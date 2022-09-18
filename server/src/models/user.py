@@ -4,10 +4,8 @@ from sqlalchemy.orm import joinedload
 from enums.entity_types import EntityTypeEnum
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
-from filters.access_level_filters import check_view_access_level
 from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
-from models.user2permission import User2Permission
 
 
 class User(BaseEntity):
@@ -15,7 +13,6 @@ class User(BaseEntity):
     Model of a user.
     """
     __tablename__ = 'users'
-    __entity_type__ = EntityTypeEnum.USER
 
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
@@ -26,10 +23,11 @@ class User(BaseEntity):
     activated_at = db.Column(db.DateTime(), nullable=True)
     reset_password_hash = db.Column(db.String(120), nullable=True, default=None)
     reset_password_hash_created = db.Column(db.DateTime(timezone=True), default=None, nullable=True)
-    organisation_id = db.Column(db.Integer, db.ForeignKey('organisations.id'))
-    organisation = db.relationship('Organisation')
-    permissions = db.relationship("UserPermission", secondary=User2Permission.__table__, viewonly=True)
-    account_settings = db.relationship('AccountSettings', uselist=False, primaryjoin="User.id==AccountSettings.user_id")
+    language_id = db.Column(db.Integer, db.ForeignKey('languages.id'), nullable=False)
+    language = db.relationship('Language')
+    color_scheme = db.Column(db.String, nullable=False)
+    avatar_id = db.Column(db.Integer, db.ForeignKey('medias.id'), nullable=True)
+    avatar = db.relationship('Media')
 
     def __init__(self):
         super(User, self).__init__(self.__entity_type__)
@@ -54,24 +52,10 @@ class User(BaseEntity):
     def find_by_reset_password_hash(cls, password_hash):
         return cls.query.filter_by(reset_password_hash=password_hash, is_deleted=False).first()
 
-    @classmethod
-    def find_detailed_by_id(cls, user_id):
-        query = cls.query.filter_by(id=user_id, is_deleted=False)
-        query = check_view_access_level(query)
-        user = query.first()
-        if user:
-            permissions = User2Permission.return_all_permissions_for_user(user.id)
-            user.permissions = permissions
-        return user
 
     @classmethod
-    def find_detailed_by_email(cls, email):
-        query = cls.query.filter_by(email=email, is_deleted=False)
-        query = check_view_access_level(query)
-        user = query.first()
-        if user:
-            permissions = User2Permission.return_all_permissions_for_user(user.id)
-            user.permissions = permissions
+    def find_by_email(cls, email):
+        user = cls.query.filter_by(email=email, is_deleted=False).first()
         return user
 
     # noinspection PyUnresolvedReferences

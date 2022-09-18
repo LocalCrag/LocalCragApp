@@ -1,14 +1,13 @@
-from enums.entity_types import EntityTypeEnum
 from extensions import db
 from models.base_entity import BaseEntity
 
 
-class Media(BaseEntity):
+class File(BaseEntity):
     """
-    Model of a media.
+    Model of a file. Video and image files will have thumbnails and height + width. All other will have those fields
+    just set to null.
     """
     __tablename__ = 'medias'
-    __entity_type__ = EntityTypeEnum.MEDIA
 
     original_filename = db.Column(db.String(120), nullable=False)
     filename = db.Column(db.String(120), nullable=False)
@@ -19,6 +18,3 @@ class Media(BaseEntity):
     thumbnail_m = db.Column(db.Boolean, default=False)
     thumbnail_l = db.Column(db.Boolean, default=False)
     thumbnail_xl = db.Column(db.Boolean, default=False)
-
-    def __init__(self):
-        super(Media, self).__init__(self.__entity_type__)
