@@ -1,15 +1,27 @@
 from webargs import fields
 
-from webargs_schemas.account_settings_args import user_account_settings_args
-from webargs_schemas.permission_args import permission_args
+from error_handling.http_exceptions.bad_request import BadRequest
+from messages.messages import ResponseMessage
+from webargs_schemas.language_args import language_args
+
+valid_color_schemes = [
+    'CLARITY_DARK',
+    'CLARITY_BRIGHT'
+]
+
+
+def valid_color_scheme(scheme):
+    if scheme not in valid_color_schemes:
+        raise BadRequest(ResponseMessage.INVALID_COLOR_SCHEME.value)
+
 
 user_args = {
     "firstname": fields.String(required=True),
     "lastname": fields.String(required=True),
     "email": fields.String(required=True),
-    "permissions": fields.Nested(permission_args, required=True, many=True),
-    "accountSettings": fields.Nested(user_account_settings_args, required=True)
-}
+    "colorScheme": fields.Str(required=True, validate=valid_color_scheme),
+    "avatar": fields.Integer(required=False, allow_none=True),
+    "language": fields.Nested(language_args, required=True)}
 
 user_id_args = {
     "id": fields.Integer(required=True)
@@ -19,8 +31,4 @@ user_contact_data_args = {
     "firstname": fields.String(required=True),
     "lastname": fields.String(required=True),
     "email": fields.String(required=True),
-}
-
-user_permissions_args = {
-    "permissions": fields.Nested(permission_args, required=True, many=True)
 }

@@ -14,7 +14,6 @@ from marshmallow_schemas.auth_response_schema import auth_response_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
 from messages.marshalling_objects import SimpleMessage, AuthResponse
 from messages.messages import ResponseMessage
-from models.account_settings import AccountSettings
 from models.revoked_token import RevokedToken
 from models.user import User
 from util.email import send_forgot_password_email
@@ -41,12 +40,10 @@ class UserLogin(MethodView):
         if User.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity=data['email'])
             refresh_token = create_refresh_token(identity=data['email'])
-            account_settings = AccountSettings.find_by_user_id(current_user.id)
             auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                          current_user,
                                          access_token=access_token,
                                          refresh_token=refresh_token,
-                                         account_settings=account_settings,
                                          permissions=current_user.permissions,
                                          languages=current_app.languages)
 
@@ -145,11 +142,9 @@ class ResetPassword(MethodView):
         user.persist()
         access_token = create_access_token(identity=user.email)
         refresh_token = create_refresh_token(identity=user.email)
-        account_settings = AccountSettings.find_by_user_id(user.id)
         auth_response = AuthResponse(ResponseMessage.PASSWORD_RESET.value,
                                      user,
                                      access_token=access_token,
                                      refresh_token=refresh_token,
-                                     account_settings=account_settings,
                                      languages=current_app.languages)
         return auth_response_schema.dump(auth_response), 202

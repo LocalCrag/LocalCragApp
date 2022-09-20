@@ -1,15 +1,12 @@
 from marshmallow import fields
 
 from extensions import ma
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from models.language import Language
 
 
-class LanguageSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Language
-
-    id = ma.auto_field()
-    code = ma.auto_field()
+class LanguageSchema(BaseEntitySchema):
+    code = fields.String()
     isDefaultLanguage = fields.Boolean(attribute='is_default_language')
 
 

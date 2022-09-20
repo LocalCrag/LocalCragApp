@@ -1,7 +1,7 @@
 import magic
 from PIL import Image
 
-from models.media import File
+from models.file import File
 from uploader.upload_handler_utils import store_tmp_file, post_upload, check_filesize_limit, get_max_image_size
 
 allowed_image_mime_types = [

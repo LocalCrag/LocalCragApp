@@ -11,10 +11,8 @@ from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import db, jwt, ma, migrate, cors
-from models.experiment import Experiment
 from models.revoked_token import RevokedToken
 from util.application_object_util import add_app_utils
-from util.class_registry_util import add_class_registry_utils
 
 
 def register_extensions(application):
@@ -23,8 +21,6 @@ def register_extensions(application):
     ma.init_app(application)
     migrate.init_app(application, db=db)
     cors.init_app(application, resources={r"/api/*": {"origins": application.config['FRONTEND_HOST']}})
-
-
 
 
 def configure_extensions(application):
@@ -41,8 +37,6 @@ def create_app():
     application.config.from_envvar('ACTION_DIRECTE_CONFIG')
 
     register_extensions(application)
-
-    add_class_registry_utils()
 
     add_app_utils(application)
 

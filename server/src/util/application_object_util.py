@@ -3,8 +3,6 @@ from typing import List
 from sqlalchemy.exc import ProgrammingError
 
 from extensions import db
-from models.entity_type import EntityType
-from models.internal_entity_accessor import InternalEntityAccessor
 from models.language import Language
 
 

@@ -16,10 +16,8 @@ def add_superadmin():
                 "lastname": current_app.config['SUPERADMIN_LASTNAME'],
                 "email": current_app.config['SUPERADMIN_EMAIL'],
                 "permissions": [],
-                "accountSettings": { # todo will be different payload
-                    "language": {
-                        "id": 1,
-                    }
+                "language": {
+                    "id": 1,
                 }
             }
             create_user(user_data, is_superadmin=True)

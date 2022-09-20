@@ -26,7 +26,7 @@ class UploadFile(MethodView):
             file = handle_file_upload(args)
             file.created_by = User.find_by_email(get_jwt_identity(), True)
             file.persist()
-            return media_schema.dump(file), 201 # todo change schema
+            return file_schema.dump(file), 201
         except InvalidFiletypeUploaded:
             raise BadRequest(ResponseMessage.INVALID_FILETYPE_UPLOADED.value)
         except FilesizeLimitExceeded as e:

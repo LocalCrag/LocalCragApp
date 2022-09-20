@@ -10,9 +10,8 @@ from error_handling.http_exceptions.conflict import Conflict
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from helpers.user_helpers import create_user
-from marshmallow_schemas.account_settings_schema import user_account_settings_schema, account_settings_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
-from marshmallow_schemas.user_schema import users_schema, user_schema
+from marshmallow_schemas.user_schema import user_schema, user_min_list_schema
 from messages.marshalling_objects import SimpleMessage
 from messages.messages import ResponseMessage
 from models.user import User
@@ -226,7 +225,7 @@ class FindUser(MethodView):  # pragma: no cover
         excluded_users = request.args.get('excluded')
         if excluded_users:
             excluded_users = excluded_users.split(',')
-        return jsonify(users_schema.dump(User.find_by_identifier(query, excluded_users))), 200
+        return jsonify(user_min_list_schema.dump(User.find_by_identifier(query, excluded_users))), 200
 
 
 class UpdateAccountSettings(MethodView):
