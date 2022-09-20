@@ -5,7 +5,6 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from marshmallow_schemas.file_schema import file_schema
-from marshmallow_schemas.media_schema import media_schema
 from messages.messages import ResponseMessage
 from models.user import User
 from uploader.errors import InvalidFiletypeUploaded, FilesizeLimitExceeded

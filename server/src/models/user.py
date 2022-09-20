@@ -1,7 +1,6 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 from sqlalchemy.orm import joinedload
 
-from enums.entity_types import EntityTypeEnum
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from messages.messages import ResponseMessage

@@ -18,9 +18,8 @@ from models.user import User
 from util.email import send_create_user_email
 from util.password_util import generate_password
 from util.regexes import email_regex
-from webargs_schemas.account_settings_args import user_account_settings_args, account_settings_args
 from webargs_schemas.change_password_args import change_password_args
-from webargs_schemas.user_args import user_args, user_contact_data_args, user_permissions_args
+from webargs_schemas.user_args import user_args, user_contact_data_args
 
 
 class ChangePassword(MethodView):
@@ -235,13 +234,15 @@ class UpdateAccountSettings(MethodView):
         """
         Updates a users account settings entity.
         """
-        account_settings_data = parser.parse(account_settings_args, request)
-        user = User.find_by_email(get_jwt_identity(), True)
-
-        user.color_scheme = account_settings_data['colorScheme']
-        user.language_id = account_settings_data['language']['id']
-        user.avatar_id = account_settings_data['avatar']
-
-        db.session.add(user)
-        db.session.commit()
-        return user_schema.dump(user), 200
+        pass
+        # todo
+        # # account_settings_data = parser.parse(account_settings_args, request)
+        # user = User.find_by_email(get_jwt_identity(), True)
+        #
+        # user.color_scheme = account_settings_data['colorScheme']
+        # user.language_id = account_settings_data['language']['id']
+        # user.avatar_id = account_settings_data['avatar']
+        #
+        # db.session.add(user)
+        # db.session.commit()
+        # return user_schema.dump(user), 200
