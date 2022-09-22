@@ -5,18 +5,15 @@ from uuid import uuid4
 import pytz
 
 from app import db, app
-from enums.entity_types import EntityTypeEnum
 from messages.messages import ResponseMessage
-from models.permission import Permission
 from models.user import User
-from permission_system.action import Action
 from tests.utils.user_test_util import get_login_headers
 
 
 def test_successful_login(client):
     data = {
-        'email': 'felix@fengelmann.de',
-        'password': 'fengelmann'
+        'email': 'action-directe@fengelmann.de',
+        'password': '[vb+xLGgU?+Z]nXD3HmO'
     }
     rv = client.post('/api/login', json=data)
     assert rv.status_code == 202
@@ -25,29 +22,17 @@ def test_successful_login(client):
     assert res['accessToken'] is not None
     assert res['refreshToken'] is not None
     assert res['accessToken'] != res['refreshToken']
-    assert res['user']['email'] == 'felix@fengelmann.de'
-    assert isinstance(res['user']['firstname'], str)
-    assert isinstance(res['user']['lastname'], str)
-    assert isinstance(res['user']['id'], int)
-    assert res['accountSettings']['colorScheme'] == 'CLARITY_BRIGHT'
-    assert res['accountSettings']['language']['code'] == 'en'
-    assert res['accountSettings']['timeCreated'] is not None
-    assert res['accountSettings']['timeUpdated'] is None
-    assert res['accountSettings']['avatar'] is not None
-    assert len(res['languages']) == 3
-    for l in res['languages']:
-        assert type(l['id']) == int
-        assert l['code'] in ['de', 'en', 'zh']
-        assert type(l['isDefaultLanguage']) == bool
-    for p in res['permissions']:
-        assert p['action'] in Action.__members__
-        assert type(p['boolValue']) == bool
-        assert type(p['id']) == int
-        assert type(p['entityType']['id']) == int
-        assert p['entityType']['name'] in EntityTypeEnum.__members__
-        if p['accessLevel']:
-            assert type(p['accessLevel']['id']) == int
-            assert type(p['accessLevel']['name']) == str
+    assert res['user']['email'] == 'action-directe@fengelmann.de'
+    assert res['user']['firstname'] == 'Felix'
+    assert res['user']['lastname'] == 'Engelmann'
+    assert isinstance(res['user']['id'], str)
+    assert res['user']['colorScheme'] == 'LARA_LIGHT_TEAL'
+    assert res['user']['language'] == 'de'
+    assert res['user']['timeCreated'] is not None
+    assert res['user']['timeUpdated'] is not None
+    assert res['user']['avatar'] is None
+
+
 
 
 def test_unsuccessful_login(client):

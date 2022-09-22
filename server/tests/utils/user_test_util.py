@@ -3,12 +3,12 @@ import json
 from messages.messages import ResponseMessage
 
 
-def get_login_headers(client, email: str, password: str):
+def get_login_headers(client, email: str = 'action-directe@fengelmann.de', password: str = '[vb+xLGgU?+Z]nXD3HmO'):
     """
     Logs in with the given credentials and returns a tuple of access and refresh headers.
     :param client: Client to use.
-    :param email: Email to log in with.
-    :param password: Password to lo in with.
+    :param email: Email to log in with (defaults to the root users email).
+    :param password: Password to log in with (defaults to the root users password).
     :return: (access_headers, refresh_headers)
     """
     data = {

@@ -37,14 +37,6 @@ class User(BaseEntity):
         return sha256.verify(password, password_hash)
 
     @classmethod
-    def find_by_email(cls, email, abort_401_if_none=False):
-        user = cls.query.filter_by(email=email).first()
-        if not user and abort_401_if_none:
-            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
-        else:
-            return user
-
-    @classmethod
     def find_by_reset_password_hash(cls, password_hash):
         return cls.query.filter_by(reset_password_hash=password_hash).first()
 

@@ -10,6 +10,7 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.unauthorized import Unauthorized
+from extensions import db
 from marshmallow_schemas.auth_response_schema import auth_response_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
 from messages.marshalling_objects import SimpleMessage, AuthResponse
@@ -29,7 +30,7 @@ class UserLogin(MethodView):
         Logs in a user into the application.
         """
         data = parser.parse(login_args, request)
-        current_user = User.find_detailed_by_email(data['email'])
+        current_user = User.find_by_email(data['email'])
 
         if not current_user:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
@@ -43,15 +44,14 @@ class UserLogin(MethodView):
             auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                          current_user,
                                          access_token=access_token,
-                                         refresh_token=refresh_token,
-                                         permissions=current_user.permissions,
-                                         languages=current_app.languages)
+                                         refresh_token=refresh_token)
 
             # A user becomes activated after first login
             if not current_user.activated:
                 current_user.activated = True
                 current_user.activated_at = datetime.utcnow()
-                current_user.persist()
+                db.session.add(current_user)
+                db.session.commit()
 
             return auth_response_schema.dump(auth_response), 202
         else:
