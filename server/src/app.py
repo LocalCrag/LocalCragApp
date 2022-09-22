@@ -12,7 +12,6 @@ from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import db, jwt, ma, migrate, cors
 from models.revoked_token import RevokedToken
-from util.application_object_util import add_app_utils
 
 
 def register_extensions(application):
@@ -37,8 +36,6 @@ def create_app():
     application.config.from_envvar('ACTION_DIRECTE_CONFIG')
 
     register_extensions(application)
-
-    add_app_utils(application)
 
     configure_extensions(application)
 

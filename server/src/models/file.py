@@ -7,7 +7,7 @@ class File(BaseEntity):
     Model of a file. Video and image files will have thumbnails and height + width. All other will have those fields
     just set to null.
     """
-    __tablename__ = 'medias'
+    __tablename__ = 'files'
 
     original_filename = db.Column(db.String(120), nullable=False)
     filename = db.Column(db.String(120), nullable=False)

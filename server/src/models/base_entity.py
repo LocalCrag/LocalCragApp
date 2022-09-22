@@ -21,7 +21,7 @@ class BaseEntity(db.Model):
 
     @declared_attr
     def created_by_id(self):
-        return db.Column(db.Integer, db.ForeignKey('users.id'))
+        return db.Column(UUID(), db.ForeignKey('users.id'))
 
     @declared_attr
     def created_by(self):

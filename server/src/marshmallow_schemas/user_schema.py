@@ -3,7 +3,6 @@ from marshmallow import fields
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.file_schema import FileSchema
-from marshmallow_schemas.language_schema import LanguageSchema
 
 
 class UserMinSchema(BaseEntitySchema):
@@ -22,7 +21,7 @@ class UserSchema(UserMinSchema):
 class UserDetailSchema(UserSchema):
     activatedAt = fields.DateTime(attribute="activated_at")
     colorScheme = fields.String(attribute='color_scheme')
-    language = ma.Nested(LanguageSchema)
+    language = fields.String()
     avatar = ma.Nested(FileSchema)
 
 

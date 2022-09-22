@@ -204,7 +204,7 @@ class DeleteUser(MethodView):  # pragma: no cover
         if user.email == get_jwt_identity():
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
-        user.is_deleted = True
+        # todo delete? set inactive..?
 
         db.session.add(user)
         db.session.commit()

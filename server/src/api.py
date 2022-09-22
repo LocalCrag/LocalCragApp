@@ -2,7 +2,6 @@ from flask import Blueprint
 
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
-from resources.language_resources import GetLanguages
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetUser, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUserContactInfo, DeleteUser, FindUser
@@ -33,11 +32,6 @@ def configure_api(app):
     account_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
     # account_bp.add_url_rule('/settings', view_func=UpdateAccountSettings.as_view('update_account_settings')) todo
     app.register_blueprint(account_bp, url_prefix='/api/account')
-
-    # Language API
-    language_bp = Blueprint('languages', __name__, )
-    language_bp.add_url_rule('', view_func=GetLanguages.as_view('get_language_list'))
-    app.register_blueprint(language_bp, url_prefix='/api/languages')
 
     # User API
     user_bp = Blueprint('users', __name__, )

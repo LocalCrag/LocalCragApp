@@ -1,4 +1,4 @@
-from util.scripts.add_superadmin import add_superadmin
+from util.scripts.add_root_user import add_root_user
 
 
 def setup_database(down=False):
@@ -6,7 +6,7 @@ def setup_database(down=False):
     Runs all migration scripts in the correct order.
     """
     scripts = [
-        add_superadmin
+        add_root_user
     ]
     if down:
         scripts = reversed(scripts)

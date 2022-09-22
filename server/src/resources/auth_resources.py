@@ -105,7 +105,7 @@ class ForgotPassword(MethodView):
         """
         data = parser.parse(forgot_password_args, request)
         user = User.find_by_email(data['email'])
-        if not user or user.is_deleted:
+        if not user:
             raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
         if not user.activated:
             raise Unauthorized(ResponseMessage.USER_NOT_ACTIVATED.value)

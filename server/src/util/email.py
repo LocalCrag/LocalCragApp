@@ -51,7 +51,7 @@ def prepare_message(user: User, i18n_dict_source):
     :param i18n_dict_source: Translation source dict.
     :return: Tuple of message object and translation dict.
     """
-    i18n_keyword_arg_dict = build_i18n_keyword_arg_dict(user.language.code, i18n_dict_source)
+    i18n_keyword_arg_dict = build_i18n_keyword_arg_dict(user.language, i18n_dict_source)
     msg = MIMEMultipart('alternative')
     msg['Subject'] = i18n_keyword_arg_dict['i18n_subject']
     msg['From'] = current_app.config['SYSTEM_EMAIL']
