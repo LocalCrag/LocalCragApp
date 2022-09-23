@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytz
-from flask import request, current_app
+from flask import request, current_app, g
 from flask.views import MethodView
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
                                 get_jwt_identity, get_jwt)
@@ -18,6 +18,7 @@ from messages.messages import ResponseMessage
 from models.revoked_token import RevokedToken
 from models.user import User
 from util.email import send_forgot_password_email
+from util.security_util import check_user_authorized
 from webargs_schemas.forgot_password_args import forgot_password_args
 from webargs_schemas.login_args import login_args
 from webargs_schemas.reset_password_args import reset_password_args
@@ -60,6 +61,7 @@ class UserLogin(MethodView):
 
 class UserLogoutAccess(MethodView):
     @jwt_required()
+    @check_user_authorized()
     def post(self):
         """
         Invalidates a users access token.
@@ -73,6 +75,7 @@ class UserLogoutAccess(MethodView):
 
 class UserLogoutRefresh(MethodView):
     @jwt_required(refresh=True)
+    @check_user_authorized()
     def post(self):
         """
         Invalidates a users refresh token.
@@ -86,11 +89,12 @@ class UserLogoutRefresh(MethodView):
 
 class TokenRefresh(MethodView):
     @jwt_required(refresh=True)
+    @check_user_authorized()
     def post(self):
         """
         Refreshes a users access token.
         """
-        current_user = User.find_by_email(get_jwt_identity())
+        current_user = g.user
         access_token = create_access_token(identity=current_user.email)
         auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                      current_user,

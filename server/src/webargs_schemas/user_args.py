@@ -2,7 +2,6 @@ from webargs import fields
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from messages.messages import ResponseMessage
-from webargs_schemas.language_args import language_args
 
 valid_color_schemes = [
     'LARA_LIGHT_TEAL',
@@ -23,12 +22,3 @@ user_args = {
     "avatar": fields.Integer(required=False, allow_none=True),
     "language": fields.Str(required=True)}
 
-user_id_args = {
-    "id": fields.Integer(required=True)
-}
-
-user_contact_data_args = {
-    "firstname": fields.String(required=True),
-    "lastname": fields.String(required=True),
-    "email": fields.String(required=True),
-}

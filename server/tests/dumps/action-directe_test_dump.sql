@@ -141,7 +141,9 @@ CREATE TABLE public.users (
     language character varying DEFAULT 'de'::character varying NOT NULL,
     color_scheme character varying NOT NULL,
     created_by_id uuid,
-    avatar_id uuid
+    avatar_id uuid,
+    deleted boolean,
+    deleted_at timestamp without time zone
 );
 
 
@@ -158,7 +160,7 @@ ALTER TABLE ONLY public.revoked_tokens ALTER COLUMN id SET DEFAULT nextval('publ
 -- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: felixengelmann
 --
 
-INSERT INTO public.alembic_version VALUES ('4355d25e861c');
+INSERT INTO public.alembic_version VALUES ('ffb5158bf4ab');
 
 
 --
@@ -177,8 +179,9 @@ INSERT INTO public.alembic_version VALUES ('4355d25e861c');
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: felixengelmann
 --
 
-INSERT INTO public.users VALUES ('1543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL);
-INSERT INTO public.users VALUES ('2543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe2@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL);
+INSERT INTO public.users VALUES ('1543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL, NULL, NULL);
+INSERT INTO public.users VALUES ('2543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe2@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL, NULL, NULL);
+INSERT INTO public.users VALUES ('3543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe3@fengelmann.de', 'Felix', 'Engelmann', false, false, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL, NULL, NULL);
 
 
 --

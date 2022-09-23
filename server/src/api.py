@@ -3,8 +3,8 @@ from flask import Blueprint
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.upload_resources import UploadFile
-from resources.user_resources import ChangePassword, GetUsers, GetUser, GetEmailTaken, CreateUser, \
-    ResendUserCreateMail, LockUser, UnlockUser, UpdateUserContactInfo, DeleteUser, FindUser
+from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
+    ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
 
 
 def configure_api(app):
@@ -30,20 +30,18 @@ def configure_api(app):
     # Account API
     account_bp = Blueprint('account', __name__, )
     account_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
-    # account_bp.add_url_rule('/settings', view_func=UpdateAccountSettings.as_view('update_account_settings')) todo
     app.register_blueprint(account_bp, url_prefix='/api/account')
 
     # User API
     user_bp = Blueprint('users', __name__, )
     user_bp.add_url_rule('', view_func=GetUsers.as_view('get_user_list'))
     user_bp.add_url_rule('', view_func=CreateUser.as_view('create_user'))
-    user_bp.add_url_rule('/<int:user_id>', view_func=GetUser.as_view('get_user_detail'))
-    user_bp.add_url_rule('/<int:user_id>', view_func=DeleteUser.as_view('delete_user'))
-    user_bp.add_url_rule('/<int:user_id>/lock', view_func=LockUser.as_view('lock_user'))
-    user_bp.add_url_rule('/<int:user_id>/contact-info',
-                         view_func=UpdateUserContactInfo.as_view('update_user_contact_info'))
-    user_bp.add_url_rule('/<int:user_id>/unlock', view_func=UnlockUser.as_view('unlock_user'))
-    user_bp.add_url_rule('/<int:user_id>/resend-user-create-mail',
+    user_bp.add_url_rule('/<string:user_id>', view_func=DeleteUser.as_view('delete_user'))
+    user_bp.add_url_rule('/<string:user_id>/lock', view_func=LockUser.as_view('lock_user'))
+    user_bp.add_url_rule('/me',
+                         view_func=UpdateUser.as_view('update_user'))
+    user_bp.add_url_rule('/<string:user_id>/unlock', view_func=UnlockUser.as_view('unlock_user'))
+    user_bp.add_url_rule('/<string:user_id>/resend-user-create-mail',
                          view_func=ResendUserCreateMail.as_view('resend_user_create_mail'))
     user_bp.add_url_rule('/email-taken/<email>', view_func=GetEmailTaken.as_view('get_email_taken'))
     user_bp.add_url_rule('/find/<string:query>', view_func=FindUser.as_view('find_user'))

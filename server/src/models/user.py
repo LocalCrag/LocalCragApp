@@ -21,6 +21,8 @@ class User(BaseEntity):
     locked = db.Column(db.Boolean, default=False)
     activated = db.Column(db.Boolean, default=False)
     activated_at = db.Column(db.DateTime(), nullable=True)
+    deleted = db.Column(db.Boolean, default=False)
+    deleted_at = db.Column(db.DateTime(), nullable=True)
     reset_password_hash = db.Column(db.String(120), nullable=True, default=None)
     reset_password_hash_created = db.Column(db.DateTime(timezone=True), default=None, nullable=True)
     language = db.Column(db.String, nullable=False, server_default='de')
@@ -63,9 +65,4 @@ class User(BaseEntity):
         )
         if excluded_ids:
             query = query.filter(User.id.notin_(excluded_ids))
-
-        # Add eager loading for this to save a lot of queries
-        query = query.options(
-            joinedload(User.account_settings).joinedload(db.get_model('AccountSettings').avatar),
-        )
         return query.limit(5).all()
