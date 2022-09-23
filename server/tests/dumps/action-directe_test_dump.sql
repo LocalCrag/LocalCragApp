@@ -177,7 +177,8 @@ INSERT INTO public.alembic_version VALUES ('4355d25e861c');
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: felixengelmann
 --
 
-INSERT INTO public.users VALUES ('1543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe@fengelmann.de', 'Felix', 'Engelmann', false, false, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL);
+INSERT INTO public.users VALUES ('1543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL);
+INSERT INTO public.users VALUES ('2543885f-e9ef-48c5-a396-6c898fb42409', '2022-09-22 19:55:03.664355', NULL, '$pbkdf2-sha256$29000$MCbk/L.39h4DwBjjXEuJcQ$m5s68Cmla14ixyWpobRVRU9J7Nq5NbCOxa85.0ZL0Ks', 'action-directe2@fengelmann.de', 'Felix', 'Engelmann', false, true, NULL, NULL, NULL, 'de', 'LARA_LIGHT_TEAL', NULL, NULL);
 
 
 --

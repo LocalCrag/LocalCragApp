@@ -5,8 +5,8 @@ from messages.messages import ResponseMessage
 from webargs_schemas.language_args import language_args
 
 valid_color_schemes = [
-    'CLARITY_DARK',
-    'CLARITY_BRIGHT'
+    'LARA_LIGHT_TEAL',
+    'LARA_DARK_TEAL'
 ]
 
 
@@ -21,7 +21,7 @@ user_args = {
     "email": fields.String(required=True),
     "colorScheme": fields.Str(required=True, validate=valid_color_scheme),
     "avatar": fields.Integer(required=False, allow_none=True),
-    "language": fields.Nested(language_args, required=True)}
+    "language": fields.Str(required=True)}
 
 user_id_args = {
     "id": fields.Integer(required=True)

@@ -29,7 +29,9 @@ class ChangePassword(MethodView):
         Changes the requesting users password.
         """
         data = parser.parse(change_password_args, request)
-        user = User.find_by_email(get_jwt_identity(), True)
+        user = User.find_by_email(get_jwt_identity())
+        if not user:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
         if User.verify_hash(data['oldPassword'], user.password):
             if len(data['newPassword']) < 8:
                 raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
@@ -113,7 +115,7 @@ class CreateUser(MethodView):
         """
         user_data = parser.parse(user_args, request)
 
-        created_by: User = User.find_detailed_by_email(get_jwt_identity())
+        created_by: User = User.find_by_email(get_jwt_identity())
 
         if User.find_by_email(user_data['email']):
             raise Conflict(ResponseMessage.USER_ALREADY_EXISTS.value)

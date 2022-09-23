@@ -29,15 +29,13 @@ def test_successful_login(client):
     assert res['user']['colorScheme'] == 'LARA_LIGHT_TEAL'
     assert res['user']['language'] == 'de'
     assert res['user']['timeCreated'] is not None
-    assert res['user']['timeUpdated'] is not None
+    assert res['user']['timeUpdated'] is None
     assert res['user']['avatar'] is None
-
-
 
 
 def test_unsuccessful_login(client):
     data = {
-        'email': 'felix@fengelmann.de',
+        'email': 'action-directe@fengelmann.de',
         'password': 'ergherz547zrthfr'
     }
     rv_wrong_pw = client.post('/api/login', json=data)
@@ -47,7 +45,7 @@ def test_unsuccessful_login(client):
 
     data = {
         'email': 'dfshshehred@wegweg.ee',
-        'password': 'fengelmann'
+        'password': '[vb+xLGgU?+Z]nXD3HmO'
     }
     rv_wrong_email = client.post('/api/login', json=data)
     assert rv_wrong_email.status_code == 401
@@ -56,7 +54,7 @@ def test_unsuccessful_login(client):
 
 
 def test_successful_access_and_refresh_logout(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
 
     rv = client.post('/api/logout/access', headers=access_headers)
     assert rv.status_code == 200
@@ -85,20 +83,19 @@ def test_refresh_logout_without_headers(client):
 
 
 def test_successful_token_refresh(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
 
     rv = client.post('/api/token/refresh', headers=refresh_headers)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.LOGIN_SUCCESS.value
     assert res['accessToken'] is not None
-    assert res['user']['email'] == 'felix@fengelmann.de'
-    assert isinstance(res['user']['email'], str)
-    assert isinstance(res['user']['id'], int)
+    assert res['user']['email'] == 'action-directe@fengelmann.de'
+    assert isinstance(res['user']['id'], str)
 
 
 def test_unsuccessful_token_refresh(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
 
     rv = client.post('/api/token/refresh')
     assert rv.status_code == 401
@@ -123,7 +120,7 @@ def test_forgot_password_wrong_email(client):
 
 def test_forgot_password_successful(client):
     data = {
-        'email': 'felix@fengelmann.de',
+        'email': 'action-directe@fengelmann.de',
     }
     rv = client.post('/api/forgot-password', json=data)
     assert rv.status_code == 200
@@ -145,11 +142,12 @@ def test_reset_password_hash_not_found(client):
 def test_reset_password_hash_expired(client):
     # Manually add a hash with expired date too the user
     with app.app_context():
-        user = User.find_by_email('felix@fengelmann.de')
+        user = User.find_by_email('action-directe@fengelmann.de')
         reset_hash = uuid4()
         user.reset_password_hash = reset_hash
         user.reset_password_hash_created = datetime.now(pytz.utc) - timedelta(hours=24, seconds=1)
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
 
     data = {
         'resetPasswordHash': reset_hash,
@@ -164,11 +162,12 @@ def test_reset_password_hash_expired(client):
 def test_reset_password_password_too_short(client):
     # Manually add a hash to the user
     with app.app_context():
-        user = User.find_by_email('felix@fengelmann.de')
+        user = User.find_by_email('action-directe@fengelmann.de')
         reset_hash = uuid4()
         user.reset_password_hash = reset_hash
         user.reset_password_hash_created = datetime.now(pytz.utc)
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
 
     data = {
         'resetPasswordHash': reset_hash,
@@ -183,11 +182,12 @@ def test_reset_password_password_too_short(client):
 def test_reset_password_success(client):
     # Manually add a hash to the user
     with app.app_context():
-        user = User.find_by_email('felix@fengelmann.de')
+        user = User.find_by_email('action-directe@fengelmann.de')
         reset_hash = uuid4()
         user.reset_password_hash = reset_hash
         user.reset_password_hash_created = datetime.now(pytz.utc)
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
 
     data = {
         'resetPasswordHash': reset_hash,
@@ -200,34 +200,25 @@ def test_reset_password_success(client):
     assert res['accessToken'] is not None
     assert res['refreshToken'] is not None
     assert res['accessToken'] != res['refreshToken']
-    assert res['user']['email'] == 'felix@fengelmann.de'
-    assert isinstance(res['user']['email'], str)
-    assert isinstance(res['user']['id'], int)
-    assert res['accountSettings']['colorScheme'] == 'CLARITY_BRIGHT'
-    assert res['accountSettings']['language']['code'] == 'en'
-    assert res['accountSettings']['timeCreated'] is not None
-    assert res['accountSettings']['timeUpdated'] is None
-    assert res['accountSettings']['avatar'] is not None
-    assert len(res['languages']) == 3
-    for l in res['languages']:
-        assert type(l['id']) == int
-        assert l['code'] in ['de', 'en', 'zh']
-        assert type(l['isDefaultLanguage']) == bool
+    assert res['user']['email'] == 'action-directe@fengelmann.de'
+    assert isinstance(res['user']['id'], str)
+    assert res['user']['colorScheme'] == 'LARA_LIGHT_TEAL'
+    assert res['user']['language'] == 'de'
+    assert res['user']['timeCreated'] is not None
+    assert res['user']['timeUpdated'] is not None
+    assert res['user']['avatar'] is None
 
 
 def test_token_user_does_not_exist(client):
     # Take one of the test users, log in, then manually delete the user. Then try to change the password.
     # As the request is performed with a non existing user, 401 should be thrown.
-    access_headers, refresh_headers = get_login_headers(client, 'queitsch@fengelmann.de', 'g!a6J!zLIXN{b~qok8.A')
+    access_headers, refresh_headers = get_login_headers(client, email='action-directe2@fengelmann.de')
 
     with app.app_context():
-        db.engine.execute("delete from account_settings where user_id = 3;")
-        db.engine.execute("delete from user_2_permission where user_id = 3;")
-        db.engine.execute("delete from assignees where user_id = 3;")
-        db.engine.execute("delete from users where id = 3;")
+        db.engine.execute("delete from users where id = '2543885f-e9ef-48c5-a396-6c898fb42409';")
 
     change_pw_data = {
-        'oldPassword': 'g!a6J!zLIXN{b~qok8.A',
+        'oldPassword': '[vb+xLGgU?+Z]nXD3HmO',
         'newPassword': 'testPassword'
     }
     rv = client.put('/api/account/change-password', headers=access_headers, json=change_pw_data)
@@ -237,7 +228,7 @@ def test_token_user_does_not_exist(client):
 
 
 def test_revoked_access_token_bahaviour(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     rv = client.post('/api/logout/access', headers=access_headers)
     assert rv.status_code == 200
     res = json.loads(rv.data)
@@ -251,7 +242,7 @@ def test_revoked_access_token_bahaviour(client):
 
 
 def test_revoked_refresh_token_bahaviour(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     rv = client.post('/api/logout/refresh', headers=refresh_headers)
     assert rv.status_code == 200
     res = json.loads(rv.data)
@@ -260,33 +251,15 @@ def test_revoked_refresh_token_bahaviour(client):
     assert rv.status_code == 401
 
 
-
 def test_forgot_password_with_non_activated_user(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
-    with app.app_context():
-        all_permissions = Permission.return_all()
+    access_headers, refresh_headers = get_login_headers(client)
     user_data = {
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'felix.engelmann@fengelmann.de',
-        'accountSettings': {
-            'language': {
-                'id': 1,
-                'code': 'en'
-            }
-        },
-        'permissions': [
-            {
-                'id': all_permissions[0].id,
-                'boolValue': True,
-                'accessLevel': None
-            },
-            {
-                'id': all_permissions[1].id,
-                'boolValue': True,
-                'accessLevel': None
-            },
-        ]
+        'language': 'de',
+        'colorScheme': 'LARA_LIGHT_TEAL',
+        'avatar': None,
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
@@ -301,35 +274,17 @@ def test_forgot_password_with_non_activated_user(client):
 
 
 def test_reset_password_with_non_activated_user(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
-    with app.app_context():
-        all_permissions = Permission.return_all()
+    access_headers, refresh_headers = get_login_headers(client)
     user_data = {
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'felix.engelmann@fengelmann.de',
-        'accountSettings': {
-            'language': {
-                'id': 1,
-                'code': 'en'
-            }
-        },
-        'permissions': [
-            {
-                'id': all_permissions[0].id,
-                'boolValue': True,
-                'accessLevel': None
-            },
-            {
-                'id': all_permissions[1].id,
-                'boolValue': True,
-                'accessLevel': None
-            },
-        ]
+        'language': 'de',
+        'colorScheme': 'LARA_LIGHT_TEAL',
+        'avatar': None,
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
-
 
     # Manually add a hash to the user
     with app.app_context():
@@ -337,7 +292,8 @@ def test_reset_password_with_non_activated_user(client):
         reset_hash = uuid4()
         user.reset_password_hash = reset_hash
         user.reset_password_hash_created = datetime.now(pytz.utc)
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
 
     data = {
         'resetPasswordHash': reset_hash,

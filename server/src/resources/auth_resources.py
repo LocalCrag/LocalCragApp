@@ -90,7 +90,7 @@ class TokenRefresh(MethodView):
         """
         Refreshes a users access token.
         """
-        current_user = User.find_by_email(get_jwt_identity(), True)
+        current_user = User.find_by_email(get_jwt_identity())
         access_token = create_access_token(identity=current_user.email)
         auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                      current_user,
@@ -111,7 +111,8 @@ class ForgotPassword(MethodView):
             raise Unauthorized(ResponseMessage.USER_NOT_ACTIVATED.value)
         user.reset_password_hash = uuid4()
         user.reset_password_hash_created = datetime.now()
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
         send_forgot_password_email(user)
 
         simple_message = SimpleMessage(ResponseMessage.RESET_PASSWORD_MAIL_SENT.value)
@@ -139,12 +140,12 @@ class ResetPassword(MethodView):
         user.password = User.generate_hash(data['newPassword'])
         user.reset_password_hash = None
         user.reset_password_hash_created = None
-        user.persist()
+        db.session.add(user)
+        db.session.commit()
         access_token = create_access_token(identity=user.email)
         refresh_token = create_refresh_token(identity=user.email)
         auth_response = AuthResponse(ResponseMessage.PASSWORD_RESET.value,
                                      user,
                                      access_token=access_token,
-                                     refresh_token=refresh_token,
-                                     languages=current_app.languages)
+                                     refresh_token=refresh_token)
         return auth_response_schema.dump(auth_response), 202
