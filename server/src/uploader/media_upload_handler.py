@@ -40,7 +40,7 @@ def handle_file_upload(args: dict) -> File:
     if mime_type in allowed_image_mime_types:
         file_object = handle_image_upload(temp_path, file, args['qquuid'])
     else:
-        file_object = handle_arbitrary_file_upload(file_object, args['qquuid'])
+        file_object = handle_arbitrary_file_upload(file, args['qquuid'])
 
     # Clean up
     post_upload(file, temp_folder)
@@ -63,6 +63,11 @@ def handle_image_upload(path: str, file, qquuid):
     file_object.original_filename = file.filename
     file_object.height = img.height
     file_object.width = img.width
+    file_object.thumbnail_xs = False
+    file_object.thumbnail_s = False
+    file_object.thumbnail_m = False
+    file_object.thumbnail_l = False
+    file_object.thumbnail_xl = False
 
     # Create thumbnails
     portrait = img.height > img.width

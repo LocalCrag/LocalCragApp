@@ -226,7 +226,7 @@ def test_update_user(client):
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'action-directe@fengelmann.de',
-        'avatar': None,  # todo when files work test to add an avatar
+        'avatar': '6137f55a-6201-45ab-89c5-6e9c29739d61',
         'colorScheme': 'LARA_DARK_TEAL'
     }
     rv = client.put('/api/users/me', headers=access_headers, json=data)
@@ -235,11 +235,10 @@ def test_update_user(client):
     assert res['language'] == 'en'
     assert res['firstname'] == 'Thorsten'
     assert res['lastname'] == 'Test'
-    assert res['avatar'] is None
+    assert res['avatar']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
+    assert res['avatar']['originalFilename'] == 'test.jpg'
     assert res['colorScheme'] == 'LARA_DARK_TEAL'
     assert res['email'] == 'action-directe@fengelmann.de'
-
-
 
 
 def test_update_user_different_email(client):
@@ -261,7 +260,6 @@ def test_update_user_different_email(client):
     assert res['avatar'] is None
     assert res['colorScheme'] == 'LARA_DARK_TEAL'
     assert res['email'] == 'horstpopelfritze@fengelmann.de'
-
 
 
 def test_update_user_taken_email(client):

@@ -74,8 +74,8 @@ CREATE TABLE public.files (
     time_updated timestamp without time zone,
     original_filename character varying(120) NOT NULL,
     filename character varying(120) NOT NULL,
-    width integer NOT NULL,
-    height integer NOT NULL,
+    width integer,
+    height integer,
     thumbnail_xs boolean,
     thumbnail_s boolean,
     thumbnail_m boolean,
@@ -160,13 +160,14 @@ ALTER TABLE ONLY public.revoked_tokens ALTER COLUMN id SET DEFAULT nextval('publ
 -- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: felixengelmann
 --
 
-INSERT INTO public.alembic_version VALUES ('ffb5158bf4ab');
+INSERT INTO public.alembic_version VALUES ('2c6af51b763d');
 
 
 --
 -- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: felixengelmann
 --
 
+INSERT INTO public.files VALUES ('6137f55a-6201-45ab-89c5-6e9c29739d61', '2022-09-22 19:55:03.664355', NULL, 'test.jpg', 'ed22745d-ce4a-49f1-b9af-d29918d07923.jpg', 200, 200, true, true, false, false, false, '1543885f-e9ef-48c5-a396-6c898fb42409');
 
 
 --

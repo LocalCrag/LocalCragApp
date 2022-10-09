@@ -176,6 +176,8 @@ class DeleteUser(MethodView):  # pragma: no cover
         if user.email == get_jwt_identity():
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
+        unknown_password = generate_password()
+
         user.email = ''
         user.firstname = ''
         user.lastname = ''
@@ -183,6 +185,7 @@ class DeleteUser(MethodView):  # pragma: no cover
         user.deleted = True
         user.deleted_at = datetime.utcnow()
         user.avatar_id = None
+        user.password = User.generate_hash(unknown_password)
 
         db.session.add(user)
         db.session.commit()

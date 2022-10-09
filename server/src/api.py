@@ -14,7 +14,7 @@ def configure_api(app):
     """
     # Upload API
     subject_bp = Blueprint('upload', __name__, )
-    subject_bp.add_url_rule('/file', view_func=UploadFile.as_view('upload_file'))
+    subject_bp.add_url_rule('', view_func=UploadFile.as_view('upload_file'))
     app.register_blueprint(subject_bp, url_prefix='/api/upload')
 
     # Auth API

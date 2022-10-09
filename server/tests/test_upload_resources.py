@@ -6,8 +6,59 @@ from werkzeug.datastructures import FileStorage
 from tests.utils.user_test_util import get_login_headers
 
 
+def test_successful_file_upload(client, clean_test_uploads):
+    access_headers, refresh_headers = get_login_headers(client)
+    upload_file = FileStorage(
+        stream=open(os.path.join("../tests/assets/test_pdf.pdf"), "rb"),
+        filename="test_pdf.pdf",
+        content_type="	application/pdf",
+    ),
+    upload_data = {
+        'qquuid': 'test-uuid',
+        'qqfilename': 'test_pdf.pdf',
+        'qqtotalfilesize': 1234,
+        'qqfile': upload_file
+    }
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    assert rv.status_code == 201
+    res = json.loads(rv.data)
+    assert res['filename'] == 'test-uuid.pdf'
+    assert res['originalFilename'] == 'test_pdf.pdf'
+    assert isinstance(res['id'], str)
+    assert isinstance(res['timeCreated'], str)
+    assert res['timeUpdated'] is None
+    assert os.path.isfile('uploads/test-uuid.pdf') is True
+    assert res['width'] is None
+    assert res['height'] is None
+    assert res['thumbnailXS'] is None
+    assert res['thumbnailS'] is None
+    assert res['thumbnailM'] is None
+    assert res['thumbnailL'] is None
+    assert res['thumbnailXL'] is None
+
+
+def test_file_upload_too_large_file(client, clean_test_uploads):
+    access_headers, refresh_headers = get_login_headers(client)
+    upload_image = FileStorage(
+        stream=open(os.path.join("../tests/assets/test_image_large_filesize.jpg"), "rb"),
+        filename="test_image_large_filesize.jpg",
+        content_type="image/jpg",
+    ),
+    upload_data = {
+        'qquuid': 'test-uuid',
+        'qqfilename': 'test_image_large_filesize.jpg',
+        'qqtotalfilesize': 5940312,
+        'qqfile': upload_image
+    }
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    assert rv.status_code == 400
+    res = json.loads(rv.data)
+    assert res['message'] == 'FILESIZE_LIMIT_EXCEEDED'
+    assert os.path.isfile('uploads/test-uuid.jpg') is False
+
+
 def test_successful_upload_small(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_271_186.jpeg"), "rb"),
         filename="test_image_271_186.jpeg",
@@ -19,14 +70,14 @@ def test_successful_upload_small(client, clean_test_uploads):
         'qqtotalfilesize': 6353,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 186
     assert res['width'] == 271
     assert res['filename'] == 'test-uuid.jpeg'
     assert res['originalFilename'] == 'test_image_271_186.jpeg'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
@@ -43,7 +94,7 @@ def test_successful_upload_small(client, clean_test_uploads):
 
 
 def test_successful_upload_medium(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_512_512.jpg"), "rb"),
         filename="test_image_512_512.jpg",
@@ -55,14 +106,14 @@ def test_successful_upload_medium(client, clean_test_uploads):
         'qqtotalfilesize': 29034,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 512
     assert res['width'] == 512
     assert res['filename'] == 'test-uuid.jpeg'
     assert res['originalFilename'] == 'test_image_512_512.jpg'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
@@ -79,7 +130,7 @@ def test_successful_upload_medium(client, clean_test_uploads):
 
 
 def test_successful_upload_large(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_4000_2667.jpg"), "rb"),
         filename="test_image_4000_2667.jpg",
@@ -91,14 +142,14 @@ def test_successful_upload_large(client, clean_test_uploads):
         'qqtotalfilesize': 1328939,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 2667
     assert res['width'] == 4000
     assert res['filename'] == 'test-uuid.jpeg'
     assert res['originalFilename'] == 'test_image_4000_2667.jpg'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
@@ -115,7 +166,7 @@ def test_successful_upload_large(client, clean_test_uploads):
 
 
 def test_upload_too_large_file(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_large_filesize.jpg"), "rb"),
         filename="test_image_large_filesize.jpg",
@@ -127,7 +178,7 @@ def test_upload_too_large_file(client, clean_test_uploads):
         'qqtotalfilesize': 5940312,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 400
     res = json.loads(rv.data)
     assert res['message'] == 'FILESIZE_LIMIT_EXCEEDED'
@@ -139,32 +190,8 @@ def test_upload_too_large_file(client, clean_test_uploads):
     assert os.path.isfile('uploads/test-uuid_xl.jpg') is False
 
 
-def test_upload_invalid_filetype(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
-    upload_text = FileStorage(
-        stream=open(os.path.join("../tests/assets/text_file.txt"), "rb"),
-        filename="text_file.txt",
-        content_type="text/plain",
-    ),
-    upload_data = {
-        'qquuid': 'test-uuid',
-        'qqfilename': 'text_file.txt',
-        'qqtotalfilesize': 22,
-        'qqfile': upload_text
-    }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
-    assert rv.status_code == 400
-    res = json.loads(rv.data)
-    assert res['message'] == 'INVALID_FILETYPE_UPLOADED'
-    assert os.path.isfile('uploads/test-uuid.txt') is False
-    assert os.path.isfile('uploads/test-uuid_xs.txt') is False
-    assert os.path.isfile('uploads/test-uuid_s.txt') is False
-    assert os.path.isfile('uploads/test-uuid_m.txt') is False
-    assert os.path.isfile('uploads/test-uuid_l.txt') is False
-    assert os.path.isfile('uploads/test-uuid_xl.txt') is False
-
 def test_successful_upload_small_png(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_271_186.png"), "rb"),
         filename="test_image_271_186.png",
@@ -176,14 +203,14 @@ def test_successful_upload_small_png(client, clean_test_uploads):
         'qqtotalfilesize': 6353,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 186
     assert res['width'] == 271
     assert res['filename'] == 'test-uuid.png'
     assert res['originalFilename'] == 'test_image_271_186.png'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
@@ -198,8 +225,9 @@ def test_successful_upload_small_png(client, clean_test_uploads):
     assert os.path.isfile('uploads/test-uuid_l.png') is False
     assert os.path.isfile('uploads/test-uuid_xl.png') is False
 
+
 def test_successful_upload_small_gif(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_271_186.gif"), "rb"),
         filename="test_image_271_186.gif",
@@ -211,14 +239,14 @@ def test_successful_upload_small_gif(client, clean_test_uploads):
         'qqtotalfilesize': 6353,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 186
     assert res['width'] == 271
     assert res['filename'] == 'test-uuid.gif'
     assert res['originalFilename'] == 'test_image_271_186.gif'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
@@ -233,8 +261,9 @@ def test_successful_upload_small_gif(client, clean_test_uploads):
     assert os.path.isfile('uploads/test-uuid_l.gif') is False
     assert os.path.isfile('uploads/test-uuid_xl.gif') is False
 
+
 def test_successful_upload_small_bmp(client, clean_test_uploads):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     upload_image = FileStorage(
         stream=open(os.path.join("../tests/assets/test_image_271_186.bmp"), "rb"),
         filename="test_image_271_186.bmp",
@@ -246,14 +275,14 @@ def test_successful_upload_small_bmp(client, clean_test_uploads):
         'qqtotalfilesize': 6353,
         'qqfile': upload_image
     }
-    rv = client.post('/api/upload/media', headers=access_headers, data=upload_data, content_type='multipart/form-data')
+    rv = client.post('/api/upload', headers=access_headers, data=upload_data, content_type='multipart/form-data')
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['height'] == 186
     assert res['width'] == 271
     assert res['filename'] == 'test-uuid.bmp'
     assert res['originalFilename'] == 'test_image_271_186.bmp'
-    assert isinstance(res['id'], int)
+    assert isinstance(res['id'], str)
     assert isinstance(res['timeCreated'], str)
     assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True

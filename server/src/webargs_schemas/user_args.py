@@ -19,6 +19,6 @@ user_args = {
     "lastname": fields.String(required=True),
     "email": fields.String(required=True),
     "colorScheme": fields.Str(required=True, validate=valid_color_scheme),
-    "avatar": fields.Integer(required=False, allow_none=True),
+    "avatar": fields.String(required=False, allow_none=True),
     "language": fields.Str(required=True)}
 

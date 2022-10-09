@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from extensions import db
 from marshmallow_schemas.file_schema import file_schema
 from messages.messages import ResponseMessage
 from models.user import User
@@ -26,7 +27,8 @@ class UploadFile(MethodView):
         try:
             file = handle_file_upload(args)
             file.created_by = g.user
-            file.persist()
+            db.session.add(file)
+            db.session.commit()
             return file_schema.dump(file), 201
         except InvalidFiletypeUploaded:
             raise BadRequest(ResponseMessage.INVALID_FILETYPE_UPLOADED.value)

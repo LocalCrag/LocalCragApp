@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="pytest in test_file_upload_resources.py" type="tests" factoryName="py.test">
+  <configuration default="false" name="pytest in test_upload_resources.py" type="tests" factoryName="py.test">
     <module name="server" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -15,7 +15,7 @@
     <option name="_new_keywords" value="&quot;&quot;" />
     <option name="_new_parameters" value="&quot;&quot;" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_file_upload_resources.py&quot;" />
+    <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_upload_resources.py&quot;" />
     <option name="_new_targetType" value="&quot;PATH&quot;" />
     <method v="2" />
   </configuration>
