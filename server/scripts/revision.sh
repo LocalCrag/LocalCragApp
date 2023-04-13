@@ -1,0 +1,1 @@
+pipenv run flask db revision

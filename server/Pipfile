@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pillow = "*"
+flask = "*"
+flask-jwt-extended = "*"
+passlib = "*"
+flask-sqlalchemy = "*"
+python-dateutil = "*"
+flask-cors = "*"
+flask-migrate = "*"
+gunicorn = "*"
+python-magic = "*"
+pytest = "*"
+sqlparse = "*"
+flask-marshmallow = "*"
+webargs = "*"
+marshmallow-sqlalchemy = "*"
+pytz = "*"
+psycopg2-binary = "*"
+shortuuid = "*"
+sqlalchemy = "*"
+marshmallow-enum = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
