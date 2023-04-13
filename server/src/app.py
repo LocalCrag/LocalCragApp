@@ -33,7 +33,7 @@ def create_app():
                         static_url_path='/uploads',
                         static_folder='uploads')
     application.config.from_object('config.default.DefaultConfig')
-    application.config.from_envvar('ACTION_DIRECTE_CONFIG')
+    application.config.from_envvar('LOCALCRAG_CONFIG')
 
     register_extensions(application)
 

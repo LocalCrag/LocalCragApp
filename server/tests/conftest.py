@@ -11,7 +11,7 @@ from app import app
 @pytest.fixture
 def client():
     # Load dump
-    subprocess.check_output('psql action-directe_test < ../tests/dumps/action-directe_test_dump.sql', shell=True)
+    subprocess.check_output('psql localcrag_test < ../tests/dumps/localcrag_test_dump.sql', shell=True)
 
     # Return client
     return app.test_client()

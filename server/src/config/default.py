@@ -2,7 +2,7 @@ from datetime import timedelta
 
 
 class DefaultConfig(object):
-    SQLALCHEMY_DATABASE_URI = 'postgresql://root:@127.0.0.1/action-directe'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://root:@127.0.0.1/localcrag'
     SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"options": "-c timezone=utc"}}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'thisKeyIsNotSecretChangeIt'
@@ -17,11 +17,11 @@ class DefaultConfig(object):
     SMTP_USER = 'YOUR_SMTP_USER'
     SMTP_PASSWORD = 'YOUR_SMTP_PASSWORD'
     SMTP_PORT = 'YOUR_SMTP_PORT'
-    FRONTEND_HOST = 'https://action-directe.de'
-    CORS_ORIGINS = 'https://action-directe.de'
+    FRONTEND_HOST = 'https://localcrag.de'
+    CORS_ORIGINS = 'https://localcrag.de'
     SUPERADMIN_FIRSTNAME = 'Felix'
     SUPERADMIN_LASTNAME = 'Engelmann'
-    SUPERADMIN_EMAIL = 'action-directe@fengelmann.de'
+    SUPERADMIN_EMAIL = 'localcrag@fengelmann.de'
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
     MAX_IMAGE_SIZE = 20
