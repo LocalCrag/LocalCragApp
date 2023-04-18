@@ -5,6 +5,11 @@ from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAcc
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
+from models.region import Region
+from models.crag import Crag
+from models.sector import Sector
+from models.area import Area
+from models.line import Line
 
 
 def configure_api(app):
