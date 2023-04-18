@@ -2,6 +2,7 @@ from sqlalchemy.dialects.postgresql import JSON
 
 from extensions import db
 from models.base_entity import BaseEntity
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class Line(BaseEntity):
@@ -20,3 +21,5 @@ class Line(BaseEntity):
     traverse = db.Column(db.Boolean, nullable=False, default=False)
     classic = db.Column(db.Boolean, nullable=False, default=False)
     linepath = db.Column(JSON, nullable=False)
+    area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
+

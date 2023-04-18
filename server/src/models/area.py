@@ -1,5 +1,6 @@
 from extensions import db
 from models.base_entity import BaseEntity
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class Area(BaseEntity):
@@ -12,3 +13,5 @@ class Area(BaseEntity):
     description = db.Column(db.Text, nullable=True)
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
+    crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
+
