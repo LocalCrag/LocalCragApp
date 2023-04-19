@@ -14,8 +14,8 @@ export class LoginComponent implements OnInit {
 
   public loginForm: FormGroup;
 
-  constructor(private store: Store<AppState>,
-              private router: Router,
+  constructor(private router: Router,
+              // private store: Store<AppState>,
               private fb: FormBuilder) {
   }
 
@@ -28,10 +28,10 @@ export class LoginComponent implements OnInit {
    */
   public login() {
     if (this.loginForm.valid) {
-      this.store.dispatch(login({
-        email: this.loginForm.get('email').value,
-        password: this.loginForm.get('password').value,
-      }));
+      // this.store.dispatch(login({
+      //   email: this.loginForm.get('email').value,
+      //   password: this.loginForm.get('password').value,
+      // }));
     } else {
       // this.clrForm.markAsDirty(); TODO
     }
