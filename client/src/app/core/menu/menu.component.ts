@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItem} from 'primeng/api';
+import {CragsService} from '../../services/crud/crags.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,17 +12,25 @@ export class MenuComponent implements OnInit {
 
   items: MenuItem[] = [];
 
+  constructor(private cragsService: CragsService) {
+  }
+
   ngOnInit() {
     this.items = [
       {
-        label: 'Aktionen',
+        label: 'News',
         icon: 'pi pi-fw pi-megaphone'
       },
-      {
-        label: 'Kalender',
-        icon: 'pi pi-fw pi-calendar',
-      }
     ];
+    this.cragsService.getCrags().subscribe(crags => {
+      crags.map(crag => {
+        this.items.push({
+          label: crag.name,
+          icon: 'pi pi-fw pi-map',
+        })
+      })
+    })
+
   }
 
 }

@@ -7,12 +7,16 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuComponent} from './core/menu/menu.component';
 import {MenubarModule} from 'primeng/menubar';
-import {ActionsModule} from './actions/actions.module';
+import {HttpClientModule} from '@angular/common/http';
+import {ButtonModule} from 'primeng/button';
+import { LoginComponent } from './core/login/login.component';
+import {PasswordModule} from 'primeng/password';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
+    LoginComponent,
 
   ],
   imports: [
@@ -21,7 +25,9 @@ import {ActionsModule} from './actions/actions.module';
     AppRoutingModule,
     InputTextModule,
     MenubarModule,
-    ActionsModule
+    HttpClientModule,
+    ButtonModule,
+    PasswordModule
   ],
   providers: [],
   bootstrap: [AppComponent]
