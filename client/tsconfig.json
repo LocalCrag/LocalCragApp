@@ -23,6 +23,7 @@
       "dom"
     ],
     "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

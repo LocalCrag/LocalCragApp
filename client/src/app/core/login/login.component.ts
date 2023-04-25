@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import { login } from 'src/app/ngrx/actions/auth.actions';
+import {AppState} from '../../ngrx/reducers';
+
 
 /**
  * Component that shows a login form.
@@ -15,7 +19,7 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
   constructor(private router: Router,
-              // private store: Store<AppState>,
+              private store: Store<AppState>,
               private fb: FormBuilder) {
   }
 
@@ -28,10 +32,10 @@ export class LoginComponent implements OnInit {
    */
   public login() {
     if (this.loginForm.valid) {
-      // this.store.dispatch(login({
-      //   email: this.loginForm.get('email').value,
-      //   password: this.loginForm.get('password').value,
-      // }));
+      this.store.dispatch(login({
+        email: this.loginForm.get('email').value,
+        password: this.loginForm.get('password').value,
+      }));
     } else {
       // this.clrForm.markAsDirty(); TODO
     }
