@@ -23,7 +23,7 @@ app-login {
     justify-content: center;
     background-color: aliceblue;
     min-width: 33%;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
   }
 
   .card-container{

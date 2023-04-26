@@ -26,13 +26,16 @@ import {JWTInterceptor} from './utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from './utility/http-interceptors/content-type.interceptor';
 import {ToastrModule} from 'ngx-toastr';
 import {ReactiveFormsModule} from '@angular/forms';
+import {LandingComponent} from './core/landing/landing.component';
+import {CookieConsentComponent} from './core/cookie-consent/cookie-consent.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     LoginComponent,
-
+    LandingComponent,
+    CookieConsentComponent
   ],
   imports: [
     BrowserModule,

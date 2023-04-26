@@ -161,7 +161,7 @@ export class AuthEffects {
         user: authState.user,
         message: '',
       };
-      localStorage.setItem('LabNodeAuth', JSON.stringify(autoLoginObject));
+      localStorage.setItem('LocalCragAuth', JSON.stringify(autoLoginObject));
       // Start a timer for refreshing the access token
       if (action.loginResponse.accessToken !== null) {
         this.store.dispatch(startAccessTokenRefreshTimer());
@@ -267,7 +267,7 @@ export class AuthEffects {
   onTryAutoLogin = createEffect(() => this.actions$.pipe(
     ofType(tryAutoLogin),
     tap(() => {
-      if (localStorage.getItem('LabNodeAuth') !== null) {
+      if (localStorage.getItem('LocalCragAuth') !== null) {
         const autoLoginObject: LoginResponse = JSON.parse(localStorage.getItem('LocalCragAuth') as string);
         this.store.dispatch(newAuthCredentials({
           loginResponse: autoLoginObject,
@@ -331,12 +331,12 @@ export class AuthEffects {
   ));
 
   /**
-   * Clears the LabNode auth information from the local storage and navigates to the login page.
+   * Clears the LocalCrag auth information from the local storage and navigates to the login page.
    */
   onCleanupCredentials = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.cleanupCredentials),
     tap(action => {
-      localStorage.removeItem('LabNodeAuth');
+      localStorage.removeItem('LocalCragAuth');
       if (action.navigateToLogin) {
         this.router.navigate(['login']);
       }
