@@ -9,11 +9,12 @@
     <form [formGroup]="loginForm">
 
       <div class="card-container block">
-        <input type="text" pInputText formControlName="email" id="email" placeholder="E-Mail"/>
+        <input type="text" pInputText formControlName="email" placeholder="E-Mail"/>
       </div>
 
       <div class="card-container block">
-        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" id="password" placeholder="Passwort"></p-password>
+        <p-password formControlName="password" [toggleMask]="true" [feedback]="false"
+                    placeholder="Passwort"></p-password>
       </div>
 
     </form>

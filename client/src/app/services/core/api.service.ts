@@ -15,7 +15,8 @@ export class ApiService {
     logoutAccess: (): string => `${this.apiHost}logout/access`,
     logoutRefresh: (): string => `${this.apiHost}logout/refresh`,
     forgotPassword: (): string => `${this.apiHost}forgot-password`,
-    resetPassword: (): string => `${this.apiHost}reset-password`
+    resetPassword: (): string => `${this.apiHost}reset-password`,
+    changePassword: (): string => `${this.apiHost}change-password`,
   };
 
   public crags = {

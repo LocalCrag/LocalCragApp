@@ -33,6 +33,8 @@ import {MenuModule} from 'primeng/menu';
 import {FooterComponent} from './core/footer/footer.component';
 import {ImprintComponent} from './core/imprint/imprint.component';
 import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
+import {ChangePasswordComponent} from './core/change-password/change-password.component';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -43,9 +45,11 @@ import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-
     NewsComponent,
     FooterComponent,
     ImprintComponent,
-    DataPrivacyStatementComponent
+    DataPrivacyStatementComponent,
+    ChangePasswordComponent
   ],
   imports: [
+    SharedModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

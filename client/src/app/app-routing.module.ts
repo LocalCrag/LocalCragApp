@@ -5,6 +5,8 @@ import {IsLoggedOutGuard} from './guards/is-logged-out.guard';
 import {NewsComponent} from './core/news/news.component';
 import {ImprintComponent} from './core/imprint/imprint.component';
 import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
+import {IsLoggedInGuard} from './guards/is-logged-in.guard';
+import {ChangePasswordComponent} from './core/change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -23,6 +25,11 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [IsLoggedOutGuard],
+  },
+  {
+    path: 'change-password',
+    component: ChangePasswordComponent,
+    canActivate: [IsLoggedInGuard],
   }
 ];
 

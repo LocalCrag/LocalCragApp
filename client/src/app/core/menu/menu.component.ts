@@ -27,7 +27,8 @@ export class MenuComponent implements OnInit {
     this.userMenuItems = [
       {
         icon: 'pi pi-fw pi-pencil',
-        label: 'Passwort ändern'
+        label: 'Passwort ändern',
+        routerLink: '/change-password'
       },
       {
         label: 'Logout',

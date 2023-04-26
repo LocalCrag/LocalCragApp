@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, HostBinding, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -13,9 +13,10 @@ import {AppState} from '../../ngrx/reducers';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
+
+  @HostBinding('class.auth-view') authView: boolean = true;
 
   public loginForm: FormGroup;
 

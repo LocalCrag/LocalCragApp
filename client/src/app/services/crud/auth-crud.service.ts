@@ -103,6 +103,19 @@ export class AuthCrudService {
   }
 
   /**
+   * Changes a user's password.
+   *
+   * @param oldPassword The old password.
+   * @param newPassword The new password.
+   */
+  public changePassword(oldPassword: string, newPassword: string): Observable<MessageResponse> {
+    return this.http.put<MessageResponse>(this.api.auth.changePassword(), {
+      oldPassword,
+      newPassword
+    });
+  }
+
+  /**
    * Returns http headers with a refresh token as bearer.
    *
    * @param refreshToken Refresh token that should be used in header.
