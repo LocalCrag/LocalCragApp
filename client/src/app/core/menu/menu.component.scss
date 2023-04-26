@@ -10,4 +10,12 @@ app-menu {
     border-top: none;
   }
 
+  .p-menuitem-link-active {
+
+    .p-menuitem-text, .p-menuitem-icon {
+      color: var(--primary-600) !important;
+    }
+
+  }
+
 }

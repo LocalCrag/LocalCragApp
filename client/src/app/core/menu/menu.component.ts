@@ -5,6 +5,7 @@ import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {selectShowCookieAlert} from '../../ngrx/selectors/app-level-alerts.selectors';
 import {selectIsLoggedIn} from '../../ngrx/selectors/auth.selectors';
+import { logout } from 'src/app/ngrx/actions/auth.actions';
 
 @Component({
   selector: 'app-menu',
@@ -30,13 +31,16 @@ export class MenuComponent implements OnInit {
       },
       {
         label: 'Logout',
-        icon: 'pi pi-fw pi-sign-out'
+        icon: 'pi pi-fw pi-sign-out',
+        command: this.logout.bind(this)
       }
     ]
     this.items = [
       {
         label: 'News',
-        icon: 'pi pi-fw pi-megaphone'
+        icon: 'pi pi-fw pi-megaphone',
+        routerLink: '/',
+        routerLinkActiveOptions: { exact: true }
       },
       {
         label: 'Topo',
@@ -67,6 +71,13 @@ export class MenuComponent implements OnInit {
       })
     })
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+  }
+
+  /**
+   * Logs out the user.
+   */
+  logout() {
+    this.store.dispatch(logout({isAutoLogout: false, silent: false}));
   }
 
 }
