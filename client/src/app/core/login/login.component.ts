@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import { login } from 'src/app/ngrx/actions/auth.actions';
+import {Store} from '@ngrx/store';
+import {login} from 'src/app/ngrx/actions/auth.actions';
 import {AppState} from '../../ngrx/reducers';
 
 
@@ -12,7 +12,8 @@ import {AppState} from '../../ngrx/reducers';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
 
@@ -37,6 +38,7 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.get('password').value,
       }));
     } else {
+      console.log(42);
       // this.clrForm.markAsDirty(); TODO
     }
   }

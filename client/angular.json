@@ -29,6 +29,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/lara-light-teal/theme.css",
               "node_modules/primeng/resources/primeng.min.css",

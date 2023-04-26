@@ -1,17 +1,27 @@
-<div class="card flex justify-content-center">
+<div class="blur-container">
 
-  <div class="card-container block">
-<span class="p-float-label">
-<input type="text" pInputText formControlName="email" id="email"/>
-  <label for="email">E-Mail</label>
-</span>
-  </div>
+  <div class="card login-card">
 
-  <div class="card-container block">
-<span class="p-float-label">
-<p-password formControlName="password" [toggleMask]="true" [feedback]="false" id="password"></p-password>
-<label for="password">Passwort</label>
-</span>
+    <h3>Willkommen bei Glees Bouldering!</h3>
+
+    Melde dich hier an.
+
+    <form [formGroup]="loginForm">
+
+      <div class="card-container block">
+        <input type="text" pInputText formControlName="email" id="email" placeholder="E-Mail"/>
+      </div>
+
+      <div class="card-container block">
+        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" id="password" placeholder="Passwort"></p-password>
+      </div>
+
+    </form>
+
+    <p-button label="Login" (click)="login()"></p-button>
+
+    <p-button label="Passwort vergessen?" styleClass="p-button-link" class="forgot-pw-button"></p-button>
+
   </div>
 
 </div>

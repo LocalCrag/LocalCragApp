@@ -25,6 +25,7 @@ import {RefreshTokenInterceptor} from './utility/http-interceptors/refresh-token
 import {JWTInterceptor} from './utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from './utility/http-interceptors/content-type.interceptor';
 import {ToastrModule} from 'ngx-toastr';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import {ToastrModule} from 'ngx-toastr';
       progressBar: true,
       progressAnimation: 'decreasing'
     }),
+    ReactiveFormsModule,
   ],
   providers: [
     {

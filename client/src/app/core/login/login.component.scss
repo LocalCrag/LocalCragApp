@@ -1,0 +1,65 @@
+app-login {
+
+  width: 100%;
+  background-image: url("../../../assets/login-bg.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  .blur-container {
+    backdrop-filter: blur(2px);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: aliceblue;
+    min-width: 33%;
+    border-radius: 6px;
+  }
+
+  .card-container{
+    margin-top: 1.5rem;
+  }
+
+  input, .card-container, form {
+    width: 100%;
+  }
+
+  p-password{
+    width: 100%;
+    display: block;
+
+    input, .p-password{
+      width: 100%;
+    }
+
+  }
+
+  p-button{
+    margin-top: 1.5rem;
+    width: 100%;
+
+    button{
+      width: 100%;
+    }
+
+  }
+
+  h3{
+    margin-top: 0;
+  }
+
+  .forgot-pw-button button{
+    padding: 0;
+  }
+
+}
