@@ -4,8 +4,10 @@
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex justify-content-center flex-wrap gap-2">
-    <input type="text" pInputText placeholder="Suche">
-    <p-button icon="pi pi-user" styleClass="p-button-info" routerLink="login"></p-button>
+      <input type="text" pInputText placeholder="Suche">
+      <p-menu #menu [model]="userMenuItems" [popup]="true" ></p-menu>
+      <p-button icon="pi pi-user" styleClass="p-button-info" (click)="menu.toggle($event)" *ngIf="isLoggedIn$ | async"></p-button>
+      <p-button icon="pi pi-user" styleClass="p-button-info" routerLink="login" *ngIf="!(isLoggedIn$ | async)"></p-button>
     </div>
   </ng-template>
 </p-menubar>

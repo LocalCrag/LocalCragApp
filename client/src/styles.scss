@@ -17,3 +17,11 @@ body {
   align-items: stretch;
   display: flex;
 }
+
+.content{
+  padding: 3rem 6rem;
+  background-image: url("assets/topo.png");
+  background-repeat: repeat;
+  background-size: 50%;
+  height: 100%;
+}

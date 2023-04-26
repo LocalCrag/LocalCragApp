@@ -1,0 +1,44 @@
+app-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: var(--surface-300);
+
+  .p-button-label{
+    color: var(--surface-700);
+    font-weight: normal;
+  }
+
+  .footer-menu {
+    display: block;
+    padding: .5rem;
+  }
+
+  .footer-notes {
+    display: flex;
+    align-items: center;
+    margin-left: 6rem;
+    margin-right: 6rem;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--surface-700);
+    border-top: 1px solid var(--surface-400);
+    width: calc(100% - 12rem);
+    box-sizing: border-box;
+
+
+    .footer-note-item {
+      padding: 1rem;
+      display: inline-block;
+
+      a, a:visited, a:hover, a:active{
+        color: var(--surface-700);
+      }
+
+    }
+
+  }
+
+}

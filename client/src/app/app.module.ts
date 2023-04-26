@@ -26,16 +26,24 @@ import {JWTInterceptor} from './utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from './utility/http-interceptors/content-type.interceptor';
 import {ToastrModule} from 'ngx-toastr';
 import {ReactiveFormsModule} from '@angular/forms';
-import {LandingComponent} from './core/landing/landing.component';
 import {CookieConsentComponent} from './core/cookie-consent/cookie-consent.component';
+import {NewsComponent} from './core/news/news.component';
+import {CardModule} from 'primeng/card';
+import {MenuModule} from 'primeng/menu';
+import {FooterComponent} from './core/footer/footer.component';
+import {ImprintComponent} from './core/imprint/imprint.component';
+import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     LoginComponent,
-    LandingComponent,
-    CookieConsentComponent
+    CookieConsentComponent,
+    NewsComponent,
+    FooterComponent,
+    ImprintComponent,
+    DataPrivacyStatementComponent
   ],
   imports: [
     BrowserModule,
@@ -67,6 +75,8 @@ import {CookieConsentComponent} from './core/cookie-consent/cookie-consent.compo
       progressAnimation: 'decreasing'
     }),
     ReactiveFormsModule,
+    CardModule,
+    MenuModule,
   ],
   providers: [
     {
