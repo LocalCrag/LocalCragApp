@@ -1,3 +1,5 @@
+// todo delete labnode specific
+
 /**
  * Defines identifiers for all notifications in the system.
  */

@@ -37,6 +37,8 @@ import {ChangePasswordComponent} from './core/change-password/change-password.co
 import {SharedModule} from './shared/shared.module';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
+import {ForgotPasswordComponent} from './core/forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './core/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import {MessageModule} from 'primeng/message';
     FooterComponent,
     ImprintComponent,
     DataPrivacyStatementComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     SharedModule,

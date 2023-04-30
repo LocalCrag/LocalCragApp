@@ -74,6 +74,7 @@ export class AuthEffects {
   onForgotPasswordSuccess = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.forgotPasswordSuccess),
     tap(() => {
+      this.router.navigate(['']);
       this.store.dispatch(toastNotification(NotificationIdentifier.FORGOT_PASSWORD_SUCCESS));
     })
   ), {dispatch: false});

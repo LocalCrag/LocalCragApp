@@ -24,7 +24,8 @@
     <p-button label="Login" (click)="login()"
               [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
 
-    <p-button label="Passwort vergessen?" styleClass="p-button-link" class="forgot-pw-button"></p-button>
+    <p-button label="Passwort vergessen?" styleClass="p-button-link" class="forgot-pw-button"
+    [routerLink]="'/forgot-password'"></p-button>
 
   </div>
 
