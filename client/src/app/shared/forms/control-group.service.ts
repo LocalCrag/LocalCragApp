@@ -96,6 +96,7 @@ export class ControlGroupService {
   public markAsTouched() {
     Object.values(this.controlElements).map(controlElement => {
       controlElement.control.control?.markAllAsTouched();
+      controlElement.control.control?.markAsDirty();
       controlElement.touchedChangedSubject.next(true);
     });
   }

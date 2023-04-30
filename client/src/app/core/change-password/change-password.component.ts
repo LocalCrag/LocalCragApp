@@ -1,6 +1,5 @@
-import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
+import {Component, HostBinding, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
 import {LoadingState} from '../../enums/loading-state';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../ngrx/reducers';
@@ -10,6 +9,7 @@ import {toastNotification} from '../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
 import {passwordsValidator} from '../../utility/validators/passwords.validator';
 import {FormDirective} from '../../shared/forms/form.directive';
+import {Router} from '@angular/router';
 
 /**
  * A component that shows a form for changing the user's password.
@@ -17,7 +17,8 @@ import {FormDirective} from '../../shared/forms/form.directive';
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss']
+  styleUrls: ['./change-password.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ChangePasswordComponent implements OnInit {
 
@@ -32,6 +33,7 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(private authCrudService: AuthCrudService,
               private store: Store<AppState>,
+              private router: Router,
               private notifications: AppNotificationsService,
               private fb: FormBuilder) {
   }
@@ -56,6 +58,7 @@ export class ChangePasswordComponent implements OnInit {
       ).subscribe(() => {
         this.loadingState = LoadingState.DEFAULT;
         this.store.dispatch(toastNotification(NotificationIdentifier.CHANGE_PASSWORD_SUCCESS));
+        this.router.navigate(['']);
       }, () => {
         this.loadingState = LoadingState.DEFAULT;
       });

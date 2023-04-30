@@ -35,6 +35,8 @@ import {ImprintComponent} from './core/imprint/imprint.component';
 import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
 import {ChangePasswordComponent} from './core/change-password/change-password.component';
 import {SharedModule} from './shared/shared.module';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import {SharedModule} from './shared/shared.module';
     ReactiveFormsModule,
     CardModule,
     MenuModule,
+    MessagesModule,
+    MessageModule,
   ],
   providers: [
     {
