@@ -9,6 +9,9 @@ import {IsLoggedInGuard} from './guards/is-logged-in.guard';
 import {ChangePasswordComponent} from './core/change-password/change-password.component';
 import {ForgotPasswordComponent} from './core/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './core/reset-password/reset-password.component';
+import {
+  ForgotPasswordCheckMailboxComponent
+} from './core/forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 
 const routes: Routes = [
   {
@@ -36,6 +39,11 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
+    canActivate: [IsLoggedOutGuard],
+  },
+  {
+    path: 'forgot-password-check-mailbox',
+    component: ForgotPasswordCheckMailboxComponent,
     canActivate: [IsLoggedOutGuard],
   },
   {

@@ -41,6 +41,9 @@ import {ResetPasswordComponent} from './core/reset-password/reset-password.compo
 import {RefreshLoginModalComponent} from './core/refresh-login-modal/refresh-login-modal.component';
 import {DialogModule} from 'primeng/dialog';
 import {AppLevelAlertsComponent} from './core/app-level-alerts/app-level-alerts.component';
+import {
+  ForgotPasswordCheckMailboxComponent
+} from './core/forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,8 @@ import {AppLevelAlertsComponent} from './core/app-level-alerts/app-level-alerts.
     ForgotPasswordComponent,
     ResetPasswordComponent,
     RefreshLoginModalComponent,
-    AppLevelAlertsComponent
+    AppLevelAlertsComponent,
+    ForgotPasswordCheckMailboxComponent
   ],
   imports: [
     SharedModule,
