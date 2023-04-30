@@ -26,7 +26,6 @@ import {JWTInterceptor} from './utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from './utility/http-interceptors/content-type.interceptor';
 import {ToastrModule} from 'ngx-toastr';
 import {ReactiveFormsModule} from '@angular/forms';
-import {CookieConsentComponent} from './core/cookie-consent/cookie-consent.component';
 import {NewsComponent} from './core/news/news.component';
 import {CardModule} from 'primeng/card';
 import {MenuModule} from 'primeng/menu';
@@ -39,20 +38,24 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {ForgotPasswordComponent} from './core/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './core/reset-password/reset-password.component';
+import {RefreshLoginModalComponent} from './core/refresh-login-modal/refresh-login-modal.component';
+import {DialogModule} from 'primeng/dialog';
+import {AppLevelAlertsComponent} from './core/app-level-alerts/app-level-alerts.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     LoginComponent,
-    CookieConsentComponent,
     NewsComponent,
     FooterComponent,
     ImprintComponent,
     DataPrivacyStatementComponent,
     ChangePasswordComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    RefreshLoginModalComponent,
+    AppLevelAlertsComponent
   ],
   imports: [
     SharedModule,
@@ -89,6 +92,7 @@ import {ResetPasswordComponent} from './core/reset-password/reset-password.compo
     MenuModule,
     MessagesModule,
     MessageModule,
+    DialogModule,
   ],
   providers: [
     {

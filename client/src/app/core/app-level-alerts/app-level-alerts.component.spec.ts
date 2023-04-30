@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CookieConsentComponent } from './cookie-consent.component';
+import { AppLevelAlertsComponent } from './app-level-alerts.component';
 
-describe('CookieConsentComponent', () => {
-  let component: CookieConsentComponent;
-  let fixture: ComponentFixture<CookieConsentComponent>;
+describe('AppLevelAlertsComponent', () => {
+  let component: AppLevelAlertsComponent;
+  let fixture: ComponentFixture<AppLevelAlertsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CookieConsentComponent ]
+      declarations: [ AppLevelAlertsComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CookieConsentComponent);
+    fixture = TestBed.createComponent(AppLevelAlertsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

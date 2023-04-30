@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
  * A component that shows a form for changing the user's password.
  */
 @Component({
-  selector: 'app-change-password',
+  selector: 'lc-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   encapsulation: ViewEncapsulation.None

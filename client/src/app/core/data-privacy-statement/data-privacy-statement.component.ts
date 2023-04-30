@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-data-privacy-statement',
+  selector: 'lc-data-privacy-statement',
   templateUrl: './data-privacy-statement.component.html',
   styleUrls: ['./data-privacy-statement.component.scss']
 })

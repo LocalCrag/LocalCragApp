@@ -6,6 +6,7 @@ import {IfNoErrorDirective} from './forms/if-no-error.directive';
 import {IfErrorDirective} from './forms/if-error.directive';
 import {FormControlDirective} from './forms/form-control.directive';
 import {ControlGroupDirective} from './forms/control-group.directive';
+import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import {ControlGroupDirective} from './forms/control-group.directive';
     IfNoErrorDirective,
     IfErrorDirective,
     FormControlDirective,
-    ControlGroupDirective
+    ControlGroupDirective,
+    MinutesRemainingPipe
   ],
   imports: [
     CommonModule
@@ -26,7 +28,8 @@ import {ControlGroupDirective} from './forms/control-group.directive';
     IfNoErrorDirective,
     IfErrorDirective,
     FormControlDirective,
-    ControlGroupDirective
+    ControlGroupDirective,
+    MinutesRemainingPipe
   ]
 })
 export class SharedModule {

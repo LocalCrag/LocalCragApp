@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-news',
+  selector: 'lc-news',
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.scss']
 })

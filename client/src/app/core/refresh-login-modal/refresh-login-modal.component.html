@@ -1,0 +1,19 @@
+<p-dialog header="Login erneuern" [(visible)]="isOpen" [modal]="true" *ngIf="isOpen" [closable]="false">
+
+  <form [formGroup]="refreshLoginForm" lcForm>
+
+    <div class="card-container block" lcControlGroup>
+      <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
+                  placeholder="Passwort"></p-password>
+      <small  class="p-error" *lcIfError="'required';controlName:'password'">Pflichtfeld</small>
+    </div>
+
+  </form>
+
+  <p-button label="Logout" (click)="logout()" styleClass="p-button-outlined p-button-secondary"
+            class="mr-3"
+            [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"></p-button>
+  <p-button label="Login erneuern" (click)="refreshLogin()"
+            [loading]="(isLoading$ | async) === loadingStates.LOADING"></p-button>
+
+</p-dialog>

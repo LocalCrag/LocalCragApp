@@ -7,7 +7,7 @@ import {checkShowCookieAlert} from './ngrx/actions/app-level-alerts.actions';
 import {checkIsMobile} from './ngrx/actions/device.actions';
 
 @Component({
-  selector: 'app-root',
+  selector: 'lc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

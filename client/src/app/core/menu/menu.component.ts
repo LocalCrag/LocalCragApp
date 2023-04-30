@@ -8,7 +8,7 @@ import {selectIsLoggedIn} from '../../ngrx/selectors/auth.selectors';
 import { logout } from 'src/app/ngrx/actions/auth.actions';
 
 @Component({
-  selector: 'app-menu',
+  selector: 'lc-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None

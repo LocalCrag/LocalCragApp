@@ -14,7 +14,7 @@ import {FormDirective} from '../../shared/forms/form.directive';
  * Component that shows a login form.
  */
 @Component({
-  selector: 'app-login',
+  selector: 'lc-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
