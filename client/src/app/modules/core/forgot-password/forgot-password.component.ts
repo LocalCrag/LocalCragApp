@@ -2,13 +2,13 @@ import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {AuthCrudService} from '../../services/crud/auth-crud.service';
+import {AuthCrudService} from '../../../services/crud/auth-crud.service';
 import {select, Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
-import {AppNotificationsService} from '../../services/core/app-notifications.service';
-import {LoadingState} from '../../enums/loading-state';
-import {selectForgotPasswordLoadingState} from '../../ngrx/selectors/auth.selectors';
-import {forgotPassword} from '../../ngrx/actions/auth.actions';
+import {AppState} from '../../../ngrx/reducers';
+import {AppNotificationsService} from '../../../services/core/app-notifications.service';
+import {LoadingState} from '../../../enums/loading-state';
+import {selectForgotPasswordLoadingState} from '../../../ngrx/selectors/auth.selectors';
+import {forgotPassword} from '../../../ngrx/actions/auth.actions';
 import {Router} from '@angular/router';
 
 /**

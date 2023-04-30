@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {Store} from '@ngrx/store';
-import {AppState} from './ngrx/reducers';
-import {tryAutoLogin} from './ngrx/actions/auth.actions';
-import {checkShowCookieAlert} from './ngrx/actions/app-level-alerts.actions';
-import {checkIsMobile} from './ngrx/actions/device.actions';
+import {AppState} from '../../ngrx/reducers';
+import {tryAutoLogin} from '../../ngrx/actions/auth.actions';
+import {checkShowCookieAlert} from '../../ngrx/actions/app-level-alerts.actions';
+import {checkIsMobile} from '../../ngrx/actions/device.actions';
 
 @Component({
   selector: 'lc-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  templateUrl: './core.component.html',
+  styleUrls: ['./core.component.scss']
 })
-export class AppComponent {
+export class CoreComponent {
 
   constructor(private primengConfig: PrimeNGConfig,
               public store: Store<AppState>) {}

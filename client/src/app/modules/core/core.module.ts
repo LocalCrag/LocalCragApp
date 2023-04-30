@@ -1,53 +1,53 @@
 import {LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
+import {CoreRoutingModule} from './core-routing.module';
+import {CoreComponent} from './core.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {InputTextModule} from 'primeng/inputtext';
-import {MenuComponent} from './core/menu/menu.component';
+import {MenuComponent} from './menu/menu.component';
 import {MenubarModule} from 'primeng/menubar';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {ButtonModule} from 'primeng/button';
-import {LoginComponent} from './core/login/login.component';
+import {LoginComponent} from './login/login.component';
 import {PasswordModule} from 'primeng/password';
 import {StoreModule} from '@ngrx/store';
-import {metaReducers, reducers} from './ngrx/reducers';
-import {environment} from '../environments/environment';
+import {metaReducers, reducers} from '../../ngrx/reducers';
+import {environment} from '../../../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
-import {AuthEffects} from './ngrx/effects/auth.effects';
-import {AppLevelAlertsEffects} from './ngrx/effects/app-level-alerts.effects';
-import {NotificationsEffects} from './ngrx/effects/notifications.effects';
+import {AuthEffects} from '../../ngrx/effects/auth.effects';
+import {AppLevelAlertsEffects} from '../../ngrx/effects/app-level-alerts.effects';
+import {NotificationsEffects} from '../../ngrx/effects/notifications.effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {TranslocoRootModule} from './transloco-root.module';
-import {ErrorHandlerInterceptor} from './utility/http-interceptors/error.interceptor';
-import {RefreshTokenInterceptor} from './utility/http-interceptors/refresh-token.interceptor';
-import {JWTInterceptor} from './utility/http-interceptors/jwt.interceptor';
-import {ContentTypeInterceptor} from './utility/http-interceptors/content-type.interceptor';
+import {TranslocoRootModule} from '../transloco/transloco-root.module';
+import {ErrorHandlerInterceptor} from '../../utility/http-interceptors/error.interceptor';
+import {RefreshTokenInterceptor} from '../../utility/http-interceptors/refresh-token.interceptor';
+import {JWTInterceptor} from '../../utility/http-interceptors/jwt.interceptor';
+import {ContentTypeInterceptor} from '../../utility/http-interceptors/content-type.interceptor';
 import {ToastrModule} from 'ngx-toastr';
 import {ReactiveFormsModule} from '@angular/forms';
-import {NewsComponent} from './core/news/news.component';
+import {NewsComponent} from './news/news.component';
 import {CardModule} from 'primeng/card';
 import {MenuModule} from 'primeng/menu';
-import {FooterComponent} from './core/footer/footer.component';
-import {ImprintComponent} from './core/imprint/imprint.component';
-import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
-import {ChangePasswordComponent} from './core/change-password/change-password.component';
-import {SharedModule} from './shared/shared.module';
+import {FooterComponent} from './footer/footer.component';
+import {ImprintComponent} from './imprint/imprint.component';
+import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
+import {ChangePasswordComponent} from './change-password/change-password.component';
+import {SharedModule} from '../shared/shared.module';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
-import {ForgotPasswordComponent} from './core/forgot-password/forgot-password.component';
-import {ResetPasswordComponent} from './core/reset-password/reset-password.component';
-import {RefreshLoginModalComponent} from './core/refresh-login-modal/refresh-login-modal.component';
+import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
+import {RefreshLoginModalComponent} from './refresh-login-modal/refresh-login-modal.component';
 import {DialogModule} from 'primeng/dialog';
-import {AppLevelAlertsComponent} from './core/app-level-alerts/app-level-alerts.component';
+import {AppLevelAlertsComponent} from './app-level-alerts/app-level-alerts.component';
 import {
   ForgotPasswordCheckMailboxComponent
-} from './core/forgot-password-check-mailbox/forgot-password-check-mailbox.component';
+} from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    CoreComponent,
     MenuComponent,
     LoginComponent,
     NewsComponent,
@@ -65,7 +65,7 @@ import {
     SharedModule,
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    CoreRoutingModule,
     InputTextModule,
     MenubarModule,
     HttpClientModule,
@@ -124,7 +124,7 @@ import {
       multi: true
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [CoreComponent]
 })
-export class AppModule {
+export class CoreModule {
 }

@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {CragsService} from '../../services/crud/crags.service';
+import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {selectShowCookieAlert} from '../../ngrx/selectors/app-level-alerts.selectors';
-import {selectIsLoggedIn} from '../../ngrx/selectors/auth.selectors';
+import {selectShowCookieAlert} from '../../../ngrx/selectors/app-level-alerts.selectors';
+import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import { logout } from 'src/app/ngrx/actions/auth.actions';
 
 @Component({

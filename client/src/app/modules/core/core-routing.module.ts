@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {LoginComponent} from './core/login/login.component';
-import {IsLoggedOutGuard} from './guards/is-logged-out.guard';
-import {NewsComponent} from './core/news/news.component';
-import {ImprintComponent} from './core/imprint/imprint.component';
-import {DataPrivacyStatementComponent} from './core/data-privacy-statement/data-privacy-statement.component';
-import {IsLoggedInGuard} from './guards/is-logged-in.guard';
-import {ChangePasswordComponent} from './core/change-password/change-password.component';
-import {ForgotPasswordComponent} from './core/forgot-password/forgot-password.component';
-import {ResetPasswordComponent} from './core/reset-password/reset-password.component';
+import {LoginComponent} from './login/login.component';
+import {IsLoggedOutGuard} from '../../guards/is-logged-out.guard';
+import {NewsComponent} from './news/news.component';
+import {ImprintComponent} from './imprint/imprint.component';
+import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
+import {IsLoggedInGuard} from '../../guards/is-logged-in.guard';
+import {ChangePasswordComponent} from './change-password/change-password.component';
+import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {
   ForgotPasswordCheckMailboxComponent
-} from './core/forgot-password-check-mailbox/forgot-password-check-mailbox.component';
+} from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 
 const routes: Routes = [
   {
@@ -57,4 +57,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class CoreRoutingModule { }

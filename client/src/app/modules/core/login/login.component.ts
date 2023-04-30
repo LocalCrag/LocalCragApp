@@ -3,10 +3,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {login} from 'src/app/ngrx/actions/auth.actions';
-import {AppState} from '../../ngrx/reducers';
-import {LoadingState} from '../../enums/loading-state';
+import {AppState} from '../../../ngrx/reducers';
+import {LoadingState} from '../../../enums/loading-state';
 import {Observable} from 'rxjs';
-import {selectLoginLoadingState} from '../../ngrx/selectors/auth.selectors';
+import {selectLoginLoadingState} from '../../../ngrx/selectors/auth.selectors';
 import {FormDirective} from '../../shared/forms/form.directive';
 
 

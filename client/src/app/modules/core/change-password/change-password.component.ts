@@ -1,13 +1,13 @@
 import {Component, HostBinding, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../enums/loading-state';
+import {LoadingState} from '../../../enums/loading-state';
 import {Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
-import {AppNotificationsService} from '../../services/core/app-notifications.service';
-import {AuthCrudService} from '../../services/crud/auth-crud.service';
-import {toastNotification} from '../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
-import {passwordsValidator} from '../../utility/validators/passwords.validator';
+import {AppState} from '../../../ngrx/reducers';
+import {AppNotificationsService} from '../../../services/core/app-notifications.service';
+import {AuthCrudService} from '../../../services/crud/auth-crud.service';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {passwordsValidator} from '../../../utility/validators/passwords.validator';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {Router} from '@angular/router';
 

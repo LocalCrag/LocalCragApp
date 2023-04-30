@@ -1,19 +1,19 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
-import {selectRefreshTokenExpires} from '../../ngrx/selectors/auth.selectors';
-import {unixToMoment} from '../../utility/operators/unix-to-moment';
+import {AppState} from '../../../ngrx/reducers';
+import {selectRefreshTokenExpires} from '../../../ngrx/selectors/auth.selectors';
+import {unixToMoment} from '../../../utility/operators/unix-to-moment';
 import {filter, map, mergeMap} from 'rxjs/operators';
 import * as moment from 'moment';
-import {bigIntTimer} from '../../utility/observables/bigint-timer';
+import {bigIntTimer} from '../../../utility/observables/bigint-timer';
 import {openRefreshLoginModal} from 'src/app/ngrx/actions/auth.actions';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {
   selectShowCookieAlert,
   selectShowRefreshTokenAboutToExpireAlert
-} from '../../ngrx/selectors/app-level-alerts.selectors';
-import {cookiesAccepted} from '../../ngrx/actions/app-level-alerts.actions';
+} from '../../../ngrx/selectors/app-level-alerts.selectors';
+import {cookiesAccepted} from '../../../ngrx/actions/app-level-alerts.actions';
 
 @Component({
   selector: 'lc-app-level-alerts',

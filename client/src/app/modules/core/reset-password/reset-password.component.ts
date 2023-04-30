@@ -2,17 +2,17 @@ import {Component, HostBinding, OnDestroy, OnInit, ViewChild} from '@angular/cor
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable, Subscription} from 'rxjs';
-import {LoadingState} from '../../enums/loading-state';
+import {LoadingState} from '../../../enums/loading-state';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
-import {AppNotificationsService} from '../../services/core/app-notifications.service';
-import {selectIsLoggedIn, selectResetPasswordLoadingState} from '../../ngrx/selectors/auth.selectors';
+import {AppState} from '../../../ngrx/reducers';
+import {AppNotificationsService} from '../../../services/core/app-notifications.service';
+import {selectIsLoggedIn, selectResetPasswordLoadingState} from '../../../ngrx/selectors/auth.selectors';
 import {take} from 'rxjs/operators';
-import {toastNotification} from '../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
-import {passwordsValidator} from '../../utility/validators/passwords.validator';
+import {passwordsValidator} from '../../../utility/validators/passwords.validator';
 
 @Component({
   selector: 'lc-reset-password',

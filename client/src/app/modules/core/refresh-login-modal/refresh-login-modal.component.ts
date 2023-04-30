@@ -1,18 +1,18 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {Observable} from 'rxjs';
-import {LoadingState} from '../../enums/loading-state';
+import {LoadingState} from '../../../enums/loading-state';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {select, Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
+import {AppState} from '../../../ngrx/reducers';
 import {
   selectCurrentUser,
   selectRefreshLoginLoadingState,
   selectRefreshLoginModalLogoutLoadingState,
   selectRefreshLoginModalOpen
-} from '../../ngrx/selectors/auth.selectors';
+} from '../../../ngrx/selectors/auth.selectors';
 import {filter} from 'rxjs/operators';
-import {login, logout} from '../../ngrx/actions/auth.actions';
+import {login, logout} from '../../../ngrx/actions/auth.actions';
 
 
 /**
