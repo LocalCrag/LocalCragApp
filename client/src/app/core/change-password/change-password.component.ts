@@ -27,7 +27,7 @@ export class ChangePasswordComponent implements OnInit {
   @ViewChild(FormDirective, {static: true}) formDirective: FormDirective;
 
   public changePasswordForm: FormGroup;
-  public loadingState: LoadingState = LoadingState.DEFAULT; // todo integrate here and in login view
+  public loading= false;
   public changePasswordPressed = false;
 
 
@@ -51,16 +51,16 @@ export class ChangePasswordComponent implements OnInit {
   public changePassword() {
     this.changePasswordPressed = true;
     if (this.changePasswordForm.valid) {
-      this.loadingState = LoadingState.LOADING;
+      this.loading = true;
       this.authCrudService.changePassword(
         this.changePasswordForm.get('oldPassword').value,
         this.changePasswordForm.get('newPasswords.password').value
       ).subscribe(() => {
-        this.loadingState = LoadingState.DEFAULT;
+        this.loading = false;
         this.store.dispatch(toastNotification(NotificationIdentifier.CHANGE_PASSWORD_SUCCESS));
         this.router.navigate(['']);
       }, () => {
-        this.loadingState = LoadingState.DEFAULT;
+        this.loading = false;
       });
     } else {
       this.formDirective.markAsTouched();

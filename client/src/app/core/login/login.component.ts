@@ -1,9 +1,13 @@
-import {Component, HostBinding, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, HostBinding, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import {login} from 'src/app/ngrx/actions/auth.actions';
 import {AppState} from '../../ngrx/reducers';
+import {LoadingState} from '../../enums/loading-state';
+import {Observable} from 'rxjs';
+import {selectLoginLoadingState} from '../../ngrx/selectors/auth.selectors';
+import {FormDirective} from '../../shared/forms/form.directive';
 
 
 /**
@@ -18,7 +22,11 @@ export class LoginComponent implements OnInit {
 
   @HostBinding('class.auth-view') authView: boolean = true;
 
+  @ViewChild(FormDirective, {static: true}) formDirective: FormDirective;
+
   public loginForm: FormGroup;
+  public loadingStates = LoadingState;
+  public loadingState$: Observable<LoadingState>;
 
   constructor(private router: Router,
               private store: Store<AppState>,
@@ -26,6 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadingState$ = this.store.pipe(select(selectLoginLoadingState));
     this.buildForm();
   }
 
@@ -39,8 +48,7 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.get('password').value,
       }));
     } else {
-      console.log(42);
-      // this.clrForm.markAsDirty(); TODO
+      this.formDirective.markAsTouched();
     }
   }
 

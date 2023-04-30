@@ -6,20 +6,23 @@
 
     Melde dich hier an.
 
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" lcForm>
 
-      <div class="card-container block">
-        <input type="text" pInputText formControlName="email" placeholder="E-Mail"/>
+      <div class="card-container block" lcControlGroup>
+        <input type="text" pInputText formControlName="email" placeholder="E-Mail" lcFormControl/>
+        <small  class="p-error" *lcIfError="'required';controlName:'email'">Pflichtfeld</small>
       </div>
 
-      <div class="card-container block">
-        <p-password formControlName="password" [toggleMask]="true" [feedback]="false"
+      <div class="card-container block" lcControlGroup>
+        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
                     placeholder="Passwort"></p-password>
+        <small  class="p-error" *lcIfError="'required';controlName:'password'">Pflichtfeld</small>
       </div>
 
     </form>
 
-    <p-button label="Login" (click)="login()"></p-button>
+    <p-button label="Login" (click)="login()"
+              [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
 
     <p-button label="Passwort vergessen?" styleClass="p-button-link" class="forgot-pw-button"></p-button>
 

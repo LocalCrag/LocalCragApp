@@ -31,12 +31,8 @@ def configure_api(app):
     auth_bp.add_url_rule('/token/refresh', view_func=TokenRefresh.as_view('token_refresh_api'))
     auth_bp.add_url_rule('/forgot-password', view_func=ForgotPassword.as_view('forgot_password_api'))
     auth_bp.add_url_rule('/reset-password', view_func=ResetPassword.as_view('reset_password_api'))
+    auth_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
     app.register_blueprint(auth_bp, url_prefix='/api')
-
-    # Account API
-    account_bp = Blueprint('account', __name__, )
-    account_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
-    app.register_blueprint(account_bp, url_prefix='/api/account')
 
     # User API
     user_bp = Blueprint('users', __name__, )
