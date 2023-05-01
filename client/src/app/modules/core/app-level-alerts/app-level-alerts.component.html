@@ -15,11 +15,11 @@
 
   <div *ngIf="showCookieAlert$ | async" class="alert info">
     <div class="alert-text">
-      Diese Webseite nutzt Cookies um die beste User Experience zu ermöglichen.
-      <a href="https://www.cookiesandyou.com/" target="_blank">Mehr erfahren</a>
+      {{t('thisWebsiteUsesCookies')}}
+      <a href="https://www.cookiesandyou.com/" target="_blank">{{t('readMoreAboutCookies')}}</a>
     </div>
     <div class="alert-actions">
-      <p-button label="Verstanden" styleClass="p-button-text" (onClick)="allowCookies()"></p-button>
+      <p-button label="{{t('AcceptCookiesButton')}}" styleClass="p-button-text" (onClick)="allowCookies()"></p-button>
     </div>
   </div>
 

@@ -2,5 +2,5 @@
   "appLevelAlerts.yourSessionExpiresInMinutesBefore": "Deine Session läuft in",
   "appLevelAlerts.yourSessionExpiresInMinutesAfter": "aus.",
   "appLevelAlerts.pleaseLogInAgain": "Bitte logge dich erneut ein.",
-  "appLevelAlerts.renewLogin": "Login erneuern",
+  "appLevelAlerts.renewLogin": "Login erneuern"
 }
