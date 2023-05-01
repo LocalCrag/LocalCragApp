@@ -24,7 +24,6 @@ import {ErrorHandlerInterceptor} from '../../utility/http-interceptors/error.int
 import {RefreshTokenInterceptor} from '../../utility/http-interceptors/refresh-token.interceptor';
 import {JWTInterceptor} from '../../utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from '../../utility/http-interceptors/content-type.interceptor';
-import {ToastrModule} from 'ngx-toastr';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NewsComponent} from './news/news.component';
 import {CardModule} from 'primeng/card';
@@ -44,6 +43,8 @@ import {AppLevelAlertsComponent} from './app-level-alerts/app-level-alerts.compo
 import {
   ForgotPasswordCheckMailboxComponent
 } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -84,19 +85,13 @@ import {
       NotificationsEffects,
     ]),
     TranslocoRootModule,
-    ToastrModule.forRoot({
-      timeOut: 5000,
-      preventDuplicates: true,
-      positionClass: 'toast-bottom-right',
-      progressBar: true,
-      progressAnimation: 'decreasing'
-    }),
     ReactiveFormsModule,
     CardModule,
     MenuModule,
     MessagesModule,
     MessageModule,
     DialogModule,
+    ToastModule,
   ],
   providers: [
     {
@@ -123,6 +118,7 @@ import {
       useClass: ContentTypeInterceptor,
       multi: true
     },
+    MessageService
   ],
   bootstrap: [CoreComponent]
 })
