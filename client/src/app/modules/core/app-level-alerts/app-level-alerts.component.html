@@ -1,0 +1,27 @@
+<ng-container *transloco="let t, read: 'appLevelAlerts'">
+
+  <div class="alert" *ngIf="showRefreshTokenAboutToExpireAlert$ | async"
+       [ngClass]="{'warning': refreshLoginAlertType === 'warning', 'danger': refreshLoginAlertType === 'danger'}">
+    <div class="alert-text">
+      <i class="pi pi-exclamation-circle" ></i>
+      {{ t('yourSessionExpiresInMinutesBefore') }} {{(refreshTokenExpires$ | async) | minutesRemaining}}
+      {{ t('yourSessionExpiresInMinutesAfter') }}
+      {{ t('pleaseLogInAgain') }}
+    </div>
+    <div class="alert-actions">
+      <p-button label="{{ t('renewLogin') }}" styleClass="p-button-text" (click)="openRefreshLoginModal()"></p-button>
+    </div>
+  </div>
+
+  <div *ngIf="showCookieAlert$ | async" class="alert info">
+    <div class="alert-text">
+      {{t('thisWebsiteUsesCookies')}}
+      <a href="https://www.cookiesandyou.com/" target="_blank">{{t('readMoreAboutCookies')}}</a>
+    </div>
+    <div class="alert-actions">
+      <p-button label="{{t('AcceptCookiesButton')}}" styleClass="p-button-text" (onClick)="allowCookies()"></p-button>
+    </div>
+  </div>
+
+
+</ng-container>

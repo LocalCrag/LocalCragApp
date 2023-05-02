@@ -2,9 +2,15 @@ from flask import Blueprint
 
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
+from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
+from models.region import Region
+from models.crag import Crag
+from models.sector import Sector
+from models.area import Area
+from models.line import Line
 
 
 def configure_api(app):
@@ -25,12 +31,8 @@ def configure_api(app):
     auth_bp.add_url_rule('/token/refresh', view_func=TokenRefresh.as_view('token_refresh_api'))
     auth_bp.add_url_rule('/forgot-password', view_func=ForgotPassword.as_view('forgot_password_api'))
     auth_bp.add_url_rule('/reset-password', view_func=ResetPassword.as_view('reset_password_api'))
+    auth_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
     app.register_blueprint(auth_bp, url_prefix='/api')
-
-    # Account API
-    account_bp = Blueprint('account', __name__, )
-    account_bp.add_url_rule('/change-password', view_func=ChangePassword.as_view('change_password'))
-    app.register_blueprint(account_bp, url_prefix='/api/account')
 
     # User API
     user_bp = Blueprint('users', __name__, )
@@ -46,3 +48,16 @@ def configure_api(app):
     user_bp.add_url_rule('/email-taken/<email>', view_func=GetEmailTaken.as_view('get_email_taken'))
     user_bp.add_url_rule('/find/<string:query>', view_func=FindUser.as_view('find_user'))
     app.register_blueprint(user_bp, url_prefix='/api/users')
+
+    # Crag API
+    crag_bp = Blueprint('crags', __name__)
+    crag_bp.add_url_rule('', view_func=GetCrags.as_view('get_crags'))
+    crag_bp.add_url_rule('/<string:id>', view_func=GetCrag.as_view('get_crag_details'))
+    crag_bp.add_url_rule('/<string:id>', view_func=UpdateCrag.as_view('update_crag'))
+    crag_bp.add_url_rule('/<string:id>', view_func=DeleteCrag.as_view('delete_crag'))
+    app.register_blueprint(crag_bp, url_prefix='/api/crags')
+
+    # Region API
+    crag_bp = Blueprint('regions', __name__)
+    crag_bp.add_url_rule('/crags', view_func=CreateCrag.as_view('create_crag'))
+    app.register_blueprint(crag_bp, url_prefix='/api/regions')

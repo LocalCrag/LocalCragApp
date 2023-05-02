@@ -12,9 +12,8 @@
     <option name="EXECUTE_IN_TERMINAL" value="true" />
     <option name="EXECUTE_SCRIPT_FILE" value="true" />
     <envs>
-      <env name="ACTION_DIRECTE_CONFIG" value="config/dev.cfg" />
+      <env name="LOCALCRAG_CONFIG" value="config/dev.cfg" />
       <env name="PYTHONPATH" value="." />
-      <env name="RUN_SCHEDULERS" value="False" />
     </envs>
     <method v="2" />
   </configuration>

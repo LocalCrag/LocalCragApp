@@ -39,8 +39,8 @@ class BaseEntity(db.Model):
         return query.all()
 
     @classmethod
-    def find_by_id(cls, entity_id):
-        entity = cls.query.filter_by(id=entity_id).first()
+    def find_by_id(cls, id):
+        entity = cls.query.filter_by(id=id).first()
 
         if not entity:
             raise NotFound()

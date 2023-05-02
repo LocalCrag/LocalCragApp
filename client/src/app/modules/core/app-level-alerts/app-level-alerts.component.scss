@@ -1,0 +1,49 @@
+lc-app-level-alerts {
+  width: 100%;
+  display: block;
+
+  .alert {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    color: #ffffff;
+
+    a{
+      color: #ffffff;
+    }
+
+    &.warning {
+      background-color: var(--yellow-700);
+    }
+
+    &.danger {
+      background-color: var(--red-700);
+    }
+
+    &.info {
+      background-color: var(--blue-700);
+    }
+
+    .alert-actions {
+      display: inline-block;
+    }
+
+    .alert-text {
+      display: inline-block;
+      padding: .5rem;
+    }
+
+    .p-button-label {
+      color: #fff
+    }
+
+    .p-button{
+      padding: .75rem .25rem;
+    }
+
+  }
+
+}

@@ -1,0 +1,21 @@
+lc-menu {
+
+  width: 100%;
+  height: 61px;
+
+  .p-menubar {
+    border-radius: 0;
+    border-right: none;
+    border-left: none;
+    border-top: none;
+  }
+
+  .p-menuitem-link-active {
+
+    .p-menuitem-text, .p-menuitem-icon {
+      color: var(--primary-600) !important;
+    }
+
+  }
+
+}

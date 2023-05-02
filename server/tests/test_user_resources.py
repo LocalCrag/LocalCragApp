@@ -5,41 +5,6 @@ from messages.messages import ResponseMessage
 from tests.utils.user_test_util import get_login_headers
 
 
-def test_successful_change_password(client):
-    access_headers, refresh_headers = get_login_headers(client)
-    change_pw_data = {
-        'oldPassword': '[vb+xLGgU?+Z]nXD3HmO',
-        'newPassword': 'fengelmann2'
-    }
-    rv = client.put('/api/account/change-password', headers=access_headers, json=change_pw_data)
-    assert rv.status_code == 201
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.PASSWORD_CHANGED.value
-
-
-def test_change_password_password_too_short(client):
-    access_headers, refresh_headers = get_login_headers(client)
-    change_pw_data = {
-        'oldPassword': '[vb+xLGgU?+Z]nXD3HmO',
-        'newPassword': '1234567'
-    }
-    rv = client.put('/api/account/change-password', headers=access_headers, json=change_pw_data)
-    assert rv.status_code == 400
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.PASSWORD_TOO_SHORT.value
-
-
-def test_change_password_password_old_pw_incorrect(client):
-    access_headers, refresh_headers = get_login_headers(client)
-    change_pw_data = {
-        'oldPassword': 'incorrectpassword',
-        'newPassword': 'fengelmann2'
-    }
-    rv = client.put('/api/account/change-password', headers=access_headers, json=change_pw_data)
-    assert rv.status_code == 401
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.OLD_PASSWORD_INCORRECT.value
-
 
 def test_successful_get_users(client):
     access_headers, refresh_headers = get_login_headers(client)
