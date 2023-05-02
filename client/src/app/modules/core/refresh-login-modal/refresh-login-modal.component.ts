@@ -26,7 +26,7 @@ import {login, logout} from '../../../ngrx/actions/auth.actions';
 })
 export class RefreshLoginModalComponent implements OnInit {
 
-  @ViewChild(FormDirective, {static: true}) formDirective: FormDirective;
+  @ViewChild(FormDirective) formDirective: FormDirective;
 
   @Output() saved: EventEmitter<null> = new EventEmitter<null>();
 

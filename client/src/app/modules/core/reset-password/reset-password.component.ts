@@ -23,7 +23,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy{
 
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  @ViewChild(FormDirective, {static: true}) formDirective: FormDirective;
+  @ViewChild(FormDirective) formDirective: FormDirective;
 
   public resetPasswordForm: FormGroup;
   public loadingState$: Observable<LoadingState>;

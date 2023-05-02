@@ -24,7 +24,7 @@ export class ChangePasswordComponent implements OnInit {
 
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  @ViewChild(FormDirective, {static: true}) formDirective: FormDirective;
+  @ViewChild(FormDirective) formDirective: FormDirective;
 
   public changePasswordForm: FormGroup;
   public loading= false;

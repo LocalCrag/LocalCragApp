@@ -1,32 +1,36 @@
+<ng-container *transloco="let t, read: 'login'">
+
 <div class="blur-container">
 
-  <div class="card login-card">
+    <div class="card login-card">
 
-    <h3>Willkommen bei Glees Bouldering!</h3>
+      <h3>{{t('title')}}</h3>
 
-    Melde dich hier an.
+      {{t('description')}}
 
-    <form [formGroup]="loginForm" lcForm>
+      <form [formGroup]="loginForm" lcForm>
 
-      <div class="card-container block" lcControlGroup>
-        <input type="text" pInputText formControlName="email" placeholder="E-Mail" lcFormControl/>
-        <small  class="p-error" *lcIfError="'required';controlName:'email'">Pflichtfeld</small>
-      </div>
+        <div class="card-container block" lcControlGroup>
+          <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}" lcFormControl/>
+          <small class="p-error" *lcIfError="'required';controlName:'email'">{{t('required')}}</small>
+        </div>
 
-      <div class="card-container block" lcControlGroup>
-        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
-                    placeholder="Passwort"></p-password>
-        <small  class="p-error" *lcIfError="'required';controlName:'password'">Pflichtfeld</small>
-      </div>
+        <div class="card-container block" lcControlGroup>
+          <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
+                      placeholder="{{t('passwordPlaceholder')}}"></p-password>
+          <small class="p-error" *lcIfError="'required';controlName:'password'">{{t('required')}}</small>
+        </div>
 
-    </form>
+      </form>
 
-    <p-button label="Login" (click)="login()"
-              [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
+      <p-button label="{{t('loginButtonLabel')}}" (click)="login()"
+                [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
 
-    <p-button label="Passwort vergessen?" styleClass="p-button-link" class="forgot-pw-button"
-    [routerLink]="'/forgot-password'"></p-button>
+      <p-button label="{{t('forgotPasswordButtonLabel')}}" styleClass="p-button-link" class="forgot-pw-button"
+                [routerLink]="'/forgot-password'"></p-button>
+
+    </div>
 
   </div>
 
-</div>
+</ng-container>
