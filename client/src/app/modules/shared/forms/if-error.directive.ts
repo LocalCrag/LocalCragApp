@@ -12,7 +12,7 @@ import {NgControl} from '@angular/forms';
 })
 export class IfErrorDirective implements OnInit, OnDestroy{
 
-  @Input() lcIfErrorControlName: string; // Name of the Angular control on which to look for errors
+  @Input() lcIfErrorControlName: string = null; // Name of the Angular control on which to look for errors
   @Input() lcIfError: string; // Name of the error to react on
 
   private hasView = false;

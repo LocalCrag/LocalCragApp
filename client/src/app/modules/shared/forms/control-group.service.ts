@@ -35,19 +35,30 @@ export class ControlGroupService {
 
   /**
    * Returns the TouchedChangesObservable for the control with the given name.
+   * If no name is given and only one control is present, this controls value is
+   * returned.
    *
    * @param name Name of the control for which to get the Observable stream.
    */
-  public controlElementTouchedChanges(name: string): Observable<boolean> {
+  public controlElementTouchedChanges(name: string = null): Observable<boolean> {
+    const controlElementValues = Object.values(this.controlElements);
+    if(controlElementValues.length === 1 && name === null){
+      return controlElementValues[0].touchedChanged;
+    }
     return this.controlElements[name].touchedChanged;
   }
 
   /**
-   * Returns the control with the given name.
+   * Returns the control with the given name. If no name is given and only one control is present, this control is
+   * returned.
    *
    * @param name Name of the control to get.
    */
-  public getControl(name: string): NgControl {
+  public getControl(name: string = null): NgControl {
+    const controlElementValues = Object.values(this.controlElements);
+    if(controlElementValues.length === 1 && name === null){
+      return controlElementValues[0].control;
+    }
     try {
       return this.controlElements[name].control;
     } catch (e) {
