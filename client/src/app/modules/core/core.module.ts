@@ -45,6 +45,7 @@ import {
 } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import {CragModule} from '../crag/crag.module';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import {ToastModule} from 'primeng/toast';
     MessageModule,
     DialogModule,
     ToastModule,
+    CragModule
   ],
   providers: [
     {

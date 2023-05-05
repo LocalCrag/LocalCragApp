@@ -1,0 +1,42 @@
+<ng-container *transloco="let t, read: 'crag.cragForm'">
+
+  <div class="content">
+
+    <p-card header="{{t('createCragTitle')}}">
+      <p class="mt-0">
+        {{t('createCragDescription')}}
+      </p>
+
+      <form [formGroup]="cragForm" lcForm>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('cragNameLabel')}}</label>
+          <input type="text" pInputText formControlName="name" placeholder="{{t('cragNamePlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('cragDescriptionLabel')}}</label>
+          <textarea rows="5" pInputTextarea formControlName="description"
+                    placeholder="{{t('cragDescriptionPlaceholder')}}" lcFormControl></textarea>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('cragRulesLabel')}}</label>
+          <textarea rows="5" pInputTextarea formControlName="rules" placeholder="{{t('cragRulesPlaceholder')}}"
+                    lcFormControl></textarea>
+        </div>
+
+      </form>
+
+      <div class="form-actions">
+        <p-button label="{{t('createCragButtonLabel')}}" (click)="createCrag()" icon="pi pi-plus"
+                  [loading]="loadingState === loadingStates.LOADING"></p-button>
+      </div>
+
+    </p-card>
+
+  </div>
+
+</ng-container>

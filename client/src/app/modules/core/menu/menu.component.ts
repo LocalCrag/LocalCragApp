@@ -8,7 +8,7 @@ import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import { logout } from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {filter} from 'rxjs/operators';
+import {filter, take} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-menu',
@@ -29,7 +29,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.translocoService.events$.pipe(
-      filter(e => e.type === 'translationLoadSuccess')
+      filter(e => e.type === 'translationLoadSuccess'),
+      take(1),
     ).subscribe(()=>{
       this.userMenuItems = [
         {
@@ -57,6 +58,7 @@ export class MenuComponent implements OnInit {
             {
               label: this.translocoService.translate(marker('menu.newCrag')),
               icon: 'pi pi-fw pi-plus',
+              routerLink: '/crags/new',
             }
           ]
         },
@@ -72,7 +74,7 @@ export class MenuComponent implements OnInit {
       ];
       this.cragsService.getCrags().subscribe(crags => {
         crags.map(crag => {
-          this.items.push({
+          this.items[1].items.splice(-2, 0, {
             label: crag.name,
             icon: 'pi pi-fw pi-map',
           })

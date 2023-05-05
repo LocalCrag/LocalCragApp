@@ -21,11 +21,11 @@ export class CragsService {
    * Creates a Crag.
    *
    * @param crag Crag to persist.
-   * @param areaId ID of the area to create the crag in.
+   * @param regionId ID of the region to create the crag in.
    * @return Observable of a Crag.
    */
-  public createCrag(crag: Crag, areaId: string): Observable<Crag> {
-    return this.http.post(this.api.crags.create(areaId), Crag.serialize(crag)).pipe(map(Crag.deserialize));
+  public createCrag(crag: Crag, regionId: string): Observable<Crag> {
+    return this.http.post(this.api.crags.create(regionId), Crag.serialize(crag)).pipe(map(Crag.deserialize));
   }
 
   /**

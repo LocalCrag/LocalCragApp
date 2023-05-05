@@ -20,7 +20,7 @@ export class ApiService {
   };
 
   public crags = {
-    create: (areaId: string): string => `${this.apiHost}areas/${areaId}/crags`,
+    create: (regionId: string): string => `${this.apiHost}regions/${regionId}/crags`,
     getList: (): string => `${this.apiHost}crags`,
     getDetail: (id: string): string => `${this.apiHost}crags/${id}`,
     delete: (id: string): string => `${this.apiHost}crags/${id}`,
