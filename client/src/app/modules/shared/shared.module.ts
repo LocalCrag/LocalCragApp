@@ -7,6 +7,9 @@ import {IfErrorDirective} from './forms/if-error.directive';
 import {FormControlDirective} from './forms/form-control.directive';
 import {ControlGroupDirective} from './forms/control-group.directive';
 import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
+import { LeveledGradeDistributionComponent } from './components/leveled-grade-distribution/leveled-grade-distribution.component';
+import {TagModule} from 'primeng/tag';
+import {BadgeModule} from 'primeng/badge';
 
 
 @NgModule({
@@ -17,10 +20,13 @@ import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
     IfErrorDirective,
     FormControlDirective,
     ControlGroupDirective,
-    MinutesRemainingPipe
+    MinutesRemainingPipe,
+    LeveledGradeDistributionComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    TagModule,
+    BadgeModule
   ],
   exports: [
     MomentPipe,
@@ -29,7 +35,8 @@ import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
     IfErrorDirective,
     FormControlDirective,
     ControlGroupDirective,
-    MinutesRemainingPipe
+    MinutesRemainingPipe,
+    LeveledGradeDistributionComponent
   ]
 })
 export class SharedModule {

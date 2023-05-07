@@ -47,3 +47,12 @@ class BaseEntity(db.Model):
 
         return entity
 
+    @classmethod
+    def find_by_slug(cls, slug):
+        entity = cls.query.filter_by(slug=slug).first()
+
+        if not entity:
+            raise NotFound()
+
+        return entity
+

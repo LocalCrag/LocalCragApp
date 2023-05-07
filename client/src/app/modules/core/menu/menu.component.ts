@@ -59,7 +59,7 @@ export class MenuComponent implements OnInit {
             {
               label: this.translocoService.translate(marker('menu.newCrag')),
               icon: 'pi pi-fw pi-plus',
-              routerLink: '/crags/new',
+              routerLink: '/create-crag',
             }
           ]
         },
@@ -78,6 +78,7 @@ export class MenuComponent implements OnInit {
           this.items[1].items.splice(-2, 0, {
             label: crag.name,
             icon: 'pi pi-fw pi-map',
+            routerLink: `/crags/${crag.slug}`
           })
         })
       })

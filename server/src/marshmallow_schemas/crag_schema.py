@@ -8,9 +8,14 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 
 class CragSchema(BaseEntitySchema):
     name = fields.String()
-    description = fields.String()
+    shortDescription = fields.String(attribute='short_description')
+    slug = fields.String()
+
+
+class CragDetailSchema(CragSchema):
     rules = fields.String()
+    description = fields.String()
 
 
-crag_schema = CragSchema()
+crag_schema = CragDetailSchema()
 crags_schema = CragSchema(many=True)

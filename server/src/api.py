@@ -52,7 +52,7 @@ def configure_api(app):
     # Crag API
     crag_bp = Blueprint('crags', __name__)
     crag_bp.add_url_rule('', view_func=GetCrags.as_view('get_crags'))
-    crag_bp.add_url_rule('/<string:id>', view_func=GetCrag.as_view('get_crag_details'))
+    crag_bp.add_url_rule('/<string:slug>', view_func=GetCrag.as_view('get_crag_details'))
     crag_bp.add_url_rule('/<string:id>', view_func=UpdateCrag.as_view('update_crag'))
     crag_bp.add_url_rule('/<string:id>', view_func=DeleteCrag.as_view('delete_crag'))
     app.register_blueprint(crag_bp, url_prefix='/api/crags')

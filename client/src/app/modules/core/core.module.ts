@@ -47,6 +47,7 @@ import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {CragModule} from '../crag/crag.module';
 import {DeviceEffects} from '../../ngrx/effects/device.effects';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import {DeviceEffects} from '../../ngrx/effects/device.effects';
     ResetPasswordComponent,
     RefreshLoginModalComponent,
     AppLevelAlertsComponent,
-    ForgotPasswordCheckMailboxComponent
+    ForgotPasswordCheckMailboxComponent,
+    NotFoundComponent
   ],
   imports: [
     SharedModule,

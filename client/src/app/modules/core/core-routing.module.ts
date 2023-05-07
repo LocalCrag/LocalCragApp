@@ -14,6 +14,8 @@ import {
 } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 import {CragFormComponent} from '../crag/crag-form/crag-form.component';
 import {CragListComponent} from '../crag/crag-list/crag-list.component';
+import {CragComponent} from '../crag/crag/crag.component';
+import {NotFoundComponent} from './not-found/not-found.component';
 
 const routes: Routes = [
   {
@@ -58,9 +60,27 @@ const routes: Routes = [
     component: CragListComponent,
   },
   {
-    path: 'crags/new',
+    path: 'create-crag',
     component: CragFormComponent,
     canActivate: [IsLoggedInGuard],
+  },
+  {
+    path: 'crags/:crag-slug',
+    children: [
+      {
+        path: '',
+        component: CragComponent
+      },
+      {
+        path: 'edit',
+        component: CragFormComponent,
+        canActivate: [IsLoggedInGuard]
+      }
+    ]
+  },
+  {
+    component: NotFoundComponent,
+    path: '**'
   }
 ];
 

@@ -1,0 +1,29 @@
+<ng-container *transloco="let t, read: 'crag.crag'">
+
+  <div class="content">
+
+    <p-card header="{{crag.name}}" *ngIf="crag">
+
+      <p-tabMenu [model]="items" [activeItem]="activeItem" [scrollable]="true"></p-tabMenu>
+
+      <section [innerHTML]="crag.description"></section>
+
+      <p-messages severity="warn">
+        <ng-template pTemplate>
+          <div class="flex flex-row gap-3">
+            <div class="flex"><i class="pi pi-exclamation-triangle mr-1"></i><strong>{{t('cragRules')}}</strong></div>
+            <div class="flex">
+              <div  class="quill-content" [innerHTML]="crag.rules"></div>
+            </div>
+          </div>
+        </ng-template>
+      </p-messages>
+
+      <h4>{{t('gradeDistribution')}}:</h4>
+      <lc-leveled-grade-distribution></lc-leveled-grade-distribution>
+
+    </p-card>
+
+  </div>
+
+</ng-container>

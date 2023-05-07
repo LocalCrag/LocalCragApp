@@ -3,12 +3,19 @@
   "cragForm.cragNameLabel": "Gebietsname",
   "cragForm.cragNamePlaceholder": "z.B. Brione",
   "cragForm.required": "Pflichtfeld",
+  "cragForm.cragShortDescriptionLabel": "Kurzbeschreibung",
+  "cragForm.cragShortDescriptionPlaceholder": "Infos zum Gebiet, kurz und knackig zusammengefasst...",
   "cragForm.cragDescriptionLabel": "Beschreibung",
   "cragForm.cragDescriptionPlaceholder": "Allgemeine Infos zum Gebiet...",
   "cragForm.cragRulesLabel": "Regeln",
   "cragForm.cragRulesPlaceholder": "Verhaltensregeln und Ähnliches...",
   "cragForm.createCragButtonLabel": "Gebiet erstellen",
+  "cragForm.editCragButtonLabel": "Änderungen speichern",
+  "cragForm.deleteCragButtonLabel": "Gebiet löschen",
+  "cragForm.editCragTitle": "Gebiet bearbeiten",
   "cragForm.createCragTitle": "Neues Gebiet erstellen",
   "cragList.newCragButtonLabel": "Neues Gebiet",
-  "cragList.cragListTitle": "Gebiete"
+  "cragList.cragListTitle": "Gebiete",
+  "crag.cragRules": "Gebietsregeln",
+  "crag.gradeDistribution": "Gradverteilung"
 }

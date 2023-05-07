@@ -7,7 +7,9 @@ export class Crag extends AbstractModel {
 
   name: string;
   description: string;
+  shortDescription: string;
   rules: string;
+  slug: string;
 
   /**
    * Parses a crag.
@@ -20,7 +22,9 @@ export class Crag extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(crag, payload);
     crag.name = payload.name;
     crag.description = payload.description;
+    crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
+    crag.slug = payload.slug;
     return crag;
   }
 
@@ -34,6 +38,7 @@ export class Crag extends AbstractModel {
     return {
       name: crag.name,
       description: crag.description,
+      shortDescription: crag.shortDescription,
       rules: crag.rules,
     };
   }

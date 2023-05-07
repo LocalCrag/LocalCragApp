@@ -14,13 +14,19 @@ import {TagModule} from 'primeng/tag';
 import {BadgeModule} from 'primeng/badge';
 import {RouterLink} from '@angular/router';
 import {DropdownModule} from 'primeng/dropdown';
+import { CragComponent } from './crag/crag.component';
+import {MessagesModule} from 'primeng/messages';
+import {EditorModule} from 'primeng/editor';
+import {TabMenuModule} from 'primeng/tabmenu';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
 
 
 
 @NgModule({
   declarations: [
     CragFormComponent,
-    CragListComponent
+    CragListComponent,
+    CragComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +42,11 @@ import {DropdownModule} from 'primeng/dropdown';
     TagModule,
     BadgeModule,
     RouterLink,
-    DropdownModule
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}

@@ -10,6 +10,8 @@ class Crag(BaseEntity):
     __tablename__ = 'crags'
 
     name = db.Column(db.String(120), nullable=False)
+    short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
     rules = db.Column(db.Text, nullable=True)
     region_id = db.Column(UUID(), db.ForeignKey('regions.id'), nullable=False)
+    slug = db.Column(db.String(120), nullable=False)

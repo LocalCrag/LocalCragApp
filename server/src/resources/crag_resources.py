@@ -7,6 +7,7 @@ from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.crag import Crag
 from models.user import User
+from util.name_to_slug import name_to_slug
 from webargs_schemas.crag_args import crag_args
 
 
@@ -21,12 +22,12 @@ class GetCrags(MethodView):
 
 
 class GetCrag(MethodView):
-    def get(self, id):
+    def get(self, slug):
         """
         Returns a detailed crag.
-        @param id: ID of the crag to return.
+        @param slug: Slug of the crag to return.
         """
-        crag: Crag = Crag.find_by_id(id=id)
+        crag: Crag = Crag.find_by_slug(slug=slug)
         return crag_schema.dump(crag), 200
 
 
@@ -42,9 +43,11 @@ class CreateCrag(MethodView):
         new_crag: Crag = Crag()
         new_crag.name = crag_data['name']
         new_crag.description = crag_data['description']
+        new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = crag_data['rules']
         new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
+        new_crag.slug = name_to_slug(new_crag.name)
 
         db.session.add(new_crag)
         db.session.commit()
@@ -64,7 +67,9 @@ class UpdateCrag(MethodView):
 
         crag.name = crag_data['name']
         crag.description = crag_data['description']
+        crag.short_description = crag_data['shortDescription']
         crag.rules = crag_data['rules']
+        crag.slug = name_to_slug(crag.name)
         db.session.add(crag)
         db.session.commit()
 
@@ -79,9 +84,8 @@ class DeleteCrag(MethodView):
         @param id: ID of the crag to delete.
         """
         crag: Crag = Crag.find_by_id(id=id)
-        crag.is_deleted = True
-        
-        db.session.add(crag)
+
+        db.session.delete(crag)
         db.session.commit()
 
         return jsonify(None), 204
