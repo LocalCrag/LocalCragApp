@@ -5,7 +5,14 @@ import {LoadingState} from '../../../enums/loading-state';
 import {CragsService} from '../../../services/crud/crags.service';
 import {Crag} from '../../../models/crag';
 import {environment} from '../../../../environments/environment';
+import {Store} from '@ngrx/store';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {Router} from '@angular/router';
 
+/**
+ * A component for creating crags.
+ */
 @Component({
   selector: 'lc-crag-form',
   templateUrl: './crag-form.component.html',
@@ -20,9 +27,14 @@ export class CragFormComponent implements OnInit {
   public loadingStates = LoadingState;
 
   constructor(private fb: FormBuilder,
+              private store: Store,
+              private router: Router,
               private cragsService: CragsService) {
   }
 
+  /**
+   * Builds the form on component initialization.
+   */
   ngOnInit() {
     this.buildForm();
   }
@@ -38,7 +50,10 @@ export class CragFormComponent implements OnInit {
     });
   }
 
-  public createCrag(){
+  /**
+   * Creates the crag and navigates to the crag list.
+   */
+  public createCrag() {
     if (this.cragForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const crag = new Crag();
@@ -46,7 +61,9 @@ export class CragFormComponent implements OnInit {
       crag.description = this.cragForm.get('description').value
       crag.rules = this.cragForm.get('rules').value
       this.cragsService.createCrag(crag, environment.regionId).subscribe(crag => {
-        console.log(crag);
+        this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
+        this.router.navigate(['/crags']);
+        this.loadingState = LoadingState.DEFAULT;
       });
     } else {
       this.formDirective.markAsTouched();

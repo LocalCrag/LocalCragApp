@@ -13,6 +13,7 @@ import {
   ForgotPasswordCheckMailboxComponent
 } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 import {CragFormComponent} from '../crag/crag-form/crag-form.component';
+import {CragListComponent} from '../crag/crag-list/crag-list.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,10 @@ const routes: Routes = [
     path: 'reset-password/:hash',
     component: ResetPasswordComponent,
     canActivate: [IsLoggedOutGuard],
+  },
+  {
+    path: 'crags',
+    component: CragListComponent,
   },
   {
     path: 'crags/new',

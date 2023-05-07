@@ -40,7 +40,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         availableLangs: ['en', 'de'],
-        defaultLang: 'de',
+        defaultLang: environment.language,
         fallbackLang: 'en',
         prodMode: environment.production,
       })

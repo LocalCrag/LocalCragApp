@@ -1,0 +1,5 @@
+$mobile-breakpoint: 800px;
+
+@mixin on-mobile {
+  @media (screen and max-width: $mobile-breakpoint) { @content; }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../ngrx/reducers';
@@ -14,7 +14,13 @@ import {checkIsMobile} from '../../ngrx/actions/device.actions';
 export class CoreComponent {
 
   constructor(private primengConfig: PrimeNGConfig,
-              public store: Store<AppState>) {}
+              public store: Store<AppState>) {
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.store.dispatch(checkIsMobile());
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true;

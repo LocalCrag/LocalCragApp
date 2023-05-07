@@ -5,10 +5,12 @@ import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {selectShowCookieAlert} from '../../../ngrx/selectors/app-level-alerts.selectors';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import { logout } from 'src/app/ngrx/actions/auth.actions';
+import {logout} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {filter, take} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
+import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 
 @Component({
   selector: 'lc-menu',
@@ -21,6 +23,7 @@ export class MenuComponent implements OnInit {
   items: MenuItem[] = [];
   userMenuItems: MenuItem[] = [];
   isLoggedIn$: Observable<boolean>;
+  isMobile$: Observable<boolean>;
 
   constructor(private cragsService: CragsService,
               private translocoService: TranslocoService,
@@ -28,10 +31,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.translocoService.events$.pipe(
-      filter(e => e.type === 'translationLoadSuccess'),
-      take(1),
-    ).subscribe(()=>{
+    this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.userMenuItems = [
         {
           icon: 'pi pi-fw pi-pencil',
@@ -49,11 +49,12 @@ export class MenuComponent implements OnInit {
           label: this.translocoService.translate(marker('menu.news')),
           icon: 'pi pi-fw pi-megaphone',
           routerLink: '/',
-          routerLinkActiveOptions: { exact: true }
+          routerLinkActiveOptions: {exact: true}
         },
         {
           label: this.translocoService.translate(marker('menu.topo')),
           icon: 'pi pi-fw pi-map',
+          routerLink: '/crags',
           items: [
             {
               label: this.translocoService.translate(marker('menu.newCrag')),
@@ -82,6 +83,7 @@ export class MenuComponent implements OnInit {
       })
     });
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   /**

@@ -46,6 +46,7 @@ import {
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {CragModule} from '../crag/crag.module';
+import {DeviceEffects} from '../../ngrx/effects/device.effects';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import {CragModule} from '../crag/crag.module';
     }),
     EffectsModule.forRoot([
       AuthEffects,
+      DeviceEffects,
       AppLevelAlertsEffects,
       NotificationsEffects,
     ]),
@@ -98,7 +100,7 @@ import {CragModule} from '../crag/crag.module';
   providers: [
     {
       provide: LOCALE_ID,
-      useValue: 'de'
+      useValue: environment.language
     },
     {
       provide: HTTP_INTERCEPTORS,

@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {map} from 'rxjs/operators';
 import {checkIsMobile, setIsMobile} from '../actions/device.actions';
-import * as MobileDetect from 'mobile-detect';
 
 /**
  * Effects for device actions.
@@ -16,8 +15,7 @@ export class DeviceEffects {
   onCheckIsMobile = createEffect(() => this.actions$.pipe(
     ofType(checkIsMobile),
     map(() => {
-      const md = new MobileDetect(window.navigator.userAgent);
-      return setIsMobile({isMobile: md.isPhoneSized()});
+      return setIsMobile({isMobile: window.innerWidth <= 800});
     })
   ));
 

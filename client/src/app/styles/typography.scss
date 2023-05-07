@@ -1,0 +1,7 @@
+@use "media-queries" as m;
+
+.p-card-title{
+  @include m.on-mobile{
+    margin-bottom: 0 !important;
+  }
+}

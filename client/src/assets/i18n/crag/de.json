@@ -8,5 +8,7 @@
   "cragForm.cragRulesLabel": "Regeln",
   "cragForm.cragRulesPlaceholder": "Verhaltensregeln und Ähnliches...",
   "cragForm.createCragButtonLabel": "Gebiet erstellen",
-  "cragForm.createCragTitle": "Neues Gebiet erstellen"
+  "cragForm.createCragTitle": "Neues Gebiet erstellen",
+  "cragList.newCragButtonLabel": "Neues Gebiet",
+  "cragList.cragListTitle": "Gebiete"
 }

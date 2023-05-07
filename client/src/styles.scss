@@ -1,5 +1,9 @@
-@import "app/styles/auth-views";
-@import "app/styles/forms.css";
+@use "app/styles/media-queries" as m;
+@use "app/styles/auth-views";
+@use "app/styles/forms.css";
+@use "app/styles/grades.css";
+@use "app/styles/data-view";
+@use "app/styles/typography";
 
 body {
   padding: 0;
@@ -26,11 +30,16 @@ body {
 
 }
 
-.content{
+.content {
   padding: 3rem 6rem;
   background-image: url("assets/topo.png");
   background-repeat: repeat;
   background-size: 50%;
   height: 100%;
   width: 100%;
+
+  @include m.on-mobile{
+    padding: 0 0;
+  }
+
 }

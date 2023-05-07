@@ -8,5 +8,7 @@
   "cragForm.cragRulesLabel": "",
   "cragForm.cragRulesPlaceholder": "",
   "cragForm.createCragButtonLabel": "",
-  "cragForm.createCragTitle": ""
+  "cragForm.createCragTitle": "",
+  "cragList.newCragButtonLabel": "",
+  "cragList.cragListTitle": ""
 }

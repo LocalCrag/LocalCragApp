@@ -1,3 +1,5 @@
+@use "../../../styles/media-queries" as m;
+
 lc-footer {
   width: 100%;
   display: flex;
@@ -28,6 +30,11 @@ lc-footer {
     width: calc(100% - 12rem);
     box-sizing: border-box;
 
+    @include m.on-mobile{
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
 
     .footer-note-item {
       padding: 1rem;

@@ -59,5 +59,5 @@ def configure_api(app):
 
     # Region API
     crag_bp = Blueprint('regions', __name__)
-    crag_bp.add_url_rule('/crags', view_func=CreateCrag.as_view('create_crag'))
+    crag_bp.add_url_rule('/<string:region_id>/crags', view_func=CreateCrag.as_view('create_crag'))
     app.register_blueprint(crag_bp, url_prefix='/api/regions')

@@ -27,7 +27,6 @@
     "@ngrx/store": "^15.4.0",
     "@ngrx/store-devtools": "^15.4.0",
     "jwt-decode": "^3.1.2",
-    "mobile-detect": "^1.4.5",
     "moment": "^2.29.4",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",

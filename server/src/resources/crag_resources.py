@@ -16,7 +16,7 @@ class GetCrags(MethodView):
         """
         Returns all crags.
         """
-        crags: Crag = Crag.return_all()
+        crags: Crag = Crag.return_all(order_by=lambda: Crag.name.asc())
         return jsonify(crags_schema.dump(crags)), 200
 
 
