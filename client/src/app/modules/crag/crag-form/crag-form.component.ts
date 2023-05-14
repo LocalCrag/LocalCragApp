@@ -76,6 +76,7 @@ export class CragFormComponent implements OnInit {
       description: [''],
       shortDescription: [''],
       rules: [''],
+      image: [null]
     });
   }
 
@@ -85,6 +86,7 @@ export class CragFormComponent implements OnInit {
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
       rules: this.crag.rules,
+      image: null // todo include in model etc
     });
     this.cragForm.enable();
   }

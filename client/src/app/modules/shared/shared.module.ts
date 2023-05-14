@@ -10,6 +10,9 @@ import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
 import { LeveledGradeDistributionComponent } from './components/leveled-grade-distribution/leveled-grade-distribution.component';
 import {TagModule} from 'primeng/tag';
 import {BadgeModule} from 'primeng/badge';
+import { SingleImageUploadComponent } from './forms/controls/single-image-upload/single-image-upload.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import {ImageModule} from 'primeng/image';
 
 
 @NgModule({
@@ -21,13 +24,16 @@ import {BadgeModule} from 'primeng/badge';
     FormControlDirective,
     ControlGroupDirective,
     MinutesRemainingPipe,
-    LeveledGradeDistributionComponent
+    LeveledGradeDistributionComponent,
+    SingleImageUploadComponent
   ],
-  imports: [
-    CommonModule,
-    TagModule,
-    BadgeModule
-  ],
+    imports: [
+        CommonModule,
+        TagModule,
+        BadgeModule,
+        FileUploadModule,
+        ImageModule
+    ],
   exports: [
     MomentPipe,
     FormDirective,
@@ -36,7 +42,8 @@ import {BadgeModule} from 'primeng/badge';
     FormControlDirective,
     ControlGroupDirective,
     MinutesRemainingPipe,
-    LeveledGradeDistributionComponent
+    LeveledGradeDistributionComponent,
+    SingleImageUploadComponent
   ]
 })
 export class SharedModule {

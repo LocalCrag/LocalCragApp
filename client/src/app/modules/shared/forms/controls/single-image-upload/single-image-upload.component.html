@@ -1,0 +1,12 @@
+<p-fileUpload mode="basic"
+              [name]="'upload'"
+              [url]="uploadUrl"
+              accept="image/*"
+              [multiple]="false"
+              [maxFileSize]="1000000"
+              (onUpload)="setMedia($event)"
+              [auto]="true"
+              chooseLabel="Browse">
+</p-fileUpload>
+
+<p-image [src]="file.path" [preview]="true" [alt]="file.originalFilename" width="250" *ngIf="file"></p-image>
