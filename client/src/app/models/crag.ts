@@ -1,4 +1,5 @@
 import {AbstractModel} from './abstract-model';
+import {File} from './file';
 
 /**
  * Model of a climbing crag.
@@ -10,6 +11,7 @@ export class Crag extends AbstractModel {
   shortDescription: string;
   rules: string;
   slug: string;
+  portraitImage: File;
 
   /**
    * Parses a crag.
@@ -25,6 +27,7 @@ export class Crag extends AbstractModel {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.slug = payload.slug;
+    crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return crag;
   }
 
@@ -40,6 +43,7 @@ export class Crag extends AbstractModel {
       description: crag.description,
       shortDescription: crag.shortDescription,
       rules: crag.rules,
+      portraitImage: crag.portraitImage?.id,
     };
   }
 

@@ -21,7 +21,8 @@
         <ng-template let-crag pTemplate="listItem">
           <div class="col-12 clickable-data-item" routerLink="/crags/{{crag.slug}}">
             <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-              <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src="assets/crag.png"
+              <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                   [src]="crag.portraitImage?.thumbnailM"
                    [alt]="crag.name"/>
               <div
                 class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">

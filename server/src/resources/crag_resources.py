@@ -45,6 +45,7 @@ class CreateCrag(MethodView):
         new_crag.description = crag_data['description']
         new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = crag_data['rules']
+        new_crag.portrait_image_id = crag_data['portraitImage']
         new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
         new_crag.slug = name_to_slug(new_crag.name)
@@ -69,6 +70,7 @@ class UpdateCrag(MethodView):
         crag.description = crag_data['description']
         crag.short_description = crag_data['shortDescription']
         crag.rules = crag_data['rules']
+        crag.portrait_image_id = crag_data['portraitImage']
         crag.slug = name_to_slug(crag.name)
         db.session.add(crag)
         db.session.commit()

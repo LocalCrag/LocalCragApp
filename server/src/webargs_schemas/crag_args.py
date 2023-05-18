@@ -1,9 +1,9 @@
 from webargs import fields
 
 crag_args = {
-    "id": fields.Str(required=False),
     "name": fields.Str(required=True),
-    "description": fields.Str(required=False),
-    "shortDescription": fields.Str(required=False),
-    "rules": fields.Str(required=False),
+    "description": fields.Str(required=True, allow_none=True),
+    "shortDescription": fields.Str(required=True, allow_none=True),
+    "rules": fields.Str(required=True, allow_none=True),
+    "portraitImage": fields.String(required=True, allow_none=True)
 }
