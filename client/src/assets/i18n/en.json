@@ -47,6 +47,8 @@
   "resetPassword.confirmNewPasswordPlaceholder": "",
   "resetPassword.passwordsDontMatchAlertText": "",
   "resetPassword.changePasswordButtonLabel": "",
+  "singleImageUploader.browseFilesButtonLabel": "",
+  "singleImageUploader.clearUploadedImageButtonLabel": "",
   "menu.changePassword": "",
   "menu.logout": "",
   "menu.news": "",

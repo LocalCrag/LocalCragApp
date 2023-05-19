@@ -21,7 +21,9 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 
 
-
+/**
+ * Module for crags.
+ */
 @NgModule({
   declarations: [
     CragFormComponent,

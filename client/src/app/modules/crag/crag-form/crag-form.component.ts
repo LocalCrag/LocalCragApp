@@ -76,6 +76,7 @@ export class CragFormComponent implements OnInit {
       description: [''],
       shortDescription: [''],
       rules: [''],
+      portraitImage: [null]
     });
   }
 
@@ -85,6 +86,7 @@ export class CragFormComponent implements OnInit {
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
       rules: this.crag.rules,
+      portraitImage: this.crag.portraitImage,
     });
     this.cragForm.enable();
   }
@@ -100,6 +102,7 @@ export class CragFormComponent implements OnInit {
       crag.description = this.cragForm.get('description').value
       crag.shortDescription = this.cragForm.get('shortDescription').value
       crag.rules = this.cragForm.get('rules').value
+      crag.portraitImage = this.cragForm.get('portraitImage').value
       if (this.crag) {
         crag.id = this.crag.id;
         this.cragsService.updateCrag(crag).subscribe(crag => {

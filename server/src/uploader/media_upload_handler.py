@@ -1,5 +1,8 @@
+import uuid
+
 import magic
 from PIL import Image
+from werkzeug.datastructures import FileStorage
 
 from models.file import File
 from uploader.upload_handler_utils import store_tmp_file, post_upload, check_filesize_limit, get_max_image_size
@@ -20,14 +23,15 @@ image_sizes = {
 }
 
 
-def handle_file_upload(args: dict) -> File:
+def handle_file_upload(file: FileStorage) -> File:
     """
     Processes an uploaded media file.
     :param args: Request arguments.
     :return: Created media model.
     """
     # Save file in tmp folder
-    temp_folder, temp_path, file = store_tmp_file(args)
+    id = uuid.uuid4().hex
+    temp_folder, temp_path, file = store_tmp_file(file, id)
 
     # Check file size
     check_filesize_limit(file, get_max_image_size(), temp_folder)
@@ -38,9 +42,9 @@ def handle_file_upload(args: dict) -> File:
     # Call the handler for the appropriate file type
     file_object = None
     if mime_type in allowed_image_mime_types:
-        file_object = handle_image_upload(temp_path, file, args['qquuid'])
+        file_object = handle_image_upload(temp_path, file, id)
     else:
-        file_object = handle_arbitrary_file_upload(file, args['qquuid'])
+        file_object = handle_arbitrary_file_upload(file, id)
 
     # Clean up
     post_upload(file, temp_folder)

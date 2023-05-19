@@ -27,6 +27,10 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}crags/${id}`
   };
 
+  public uploader = {
+    uploadFile: (): string => `${this.apiHost}upload`
+  };
+
   private apiHost = `${environment.apiHost}/api/`
 
 }

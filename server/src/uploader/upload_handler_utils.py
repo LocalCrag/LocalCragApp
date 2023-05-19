@@ -1,9 +1,11 @@
 import os
 import pathlib
 import shutil
+import uuid
 from typing import Tuple
 
 from flask import current_app
+from werkzeug.datastructures import FileStorage
 
 from uploader.errors import FilesizeLimitExceeded
 
@@ -39,12 +41,11 @@ def check_filesize_limit(file, max_filesize, temp_folder):
         raise FilesizeLimitExceeded(max_filesize)
 
 
-def store_tmp_file(upload_args) -> Tuple[str, str, any]:
+def store_tmp_file(file: FileStorage, id: str) -> Tuple[str, str, any]:
     """
     Stores the file in the temporary folder.
     """
-    file = upload_args['qqfile']
-    temp_folder = os.path.join('uploads/tmp', upload_args['qquuid'])
+    temp_folder = os.path.join('uploads/tmp', id)
     pathlib.Path(temp_folder).mkdir(parents=True, exist_ok=True)
     temp_path = os.path.join(temp_folder, file.filename)
     file.save(temp_path)
