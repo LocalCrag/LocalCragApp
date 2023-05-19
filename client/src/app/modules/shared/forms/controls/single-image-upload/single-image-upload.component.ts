@@ -1,4 +1,4 @@
-import {Component, forwardRef, Injector, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, forwardRef, Injector, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ApiService} from '../../../../../services/core/api.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
 import {File} from '../../../../../models/file';
@@ -17,9 +17,10 @@ import {FileUpload} from 'primeng/fileupload';
       useExisting: forwardRef(() => SingleImageUploadComponent),
       multi: true,
     }
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
-export class SingleImageUploadComponent implements OnInit, ControlValueAccessor, OnDestroy{
+export class SingleImageUploadComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
   @ViewChild(FileUpload) uploader: FileUpload;
 
@@ -30,14 +31,18 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
   public imageLoading = true;
   public imageLoadingError = false;
   public uploadInProgress = false;
-
-
+  public progress: number = null;
+  public progressMode = 'determinate';
+  public showProgressBar = false;
 
   constructor(private api: ApiService,
               private inj: Injector) {
 
   }
 
+  /**
+   * Initializes the uploader component.
+   */
   ngOnInit() {
     this.uploadUrl = this.api.uploader.uploadFile();
     this.formControl = this.inj.get(NgControl);
@@ -105,6 +110,7 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
     this.file = File.deserialize(event.originalEvent.body);
     this.imageLoading = true;
     this.imageLoadingError = false;
+    this.showProgressBar = false;
     this.onChange();
   }
 
@@ -127,7 +133,7 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
   /**
    * Sets the error flag and shows an alert that the image could not be loaded.
    */
-  onImageLoadError(){
+  onImageLoadError() {
     this.imageLoading = false;
     this.imageLoadingError = true;
   }
@@ -136,8 +142,28 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
    * Resets the component on destruction.
    */
   ngOnDestroy(): void {
-    this.uploader.clear();
+    this.uploader?.clear();
   }
 
+  /**
+   * Starts the progress bar.
+   */
+  startProgress() {
+    this.showProgressBar = true;
+    this.progress = 0;
+    this.progressMode = 'determinate';
+  }
+
+  /**
+   * Sets a new progress value.
+   * @param event Progress bar event.
+   */
+  setProgress(event: any) {
+    this.progress = event.progress;
+    if (this.progress === 100) {
+      this.progressMode = 'indeterminate';
+      this.progress = null;
+    }
+  }
 
 }

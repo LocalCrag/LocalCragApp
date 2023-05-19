@@ -1,0 +1,28 @@
+lc-single-image-upload {
+
+  .image-wrapper {
+    overflow: hidden;
+    display: inline-block;
+    position: relative;
+
+    p-image {
+      img {
+        border-radius: 6px;
+      }
+
+      .p-image-preview-indicator {
+        border-radius: 6px;
+      }
+    }
+
+    p-button {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+    }
+
+  }
+
+
+
+}

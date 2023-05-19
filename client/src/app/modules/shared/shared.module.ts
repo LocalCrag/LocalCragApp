@@ -7,14 +7,20 @@ import {IfErrorDirective} from './forms/if-error.directive';
 import {FormControlDirective} from './forms/form-control.directive';
 import {ControlGroupDirective} from './forms/control-group.directive';
 import {MinutesRemainingPipe} from './pipes/minutes-remaining.pipe';
-import { LeveledGradeDistributionComponent } from './components/leveled-grade-distribution/leveled-grade-distribution.component';
+import {
+  LeveledGradeDistributionComponent
+} from './components/leveled-grade-distribution/leveled-grade-distribution.component';
 import {TagModule} from 'primeng/tag';
 import {BadgeModule} from 'primeng/badge';
-import { SingleImageUploadComponent } from './forms/controls/single-image-upload/single-image-upload.component';
+import {SingleImageUploadComponent} from './forms/controls/single-image-upload/single-image-upload.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {ImageModule} from 'primeng/image';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
-
+/**
+ * Module for shared components, pipes etc.
+ */
 @NgModule({
   declarations: [
     MomentPipe,
@@ -27,13 +33,15 @@ import {ImageModule} from 'primeng/image';
     LeveledGradeDistributionComponent,
     SingleImageUploadComponent
   ],
-    imports: [
-        CommonModule,
-        TagModule,
-        BadgeModule,
-        FileUploadModule,
-        ImageModule
-    ],
+  imports: [
+    CommonModule,
+    TagModule,
+    BadgeModule,
+    FileUploadModule,
+    ImageModule,
+    TranslocoModule,
+    ProgressSpinnerModule
+  ],
   exports: [
     MomentPipe,
     FormDirective,
