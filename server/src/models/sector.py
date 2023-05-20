@@ -11,5 +11,10 @@ class Sector(BaseEntity):
 
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    short_description = db.Column(db.Text, nullable=True)
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
+    slug = db.Column(db.String(120), nullable=False)
+    portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
+    portrait_image = db.relationship('File', lazy='joined')
+
 

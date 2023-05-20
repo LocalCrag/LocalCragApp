@@ -3,6 +3,7 @@ from flask import Blueprint
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
+from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
@@ -48,6 +49,15 @@ def configure_api(app):
     user_bp.add_url_rule('/email-taken/<email>', view_func=GetEmailTaken.as_view('get_email_taken'))
     user_bp.add_url_rule('/find/<string:query>', view_func=FindUser.as_view('find_user'))
     app.register_blueprint(user_bp, url_prefix='/api/users')
+
+    # Sector API
+    sector_bp = Blueprint('sectors', __name__)
+    sector_bp.add_url_rule('', view_func=GetSectors.as_view('get_sectors'))
+    sector_bp.add_url_rule('', view_func=CreateSector.as_view('create_sector'))
+    sector_bp.add_url_rule('/<string:slug>', view_func=GetSector.as_view('get_sector_details'))
+    sector_bp.add_url_rule('/<string:id>', view_func=UpdateSector.as_view('update_sector'))
+    sector_bp.add_url_rule('/<string:id>', view_func=DeleteSector.as_view('delete_sector'))
+    app.register_blueprint(sector_bp, url_prefix='/api/crags/<string:crag_id>/sectors')
 
     # Crag API
     crag_bp = Blueprint('crags', __name__)
