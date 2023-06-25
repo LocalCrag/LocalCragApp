@@ -52,12 +52,9 @@ def configure_api(app):
 
     # Sector API
     sector_bp = Blueprint('sectors', __name__)
-    sector_bp.add_url_rule('', view_func=GetSectors.as_view('get_sectors'))
-    sector_bp.add_url_rule('', view_func=CreateSector.as_view('create_sector'))
-    sector_bp.add_url_rule('/<string:slug>', view_func=GetSector.as_view('get_sector_details'))
     sector_bp.add_url_rule('/<string:id>', view_func=UpdateSector.as_view('update_sector'))
     sector_bp.add_url_rule('/<string:id>', view_func=DeleteSector.as_view('delete_sector'))
-    app.register_blueprint(sector_bp, url_prefix='/api/crags/<string:crag_id>/sectors')
+    app.register_blueprint(sector_bp, url_prefix='/api/sectors')
 
     # Crag API
     crag_bp = Blueprint('crags', __name__)
@@ -65,9 +62,13 @@ def configure_api(app):
     crag_bp.add_url_rule('/<string:slug>', view_func=GetCrag.as_view('get_crag_details'))
     crag_bp.add_url_rule('/<string:id>', view_func=UpdateCrag.as_view('update_crag'))
     crag_bp.add_url_rule('/<string:id>', view_func=DeleteCrag.as_view('delete_crag'))
+    crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=GetSectors.as_view('get_sectors'))
+    crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=CreateSector.as_view('create_sector'))
+    crag_bp.add_url_rule('/<string:crag_slug>/sectors/<string:sector_slug>', view_func=GetSector.as_view('get_sector_details'))
+
     app.register_blueprint(crag_bp, url_prefix='/api/crags')
 
     # Region API
-    crag_bp = Blueprint('regions', __name__)
-    crag_bp.add_url_rule('/<string:region_id>/crags', view_func=CreateCrag.as_view('create_crag'))
-    app.register_blueprint(crag_bp, url_prefix='/api/regions')
+    regions_bp = Blueprint('regions', __name__)
+    regions_bp.add_url_rule('/<string:region_id>/crags', view_func=CreateCrag.as_view('create_crag'))
+    app.register_blueprint(regions_bp, url_prefix='/api/regions')

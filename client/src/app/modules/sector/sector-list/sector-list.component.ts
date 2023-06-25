@@ -1,28 +1,30 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Crag} from '../../../models/crag';
-import {CragsService} from '../../../services/crud/crags.service';
 import {LoadingState} from '../../../enums/loading-state';
-import {SelectItem} from 'primeng/api';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {forkJoin, Observable} from 'rxjs';
+import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import {filter, take} from 'rxjs/operators';
+import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
+import {Sector} from '../../../models/sector';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {ActivatedRoute} from '@angular/router';
+import {SelectItem} from 'primeng/api';
 
 /**
- * Component that lists all crags in an area.
+ * Component that displays a list of sectors.
  */
 @Component({
-  selector: 'lc-crag-list',
-  templateUrl: './crag-list.component.html',
-  styleUrls: ['./crag-list.component.scss']
+  selector: 'lc-sector-list',
+  templateUrl: './sector-list.component.html',
+  styleUrls: ['./sector-list.component.scss']
 })
-export class CragListComponent implements OnInit {
+export class SectorListComponent {
 
-  public crags: Crag[];
+  public sectors: Sector[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public sortOptions: SelectItem[];
@@ -31,21 +33,25 @@ export class CragListComponent implements OnInit {
   public sortField: string;
   public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
+  public cragSlug: string;
 
-  constructor(private cragsService: CragsService,
+  constructor(private sectorsService: SectorsService,
+              private route: ActivatedRoute,
               private store: Store,
               private translocoService: TranslocoService) {
   }
 
   /**
-   * Loads the crags on initialization.
+   * Loads the sectors on initialization.
    */
   ngOnInit() {
+    this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
+    console.log(this.cragSlug);
     forkJoin([
-      this.cragsService.getCrags(),
+      this.sectorsService.getSectors(this.cragSlug),
       this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([crags, e]) => {
-      this.crags = crags;
+    ]).subscribe(([sectors, e]) => {
+      this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
         {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
@@ -71,5 +77,4 @@ export class CragListComponent implements OnInit {
       this.sortField = value;
     }
   }
-
 }

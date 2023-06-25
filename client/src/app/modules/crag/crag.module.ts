@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CragFormComponent } from './crag-form/crag-form.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CragFormComponent} from './crag-form/crag-form.component';
 import {CardModule} from 'primeng/card';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import {SharedModule} from '../shared/shared.module';
@@ -8,17 +8,18 @@ import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {ButtonModule} from 'primeng/button';
-import { CragListComponent } from './crag-list/crag-list.component';
+import {CragListComponent} from './crag-list/crag-list.component';
 import {DataViewModule} from 'primeng/dataview';
 import {TagModule} from 'primeng/tag';
 import {BadgeModule} from 'primeng/badge';
 import {RouterLink} from '@angular/router';
 import {DropdownModule} from 'primeng/dropdown';
-import { CragComponent } from './crag/crag.component';
+import {CragComponent} from './crag/crag.component';
 import {MessagesModule} from 'primeng/messages';
 import {EditorModule} from 'primeng/editor';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {SectorModule} from '../sector/sector.module';
 
 
 /**
@@ -48,7 +49,8 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
     MessagesModule,
     EditorModule,
     TabMenuModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    SectorModule
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
@@ -57,4 +59,5 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
     CragFormComponent
   ]
 })
-export class CragModule { }
+export class CragModule {
+}

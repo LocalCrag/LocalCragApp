@@ -45,15 +45,16 @@ export class CragComponent implements OnInit {
     ]).subscribe(([crag, isLoggedIn]) => {
       this.crag = crag;
       this.items = [
-        {label: this.translocoService.translate(marker('crag.infos')), icon: 'pi pi-fw pi-info-circle'},
-        {label: this.translocoService.translate(marker('crag.sectors')), icon: 'pi pi-fw pi-sitemap'},
-        {label: this.translocoService.translate(marker('crag.gallery')), icon: 'pi pi-fw pi-images'},
-        {label: this.translocoService.translate(marker('crag.ascents')), icon: 'pi pi-fw pi-users'},
+        {id: 'infos', label: this.translocoService.translate(marker('crag.infos')), icon: 'pi pi-fw pi-info-circle'}, // todo add router links and add them to api
+        {id: 'sectors', label: this.translocoService.translate(marker('crag.sectors')), icon: 'pi pi-fw pi-sitemap'},
+        {id: 'gallery', label: this.translocoService.translate(marker('crag.gallery')), icon: 'pi pi-fw pi-images'},
+        {id: 'ascents', label: this.translocoService.translate(marker('crag.ascents')), icon: 'pi pi-fw pi-users'},
         {
           label: this.translocoService.translate(marker('crag.edit')),
           icon: 'pi pi-fw pi-file-edit',
           routerLink: `/crags/${this.crag.slug}/edit`,
-          visible: isLoggedIn
+          visible: isLoggedIn,
+          id: 'edit'
         },
       ];
       this.activeItem = this.items[0];
