@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {IsLoggedOutGuard} from '../../guards/is-logged-out.guard';
 import {NewsComponent} from './news/news.component';
@@ -16,18 +16,23 @@ import {CragFormComponent} from '../crag/crag-form/crag-form.component';
 import {CragListComponent} from '../crag/crag-list/crag-list.component';
 import {CragComponent} from '../crag/crag/crag.component';
 import {NotFoundComponent} from './not-found/not-found.component';
+import {SectorListComponent} from '../sector/sector-list/sector-list.component';
+import {CragInfoComponent} from '../crag/crag-info/crag-info.component';
+import {SectorComponent} from '../sector/sector/sector.component';
+import {SectorInfoComponent} from '../sector/sector-info/sector-info.component';
+import {SectorFormComponent} from '../sector/sector-form/sector-form.component';
 
 const routes: Routes = [
   {
-    path:'',
+    path: '',
     component: NewsComponent
   },
   {
-    path:'imprint',
+    path: 'imprint',
     component: ImprintComponent
   },
   {
-    path:'data-privacy-statement',
+    path: 'data-privacy-statement',
     component: DataPrivacyStatementComponent
   },
   {
@@ -66,17 +71,82 @@ const routes: Routes = [
   },
   {
     path: 'crags/:crag-slug',
+    component: CragComponent,
     children: [
       {
         path: '',
-        component: CragComponent
+        pathMatch: 'full',
+        children: [
+          {
+            path: '',
+            component: CragInfoComponent,
+            outlet: 'cragContent'
+          }
+        ]
       },
       {
-        path: 'edit',
-        component: CragFormComponent,
-        canActivate: [IsLoggedInGuard]
-      }
+        path: 'sectors',
+        children: [
+          {
+            path: '',
+            component: SectorListComponent,
+            outlet: 'cragContent'
+          }
+        ]
+      },
+      {
+        path: 'gallery',
+        redirectTo: ''
+      },
+      {
+        path: 'ascents',
+        redirectTo: ''
+      },
     ]
+  },
+  {
+    path: 'crags/:crag-slug/edit',
+    component: CragFormComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'crags/:crag-slug/create-sector',
+    component: SectorFormComponent,
+    canActivate: [IsLoggedInGuard],
+  },
+  {
+    path: 'crags/:crag-slug/sectors/:sector-slug',
+    component: SectorComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        children: [
+          {
+            path: '',
+            component: SectorInfoComponent,
+            outlet: 'sectorContent'
+          }
+        ]
+      },
+      {
+        path: 'areas',
+        redirectTo: ''
+      },
+      {
+        path: 'gallery',
+        redirectTo: ''
+      },
+      {
+        path: 'ascents',
+        redirectTo: ''
+      },
+    ]
+  },
+  {
+    path: 'crags/:crag-slug/sectors/:sector-slug/edit',
+    component: SectorFormComponent,
+    canActivate: [IsLoggedInGuard]
   },
   {
     component: NotFoundComponent,
@@ -88,4 +158,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class CoreRoutingModule { }
+export class CoreRoutingModule {
+}

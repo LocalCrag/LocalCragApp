@@ -32,7 +32,7 @@ export class ApiService {
     getList: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
     getDetail: (cragSlug: string, sectorSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors/${sectorSlug}`,
     delete: (id: string): string => `${this.apiHost}sectors/${id}`,
-    update: (id: string): string => `${this.apiHost}sectors´´${id}`
+    update: (id: string): string => `${this.apiHost}sectors/${id}`
   };
 
   public uploader = {

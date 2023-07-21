@@ -1,0 +1,19 @@
+{
+  "sectorForm.createSectorDescription": "Hier kannst du einen neuen Sektor anlegen. Sektoren sind größere Bereiche innerhalb eines Gebietes. In Chironico wäre beispielsweise das Schattental ein Sektor. Sektoren werden in einem weiteren Schritt weiter in Bereiche unterteilt welche meist einen einzelnen Block mit mehreren Linien darstellen.",
+  "sectorForm.sectorNameLabel": "Sektorenname",
+  "sectorForm.sectorNamePlaceholder": "z.B. Schattental",
+  "sectorForm.required": "Pflichtfeld",
+  "sectorForm.sectorShortDescriptionLabel": "Kurzbeschreibung",
+  "sectorForm.sectorShortDescriptionPlaceholder": "Infos zum Sektor, kurz und knackig zusammengefasst...",
+  "sectorForm.sectorDescriptionLabel": "Beschreibung",
+  "sectorForm.sectorDescriptionPlaceholder": "Allgemeine Infos zum Sektor",
+  "sectorForm.sectorPortraitImageLabel": "Bild",
+  "sectorForm.createSectorButtonLabel": "Sektor erstellen",
+  "sectorForm.editSectorButtonLabel": "Änderungen speichern",
+  "sectorForm.cancelButtonLabel": "Abbrechen",
+  "sectorForm.deleteSectorButtonLabel": "Sektor löschen",
+  "sectorForm.editSectorTitle": "Sektor bearbeiten",
+  "sectorForm.createSectorTitle": "Sektor erstellen",
+  "sector.gradeDistribution": "Gradverteilung",
+  "sectorList.newSectorButtonLabel": "Neuer Sektor"
+}

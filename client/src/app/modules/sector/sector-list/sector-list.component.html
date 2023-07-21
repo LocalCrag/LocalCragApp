@@ -1,8 +1,5 @@
 <ng-container *transloco="let t, read: 'sector.sectorList'">
 
-  <div class="content">
-    <p-card header="{{t('sectorListTitle')}}">
-
       <p-dataView #dv [value]="sectors" [sortField]="sortField" [sortOrder]="sortOrder"
                   [loading]="loading === loadingStates.LOADING">
         <ng-template pTemplate="header">
@@ -11,7 +8,7 @@
                         optionLabel="label" (onChange)="onSortChange($event)"
                         styleClass="md:mb-0"></p-dropdown>
             <div class="flex justify-content-end">
-              <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" routerLink="/create-sector"
+              <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" routerLink="/crags/{{cragSlug}}/create-sector"
                         *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
               <p-button icon="pi pi-plus" routerLink="/create-sector"
                         *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
@@ -36,8 +33,5 @@
           </div>
         </ng-template>
       </p-dataView>
-
-    </p-card>
-  </div>
 
 </ng-container>

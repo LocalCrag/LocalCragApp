@@ -1,40 +1,13 @@
-<ng-container *transloco="let t, read: 'crag.crag'">
+<div class="content">
 
-  <div class="content">
+  <p-card header="{{crag?.name}}">
 
-    <p-card header="{{crag.name}}" *ngIf="crag">
+    <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
 
-      <p-tabMenu [model]="items" [activeItem]="activeItem" [scrollable]="true"></p-tabMenu>
+    <p-tabMenu [model]="items" [scrollable]="true" *ngIf="crag"></p-tabMenu>
 
-      <ng-container *ngIf="activeItem.id === 'infos'">
+    <router-outlet name="cragContent"></router-outlet>
 
-<!--        todo refactor to component-->
-        <section [innerHTML]="crag.description"></section>
+  </p-card>
 
-        <p-messages severity="warn">
-          <ng-template pTemplate>
-            <div class="flex flex-row gap-3">
-              <div class="flex"><i class="pi pi-exclamation-triangle mr-1"></i><strong>{{t('cragRules')}}</strong></div>
-              <div class="flex">
-                <div class="quill-content" [innerHTML]="crag.rules"></div>
-              </div>
-            </div>
-          </ng-template>
-        </p-messages>
-
-        <h4>{{t('gradeDistribution')}}:</h4>
-        <lc-leveled-grade-distribution></lc-leveled-grade-distribution>
-
-      </ng-container>
-
-      <ng-container *ngIf="activeItem.id === 'sectors'">
-
-        <lc-sector-list></lc-sector-list>
-
-      </ng-container>
-
-    </p-card>
-
-  </div>
-
-</ng-container>
+</div>

@@ -16,31 +16,35 @@ from webargs_schemas.sector_args import sector_args
 
 class GetSectors(MethodView):
 
-    def get(self, crag_id):
+    def get(self, crag_slug):
         """
         Returns all sectors of a crag.
         """
+        crag_id = Crag.get_id_by_slug(crag_slug)
         sectors: Sector = Sector.return_all(filter=lambda: Sector.crag_id == crag_id,
                                             order_by=lambda: Sector.name.asc())
         return jsonify(sectors_schema.dump(sectors)), 200
 
 
 class GetSector(MethodView):
-    def get(self, slug):
+    def get(self, crag_slug, sector_slug):
         """
         Returns a detailed sector.
-        @param slug: Slug of the sector to return.
+        @param crag_slug: Slug of the crag that the sector is in.
+        @param sector_slug: Slug of the sector to return.
         """
-        sector: Sector = Sector.find_by_slug(slug=slug)
+        crag_id = Crag.get_id_by_slug(crag_slug)
+        sector: Sector = Sector.find_by_slug(slug=sector_slug, crag_id=crag_id)
         return sector_schema.dump(sector), 200
 
 
 class CreateSector(MethodView):
     @jwt_required()
-    def post(self, crag_id):
+    def post(self, crag_slug):
         """
         Create a sector.
         """
+        crag_id = Crag.get_id_by_slug(crag_slug)
         sector_data = parser.parse(sector_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
@@ -51,6 +55,7 @@ class CreateSector(MethodView):
         new_sector.portrait_image_id = sector_data['portraitImage']
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
+        # todo test slug for duplicates
         new_sector.slug = name_to_slug(new_sector.name)
 
         db.session.add(new_sector)
@@ -73,6 +78,7 @@ class UpdateSector(MethodView):
         sector.description = sector_data['description']
         sector.short_description = sector_data['shortDescription']
         sector.portrait_image_id = sector_data['portraitImage']
+        # todo test slug for duplicates
         sector.slug = name_to_slug(sector.name)
         db.session.add(sector)
         db.session.commit()

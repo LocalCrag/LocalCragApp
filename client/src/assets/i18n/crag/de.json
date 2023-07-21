@@ -1,5 +1,5 @@
 {
-  "cragForm.createCragDescription": "Hier kannst du ein neues Gebiet anlegen. In LocalCrag sind Gebiete zusammenhängende Areale in denen Boulder zu finden sind, wie z.B. Brione. Tessin wäre im Sinne unserer Datenbank kein Gebiet, sondern eine Region.",
+  "cragForm.createCragDescription": "Hier kannst du ein neues Gebiet anlegen. In LocalCrag sind Gebiete zusammenhängende Areale in denen Boulder zu finden sind, wie z.B. Chironico. Tessin wäre im Sinne unserer Datenbank kein Gebiet, sondern eine Region.",
   "cragForm.cragNameLabel": "Gebietsname",
   "cragForm.cragNamePlaceholder": "z.B. Brione",
   "cragForm.required": "Pflichtfeld",
@@ -12,11 +12,12 @@
   "cragForm.cragPortraitImageLabel": "Bild",
   "cragForm.createCragButtonLabel": "Gebiet erstellen",
   "cragForm.editCragButtonLabel": "Änderungen speichern",
+  "cragForm.cancelButtonLabel": "Abbrechen",
   "cragForm.deleteCragButtonLabel": "Gebiet löschen",
   "cragForm.editCragTitle": "Gebiet bearbeiten",
   "cragForm.createCragTitle": "Neues Gebiet erstellen",
-  "cragList.newCragButtonLabel": "Neues Gebiet",
-  "cragList.cragListTitle": "Gebiete",
   "crag.cragRules": "Gebietsregeln",
-  "crag.gradeDistribution": "Gradverteilung"
+  "crag.gradeDistribution": "Gradverteilung",
+  "cragList.newCragButtonLabel": "Neues Gebiet",
+  "cragList.cragListTitle": "Gebiete"
 }

@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
 import {HttpClient} from '@angular/common/http';
 import {Sector} from '../../models/sector';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
+import {CacheService} from '../../cache/cache.service';
 
 /**
  * CRUD service for sectors.
@@ -14,6 +15,7 @@ import {map} from 'rxjs/operators';
 export class SectorsService {
 
   constructor(private api: ApiService,
+              private cache: CacheService,
               private http: HttpClient) {
   }
 
@@ -25,7 +27,12 @@ export class SectorsService {
    * @return Observable of a Sector.
    */
   public createSector(sector: Sector, cragSlug: string): Observable<Sector> {
-    return this.http.post(this.api.sectors.create(cragSlug), Sector.serialize(sector)).pipe(map(Sector.deserialize));
+    return this.http.post(this.api.sectors.create(cragSlug), Sector.serialize(sector)).pipe(
+      tap(() => {
+        this.cache.clear(this.api.sectors.getList(cragSlug))
+      }),
+      map(Sector.deserialize)
+    );
   }
 
   /**
@@ -34,7 +41,7 @@ export class SectorsService {
    * @return Observable of a list of Sectors.
    */
   public getSectors(cragSlug: string): Observable<Sector[]> {
-    return this.http.get(this.api.sectors.getList(cragSlug)).pipe(map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)));
+    return this.cache.get(this.api.sectors.getList(cragSlug), map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)))
   }
 
   /**
@@ -45,29 +52,39 @@ export class SectorsService {
    * @return Observable of a Sector.
    */
   public getSector(cragSlug: string, sectorSlug: string): Observable<Sector> {
-    return this.http.get(this.api.sectors.getDetail(cragSlug, sectorSlug)).pipe(map(Sector.deserialize));
+    return this.cache.get(this.api.sectors.getDetail(cragSlug, sectorSlug), map(Sector.deserialize));
   }
 
   /**
    * Deletes a Sector.
    *
+   * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to delete.
    * @return Observable of a Sector.
    */
-  public deleteSector(sector: Sector): Observable<null> {
-    return this.http.delete(this.api.sectors.delete(sector.id)).pipe(map(() => null));
+  public deleteSector(cragSlug: string, sector: Sector): Observable<null> {
+    return this.http.delete(this.api.sectors.delete(sector.id)).pipe(
+      tap(() => {
+        this.cache.clear(this.api.sectors.getList(cragSlug))
+        this.cache.clear(this.api.sectors.getDetail(cragSlug, sector.slug))
+      }),
+      map(() => null)
+    );
   }
 
   /**
    * Updates a Sector.
    *
+   * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to persist.
    * @return Observable of null.
    */
-  public updateSector(sector: Sector): Observable<Sector> {
-    return this.http.put(
-      this.api.sectors.update(sector.id),
-      Sector.serialize(sector)).pipe(map(Sector.deserialize)
+  public updateSector(cragSlug: string, sector: Sector): Observable<Sector> {
+    return this.http.put(this.api.sectors.update(sector.id), Sector.serialize(sector)).pipe(
+      tap(() => {
+        this.cache.clear(this.api.sectors.getList(cragSlug))
+      }),
+      map(Sector.deserialize)
     );
   }
 }

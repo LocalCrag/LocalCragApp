@@ -12,11 +12,12 @@
   "cragForm.cragPortraitImageLabel": "",
   "cragForm.createCragButtonLabel": "",
   "cragForm.editCragButtonLabel": "",
+  "cragForm.cancelButtonLabel": "",
   "cragForm.deleteCragButtonLabel": "",
   "cragForm.editCragTitle": "",
   "cragForm.createCragTitle": "",
-  "cragList.newCragButtonLabel": "",
-  "cragList.cragListTitle": "",
   "crag.cragRules": "",
-  "crag.gradeDistribution": ""
+  "crag.gradeDistribution": "",
+  "cragList.newCragButtonLabel": "",
+  "cragList.cragListTitle": ""
 }

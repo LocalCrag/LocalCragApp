@@ -80,6 +80,9 @@ export class CragFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets the form value based on an input crag and enables the form afterwards.
+   */
   private setFormValue() {
     this.cragForm.patchValue({
       name: this.crag.name,
@@ -89,6 +92,17 @@ export class CragFormComponent implements OnInit {
       portraitImage: this.crag.portraitImage,
     });
     this.cragForm.enable();
+  }
+
+  /**
+   * Cancels the form.
+   */
+  cancel() {
+    if (this.crag) {
+      this.router.navigate(['/crags', this.crag.slug]);
+    } else {
+      this.router.navigate(['/crags']);
+    }
   }
 
   /**

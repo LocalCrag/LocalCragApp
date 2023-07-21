@@ -1,0 +1,19 @@
+{
+  "sectorForm.createSectorDescription": "",
+  "sectorForm.sectorNameLabel": "",
+  "sectorForm.sectorNamePlaceholder": "",
+  "sectorForm.required": "",
+  "sectorForm.sectorShortDescriptionLabel": "",
+  "sectorForm.sectorShortDescriptionPlaceholder": "",
+  "sectorForm.sectorDescriptionLabel": "",
+  "sectorForm.sectorDescriptionPlaceholder": "",
+  "sectorForm.sectorPortraitImageLabel": "",
+  "sectorForm.createSectorButtonLabel": "",
+  "sectorForm.editSectorButtonLabel": "",
+  "sectorForm.cancelButtonLabel": "",
+  "sectorForm.deleteSectorButtonLabel": "",
+  "sectorForm.editSectorTitle": "",
+  "sectorForm.createSectorTitle": "",
+  "sector.gradeDistribution": "",
+  "sectorList.newSectorButtonLabel": ""
+}

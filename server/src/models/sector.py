@@ -1,3 +1,4 @@
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
@@ -16,5 +17,14 @@ class Sector(BaseEntity):
     slug = db.Column(db.String(120), nullable=False)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
+
+    @classmethod
+    def find_by_slug(cls, slug, crag_id):
+        entity = cls.query.filter_by(slug=slug, crag_id=crag_id).first()
+
+        if not entity:
+            raise NotFound()
+
+        return entity
 
 

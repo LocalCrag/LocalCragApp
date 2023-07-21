@@ -20,6 +20,21 @@ export class AppNotificationsService {
   private isMobile: boolean;
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> = new Map<NotificationIdentifier, NotificationType>([
+    [NotificationIdentifier.SECTOR_DELETED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.SECTOR_DELETED_TITLE)
+     * t(notifications.SECTOR_DELETED_MESSAGE)
+     **/
+    [NotificationIdentifier.SECTOR_UPDATED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.SECTOR_UPDATED_TITLE)
+     * t(notifications.SECTOR_UPDATED_MESSAGE)
+     **/
+    [NotificationIdentifier.SECTOR_CREATED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.SECTOR_CREATED_TITLE)
+     * t(notifications.SECTOR_CREATED_MESSAGE)
+     **/
     [NotificationIdentifier.CRAG_DELETED, NotificationType.SUCCESS],
     /**
      * t(notifications.CRAG_DELETED_TITLE)

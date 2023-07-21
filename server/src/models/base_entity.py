@@ -58,3 +58,11 @@ class BaseEntity(db.Model):
 
         return entity
 
+    @classmethod
+    def get_id_by_slug(cls, slug):
+        id = db.session.query(cls.id).filter_by(slug=slug).first()
+
+        if not id:
+            raise NotFound()
+
+        return id[0]

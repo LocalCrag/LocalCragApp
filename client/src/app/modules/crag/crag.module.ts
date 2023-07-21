@@ -20,6 +20,9 @@ import {EditorModule} from 'primeng/editor';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {SectorModule} from '../sector/sector.module';
+import {CragInfoComponent} from './crag-info/crag-info.component';
+import {SkeletonModule} from 'primeng/skeleton';
+import {BreadcrumbModule} from 'primeng/breadcrumb';
 
 
 /**
@@ -29,7 +32,8 @@ import {SectorModule} from '../sector/sector.module';
   declarations: [
     CragFormComponent,
     CragListComponent,
-    CragComponent
+    CragComponent,
+    CragInfoComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +54,9 @@ import {SectorModule} from '../sector/sector.module';
     EditorModule,
     TabMenuModule,
     ConfirmPopupModule,
-    SectorModule
+    SectorModule,
+    SkeletonModule,
+    BreadcrumbModule
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}

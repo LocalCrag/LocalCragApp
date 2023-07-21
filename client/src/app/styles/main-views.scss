@@ -1,0 +1,18 @@
+lc-sector, lc-crag {
+
+  .p-card-content {
+    padding-top: 0 !important;
+  }
+
+  p-breadcrumb .p-breadcrumb{
+    padding: 0;
+    border: none;
+    margin-top: 18px;
+    margin-bottom: 5px;
+  }
+
+  .p-tabmenu-nav :first-child a {
+    padding-left: 0 !important;
+  }
+
+}

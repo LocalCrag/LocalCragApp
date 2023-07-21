@@ -48,13 +48,14 @@ class CreateCrag(MethodView):
         new_crag.portrait_image_id = crag_data['portraitImage']
         new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
+        # todo test slug for duplicates
         new_crag.slug = name_to_slug(new_crag.name)
 
         db.session.add(new_crag)
         db.session.commit()
-        
+
         return crag_schema.dump(new_crag), 201
-        
+
 
 class UpdateCrag(MethodView):
     @jwt_required()
@@ -71,6 +72,7 @@ class UpdateCrag(MethodView):
         crag.short_description = crag_data['shortDescription']
         crag.rules = crag_data['rules']
         crag.portrait_image_id = crag_data['portraitImage']
+        # todo test slug for duplicates
         crag.slug = name_to_slug(crag.name)
         db.session.add(crag)
         db.session.commit()
@@ -91,4 +93,3 @@ class DeleteCrag(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
-

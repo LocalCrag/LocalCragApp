@@ -45,8 +45,7 @@ export class SectorListComponent {
    * Loads the sectors on initialization.
    */
   ngOnInit() {
-    this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
-    console.log(this.cragSlug);
+    this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
     forkJoin([
       this.sectorsService.getSectors(this.cragSlug),
       this.translocoService.load(`${environment.language}`)
