@@ -4,53 +4,52 @@ from tests.utils.user_test_util import get_login_headers
 
 
 def test_successful_create_sector(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     sector_data = {
         "name": "Kruzifix",
         "description": "Der Klassikersektor",
         "shortDescription": "Classic.",
-        "portraitImage": 1,
+        "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
-    rv = client.post('/api/regions/XXX/crags/glees/sectors', headers=access_headers, json=sector_data)
+    rv = client.post('/api/crags/brione/sectors', headers=access_headers, json=sector_data)
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['name'] == "Kruzifix"
     assert res['slug'] == "kruzifix"
     assert res['description'] == "Der Klassikersektor"
     assert res['shortDescription'] == "Classic."
-    assert res['portraitImage']['id'] == 1
+    assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
 
 
 def test_successful_get_sectors(client):
-    rv = client.get('/api/crags/glees/sectors')
+    rv = client.get('/api/crags/brione/sectors')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert len(res) == 2
-    assert res[0]['hashId'] == "XXX"
-    assert res[0]['slug'] == "XXX"
-    assert res[0]['name'] == "Kottenheim"
-    assert res[0]['shortDescription'] == "Kottenheim"
-    assert res[0]['portraitImage']['id'] == 1
-    assert res[1]['hashId'] == "XXX"
-    assert res[1]['slug'] == "XXX"
-    assert res[1]['name'] == "Hohenfels"
-    assert res[1]['shortDescription'] == "Hohenfels"
-    assert res[1]['portraitImage']['id'] == 1
+    assert res[0]['id'] == "5f186998-7712-4a85-a623-a5126836a2b1"
+    assert res[0]['slug'] == "oben"
+    assert res[0]['name'] == "Oben"
+    assert res[0]['shortDescription'] == ""
+    assert res[0]['portraitImage'] == None
+    assert res[1]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
+    assert res[1]['slug'] == "schattental"
+    assert res[1]['name'] == "Schattental"
+    assert res[1]['shortDescription'] == "Kurze Beschreibung zum Schattental"
+    assert res[1]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
 
 
 def test_successful_get_sector(client):
-    rv = client.get('/api/crags/glees/sectors/romani-ite-domum')
+    rv = client.get('/api/crags/brione/sectors/schattental')
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert res['hashId'] == "XXX"
-    assert res['name'] == "Kottenheim"
-    assert res['slug'] == "Kottenheim magic!"
-    assert res['portraitImage']['id'] == 1
-    assert res['description'] == "Kottenheim magic!"
-    assert res['shortDescription'] == "Kottenheim magic!"
-    assert res['rules'] == "Alles erlaubt in Kottenheim."
+    assert res['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
+    assert res['name'] == "Schattental"
+    assert res['slug'] == "schattental"
+    assert res['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
+    assert res['description'] == "<p>Lange Beschreibung zum Schattental</p>"
+    assert res['shortDescription'] == "Kurze Beschreibung zum Schattental"
 
 
 def test_get_deleted_sector(client):
@@ -61,27 +60,27 @@ def test_get_deleted_sector(client):
 
 
 def test_successful_delete_sector(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
 
-    rv = client.delete('/api/crags/glees/sectors/romani', headers=access_headers)
+    rv = client.delete('/api/sectors/5f186998-7712-4a85-a623-a5126836a2b1', headers=access_headers)
     assert rv.status_code == 204
 
 
 def test_successful_edit_sector(client):
-    access_headers, refresh_headers = get_login_headers(client, 'felix@fengelmann.de', 'fengelmann')
+    access_headers, refresh_headers = get_login_headers(client)
     sector_data = {
         "name": "Romani",
         "description": "Test edit",
         "shortDescription": "Test",
-        "portraitImage": 2,
+        "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
-    rv = client.put('/api/crags/glees/sectors/romani-ite-domum', headers=access_headers, json=sector_data)
+    rv = client.put('/api/sectors/5f186998-7712-4a85-a623-a5126836a2b1', headers=access_headers, json=sector_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['name'] == "Romani"
     assert res['slug'] == "romani"
     assert res['description'] == "Test edit"
     assert res['shortDescription'] == "Test"
-    assert res['portraitImage']['id'] == 2
+    assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None

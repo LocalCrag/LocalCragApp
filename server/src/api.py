@@ -65,7 +65,6 @@ def configure_api(app):
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=GetSectors.as_view('get_sectors'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=CreateSector.as_view('create_sector'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors/<string:sector_slug>', view_func=GetSector.as_view('get_sector_details'))
-
     app.register_blueprint(crag_bp, url_prefix='/api/crags')
 
     # Region API

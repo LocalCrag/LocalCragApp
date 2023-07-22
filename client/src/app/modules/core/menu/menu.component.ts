@@ -72,6 +72,11 @@ export class MenuComponent implements OnInit {
           url: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',
           icon: 'pi pi-fw pi-youtube'
         },
+        {
+          label: this.translocoService.translate(marker('menu.instagram')),
+          url: 'https://www.instagram.com/gleesbouldering/',
+          icon: 'pi pi-fw pi-instagram'
+        },
       ];
       this.cragsService.getCrags().subscribe(crags => {
         crags.map(crag => {
