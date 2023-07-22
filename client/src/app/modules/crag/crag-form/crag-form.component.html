@@ -18,9 +18,9 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('cragShortDescriptionLabel')}}</label>
-          <textarea  pInputTextarea formControlName="shortDescription"
-                 placeholder="{{t('cragShortDescriptionPlaceholder')}}"
-                     lcFormControl rows="3"></textarea>
+          <textarea pInputTextarea formControlName="shortDescription"
+                    placeholder="{{t('cragShortDescriptionPlaceholder')}}"
+                    lcFormControl rows="3"></textarea>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
@@ -48,7 +48,7 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('cragRulesLabel')}}</label>
           <p-editor formControlName="rules" lcFormControl placeholder="{{t('cragRulesPlaceholder')}}"
-                    [style]="{ height: '200px' }"  [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
             <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
@@ -78,6 +78,8 @@
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
         <p-button label="{{t('editCragButtonLabel')}}" (click)="saveCrag()" icon="pi pi-plus"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
         <p-button label="{{t('deleteCragButtonLabel')}}" (click)="confirmDeleteCrag($event)" icon="pi pi-trash"
                   styleClass="p-button-danger" class="ml-3"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>

@@ -65,7 +65,7 @@ def test_unsuccessful_create_user_email_taken(client):
     user_data = {
         'firstname': 'Thorsten',
         'lastname': 'Test',
-        'email': 'action-directe@fengelmann.de',
+        'email': 'localcrag@fengelmann.de',
         'language': 'de',
         'avatar': None,
         'colorScheme': 'LARA_LIGHT_TEAL'
@@ -91,7 +91,7 @@ def test_lock_user(client):
 
     # Try to log in locked user
     data = {
-        'email': 'action-directe2@fengelmann.de',
+        'email': 'localcrag2@fengelmann.de',
         'password': '[vb+xLGgU?+Z]nXD3HmO'
     }
     rv = client.post('/api/login', json=data)
@@ -119,7 +119,7 @@ def test_lock_user(client):
 
 
 def test_use_tokens_of_locked_user(client):
-    access_headers_locked_user, refresh_headers_locked_user = get_login_headers(client, 'action-directe2@fengelmann.de',
+    access_headers_locked_user, refresh_headers_locked_user = get_login_headers(client, 'localcrag2@fengelmann.de',
                                                                                 '[vb+xLGgU?+Z]nXD3HmO')
     access_headers, refresh_headers = get_login_headers(client)
 
@@ -140,7 +140,7 @@ def test_email_taken(client):
     access_headers, refresh_headers = get_login_headers(client)
 
     # Test a taken email
-    rv = client.get('/api/users/email-taken/action-directe@fengelmann.de', headers=access_headers, json=None)
+    rv = client.get('/api/users/email-taken/localcrag@fengelmann.de', headers=access_headers, json=None)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res is True
@@ -170,7 +170,7 @@ def test_delete_other_user(client):
 
 def test_use_tokens_of_deleted_user(client):
     access_headers_deleted_user, refresh_headers_deleted_user = get_login_headers(client,
-                                                                                  'action-directe2@fengelmann.de',
+                                                                                  'localcrag2@fengelmann.de',
                                                                                   '[vb+xLGgU?+Z]nXD3HmO')
     access_headers, refresh_headers = get_login_headers(client)
 
@@ -190,7 +190,7 @@ def test_update_user(client):
         'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
-        'email': 'action-directe@fengelmann.de',
+        'email': 'localcrag@fengelmann.de',
         'avatar': '6137f55a-6201-45ab-89c5-6e9c29739d61',
         'colorScheme': 'LARA_DARK_TEAL'
     }
@@ -203,7 +203,7 @@ def test_update_user(client):
     assert res['avatar']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['avatar']['originalFilename'] == 'test.jpg'
     assert res['colorScheme'] == 'LARA_DARK_TEAL'
-    assert res['email'] == 'action-directe@fengelmann.de'
+    assert res['email'] == 'localcrag@fengelmann.de'
 
 
 def test_update_user_different_email(client):
@@ -233,7 +233,7 @@ def test_update_user_taken_email(client):
         'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
-        'email': 'action-directe2@fengelmann.de',
+        'email': 'localcrag2@fengelmann.de',
         'avatar': None,
         'colorScheme': 'LARA_DARK_TEAL'
     }
@@ -249,7 +249,7 @@ def test_update_user_invalid_email(client):
         'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
-        'email': 'action-directefengelmann.de',
+        'email': 'localcragfengelmann.de',
         'avatar': None,
         'colorScheme': 'LARA_DARK_TEAL'
     }

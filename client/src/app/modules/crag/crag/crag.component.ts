@@ -11,23 +11,25 @@ import {catchError, take} from 'rxjs/operators';
 import {select, Store} from '@ngrx/store';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
-  encapsulation: ViewEncapsulation.None
 })
 export class CragComponent implements OnInit {
 
   public crag: Crag;
   public items: MenuItem[];
-  public activeItem: MenuItem;
+  public breadcrumbs: MenuItem[] | undefined;
+  public breadcrumbHome: MenuItem | undefined;
 
   constructor(private cragsService: CragsService,
               private translocoService: TranslocoService,
               private router: Router,
               private store: Store,
+              private title: Title,
               private route: ActivatedRoute) {
   }
 
@@ -44,19 +46,43 @@ export class CragComponent implements OnInit {
       this.translocoService.load(`${environment.language}`)
     ]).subscribe(([crag, isLoggedIn]) => {
       this.crag = crag;
+      this.title.setTitle(`${crag.name} - ${environment.instanceName}`)
       this.items = [
-        {label: this.translocoService.translate(marker('crag.infos')), icon: 'pi pi-fw pi-info-circle'},
-        {label: this.translocoService.translate(marker('crag.sectors')), icon: 'pi pi-fw pi-sitemap'},
-        {label: this.translocoService.translate(marker('crag.gallery')), icon: 'pi pi-fw pi-images'},
-        {label: this.translocoService.translate(marker('crag.ascents')), icon: 'pi pi-fw pi-users'},
+        {
+          label: this.translocoService.translate(marker('crag.infos')),
+          icon: 'pi pi-fw pi-info-circle',
+          routerLink: `/crags/${this.crag.slug}`,
+          routerLinkActiveOptions: {exact: true}
+        },
+        {
+          label: this.translocoService.translate(marker('crag.sectors')),
+          icon: 'pi pi-fw pi-sitemap',
+          routerLink: `/crags/${this.crag.slug}/sectors`,
+        },
+        {
+          label: this.translocoService.translate(marker('crag.gallery')),
+          icon: 'pi pi-fw pi-images',
+          routerLink: `/crags/${this.crag.slug}/gallery`,
+        },
+        {
+          label: this.translocoService.translate(marker('crag.ascents')),
+          icon: 'pi pi-fw pi-users',
+          routerLink: `/crags/${this.crag.slug}/ascents`,
+        },
         {
           label: this.translocoService.translate(marker('crag.edit')),
           icon: 'pi pi-fw pi-file-edit',
           routerLink: `/crags/${this.crag.slug}/edit`,
-          visible: isLoggedIn
+          visible: isLoggedIn,
         },
       ];
-      this.activeItem = this.items[0];
+      this.breadcrumbs = [
+        {
+          label: crag.name,
+          routerLink: `/crags/${crag.slug}`
+        }
+      ];
+      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/crags'};
     })
   }
 

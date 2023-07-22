@@ -11,7 +11,10 @@ from app import app
 @pytest.fixture
 def client():
     # Load dump
-    subprocess.check_output('psql localcrag_test < ../tests/dumps/localcrag_test_dump.sql', shell=True)
+    subprocess.check_output(
+        "export PGPASSWORD=''; pg_restore -h {} -p {} -U {} -d {} --format=c --clean -j 4 ../tests/dumps/localcrag_test_dump.sql".format(
+            'localhost', 5432, 'postgres', 'localcrag_test'
+        ), shell=True)
 
     # Return client
     return app.test_client()

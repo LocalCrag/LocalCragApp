@@ -28,10 +28,12 @@ class BaseEntity(db.Model):
         return db.relationship('User', foreign_keys='[%s.created_by_id]' % self.__name__)
 
     @classmethod
-    def return_all(cls, order_by=None, options=None):
+    def return_all(cls, order_by=None, options=None, filter=None):
         query = cls.query
         if options:
             query = query.options(options)
+        if filter:
+            query = query.filter(filter())
         if order_by is not None:
             query = query.order_by(order_by())
         else:
@@ -56,3 +58,11 @@ class BaseEntity(db.Model):
 
         return entity
 
+    @classmethod
+    def get_id_by_slug(cls, slug):
+        id = db.session.query(cls.id).filter_by(slug=slug).first()
+
+        if not id:
+            raise NotFound()
+
+        return id[0]

@@ -12,6 +12,9 @@ import {filter, take} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 
+/**
+ * Component that lists all crags in an area.
+ */
 @Component({
   selector: 'lc-crag-list',
   templateUrl: './crag-list.component.html',
@@ -34,6 +37,9 @@ export class CragListComponent implements OnInit {
               private translocoService: TranslocoService) {
   }
 
+  /**
+   * Loads the crags on initialization.
+   */
   ngOnInit() {
     forkJoin([
       this.cragsService.getCrags(),
@@ -51,6 +57,10 @@ export class CragListComponent implements OnInit {
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
+  /**
+   * Sets the sort field and order.
+   * @param event Sort change event.
+   */
   onSortChange(event: any) {
     let value = event.value.value;
     if (value.indexOf('!') === 0) {

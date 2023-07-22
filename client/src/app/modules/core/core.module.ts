@@ -1,4 +1,4 @@
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {CoreRoutingModule} from './core-routing.module';
@@ -48,6 +48,16 @@ import {ToastModule} from 'primeng/toast';
 import {CragModule} from '../crag/crag.module';
 import {DeviceEffects} from '../../ngrx/effects/device.effects';
 import {NotFoundComponent} from './not-found/not-found.component';
+import {TranslocoService} from '@ngneat/transloco';
+
+export function preloadTranslations(transloco: TranslocoService) {
+  return function () {
+    transloco.setActiveLang(environment.language);
+    transloco.load(environment.language).subscribe()
+    transloco.load('crag/' + environment.language).subscribe()
+    transloco.load('sector/' + environment.language).subscribe()
+  }
+}
 
 @NgModule({
   declarations: [
@@ -124,9 +134,17 @@ import {NotFoundComponent} from './not-found/not-found.component';
       useClass: ContentTypeInterceptor,
       multi: true
     },
-    MessageService
+    MessageService,
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [TranslocoService],
+      useFactory: preloadTranslations
+    }
   ],
   bootstrap: [CoreComponent]
 })
 export class CoreModule {
 }
+
+

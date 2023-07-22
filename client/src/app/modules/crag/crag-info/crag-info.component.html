@@ -1,0 +1,36 @@
+<ng-container *transloco="let t, read: 'crag.crag'">
+
+  <ng-container *ngIf="crag">
+
+    <section [innerHTML]="crag.description"></section>
+
+    <p-messages severity="warn">
+      <ng-template pTemplate>
+        <div class="flex flex-row gap-3">
+          <div class="flex"><i class="pi pi-exclamation-triangle mr-1"></i><strong>{{t('cragRules')}}</strong></div>
+          <div class="flex">
+            <div class="quill-content" [innerHTML]="crag.rules"></div>
+          </div>
+        </div>
+      </ng-template>
+    </p-messages>
+
+    <h4>{{t('gradeDistribution')}}:</h4>
+    <lc-leveled-grade-distribution></lc-leveled-grade-distribution>
+
+  </ng-container>
+
+  <ng-container *ngIf="!crag">
+
+    <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
+    <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
+    <p-skeleton width="40%" height="4rem"></p-skeleton>
+
+  </ng-container>
+
+</ng-container>
