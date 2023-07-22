@@ -43,7 +43,7 @@ export class Crag extends AbstractModel {
       description: crag.description,
       shortDescription: crag.shortDescription,
       rules: crag.rules,
-      portraitImage: crag.portraitImage?.id,
+      portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
     };
   }
 

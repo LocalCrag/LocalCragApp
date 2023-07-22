@@ -40,7 +40,7 @@ export class Sector extends AbstractModel {
       name: sector.name,
       description: sector.description,
       shortDescription: sector.shortDescription,
-      portraitImage: sector.portraitImage?.id,
+      portraitImage: sector.portraitImage ?  sector.portraitImage.id : null,
     };
   }
 

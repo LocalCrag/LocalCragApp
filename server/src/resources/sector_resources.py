@@ -9,7 +9,7 @@ from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.crag import Crag
 from models.sector import Sector
 from models.user import User
-from util.name_to_slug import name_to_slug
+from util.name_to_slug import name_to_slug, get_free_slug
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
 
@@ -55,8 +55,7 @@ class CreateSector(MethodView):
         new_sector.portrait_image_id = sector_data['portraitImage']
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
-        # todo test slug for duplicates
-        new_sector.slug = name_to_slug(new_sector.name)
+        new_sector.slug = get_free_slug(name_to_slug(new_sector.name), Sector.get_id_by_slug)
 
         db.session.add(new_sector)
         db.session.commit()
@@ -78,8 +77,7 @@ class UpdateSector(MethodView):
         sector.description = sector_data['description']
         sector.short_description = sector_data['shortDescription']
         sector.portrait_image_id = sector_data['portraitImage']
-        # todo test slug for duplicates
-        sector.slug = name_to_slug(sector.name)
+        sector.slug = get_free_slug(name_to_slug(sector.name), Sector.get_id_by_slug)
         db.session.add(sector)
         db.session.commit()
 

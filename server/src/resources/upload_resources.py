@@ -10,11 +10,9 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.file_schema import file_schema
 from messages.messages import ResponseMessage
-from models.user import User
 from uploader.errors import InvalidFiletypeUploaded, FilesizeLimitExceeded
 from uploader.media_upload_handler import handle_file_upload
 from util.security_util import check_user_authorized
-from webargs_schemas.upload_args import upload_args, upload_args_test
 
 
 class UploadFile(MethodView):
