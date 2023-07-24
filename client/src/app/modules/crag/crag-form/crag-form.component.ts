@@ -125,7 +125,7 @@ export class CragFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag, environment.regionId).subscribe(crag => {
+        this.cragsService.createCrag(crag, environment.regionSlug).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
           this.router.navigate(['/crags']);
           this.loadingState = LoadingState.DEFAULT;

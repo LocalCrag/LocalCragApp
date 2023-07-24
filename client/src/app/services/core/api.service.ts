@@ -20,19 +20,19 @@ export class ApiService {
   };
 
   public crags = {
-    create: (regionId: string): string => `${this.apiHost}regions/${regionId}/crags`,
-    getList: (): string => `${this.apiHost}crags`,
+    create: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
+    getList: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
     getDetail: (slug: string): string => `${this.apiHost}crags/${slug}`,
-    delete: (id: string): string => `${this.apiHost}crags/${id}`,
-    update: (id: string): string => `${this.apiHost}crags/${id}`
+    delete: (slug: string): string => `${this.apiHost}crags/${slug}`,
+    update: (slug: string): string => `${this.apiHost}crags/${slug}`
   };
 
   public sectors = {
     create: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
     getList: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
-    getDetail: (cragSlug: string, sectorSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors/${sectorSlug}`,
-    delete: (id: string): string => `${this.apiHost}sectors/${id}`,
-    update: (id: string): string => `${this.apiHost}sectors/${id}`
+    getDetail: (slug: string): string => `${this.apiHost}sectors/${slug}`,
+    delete: (slug: string): string => `${this.apiHost}sectors/${slug}`,
+    update: (slug: string): string => `${this.apiHost}sectors/${slug}`
   };
 
   public uploader = {

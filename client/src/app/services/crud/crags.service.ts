@@ -5,6 +5,7 @@ import {map, mapTo, tap} from 'rxjs/operators';
 import {Crag} from '../../models/crag';
 import {HttpClient} from '@angular/common/http';
 import {CacheService} from '../../cache/cache.service';
+import {environment} from '../../../environments/environment';
 
 /**
  * CRUD service for crags.
@@ -23,13 +24,13 @@ export class CragsService {
    * Creates a Crag.
    *
    * @param crag Crag to persist.
-   * @param regionId ID of the region to create the crag in.
+   * @param regionSlug Slug of the region to create the crag in.
    * @return Observable of a Crag.
    */
-  public createCrag(crag: Crag, regionId: string): Observable<Crag> {
-    return this.http.post(this.api.crags.create(regionId), Crag.serialize(crag)).pipe(
+  public createCrag(crag: Crag, regionSlug: string): Observable<Crag> {
+    return this.http.post(this.api.crags.create(regionSlug), Crag.serialize(crag)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.crags.getList(environment.regionSlug));
       }),
       map(Crag.deserialize)
     );
@@ -41,7 +42,7 @@ export class CragsService {
    * @return Observable of a list of Crags.
    */
   public getCrags(): Observable<Crag[]> {
-    return this.cache.get(this.api.crags.getList(), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
+    return this.cache.get(this.api.crags.getList(environment.regionSlug), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 
   /**
@@ -61,9 +62,9 @@ export class CragsService {
    * @return Observable of a Crag.
    */
   public deleteCrag(crag: Crag): Observable<null> {
-    return this.http.delete(this.api.crags.delete(crag.id)).pipe(
+    return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.crags.getList(environment.regionSlug));
       }),
       map(() => null)
     );
@@ -76,10 +77,10 @@ export class CragsService {
    * @return Observable of null.
    */
   public updateCrag(crag: Crag): Observable<Crag> {
-    return this.http.put(this.api.crags.update(crag.id), Crag.serialize(crag)).pipe(
+    return this.http.put(this.api.crags.update(crag.slug), Crag.serialize(crag)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getDetail(crag.slug));
-        this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.crags.getList(environment.regionSlug));
       }),
       map(Crag.deserialize)
     );

@@ -6,18 +6,20 @@ from webargs.flaskparser import parser
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.crag import Crag
+from models.region import Region
 from models.user import User
-from util.name_to_slug import name_to_slug, get_free_slug
 from webargs_schemas.crag_args import crag_args
 
 
 class GetCrags(MethodView):
 
-    def get(self):
+    def get(self, region_slug):
         """
         Returns all crags.
+        @param region_slug: Slug of the region to return the crags for.
         """
-        crags: Crag = Crag.return_all(order_by=lambda: Crag.name.asc())
+        region_id = Region.get_id_by_slug(region_slug)
+        crags: Crag = Crag.return_all(filter=lambda: Crag.region_id == region_id, order_by=lambda: Crag.name.asc())
         return jsonify(crags_schema.dump(crags)), 200
 
 
@@ -33,12 +35,13 @@ class GetCrag(MethodView):
 
 class CreateCrag(MethodView):
     @jwt_required()
-    def post(self, region_id):
+    def post(self, region_slug):
         """
         Create a crag.
         """
         crag_data = parser.parse(crag_args, request)
         created_by = User.find_by_email(get_jwt_identity())
+        region_id = Region.get_id_by_slug(region_slug)
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data['name']
@@ -48,7 +51,6 @@ class CreateCrag(MethodView):
         new_crag.portrait_image_id = crag_data['portraitImage']
         new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
-        new_crag.slug = get_free_slug(name_to_slug(new_crag.name), Crag.get_id_by_slug)
 
         db.session.add(new_crag)
         db.session.commit()
@@ -58,20 +60,19 @@ class CreateCrag(MethodView):
 
 class UpdateCrag(MethodView):
     @jwt_required()
-    def put(self, id):
+    def put(self, crag_slug):
         """
         Edit a crag.
-        @param id: ID of the crag to update.
+        @param crag_slug: Slug of the crag to update.
         """
         crag_data = parser.parse(crag_args, request)
-        crag: Crag = Crag.find_by_id(id=id)
+        crag: Crag = Crag.find_by_slug(crag_slug)
 
         crag.name = crag_data['name']
         crag.description = crag_data['description']
         crag.short_description = crag_data['shortDescription']
         crag.rules = crag_data['rules']
         crag.portrait_image_id = crag_data['portraitImage']
-        crag.slug = get_free_slug(name_to_slug(crag.name), Crag.get_id_by_slug)
         db.session.add(crag)
         db.session.commit()
 
@@ -80,12 +81,12 @@ class UpdateCrag(MethodView):
 
 class DeleteCrag(MethodView):
     @jwt_required()
-    def delete(self, id):
+    def delete(self, crag_slug):
         """
         Delete a crag.
-        @param id: ID of the crag to delete.
+        @param crag_slug: Slug of the crag to delete.
         """
-        crag: Crag = Crag.find_by_id(id=id)
+        crag: Crag = Crag.find_by_slug(crag_slug)
 
         db.session.delete(crag)
         db.session.commit()
