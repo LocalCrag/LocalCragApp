@@ -99,9 +99,9 @@ export class CragFormComponent implements OnInit {
    */
   cancel() {
     if (this.crag) {
-      this.router.navigate(['/crags', this.crag.slug]);
+      this.router.navigate(['/topo', this.crag.slug]);
     } else {
-      this.router.navigate(['/crags']);
+      this.router.navigate(['/topo']);
     }
   }
 
@@ -121,13 +121,13 @@ export class CragFormComponent implements OnInit {
         crag.id = this.crag.id;
         this.cragsService.updateCrag(crag).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_UPDATED));
-          this.router.navigate(['/crags', crag.slug]);
+          this.router.navigate(['/topo', crag.slug]);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
         this.cragsService.createCrag(crag, environment.regionSlug).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
-          this.router.navigate(['/crags']);
+          this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -163,7 +163,7 @@ export class CragFormComponent implements OnInit {
   public deleteCrag() {
     this.cragsService.deleteCrag(this.crag).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_DELETED));
-      this.router.navigate(['/crags']);
+      this.router.navigate(['/topo']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }

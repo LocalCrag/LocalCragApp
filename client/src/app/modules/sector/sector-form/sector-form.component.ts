@@ -100,9 +100,9 @@ export class SectorFormComponent implements OnInit {
    */
   cancel() {
     if (this.sector) {
-      this.router.navigate(['/crags', this.cragSlug, 'sectors', this.sector.slug]);
+      this.router.navigate(['/topo', this.cragSlug, this.sector.slug]);
     } else {
-      this.router.navigate(['/crags', this.cragSlug, 'sectors']);
+      this.router.navigate(['/topo', this.cragSlug, 'sectors']);
     }
   }
 
@@ -121,13 +121,13 @@ export class SectorFormComponent implements OnInit {
         sector.id = this.sector.id;
         this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {
           this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_UPDATED));
-          this.router.navigate(['/crags', this.cragSlug, 'sectors', sector.slug]);
+          this.router.navigate(['/topo', this.cragSlug, sector.slug]);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
         this.sectorsService.createSector(sector, this.cragSlug).subscribe(sector => {
           this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_CREATED));
-          this.router.navigate(['/crags', this.cragSlug, 'sectors']);
+          this.router.navigate(['/topo', this.cragSlug, 'sectors']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -162,7 +162,7 @@ export class SectorFormComponent implements OnInit {
   public deleteSector() {
     this.sectorsService.deleteSector(this.cragSlug, this.sector).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_DELETED));
-      this.router.navigate(['/crags', this.cragSlug, 'sectors']);
+      this.router.navigate(['/topo', this.cragSlug, 'sectors']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }

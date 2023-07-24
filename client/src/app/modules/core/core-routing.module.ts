@@ -61,16 +61,16 @@ const routes: Routes = [
     canActivate: [IsLoggedOutGuard],
   },
   {
-    path: 'crags',
+    path: 'topo',
     component: CragListComponent,
   },
   {
-    path: 'create-crag',
+    path: 'topo/create-crag',
     component: CragFormComponent,
     canActivate: [IsLoggedInGuard],
   },
   {
-    path: 'crags/:crag-slug',
+    path: 'topo/:crag-slug',
     component: CragComponent,
     children: [
       {
@@ -105,17 +105,17 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'crags/:crag-slug/edit',
+    path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
     canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'crags/:crag-slug/create-sector',
+    path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
     canActivate: [IsLoggedInGuard],
   },
   {
-    path: 'crags/:crag-slug/sectors/:sector-slug',
+    path: 'topo/:crag-slug/:sector-slug',
     component: SectorComponent,
     children: [
       {
@@ -144,7 +144,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'crags/:crag-slug/sectors/:sector-slug/edit',
+    path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
     canActivate: [IsLoggedInGuard]
   },

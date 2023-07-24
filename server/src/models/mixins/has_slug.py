@@ -23,6 +23,7 @@ class HasSlug:
     """
     Mixin class that adds a slug column to a model.
     """
+    slug_blocklist = []
     slug_target_column = "name"
     slug = db.Column(
         db.String,
@@ -49,6 +50,9 @@ def update_slugs(session):
                 slugs_map[table] = set(
                     c[0] for c in session.execute(db.select(table.c.slug))
                 )
+
+            for blocklisted_slug in item.slug_blocklist:
+                slugs_map[table].add(blocklisted_slug)
 
             item_slug = item.slug or ""
             title = getattr(item, item.slug_target_column)

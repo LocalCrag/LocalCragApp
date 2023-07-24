@@ -62,41 +62,41 @@ export class SectorComponent implements OnInit{
         {
           label: this.translocoService.translate(marker('sector.infos')),
           icon: 'pi pi-fw pi-info-circle',
-          routerLink: `/crags/${this.crag.slug}/sectors/${this.sector.slug}`,
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}`,
           routerLinkActiveOptions: {exact: true}
         },
         {
           label: this.translocoService.translate(marker('sector.areas')),
           icon: 'pi pi-fw pi-sitemap',
-          routerLink: `/crags/${this.crag.slug}/sectors/${this.sector.slug}/areas`,
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
         },
         {
           label: this.translocoService.translate(marker('sector.gallery')),
           icon: 'pi pi-fw pi-images',
-          routerLink: `/crags/${this.crag.slug}/sectors/${this.sector.slug}/gallery`,
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
         },
         {
           label: this.translocoService.translate(marker('sector.ascents')),
           icon: 'pi pi-fw pi-users',
-          routerLink: `/crags/${this.crag.slug}/sectors/${this.sector.slug}/ascents`,
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
         },
         {
           label: this.translocoService.translate(marker('sector.edit')),
           icon: 'pi pi-fw pi-file-edit',
-          routerLink: `/crags/${this.crag.slug}/sectors/${this.sector.slug}/edit`,
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,
           visible: isLoggedIn,
         },
       ];
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/crags/${crag.slug}`
+          routerLink: `/topo/${crag.slug}`
         },
         {
           label: sector.name,
         },
       ];
-      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/crags'};
+      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo'};
     })
   }
 

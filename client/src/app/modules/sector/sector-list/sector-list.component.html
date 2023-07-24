@@ -8,15 +8,15 @@
                         optionLabel="label" (onChange)="onSortChange($event)"
                         styleClass="md:mb-0"></p-dropdown>
             <div class="flex justify-content-end">
-              <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" routerLink="/crags/{{cragSlug}}/create-sector"
+              <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/create-sector"
                         *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-              <p-button icon="pi pi-plus" routerLink="/create-sector"
+              <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/create-sector"
                         *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-sector pTemplate="listItem">
-          <div class="col-12 clickable-data-item" routerLink="/crags/{{cragSlug}}/sectors/{{sector.slug}}">
+          <div class="col-12 clickable-data-item" routerLink="/topo/{{cragSlug}}/{{sector.slug}}">
             <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
               <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
                    [src]="sector.portraitImage ? sector.portraitImage.thumbnailM : 'assets/placeholder.png'"
