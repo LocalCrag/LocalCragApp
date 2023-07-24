@@ -30,7 +30,7 @@ export class CragsService {
   public createCrag(crag: Crag, regionSlug: string): Observable<Crag> {
     return this.http.post(this.api.crags.create(regionSlug), Crag.serialize(crag)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.cache.clear(this.api.crags.getList(regionSlug));
       }),
       map(Crag.deserialize)
     );

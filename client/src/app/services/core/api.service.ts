@@ -35,6 +35,14 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}sectors/${slug}`
   };
 
+  public areas = {
+    create: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas`,
+    getList: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas`,
+    getDetail: (slug: string): string => `${this.apiHost}areas/${slug}`,
+    delete: (slug: string): string => `${this.apiHost}areas/${slug}`,
+    update: (slug: string): string => `${this.apiHost}areas/${slug}`
+  };
+
   public uploader = {
     uploadFile: (): string => `${this.apiHost}upload`
   };
