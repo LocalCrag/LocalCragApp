@@ -123,8 +123,8 @@ export class AreaFormComponent implements OnInit {
       const area = new Area;
       area.name = this.areaForm.get('name').value;
       area.description = this.areaForm.get('description').value;
-      area.lat = Number(this.areaForm.get('lat').value);
-      area.lng = Number(this.areaForm.get('lng').value);
+      area.lat = this.areaForm.get('lat').value ? Number(this.areaForm.get('lat').value) : null;
+      area.lng = this.areaForm.get('lng').value ? Number(this.areaForm.get('lng').value) : null;
       area.portraitImage = this.areaForm.get('portraitImage').value;
       if (this.area) {
         area.slug = this.area.slug;
