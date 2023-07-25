@@ -20,6 +20,7 @@ import {EditorModule} from 'primeng/editor';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {AreaModule} from '../area/area.module';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     MessagesModule,
     BreadcrumbModule,
     EditorModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    AreaModule,
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}

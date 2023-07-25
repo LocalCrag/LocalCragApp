@@ -47,11 +47,10 @@ export class SectorsService {
   /**
    * Returns a Sector.
    *
-   * @param cragSlug: Slug of the Crag to load the sector for.
    * @param sectorSlug: Slug of the Sector to load.
    * @return Observable of a Sector.
    */
-  public getSector(cragSlug: string, sectorSlug: string): Observable<Sector> {
+  public getSector(sectorSlug: string): Observable<Sector> {
     return this.cache.get(this.api.sectors.getDetail(sectorSlug), map(Sector.deserialize));
   }
 

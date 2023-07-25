@@ -52,10 +52,10 @@ export class SectorFormComponent implements OnInit {
     this.buildForm();
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-    if (this.cragSlug && sectorSlug) {
+    if (sectorSlug) {
       this.editMode = true;
       this.sectorForm.disable();
-      this.sectorsService.getSector(this.cragSlug, sectorSlug).pipe(catchError(e => {
+      this.sectorsService.getSector(sectorSlug).pipe(catchError(e => {
         if (e.status === 404) {
           this.router.navigate(['/not-found']);
         }
@@ -118,7 +118,7 @@ export class SectorFormComponent implements OnInit {
       sector.shortDescription = this.sectorForm.get('shortDescription').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
       if (this.sector) {
-        sector.id = this.sector.id;
+        sector.slug = this.sector.slug;
         this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {
           this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_UPDATED));
           this.router.navigate(['/topo', this.cragSlug, sector.slug]);

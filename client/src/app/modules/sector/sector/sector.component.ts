@@ -46,7 +46,7 @@ export class SectorComponent implements OnInit{
         }
         return of(e);
       })),
-      this.sectorsService.getSector(cragSlug, sectorSlug).pipe(catchError(e => {
+      this.sectorsService.getSector(sectorSlug).pipe(catchError(e => {
         if (e.status === 404) {
           this.router.navigate(['/not-found']);
         }

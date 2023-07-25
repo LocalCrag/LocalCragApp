@@ -1,1 +1,13 @@
-<p>area works!</p>
+<div class="content">
+
+  <p-card header="{{area?.name}}">
+
+    <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
+
+    <p-tabMenu [model]="items" [scrollable]="true" *ngIf="area"></p-tabMenu>
+
+    <router-outlet name="areaContent"></router-outlet>
+
+  </p-card>
+
+</div>

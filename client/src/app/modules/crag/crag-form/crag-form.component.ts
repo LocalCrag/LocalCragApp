@@ -118,7 +118,7 @@ export class CragFormComponent implements OnInit {
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
       if (this.crag) {
-        crag.id = this.crag.id;
+        crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_UPDATED));
           this.router.navigate(['/topo', crag.slug]);

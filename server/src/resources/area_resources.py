@@ -32,7 +32,7 @@ class GetArea(MethodView):
         @param area_slug: Slug of the area to return.
         """
         area: Area = Area.find_by_slug(area_slug)
-        return sector_schema.dump(area), 200
+        return area_schema.dump(area), 200
 
 
 class CreateArea(MethodView):
@@ -62,13 +62,13 @@ class CreateArea(MethodView):
 
 class UpdateArea(MethodView):
     @jwt_required()
-    def put(self, id):
+    def put(self, area_slug):
         """
         Edit an area.
-        @param id: ID of the area to update.
+        @param area_slug: Slug of the area to update.
         """
         area_data = parser.parse(area_args, request)
-        area: Area = Area.find_by_id(id=id)
+        area: Area = Area.find_by_slug(area_slug)
 
         area.name = area_data['name']
         area.lat = area_data['lat']
@@ -83,12 +83,12 @@ class UpdateArea(MethodView):
 
 class DeleteArea(MethodView):
     @jwt_required()
-    def delete(self, id):
+    def delete(self, area_slug):
         """
         Delete an area.
         @param id: ID of the area to delete.
         """
-        area: Area = Area.find_by_id(id=id)
+        area: Area = Area.find_by_slug(area_slug)
 
         db.session.delete(area)
         db.session.commit()

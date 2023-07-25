@@ -21,6 +21,10 @@ import {CragInfoComponent} from '../crag/crag-info/crag-info.component';
 import {SectorComponent} from '../sector/sector/sector.component';
 import {SectorInfoComponent} from '../sector/sector-info/sector-info.component';
 import {SectorFormComponent} from '../sector/sector-form/sector-form.component';
+import {AreaComponent} from '../area/area/area.component';
+import {AreaInfoComponent} from '../area/area-info/area-info.component';
+import {AreaFormComponent} from '../area/area-form/area-form.component';
+import {AreaListComponent} from '../area/area-list/area-list.component';
 
 const routes: Routes = [
   {
@@ -131,7 +135,13 @@ const routes: Routes = [
       },
       {
         path: 'areas',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: AreaListComponent,
+            outlet: 'sectorContent'
+          }
+        ]
       },
       {
         path: 'gallery',
@@ -146,6 +156,45 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/create-area',
+    component: AreaFormComponent,
+    canActivate: [IsLoggedInGuard],
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug',
+    component: AreaComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        children: [
+          {
+            path: '',
+            component: AreaInfoComponent,
+            outlet: 'areaContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        redirectTo: ''
+      },
+      {
+        path: 'gallery',
+        redirectTo: ''
+      },
+      {
+        path: 'ascents',
+        redirectTo: ''
+      },
+    ]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
+    component: AreaFormComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

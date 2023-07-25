@@ -1,10 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {TRANSLOCO_SCOPE} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import { AreaComponent } from './area/area.component';
 import { AreaFormComponent } from './area-form/area-form.component';
 import { AreaInfoComponent } from './area-info/area-info.component';
 import { AreaListComponent } from './area-list/area-list.component';
+import {DataViewModule} from 'primeng/dataview';
+import {DropdownModule} from 'primeng/dropdown';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ButtonModule} from 'primeng/button';
+import {SharedModule} from '../shared/shared.module';
+import {RouterLink} from '@angular/router';
+import {CardModule} from 'primeng/card';
+import {InputTextModule} from 'primeng/inputtext';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {TagModule} from 'primeng/tag';
+import {BadgeModule} from 'primeng/badge';
+import {MessagesModule} from 'primeng/messages';
+import {EditorModule} from 'primeng/editor';
+import {TabMenuModule} from 'primeng/tabmenu';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {SectorModule} from '../sector/sector.module';
+import {SkeletonModule} from 'primeng/skeleton';
+import {BreadcrumbModule} from 'primeng/breadcrumb';
 
 
 
@@ -16,7 +34,29 @@ import { AreaListComponent } from './area-list/area-list.component';
     AreaListComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    CardModule,
+    TranslocoModule,
+    SharedModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    ButtonModule,
+    DataViewModule,
+    TagModule,
+    BadgeModule,
+    RouterLink,
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule,
+    SkeletonModule,
+    BreadcrumbModule
+  ],
+  exports: [
+    AreaListComponent
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'area'}
