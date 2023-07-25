@@ -51,38 +51,38 @@ export class CragComponent implements OnInit {
         {
           label: this.translocoService.translate(marker('crag.infos')),
           icon: 'pi pi-fw pi-info-circle',
-          routerLink: `/crags/${this.crag.slug}`,
+          routerLink: `/topo/${this.crag.slug}`,
           routerLinkActiveOptions: {exact: true}
         },
         {
           label: this.translocoService.translate(marker('crag.sectors')),
           icon: 'pi pi-fw pi-sitemap',
-          routerLink: `/crags/${this.crag.slug}/sectors`,
+          routerLink: `/topo/${this.crag.slug}/sectors`,
         },
         {
           label: this.translocoService.translate(marker('crag.gallery')),
           icon: 'pi pi-fw pi-images',
-          routerLink: `/crags/${this.crag.slug}/gallery`,
+          routerLink: `/topo/${this.crag.slug}/gallery`,
         },
         {
           label: this.translocoService.translate(marker('crag.ascents')),
           icon: 'pi pi-fw pi-users',
-          routerLink: `/crags/${this.crag.slug}/ascents`,
+          routerLink: `/topo/${this.crag.slug}/ascents`,
         },
         {
           label: this.translocoService.translate(marker('crag.edit')),
           icon: 'pi pi-fw pi-file-edit',
-          routerLink: `/crags/${this.crag.slug}/edit`,
+          routerLink: `/topo/${this.crag.slug}/edit`,
           visible: isLoggedIn,
         },
       ];
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/crags/${crag.slug}`
+          routerLink: `/topo/${crag.slug}`
         }
       ];
-      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/crags'};
+      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo'};
     })
   }
 

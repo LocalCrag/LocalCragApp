@@ -1,0 +1,21 @@
+{
+  "areaForm.createAreaDescription": "",
+  "areaForm.areaNameLabel": "",
+  "areaForm.areaNamePlaceholder": "",
+  "areaForm.required": "",
+  "areaForm.areaDescriptionLabel": "",
+  "areaForm.areaDescriptionPlaceholder": "",
+  "areaForm.areaPortraitImageLabel": "",
+  "areaForm.latLabel": "",
+  "areaForm.latPlaceholder": "",
+  "areaForm.lngLabel": "",
+  "areaForm.lngPlaceholder": "",
+  "areaForm.createAreaButtonLabel": "",
+  "areaForm.editAreaButtonLabel": "",
+  "areaForm.cancelButtonLabel": "",
+  "areaForm.deleteAreaButtonLabel": "",
+  "areaForm.editAreaTitle": "",
+  "areaForm.createAreaTitle": "",
+  "area.gradeDistribution": "",
+  "areaList.newAreaButtonLabel": ""
+}

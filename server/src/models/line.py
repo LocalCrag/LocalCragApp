@@ -5,9 +5,10 @@ from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.enums.line_type_enum import LineTypeEnum
+from models.mixins.has_slug import HasSlug
 
 
-class Line(BaseEntity):
+class Line(HasSlug, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """

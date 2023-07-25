@@ -56,6 +56,7 @@ export function preloadTranslations(transloco: TranslocoService) {
     transloco.load(environment.language).subscribe()
     transloco.load('crag/' + environment.language).subscribe()
     transloco.load('sector/' + environment.language).subscribe()
+    transloco.load('area/' + environment.language).subscribe()
   }
 }
 

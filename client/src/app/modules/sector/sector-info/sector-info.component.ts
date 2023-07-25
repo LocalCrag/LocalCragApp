@@ -19,12 +19,10 @@ export class SectorInfoComponent implements OnInit{
   }
 
   ngOnInit() {
-    const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-    this.sectorsService.getSector(cragSlug, sectorSlug).subscribe(sector => {
+    this.sectorsService.getSector(sectorSlug).subscribe(sector => {
       this.sector = sector;
     });
   }
-
 
 }

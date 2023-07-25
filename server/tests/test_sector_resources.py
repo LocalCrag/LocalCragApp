@@ -41,7 +41,7 @@ def test_successful_get_sectors(client):
 
 
 def test_successful_get_sector(client):
-    rv = client.get('/api/crags/brione/sectors/schattental')
+    rv = client.get('/api/sectors/schattental')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
@@ -53,7 +53,7 @@ def test_successful_get_sector(client):
 
 
 def test_get_deleted_sector(client):
-    rv = client.get('/api/crags/cf6f3058-48e7-4229-8172-58d48b758a89')
+    rv = client.get('/api/crags/mordor')
     assert rv.status_code == 404
     res = json.loads(rv.data)
     assert res['message'] == "ENTITY_NOT_FOUND"
@@ -62,7 +62,7 @@ def test_get_deleted_sector(client):
 def test_successful_delete_sector(client):
     access_headers, refresh_headers = get_login_headers(client)
 
-    rv = client.delete('/api/sectors/5f186998-7712-4a85-a623-a5126836a2b1', headers=access_headers)
+    rv = client.delete('/api/sectors/schattental', headers=access_headers)
     assert rv.status_code == 204
 
 
@@ -75,7 +75,7 @@ def test_successful_edit_sector(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
-    rv = client.put('/api/sectors/5f186998-7712-4a85-a623-a5126836a2b1', headers=access_headers, json=sector_data)
+    rv = client.put('/api/sectors/schattental', headers=access_headers, json=sector_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['name'] == "Romani"

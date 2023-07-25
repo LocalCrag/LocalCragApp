@@ -9,7 +9,6 @@ from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.crag import Crag
 from models.sector import Sector
 from models.user import User
-from util.name_to_slug import name_to_slug, get_free_slug
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
 
@@ -27,14 +26,12 @@ class GetSectors(MethodView):
 
 
 class GetSector(MethodView):
-    def get(self, crag_slug, sector_slug):
+    def get(self, sector_slug):
         """
         Returns a detailed sector.
-        @param crag_slug: Slug of the crag that the sector is in.
         @param sector_slug: Slug of the sector to return.
         """
-        crag_id = Crag.get_id_by_slug(crag_slug)
-        sector: Sector = Sector.find_by_slug(slug=sector_slug, crag_id=crag_id)
+        sector: Sector = Sector.find_by_slug(sector_slug)
         return sector_schema.dump(sector), 200
 
 
@@ -55,7 +52,6 @@ class CreateSector(MethodView):
         new_sector.portrait_image_id = sector_data['portraitImage']
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
-        new_sector.slug = get_free_slug(name_to_slug(new_sector.name), Sector.get_id_by_slug)
 
         db.session.add(new_sector)
         db.session.commit()
@@ -65,19 +61,18 @@ class CreateSector(MethodView):
 
 class UpdateSector(MethodView):
     @jwt_required()
-    def put(self, id):
+    def put(self, sector_slug):
         """
         Edit a sector.
-        @param id: ID of the sector to update.
+        @param sector_slug: Slug of the sector to update.
         """
         sector_data = parser.parse(sector_args, request)
-        sector: Sector = Sector.find_by_id(id=id)
+        sector: Sector = Sector.find_by_slug(sector_slug)
 
         sector.name = sector_data['name']
         sector.description = sector_data['description']
         sector.short_description = sector_data['shortDescription']
         sector.portrait_image_id = sector_data['portraitImage']
-        sector.slug = get_free_slug(name_to_slug(sector.name), Sector.get_id_by_slug)
         db.session.add(sector)
         db.session.commit()
 
@@ -86,12 +81,12 @@ class UpdateSector(MethodView):
 
 class DeleteSector(MethodView):
     @jwt_required()
-    def delete(self, id):
+    def delete(self, sector_slug):
         """
         Delete a sector.
-        @param id: ID of the sector to delete.
+        @param sector_slug: Slug of the sector to delete.
         """
-        sector: Sector = Sector.find_by_id(id=id)
+        sector: Sector = Sector.find_by_slug(sector_slug)
 
         db.session.delete(sector)
         db.session.commit()

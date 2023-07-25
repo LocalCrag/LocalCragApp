@@ -13,7 +13,7 @@ def test_successful_create_crag(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
-    rv = client.post('/api/regions/d2c864b4-ca80-4d01-a8bf-41521182b5d4/crags', headers=access_headers, json=crag_data)
+    rv = client.post('/api/regions/tessin/crags', headers=access_headers, json=crag_data)
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['name'] == "Glees"
@@ -26,7 +26,7 @@ def test_successful_create_crag(client):
 
 
 def test_successful_get_crags(client):
-    rv = client.get('/api/crags')
+    rv = client.get('/api/regions/tessin/crags')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert len(res) == 2
@@ -56,7 +56,7 @@ def test_successful_get_crag(client):
 
 
 def test_get_deleted_crag(client):
-    rv = client.get('/api/crags/cf6f3058-48e7-4229-8172-58d48b758a89')
+    rv = client.get('/api/crags/hohenfels')
     assert rv.status_code == 404
     res = json.loads(rv.data)
     assert res['message'] == "ENTITY_NOT_FOUND"
@@ -65,7 +65,7 @@ def test_get_deleted_crag(client):
 def test_successful_delete_crag(client):
     access_headers, refresh_headers = get_login_headers(client)
 
-    rv = client.delete('/api/crags/aabc4539-c02f-4a03-8db3-ea0916e59884', headers=access_headers)
+    rv = client.delete('/api/crags/brione', headers=access_headers)
     assert rv.status_code == 204
 
 
@@ -79,7 +79,7 @@ def test_successful_edit_crag(client):
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
     }
 
-    rv = client.put('/api/crags/aabc4539-c02f-4a03-8db3-ea0916e59884', headers=access_headers, json=crag_data)
+    rv = client.put('/api/crags/brione', headers=access_headers, json=crag_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['name'] == "Glees 2"

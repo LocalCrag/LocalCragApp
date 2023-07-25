@@ -54,12 +54,12 @@ export class MenuComponent implements OnInit {
         {
           label: this.translocoService.translate(marker('menu.topo')),
           icon: 'pi pi-fw pi-map',
-          routerLink: '/crags',
+          routerLink: '/topo',
           items: [
             {
               label: this.translocoService.translate(marker('menu.newCrag')),
               icon: 'pi pi-fw pi-plus',
-              routerLink: '/create-crag',
+              routerLink: '/topo/create-crag',
             }
           ]
         },
@@ -83,7 +83,7 @@ export class MenuComponent implements OnInit {
           this.items[1].items.splice(-2, 0, {
             label: crag.name,
             icon: 'pi pi-fw pi-map',
-            routerLink: `/crags/${crag.slug}`
+            routerLink: `/topo/${crag.slug}`
           })
         })
       })
