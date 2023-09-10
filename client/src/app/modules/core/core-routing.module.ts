@@ -25,6 +25,7 @@ import {AreaComponent} from '../area/area/area.component';
 import {AreaInfoComponent} from '../area/area-info/area-info.component';
 import {AreaFormComponent} from '../area/area-form/area-form.component';
 import {AreaListComponent} from '../area/area-list/area-list.component';
+import {LineListComponent} from '../line/line-list/line-list.component';
 
 const routes: Routes = [
   {
@@ -180,7 +181,13 @@ const routes: Routes = [
       },
       {
         path: 'lines',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
+            outlet: 'areaContent'
+          }
+        ]
       },
       {
         path: 'gallery',

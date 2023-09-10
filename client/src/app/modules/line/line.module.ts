@@ -1,18 +1,17 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {LineComponent} from './line/line.component';
+import {LineFormComponent} from './line-form/line-form.component';
+import {LineListComponent} from './line-list/line-list.component';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
-import {AreaComponent} from './area/area.component';
-import {AreaFormComponent} from './area-form/area-form.component';
-import {AreaInfoComponent} from './area-info/area-info.component';
-import {AreaListComponent} from './area-list/area-list.component';
+import {CardModule} from 'primeng/card';
 import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
-import {SharedModule} from '../shared/shared.module';
 import {RouterLink} from '@angular/router';
-import {CardModule} from 'primeng/card';
+import {SharedModule} from '../shared/shared.module';
 import {InputTextModule} from 'primeng/inputtext';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {TagModule} from 'primeng/tag';
 import {BadgeModule} from 'primeng/badge';
@@ -20,18 +19,15 @@ import {MessagesModule} from 'primeng/messages';
 import {EditorModule} from 'primeng/editor';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {SectorModule} from '../sector/sector.module';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
-import {LineModule} from '../line/line.module';
 
 
 @NgModule({
   declarations: [
-    AreaComponent,
-    AreaFormComponent,
-    AreaInfoComponent,
-    AreaListComponent
+    LineComponent,
+    LineFormComponent,
+    LineListComponent
   ],
   imports: [
     CommonModule,
@@ -53,15 +49,14 @@ import {LineModule} from '../line/line.module';
     TabMenuModule,
     ConfirmPopupModule,
     SkeletonModule,
-    BreadcrumbModule,
-    LineModule
+    BreadcrumbModule
   ],
   exports: [
-    AreaListComponent
+    LineListComponent
   ],
   providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'area'}
-  ],
+    {provide: TRANSLOCO_SCOPE, useValue: 'line'}
+  ]
 })
-export class AreaModule {
+export class LineModule {
 }

@@ -43,6 +43,14 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}areas/${slug}`
   };
 
+  public lines = {
+    create: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/lines`,
+    getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/lines`,
+    getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    update: (slug: string): string => `${this.apiHost}lines/${slug}`
+  };
+
   public uploader = {
     uploadFile: (): string => `${this.apiHost}upload`
   };
