@@ -27,7 +27,7 @@ export class LinesService {
    * @param areaSlug Slug of the area to create the line in.
    * @return Observable of a Crag.
    */
-  public createArea(line: Line, areaSlug: string): Observable<Line> {
+  public createLine(line: Line, areaSlug: string): Observable<Line> {
     return this.http.post(this.api.lines.create(areaSlug), Line.serialize(line)).pipe(
       tap(() => {
         this.cache.clear(this.api.lines.getList(areaSlug));

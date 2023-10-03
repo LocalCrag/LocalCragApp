@@ -1,1 +1,59 @@
-<p>line-form works!</p>
+<ng-container *transloco="let t, read: 'line.lineForm'">
+
+  <div class="content">
+
+    <p-card header="{{editMode ? t('editLineTitle') : t('createLineTitle')}}">
+      <p class="mt-0" *ngIf="!editMode">
+        {{t('createLineDescription')}}
+      </p>
+
+      <form [formGroup]="lineForm" lcForm>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineNameLabel')}}</label>
+          <input type="text" pInputText formControlName="name" placeholder="{{t('lineNamePlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineDescriptionLabel')}}</label>
+          <p-editor formControlName="description" lcFormControl placeholder="{{t('lineDescriptionPlaceholder')}}"
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
+                  <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Ordered List"></button>
+              </span>
+            </ng-template>
+          </p-editor>
+        </div>
+
+      </form>
+
+      <div class="form-actions">
+        <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
+        <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+        <p-button label="{{t('deleteLineButtonLabel')}}" (click)="confirmDeleteLine($event)" icon="pi pi-trash"
+                  styleClass="p-button-danger" class="ml-3"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-confirmPopup></p-confirmPopup>
+      </div>
+
+    </p-card>
+
+  </div>
+
+</ng-container>

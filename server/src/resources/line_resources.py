@@ -20,7 +20,7 @@ class GetLines(MethodView):
         """
         Returns all lines of an area.
         """
-        area_id = Sector.get_id_by_slug(area_slug)
+        area_id = Area.get_id_by_slug(area_slug)
         lines: Line = Line.return_all(filter=lambda: Line.area_id == area_id,
                                       order_by=lambda: Line.name.asc())
         return jsonify(lines_schema.dump(lines)), 200

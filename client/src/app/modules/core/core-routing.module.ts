@@ -26,6 +26,7 @@ import {AreaInfoComponent} from '../area/area-info/area-info.component';
 import {AreaFormComponent} from '../area/area-form/area-form.component';
 import {AreaListComponent} from '../area/area-list/area-list.component';
 import {LineListComponent} from '../line/line-list/line-list.component';
+import {LineFormComponent} from '../line/line-form/line-form.component';
 
 const routes: Routes = [
   {
@@ -162,6 +163,11 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/create-area',
     component: AreaFormComponent,
+    canActivate: [IsLoggedInGuard],
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
+    component: LineFormComponent,
     canActivate: [IsLoggedInGuard],
   },
   {

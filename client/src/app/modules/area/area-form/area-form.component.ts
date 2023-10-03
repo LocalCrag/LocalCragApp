@@ -56,7 +56,7 @@ export class AreaFormComponent implements OnInit {
   ngOnInit() {
     this.buildForm();
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
-    this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug'); // todo are they used?
+    this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
     if (areaSlug) {
       this.editMode = true;

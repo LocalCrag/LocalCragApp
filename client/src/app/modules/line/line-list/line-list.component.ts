@@ -49,7 +49,7 @@ export class LineListComponent implements OnInit {
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
-    this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
+    this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
     forkJoin([
       this.linesService.getLines(this.areaSlug),
       this.translocoService.load(`${environment.language}`)
@@ -80,6 +80,5 @@ export class LineListComponent implements OnInit {
       this.sortField = value;
     }
   }
-
 
 }
