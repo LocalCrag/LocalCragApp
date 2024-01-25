@@ -17,10 +17,10 @@ class Line(HasSlug, BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     video = db.Column(db.String(120), nullable=False)
-    grade = db.Column(db.Integer, nullable=False)
+    grade_name = db.Column(db.String(120), nullable=False)
+    grade_scale = db.Column(db.String(120), nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    linepath = db.Column(JSON, nullable=False)
     area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
@@ -31,7 +31,6 @@ class Line(HasSlug, BaseEntity):
     highball = db.Column(db.Boolean, nullable=False, default=False)
     no_topout = db.Column(db.Boolean, nullable=False, default=False)
 
-    # Select at least 1
     roof = db.Column(db.Boolean, nullable=False, default=False)
     slab = db.Column(db.Boolean, nullable=False, default=False)
     vertical = db.Column(db.Boolean, nullable=False, default=False)
@@ -45,11 +44,11 @@ class Line(HasSlug, BaseEntity):
 
     jugs = db.Column(db.Boolean, nullable=False, default=False)
     sloper = db.Column(db.Boolean, nullable=False, default=False)
-    crimpy = db.Column(db.Boolean, nullable=False, default=False)
+    crimps = db.Column(db.Boolean, nullable=False, default=False)
     pockets = db.Column(db.Boolean, nullable=False, default=False)
+    pinches = db.Column(db.Boolean, nullable=False, default=False)
 
     crack = db.Column(db.Boolean, nullable=False, default=False)
     dihedral = db.Column(db.Boolean, nullable=False, default=False)
     compression = db.Column(db.Boolean, nullable=False, default=False)
     arete = db.Column(db.Boolean, nullable=False, default=False)
-    wall = db.Column(db.Boolean, nullable=False, default=False)

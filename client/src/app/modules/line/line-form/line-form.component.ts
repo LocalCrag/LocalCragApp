@@ -2,10 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Crag} from '../../../models/crag';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CragsService} from '../../../services/crud/crags.service';
 import {TranslocoService} from '@ngneat/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {catchError} from 'rxjs/operators';
@@ -16,6 +14,7 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
+import {GRADES} from '../../../utility/misc/grades';
 
 @Component({
   selector: 'lc-line-form',
@@ -32,6 +31,9 @@ export class LineFormComponent {
   public loadingStates = LoadingState;
   public line: Line;
   public editMode = false;
+  public grades = GRADES.FB;
+  public today = new Date();
+
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
@@ -81,32 +83,32 @@ export class LineFormComponent {
       description: [''],
       video: [''],
       grade: ['', [Validators.required]],
-      rating: [null],
-      faYear: [null],
+      rating: [null, [Validators.required]],
+      faYear: [null], // todo validate not future
       faName: [null],
-      sitstart: [null],
-      eliminate: [null],
-      traverse: [null],
-      highball: [null],
-      noTopout: [null],
-      roof: [null],
-      slab: [null],
-      vertical: [null],
-      overhang: [null],
-      athletic: [null],
-      technical: [null],
-      endurance: [null],
-      cruxy: [null],
-      dyno: [null],
-      jugs: [null],
-      sloper: [null],
-      crimpy: [null],
-      pockets: [null],
-      crack: [null],
-      dihedral: [null],
-      compression: [null],
-      arete: [null],
-      wall: [null],
+      sitstart: [false],
+      eliminate: [false],
+      traverse: [false],
+      highball: [false],
+      noTopout: [false],
+      roof: [false],
+      slab: [false],
+      vertical: [false],
+      overhang: [false],
+      athletic: [false],
+      technical: [false],
+      endurance: [false],
+      cruxy: [false],
+      dyno: [false],
+      jugs: [false],
+      sloper: [false],
+      crimps: [false],
+      pockets: [false],
+      pinches: [false],
+      crack: [false],
+      dihedral: [false],
+      compression: [false],
+      arete: [false],
     });
   }
 
@@ -138,13 +140,13 @@ export class LineFormComponent {
       dyno: this.line.dyno,
       jugs: this.line.jugs,
       sloper: this.line.sloper,
-      crimpy: this.line.crimpy,
+      crimps: this.line.crimps,
       pockets: this.line.pockets,
+      pinches: this.line.pinches,
       crack: this.line.crack,
       dihedral: this.line.dihedral,
       compression: this.line.compression,
       arete: this.line.arete,
-      wall: this.line.wall,
     });
     this.lineForm.enable();
   }
@@ -167,36 +169,37 @@ export class LineFormComponent {
     if (this.lineForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const line = new Line();
-      line.name = this.lineForm.get('name').value
-      line.description = this.lineForm.get('description').value
-      line.video = this.lineForm.get('video').value
-      line.grade = this.lineForm.get('grade').value
-      line.rating = this.lineForm.get('rating').value
-      line.faYear = this.lineForm.get('faYear').value
-      line.faName = this.lineForm.get('faName').value
-      line.sitstart = this.lineForm.get('sitstart').value
-      line.eliminate = this.lineForm.get('eliminate').value
-      line.traverse = this.lineForm.get('traverse').value
-      line.highball = this.lineForm.get('highball').value
-      line.noTopout = this.lineForm.get('noTopout').value
-      line.roof = this.lineForm.get('roof').value
-      line.slab = this.lineForm.get('slab').value
-      line.vertical = this.lineForm.get('vertical').value
-      line.overhang = this.lineForm.get('overhang').value
-      line.athletic = this.lineForm.get('athletic').value
-      line.technical = this.lineForm.get('technical').value
-      line.endurance = this.lineForm.get('endurance').value
-      line.cruxy = this.lineForm.get('cruxy').value
-      line.dyno = this.lineForm.get('dyno').value
-      line.jugs = this.lineForm.get('jugs').value
-      line.sloper = this.lineForm.get('sloper').value
-      line.crimpy = this.lineForm.get('crimpy').value
-      line.pockets = this.lineForm.get('pockets').value
-      line.crack = this.lineForm.get('crack').value
-      line.dihedral = this.lineForm.get('dihedral').value
-      line.compression = this.lineForm.get('compression').value
-      line.arete = this.lineForm.get('arete').value
-      line.wall = this.lineForm.get('wall').value
+      console.log(this.lineForm.get('faYear').value.getFullYear());
+      line.name = this.lineForm.get('name').value;
+      line.description = this.lineForm.get('description').value;
+      line.video = this.lineForm.get('video').value;
+      line.grade = this.lineForm.get('grade').value;
+      line.rating = this.lineForm.get('rating').value;
+      line.faYear = this.lineForm.get('faYear').value.getFullYear();
+      line.faName = this.lineForm.get('faName').value;
+      line.sitstart = this.lineForm.get('sitstart').value;
+      line.eliminate = this.lineForm.get('eliminate').value;
+      line.traverse = this.lineForm.get('traverse').value;
+      line.highball = this.lineForm.get('highball').value;
+      line.noTopout = this.lineForm.get('noTopout').value;
+      line.roof = this.lineForm.get('roof').value;
+      line.slab = this.lineForm.get('slab').value;
+      line.vertical = this.lineForm.get('vertical').value;
+      line.overhang = this.lineForm.get('overhang').value;
+      line.athletic = this.lineForm.get('athletic').value;
+      line.technical = this.lineForm.get('technical').value;
+      line.endurance = this.lineForm.get('endurance').value;
+      line.cruxy = this.lineForm.get('cruxy').value;
+      line.dyno = this.lineForm.get('dyno').value;
+      line.jugs = this.lineForm.get('jugs').value;
+      line.sloper = this.lineForm.get('sloper').value;
+      line.crimps = this.lineForm.get('crimps').value;
+      line.pockets = this.lineForm.get('pockets').value;
+      line.pinches = this.lineForm.get('pinches').value;
+      line.crack = this.lineForm.get('crack').value;
+      line.dihedral = this.lineForm.get('dihedral').value;
+      line.compression = this.lineForm.get('compression').value;
+      line.arete = this.lineForm.get('arete').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(this.areaSlug, line).subscribe(line => {
@@ -205,7 +208,7 @@ export class LineFormComponent {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.linesService.createLine(line, environment.regionSlug).subscribe(crag => {
+        this.linesService.createLine(line, this.areaSlug).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.LINE_CREATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
           this.loadingState = LoadingState.DEFAULT;

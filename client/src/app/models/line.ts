@@ -1,6 +1,6 @@
 import {AbstractModel} from './abstract-model';
-import {File} from './file';
 import {LineType} from '../enums/line-type';
+import {Grade, gradeMap} from '../utility/misc/grades';
 
 /**
  * Model of a climbing area's line.
@@ -11,9 +11,8 @@ export class Line extends AbstractModel {
   description: string;
   slug: string;
   video: string;
-  grade: number;
+  grade: Grade;
   rating: number;
-  linepath: any; // todo add type
   type: LineType;
   faYear: number;
   faName: string;
@@ -37,14 +36,19 @@ export class Line extends AbstractModel {
 
   jugs: boolean;
   sloper: boolean;
-  crimpy: boolean;
+  crimps: boolean;
   pockets: boolean;
+  pinches: boolean;
 
   crack: boolean;
   dihedral: boolean;
   compression: boolean;
   arete: boolean;
-  wall: boolean;
+
+  constructor() {
+    super();
+    this.type = LineType.BOULDER;
+  }
 
   /**
    * Parses a line.
@@ -60,12 +64,11 @@ export class Line extends AbstractModel {
     line.video = payload.video;
     line.slug = payload.slug;
 
-    line.grade = payload.grade;
+    line.grade = gradeMap.FB[payload.gradeName];
     line.rating = payload.rating;
-    line.linepath = payload.linepath;
     line.type = payload.type;
-    line.faYear = payload.fa_year;
-    line.faName = payload.fa_name;
+    line.faYear = payload.faYear;
+    line.faName = payload.faName;
 
     line.sitstart = payload.sitstart;
     line.eliminate = payload.eliminate;
@@ -86,14 +89,14 @@ export class Line extends AbstractModel {
 
     line.jugs = payload.jugs;
     line.sloper = payload.sloper;
-    line.crimpy = payload.crimpy;
+    line.crimps = payload.crimps;
     line.pockets = payload.pockets;
+    line.pinches = payload.pinches;
 
     line.crack = payload.crack;
     line.dihedral = payload.dihedral;
     line.compression = payload.compression;
     line.arete = payload.arete;
-    line.wall = payload.wall;
 
     return line;
   }
@@ -110,9 +113,9 @@ export class Line extends AbstractModel {
       description: line.description,
       video: line.video,
       slug: line.slug,
-      grade: line.grade,
+      gradeScale: 'FB',
+      gradeName: line.grade.name,
       rating: line.rating,
-      linepath: line.linepath,
       type: line.type,
       faYear: line.faYear,
       faName: line.faName,
@@ -136,14 +139,14 @@ export class Line extends AbstractModel {
 
       jugs: line.jugs,
       sloper: line.sloper,
-      crimpy: line.crimpy,
+      crimps: line.crimps,
       pockets: line.pockets,
+      pinches: line.pinches,
 
       crack: line.crack,
       dihedral: line.dihedral,
       compression: line.compression,
       arete: line.arete,
-      wall: line.wall,
     };
   }
 

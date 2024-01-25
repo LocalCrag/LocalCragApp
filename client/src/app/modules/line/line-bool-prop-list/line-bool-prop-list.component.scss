@@ -1,0 +1,9 @@
+span:nth-of-type(n + 2) {
+  &::before {
+    content: ", ";
+  }
+}
+
+:host{
+  font-style: italic;
+}

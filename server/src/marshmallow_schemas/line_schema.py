@@ -16,10 +16,10 @@ class LineSchema(BaseEntitySchema):
     video = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
     rating = fields.Integer()
-    grade = fields.Integer()
-    linepath = fields.Dict()
-    faYear: fields.Integer(attribute='fa_year')
-    faName: fields.String(attribute='fa_name')
+    gradeName = fields.String(attribute='grade_name')
+    gradeScale = fields.String(attribute='grade_scale')
+    faYear = fields.Integer(attribute='fa_year')
+    faName = fields.String(attribute='fa_name')
 
     sitstart = fields.Boolean()
     eliminate = fields.Boolean()
@@ -40,14 +40,14 @@ class LineSchema(BaseEntitySchema):
 
     jugs = fields.Boolean()
     sloper = fields.Boolean()
-    crimpy = fields.Boolean()
+    crimps = fields.Boolean()
     pockets = fields.Boolean()
+    pinches = fields.Boolean()
 
     crack = fields.Boolean()
     dihedral = fields.Boolean()
     compression = fields.Boolean()
     arete = fields.Boolean()
-    wall = fields.Boolean()
 
 
 line_schema = LineSchema()

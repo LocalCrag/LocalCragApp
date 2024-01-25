@@ -51,10 +51,10 @@ class CreateLine(MethodView):
         new_line.name = line_data['name']
         new_line.description = line_data['description']
         new_line.video = line_data['video']
-        new_line.grade = line_data['grade']
+        new_line.grade_name = line_data['gradeName']
+        new_line.grade_scale = line_data['gradeScale']
         new_line.type = line_data['type']
         new_line.rating = line_data['rating']
-        new_line.linepath = line_data['linepath']
         new_line.fa_year = line_data['faYear']
         new_line.fa_name = line_data['faName']
 
@@ -69,9 +69,6 @@ class CreateLine(MethodView):
         new_line.vertical = line_data['vertical']
         new_line.overhang = line_data['overhang']
 
-        if not (new_line.roof or new_line.slab or new_line.vertical or new_line.overhang):
-            raise BadRequest('At least one line steepness flag must be set to true.')
-
         new_line.athletic = line_data['athletic']
         new_line.technical = line_data['technical']
         new_line.endurance = line_data['endurance']
@@ -80,14 +77,14 @@ class CreateLine(MethodView):
 
         new_line.jugs = line_data['jugs']
         new_line.sloper = line_data['sloper']
-        new_line.crimpy = line_data['crimpy']
+        new_line.crimps = line_data['crimps']
         new_line.pockets = line_data['pockets']
+        new_line.pinches = line_data['pinches']
 
         new_line.crack = line_data['crack']
         new_line.dihedral = line_data['dihedral']
         new_line.compression = line_data['compression']
         new_line.arete = line_data['arete']
-        new_line.wall = line_data['wall']
 
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
@@ -111,10 +108,10 @@ class UpdateLine(MethodView):
         line.name = line_data['name']
         line.description = line_data['description']
         line.video = line_data['video']
-        line.grade = line_data['grade']
+        line.grade_name = line_data['gradeName']
+        line.grade_scale = line_data['gradeScale']
         line.type = line_data['type']
         line.rating = line_data['rating']
-        line.linepath = line_data['linepath']
         line.fa_year = line_data['faYear']
         line.fa_name = line_data['faName']
 
@@ -129,9 +126,6 @@ class UpdateLine(MethodView):
         line.vertical = line_data['vertical']
         line.overhang = line_data['overhang']
 
-        if not (line.roof or line.slab or line.vertical or line.overhang):
-            raise BadRequest('At least one line steepness flag must be set to true.')
-
         line.athletic = line_data['athletic']
         line.technical = line_data['technical']
         line.endurance = line_data['endurance']
@@ -140,14 +134,14 @@ class UpdateLine(MethodView):
 
         line.jugs = line_data['jugs']
         line.sloper = line_data['sloper']
-        line.crimpy = line_data['crimpy']
+        line.crimps = line_data['crimps']
         line.pockets = line_data['pockets']
+        line.pinches = line_data['pinches']
 
         line.crack = line_data['crack']
         line.dihedral = line_data['dihedral']
         line.compression = line_data['compression']
         line.arete = line_data['arete']
-        line.wall = line_data['wall']
 
         db.session.add(line)
         db.session.commit()

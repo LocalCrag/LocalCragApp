@@ -21,13 +21,18 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
+import {RatingModule} from 'primeng/rating';
+import {CalendarModule} from 'primeng/calendar';
+import {CheckboxModule} from 'primeng/checkbox';
+import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 
 
 @NgModule({
   declarations: [
     LineComponent,
     LineFormComponent,
-    LineListComponent
+    LineListComponent,
+    LineBoolPropListComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +54,10 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
     TabMenuModule,
     ConfirmPopupModule,
     SkeletonModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    RatingModule,
+    CalendarModule,
+    CheckboxModule
   ],
   exports: [
     LineListComponent

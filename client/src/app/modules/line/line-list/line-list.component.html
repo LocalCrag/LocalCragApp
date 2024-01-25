@@ -8,7 +8,8 @@
                     optionLabel="label" (onChange)="onSortChange($event)"
                     styleClass="md:mb-0"></p-dropdown>
         <div class="flex justify-content-end">
-          <p-button label="{{t('newLineButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
+          <p-button label="{{t('newLineButtonLabel')}}" icon="pi pi-plus"
+                    routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
                     *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
           <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
                     *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
@@ -23,9 +24,18 @@
                [alt]="line.name"/>
           <div
             class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-            <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-              <div class="text-2xl font-bold text-900">{{ line.name }}</div>
-              {{line.shortDescription}}
+            <div class="flex flex-column align-items-center sm:align-items-start gap-3 line-info-container">
+              <div class="text-2xl text-900 line-name">
+                <div>
+                  <strong>{{ line.name }}</strong>
+                  {{line.grade.name}}
+                </div>
+                <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
+              </div>
+              <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
+              <div [innerHTML]="line.description" *ngIf="line.description"></div>
+              <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
+                *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
             </div>
           </div>
         </div>
