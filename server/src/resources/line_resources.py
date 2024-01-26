@@ -10,6 +10,7 @@ from models.area import Area
 from models.line import Line
 from models.sector import Sector
 from models.user import User
+from util.validators import cross_validate_grade
 
 from webargs_schemas.line_args import line_args
 
@@ -45,6 +46,9 @@ class CreateLine(MethodView):
         area_id = Area.get_id_by_slug(area_slug)
         line_data = parser.parse(line_args, request)
         created_by = User.find_by_email(get_jwt_identity())
+
+        if not cross_validate_grade(line_data['gradeName'], line_data['gradeScale'], line_data['type']):
+            raise BadRequest('Grade scale, name and line type do not match.')
 
         new_line: Line = Line()
 
@@ -104,6 +108,9 @@ class UpdateLine(MethodView):
         """
         line_data = parser.parse(line_args, request)
         line: Line = Line.find_by_slug(line_slug)
+
+        if not cross_validate_grade(line_data['gradeName'], line_data['gradeScale'], line_data['type']):
+            raise BadRequest('Grade scale, name and line type do not match.')
 
         line.name = line_data['name']
         line.description = line_data['description']

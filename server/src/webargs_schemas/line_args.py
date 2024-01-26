@@ -1,5 +1,6 @@
 import datetime
 
+import validators
 from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
@@ -7,11 +8,11 @@ from models.enums.line_type_enum import LineTypeEnum
 line_args = {
     "name": fields.Str(required=True),
     "description": fields.Str(required=True, allow_none=True),
-    "video": fields.Str(required=True, allow_none=True),
+    "video": fields.Str(required=True, allow_none=True, validate=lambda x: validators.url(x) == True),
     "gradeName": fields.Str(required=True, allow_none=False),
     "gradeScale": fields.Str(required=True, allow_none=False),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),
-    "rating": fields.Integer(required=True, allow_none=False),
+    "rating": fields.Integer(required=True, allow_none=False, validate=lambda x: 1 <= x <= 5),
     "faYear": fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year),
     "faName": fields.Str(required=True, allow_none=True),
 

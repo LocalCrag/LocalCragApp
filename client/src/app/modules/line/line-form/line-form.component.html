@@ -60,6 +60,7 @@
           <label class="form-label">{{t('lineVideoLabel')}}</label>
           <input type="text" pInputText formControlName="video" placeholder="{{t('lineVideoPlaceholder')}}"
                  lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrlValidationError')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -72,6 +73,7 @@
           <label class="form-label">{{t('lineFAYearLabel')}}</label>
           <p-calendar formControlName="faYear" view="year" dateFormat="yy" inputId="faYear" lcFormControl
                       [maxDate]="today" [readonlyInput]="true"></p-calendar>
+          <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
         </div>
 
 

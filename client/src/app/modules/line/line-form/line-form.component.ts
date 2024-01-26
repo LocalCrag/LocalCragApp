@@ -15,6 +15,8 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
 import {GRADES} from '../../../utility/misc/grades';
+import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
+import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 
 @Component({
   selector: 'lc-line-form',
@@ -81,10 +83,10 @@ export class LineFormComponent {
     this.lineForm = this.fb.group({
       name: ['', [Validators.required]],
       description: [''],
-      video: [''],
+      video: ['', [httpUrlValidator()]],
       grade: ['', [Validators.required]],
       rating: [null, [Validators.required]],
-      faYear: [null], // todo validate not future
+      faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],
       sitstart: [false],
       eliminate: [false],
@@ -122,7 +124,7 @@ export class LineFormComponent {
       video: this.line.video,
       grade: this.line.grade,
       rating: this.line.rating,
-      faYear: new Date(this.line.faYear, 6, 15),
+      faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
       sitstart: this.line.sitstart,
       eliminate: this.line.eliminate,
@@ -174,7 +176,7 @@ export class LineFormComponent {
       line.video = this.lineForm.get('video').value;
       line.grade = this.lineForm.get('grade').value;
       line.rating = this.lineForm.get('rating').value;
-      line.faYear = this.lineForm.get('faYear').value.getFullYear();
+      line.faYear = this.lineForm.get('faYear').value? this.lineForm.get('faYear').value.getFullYear() : null;
       line.faName = this.lineForm.get('faName').value;
       line.sitstart = this.lineForm.get('sitstart').value;
       line.eliminate = this.lineForm.get('eliminate').value;
