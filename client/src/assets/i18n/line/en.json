@@ -1,6 +1,6 @@
 {
-  "lineBoolPropList.eliminate": "",
   "lineBoolPropList.sitstart": "",
+  "lineBoolPropList.eliminate": "",
   "lineBoolPropList.traverse": "",
   "lineBoolPropList.highball": "",
   "lineBoolPropList.noTopout": "",
@@ -69,6 +69,8 @@
   "lineForm.deleteLineButtonLabel": "",
   "lineForm.editLineTitle": "",
   "lineForm.createLineTitle": "",
+  "line.rating": "",
+  "line.FA": "",
   "lineList.newLineButtonLabel": "",
   "lineList.FA": "",
   "lineList.lineListTitle": ""

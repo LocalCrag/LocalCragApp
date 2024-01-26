@@ -112,7 +112,6 @@ export class Line extends AbstractModel {
       name: line.name,
       description: line.description,
       video: line.video,
-      slug: line.slug,
       gradeScale: 'FB',
       gradeName: line.grade.name,
       rating: line.rating,

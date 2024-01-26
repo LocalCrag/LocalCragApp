@@ -1,6 +1,6 @@
 {
-  "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.sitstart": "Sitzstart",
+  "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.traverse": "Traverse",
   "lineBoolPropList.highball": "Highball",
   "lineBoolPropList.noTopout": "Ohne Topout",
@@ -69,6 +69,8 @@
   "lineForm.deleteLineButtonLabel": "Linie löschen",
   "lineForm.editLineTitle": "Linie bearbeiten",
   "lineForm.createLineTitle": "Linie erstellen",
+  "line.rating": "Bewertung",
+  "line.FA": "FA",
   "lineList.newLineButtonLabel": "Neue Linie",
   "lineList.FA": "FA",
   "lineList.lineListTitle": "Linien"

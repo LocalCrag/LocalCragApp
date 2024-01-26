@@ -122,7 +122,7 @@ export class LineFormComponent {
       video: this.line.video,
       grade: this.line.grade,
       rating: this.line.rating,
-      faYear: this.line.faYear,
+      faYear: new Date(this.line.faYear, 6, 15),
       faName: this.line.faName,
       sitstart: this.line.sitstart,
       eliminate: this.line.eliminate,
@@ -169,7 +169,6 @@ export class LineFormComponent {
     if (this.lineForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const line = new Line();
-      console.log(this.lineForm.get('faYear').value.getFullYear());
       line.name = this.lineForm.get('name').value;
       line.description = this.lineForm.get('description').value;
       line.video = this.lineForm.get('video').value;

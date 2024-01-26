@@ -25,6 +25,7 @@ import {RatingModule} from 'primeng/rating';
 import {CalendarModule} from 'primeng/calendar';
 import {CheckboxModule} from 'primeng/checkbox';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
+import { LineInfoComponent } from './line-info/line-info.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-
     LineComponent,
     LineFormComponent,
     LineListComponent,
-    LineBoolPropListComponent
+    LineBoolPropListComponent,
+    LineInfoComponent
   ],
   imports: [
     CommonModule,

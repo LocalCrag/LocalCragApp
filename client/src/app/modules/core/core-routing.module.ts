@@ -27,6 +27,8 @@ import {AreaFormComponent} from '../area/area-form/area-form.component';
 import {AreaListComponent} from '../area/area-list/area-list.component';
 import {LineListComponent} from '../line/line-list/line-list.component';
 import {LineFormComponent} from '../line/line-form/line-form.component';
+import {LineInfoComponent} from '../line/line-info/line-info.component';
+import {LineComponent} from '../line/line/line.component';
 
 const routes: Routes = [
   {
@@ -190,6 +192,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
+            pathMatch: 'full',
             component: LineListComponent,
             outlet: 'areaContent'
           }
@@ -208,6 +211,22 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug',
+    component: LineComponent,
+    children: [
+      {
+        path: '',
+        component: LineInfoComponent,
+        outlet: 'lineContent'
+      }
+    ]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
+    component: LineFormComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

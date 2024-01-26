@@ -1,0 +1,38 @@
+<ng-container *transloco="let t, read: 'line.line'">
+
+  <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" *ngIf="line">
+
+
+    <img class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
+         [src]="'assets/placeholder.png'"
+         [alt]="line.name"/>
+
+    <div
+      class="flex flex-column  justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+      <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
+
+      <div [innerHTML]="line.description" *ngIf="line.description"></div>
+      <div>{{t('rating')}}:
+        <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
+      </div>
+      <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
+        *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
+
+    </div>
+
+  </div>
+
+  <ng-container *ngIf="!line">
+
+    <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
+    <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
+    <p-skeleton width="40%" height="4rem"></p-skeleton>
+
+  </ng-container>
+
+</ng-container>

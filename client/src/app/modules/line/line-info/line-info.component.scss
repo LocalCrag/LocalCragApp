@@ -1,0 +1,11 @@
+.fa {
+
+  font-size: 11px;
+
+  span:nth-of-type(n + 2) {
+    &::before {
+      content: ", ";
+    }
+  }
+
+}
