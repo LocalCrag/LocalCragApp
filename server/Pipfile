@@ -24,6 +24,7 @@ psycopg2-binary = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 marshmallow-enum = "*"
+validators = "*"
 
 [dev-packages]
 

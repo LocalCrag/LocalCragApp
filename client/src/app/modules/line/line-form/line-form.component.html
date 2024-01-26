@@ -1,0 +1,162 @@
+<ng-container *transloco="let t, read: 'line.lineForm'">
+
+  <div class="content">
+
+    <p-card header="{{editMode ? t('editLineTitle') : t('createLineTitle')}}">
+      <p class="mt-0" *ngIf="!editMode">
+        {{t('createLineDescription')}}
+      </p>
+
+      <form [formGroup]="lineForm" lcForm>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineNameLabel')}}</label>
+          <input type="text" pInputText formControlName="name" placeholder="{{t('lineNamePlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineDescriptionLabel')}}</label>
+          <p-editor formControlName="description" lcFormControl placeholder="{{t('lineDescriptionPlaceholder')}}"
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
+                  <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Ordered List"></button>
+              </span>
+            </ng-template>
+          </p-editor>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineGradeLabel')}}</label>
+          <p-dropdown formControlName="grade" [options]="grades"
+                      optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
+            <ng-template let-grade pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ grade.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineRatingLabel')}}</label>
+          <p-rating formControlName="rating" lcFormControl [cancel]="false"></p-rating>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineVideoLabel')}}</label>
+          <input type="text" pInputText formControlName="video" placeholder="{{t('lineVideoPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrlValidationError')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineFANameLabel')}}</label>
+          <input type="text" pInputText formControlName="faName" placeholder="{{t('lineFANamePlaceholder')}}"
+                 lcFormControl/>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineFAYearLabel')}}</label>
+          <p-calendar formControlName="faYear" view="year" dateFormat="yy" inputId="faYear" lcFormControl
+                      [maxDate]="today" [readonlyInput]="true"></p-calendar>
+          <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
+        </div>
+
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('linePropertiesLabel')}}</label>
+          <p-checkbox label="{{t('lineSitstartLabel')}}" name="sitstart" [binary]="true" formControlName="sitstart"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineEliminateLabel')}}" name="eliminate" [binary]="true" formControlName="eliminate"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineHighballLabel')}}" name="highball" [binary]="true" formControlName="highball"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineNoTopoutLabel')}}" name="noTopout" [binary]="true" formControlName="noTopout"
+                      lcFormControl></p-checkbox>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineTypeLabel')}}</label>
+          <p-checkbox label="{{t('lineRoofLabel')}}" name="roof" [binary]="true" formControlName="roof"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineOverhangLabel')}}" name="overhang" [binary]="true" formControlName="overhang"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineVerticalLabel')}}" name="vertical" [binary]="true" formControlName="vertical"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineSlabLabel')}}" name="slab" [binary]="true" formControlName="slab"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineTraverseLabel')}}" name="traverse" [binary]="true" formControlName="traverse"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineDihedralLabel')}}" name="dihedral" [binary]="true" formControlName="dihedral"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineCompressionLabel')}}" name="compression" [binary]="true" formControlName="compression"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineAreteLabel')}}" name="arete" [binary]="true" formControlName="arete"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineCrackLabel')}}" name="crack" [binary]="true" formControlName="crack"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineDynoLabel')}}" name="dyno" [binary]="true" formControlName="dyno"
+                      lcFormControl></p-checkbox>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lineKeyAspectsLabel')}}</label>
+          <p-checkbox label="{{t('lineAthleticLabel')}}" name="athletic" [binary]="true" formControlName="athletic"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineTechnicalLabel')}}" name="technical" [binary]="true" formControlName="technical"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineEnduranceLabel')}}" name="endurance" [binary]="true" formControlName="endurance"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineCruxyLabel')}}" name="cruxy" [binary]="true" formControlName="cruxy"
+                      lcFormControl></p-checkbox>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('linePrimaryHoldTypesLabel')}}</label>
+          <p-checkbox label="{{t('lineJugsLabel')}}" name="jugs" [binary]="true" formControlName="jugs"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineSloperLabel')}}" name="sloper" [binary]="true" formControlName="sloper"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('lineCrimpsLabel')}}" name="crimps" [binary]="true" formControlName="crimps"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('linePocketsLabel')}}" name="pockets" [binary]="true" formControlName="pockets"
+                      lcFormControl></p-checkbox>
+          <p-checkbox label="{{t('linePinchesLabel')}}" name="pinches" [binary]="true" formControlName="pinches"
+                      lcFormControl></p-checkbox>
+        </div>
+
+
+      </form>
+
+      <div class="form-actions">
+        <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
+        <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+        <p-button label="{{t('deleteLineButtonLabel')}}" (click)="confirmDeleteLine($event)" icon="pi pi-trash"
+                  styleClass="p-button-danger" class="ml-3"
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-confirmPopup></p-confirmPopup>
+      </div>
+
+    </p-card>
+
+  </div>
+
+</ng-container>

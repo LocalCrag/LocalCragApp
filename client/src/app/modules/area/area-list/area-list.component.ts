@@ -48,7 +48,6 @@ export class AreaListComponent implements OnInit{
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
-    console.log(this.cragSlug, this.sectorSlug);
     forkJoin([
       this.areasService.getAreas(this.sectorSlug),
       this.translocoService.load(`${environment.language}`)

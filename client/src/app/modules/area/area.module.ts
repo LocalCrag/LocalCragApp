@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
-import { AreaComponent } from './area/area.component';
-import { AreaFormComponent } from './area-form/area-form.component';
-import { AreaInfoComponent } from './area-info/area-info.component';
-import { AreaListComponent } from './area-list/area-list.component';
+import {AreaComponent} from './area/area.component';
+import {AreaFormComponent} from './area-form/area-form.component';
+import {AreaInfoComponent} from './area-info/area-info.component';
+import {AreaListComponent} from './area-list/area-list.component';
 import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -23,7 +23,7 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {SectorModule} from '../sector/sector.module';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
-
+import {LineModule} from '../line/line.module';
 
 
 @NgModule({
@@ -53,7 +53,8 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
     TabMenuModule,
     ConfirmPopupModule,
     SkeletonModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    LineModule
   ],
   exports: [
     AreaListComponent
@@ -62,4 +63,5 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
     {provide: TRANSLOCO_SCOPE, useValue: 'area'}
   ],
 })
-export class AreaModule { }
+export class AreaModule {
+}

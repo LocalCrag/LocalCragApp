@@ -86,7 +86,7 @@ class DeleteArea(MethodView):
     def delete(self, area_slug):
         """
         Delete an area.
-        @param id: ID of the area to delete.
+        @param area_slug: Slug of the area to delete.
         """
         area: Area = Area.find_by_slug(area_slug)
 

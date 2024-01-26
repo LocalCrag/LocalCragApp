@@ -4,6 +4,7 @@ from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateAre
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
+from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
@@ -51,11 +52,20 @@ def configure_api(app):
     user_bp.add_url_rule('/find/<string:query>', view_func=FindUser.as_view('find_user'))
     app.register_blueprint(user_bp, url_prefix='/api/users')
 
+    # Line API
+    line_bp = Blueprint('lines', __name__)
+    line_bp.add_url_rule('/<string:line_slug>', view_func=GetLine.as_view('get_line_details'))
+    line_bp.add_url_rule('/<string:line_slug>', view_func=UpdateLine.as_view('update_line'))
+    line_bp.add_url_rule('/<string:line_slug>', view_func=DeleteLine.as_view('delete_line'))
+    app.register_blueprint(line_bp, url_prefix='/api/lines')
+
     # Area API
     area_bp = Blueprint('areas', __name__)
     area_bp.add_url_rule('/<string:area_slug>', view_func=GetArea.as_view('get_area_details'))
     area_bp.add_url_rule('/<string:area_slug>', view_func=UpdateArea.as_view('update_area'))
     area_bp.add_url_rule('/<string:area_slug>', view_func=DeleteArea.as_view('delete_area'))
+    area_bp.add_url_rule('/<string:area_slug>/lines', view_func=GetLines.as_view('get_lines'))
+    area_bp.add_url_rule('/<string:area_slug>/lines', view_func=CreateLine.as_view('create_line'))
     app.register_blueprint(area_bp, url_prefix='/api/areas')
 
     # Sector API

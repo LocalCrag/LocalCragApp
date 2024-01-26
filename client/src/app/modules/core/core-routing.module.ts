@@ -25,6 +25,10 @@ import {AreaComponent} from '../area/area/area.component';
 import {AreaInfoComponent} from '../area/area-info/area-info.component';
 import {AreaFormComponent} from '../area/area-form/area-form.component';
 import {AreaListComponent} from '../area/area-list/area-list.component';
+import {LineListComponent} from '../line/line-list/line-list.component';
+import {LineFormComponent} from '../line/line-form/line-form.component';
+import {LineInfoComponent} from '../line/line-info/line-info.component';
+import {LineComponent} from '../line/line/line.component';
 
 const routes: Routes = [
   {
@@ -164,6 +168,11 @@ const routes: Routes = [
     canActivate: [IsLoggedInGuard],
   },
   {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
+    component: LineFormComponent,
+    canActivate: [IsLoggedInGuard],
+  },
+  {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
     component: AreaComponent,
     children: [
@@ -180,7 +189,14 @@ const routes: Routes = [
       },
       {
         path: 'lines',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: LineListComponent,
+            outlet: 'areaContent'
+          }
+        ]
       },
       {
         path: 'gallery',
@@ -195,6 +211,22 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug',
+    component: LineComponent,
+    children: [
+      {
+        path: '',
+        component: LineInfoComponent,
+        outlet: 'lineContent'
+      }
+    ]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
+    component: LineFormComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

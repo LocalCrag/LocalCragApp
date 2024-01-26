@@ -19,4 +19,6 @@ class Area(HasSlug, BaseEntity):
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
+    lines = db.relationship("Line", cascade="all,delete", backref="area", lazy="select")
+
 

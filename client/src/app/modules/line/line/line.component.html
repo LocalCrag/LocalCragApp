@@ -1,0 +1,13 @@
+<div class="content">
+
+  <p-card header="{{line?.name}} {{line?.grade.name}}">
+
+    <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
+
+    <p-tabMenu [model]="items" [scrollable]="true" *ngIf="line"></p-tabMenu>
+
+    <router-outlet name="lineContent"></router-outlet>
+
+  </p-card>
+
+</div>

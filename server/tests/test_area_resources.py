@@ -98,7 +98,7 @@ def test_successful_delete_area(client):
 
 def test_successful_edit_area(client):
     access_headers, refresh_headers = get_login_headers(client)
-    sector_data = {
+    area_data = {
         "name": "Vierter Block von rechts",
         "description": "Test edit",
         "lat": 42.1,
@@ -106,7 +106,7 @@ def test_successful_edit_area(client):
         "portraitImage": None,
     }
 
-    rv = client.put('/api/areas/dritter-block-von-links', headers=access_headers, json=sector_data)
+    rv = client.put('/api/areas/dritter-block-von-links', headers=access_headers, json=area_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['name'] == "Vierter Block von rechts"

@@ -1,0 +1,27 @@
+.fa {
+
+  font-size: 11px;
+
+  span:nth-of-type(n + 2) {
+    &::before {
+      content: ", ";
+    }
+  }
+
+}
+
+.line-info-container{
+  width: 100%;
+}
+
+.line-name{
+
+  display: grid;
+  grid-template-columns: auto max-content;
+  width: 100%;
+
+  p-rating{
+    align-self: flex-end;
+  }
+
+}
