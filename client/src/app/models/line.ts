@@ -111,13 +111,13 @@ export class Line extends AbstractModel {
     return {
       name: line.name,
       description: line.description,
-      video: line.video,
+      video: line.video ? line.video : null,
       gradeScale: 'FB',
       gradeName: line.grade.name,
       rating: line.rating,
       type: line.type,
       faYear: line.faYear,
-      faName: line.faName,
+      faName: line.faName ? line.faName : null,
 
       sitstart: line.sitstart,
       eliminate: line.eliminate,

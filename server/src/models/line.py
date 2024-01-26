@@ -16,7 +16,7 @@ class Line(HasSlug, BaseEntity):
 
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    video = db.Column(db.String(120), nullable=False)
+    video = db.Column(db.String(120), nullable=True)
     grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
