@@ -1,5 +1,6 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
+import {LinePath} from './line-path';
 
 /**
  * Model of a topo image.
@@ -7,6 +8,7 @@ import {File} from './file';
 export class TopoImage extends AbstractModel {
 
   image: File;
+  linePaths: LinePath[];
 
   /**
    * Parses a topo image.
@@ -18,6 +20,7 @@ export class TopoImage extends AbstractModel {
     const topoImage = new TopoImage();
     AbstractModel.deserializeAbstractAttributes(topoImage, payload);
     topoImage.image =  File.deserialize(payload.image);
+    topoImage.linePaths = payload.linePaths.map(LinePath.deserialize);
     return topoImage;
   }
 

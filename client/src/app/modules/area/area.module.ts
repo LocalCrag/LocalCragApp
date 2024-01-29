@@ -25,6 +25,7 @@ import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {LineModule} from '../line/line.module';
 import {TopoImagesModule} from '../topo-images/topo-images.module';
+import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import {TopoImagesModule} from '../topo-images/topo-images.module';
         SkeletonModule,
         BreadcrumbModule,
         LineModule,
-        TopoImagesModule
+        TopoImagesModule,
+        LinePathEditorModule
     ],
     exports: [
         AreaListComponent

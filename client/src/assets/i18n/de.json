@@ -93,6 +93,8 @@
   "topoImage.askReallyWantToDeleteTopoImage": "Bist Du Dir sicher? Dies ist eine extrem destruktive Aktion und kann nicht rückgängig gemacht werden. Das Topo Bild und alle Linienverknüpfungen werden gelöscht. Die eigentlichen Linien samt Begehungebn etc. bleiben aber bestehen.",
   "topoImage.yesDelete": "Ja, alles löschen!",
   "topoImage.noDontDelete": "Nee, doch nicht.",
+  "notifications.LINE_PATH_ADDED_TITLE": "Linie eingezeichnet",
+  "notifications.LINE_PATH_ADDED_MESSAGE": "Die Linie wurde erfolgreich eingezeichnet.",
   "notifications.TOPO_IMAGE_DELETED_TITLE": "Topo Bild gelöscht",
   "notifications.TOPO_IMAGE_DELETED_MESSAGE": "Du hast das Topo Bild erfolgreich gelöscht.",
   "notifications.TOPO_IMAGE_ADDED_TITLE": "Topo Bild hinzugefügt",

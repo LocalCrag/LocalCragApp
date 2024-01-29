@@ -93,6 +93,8 @@
   "topoImage.askReallyWantToDeleteTopoImage": "",
   "topoImage.yesDelete": "",
   "topoImage.noDontDelete": "",
+  "notifications.LINE_PATH_ADDED_TITLE": "",
+  "notifications.LINE_PATH_ADDED_MESSAGE": "",
   "notifications.TOPO_IMAGE_DELETED_TITLE": "",
   "notifications.TOPO_IMAGE_DELETED_MESSAGE": "",
   "notifications.TOPO_IMAGE_ADDED_TITLE": "",

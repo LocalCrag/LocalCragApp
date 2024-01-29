@@ -2,49 +2,41 @@ import {Component, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Area} from '../../../models/area';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AreasService} from '../../../services/crud/areas.service';
-import {TranslocoService} from '@ngneat/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {TopoImage} from '../../../models/topo-image';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
+import {LinePath} from '../../../models/line-path';
+import {LinePathsService} from '../../../services/crud/line-paths.service';
+import {LinesService} from '../../../services/crud/lines.service';
+import {Line} from '../../../models/line';
 
-/**
- * Component for uploading topo images.
- */
 @Component({
-    selector: 'lc-topo-image-form',
-    templateUrl: './topo-image-form.component.html',
-    styleUrls: ['./topo-image-form.component.scss']
+    selector: 'lc-line-path-form',
+    templateUrl: './line-path-form.component.html',
+    styleUrls: ['./line-path-form.component.scss']
 })
-export class TopoImageFormComponent {
+export class LinePathFormComponent {
 
     @ViewChild(FormDirective) formDirective: FormDirective;
 
-    public topoImageForm: FormGroup;
+    public linePathForm: FormGroup;
     public loadingState = LoadingState.DEFAULT;
     public loadingStates = LoadingState;
-    public topoImage: TopoImage;
+    public linePath: LinePath;
+    public lines: Line[];
 
     private cragSlug: string;
     private sectorSlug: string;
     private areaSlug: string;
+    private topoImageId: string;
 
     constructor(private fb: FormBuilder,
                 private store: Store,
                 private route: ActivatedRoute,
                 private router: Router,
-                private topoImagesService: TopoImagesService) {
+                private linesService: LinesService,
+                private linePathsService: LinePathsService) {
     }
 
     /**
@@ -52,17 +44,23 @@ export class TopoImageFormComponent {
      */
     ngOnInit() {
         this.buildForm();
+        this.loadingState = LoadingState.INITIAL_LOADING;
         this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+        this.topoImageId = this.route.snapshot.paramMap.get('line-id');
+        this.linesService.getLines(this.areaSlug).subscribe(lines => {
+            this.lines = lines;
+            this.loadingState = LoadingState.DEFAULT;
+        })
     }
 
     /**
      * Builds the area form.
      */
     private buildForm() {
-        this.topoImageForm = this.fb.group({
-            image: [null, [Validators.required]]
+        this.linePathForm = this.fb.group({
+            line: [null, [Validators.required]]
         });
     }
 
@@ -77,13 +75,13 @@ export class TopoImageFormComponent {
     /**
      * Saves the topo image and navigates to the topo image list.
      */
-    public saveTopoImage() {
-        if (this.topoImageForm.valid) {
+    public saveLinePath() {
+        if (this.linePathForm.valid) {
             this.loadingState = LoadingState.LOADING;
-            const topoImage = new TopoImage();
-            topoImage.image = this.topoImageForm.get('image').value;
-            this.topoImagesService.addTopoImage(topoImage, this.areaSlug).subscribe(area => {
-                this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED));
+            const linePath = new LinePath();
+            linePath.line = this.linePathForm.get('line').value;
+            this.linePathsService.addLinePath(linePath, this.topoImageId, this.areaSlug).subscribe(() => {
+                this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_ADDED));
                 this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
                 this.loadingState = LoadingState.DEFAULT;
             });
@@ -91,5 +89,6 @@ export class TopoImageFormComponent {
             this.formDirective.markAsTouched();
         }
     }
+
 
 }

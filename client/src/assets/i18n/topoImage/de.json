@@ -1,10 +1,11 @@
 {
   "topoImageForm.addTopoImageDescription": "Lade ein neues Topo-Bild hoch. Im Anschluss können angelegte Linien im Bild verzeichnet werden. Der Fels sollte den größten Teil des Bildes einnehmen und die ganze Linie sollte gut zu sehen sein. In manchen Fällen ergibt es Sinn, die gleiche Linie auf mehreren Bildern einzuzeichnen. Dies ist z.B. bei Traversen oder Linien die um eine Kante herum verlaufen der Fall.",
-  "topoImageForm.topoImageImageImageLabel": "Bild",
+  "topoImageForm.required": "",
   "topoImageForm.addTopoImageButtonLabel": "Speichern",
   "topoImageForm.cancelButtonLabel": "Abbrechen",
   "topoImageForm.addTopoImageTitle": "Topo Bild hinzufügen",
   "topoImageList.newTopoImageButtonLabel": "Neues Topo Bild",
   "topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
+  "topoImageForm.topoImageImageImageLabel": "Bild",
   "topoImageList.deleteTopoImageButtonLabel": "Löschen"
 }

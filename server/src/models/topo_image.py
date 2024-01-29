@@ -12,3 +12,5 @@ class TopoImage(BaseEntity):
     area_id: Mapped[UUID] = mapped_column(db.ForeignKey("areas.id"), primary_key=True)
     file_id: Mapped[UUID] = mapped_column(db.ForeignKey("files.id"), primary_key=True)
     file: Mapped["File"] = relationship()
+    line_paths = db.relationship("LinePath", lazy="select")
+

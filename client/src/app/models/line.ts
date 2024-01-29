@@ -45,6 +45,8 @@ export class Line extends AbstractModel {
   compression: boolean;
   arete: boolean;
 
+  nameWithGrade: string;
+
   constructor() {
     super();
     this.type = LineType.BOULDER;
@@ -97,6 +99,8 @@ export class Line extends AbstractModel {
     line.dihedral = payload.dihedral;
     line.compression = payload.compression;
     line.arete = payload.arete;
+
+    line.nameWithGrade = `${line.name} ${line.grade.name}`;
 
     return line;
   }

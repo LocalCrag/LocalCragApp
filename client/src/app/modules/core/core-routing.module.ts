@@ -31,6 +31,7 @@ import {LineInfoComponent} from '../line/line-info/line-info.component';
 import {LineComponent} from '../line/line/line.component';
 import {TopoImageListComponent} from '../topo-images/topo-image-list/topo-image-list.component';
 import {TopoImageFormComponent} from '../topo-images/topo-image-form/topo-image-form.component';
+import {LinePathFormComponent} from '../line-path-editor/line-path-form/line-path-form.component';
 
 const routes: Routes = [
   {
@@ -245,6 +246,11 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
     component: LineFormComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
+    component: LinePathFormComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

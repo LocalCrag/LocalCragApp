@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {TopoImage} from '../../models/topo-image';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {LinePath} from '../../models/line-path';
 
 /**
  * CRUD service for topo images.

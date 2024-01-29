@@ -50,7 +50,7 @@ export class AreasService {
   /**
    * Returns an Area.
    *
-   * @param slug: Slug of the Area to load.
+   * @param slug Slug of the Area to load.
    * @return Observable of an Area.
    */
   public getArea(slug: string): Observable<Area> {

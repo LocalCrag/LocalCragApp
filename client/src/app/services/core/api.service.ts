@@ -47,6 +47,11 @@ export class ApiService {
     add: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
+    addLinePath: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths`,
+  };
+
+  public linePaths = {
+    delete: (id: string): string => `${this.apiHost}line-paths/${id}`,
   };
 
   public lines = {

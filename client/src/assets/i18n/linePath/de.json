@@ -1,0 +1,9 @@
+{
+  "linePathForm.addLinePathDescription": "Hier kannst Du eine Linie auf einem Topo Bild verzeichnen. Wähle die einzuzeichnende Linie aus der Liste aus und zeichne dann durch Klicken auf das Bild den Linienverlauf ein.",
+  "linePathForm.lineLabel": "Linie",
+  "linePathForm.linePlaceholder": "Wähle eine Linie",
+  "linePathForm.required": "Pflichtfeld",
+  "linePathForm.addLinePathButtonLabel": "Linie einzeichnen",
+  "linePathForm.cancelButtonLabel": "Abbrechen",
+  "linePathForm.addLinePathTitle": "Linie einzeichnen"
+}

@@ -1,0 +1,40 @@
+<ng-container *transloco="let t, read: 'linePath.linePathForm'">
+
+    <div class="content">
+
+<!--        todo disable while lines are loading-->
+
+        <p-card header="{{t('addLinePathTitle')}}">
+            <p class="mt-0">
+                {{t('addLinePathDescription')}}
+            </p>
+
+            <form [formGroup]="linePathForm" lcForm>
+
+                <div class="flex flex-column gap-2" lcControlGroup>
+                    <label class="form-label">{{t('lineLabel')}}</label>
+                    <p-dropdown formControlName="line" [options]="lines"
+                                optionLabel="nameWithGrade" placeholder="{{t('linePlaceholder')}}" lcFormControl>
+                        <ng-template let-line pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <div>{{ line.nameWithGrade }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+                </div>
+
+            </form>
+
+            <div class="form-actions">
+                <p-button label="{{t('addLinePathButtonLabel')}}" (click)="saveLinePath()" icon="pi pi-plus"
+                          [loading]="loadingState === loadingStates.LOADING" ></p-button>
+                <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+                          styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+            </div>
+
+        </p-card>
+
+    </div>
+
+</ng-container>
