@@ -34,7 +34,6 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private authCrudService: AuthCrudService,
               private store: Store<AppState>,
               private router: Router,
-              private notifications: AppNotificationsService,
               private fb: FormBuilder) {
   }
 

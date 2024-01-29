@@ -59,7 +59,7 @@ export class SectorsService {
    *
    * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to delete.
-   * @return Observable of a Sector.
+   * @return Observable of null.
    */
   public deleteSector(cragSlug: string, sector: Sector): Observable<null> {
     return this.http.delete(this.api.sectors.delete(sector.slug)).pipe(
@@ -76,7 +76,7 @@ export class SectorsService {
    *
    * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to persist.
-   * @return Observable of null.
+   * @return Observable of a Sector.
    */
   public updateSector(cragSlug: string, sector: Sector): Observable<Sector> {
     return this.http.put(this.api.sectors.update(sector.slug), Sector.serialize(sector)).pipe(
@@ -86,4 +86,5 @@ export class SectorsService {
       map(Sector.deserialize)
     );
   }
+
 }

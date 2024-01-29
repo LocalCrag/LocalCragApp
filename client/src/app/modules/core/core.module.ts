@@ -58,6 +58,7 @@ export function preloadTranslations(transloco: TranslocoService) {
     transloco.load('sector/' + environment.language).subscribe()
     transloco.load('area/' + environment.language).subscribe()
     transloco.load('line/' + environment.language).subscribe()
+    transloco.load('topoImage/' + environment.language).subscribe()
   }
 }
 

@@ -1,3 +1,5 @@
+from typing import List
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -8,9 +10,11 @@ from marshmallow_schemas.area_schema import areas_schema, area_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
 from models.sector import Sector
+from models.topo_image import TopoImage
 from models.user import User
 
 from webargs_schemas.area_args import area_args
+from webargs_schemas.topo_image_args import topo_image_args
 
 
 class GetAreas(MethodView):
@@ -20,7 +24,7 @@ class GetAreas(MethodView):
         Returns all areas of a sector.
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
-        areas: Area = Area.return_all(filter=lambda: Area.sector_id == sector_id,
+        areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id,
                                       order_by=lambda: Area.name.asc())
         return jsonify(areas_schema.dump(areas)), 200
 
@@ -94,3 +98,5 @@ class DeleteArea(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
+
+

@@ -29,6 +29,8 @@ import {LineListComponent} from '../line/line-list/line-list.component';
 import {LineFormComponent} from '../line/line-form/line-form.component';
 import {LineInfoComponent} from '../line/line-info/line-info.component';
 import {LineComponent} from '../line/line/line.component';
+import {TopoImageListComponent} from '../topo-images/topo-image-list/topo-image-list.component';
+import {TopoImageFormComponent} from '../topo-images/topo-image-form/topo-image-form.component';
 
 const routes: Routes = [
   {
@@ -173,6 +175,11 @@ const routes: Routes = [
     canActivate: [IsLoggedInGuard],
   },
   {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/add-topo-image',
+    component: TopoImageFormComponent,
+    canActivate: [IsLoggedInGuard],
+  },
+  {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
     component: AreaComponent,
     children: [
@@ -194,6 +201,17 @@ const routes: Routes = [
             path: '',
             pathMatch: 'full',
             component: LineListComponent,
+            outlet: 'areaContent'
+          }
+        ]
+      },
+      {
+        path: 'topo-images',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: TopoImageListComponent,
             outlet: 'areaContent'
           }
         ]

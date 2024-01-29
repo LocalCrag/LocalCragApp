@@ -1,0 +1,30 @@
+<ng-container *transloco="let t, read: 'topoImage.topoImageForm'">
+
+    <div class="content">
+
+        <p-card header="{{t('addTopoImageTitle')}}">
+            <p class="mt-0">
+                {{t('addTopoImageDescription')}}
+            </p>
+
+            <form [formGroup]="topoImageForm" lcForm>
+
+                <div class="flex flex-column gap-2" lcControlGroup>
+                    <lc-single-image-upload lcFormControl formControlName="image"></lc-single-image-upload>
+                    <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+                </div>
+
+            </form>
+
+            <div class="form-actions">
+                <p-button label="{{t('addTopoImageButtonLabel')}}" (click)="saveTopoImage()" icon="pi pi-plus"
+                          [loading]="loadingState === loadingStates.LOADING" ></p-button>
+                <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+                          styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+            </div>
+
+        </p-card>
+
+    </div>
+
+</ng-container>
