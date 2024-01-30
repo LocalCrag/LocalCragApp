@@ -6,7 +6,8 @@ from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAcc
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
-from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, CreateLinePath, DeleteLinePath
+from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, CreateLinePath, DeleteLinePath, \
+    GetTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
@@ -74,6 +75,7 @@ def configure_api(app):
     # Topo image API
     area_bp = Blueprint('topo-images', __name__)
     area_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
+    area_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
     area_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
     app.register_blueprint(area_bp, url_prefix='/api/topo-images')
 

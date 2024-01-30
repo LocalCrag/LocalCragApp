@@ -24,6 +24,13 @@
                     <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
                 </div>
 
+                <div class="flex flex-column gap-2" lcControlGroup>
+                    <label class="form-label">{{t('linePathLabel')}}</label>
+                    <lc-line-path-editor formControlName="path" lcFormControl>
+                    </lc-line-path-editor>
+                    <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+                </div>
+
             </form>
 
             <div class="form-actions">

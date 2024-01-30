@@ -68,6 +68,16 @@ class GetTopoImages(MethodView):
         return jsonify(topo_images_schema.dump(topo_images)), 200
 
 
+class GetTopoImage(MethodView):
+    def get(self, image_id):
+        """
+        Returns a detailed topo image.
+        @param image_id: ID of the topo image to return.
+        """
+        topo_image: TopoImage = TopoImage.find_by_id(image_id)
+        return topo_image_schema.dump(topo_image), 200
+
+
 class CreateLinePath(MethodView):
     @jwt_required()
     def post(self, topo_image_id):

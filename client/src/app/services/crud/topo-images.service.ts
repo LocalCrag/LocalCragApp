@@ -6,6 +6,7 @@ import {TopoImage} from '../../models/topo-image';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {LinePath} from '../../models/line-path';
+import {Crag} from '../../models/crag';
 
 /**
  * CRUD service for topo images.
@@ -43,6 +44,16 @@ export class TopoImagesService {
      */
     public getTopoImages(areaSlug: string): Observable<TopoImage[]> {
         return this.cache.get(this.api.topoImages.getList(areaSlug), map((topoImageListJson: any) => topoImageListJson.map(TopoImage.deserialize)))
+    }
+
+    /**
+     * Returns a TopoImage.
+     *
+     * @param id ID of the TopoImage to load.
+     * @return Observable of a TopoImage.
+     */
+    public getTopoImage(id: string): Observable<TopoImage> {
+        return this.cache.get(this.api.topoImages.getDetail(id), map(TopoImage.deserialize));
     }
 
     /**

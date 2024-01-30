@@ -10,6 +10,7 @@ import {LinePath} from '../../../models/line-path';
 import {LinePathsService} from '../../../services/crud/line-paths.service';
 import {LinesService} from '../../../services/crud/lines.service';
 import {Line} from '../../../models/line';
+import {TopoImagesService} from '../../../services/crud/topo-images.service';
 
 @Component({
     selector: 'lc-line-path-form',
@@ -48,7 +49,7 @@ export class LinePathFormComponent {
         this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
-        this.topoImageId = this.route.snapshot.paramMap.get('line-id');
+        this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
         this.linesService.getLines(this.areaSlug).subscribe(lines => {
             this.lines = lines;
             this.loadingState = LoadingState.DEFAULT;
@@ -60,7 +61,8 @@ export class LinePathFormComponent {
      */
     private buildForm() {
         this.linePathForm = this.fb.group({
-            line: [null, [Validators.required]]
+            line: [null, [Validators.required]],
+            path: [null, [Validators.required]],
         });
     }
 
@@ -80,6 +82,7 @@ export class LinePathFormComponent {
             this.loadingState = LoadingState.LOADING;
             const linePath = new LinePath();
             linePath.line = this.linePathForm.get('line').value;
+            linePath.path = this.linePathForm.get('path').value;
             this.linePathsService.addLinePath(linePath, this.topoImageId, this.areaSlug).subscribe(() => {
                 this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_ADDED));
                 this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
