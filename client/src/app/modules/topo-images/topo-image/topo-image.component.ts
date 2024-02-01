@@ -24,6 +24,7 @@ export class TopoImageComponent implements OnInit {
   private backgroundImage: any;
   private stageLayer: Konva.Layer;
   private stage: Konva.Stage;
+  private lineSizeMultiplicator = 1;
 
   constructor(public el: ElementRef) {
   }
@@ -33,18 +34,23 @@ export class TopoImageComponent implements OnInit {
     switch (this.thumbnailSize) {
       case ThumbnailSize.XS:
         this.backgroundImage.src = this.topoImage.image.thumbnailXS;
+        this.lineSizeMultiplicator = .25;
         break;
       case ThumbnailSize.S:
         this.backgroundImage.src = this.topoImage.image.thumbnailS;
+        this.lineSizeMultiplicator = .5;
         break;
       case ThumbnailSize.M:
         this.backgroundImage.src = this.topoImage.image.thumbnailM;
+        this.lineSizeMultiplicator = 1;
         break;
       case ThumbnailSize.L:
         this.backgroundImage.src = this.topoImage.image.thumbnailL;
+        this.lineSizeMultiplicator = 2;
         break;
       case ThumbnailSize.XL:
         this.backgroundImage.src = this.topoImage.image.thumbnailXL;
+        this.lineSizeMultiplicator = 3;
         break;
       case ThumbnailSize.ORIGINAL:
         this.backgroundImage.src = this.topoImage.image.path;
@@ -85,11 +91,11 @@ export class TopoImageComponent implements OnInit {
       points: this.getAbsoluteCoordinates(linePath.path),
       stroke: 'yellow',
       fill: 'yellow',
-      strokeWidth: 5,
+      strokeWidth: 2 * this.lineSizeMultiplicator,
       lineCap: 'square',
       tension: .5,
-      pointerLength: 20,
-      pointerWidth: 20,
+      pointerLength: 10 * this.lineSizeMultiplicator,
+      pointerWidth: 10 * this.lineSizeMultiplicator,
       opacity,
     });
     this.stageLayer.add(line);
