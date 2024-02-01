@@ -45,7 +45,9 @@ export class Line extends AbstractModel {
   compression: boolean;
   arete: boolean;
 
+  // UI specific attributes, not related to data model
   nameWithGrade: string;
+  disabled = false;
 
   constructor() {
     super();

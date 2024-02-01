@@ -14,6 +14,7 @@
                 <div class="flex flex-column gap-2" lcControlGroup>
                     <label class="form-label">{{t('lineLabel')}}</label>
                     <p-dropdown formControlName="line" [options]="lines"
+                                [optionDisabled]="'disabled'"
                                 optionLabel="nameWithGrade" placeholder="{{t('linePlaceholder')}}" lcFormControl>
                         <ng-template let-line pTemplate="item">
                             <div class="flex align-items-center gap-2">

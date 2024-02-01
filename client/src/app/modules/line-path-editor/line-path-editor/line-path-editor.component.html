@@ -1,2 +1,5 @@
-<img class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
-     [src]="topoImage?.image.thumbnailM"/>
+<lc-topo-image [topoImage]="topoImage"
+               [thumbnailSize]="thumbnailSizes.L"
+               [linePathInProgress]="linePath"
+               *ngIf="topoImage">
+</lc-topo-image>

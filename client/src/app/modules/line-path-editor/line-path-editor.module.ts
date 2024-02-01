@@ -8,6 +8,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../shared/shared.module';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import {DropdownModule} from 'primeng/dropdown';
+import {TopoImagesModule} from '../topo-images/topo-images.module';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {DropdownModule} from 'primeng/dropdown';
         TranslocoModule,
         FormsModule,
         ReactiveFormsModule,
-        DropdownModule
+        DropdownModule,
+        TopoImagesModule
     ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'linePath'}

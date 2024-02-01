@@ -5,7 +5,9 @@
   "topoImageForm.cancelButtonLabel": "",
   "topoImageForm.addTopoImageTitle": "",
   "topoImageList.newTopoImageButtonLabel": "",
+  "topoImageList.lines": "",
   "topoImageList.addLineToImageButtonLabel": "",
+  "topoImageList.noLineAssignedToTopoImage": "",
   "topoImageForm.topoImageImageImageLabel": "",
   "topoImageList.deleteTopoImageButtonLabel": ""
 }

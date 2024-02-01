@@ -1,14 +1,21 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
 import {Line} from './line';
+import Konva from 'konva';
 
 /**
  * Model of a line path.
  */
 export class LinePath extends AbstractModel {
 
-  path: any; // TODO add type
+  path: number[];
   line: Line;
+  konvaLine: Konva.Line;
+
+  constructor() {
+    super();
+    this.path = [];
+  }
 
   /**
    * Parses a line path.

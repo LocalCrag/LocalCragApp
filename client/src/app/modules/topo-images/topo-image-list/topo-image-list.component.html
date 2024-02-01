@@ -1,44 +1,80 @@
 <ng-container *transloco="let t, read: 'topoImage.topoImageList'">
 
-    <p-dataView #dv [value]="topoImages" [sortField]="sortField" [sortOrder]="sortOrder"
-                [loading]="loading === loadingStates.LOADING">
-        <ng-template pTemplate="header">
-            <div class="flex flex-row justify-content-between">
-                <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
-                            optionLabel="label" (onChange)="onSortChange($event)"
-                            styleClass="md:mb-0"></p-dropdown>
-                <div class="flex justify-content-end">
-                    <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus"
-                              routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
-                              *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-                    <p-button icon="pi pi-plus"
-                              routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
-                              *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
-                </div>
-            </div>
-        </ng-template>
-        <ng-template let-topoImage pTemplate="listItem">
-            <div class="col-12">
-                <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
-                         [src]="topoImage.image.thumbnailM"/>
-                    <div class="flex flex-column sm:flex-row justify-content-between align-items-center
+  <p-dataView #dv [value]="topoImages" [sortField]="sortField" [sortOrder]="sortOrder"
+              [loading]="loading === loadingStates.LOADING">
+    <ng-template pTemplate="header">
+      <div class="flex flex-row justify-content-between">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
+                    optionLabel="label" (onChange)="onSortChange($event)"
+                    styleClass="md:mb-0"></p-dropdown>
+        <div class="flex justify-content-end">
+          <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus"
+                    routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
+                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
+          <p-button icon="pi pi-plus"
+                    routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
+                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template let-topoImage pTemplate="listItem">
+      <div class="col-12">
+        <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+          <lc-topo-image [topoImage]="topoImage"
+                         class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
+          <div class="flex flex-column sm:flex-column justify-content-between align-items-center
                      xl:align-items-start flex-1 gap-4">
-                        <div class="flex gap-2 align-items- flex-grow-1 justify-content-end"
-                             *ngIf="isLoggedIn$ | async">
-                            <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
-                                      routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
-                                      styleClass=" p-button-sm"></p-button>
-                            <p-button icon="pi pi-trash"
-                                      (click)="confirmDeleteTopoImage($event, topoImage)"
-                                      [loading]="loadingState === loadingStates.LOADING"
-                                      styleClass="p-button-outlined p-button-danger p-button-sm"></p-button>
-                            <p-confirmPopup></p-confirmPopup>
-                        </div>
-                    </div>
+
+            <p-table [value]="topoImage.linePaths" class="line-table" [styleClass]="'p-datatable-sm'">
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                  <div>
+                    {{t('lines')}}
+                  </div>
+                  <div *ngIf="isLoggedIn$ | async">
+                    <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
+                              routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
+                              styleClass=" p-button-sm"></p-button>
+                    <p-button icon="pi pi-trash"
+                              class="ml-2"
+                              (click)="confirmDeleteTopoImage($event, topoImage)"
+                              [loading]="loadingState === loadingStates.LOADING"
+                              styleClass="p-button-outlined p-button-danger p-button-sm"></p-button>
+                    <p-confirmPopup></p-confirmPopup>
+                  </div>
                 </div>
-            </div>
-        </ng-template>
-    </p-dataView>
+              </ng-template>
+              <ng-template pTemplate="body" let-linePath>
+                <tr (mouseenter)="highlightLinePath(linePath)" (mouseleave)="unhighlightLinePath(linePath)"
+                    routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
+                    class="line-row">
+                  <td class="name-column">{{ linePath.line.name }}</td>
+                  <td class="grade-column">{{ linePath.line.grade.name }}</td>
+                  <td class="style-column">
+                    <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>
+                  </td>
+                  <td class="rating-column">
+                    <p-rating [ngModel]="linePath.line.rating" [readonly]="true" [cancel]="false"></p-rating>
+                  </td>
+                  <td class="action-column" *ngIf="(isLoggedIn$ | async)">
+                    <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
+                              (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
+                    <p-confirmPopup></p-confirmPopup>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary" *ngIf="topoImage.linePaths.length === 0">
+                <p-messages severity="info">
+                  <ng-template pTemplate>
+                    <div class="ml-2">{{t('noLineAssignedToTopoImage')}}</div>
+                  </ng-template>
+                </p-messages>
+              </ng-template>
+            </p-table>
+
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
 
 </ng-container>

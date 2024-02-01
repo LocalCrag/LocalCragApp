@@ -12,31 +12,42 @@ import {LineListComponent} from '../line/line-list/line-list.component';
 import {SharedModule} from '../shared/shared.module';
 import {CardModule} from 'primeng/card';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import { TopoImageComponent } from './topo-image/topo-image.component';
+import {TableModule} from 'primeng/table';
+import {RatingModule} from 'primeng/rating';
+import {LineModule} from '../line/line.module';
+import {MessagesModule} from 'primeng/messages';
 
 
 @NgModule({
     declarations: [
         TopoImageListComponent,
-        TopoImageFormComponent
+        TopoImageFormComponent,
+        TopoImageComponent
     ],
-    imports: [
-        CommonModule,
-        CardModule,
-        DataViewModule,
-        DropdownModule,
-        FormsModule,
-        ButtonModule,
-        RouterLink,
-        SharedModule,
-        TranslocoModule,
-        ReactiveFormsModule,
-        ConfirmPopupModule
-    ],
+  imports: [
+    CommonModule,
+    CardModule,
+    DataViewModule,
+    DropdownModule,
+    FormsModule,
+    ButtonModule,
+    RouterLink,
+    SharedModule,
+    TranslocoModule,
+    ReactiveFormsModule,
+    ConfirmPopupModule,
+    TableModule,
+    RatingModule,
+    LineModule,
+    MessagesModule
+  ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
     ],
     exports: [
-        TopoImageListComponent
+        TopoImageListComponent,
+        TopoImageComponent
     ],
 })
 export class TopoImagesModule {

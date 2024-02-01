@@ -47,7 +47,7 @@ export class SectorsService {
   /**
    * Returns a Sector.
    *
-   * @param sectorSlug: Slug of the Sector to load.
+   * @param sectorSlug Slug of the Sector to load.
    * @return Observable of a Sector.
    */
   public getSector(sectorSlug: string): Observable<Sector> {
@@ -81,7 +81,8 @@ export class SectorsService {
   public updateSector(cragSlug: string, sector: Sector): Observable<Sector> {
     return this.http.put(this.api.sectors.update(sector.slug), Sector.serialize(sector)).pipe(
       tap(() => {
-        this.cache.clear(this.api.sectors.getList(cragSlug))
+        this.cache.clear(this.api.sectors.getList(cragSlug));
+        this.cache.clear(this.api.sectors.getDetail(sector.slug))
       }),
       map(Sector.deserialize)
     );

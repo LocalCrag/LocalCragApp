@@ -61,9 +61,10 @@ import { LineInfoComponent } from './line-info/line-info.component';
     CalendarModule,
     CheckboxModule
   ],
-  exports: [
-    LineListComponent
-  ],
+    exports: [
+        LineListComponent,
+        LineBoolPropListComponent
+    ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'line'}
   ]

@@ -3,6 +3,7 @@
   "linePathForm.lineLabel": "Linie",
   "linePathForm.linePlaceholder": "Wähle eine Linie",
   "linePathForm.required": "Pflichtfeld",
+  "linePathForm.linePathLabel": "Linienverlauf",
   "linePathForm.addLinePathButtonLabel": "Linie einzeichnen",
   "linePathForm.cancelButtonLabel": "Abbrechen",
   "linePathForm.addLinePathTitle": "Linie einzeichnen"

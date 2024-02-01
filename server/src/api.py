@@ -4,9 +4,10 @@ from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateAre
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
+from resources.line_path_resources import CreateLinePath, DeleteLinePath
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
-from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, CreateLinePath, DeleteLinePath, \
+from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
     GetTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \

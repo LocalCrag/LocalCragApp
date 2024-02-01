@@ -10,6 +10,9 @@ export class TopoImage extends AbstractModel {
   image: File;
   linePaths: LinePath[];
 
+  // UI specific parameters
+  selectedLinePath: LinePath;
+
   /**
    * Parses a topo image.
    *

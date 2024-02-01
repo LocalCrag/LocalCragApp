@@ -10,7 +10,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 
 class LinePathSchema(BaseEntitySchema):
     line = fields.Nested(line_schema, attribute='line')
-    path = fields.Dict()
+    path = fields.List(fields.Integer)
 
 
 line_path_schema = LinePathSchema()
