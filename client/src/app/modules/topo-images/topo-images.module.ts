@@ -17,6 +17,7 @@ import {TableModule} from 'primeng/table';
 import {RatingModule} from 'primeng/rating';
 import {LineModule} from '../line/line.module';
 import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {MessagesModule} from 'primeng/messages';
     TableModule,
     RatingModule,
     LineModule,
-    MessagesModule
+    MessagesModule,
+    MessageModule
   ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}

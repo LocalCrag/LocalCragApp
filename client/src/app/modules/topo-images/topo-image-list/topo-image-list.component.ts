@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {Line} from '../../../models/line';
 import {LoadingState} from '../../../enums/loading-state';
 import {ConfirmationService, SelectItem} from 'primeng/api';
@@ -130,6 +130,7 @@ export class TopoImageListComponent {
    * @param topoImage that the line path was assigned to.
    */
   confirmDeleteLinePath(event: Event, linePath: LinePath, topoImage: TopoImage) {
+    event.stopPropagation();
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,

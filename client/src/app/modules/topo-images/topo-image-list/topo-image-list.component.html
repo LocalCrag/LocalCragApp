@@ -28,7 +28,10 @@
             <p-table [value]="topoImage.linePaths" class="line-table" [styleClass]="'p-datatable-sm'">
               <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between">
-                  <div>
+                  <p-message severity="info" *ngIf="topoImage.linePaths.length === 0"
+                  text="{{t('noLineAssignedToTopoImage')}}">
+                  </p-message>
+                  <div *ngIf="topoImage.linePaths.length > 0">
                     {{t('lines')}}
                   </div>
                   <div *ngIf="isLoggedIn$ | async">
@@ -61,13 +64,6 @@
                               (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
                     <p-confirmPopup></p-confirmPopup>
                 </tr>
-              </ng-template>
-              <ng-template pTemplate="summary" *ngIf="topoImage.linePaths.length === 0">
-                <p-messages severity="info">
-                  <ng-template pTemplate>
-                    <div class="ml-2">{{t('noLineAssignedToTopoImage')}}</div>
-                  </ng-template>
-                </p-messages>
               </ng-template>
             </p-table>
 
