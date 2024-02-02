@@ -163,6 +163,7 @@ export class TopoImageListComponent {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('red');
       linePath.konvaLine.stroke('red');
+      linePath.konvaLine.zIndex(1000);
     }
   }
 
@@ -170,6 +171,7 @@ export class TopoImageListComponent {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('yellow');
       linePath.konvaLine.stroke('yellow');
+      linePath.konvaLine.zIndex(500);
     }
   }
 
