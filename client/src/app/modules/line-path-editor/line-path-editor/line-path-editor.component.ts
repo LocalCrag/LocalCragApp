@@ -31,7 +31,6 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
 
   private topoImageId: string = null;
   private onChange: (value: number[]) => void;
-  private onTouched: () => void;
 
   constructor(private topoImagesService: TopoImagesService,
               private cdr: ChangeDetectorRef,
@@ -76,7 +75,6 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    * @param fn onTouched function.
    */
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
   }
 
   /**
@@ -93,11 +91,6 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    */
   writeValue(value: number[]): void {
     this.linePath.path = value;
-  }
-
-  // todo call when component loses focus, maybe force focus on click before if this is possible?
-  onBlur(): void {
-    this.onTouched();
   }
 
 }

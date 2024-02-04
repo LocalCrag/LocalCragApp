@@ -1,7 +1,7 @@
 import {AbstractModel} from './abstract-model';
-import {File} from './file';
 import {Line} from './line';
 import Konva from 'konva';
+import {LoadingState} from '../enums/loading-state';
 
 /**
  * Model of a line path.
@@ -11,6 +11,9 @@ export class LinePath extends AbstractModel {
   path: number[];
   line: Line;
   konvaLine: Konva.Line;
+
+  // Properties for UI features
+  loadingState: LoadingState = LoadingState.DEFAULT;
 
   constructor() {
     super();

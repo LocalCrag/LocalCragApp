@@ -77,7 +77,7 @@ export class LinePathFormComponent {
   private buildForm() {
     this.linePathForm = this.fb.group({
       line: [null, [Validators.required]],
-      path: [[], [Validators.required]], // TODO validate at least two points required!
+      path: [[], [Validators.required, Validators.minLength(4)]],
     });
   }
 

@@ -5,9 +5,9 @@
   "topoImageForm.cancelButtonLabel": "Abbrechen",
   "topoImageForm.addTopoImageTitle": "Topo Bild hinzufügen",
   "topoImageList.newTopoImageButtonLabel": "Neues Topo Bild",
+  "topoImageList.noLineAssignedToTopoImage": "Diesem Bild ist bisher keine Linie zugeordnet worden.",
   "topoImageList.lines": "Linien",
   "topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
-  "topoImageList.noLineAssignedToTopoImage": "Diesem Bild ist bisher keine Linie zugeordnet worden.",
   "topoImageForm.topoImageImageImageLabel": "Bild",
   "topoImageList.deleteTopoImageButtonLabel": "Löschen"
 }

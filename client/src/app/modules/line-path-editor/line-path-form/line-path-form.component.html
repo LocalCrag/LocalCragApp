@@ -2,8 +2,6 @@
 
     <div class="content">
 
-<!--        todo disable while lines are loading-->
-
         <p-card header="{{t('addLinePathTitle')}}">
             <p class="mt-0">
                 {{t('addLinePathDescription')}}
@@ -29,7 +27,8 @@
                     <label class="form-label">{{t('linePathLabel')}}</label>
                     <lc-line-path-editor formControlName="path" lcFormControl>
                     </lc-line-path-editor>
-                    <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+                    <small class="p-error" *lcIfError="'required'">{{t('drawALineWithAtLeastTwoAnchorPoints')}}</small>
+                    <small class="p-error" *lcIfError="'minlength'">{{t('drawALineWithAtLeastTwoAnchorPoints')}}</small>
                 </div>
 
             </form>

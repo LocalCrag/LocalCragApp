@@ -1,9 +1,7 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-import {Line} from '../../../models/line';
+import {Component} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {ConfirmationService, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {LinesService} from '../../../services/crud/lines.service';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
@@ -65,8 +63,8 @@ export class TopoImageListComponent {
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortAZ')), value: '!name'}, // TODO
-        {label: this.translocoService.translate(marker('sortZA')), value: 'name'} // TODO
+        {label: this.translocoService.translate(marker('ascending')), value: '!timeCreated'},
+        {label: this.translocoService.translate(marker('descending')), value: 'timeCreated'}
       ];
       this.sortKey = this.sortOptions[0];
     });
@@ -115,11 +113,12 @@ export class TopoImageListComponent {
    * @param topoImage The topo image that is deleted.
    */
   public deleteTopoImage(topoImage: TopoImage) {
+    topoImage.loadingState = LoadingState.LOADING;
     this.topoImagesService.deleteTopoImage(this.areaSlug, topoImage).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_DELETED));
       this.topoImages.splice(this.topoImages.indexOf(topoImage), 1)
       this.topoImages = [...this.topoImages];
-      this.loadingState = LoadingState.DEFAULT; // TODO
+      topoImage.loadingState = LoadingState.DEFAULT;
     });
   }
 
@@ -152,11 +151,12 @@ export class TopoImageListComponent {
    * @param topoImage The topo image the line path belonged to.
    */
   public deleteLinePath(linePath: LinePath, topoImage: TopoImage) {
+    linePath.loadingState = LoadingState.LOADING;
     this.linePathsService.deleteLinePath(this.areaSlug, linePath, topoImage.id).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_DELETED));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1)
       linePath.konvaLine.destroy();
-      // this.loadingState = LoadingState.DEFAULT; todo
+      linePath.loadingState = LoadingState.DEFAULT;
     });
   }
 

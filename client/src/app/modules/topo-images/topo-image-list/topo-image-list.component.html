@@ -37,11 +37,12 @@
                   <div *ngIf="isLoggedIn$ | async">
                     <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
                               routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
+                              [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
                               styleClass=" p-button-sm"></p-button>
                     <p-button icon="pi pi-trash"
                               class="ml-2"
                               (click)="confirmDeleteTopoImage($event, topoImage)"
-                              [loading]="loadingState === loadingStates.LOADING"
+                              [loading]="topoImage.loadingState"
                               styleClass="p-button-outlined p-button-danger p-button-sm"></p-button>
                     <p-confirmPopup></p-confirmPopup>
                   </div>
@@ -61,6 +62,8 @@
                   </td>
                   <td class="action-column" *ngIf="(isLoggedIn$ | async)">
                     <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
+                              [loading]="linePath.loadingState"
+                              [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
                               (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
                     <p-confirmPopup></p-confirmPopup>
                 </tr>

@@ -14,3 +14,8 @@ class LinePath(BaseEntity):
     line: Mapped["Line"] = relationship()
     topo_image: Mapped["TopoImage"] = relationship()
     path = db.Column(JSON, nullable=False)
+
+    @classmethod
+    def exists_for_topo_image(cls, topo_image_id):
+        entity = cls.query.filter_by(topo_image_id=topo_image_id).first()
+        return entity is not None

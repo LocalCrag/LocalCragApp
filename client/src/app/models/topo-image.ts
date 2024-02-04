@@ -1,6 +1,7 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
 import {LinePath} from './line-path';
+import {LoadingState} from '../enums/loading-state';
 
 /**
  * Model of a topo image.
@@ -9,6 +10,9 @@ export class TopoImage extends AbstractModel {
 
   image: File;
   linePaths: LinePath[];
+
+  // Properties for UI features
+  loadingState: LoadingState = LoadingState.DEFAULT;
 
   /**
    * Parses a topo image.

@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.line_path_schema import line_path_schema
 from models.line_path import LinePath
@@ -21,8 +22,8 @@ class CreateLinePath(MethodView):
         line_path_data = parser.parse(line_path_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        # todo check if topo image already has line assigned
-        # todo check line path format
+        if LinePath.exists_for_topo_image(image_id):
+            raise BadRequest('The same line can only be added once for a single topo image.')
 
         new_line_path: LinePath = LinePath()
         new_line_path.line_id = line_path_data['line']

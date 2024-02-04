@@ -2,6 +2,7 @@ import json
 
 from tests.utils.user_test_util import get_login_headers
 
+# todo add topo image checks
 
 def test_successful_create_line(client):
     access_headers, refresh_headers = get_login_headers(client)
