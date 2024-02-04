@@ -3,8 +3,6 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {ActivatedRoute, Route} from '@angular/router';
 import {TopoImage} from '../../../models/topo-image';
-import Konva from 'konva';
-import {ThumbnailSize} from '../../../enums/thumbnail-size';
 import {LinePath} from '../../../models/line-path';
 import {TopoImageComponent} from '../../shared/components/topo-image/topo-image.component';
 
@@ -28,7 +26,6 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;
 
   public topoImage: TopoImage;
-  public thumbnailSizes = ThumbnailSize;
   public linePath: LinePath;
   public isDisabled = false;
 

@@ -20,7 +20,6 @@
       <div class="col-12 clickable-data-item" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{line.slug}}">
         <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
           <lc-topo-image class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                         [thumbnailSize]="thumbnailSizes.S"
                          [topoImage]="line.topoImages[0]" *ngIf="line.topoImages.length > 0"></lc-topo-image>
           <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
                [src]="'assets/placeholder.png'"

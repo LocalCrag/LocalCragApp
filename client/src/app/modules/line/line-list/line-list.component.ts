@@ -3,7 +3,6 @@ import {Area} from '../../../models/area';
 import {LoadingState} from '../../../enums/loading-state';
 import {SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {AreasService} from '../../../services/crud/areas.service';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
@@ -13,7 +12,6 @@ import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
-import {ThumbnailSize} from '../../../enums/thumbnail-size';
 
 /**
  * Component that lists all lines in an area.
@@ -37,7 +35,6 @@ export class LineListComponent implements OnInit {
   public cragSlug: string;
   public sectorSlug: string;
   public areaSlug: string;
-  public thumbnailSizes = ThumbnailSize;
 
   constructor(private linesService: LinesService,
               private store: Store,
