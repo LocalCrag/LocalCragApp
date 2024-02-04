@@ -1,13 +1,17 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {TopoImage} from '../../../models/topo-image';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {TopoImage} from '../../../../models/topo-image';
 import Konva from 'konva';
-import {ThumbnailSize} from '../../../enums/thumbnail-size';
-import {LinePath} from '../../../models/line-path';
+import {ThumbnailSize} from '../../../../enums/thumbnail-size';
+import {LinePath} from '../../../../models/line-path';
 
+/**
+ * Component that shows a topo image with line paths on it.
+ */
 @Component({
   selector: 'lc-topo-image',
   templateUrl: './topo-image.component.html',
-  styleUrls: ['./topo-image.component.scss']
+  styleUrls: ['./topo-image.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class TopoImageComponent implements OnInit {
 
@@ -30,11 +34,17 @@ export class TopoImageComponent implements OnInit {
   private stage: Konva.Stage;
   private lineSizeMultiplicator = 1;
 
-  constructor(public el: ElementRef) {
+  constructor(private el: ElementRef) {
   }
 
+  /**
+   * Loads the background image and draws the lines on it.
+   */
   ngOnInit() {
+    // Load the background image in the appropriate size and set line path size based on it
     this.backgroundImage = new Image();
+    // TODO get rid of thumbnail size as input, instead get container size and load appropriate thumnbil based on that
+    // TODO then also calculate multiplicator correctly
     switch (this.thumbnailSize) {
       case ThumbnailSize.XS:
         this.backgroundImage.src = this.topoImage.image.thumbnailXS;
@@ -60,6 +70,7 @@ export class TopoImageComponent implements OnInit {
         this.backgroundImage.src = this.topoImage.image.path;
         break;
     }
+    // Draw lines after image is fully loaded
     this.backgroundImage.onload = () => {
       this.width = this.backgroundImage.width;
       this.height = this.backgroundImage.height;
@@ -79,6 +90,9 @@ export class TopoImageComponent implements OnInit {
     }
   }
 
+  /**
+   * Create the Konva stage and layer and add a rectangle containing the background image.
+   */
   createKonvaStageAndLayer() {
     this.stage = new Konva.Stage({
       container: this.konvaContainer.nativeElement,
@@ -97,10 +111,22 @@ export class TopoImageComponent implements OnInit {
         event.cancelBubble = true;
         this.imageClick.emit([event.evt.offsetX, event.evt.offsetY]);
       });
+      background.on('mouseenter', () => {
+        this.stage.container().style.cursor = 'pointer';
+      })
+      background.on('mouseleave', () => {
+        this.stage.container().style.cursor = 'default';
+      })
     }
+    this.fitStageIntoParentContainer(this.stage, this.width, this.height)
     this.stageLayer.add(background)
   }
 
+  /**
+   * Draws a line path oin the image.
+   * @param linePath Line path to draw.
+   * @param opacity Opacity of the line.
+   */
   drawLine(linePath: LinePath, opacity: number) {
     const line = new Konva.Arrow({
       points: this.getAbsoluteCoordinates(linePath.path),
@@ -117,6 +143,11 @@ export class TopoImageComponent implements OnInit {
     linePath.konvaLine = line;
   }
 
+  /**
+   * Draws line anchors in edit mode. Those anchors emit their positions via anchorClick when clicked on.
+   * Thereby e.g. a sitstart line can be drawn 100% congruent to the standstart line.
+   * @param linePath
+   */
   drawAnchors(linePath: LinePath) {
     const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
     for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
@@ -132,11 +163,11 @@ export class TopoImageComponent implements OnInit {
         event.cancelBubble = true;
         this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
       });
-      anchor.on('mouseenter', ()=>{
+      anchor.on('mouseenter', () => {
         anchor.fill('red');
         this.stage.container().style.cursor = 'pointer';
       })
-      anchor.on('mouseleave', ()=>{
+      anchor.on('mouseleave', () => {
         anchor.fill('yellow');
         this.stage.container().style.cursor = 'default';
       })
@@ -144,6 +175,11 @@ export class TopoImageComponent implements OnInit {
     }
   }
 
+  /**
+   * Converts the relative coordinates (points array) to an array of absolute coordinate points based on the current
+   * image size.
+   * @param points
+   */
   getAbsoluteCoordinates(points: number[]) {
     const absolutePoints = [];
     for (let i = 0; i < points.length; i++) {
@@ -156,9 +192,27 @@ export class TopoImageComponent implements OnInit {
     return absolutePoints;
   }
 
-  redraw() {
+  /**
+   * Redraws the line in progress.
+   */
+  redrawLinePathInProgress() {
     this.linePathInProgress.konvaLine.destroy();
     this.drawLine(this.linePathInProgress, 1)
+  }
+
+  /**
+   * Scales the stage, so it fit's in the parent container.
+   * @param stage
+   * @param sceneWidth
+   * @param sceneHeight
+   */
+  fitStageIntoParentContainer(stage: Konva.Stage, sceneWidth: number, sceneHeight: number) {
+    const container = this.el.nativeElement
+    const containerWidth = container.offsetWidth;
+    const scale = containerWidth / sceneWidth; // todo scene width differs based on thumbnail size
+    stage.width(sceneWidth * scale);
+    stage.height(sceneHeight * scale);
+    stage.scale({ x: scale, y: scale });
   }
 
 }

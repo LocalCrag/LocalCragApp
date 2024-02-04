@@ -53,3 +53,5 @@ class Line(HasSlug, BaseEntity):
     dihedral = db.Column(db.Boolean, nullable=False, default=False)
     compression = db.Column(db.Boolean, nullable=False, default=False)
     arete = db.Column(db.Boolean, nullable=False, default=False)
+
+    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select") # todo test cascade :image as to stay

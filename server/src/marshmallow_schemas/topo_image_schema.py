@@ -13,5 +13,9 @@ class TopoImageSchema(BaseEntitySchema):
     linePaths = fields.List(fields.Nested(line_path_schema), attribute='line_paths')
 
 
+class TopoImageSchemaForLines(BaseEntitySchema):
+    image = fields.Nested(file_schema, attribute='file')
+
+
 topo_image_schema = TopoImageSchema()
 topo_images_schema = TopoImageSchema(many=True)

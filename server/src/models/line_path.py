@@ -12,4 +12,5 @@ class LinePath(BaseEntity):
     line_id: Mapped[UUID] = mapped_column(db.ForeignKey("lines.id"), primary_key=True)
     topo_image_id: Mapped[UUID] = mapped_column(db.ForeignKey("topo_images.id"), primary_key=True)
     line: Mapped["Line"] = relationship()
+    topo_image: Mapped["TopoImage"] = relationship()
     path = db.Column(JSON, nullable=False)

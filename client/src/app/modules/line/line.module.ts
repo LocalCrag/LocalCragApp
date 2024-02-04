@@ -59,7 +59,7 @@ import { LineInfoComponent } from './line-info/line-info.component';
     BreadcrumbModule,
     RatingModule,
     CalendarModule,
-    CheckboxModule
+    CheckboxModule,
   ],
     exports: [
         LineListComponent,

@@ -10,9 +10,6 @@ export class TopoImage extends AbstractModel {
   image: File;
   linePaths: LinePath[];
 
-  // UI specific parameters
-  selectedLinePath: LinePath;
-
   /**
    * Parses a topo image.
    *
@@ -23,7 +20,7 @@ export class TopoImage extends AbstractModel {
     const topoImage = new TopoImage();
     AbstractModel.deserializeAbstractAttributes(topoImage, payload);
     topoImage.image =  File.deserialize(payload.image);
-    topoImage.linePaths = payload.linePaths.map(LinePath.deserialize);
+    topoImage.linePaths = payload.linePaths ? payload.linePaths.map(LinePath.deserialize) : null;
     return topoImage;
   }
 

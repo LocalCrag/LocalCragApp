@@ -13,6 +13,7 @@ import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
+import {ThumbnailSize} from '../../../enums/thumbnail-size';
 
 /**
  * Component that lists all lines in an area.
@@ -36,6 +37,7 @@ export class LineListComponent implements OnInit {
   public cragSlug: string;
   public sectorSlug: string;
   public areaSlug: string;
+  public thumbnailSizes = ThumbnailSize;
 
   constructor(private linesService: LinesService,
               private store: Store,

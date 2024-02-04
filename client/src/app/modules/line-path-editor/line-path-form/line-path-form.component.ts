@@ -13,6 +13,9 @@ import {Line} from '../../../models/line';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {forkJoin} from 'rxjs';
 
+/**
+ * Form for line paths.
+ */
 @Component({
   selector: 'lc-line-path-form',
   templateUrl: './line-path-form.component.html',

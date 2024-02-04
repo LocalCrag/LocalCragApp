@@ -8,11 +8,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import {RouterLink, RouterModule} from '@angular/router';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
-import {LineListComponent} from '../line/line-list/line-list.component';
 import {SharedModule} from '../shared/shared.module';
 import {CardModule} from 'primeng/card';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import { TopoImageComponent } from './topo-image/topo-image.component';
 import {TableModule} from 'primeng/table';
 import {RatingModule} from 'primeng/rating';
 import {LineModule} from '../line/line.module';
@@ -24,7 +22,6 @@ import {MessageModule} from 'primeng/message';
     declarations: [
         TopoImageListComponent,
         TopoImageFormComponent,
-        TopoImageComponent
     ],
   imports: [
     CommonModule,
@@ -49,7 +46,6 @@ import {MessageModule} from 'primeng/message';
     ],
     exports: [
         TopoImageListComponent,
-        TopoImageComponent
     ],
 })
 export class TopoImagesModule {

@@ -27,7 +27,7 @@ export class LinePath extends AbstractModel {
     const linePath = new LinePath();
     AbstractModel.deserializeAbstractAttributes(linePath, payload);
     linePath.path =  payload.path;
-    linePath.line = Line.deserialize(payload.line);
+    linePath.line = payload.line ? Line.deserialize(payload.line) : null;
     return linePath;
   }
 

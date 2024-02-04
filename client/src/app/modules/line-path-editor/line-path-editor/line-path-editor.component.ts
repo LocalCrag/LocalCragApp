@@ -6,8 +6,11 @@ import {TopoImage} from '../../../models/topo-image';
 import Konva from 'konva';
 import {ThumbnailSize} from '../../../enums/thumbnail-size';
 import {LinePath} from '../../../models/line-path';
-import {TopoImageComponent} from '../../topo-images/topo-image/topo-image.component';
+import {TopoImageComponent} from '../../shared/components/topo-image/topo-image.component';
 
+/**
+ * Form component for drawing a line path.
+ */
 @Component({
   selector: 'lc-line-path-editor',
   templateUrl: './line-path-editor.component.html',
@@ -21,8 +24,6 @@ import {TopoImageComponent} from '../../topo-images/topo-image/topo-image.compon
   ],
 })
 export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
-
-  // todo when immediately drawing a second line path, the first is not shown as low opacity path
 
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;
 
@@ -40,6 +41,9 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
               private route: ActivatedRoute) {
   }
 
+  /**
+   * Loads the topo image on which to draw the line.
+   */
   ngOnInit() {
     this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
     this.topoImagesService.getTopoImage(this.topoImageId).subscribe(topoImage => {
@@ -49,36 +53,54 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
     this.linePath = new LinePath();
   }
 
+  /**
+   * Adds a new point to the path on click.
+   * @param point Point to add.
+   */
   handleClick(point: number[]) {
     if (!this.isDisabled) {
       this.linePath.path.push((point[0] / this.topoImageComponent.width) * 100);
       this.linePath.path.push((point[1] / this.topoImageComponent.height) * 100);
-      this.topoImageComponent.redraw();
+      this.topoImageComponent.redrawLinePathInProgress();
       this.onChange(this.linePath.path);
     }
   }
 
+  /**
+   * Registers the onChange function in the ControlValueAccessor.
+   * @param fn onChange function.
+   */
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
+  /**
+   * Registers the onTouched function in the ControlValueAccessor.
+   * @param fn onTouched function.
+   */
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
+  /**
+   * Sets the disabled state.
+   * @param isDisabled True if component should be disabled.
+   */
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
   }
 
+  /**
+   * Writes a new value to the model.
+   * @param value Value to write to the model.
+   */
   writeValue(value: number[]): void {
     this.linePath.path = value;
   }
-
 
   // todo call when component loses focus, maybe force focus on click before if this is possible?
   onBlur(): void {
     this.onTouched();
   }
-
 
 }

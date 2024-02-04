@@ -152,13 +152,19 @@ export class TopoImageListComponent {
    * @param topoImage The topo image the line path belonged to.
    */
   public deleteLinePath(linePath: LinePath, topoImage: TopoImage) {
-    this.linePathsService.deleteLinePath(this.areaSlug, linePath).subscribe(() => {
+    this.linePathsService.deleteLinePath(this.areaSlug, linePath, topoImage.id).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_DELETED));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1)
+      linePath.konvaLine.destroy();
       // this.loadingState = LoadingState.DEFAULT; todo
     });
   }
 
+  /**
+   * Highlights the passes line path on the topo image.
+   * @param linePath Line path to highlight.
+   * @param topoImage Topo image that the path is a part of. Needed for getting the correct z-index.
+   */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('red');
@@ -167,6 +173,10 @@ export class TopoImageListComponent {
     }
   }
 
+  /**
+   * Un-highlights the passed line path.
+   * @param linePath Line path to un-highlight.
+   */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('yellow');
@@ -174,6 +184,5 @@ export class TopoImageListComponent {
       linePath.konvaLine.zIndex(1); // 0 is the BG image
     }
   }
-
 
 }
