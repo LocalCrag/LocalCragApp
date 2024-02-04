@@ -159,11 +159,11 @@ export class TopoImageListComponent {
     });
   }
 
-  highlightLinePath(linePath: LinePath) {
+  highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('red');
       linePath.konvaLine.stroke('red');
-      linePath.konvaLine.zIndex(1000);
+      linePath.konvaLine.zIndex(topoImage.linePaths.length);
     }
   }
 
@@ -171,7 +171,7 @@ export class TopoImageListComponent {
     if (linePath.konvaLine) {
       linePath.konvaLine.fill('yellow');
       linePath.konvaLine.stroke('yellow');
-      linePath.konvaLine.zIndex(500);
+      linePath.konvaLine.zIndex(1); // 0 is the BG image
     }
   }
 

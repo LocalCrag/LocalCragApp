@@ -48,7 +48,7 @@
                 </div>
               </ng-template>
               <ng-template pTemplate="body" let-linePath>
-                <tr (mouseenter)="highlightLinePath(linePath)" (mouseleave)="unhighlightLinePath(linePath)"
+                <tr (mouseenter)="highlightLinePath(linePath, topoImage)" (mouseleave)="unhighlightLinePath(linePath)"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                     class="line-row">
                   <td class="name-column">{{ linePath.line.name }}</td>

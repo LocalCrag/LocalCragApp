@@ -31,7 +31,8 @@ export class LinePathsService {
     public addLinePath(linePath: LinePath, topoImageId: string, areaSlug: string): Observable<LinePath> {
         return this.http.post(this.api.topoImages.addLinePath(topoImageId), LinePath.serialize(linePath)).pipe(
             tap(() => {
-                this.cache.clear(this.api.topoImages.getList(areaSlug))
+                this.cache.clear(this.api.topoImages.getList(areaSlug));
+                this.cache.clear(this.api.topoImages.getDetail(topoImageId));
             }),
             map(LinePath.deserialize)
         );
