@@ -24,44 +24,48 @@ import {SectorModule} from '../sector/sector.module';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {LineModule} from '../line/line.module';
+import {TopoImagesModule} from '../topo-images/topo-images.module';
+import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module';
 
 
 @NgModule({
-  declarations: [
-    AreaComponent,
-    AreaFormComponent,
-    AreaInfoComponent,
-    AreaListComponent
-  ],
-  imports: [
-    CommonModule,
-    CardModule,
-    TranslocoModule,
-    SharedModule,
-    InputTextModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    ButtonModule,
-    DataViewModule,
-    TagModule,
-    BadgeModule,
-    RouterLink,
-    DropdownModule,
-    MessagesModule,
-    EditorModule,
-    TabMenuModule,
-    ConfirmPopupModule,
-    SkeletonModule,
-    BreadcrumbModule,
-    LineModule
-  ],
-  exports: [
-    AreaListComponent
-  ],
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'area'}
-  ],
+    declarations: [
+        AreaComponent,
+        AreaFormComponent,
+        AreaInfoComponent,
+        AreaListComponent
+    ],
+    imports: [
+        CommonModule,
+        CardModule,
+        TranslocoModule,
+        SharedModule,
+        InputTextModule,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        ButtonModule,
+        DataViewModule,
+        TagModule,
+        BadgeModule,
+        RouterLink,
+        DropdownModule,
+        MessagesModule,
+        EditorModule,
+        TabMenuModule,
+        ConfirmPopupModule,
+        SkeletonModule,
+        BreadcrumbModule,
+        LineModule,
+        TopoImagesModule,
+        LinePathEditorModule
+    ],
+    exports: [
+        AreaListComponent
+    ],
+    providers: [
+        {provide: TRANSLOCO_SCOPE, useValue: 'area'}
+    ],
 })
 export class AreaModule {
 }

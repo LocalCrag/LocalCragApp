@@ -83,6 +83,11 @@ export class AreaComponent implements OnInit {
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
         },
         {
+          label: this.translocoService.translate(marker('area.topoImages')),
+          icon: 'pi pi-fw pi-chart-line',
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
+        },
+        {
           label: this.translocoService.translate(marker('area.gallery')),
           icon: 'pi pi-fw pi-images',
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,

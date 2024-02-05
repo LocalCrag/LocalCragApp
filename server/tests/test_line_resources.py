@@ -77,6 +77,8 @@ def test_successful_create_line(client):
     assert res["compression"] == True
     assert res["arete"] == True
     assert res['id'] is not None
+    assert len(res['linePaths']) == 0
+
 
 def test_create_line_invalid_fa_year(client):
     access_headers, refresh_headers = get_login_headers(client)
@@ -118,6 +120,7 @@ def test_create_line_invalid_fa_year(client):
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
 
+
 def test_create_line_invalid_rating(client):
     access_headers, refresh_headers = get_login_headers(client)
     line_data = {
@@ -157,6 +160,7 @@ def test_create_line_invalid_rating(client):
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
+
 
 def test_create_line_invalid_video_url(client):
     access_headers, refresh_headers = get_login_headers(client)
@@ -239,6 +243,7 @@ def test_create_line_invalid_grade_name(client):
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
 
+
 def test_create_line_invalid_grade_scale_for_line_type(client):
     access_headers, refresh_headers = get_login_headers(client)
     line_data = {
@@ -278,6 +283,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
+
 
 def test_create_line_invalid_grade_scale(client):
     access_headers, refresh_headers = get_login_headers(client)
@@ -319,6 +325,7 @@ def test_create_line_invalid_grade_scale(client):
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
 
+
 def test_create_line_invalid_line_type(client):
     access_headers, refresh_headers = get_login_headers(client)
     line_data = {
@@ -359,6 +366,7 @@ def test_create_line_invalid_line_type(client):
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
     assert rv.status_code == 400
 
+
 def test_successful_get_lines(client):
     rv = client.get('/api/areas/dritter-block-von-links/lines')
     assert rv.status_code == 200
@@ -367,9 +375,13 @@ def test_successful_get_lines(client):
     assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
     assert res[0]['slug'] == "super-spreader"
     assert res[0]['name'] == "Super-Spreader"
+    assert len(res[0]['linePaths']) == 1
+    assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
     assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
     assert res[1]['slug'] == "treppe"
     assert res[1]['name'] == "Treppe"
+    assert len(res[1]['linePaths']) == 1
+    assert res[1]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
 
 
 def test_successful_get_line(client):
@@ -410,6 +422,8 @@ def test_successful_get_line(client):
     assert res["compression"] == True
     assert res["arete"] == False
     assert res['id'] is not None
+    assert len(res['linePaths']) == 1
+    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
 
 
 def test_get_deleted_line(client):
@@ -500,3 +514,5 @@ def test_successful_edit_line(client):
     assert res["compression"] == True
     assert res["arete"] == True
     assert res['id'] is not None
+    assert len(res['linePaths']) == 1
+    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'

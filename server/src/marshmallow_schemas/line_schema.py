@@ -1,10 +1,7 @@
 from marshmallow import fields
 from marshmallow_enum import EnumField
 
-from extensions import ma
-from marshmallow_schemas.file_schema import FileSchema, file_schema
 from models.enums.line_type_enum import LineTypeEnum
-from models.file import File
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 
@@ -48,6 +45,8 @@ class LineSchema(BaseEntitySchema):
     dihedral = fields.Boolean()
     compression = fields.Boolean()
     arete = fields.Boolean()
+
+    linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute='line_paths')
 
 
 line_schema = LineSchema()

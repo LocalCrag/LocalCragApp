@@ -2,9 +2,12 @@
 
   <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" *ngIf="line">
 
+    <lc-topo-image class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
+                   [topoImage]="line.topoImages[0]" *ngIf="line.topoImages.length > 0"></lc-topo-image>
 
     <img class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
          [src]="'assets/placeholder.png'"
+         *ngIf="line.topoImages.length === 0"
          [alt]="line.name"/>
 
     <div

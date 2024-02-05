@@ -1,6 +1,8 @@
 import {AbstractModel} from './abstract-model';
 import {LineType} from '../enums/line-type';
 import {Grade, gradeMap} from '../utility/misc/grades';
+import {LinePath} from './line-path';
+import {TopoImage} from './topo-image';
 
 /**
  * Model of a climbing area's line.
@@ -44,6 +46,12 @@ export class Line extends AbstractModel {
   dihedral: boolean;
   compression: boolean;
   arete: boolean;
+
+  topoImages: TopoImage[];
+
+  // UI specific attributes, not related to data model
+  nameWithGrade: string;
+  disabled = false;
 
   constructor() {
     super();
@@ -97,6 +105,15 @@ export class Line extends AbstractModel {
     line.dihedral = payload.dihedral;
     line.compression = payload.compression;
     line.arete = payload.arete;
+
+    line.topoImages = payload.linePaths.map(linePathJson => {
+      const linePath = LinePath.deserialize(linePathJson);
+      const topoImage = TopoImage.deserialize(linePathJson.topoImage);
+      topoImage.linePaths = [linePath];
+      return topoImage;
+    })
+
+    line.nameWithGrade = `${line.name} ${line.grade.name}`;
 
     return line;
   }

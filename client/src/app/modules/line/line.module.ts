@@ -59,11 +59,12 @@ import { LineInfoComponent } from './line-info/line-info.component';
     BreadcrumbModule,
     RatingModule,
     CalendarModule,
-    CheckboxModule
+    CheckboxModule,
   ],
-  exports: [
-    LineListComponent
-  ],
+    exports: [
+        LineListComponent,
+        LineBoolPropListComponent
+    ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'line'}
   ]

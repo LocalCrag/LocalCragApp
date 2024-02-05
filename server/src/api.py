@@ -4,8 +4,11 @@ from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateAre
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
+from resources.line_path_resources import CreateLinePath, DeleteLinePath
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
+from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
+    GetTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
@@ -66,7 +69,21 @@ def configure_api(app):
     area_bp.add_url_rule('/<string:area_slug>', view_func=DeleteArea.as_view('delete_area'))
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=GetLines.as_view('get_lines'))
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=CreateLine.as_view('create_line'))
+    area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=GetTopoImages.as_view('get_topo_images'))
+    area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=AddTopoImage.as_view('add_topo_image'))
     app.register_blueprint(area_bp, url_prefix='/api/areas')
+
+    # Topo image API
+    area_bp = Blueprint('topo-images', __name__)
+    area_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
+    area_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
+    area_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
+    app.register_blueprint(area_bp, url_prefix='/api/topo-images')
+
+    # Line path API
+    area_bp = Blueprint('line-paths', __name__)
+    area_bp.add_url_rule('/<string:line_path_id>', view_func=DeleteLinePath.as_view('delete_line_path'))
+    app.register_blueprint(area_bp, url_prefix='/api/line-paths')
 
     # Sector API
     sector_bp = Blueprint('sectors', __name__)

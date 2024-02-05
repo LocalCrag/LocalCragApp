@@ -74,20 +74,12 @@ def handle_image_upload(path: str, file, qquuid):
     file_object.thumbnail_xl = False
 
     # Create thumbnails
-    portrait = img.height > img.width
     for size_key, size in image_sizes.items():
-        if portrait:
-            if img.height > size:
-                new_size = (round(img.width * (size / img.height)), size)
-                img = img.resize(new_size)
-            else:
-                continue
+        if img.width > size:
+            new_size = (size, round(img.height * (size / img.width)))
+            img = img.resize(new_size)
         else:
-            if img.width > size:
-                new_size = (size, round(img.height * (size / img.width)))
-                img = img.resize(new_size)
-            else:
-                continue
+            continue
         setattr(file_object, 'thumbnail_{}'.format(size_key), True)
         img.save('uploads/{}_{}.{}'.format(qquuid, size_key, extension))
 

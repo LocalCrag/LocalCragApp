@@ -17,6 +17,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ImageModule} from 'primeng/image';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {TopoImageComponent} from './components/topo-image/topo-image.component';
 
 /**
  * Module for shared components, pipes etc.
@@ -31,7 +32,8 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     ControlGroupDirective,
     MinutesRemainingPipe,
     LeveledGradeDistributionComponent,
-    SingleImageUploadComponent
+    SingleImageUploadComponent,
+    TopoImageComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +53,8 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     ControlGroupDirective,
     MinutesRemainingPipe,
     LeveledGradeDistributionComponent,
-    SingleImageUploadComponent
+    SingleImageUploadComponent,
+    TopoImageComponent
   ]
 })
 export class SharedModule {

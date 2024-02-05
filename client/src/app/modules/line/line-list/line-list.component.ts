@@ -3,7 +3,6 @@ import {Area} from '../../../models/area';
 import {LoadingState} from '../../../enums/loading-state';
 import {SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {AreasService} from '../../../services/crud/areas.service';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';

@@ -14,6 +14,7 @@ class Line(HasSlug, BaseEntity):
     """
     __tablename__ = 'lines'
 
+    slug_blocklist = ['edit', 'create-line', 'gallery', 'ascents']
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     video = db.Column(db.String(120), nullable=True)
@@ -52,3 +53,5 @@ class Line(HasSlug, BaseEntity):
     dihedral = db.Column(db.Boolean, nullable=False, default=False)
     compression = db.Column(db.Boolean, nullable=False, default=False)
     arete = db.Column(db.Boolean, nullable=False, default=False)
+
+    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select")
