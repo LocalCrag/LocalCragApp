@@ -16,7 +16,7 @@
                                 optionLabel="nameWithGrade" placeholder="{{t('linePlaceholder')}}" lcFormControl>
                         <ng-template let-line pTemplate="item">
                             <div class="flex align-items-center gap-2">
-                                <div>{{ line.nameWithGrade }}</div>
+                                <div>{{ line.name }} {{line.grade.name | transloco}}</div>
                             </div>
                         </ng-template>
                     </p-dropdown>

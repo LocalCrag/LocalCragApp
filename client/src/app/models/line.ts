@@ -3,6 +3,7 @@ import {LineType} from '../enums/line-type';
 import {Grade, gradeMap} from '../utility/misc/grades';
 import {LinePath} from './line-path';
 import {TopoImage} from './topo-image';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * Model of a climbing area's line.
@@ -64,7 +65,7 @@ export class Line extends AbstractModel {
    * @param payload Line json payload.
    * @return Parsed Line.
    */
-  public static deserialize(payload: any): Line {
+  public static deserialize(payload: any, translocoService?: TranslocoService): Line {
     const line = new Line();
     AbstractModel.deserializeAbstractAttributes(line, payload);
     line.name = payload.name;
@@ -113,7 +114,11 @@ export class Line extends AbstractModel {
       return topoImage;
     })
 
-    line.nameWithGrade = `${line.name} ${line.grade.name}`;
+    // Only needed for dropdown option display in native selects, therefore transloco translations only needed
+    // when parsing line lists
+    if (translocoService) {
+      line.nameWithGrade = `${line.name} ${translocoService.translate(line.grade.name)}`;
+    }
 
     return line;
   }

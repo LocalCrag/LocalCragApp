@@ -14,9 +14,10 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
-import {GRADES} from '../../../utility/misc/grades';
+import {Grade, GRADES} from '../../../utility/misc/grades';
 import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
 import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-line-form',
@@ -24,6 +25,7 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService]
 })
+@UntilDestroy()
 export class LineFormComponent {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -111,6 +113,20 @@ export class LineFormComponent {
       dihedral: [false],
       compression: [false],
       arete: [false],
+    });
+    this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
+      if(newGrade.value < 0){ // Projects can't have ratings or FA info
+        this.lineForm.get('rating').disable();
+        this.lineForm.get('faYear').disable();
+        this.lineForm.get('faName').disable();
+        this.lineForm.get('rating').setValue(null);
+        this.lineForm.get('faYear').setValue(null);
+        this.lineForm.get('faName').setValue(null);
+      } else {
+        this.lineForm.get('rating').enable();
+        this.lineForm.get('faYear').enable();
+        this.lineForm.get('faName').enable();
+      }
     });
   }
 

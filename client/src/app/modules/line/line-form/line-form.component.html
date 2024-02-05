@@ -43,7 +43,7 @@
                       optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
             <ng-template let-grade pTemplate="item">
               <div class="flex align-items-center gap-2">
-                <div>{{ grade.name }}</div>
+                <div>{{ grade.name | transloco }}</div>
               </div>
             </ng-template>
           </p-dropdown>

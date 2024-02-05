@@ -17,6 +17,7 @@ export class ControlGroupService {
   private controlElements: { [key: string]: ControlElement } = {};
   private hasErrorSubject: Subject<boolean> = new Subject<boolean>();
   private hasErrorAndIsTouchedSubject: Subject<boolean> = new Subject<boolean>();
+  private isDisabledSubject: Subject<boolean> = new Subject<boolean>();
 
   constructor(private formService: FormService) {
     this.formService.addControlGroupService(this);
@@ -31,6 +32,7 @@ export class ControlGroupService {
     if (typeof controlElement.name === 'string') {
       this.controlElements[controlElement.name] = controlElement;
     }
+    this.onDisabledStateChange(); // Compute initial disabled state
   }
 
   /**
@@ -88,6 +90,20 @@ export class ControlGroupService {
   }
 
   /**
+   * Called by the formControl directives. Each time a single disabled state changes, this function will check the
+   * combined disabled state of the control group. The complete control group is disabled when all contained
+   * controls are disabled. In this case the `disabled` class is set on the controlGroup host element and the state
+   * can thus be visualized via CSS.
+   */
+  public onDisabledStateChange() {
+    let isDisabled = true;
+    Object.values(this.controlElements).map(controlElement => {
+      isDisabled = isDisabled && controlElement.control.disabled;
+    });
+    this.isDisabledSubject.next(isDisabled);
+  }
+
+  /**
    * Returns the hasError Observable which emits the current combined error state.
    */
   public get hasError(): Observable<boolean> {
@@ -99,6 +115,13 @@ export class ControlGroupService {
    */
   public hasErrorAndIsTouched(): Observable<boolean> {
     return this.hasErrorAndIsTouchedSubject.asObservable();
+  }
+
+  /**
+   * Returns the isDisabled Observable which emits the current disabled state.
+   */
+  public isDisabled(): Observable<boolean> {
+    return this.isDisabledSubject.asObservable();
   }
 
   /**

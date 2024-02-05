@@ -6,6 +6,7 @@ import {Area} from '../../models/area';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {Line} from '../../models/line';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * CRUD service for lines.
@@ -16,6 +17,7 @@ import {Line} from '../../models/line';
 export class LinesService {
 
   constructor(private api: ApiService,
+              private translocoService: TranslocoService,
               private cache: CacheService,
               private http: HttpClient) {
   }
@@ -32,7 +34,7 @@ export class LinesService {
       tap(() => {
         this.cache.clear(this.api.lines.getList(areaSlug));
       }),
-      map(Line.deserialize)
+      map(l => Line.deserialize(l))
     );
   }
 
@@ -43,7 +45,7 @@ export class LinesService {
    * @return Observable of a list of Lines.
    */
   public getLines(areaSlug: string): Observable<Line[]> {
-    return this.cache.get(this.api.lines.getList(areaSlug), map((lineListJson: any) => lineListJson.map(Line.deserialize)));
+    return this.cache.get(this.api.lines.getList(areaSlug), map((lineListJson: any) => lineListJson.map(l => Line.deserialize(l, this.translocoService))));
   }
 
   /**
@@ -53,7 +55,7 @@ export class LinesService {
    * @return Observable of a Line.
    */
   public getLine(slug: string): Observable<Line> {
-    return this.cache.get(this.api.lines.getDetail(slug), map(Line.deserialize));
+    return this.cache.get(this.api.lines.getDetail(slug), map(l => Line.deserialize(l)));
   }
 
   /**
@@ -85,7 +87,7 @@ export class LinesService {
         this.cache.clear(this.api.lines.getDetail(line.slug));
         this.cache.clear(this.api.lines.getList(areaSlug));
       }),
-      map(Line.deserialize)
+      map(l => Line.deserialize(l))
     );
   }
 

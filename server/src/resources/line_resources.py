@@ -7,6 +7,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.line_schema import lines_schema, line_schema
 from models.area import Area
+from models.grades import GRADES
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -58,9 +59,15 @@ class CreateLine(MethodView):
         new_line.grade_name = line_data['gradeName']
         new_line.grade_scale = line_data['gradeScale']
         new_line.type = line_data['type']
-        new_line.rating = line_data['rating']
-        new_line.fa_year = line_data['faYear']
-        new_line.fa_name = line_data['faName']
+
+        if new_line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
+            new_line.rating = line_data['rating']
+            new_line.fa_year = line_data['faYear']
+            new_line.fa_name = line_data['faName']
+        else:
+            new_line.rating = None
+            new_line.fa_year = None
+            new_line.fa_name = None
 
         new_line.sitstart = line_data['sitstart']
         new_line.eliminate = line_data['eliminate']
@@ -118,9 +125,15 @@ class UpdateLine(MethodView):
         line.grade_name = line_data['gradeName']
         line.grade_scale = line_data['gradeScale']
         line.type = line_data['type']
-        line.rating = line_data['rating']
-        line.fa_year = line_data['faYear']
-        line.fa_name = line_data['faName']
+
+        if line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
+            line.rating = line_data['rating']
+            line.fa_year = line_data['faYear']
+            line.fa_name = line_data['faName']
+        else:
+            line.rating = None
+            line.fa_year = None
+            line.fa_name = None
 
         line.sitstart = line_data['sitstart']
         line.eliminate = line_data['eliminate']
