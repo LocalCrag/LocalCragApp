@@ -21,7 +21,7 @@ class Line(HasSlug, BaseEntity):
     grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
+    rating = db.Column(db.Integer, nullable=True)
     area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)

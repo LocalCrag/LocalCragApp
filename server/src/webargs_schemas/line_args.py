@@ -12,7 +12,7 @@ line_args = {
     "gradeName": fields.Str(required=True, allow_none=False),
     "gradeScale": fields.Str(required=True, allow_none=False),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),
-    "rating": fields.Integer(required=True, allow_none=False, validate=lambda x: 1 <= x <= 5),
+    "rating": fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None),
     "faYear": fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year),
     "faName": fields.Str(required=True, allow_none=True),
 

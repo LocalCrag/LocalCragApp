@@ -87,7 +87,7 @@ export class LineFormComponent {
       description: [''],
       video: ['', [httpUrlValidator()]],
       grade: ['', [Validators.required]],
-      rating: [null, [Validators.required]],
+      rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],
       sitstart: [false],
