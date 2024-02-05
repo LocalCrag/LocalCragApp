@@ -22,7 +22,7 @@ class CreateLinePath(MethodView):
         line_path_data = parser.parse(line_path_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        if LinePath.exists_for_topo_image(image_id):
+        if LinePath.exists_for_topo_image(image_id, line_path_data['line']):
             raise BadRequest('The same line can only be added once for a single topo image.')
 
         new_line_path: LinePath = LinePath()

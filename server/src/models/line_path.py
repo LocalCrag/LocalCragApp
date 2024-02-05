@@ -16,6 +16,6 @@ class LinePath(BaseEntity):
     path = db.Column(JSON, nullable=False)
 
     @classmethod
-    def exists_for_topo_image(cls, topo_image_id):
-        entity = cls.query.filter_by(topo_image_id=topo_image_id).first()
+    def exists_for_topo_image(cls, topo_image_id, line_id):
+        entity = cls.query.filter_by(topo_image_id=topo_image_id, line_id=line_id).first()
         return entity is not None
