@@ -43,8 +43,23 @@
                       optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
             <ng-template let-grade pTemplate="item">
               <div class="flex align-items-center gap-2">
-                <div>{{ grade.name }}</div>
+                <div>{{ grade.name | transloco }}</div>
               </div>
+            </ng-template>
+          </p-dropdown>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('startingPositionLabel')}}</label>
+          <p-dropdown formControlName="startingPosition" [options]="startingPositions" lcFormControl>
+            <ng-template let-startingPosition pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ startingPosition | transloco }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedItem pTemplate="selectedItem">
+              {{ selectedItem | transloco }}
             </ng-template>
           </p-dropdown>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
@@ -53,7 +68,6 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineRatingLabel')}}</label>
           <p-rating formControlName="rating" lcFormControl [cancel]="false"></p-rating>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -79,8 +93,6 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('linePropertiesLabel')}}</label>
-          <p-checkbox label="{{t('lineSitstartLabel')}}" name="sitstart" [binary]="true" formControlName="sitstart"
-                      lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineEliminateLabel')}}" name="eliminate" [binary]="true" formControlName="eliminate"
                       lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineHighballLabel')}}" name="highball" [binary]="true" formControlName="highball"

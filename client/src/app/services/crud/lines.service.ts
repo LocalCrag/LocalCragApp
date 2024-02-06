@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
 import {CacheService} from '../../cache/cache.service';
 import {HttpClient} from '@angular/common/http';
@@ -6,6 +6,7 @@ import {Area} from '../../models/area';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {Line} from '../../models/line';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * CRUD service for lines.

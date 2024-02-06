@@ -14,9 +14,11 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
-import {GRADES} from '../../../utility/misc/grades';
+import {Grade, GRADES} from '../../../utility/misc/grades';
 import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
 import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {StartingPosition} from '../../../enums/starting-position';
 
 @Component({
   selector: 'lc-line-form',
@@ -24,6 +26,7 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService]
 })
+@UntilDestroy()
 export class LineFormComponent {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -34,6 +37,13 @@ export class LineFormComponent {
   public line: Line;
   public editMode = false;
   public grades = GRADES.FB;
+  public startingPositions = [
+    StartingPosition.STAND,
+    StartingPosition.SIT,
+    StartingPosition.CROUCH,
+    StartingPosition.FRENCH,
+    StartingPosition.CANDLE
+  ]
   public today = new Date();
 
   private cragSlug: string;
@@ -85,10 +95,10 @@ export class LineFormComponent {
       description: [''],
       video: ['', [httpUrlValidator()]],
       grade: ['', [Validators.required]],
-      rating: [null, [Validators.required]],
+      rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],
-      sitstart: [false],
+      startingPosition: [StartingPosition.STAND, [Validators.required]],
       eliminate: [false],
       traverse: [false],
       highball: [false],
@@ -112,6 +122,20 @@ export class LineFormComponent {
       compression: [false],
       arete: [false],
     });
+    this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
+      if(newGrade.value < 0){ // Projects can't have ratings or FA info
+        this.lineForm.get('rating').disable();
+        this.lineForm.get('faYear').disable();
+        this.lineForm.get('faName').disable();
+        this.lineForm.get('rating').setValue(null);
+        this.lineForm.get('faYear').setValue(null);
+        this.lineForm.get('faName').setValue(null);
+      } else {
+        this.lineForm.get('rating').enable();
+        this.lineForm.get('faYear').enable();
+        this.lineForm.get('faName').enable();
+      }
+    });
   }
 
   /**
@@ -126,7 +150,7 @@ export class LineFormComponent {
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
-      sitstart: this.line.sitstart,
+      startingPosition: this.line.startingPosition,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
@@ -178,7 +202,7 @@ export class LineFormComponent {
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value? this.lineForm.get('faYear').value.getFullYear() : null;
       line.faName = this.lineForm.get('faName').value;
-      line.sitstart = this.lineForm.get('sitstart').value;
+      line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;

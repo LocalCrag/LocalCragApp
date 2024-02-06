@@ -4,6 +4,7 @@ from marshmallow_enum import EnumField
 from models.enums.line_type_enum import LineTypeEnum
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from models.enums.starting_position_enum import StartingPositionEnum
 
 
 class LineSchema(BaseEntitySchema):
@@ -17,8 +18,8 @@ class LineSchema(BaseEntitySchema):
     gradeScale = fields.String(attribute='grade_scale')
     faYear = fields.Integer(attribute='fa_year')
     faName = fields.String(attribute='fa_name')
+    startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute='starting_position')
 
-    sitstart = fields.Boolean()
     eliminate = fields.Boolean()
     traverse = fields.Boolean()
     highball = fields.Boolean()

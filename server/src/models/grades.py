@@ -4,6 +4,14 @@ GRADES = {
     LineTypeEnum.BOULDER: {
         "FB": [
             {
+                "name": 'CLOSED_PROJECT',
+                "value": -2
+            },
+            {
+                "name": 'OPEN_PROJECT',
+                "value": -1
+            },
+            {
                 "name": '1',
                 "value": 1
             },

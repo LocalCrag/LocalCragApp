@@ -2,6 +2,7 @@ import {Directive, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {fromEvent, Subject, Subscription} from 'rxjs';
 import {ControlGroupService} from './control-group.service';
 import {NgControl} from '@angular/forms';
+import {UntilDestroy} from '@ngneat/until-destroy';
 
 /**
  * A directive that is responsible for watching the touched state of a form control and for registering
@@ -10,6 +11,7 @@ import {NgControl} from '@angular/forms';
 @Directive({
   selector: '[lcFormControl]'
 })
+@UntilDestroy()
 export class FormControlDirective  implements OnInit, OnDestroy {
 
   private fromEventSubscription: Subscription;
@@ -35,6 +37,9 @@ export class FormControlDirective  implements OnInit, OnDestroy {
       touchedChangedSubject,
       name: this.ngControl.name
     });
+    this.ngControl.statusChanges.pipe().subscribe(() => {
+      this.controlGroupService.onDisabledStateChange();
+    })
   }
 
   /**

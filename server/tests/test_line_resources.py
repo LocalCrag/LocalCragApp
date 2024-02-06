@@ -15,7 +15,7 @@ def test_successful_create_line(client):
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -53,7 +53,83 @@ def test_successful_create_line(client):
     assert res["rating"] == 5
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
-    assert res["sitstart"] == True
+    assert res["startingPosition"] == 'FRENCH'
+    assert res["eliminate"] == True
+    assert res["traverse"] == True
+    assert res["highball"] == True
+    assert res["noTopout"] == True
+    assert res["roof"] == True
+    assert res["slab"] == True
+    assert res["vertical"] == True
+    assert res["overhang"] == True
+    assert res["athletic"] == True
+    assert res["technical"] == True
+    assert res["endurance"] == True
+    assert res["cruxy"] == True
+    assert res["dyno"] == True
+    assert res["jugs"] == True
+    assert res["sloper"] == True
+    assert res["crimps"] == True
+    assert res["pockets"] == True
+    assert res["pinches"] == True
+    assert res["crack"] == True
+    assert res["dihedral"] == True
+    assert res["compression"] == True
+    assert res["arete"] == True
+    assert res['id'] is not None
+    assert len(res['linePaths']) == 0
+
+def test_successful_create_line_with_project_status(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "gradeName": "OPEN_PROJECT",
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "rating": 5,
+        "faYear": 2016,
+        "faName": "Dave Graham",
+        "startingPosition": 'FRENCH',
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "noTopout": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+    }
+
+    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    assert rv.status_code == 201
+    res = json.loads(rv.data)
+    assert res['name'] == "Es"
+    assert res['slug'] == "es"
+    assert res['description'] == "Super Boulder"
+    assert res['video'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res['gradeName'] == "OPEN_PROJECT"
+    assert res['gradeScale'] == "FB"
+    assert res['type'] == "BOULDER"
+    assert res["rating"] == None # Should be set to None automatically for projects!
+    assert res["faYear"] == None # Should be set to None automatically for projects!
+    assert res["faName"] == None # Should be set to None automatically for projects!
+    assert res["startingPosition"] == 'FRENCH'
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
@@ -92,7 +168,7 @@ def test_create_line_invalid_fa_year(client):
         "rating": 5,
         "faYear": 9000,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -133,7 +209,7 @@ def test_create_line_invalid_rating(client):
         "rating": 6,
         "faYear": 2014,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -174,7 +250,7 @@ def test_create_line_invalid_video_url(client):
         "rating": 5,
         "faYear": 2014,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -215,7 +291,7 @@ def test_create_line_invalid_grade_name(client):
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -256,7 +332,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -297,7 +373,7 @@ def test_create_line_invalid_grade_scale(client):
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -338,7 +414,47 @@ def test_create_line_invalid_line_type(client):
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'FRENCH',
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "noTopout": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+    }
+
+    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    assert rv.status_code == 400
+
+def test_create_line_invalid_line_starting_position(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "gradeName": "7B+",
+        "gradeScale": "FB",
+        "type": "WEIRD",
+        "rating": 5,
+        "faYear": 2000,
+        "faName": "Dave Graham",
+        "startingPosition": 'PRE_CLIPPED',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -398,7 +514,7 @@ def test_successful_get_line(client):
     assert res["rating"] == 5
     assert res["faYear"] == 2024
     assert res["faName"] == "Felix Engelmann"
-    assert res["sitstart"] == True
+    assert res["startingPosition"] == 'SIT'
     assert res["eliminate"] == False
     assert res["traverse"] == False
     assert res["highball"] == False
@@ -452,7 +568,7 @@ def test_successful_edit_line(client):
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "sitstart": True,
+        "startingPosition": 'STAND',
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -490,7 +606,7 @@ def test_successful_edit_line(client):
     assert res["rating"] == 5
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
-    assert res["sitstart"] == True
+    assert res["startingPosition"] == 'STAND'
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True

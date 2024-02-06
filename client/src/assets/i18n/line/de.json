@@ -1,5 +1,4 @@
 {
-  "lineBoolPropList.sitstart": "Sitzstart",
   "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.traverse": "Traverse",
   "lineBoolPropList.highball": "Highball",
@@ -30,6 +29,7 @@
   "lineForm.lineDescriptionPlaceholder": "Beschreibe hier generelle Aspekte der Linie und anderes worauf es zu achten gilt. Braucht man viele Pads? Bleibt sie lange nass? Sind evtl Griffe brüchig?",
   "lineForm.lineGradeLabel": "Schwierigkeitsgrad",
   "lineForm.gradePlaceholder": "Wähle den Grad...",
+  "lineForm.startingPositionLabel": "Startposition",
   "lineForm.lineRatingLabel": "Bewertung",
   "lineForm.lineVideoLabel": "Video",
   "lineForm.lineVideoPlaceholder": "e.g. Link zu YouTube",
@@ -39,7 +39,6 @@
   "lineForm.lineFAYearLabel": "Jahr der Erstbegehung",
   "lineForm.yearInFutureValidationError": "Das Jahr darf nicht in der Zukunft liegen",
   "lineForm.linePropertiesLabel": "Eigenschaften",
-  "lineForm.lineSitstartLabel": "Sitzstart",
   "lineForm.lineEliminateLabel": "Definition",
   "lineForm.lineHighballLabel": "Highball",
   "lineForm.lineNoTopoutLabel": "Ohne Topout",
@@ -75,5 +74,7 @@
   "line.FA": "FA",
   "lineList.newLineButtonLabel": "Neue Linie",
   "lineList.FA": "FA",
+  "lineBoolPropList.sitstart": "Sitzstart",
+  "lineForm.lineSitstartLabel": "Sitzstart",
   "lineList.lineListTitle": "Linien"
 }

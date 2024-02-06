@@ -31,7 +31,7 @@
               <div class="text-2xl text-900 line-name">
                 <div>
                   <strong>{{ line.name }}</strong>
-                  {{line.grade.name}}
+                  {{line.grade.name | transloco}}
                 </div>
                 <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
               </div>
