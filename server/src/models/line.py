@@ -5,6 +5,7 @@ from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
 
 
@@ -25,8 +26,8 @@ class Line(HasSlug, BaseEntity):
     area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
+    starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
 
-    sitstart = db.Column(db.Boolean, nullable=False, default=False)
     eliminate = db.Column(db.Boolean, nullable=False, default=False)
     traverse = db.Column(db.Boolean, nullable=False, default=False)
     highball = db.Column(db.Boolean, nullable=False, default=False)

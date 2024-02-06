@@ -59,6 +59,7 @@ class CreateLine(MethodView):
         new_line.grade_name = line_data['gradeName']
         new_line.grade_scale = line_data['gradeScale']
         new_line.type = line_data['type']
+        new_line.starting_position = line_data['startingPosition']
 
         if new_line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             new_line.rating = line_data['rating']
@@ -69,7 +70,6 @@ class CreateLine(MethodView):
             new_line.fa_year = None
             new_line.fa_name = None
 
-        new_line.sitstart = line_data['sitstart']
         new_line.eliminate = line_data['eliminate']
         new_line.traverse = line_data['traverse']
         new_line.highball = line_data['highball']
@@ -125,6 +125,7 @@ class UpdateLine(MethodView):
         line.grade_name = line_data['gradeName']
         line.grade_scale = line_data['gradeScale']
         line.type = line_data['type']
+        line.starting_position = line_data['startingPosition']
 
         if line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             line.rating = line_data['rating']
@@ -135,7 +136,6 @@ class UpdateLine(MethodView):
             line.fa_year = None
             line.fa_name = None
 
-        line.sitstart = line_data['sitstart']
         line.eliminate = line_data['eliminate']
         line.traverse = line_data['traverse']
         line.highball = line_data['highball']

@@ -4,6 +4,7 @@ import {Grade, gradeMap} from '../utility/misc/grades';
 import {LinePath} from './line-path';
 import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
+import {StartingPosition} from '../enums/starting-position';
 
 /**
  * Model of a climbing area's line.
@@ -19,8 +20,8 @@ export class Line extends AbstractModel {
   type: LineType;
   faYear: number;
   faName: string;
+  startingPosition: StartingPosition;
 
-  sitstart: boolean;
   eliminate: boolean;
   traverse: boolean;
   highball: boolean;
@@ -51,7 +52,6 @@ export class Line extends AbstractModel {
   topoImages: TopoImage[];
 
   // UI specific attributes, not related to data model
-  nameWithGrade: string;
   disabled = false;
 
   constructor() {
@@ -65,7 +65,7 @@ export class Line extends AbstractModel {
    * @param payload Line json payload.
    * @return Parsed Line.
    */
-  public static deserialize(payload: any, translocoService?: TranslocoService): Line {
+  public static deserialize(payload: any): Line {
     const line = new Line();
     AbstractModel.deserializeAbstractAttributes(line, payload);
     line.name = payload.name;
@@ -78,8 +78,8 @@ export class Line extends AbstractModel {
     line.type = payload.type;
     line.faYear = payload.faYear;
     line.faName = payload.faName;
+line.startingPosition = payload.startingPosition;
 
-    line.sitstart = payload.sitstart;
     line.eliminate = payload.eliminate;
     line.traverse = payload.traverse;
     line.highball = payload.highball;
@@ -114,12 +114,6 @@ export class Line extends AbstractModel {
       return topoImage;
     })
 
-    // Only needed for dropdown option display in native selects, therefore transloco translations only needed
-    // when parsing line lists
-    if (translocoService) {
-      line.nameWithGrade = `${line.name} ${translocoService.translate(line.grade.name)}`;
-    }
-
     return line;
   }
 
@@ -140,8 +134,8 @@ export class Line extends AbstractModel {
       type: line.type,
       faYear: line.faYear,
       faName: line.faName ? line.faName : null,
+      startingPosition: line.startingPosition,
 
-      sitstart: line.sitstart,
       eliminate: line.eliminate,
       traverse: line.traverse,
       highball: line.highball,

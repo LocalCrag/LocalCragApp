@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
 import {CacheService} from '../../cache/cache.service';
 import {HttpClient} from '@angular/common/http';
@@ -17,7 +17,6 @@ import {TranslocoService} from '@ngneat/transloco';
 export class LinesService {
 
   constructor(private api: ApiService,
-              private translocoService: TranslocoService,
               private cache: CacheService,
               private http: HttpClient) {
   }
@@ -34,7 +33,7 @@ export class LinesService {
       tap(() => {
         this.cache.clear(this.api.lines.getList(areaSlug));
       }),
-      map(l => Line.deserialize(l))
+      map(Line.deserialize)
     );
   }
 
@@ -45,7 +44,7 @@ export class LinesService {
    * @return Observable of a list of Lines.
    */
   public getLines(areaSlug: string): Observable<Line[]> {
-    return this.cache.get(this.api.lines.getList(areaSlug), map((lineListJson: any) => lineListJson.map(l => Line.deserialize(l, this.translocoService))));
+    return this.cache.get(this.api.lines.getList(areaSlug), map((lineListJson: any) => lineListJson.map(Line.deserialize)));
   }
 
   /**
@@ -55,7 +54,7 @@ export class LinesService {
    * @return Observable of a Line.
    */
   public getLine(slug: string): Observable<Line> {
-    return this.cache.get(this.api.lines.getDetail(slug), map(l => Line.deserialize(l)));
+    return this.cache.get(this.api.lines.getDetail(slug), map(Line.deserialize));
   }
 
   /**
@@ -87,7 +86,7 @@ export class LinesService {
         this.cache.clear(this.api.lines.getDetail(line.slug));
         this.cache.clear(this.api.lines.getList(areaSlug));
       }),
-      map(l => Line.deserialize(l))
+      map(Line.deserialize)
     );
   }
 

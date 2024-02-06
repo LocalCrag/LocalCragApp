@@ -4,6 +4,7 @@ import validators
 from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 
 line_args = {
     "name": fields.Str(required=True),
@@ -15,8 +16,8 @@ line_args = {
     "rating": fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None),
     "faYear": fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year),
     "faName": fields.Str(required=True, allow_none=True),
+    "startingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
 
-    "sitstart": fields.Boolean(required=True, allow_none=False),
     "eliminate": fields.Boolean(required=True, allow_none=False),
     "traverse": fields.Boolean(required=True, allow_none=False),
     "highball": fields.Boolean(required=True, allow_none=False),

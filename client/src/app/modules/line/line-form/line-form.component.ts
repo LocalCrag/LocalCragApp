@@ -18,6 +18,7 @@ import {Grade, GRADES} from '../../../utility/misc/grades';
 import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
 import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {StartingPosition} from '../../../enums/starting-position';
 
 @Component({
   selector: 'lc-line-form',
@@ -36,6 +37,13 @@ export class LineFormComponent {
   public line: Line;
   public editMode = false;
   public grades = GRADES.FB;
+  public startingPositions = [
+    StartingPosition.STAND,
+    StartingPosition.SIT,
+    StartingPosition.CROUCH,
+    StartingPosition.FRENCH,
+    StartingPosition.CANDLE
+  ]
   public today = new Date();
 
   private cragSlug: string;
@@ -90,7 +98,7 @@ export class LineFormComponent {
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],
-      sitstart: [false],
+      startingPosition: [StartingPosition.STAND, [Validators.required]],
       eliminate: [false],
       traverse: [false],
       highball: [false],
@@ -142,7 +150,7 @@ export class LineFormComponent {
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
-      sitstart: this.line.sitstart,
+      startingPosition: this.line.startingPosition,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
@@ -194,7 +202,7 @@ export class LineFormComponent {
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value? this.lineForm.get('faYear').value.getFullYear() : null;
       line.faName = this.lineForm.get('faName').value;
-      line.sitstart = this.lineForm.get('sitstart').value;
+      line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;

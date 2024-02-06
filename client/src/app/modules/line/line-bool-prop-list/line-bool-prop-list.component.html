@@ -1,6 +1,6 @@
 <ng-container *transloco="let t, read: 'line.lineBoolPropList'">
 
-  <span *ngIf="line.sitstart"><strong>{{t('sitstart')}}</strong></span>
+  <span><strong>{{line.startingPosition | transloco}}</strong></span>
   <span *ngIf="line.eliminate">{{t('eliminate')}}</span>
   <span *ngIf="line.traverse">{{t('traverse')}}</span>
   <span *ngIf="line.highball">{{t('highball')}}</span>

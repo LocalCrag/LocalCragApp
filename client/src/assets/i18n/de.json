@@ -51,6 +51,11 @@
   "resetPassword.passwordsDontMatchAlertText": "Passwörter stimmen nicht überein.",
   "resetPassword.changePasswordButtonLabel": "Passwort ändern",
   "singleImageUploader.browseFilesButtonLabel": "Durchsuchen",
+  "SIT": "Sitzstart",
+  "STAND": "Stehstart",
+  "CROUCH": "Hockstart",
+  "FRENCH": "Sprungstart",
+  "CANDLE": "Kerze",
   "area.askReallyWantToDeleteArea": "Bist Du Dir sicher? Dies ist eine extrem destruktive Aktion und kann nicht rückgängig gemacht werden. Alle Linien sowie Begehungen im Bereich, etc. werden ebenfalls gelöscht. Fortfahren?",
   "area.yesDelete": "Ja, alles löschen!",
   "area.noDontDelete": "Nee, doch nicht.",
@@ -175,6 +180,5 @@
   "8C+": "8C+",
   "9A": "9A",
   "9A+": "9A+",
-  "@ngneat/transloco-keys-manager/marker": "",
   "singleImageUploader.clearUploadedImageButtonLabel": "Bild entfernen"
 }
