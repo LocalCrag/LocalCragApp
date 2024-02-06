@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from extensions import db
@@ -21,7 +22,7 @@ class GetSectors(MethodView):
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
         sectors: Sector = Sector.return_all(filter=lambda: Sector.crag_id == crag_id,
-                                            order_by=lambda: Sector.name.asc())
+                                            order_by=lambda: Sector.order_index.asc())
         return jsonify(sectors_schema.dump(sectors)), 200
 
 
@@ -52,6 +53,7 @@ class CreateSector(MethodView):
         new_sector.portrait_image_id = sector_data['portraitImage']
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
+        new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
 
         db.session.add(new_sector)
         db.session.commit()
@@ -89,6 +91,9 @@ class DeleteSector(MethodView):
         sector: Sector = Sector.find_by_slug(sector_slug)
 
         db.session.delete(sector)
+        db.session.execute(text(
+            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > {} AND crag_id = {}}".format(
+                sector.order_index, sector.crag_id)))
         db.session.commit()
 
         return jsonify(None), 204

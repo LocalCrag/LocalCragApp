@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from extensions import db
@@ -19,7 +20,8 @@ class GetCrags(MethodView):
         @param region_slug: Slug of the region to return the crags for.
         """
         region_id = Region.get_id_by_slug(region_slug)
-        crags: Crag = Crag.return_all(filter=lambda: Crag.region_id == region_id, order_by=lambda: Crag.name.asc())
+        crags: Crag = Crag.return_all(filter=lambda: Crag.region_id == region_id,
+                                      order_by=lambda: Crag.order_index.asc())
         return jsonify(crags_schema.dump(crags)), 200
 
 
@@ -51,6 +53,7 @@ class CreateCrag(MethodView):
         new_crag.portrait_image_id = crag_data['portraitImage']
         new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
+        new_crag.order_index = Crag.find_max_order_index() + 1
 
         db.session.add(new_crag)
         db.session.commit()
@@ -89,6 +92,8 @@ class DeleteCrag(MethodView):
         crag: Crag = Crag.find_by_slug(crag_slug)
 
         db.session.delete(crag)
+        db.session.execute(text(
+            "UPDATE crags SET order_index=order_index - 1 WHERE order_index > {}".format(crag.order_index)))
         db.session.commit()
 
         return jsonify(None), 204

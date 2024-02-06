@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
@@ -20,4 +22,15 @@ class Crag(HasSlug, BaseEntity):
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
     sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select")
+    order_index = db.Column(db.Integer, nullable=False, server_default='0')
+
+    @classmethod
+    def find_max_order_index(cls) -> int:
+        max_order_index = db.session.query(func.max(cls.order_index)).first()
+
+        if not max_order_index:
+            return -1
+
+        return max_order_index[0]
+
 

@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
@@ -21,6 +23,17 @@ class Area(HasSlug, BaseEntity):
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
     lines = db.relationship("Line", cascade="all,delete", backref="area", lazy="select")
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
+    order_index = db.Column(db.Integer, nullable=False, server_default='0')
+
+    @classmethod
+    def find_max_order_index(cls, sector_id) -> int:
+        max_order_index = db.session.query(func.max(cls.order_index)).filter(cls.sector_id == sector_id).first()
+
+        if not max_order_index:
+            return -1
+
+        return max_order_index[0]
+
 
 
 

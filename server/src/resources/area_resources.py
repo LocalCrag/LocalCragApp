@@ -3,6 +3,7 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from extensions import db
@@ -25,7 +26,7 @@ class GetAreas(MethodView):
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
         areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id,
-                                      order_by=lambda: Area.name.asc())
+                                      order_by=lambda: Area.order_index.asc())
         return jsonify(areas_schema.dump(areas)), 200
 
 
@@ -57,6 +58,7 @@ class CreateArea(MethodView):
         new_area.portrait_image_id = area_data['portraitImage']
         new_area.sector_id = sector_id
         new_area.created_by_id = created_by.id
+        new_area.order_index = Area.find_max_order_index(sector_id) + 1
 
         db.session.add(new_area)
         db.session.commit()
@@ -95,6 +97,8 @@ class DeleteArea(MethodView):
         area: Area = Area.find_by_slug(area_slug)
 
         db.session.delete(area)
+        db.session.execute(text(
+            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = {}}".format(area.order_index, area.sector_id)))
         db.session.commit()
 
         return jsonify(None), 204
