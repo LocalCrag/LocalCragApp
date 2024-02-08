@@ -53,7 +53,7 @@ class DeleteLinePath(MethodView):
 
         db.session.delete(line_path)
         db.session.execute(text(
-            "UPDATE line_paths SET order_index=order_index - 1 WHERE order_index > {} AND topo_image_id = {}}".format(
+            "UPDATE line_paths SET order_index=order_index - 1 WHERE order_index > {} AND topo_image_id = '{}'".format(
                 line_path.order_index, line_path.topo_image_id)))
         db.session.commit()
 

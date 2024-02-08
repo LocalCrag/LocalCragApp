@@ -28,16 +28,16 @@ def test_successful_get_sectors(client):
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert len(res) == 2
-    assert res[0]['id'] == "5f186998-7712-4a85-a623-a5126836a2b1"
-    assert res[0]['slug'] == "oben"
-    assert res[0]['name'] == "Oben"
-    assert res[0]['shortDescription'] == ""
-    assert res[0]['portraitImage'] == None
-    assert res[1]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
-    assert res[1]['slug'] == "schattental"
-    assert res[1]['name'] == "Schattental"
-    assert res[1]['shortDescription'] == "Kurze Beschreibung zum Schattental"
-    assert res[1]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
+    assert res[1]['id'] == "5f186998-7712-4a85-a623-a5126836a2b1"
+    assert res[1]['slug'] == "oben"
+    assert res[1]['name'] == "Oben"
+    assert res[1]['shortDescription'] == ""
+    assert res[1]['portraitImage'] == None
+    assert res[0]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
+    assert res[0]['slug'] == "schattental"
+    assert res[0]['name'] == "Schattental"
+    assert res[0]['shortDescription'] == "Kurze Beschreibung zum Schattental"
+    assert res[0]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
 
 
 def test_successful_get_sector(client):

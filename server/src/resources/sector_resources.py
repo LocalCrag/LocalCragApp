@@ -96,7 +96,7 @@ class DeleteSector(MethodView):
 
         db.session.delete(sector)
         db.session.execute(text(
-            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > {} AND crag_id = {}}".format(
+            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > {} AND crag_id = '{}'".format(
                 sector.order_index, sector.crag_id)))
         db.session.commit()
 

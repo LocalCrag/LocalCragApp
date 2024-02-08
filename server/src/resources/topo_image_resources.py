@@ -50,7 +50,7 @@ class DeleteTopoImage(MethodView):
 
         db.session.delete(image)
         db.session.execute(text(
-            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > {} AND area_id = {}}".format(
+            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > {} AND area_id = '{}'".format(
                 image.order_index, image.area_id)))
         db.session.commit()
 

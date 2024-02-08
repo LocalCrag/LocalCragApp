@@ -100,7 +100,7 @@ class DeleteArea(MethodView):
 
         db.session.delete(area)
         db.session.execute(text(
-            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = {}}".format(
+            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = '{}'".format(
                 area.order_index, area.sector_id)))
         db.session.commit()
 
