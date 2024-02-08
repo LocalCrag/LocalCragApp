@@ -3,13 +3,16 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image_schema
 from models.area import Area
 from models.topo_image import TopoImage
 from models.user import User
+from util.validators import validate_order_payload
 
 from webargs_schemas.topo_image_args import topo_image_args
 
@@ -28,6 +31,7 @@ class AddTopoImage(MethodView):
         new_topo_image.file_id = topo_image_data['image']
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
+        new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
 
         db.session.add(new_topo_image)
         db.session.commit()
@@ -45,6 +49,9 @@ class DeleteTopoImage(MethodView):
         image: TopoImage = TopoImage.find_by_id(image_id)
 
         db.session.delete(image)
+        db.session.execute(text(
+            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > {} AND area_id = '{}'".format(
+                image.order_index, image.area_id)))
         db.session.commit()
 
         return jsonify(None), 204
@@ -57,7 +64,8 @@ class GetTopoImages(MethodView):
         Returns all topo images of an area.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id,  order_by=lambda: TopoImage.time_created.asc())
+        topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id,
+                                                            order_by=lambda: TopoImage.order_index.asc())
         return jsonify(topo_images_schema.dump(topo_images)), 200
 
 
@@ -71,3 +79,23 @@ class GetTopoImage(MethodView):
         return topo_image_schema.dump(topo_image), 200
 
 
+class UpdateTopoImageOrder(MethodView):
+    @jwt_required()
+    def put(self, area_slug):
+        """
+        Changes the order index of topo images.
+        """
+        new_order = request.json
+        area_id = Area.get_id_by_slug(area_slug)
+        topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id)
+
+        if not validate_order_payload(new_order, topo_images):
+            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+
+        for topo_image in topo_images:
+            topo_image.order_index = new_order[str(topo_image.id)]
+            db.session.add(topo_image)
+
+        db.session.commit()
+
+        return jsonify(None), 200

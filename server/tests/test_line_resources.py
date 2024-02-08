@@ -632,3 +632,4 @@ def test_successful_edit_line(client):
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+

@@ -18,6 +18,8 @@ import {ImageModule} from 'primeng/image';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TopoImageComponent} from './components/topo-image/topo-image.component';
+import { OrderItemsComponent } from './components/order-items/order-items.component';
+import {OrderListModule} from 'primeng/orderlist';
 
 /**
  * Module for shared components, pipes etc.
@@ -33,7 +35,8 @@ import {TopoImageComponent} from './components/topo-image/topo-image.component';
     MinutesRemainingPipe,
     LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
-    TopoImageComponent
+    TopoImageComponent,
+    OrderItemsComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +45,8 @@ import {TopoImageComponent} from './components/topo-image/topo-image.component';
     FileUploadModule,
     ImageModule,
     TranslocoModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    OrderListModule
   ],
   exports: [
     MomentPipe,

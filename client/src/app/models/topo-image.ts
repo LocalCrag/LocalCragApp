@@ -10,6 +10,7 @@ export class TopoImage extends AbstractModel {
 
   image: File;
   linePaths: LinePath[];
+  orderIndex: number;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
@@ -24,6 +25,7 @@ export class TopoImage extends AbstractModel {
     const topoImage = new TopoImage();
     AbstractModel.deserializeAbstractAttributes(topoImage, payload);
     topoImage.image =  File.deserialize(payload.image);
+    topoImage.orderIndex = payload.orderIndex;
     topoImage.linePaths = payload.linePaths ? payload.linePaths.map(LinePath.deserialize) : null;
     return topoImage;
   }

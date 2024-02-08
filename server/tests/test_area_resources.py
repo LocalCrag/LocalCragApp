@@ -61,10 +61,12 @@ def test_successful_get_areas(client):
     assert res[0]['name'] == "Dritter Block von links"
     assert res[0]['lat'] == 34.343434
     assert res[0]['lng'] == 29.292929
+    assert res[0]['orderIndex'] == 0
     assert res[0]['portraitImage']['id'] == 'e8be1c78-1912-405c-861c-883967485838'
     assert res[1]['id'] == "8c3c70ca-c66c-4e45-85c0-72d46778bec4"
     assert res[1]['slug'] == "noch-ein-bereich"
     assert res[1]['name'] == "Noch ein Bereich"
+    assert res[1]['orderIndex'] == 1
     assert res[1]['portraitImage'] == None
     assert res[1]['lat'] == None
     assert res[1]['lng'] == None
@@ -116,3 +118,29 @@ def test_successful_edit_area(client):
     assert res['lng'] == 42.2
     assert res['portraitImage'] == None
     assert res['id'] is not None
+
+def test_successful_order_areas(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    rv = client.get('/api/sectors/schattental/areas')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res[0]['id'] == "e5bc6b6b-a72a-48e5-a2cc-37bfc7b7183f"
+    assert res[0]['orderIndex'] == 0
+    assert res[1]['id'] == "8c3c70ca-c66c-4e45-85c0-72d46778bec4"
+    assert res[1]['orderIndex'] == 1
+
+    new_order = {
+        "e5bc6b6b-a72a-48e5-a2cc-37bfc7b7183f": 1,
+        "8c3c70ca-c66c-4e45-85c0-72d46778bec4": 0,
+    }
+    rv = client.put('/api/sectors/schattental/areas/update-order', headers=access_headers, json=new_order)
+    assert rv.status_code == 200
+
+    rv = client.get('/api/sectors/schattental/areas')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res[1]['id'] == "e5bc6b6b-a72a-48e5-a2cc-37bfc7b7183f"
+    assert res[1]['orderIndex'] == 1
+    assert res[0]['id'] == "8c3c70ca-c66c-4e45-85c0-72d46778bec4"
+    assert res[0]['orderIndex'] == 0

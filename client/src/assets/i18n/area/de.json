@@ -19,5 +19,6 @@
   "areaForm.editAreaTitle": "Bereich bearbeiten",
   "areaForm.createAreaTitle": "Neuen Bereich erstellen",
   "area.gradeDistribution": "Gradverteilung",
-  "areaList.newAreaButtonLabel": "Neuer Bereich"
+  "areaList.newAreaButtonLabel": "Neuer Bereich",
+  "areaList.reorderAreasButtonLabel": "Bereiche ordnen"
 }

@@ -11,6 +11,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 class TopoImageSchema(BaseEntitySchema):
     image = fields.Nested(file_schema, attribute='file')
     linePaths = fields.List(fields.Nested(line_path_schema), attribute='line_paths')
+    orderIndex = fields.Int(attribute='order_index')
 
 
 class TopoImageSchemaForLines(BaseEntitySchema):

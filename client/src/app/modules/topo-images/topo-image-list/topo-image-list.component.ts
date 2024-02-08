@@ -15,6 +15,11 @@ import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {LinePath} from '../../../models/line-path';
 import {LinePathsService} from '../../../services/crud/line-paths.service';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {ApiService} from '../../../services/core/api.service';
+import {CacheService} from '../../../cache/cache.service';
 
 /**
  * Component that lists all topo images in an area.
@@ -23,8 +28,12 @@ import {LinePathsService} from '../../../services/crud/line-paths.service';
   selector: 'lc-topo-image-list',
   templateUrl: './topo-image-list.component.html',
   styleUrls: ['./topo-image-list.component.scss'],
-  providers: [ConfirmationService]
+  providers: [
+    ConfirmationService,
+    DialogService
+  ]
 })
+@UntilDestroy()
 export class TopoImageListComponent {
 
   public topoImages: TopoImage[];
@@ -40,10 +49,14 @@ export class TopoImageListComponent {
   public cragSlug: string;
   public sectorSlug: string;
   public areaSlug: string;
+  public ref: DynamicDialogRef | undefined;
 
   constructor(private topoImagesService: TopoImagesService,
+              private api: ApiService,
+              private cache: CacheService,
               private store: Store,
               private confirmationService: ConfirmationService,
+              private dialogService: DialogService,
               private linePathsService: LinePathsService,
               private route: ActivatedRoute,
               private translocoService: TranslocoService) {
@@ -56,6 +69,15 @@ export class TopoImageListComponent {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
+    this.refreshData();
+    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.isMobile$ = this.store.pipe(select(selectIsMobile));
+  }
+
+  /**
+   * Loads new data.
+   */
+  refreshData() {
     forkJoin([
       this.topoImagesService.getTopoImages(this.areaSlug),
       this.translocoService.load(`${environment.language}`)
@@ -63,13 +85,11 @@ export class TopoImageListComponent {
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('ascending')), value: '!timeCreated'},
-        {label: this.translocoService.translate(marker('descending')), value: 'timeCreated'}
+        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
       ];
       this.sortKey = this.sortOptions[0];
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-    this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   /**
@@ -183,6 +203,45 @@ export class TopoImageListComponent {
       linePath.konvaLine.stroke('yellow');
       linePath.konvaLine.zIndex(1); // 0 is the BG image
     }
+  }
+
+  /**
+   * Opens the reordering dialog for the topo images.
+   */
+  reorderTopoImages() {
+    this.ref = this.dialogService.open(OrderItemsComponent, {
+      header: this.translocoService.translate(marker('reorderTopoImagesDialogTitle')),
+      data: {
+        items: this.topoImages,
+        itemsName: this.translocoService.translate(marker('reorderTopoImagesDialogItemsName')),
+        callback: this.topoImagesService.updateTopoImageOrder.bind(this.topoImagesService),
+        slugParameter: this.areaSlug,
+        showImage: true
+      }
+    });
+    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+      this.refreshData();
+    });
+  }
+
+  /**
+   * Opens the reordering dialog for the line paths.
+   */
+  reorderLinePaths(topoImage: TopoImage) {
+    this.ref = this.dialogService.open(OrderItemsComponent, {
+      header: this.translocoService.translate(marker('reorderLinePathsDialogTitle')),
+      data: {
+        items: topoImage.linePaths,
+        itemsName: this.translocoService.translate(marker('reorderLinePathsDialogItemsName')),
+        callback: this.linePathsService.updateLinePathOrder.bind(this.linePathsService),
+        slugParameter: topoImage.id,
+        showLinePathLineName: true
+      }
+    });
+    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+      this.cache.clear(this.api.topoImages.getList(this.areaSlug));
+      this.refreshData();
+    });
   }
 
 }

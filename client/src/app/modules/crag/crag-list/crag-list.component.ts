@@ -11,6 +11,9 @@ import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {filter, take} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Component that lists all crags in an area.
@@ -18,8 +21,12 @@ import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 @Component({
   selector: 'lc-crag-list',
   templateUrl: './crag-list.component.html',
-  styleUrls: ['./crag-list.component.scss']
+  styleUrls: ['./crag-list.component.scss'],
+  providers: [
+    DialogService
+  ]
 })
+@UntilDestroy()
 export class CragListComponent implements OnInit {
 
   public crags: Crag[];
@@ -31,9 +38,11 @@ export class CragListComponent implements OnInit {
   public sortField: string;
   public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
+  public ref: DynamicDialogRef | undefined;
 
   constructor(private cragsService: CragsService,
               private store: Store,
+              private dialogService: DialogService,
               private translocoService: TranslocoService) {
   }
 
@@ -41,6 +50,15 @@ export class CragListComponent implements OnInit {
    * Loads the crags on initialization.
    */
   ngOnInit() {
+    this.refreshData();
+    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.isMobile$ = this.store.pipe(select(selectIsMobile));
+  }
+
+  /**
+   * Loads new data.
+   */
+  refreshData() {
     forkJoin([
       this.cragsService.getCrags(),
       this.translocoService.load(`${environment.language}`)
@@ -48,13 +66,13 @@ export class CragListComponent implements OnInit {
       this.crags = crags;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
+        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
         {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
         {label: this.translocoService.translate(marker('sortZA')), value: 'name'}
       ];
       this.sortKey = this.sortOptions[0];
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-    this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   /**
@@ -70,6 +88,23 @@ export class CragListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+  }
+
+  /**
+   * Opens the reordering dialog for the crags.
+   */
+  reorderCrags() {
+    this.ref = this.dialogService.open(OrderItemsComponent, {
+      header: this.translocoService.translate(marker('reorderCragsDialogTitle')),
+      data: {
+        items: this.crags,
+        itemsName: this.translocoService.translate(marker('reorderCragsDialogItemsName')),
+        callback: this.cragsService.updateCragOrder.bind(this.cragsService)
+      }
+    });
+    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+      this.refreshData();
+    });
   }
 
 }

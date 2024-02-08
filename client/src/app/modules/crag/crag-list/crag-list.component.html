@@ -10,10 +10,16 @@
             <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                         optionLabel="label" (onChange)="onSortChange($event)"
                         styleClass="md:mb-0"></p-dropdown>
-            <div class="flex justify-content-end">
+            <div class="flex justify-content-end gap-3">
               <p-button label="{{t('newCragButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/create-crag"
               *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
               <p-button icon="pi pi-plus" routerLink="/topo/create-crag"
+                        *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+              <p-button label="{{t('reorderCragsButtonLabel')}}" icon="pi pi-sort" (click)="reorderCrags()"
+                        [disabled]="crags?.length < 2"
+                        *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
+              <p-button icon="pi pi-sort" (click)="reorderCrags()"
+                        [disabled]="crags?.length < 2"
                         *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
             </div>
           </div>

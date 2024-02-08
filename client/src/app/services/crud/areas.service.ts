@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {Area} from '../../models/area';
+import {ItemOrder} from '../../interfaces/item-order.interface';
 
 /**
  * CRUD service for areas.
@@ -87,6 +88,22 @@ export class AreasService {
         this.cache.clear(this.api.areas.getList(sectorSlug));
       }),
       map(Area.deserialize)
+    );
+  }
+
+  /**
+   * Updates the order of the areas for a sector.
+   *
+   * @param newOrder Area order.
+   * @param sectorSlug Slug of the sector the areas are in.
+   * @return Observable of null.
+   */
+  public updateAreaOrder(newOrder: ItemOrder, sectorSlug: string): Observable<null> {
+    return this.http.put(this.api.areas.updateOrder(sectorSlug), newOrder).pipe(
+      tap(() => {
+        this.cache.clear(this.api.areas.getList(sectorSlug));
+      }),
+      map(() => null)
     );
   }
 

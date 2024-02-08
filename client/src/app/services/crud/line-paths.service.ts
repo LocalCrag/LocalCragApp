@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {LinePath} from '../../models/line-path';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {ItemOrder} from '../../interfaces/item-order.interface';
 
 
 /**
@@ -29,7 +30,7 @@ export class LinePathsService {
    * @return Observable of a LinePath.
    */
   public addLinePath(linePath: LinePath, topoImageId: string, areaSlug: string): Observable<LinePath> {
-    return this.http.post(this.api.topoImages.addLinePath(topoImageId), LinePath.serialize(linePath)).pipe(
+    return this.http.post(this.api.linePaths.addLinePath(topoImageId), LinePath.serialize(linePath)).pipe(
       tap(() => {
         this.cache.clear(this.api.topoImages.getList(areaSlug));
         this.cache.clear(this.api.topoImages.getDetail(topoImageId));
@@ -50,6 +51,22 @@ export class LinePathsService {
     return this.http.delete(this.api.linePaths.delete(linePath.id)).pipe(
       tap(() => {
         this.cache.clear(this.api.topoImages.getList(areaSlug))
+        this.cache.clear(this.api.topoImages.getDetail(topoImageId));
+      }),
+      map(() => null)
+    );
+  }
+
+  /**
+   * Updates the order of the line paths for a topo image.
+   *
+   * @param newOrder Sector order.
+   * @param topoImageId ID of the topo image the line paths are in.
+   * @return Observable of null.
+   */
+  public updateLinePathOrder(newOrder: ItemOrder, topoImageId: string): Observable<null> {
+    return this.http.put(this.api.linePaths.updateOrder(topoImageId), newOrder).pipe(
+      tap(() => {
         this.cache.clear(this.api.topoImages.getDetail(topoImageId));
       }),
       map(() => null)
