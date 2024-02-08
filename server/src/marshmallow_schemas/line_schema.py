@@ -46,6 +46,7 @@ class LineSchema(BaseEntitySchema):
     dihedral = fields.Boolean()
     compression = fields.Boolean()
     arete = fields.Boolean()
+    mantle = fields.Boolean()
 
     linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute='line_paths')
 

@@ -121,6 +121,7 @@ export class LineFormComponent {
       dihedral: [false],
       compression: [false],
       arete: [false],
+      mantle: [false],
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
       if(newGrade.value < 0){ // Projects can't have ratings or FA info
@@ -173,6 +174,7 @@ export class LineFormComponent {
       dihedral: this.line.dihedral,
       compression: this.line.compression,
       arete: this.line.arete,
+      mantle: this.line.mantle,
     });
     this.lineForm.enable();
   }
@@ -225,6 +227,7 @@ export class LineFormComponent {
       line.dihedral = this.lineForm.get('dihedral').value;
       line.compression = this.lineForm.get('compression').value;
       line.arete = this.lineForm.get('arete').value;
+      line.mantle = this.lineForm.get('mantle').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(this.areaSlug, line).subscribe(line => {

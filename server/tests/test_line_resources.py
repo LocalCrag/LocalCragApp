@@ -38,6 +38,7 @@ def test_successful_create_line(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -76,6 +77,7 @@ def test_successful_create_line(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -114,6 +116,7 @@ def test_successful_create_line_with_project_status(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -152,6 +155,7 @@ def test_successful_create_line_with_project_status(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -191,6 +195,7 @@ def test_create_line_invalid_fa_year(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -232,6 +237,7 @@ def test_create_line_invalid_rating(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -273,6 +279,7 @@ def test_create_line_invalid_video_url(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -314,6 +321,7 @@ def test_create_line_invalid_grade_name(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -355,6 +363,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -396,6 +405,7 @@ def test_create_line_invalid_grade_scale(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -437,6 +447,7 @@ def test_create_line_invalid_line_type(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -477,6 +488,7 @@ def test_create_line_invalid_line_starting_position(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -537,6 +549,7 @@ def test_successful_get_line(client):
     assert res["dihedral"] == False
     assert res["compression"] == True
     assert res["arete"] == False
+    assert res["mantle"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -591,6 +604,7 @@ def test_successful_edit_line(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.put('/api/lines/treppe', headers=access_headers, json=line_data)
@@ -629,6 +643,7 @@ def test_successful_edit_line(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'

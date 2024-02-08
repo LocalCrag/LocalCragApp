@@ -44,5 +44,6 @@ line_args = {
     "dihedral": fields.Boolean(required=True, allow_none=False),
     "compression": fields.Boolean(required=True, allow_none=False),
     "arete": fields.Boolean(required=True, allow_none=False),
+    "mantle": fields.Boolean(required=True, allow_none=False),
 
 }

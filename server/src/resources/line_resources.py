@@ -96,6 +96,7 @@ class CreateLine(MethodView):
         new_line.dihedral = line_data['dihedral']
         new_line.compression = line_data['compression']
         new_line.arete = line_data['arete']
+        new_line.mantle = line_data['mantle']
 
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
@@ -162,6 +163,7 @@ class UpdateLine(MethodView):
         line.dihedral = line_data['dihedral']
         line.compression = line_data['compression']
         line.arete = line_data['arete']
+        line.mantle = line_data['mantle']
 
         db.session.add(line)
         db.session.commit()

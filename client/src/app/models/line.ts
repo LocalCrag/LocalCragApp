@@ -48,6 +48,7 @@ export class Line extends AbstractModel {
   dihedral: boolean;
   compression: boolean;
   arete: boolean;
+  mantle: boolean;
 
   topoImages: TopoImage[];
 
@@ -106,6 +107,7 @@ line.startingPosition = payload.startingPosition;
     line.dihedral = payload.dihedral;
     line.compression = payload.compression;
     line.arete = payload.arete;
+    line.mantle = payload.mantle;
 
     line.topoImages = payload.linePaths.map(linePathJson => {
       const linePath = LinePath.deserialize(linePathJson);
@@ -162,6 +164,7 @@ line.startingPosition = payload.startingPosition;
       dihedral: line.dihedral,
       compression: line.compression,
       arete: line.arete,
+      mantle: line.mantle,
     };
   }
 
