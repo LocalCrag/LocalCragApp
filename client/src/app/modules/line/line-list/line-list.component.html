@@ -37,8 +37,6 @@
               </div>
               <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
               <div [innerHTML]="line.description" *ngIf="line.description"></div>
-              <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
-                *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
             </div>
           </div>
         </div>
