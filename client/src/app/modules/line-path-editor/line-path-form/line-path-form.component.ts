@@ -12,6 +12,7 @@ import {LinesService} from '../../../services/crud/lines.service';
 import {Line} from '../../../models/line';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {forkJoin} from 'rxjs';
+import {LinePathEditorComponent} from '../line-path-editor/line-path-editor.component';
 
 /**
  * Form for line paths.
@@ -24,6 +25,7 @@ import {forkJoin} from 'rxjs';
 export class LinePathFormComponent {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(LinePathEditorComponent) linePathEditor: LinePathEditorComponent;
 
   public linePathForm: FormGroup;
   public loadingState = LoadingState.DEFAULT;
@@ -49,23 +51,30 @@ export class LinePathFormComponent {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.buildForm();
-    this.loadingState = LoadingState.INITIAL_LOADING;
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
+    this.refreshData();
+  }
+
+  /**
+   * Loads new data.
+   */
+  refreshData() {
+    this.buildForm();
+    this.loadingState = LoadingState.INITIAL_LOADING;
     forkJoin([
       this.linesService.getLines(this.areaSlug),
       this.topoImagesService.getTopoImage(this.topoImageId)
-    ]).subscribe(([lines, topoImage])=>{
+    ]).subscribe(([lines, topoImage]) => {
       this.lines = lines;
       this.loadingState = LoadingState.DEFAULT;
-      const disabledLineIds: {[lineId: string]: any} = {};
+      const disabledLineIds: { [lineId: string]: any } = {};
       topoImage.linePaths.map(linePath => {
         disabledLineIds[linePath.line.id] = linePath.line;
       });
-      this.lines.map(line=>{
+      this.lines.map(line => {
         line.disabled = line.id in disabledLineIds;
       })
     });
@@ -85,7 +94,7 @@ export class LinePathFormComponent {
   /**
    * Cancels the form.
    */
-  cancel() {
+  leaveEditor() {
     this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
   }
 
@@ -100,8 +109,10 @@ export class LinePathFormComponent {
       linePath.path = this.linePathForm.get('path').value;
       this.linePathsService.addLinePath(linePath, this.topoImageId, this.areaSlug).subscribe(() => {
         this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_ADDED));
-        this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
+        // this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
         this.loadingState = LoadingState.DEFAULT;
+        this.refreshData();
+        this.linePathEditor.refreshData(true);
       });
     } else {
       this.formDirective.markAsTouched();

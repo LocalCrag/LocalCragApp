@@ -42,6 +42,19 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    */
   ngOnInit() {
     this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
+    this.refreshData();
+  }
+
+  /**
+   * Loads new data.
+   *
+   * @param clear If true, the old topo image component is destroyed.
+   */
+  refreshData(clear=false) {
+    if(clear){
+      this.topoImage = null;
+      this.cdr.detectChanges();
+    }
     this.topoImagesService.getTopoImage(this.topoImageId).subscribe(topoImage => {
       this.topoImage = topoImage;
       this.cdr.detectChanges();
