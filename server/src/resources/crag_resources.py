@@ -105,7 +105,7 @@ class UpdateCragOrder(MethodView):
     @jwt_required()
     def put(self):
         """
-        Changes the order index of crags. todo Add test
+        Changes the order index of crags.
         """
         new_order = request.json
         crags = Crag.return_all()

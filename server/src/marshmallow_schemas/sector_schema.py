@@ -12,7 +12,7 @@ class SectorSchema(BaseEntitySchema):
     slug = fields.String()
     shortDescription = fields.String(attribute='short_description')
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
-    orderIndex = fields.Int(attribute='order_index')  # todo tests
+    orderIndex = fields.Int(attribute='order_index')
 
 
 class SectorDetailSchema(SectorSchema):

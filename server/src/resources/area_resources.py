@@ -111,7 +111,7 @@ class UpdateAreaOrder(MethodView):
     @jwt_required()
     def put(self, sector_slug):
         """
-        Changes the order index of areas. todo Add test
+        Changes the order index of areas.
         """
         new_order = request.json
         sector_id = Sector.get_id_by_slug(sector_slug)

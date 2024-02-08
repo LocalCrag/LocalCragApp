@@ -67,3 +67,27 @@ def test_add_line_path_path_duplicate_line(client):
     rv = client.post('/api/topo-images/4e8f0a85-b971-409b-a972-7805173b4a19/line-paths', headers=access_headers,
                      json=line_path_data)
     assert rv.status_code == 400
+
+def test_successful_order_line_paths(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    rv = client.get('/api/areas/dritter-block-von-links/topo-images')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['linePaths'][0]['id'] == "74b746bb-2d79-4ba5-800d-a73af2c60507"
+    assert res[0]['linePaths'][1]['id'] == "f2c62a33-373d-46ab-94ee-7da16239e126"
+
+    new_order = {
+        "74b746bb-2d79-4ba5-800d-a73af2c60507": 1,
+        "f2c62a33-373d-46ab-94ee-7da16239e126": 0,
+    }
+    rv = client.put('/api/topo-images/4e8f0a85-b971-409b-a972-7805173b4a19/line-paths/update-order', headers=access_headers, json=new_order)
+    assert rv.status_code == 200
+
+    rv = client.get('/api/areas/dritter-block-von-links/topo-images')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['linePaths'][0]['id'] == "f2c62a33-373d-46ab-94ee-7da16239e126"
+    assert res[0]['linePaths'][1]['id'] == "74b746bb-2d79-4ba5-800d-a73af2c60507"

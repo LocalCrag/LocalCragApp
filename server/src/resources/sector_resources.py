@@ -107,7 +107,7 @@ class UpdateSectorOrder(MethodView):
     @jwt_required()
     def put(self, crag_slug):
         """
-        Changes the order index of sectors. todo Add test
+        Changes the order index of sectors.
         """
         new_order = request.json
         crag_id = Crag.get_id_by_slug(crag_slug)

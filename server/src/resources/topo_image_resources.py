@@ -83,7 +83,7 @@ class UpdateTopoImageOrder(MethodView):
     @jwt_required()
     def put(self, area_slug):
         """
-        Changes the order index of topo images. todo Add test
+        Changes the order index of topo images.
         """
         new_order = request.json
         area_id = Area.get_id_by_slug(area_slug)

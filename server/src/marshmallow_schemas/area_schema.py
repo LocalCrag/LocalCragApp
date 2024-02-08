@@ -14,7 +14,7 @@ class AreaSchema(BaseEntitySchema):
     lng = fields.Float()
     description = fields.String(attribute='description')
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
-    orderIndex = fields.Int(attribute='order_index') # todo tests
+    orderIndex = fields.Int(attribute='order_index')
 
 
 area_schema = AreaSchema()

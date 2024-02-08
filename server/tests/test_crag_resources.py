@@ -33,11 +33,13 @@ def test_successful_get_crags(client):
     assert res[0]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
     assert res[0]['slug'] == "brione"
     assert res[0]['name'] == "Brione"
+    assert res[0]['orderIndex'] == 0
     assert res[0]['shortDescription'] == "Kurze Beschreibung zu Brione"
     assert res[0]['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
     assert res[1]['slug'] == "chironico"
     assert res[1]['name'] == "Chironico"
+    assert res[1]['orderIndex'] == 1
     assert res[1]['shortDescription'] == "Kurze Beschreibung zu Chironico"
     assert res[1]['portraitImage']['id'] == 'b668385f-9693-414a-a4c7-4da6f3ba405d'
 
@@ -89,3 +91,53 @@ def test_successful_edit_crag(client):
     assert res['rules'] == "Parken nur Samstag und Sonntag 2."
     assert res['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res['id'] is not None
+
+
+def test_successful_order_crags(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    rv = client.get('/api/regions/tessin/crags')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res[0]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
+    assert res[0]['orderIndex'] == 0
+    assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
+    assert res[1]['orderIndex'] == 1
+
+    new_order = {
+        "aabc4539-c02f-4a03-8db3-ea0916e59884": 1,
+        "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0": 0,
+    }
+    rv = client.put('/api/crags/update-order', headers=access_headers, json=new_order)
+    assert rv.status_code == 200
+
+    rv = client.get('/api/regions/tessin/crags')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res[1]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
+    assert res[1]['orderIndex'] == 1
+    assert res[0]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
+    assert res[0]['orderIndex'] == 0
+
+
+def test_order_crags_wrong_number_of_items(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    new_order = {
+        "aabc4539-c02f-4a03-8db3-ea0916e59884": 1,
+        "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0": 0,
+        "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db1": 2,
+    }
+    rv = client.put('/api/crags/update-order', headers=access_headers, json=new_order)
+    assert rv.status_code == 400
+
+
+def test_order_crags_bad_indexes(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    new_order = {
+        "aabc4539-c02f-4a03-8db3-ea0916e59884": 2,
+        "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0": 0,
+    }
+    rv = client.put('/api/crags/update-order', headers=access_headers, json=new_order)
+    assert rv.status_code == 400

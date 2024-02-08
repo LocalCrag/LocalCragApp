@@ -64,7 +64,7 @@ class UpdateLinePathOrder(MethodView):
     @jwt_required()
     def put(self, image_id):
         """
-        Changes the order index of line paths. todo Add test
+        Changes the order index of line paths.
         """
         new_order = request.json
         line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.topo_image_id == image_id)
