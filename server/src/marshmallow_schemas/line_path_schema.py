@@ -11,6 +11,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 class LinePathSchema(BaseEntitySchema):
     line = fields.Nested(line_schema, attribute='line')
     path = fields.List(fields.Float)
+    orderIndex = fields.Int(attribute='order_index') # todo tests
 
 class LinePathSchemaForLines(BaseEntitySchema):
     path = fields.List(fields.Float)

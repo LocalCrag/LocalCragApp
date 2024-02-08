@@ -13,6 +13,9 @@ import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {ActivatedRoute} from '@angular/router';
 import {SelectItem} from 'primeng/api';
+import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 
 /**
  * Component that displays a list of sectors.
@@ -20,8 +23,12 @@ import {SelectItem} from 'primeng/api';
 @Component({
   selector: 'lc-sector-list',
   templateUrl: './sector-list.component.html',
-  styleUrls: ['./sector-list.component.scss']
+  styleUrls: ['./sector-list.component.scss'],
+  providers: [
+    DialogService
+  ]
 })
+@UntilDestroy()
 export class SectorListComponent {
 
   public sectors: Sector[];
@@ -34,9 +41,11 @@ export class SectorListComponent {
   public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
+  public ref: DynamicDialogRef | undefined;
 
   constructor(private sectorsService: SectorsService,
               private route: ActivatedRoute,
+              private dialogService: DialogService,
               private store: Store,
               private translocoService: TranslocoService) {
   }
@@ -46,6 +55,15 @@ export class SectorListComponent {
    */
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
+    this.refreshData();
+    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.isMobile$ = this.store.pipe(select(selectIsMobile));
+  }
+
+  /**
+   * Loads new data.
+   */
+  refreshData(){
     forkJoin([
       this.sectorsService.getSectors(this.cragSlug),
       this.translocoService.load(`${environment.language}`)
@@ -53,13 +71,13 @@ export class SectorListComponent {
       this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
+        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
         {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
         {label: this.translocoService.translate(marker('sortZA')), value: 'name'}
       ];
       this.sortKey = this.sortOptions[0];
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-    this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   /**
@@ -76,4 +94,23 @@ export class SectorListComponent {
       this.sortField = value;
     }
   }
+
+  /**
+   * Opens the reordering dialog for the sectors.
+   */
+  reorderSectors() {
+    this.ref = this.dialogService.open(OrderItemsComponent, {
+      header: this.translocoService.translate(marker('reorderSectorsDialogTitle')),
+      data: {
+        items: this.sectors,
+        itemsName: this.translocoService.translate(marker('reorderSectorsDialogItemsName')),
+        callback: this.sectorsService.updateSectorOrder.bind(this.sectorsService),
+        slugParameter: this.cragSlug
+      }
+    });
+    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+      this.refreshData();
+    });
+  }
+
 }

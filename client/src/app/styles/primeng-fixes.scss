@@ -2,3 +2,9 @@
 .p-image-preview-container{
   display: flex !important;
 }
+
+// Fix dragged elements in orderlist not visible
+.p-orderlist-item:not(.cdk-drag-disabled) {
+  cursor: move;
+  z-index: 1130 !important;
+}

@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
@@ -13,6 +14,7 @@ from models.area import Area
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.validators import validate_order_payload
 
 from webargs_schemas.area_args import area_args
 from webargs_schemas.topo_image_args import topo_image_args
@@ -26,7 +28,7 @@ class GetAreas(MethodView):
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
         areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id,
-                                      order_by=lambda: Area.order_index.asc())
+                                            order_by=lambda: Area.order_index.asc())
         return jsonify(areas_schema.dump(areas)), 200
 
 
@@ -98,9 +100,30 @@ class DeleteArea(MethodView):
 
         db.session.delete(area)
         db.session.execute(text(
-            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = {}}".format(area.order_index, area.sector_id)))
+            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = {}}".format(
+                area.order_index, area.sector_id)))
         db.session.commit()
 
         return jsonify(None), 204
 
 
+class UpdateAreaOrder(MethodView):
+    @jwt_required()
+    def put(self, sector_slug):
+        """
+        Changes the order index of areas. todo Add test
+        """
+        new_order = request.json
+        sector_id = Sector.get_id_by_slug(sector_slug)
+        areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id)
+
+        if not validate_order_payload(new_order, areas):
+            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+
+        for area in areas:
+            area.order_index = new_order[str(area.id)]
+            db.session.add(area)
+
+        db.session.commit()
+
+        return jsonify(None), 200

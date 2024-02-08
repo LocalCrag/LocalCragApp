@@ -20,7 +20,7 @@ class TopoImage(BaseEntity):
     def find_max_order_index(cls, area_id) -> int:
         max_order_index = db.session.query(func.max(cls.order_index)).filter(cls.area_id == area_id).first()
 
-        if not max_order_index:
+        if len(max_order_index) == 0 or max_order_index[0] is None:
             return -1
 
         return max_order_index[0]

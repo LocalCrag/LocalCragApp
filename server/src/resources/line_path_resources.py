@@ -1,3 +1,5 @@
+from typing import List
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -9,6 +11,7 @@ from extensions import db
 from marshmallow_schemas.line_path_schema import line_path_schema
 from models.line_path import LinePath
 from models.user import User
+from util.validators import validate_order_payload
 
 from webargs_schemas.line_path_args import line_path_args
 
@@ -55,3 +58,24 @@ class DeleteLinePath(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
+
+
+class UpdateLinePathOrder(MethodView):
+    @jwt_required()
+    def put(self, image_id):
+        """
+        Changes the order index of line paths. todo Add test
+        """
+        new_order = request.json
+        line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.topo_image_id == image_id)
+
+        if not validate_order_payload(new_order, line_paths):
+            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+
+        for line_path in line_paths:
+            line_path.order_index = new_order[str(line_path.id)]
+            db.session.add(line_path)
+
+        db.session.commit()
+
+        return jsonify(None), 200

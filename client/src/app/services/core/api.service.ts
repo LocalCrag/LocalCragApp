@@ -24,7 +24,8 @@ export class ApiService {
     getList: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
     getDetail: (slug: string): string => `${this.apiHost}crags/${slug}`,
     delete: (slug: string): string => `${this.apiHost}crags/${slug}`,
-    update: (slug: string): string => `${this.apiHost}crags/${slug}`
+    update: (slug: string): string => `${this.apiHost}crags/${slug}`,
+    updateOrder: (): string => `${this.apiHost}crags/update-order`,
   };
 
   public sectors = {
@@ -32,7 +33,8 @@ export class ApiService {
     getList: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
     getDetail: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     delete: (slug: string): string => `${this.apiHost}sectors/${slug}`,
-    update: (slug: string): string => `${this.apiHost}sectors/${slug}`
+    update: (slug: string): string => `${this.apiHost}sectors/${slug}`,
+    updateOrder: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
   };
 
   public areas = {
@@ -40,7 +42,8 @@ export class ApiService {
     getList: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas`,
     getDetail: (slug: string): string => `${this.apiHost}areas/${slug}`,
     delete: (slug: string): string => `${this.apiHost}areas/${slug}`,
-    update: (slug: string): string => `${this.apiHost}areas/${slug}`
+    update: (slug: string): string => `${this.apiHost}areas/${slug}`,
+    updateOrder: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
   };
 
   public topoImages = {
@@ -48,10 +51,12 @@ export class ApiService {
     getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
-    addLinePath: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths`,
+    updateOrder: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
   };
 
   public linePaths = {
+    addLinePath: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths`,
+    updateOrder: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,
     delete: (id: string): string => `${this.apiHost}line-paths/${id}`,
   };
 

@@ -28,7 +28,7 @@ class Crag(HasSlug, BaseEntity):
     def find_max_order_index(cls) -> int:
         max_order_index = db.session.query(func.max(cls.order_index)).first()
 
-        if not max_order_index:
+        if len(max_order_index) == 0 or max_order_index[0] is None:
             return -1
 
         return max_order_index[0]

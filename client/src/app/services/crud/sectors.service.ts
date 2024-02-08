@@ -5,6 +5,8 @@ import {Sector} from '../../models/sector';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {CacheService} from '../../cache/cache.service';
+import {ItemOrder} from '../../interfaces/item-order.interface';
+import {environment} from '../../../environments/environment';
 
 /**
  * CRUD service for sectors.
@@ -85,6 +87,22 @@ export class SectorsService {
         this.cache.clear(this.api.sectors.getDetail(sector.slug))
       }),
       map(Sector.deserialize)
+    );
+  }
+
+  /**
+   * Updates the order of the sectors for a crag.
+   *
+   * @param newOrder Sector order.
+   * @param cragSlug Slug of the crag the sectors are in.
+   * @return Observable of null.
+   */
+  public updateSectorOrder(newOrder: ItemOrder, cragSlug: string): Observable<null> {
+    return this.http.put(this.api.sectors.updateOrder(cragSlug), newOrder).pipe(
+      tap(() => {
+        this.cache.clear(this.api.sectors.getList(cragSlug));
+      }),
+      map(() => null)
     );
   }
 

@@ -6,6 +6,7 @@ import {Crag} from '../../models/crag';
 import {HttpClient} from '@angular/common/http';
 import {CacheService} from '../../cache/cache.service';
 import {environment} from '../../../environments/environment';
+import {ItemOrder} from '../../interfaces/item-order.interface';
 
 /**
  * CRUD service for crags.
@@ -48,7 +49,7 @@ export class CragsService {
   /**
    * Returns a Crag.
    *
-   * @param slug: Slug of the Crag to load.
+   * @param slug Slug of the Crag to load.
    * @return Observable of a Crag.
    */
   public getCrag(slug: string): Observable<Crag> {
@@ -83,6 +84,21 @@ export class CragsService {
         this.cache.clear(this.api.crags.getList(environment.regionSlug));
       }),
       map(Crag.deserialize)
+    );
+  }
+
+  /**
+   * Updates the order of all crags.
+   *
+   * @param newOrder Crag order.
+   * @return Observable of null.
+   */
+  public updateCragOrder(newOrder: ItemOrder): Observable<null> {
+    return this.http.put(this.api.crags.updateOrder(), newOrder).pipe(
+      tap(() => {
+        this.cache.clear(this.api.crags.getList(environment.regionSlug));
+      }),
+      map(() => null)
     );
   }
 

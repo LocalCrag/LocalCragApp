@@ -12,6 +12,7 @@ export class Area extends AbstractModel {
   portraitImage: File;
   lat: number;
   lng: number;
+  orderIndex: number;
 
   /**
    * Parses an area.
@@ -27,6 +28,7 @@ export class Area extends AbstractModel {
     area.lat = payload.lat;
     area.lng = payload.lng;
     area.slug = payload.slug;
+    area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return area;
   }

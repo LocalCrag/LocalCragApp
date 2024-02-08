@@ -1,14 +1,15 @@
 from flask import Blueprint
 
-from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea
+from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
-from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag
-from resources.line_path_resources import CreateLinePath, DeleteLinePath
+from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder
+from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
-from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector
+from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
+    UpdateSectorOrder
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
-    GetTopoImage
+    GetTopoImage, UpdateTopoImageOrder
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
@@ -71,6 +72,7 @@ def configure_api(app):
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=CreateLine.as_view('create_line'))
     area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=GetTopoImages.as_view('get_topo_images'))
     area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=AddTopoImage.as_view('add_topo_image'))
+    area_bp.add_url_rule('/<string:area_slug>/topo-images/update-order', view_func=UpdateTopoImageOrder.as_view('update_topo_image_order'))
     app.register_blueprint(area_bp, url_prefix='/api/areas')
 
     # Topo image API
@@ -78,6 +80,7 @@ def configure_api(app):
     area_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
     area_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
     area_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
+    area_bp.add_url_rule('/<string:image_id>/line-paths/update-order', view_func=UpdateLinePathOrder.as_view('update_line_path_order'))
     app.register_blueprint(area_bp, url_prefix='/api/topo-images')
 
     # Line path API
@@ -92,15 +95,18 @@ def configure_api(app):
     sector_bp.add_url_rule('/<string:sector_slug>', view_func=DeleteSector.as_view('delete_sector'))
     sector_bp.add_url_rule('/<string:sector_slug>/areas', view_func=GetAreas.as_view('get_areas'))
     sector_bp.add_url_rule('/<string:sector_slug>/areas', view_func=CreateArea.as_view('create_area'))
+    sector_bp.add_url_rule('/<string:sector_slug>/areas/update-order', view_func=UpdateAreaOrder.as_view('update_area_order'))
     app.register_blueprint(sector_bp, url_prefix='/api/sectors')
 
     # Crag API
     crag_bp = Blueprint('crags', __name__)
-    crag_bp.add_url_rule('/<string:slug>', view_func=GetCrag.as_view('get_crag_details'))
+    crag_bp.add_url_rule('/update-order', view_func=UpdateCragOrder.as_view('update_crag_order'))
+    crag_bp.add_url_rule('/<string:crag_slug>', view_func=GetCrag.as_view('get_crag_details'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=UpdateCrag.as_view('update_crag'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=DeleteCrag.as_view('delete_crag'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=GetSectors.as_view('get_sectors'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=CreateSector.as_view('create_sector'))
+    crag_bp.add_url_rule('/<string:crag_slug>/sectors/update-order', view_func=UpdateSectorOrder.as_view('update_sector_order'))
     app.register_blueprint(crag_bp, url_prefix='/api/crags')
 
     # Region API

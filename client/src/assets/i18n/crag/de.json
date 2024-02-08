@@ -19,5 +19,6 @@
   "crag.cragRules": "Gebietsregeln",
   "crag.gradeDistribution": "Gradverteilung",
   "cragList.newCragButtonLabel": "Neues Gebiet",
+  "cragList.reorderCragsButtonLabel": "Gebiete ordnen",
   "cragList.cragListTitle": "Gebiete"
 }

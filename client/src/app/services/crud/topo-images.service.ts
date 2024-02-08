@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {LinePath} from '../../models/line-path';
 import {Crag} from '../../models/crag';
+import {ItemOrder} from '../../interfaces/item-order.interface';
 
 /**
  * CRUD service for topo images.
@@ -71,5 +72,23 @@ export class TopoImagesService {
             map(() => null)
         );
     }
+
+  /**
+   * Updates the order of the topo images for an area.
+   *
+   * @param newOrder Sector order.
+   * @param areaSlug Slug of the area the topo images are in.
+   * @return Observable of null.
+   */
+  public updateTopoImageOrder(newOrder: ItemOrder, areaSlug: string): Observable<null> {
+    return this.http.put(this.api.topoImages.updateOrder(areaSlug), newOrder).pipe(
+      tap(() => {
+        this.cache.clear(this.api.topoImages.getList(areaSlug));
+      }),
+      map(() => null)
+    );
+  }
+
+
 
 }

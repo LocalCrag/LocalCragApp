@@ -26,7 +26,7 @@ class LinePath(BaseEntity):
     def find_max_order_index(cls, topo_image_id) -> int:
         max_order_index = db.session.query(func.max(cls.order_index)).filter(cls.topo_image_id == topo_image_id).first()
 
-        if not max_order_index:
+        if len(max_order_index) == 0 or max_order_index[0] is None:
             return -1
 
         return max_order_index[0]

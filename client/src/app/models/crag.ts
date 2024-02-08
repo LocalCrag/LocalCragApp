@@ -12,6 +12,7 @@ export class Crag extends AbstractModel {
   rules: string;
   slug: string;
   portraitImage: File;
+  orderIndex: number;
 
   /**
    * Parses a crag.
@@ -27,6 +28,7 @@ export class Crag extends AbstractModel {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.slug = payload.slug;
+    crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return crag;
   }

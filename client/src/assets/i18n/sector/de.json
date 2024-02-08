@@ -15,5 +15,6 @@
   "sectorForm.editSectorTitle": "Sektor bearbeiten",
   "sectorForm.createSectorTitle": "Sektor erstellen",
   "sector.gradeDistribution": "Gradverteilung",
-  "sectorList.newSectorButtonLabel": "Neuer Sektor"
+  "sectorList.newSectorButtonLabel": "Neuer Sektor",
+  "sectorList.reorderSectorsButtonLabel": "Sektoren ordnen"
 }
