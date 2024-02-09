@@ -70,11 +70,36 @@
           <p-rating formControlName="rating" lcFormControl [cancel]="false"></p-rating>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('lineVideoLabel')}}</label>
-          <input type="text" pInputText formControlName="video" placeholder="{{t('lineVideoPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrlValidationError')}}</small>
+        <div class="flex flex-column gap-2">
+          <label class="form-label">{{t('lineVideosLabel')}}</label>
+
+          <div *ngFor="let lineVideoGroup of (lineForm.get('videos') | asFormArray).controls; index as i"
+               [formGroup]="lineVideoGroup | asFormGroup" class="flex flex-row gap-3">
+            <div lcControlGroup class=" flex flex-column flex-1">
+              <input type="text" pInputText formControlName="title" placeholder="{{t('lineVideoTitlePlaceholder')}}"
+                     lcFormControl/>
+              <div>
+                <small class="p-error" *lcIfError="'required'">{{t('requiredValidationError')}}</small>
+              </div>
+            </div>
+            <div lcControlGroup class=" flex flex-column flex-1">
+              <input type="text" pInputText formControlName="url" placeholder="{{t('lineVideoUrlPlaceholder')}}"
+                     lcFormControl/>
+              <div>
+                <small class="p-error" *lcIfError="'required'">{{t('requiredValidationError')}}</small>
+                <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrlValidationError')}}</small>
+              </div>
+            </div>
+            <p-button (click)="deleteLineVideoControl(i)" icon="pi pi-trash"
+                      styleClass="p-button-danger"></p-button>
+          </div>
+
+          <div>
+          <p-button label="{{t('addVideoButtonLabel')}}" (click)="addLineVideoFormControl()"
+                    class="pl-0"
+                    styleClass="p-button-secondary" icon="pi pi-plus"></p-button>
+          </div>
+
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -115,7 +140,8 @@
                       lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineDihedralLabel')}}" name="dihedral" [binary]="true" formControlName="dihedral"
                       lcFormControl></p-checkbox>
-          <p-checkbox label="{{t('lineCompressionLabel')}}" name="compression" [binary]="true" formControlName="compression"
+          <p-checkbox label="{{t('lineCompressionLabel')}}" name="compression" [binary]="true"
+                      formControlName="compression"
                       lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineAreteLabel')}}" name="arete" [binary]="true" formControlName="arete"
                       lcFormControl></p-checkbox>

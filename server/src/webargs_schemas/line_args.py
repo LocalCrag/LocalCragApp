@@ -6,10 +6,15 @@ from webargs import fields
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
+videos_args = {
+    "url": fields.Str(required=True, allow_none=False, validate=lambda x: validators.url(x) == True),
+    "title": fields.Str(required=True, allow_none=False),
+}
+
 line_args = {
     "name": fields.Str(required=True),
     "description": fields.Str(required=True, allow_none=True),
-    "video": fields.Str(required=True, allow_none=True, validate=lambda x: validators.url(x) == True),
+    "videos": fields.List(fields.Nested(videos_args),  required=True, allow_none=True),
     "gradeName": fields.Str(required=True, allow_none=False),
     "gradeScale": fields.Str(required=True, allow_none=False),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),

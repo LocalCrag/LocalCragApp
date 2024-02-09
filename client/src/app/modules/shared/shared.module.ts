@@ -20,6 +20,8 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TopoImageComponent} from './components/topo-image/topo-image.component';
 import { OrderItemsComponent } from './components/order-items/order-items.component';
 import {OrderListModule} from 'primeng/orderlist';
+import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
+import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
 
 /**
  * Module for shared components, pipes etc.
@@ -36,7 +38,9 @@ import {OrderListModule} from 'primeng/orderlist';
     LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
     TopoImageComponent,
-    OrderItemsComponent
+    OrderItemsComponent,
+    AsFormArrayPipe,
+    AsFormGroupPipe,
   ],
   imports: [
     CommonModule,
@@ -58,7 +62,9 @@ import {OrderListModule} from 'primeng/orderlist';
     MinutesRemainingPipe,
     LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
-    TopoImageComponent
+    TopoImageComponent,
+    AsFormArrayPipe,
+    AsFormGroupPipe
   ]
 })
 export class SharedModule {

@@ -6,6 +6,11 @@ import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
 import {StartingPosition} from '../enums/starting-position';
 
+export interface LineVideo{
+  url: string;
+  title: string;
+}
+
 /**
  * Model of a climbing area's line.
  */
@@ -14,7 +19,7 @@ export class Line extends AbstractModel {
   name: string;
   description: string;
   slug: string;
-  video: string;
+  videos: LineVideo[];
   grade: Grade;
   rating: number;
   type: LineType;
@@ -71,7 +76,7 @@ export class Line extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(line, payload);
     line.name = payload.name;
     line.description = payload.description;
-    line.video = payload.video;
+    line.videos = payload.videos ? payload.videos : [];
     line.slug = payload.slug;
 
     line.grade = gradeMap.FB[payload.gradeName];
@@ -129,7 +134,7 @@ line.startingPosition = payload.startingPosition;
     return {
       name: line.name,
       description: line.description,
-      video: line.video ? line.video : null,
+      videos: line.videos ? line.videos : null,
       gradeScale: 'FB',
       gradeName: line.grade.name,
       rating: line.rating,
