@@ -15,6 +15,11 @@
       <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
 
       <div [innerHTML]="line.description" *ngIf="line.description"></div>
+      <div *ngIf="line.videos">{{t('videoBeta')}}:
+      <span class="link-list">
+        <span *ngFor="let video of line.videos" ><a [href]="video.url" target="_blank">{{video.title}}</a></span>
+      </span>
+      </div>
       <div>{{t('rating')}}:
         <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
       </div>

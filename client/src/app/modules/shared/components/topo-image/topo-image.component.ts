@@ -67,7 +67,7 @@ export class TopoImageComponent implements OnInit {
     this.backgroundImage.onload = () => {
       this.width = this.backgroundImage.width;
       this.height = this.backgroundImage.height;
-      this.lineSizeMultiplicator = this.width  / 250;
+      this.lineSizeMultiplicator = this.width  / 350;
       this.loading = false;
       this.createKonvaStageAndLayer();
       this.topoImage.linePaths.map(linePath => {
@@ -129,8 +129,8 @@ export class TopoImageComponent implements OnInit {
       strokeWidth: 2 * this.lineSizeMultiplicator,
       lineCap: 'square',
       tension: 0,
-      pointerLength: 10 * this.lineSizeMultiplicator,
-      pointerWidth: 10 * this.lineSizeMultiplicator,
+      pointerLength: 6 * this.lineSizeMultiplicator,
+      pointerWidth: 6 * this.lineSizeMultiplicator,
       opacity,
     });
     this.stageLayer.add(line);

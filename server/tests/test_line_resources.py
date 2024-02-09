@@ -8,7 +8,12 @@ def test_successful_create_line(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -38,6 +43,7 @@ def test_successful_create_line(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -46,7 +52,7 @@ def test_successful_create_line(client):
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
-    assert res['video'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res['gradeName'] == "7B+"
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
@@ -76,6 +82,7 @@ def test_successful_create_line(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -84,7 +91,12 @@ def test_successful_create_line_with_project_status(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "OPEN_PROJECT",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -114,6 +126,7 @@ def test_successful_create_line_with_project_status(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -122,7 +135,8 @@ def test_successful_create_line_with_project_status(client):
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
-    assert res['video'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res['videos'][0]['title'] == "Video"
     assert res['gradeName'] == "OPEN_PROJECT"
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
@@ -152,6 +166,7 @@ def test_successful_create_line_with_project_status(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -161,7 +176,12 @@ def test_create_line_invalid_fa_year(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -191,6 +211,7 @@ def test_create_line_invalid_fa_year(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -202,7 +223,12 @@ def test_create_line_invalid_rating(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -232,6 +258,7 @@ def test_create_line_invalid_rating(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -243,7 +270,12 @@ def test_create_line_invalid_video_url(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "eergergergegerg",
+        "videos": [
+            {
+                "url": "sdfsdfsdf",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -273,6 +305,7 @@ def test_create_line_invalid_video_url(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -284,7 +317,12 @@ def test_create_line_invalid_grade_name(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "dfgdf",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -314,6 +352,7 @@ def test_create_line_invalid_grade_name(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -325,7 +364,12 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "TRAD",
@@ -355,6 +399,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -366,7 +411,12 @@ def test_create_line_invalid_grade_scale(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "TRESGDFGD",
         "type": "BOULDER",
@@ -396,6 +446,7 @@ def test_create_line_invalid_grade_scale(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -407,7 +458,12 @@ def test_create_line_invalid_line_type(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "WEIRD",
@@ -437,6 +493,7 @@ def test_create_line_invalid_line_type(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -447,7 +504,12 @@ def test_create_line_invalid_line_starting_position(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "WEIRD",
@@ -477,6 +539,52 @@ def test_create_line_invalid_line_starting_position(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
+    }
+
+    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    assert rv.status_code == 400
+
+def test_create_line_invalid_video_payload(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            }
+        ],
+        "gradeName": "7B+",
+        "gradeScale": "FB",
+        "type": "WEIRD",
+        "rating": 5,
+        "faYear": 2000,
+        "faName": "Dave Graham",
+        "startingPosition": 'SIT',
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "noTopout": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -507,7 +615,7 @@ def test_successful_get_line(client):
     assert res['name'] == "Super-Spreader"
     assert res['slug'] == "super-spreader"
     assert res['description'] == "<p>Geiler Kühlschrankboulder!</p>"
-    assert res['video'] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
+    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
     assert res['gradeName'] == "8A"
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
@@ -537,6 +645,7 @@ def test_successful_get_line(client):
     assert res["dihedral"] == False
     assert res["compression"] == True
     assert res["arete"] == False
+    assert res["mantle"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -561,7 +670,12 @@ def test_successful_edit_line(client):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -591,6 +705,7 @@ def test_successful_edit_line(client):
         "dihedral": True,
         "compression": True,
         "arete": True,
+        "mantle": True,
     }
 
     rv = client.put('/api/lines/treppe', headers=access_headers, json=line_data)
@@ -599,7 +714,7 @@ def test_successful_edit_line(client):
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
-    assert res['video'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res['gradeName'] == "7B+"
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
@@ -629,6 +744,7 @@ def test_successful_edit_line(client):
     assert res["dihedral"] == True
     assert res["compression"] == True
     assert res["arete"] == True
+    assert res["mantle"] == True
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'

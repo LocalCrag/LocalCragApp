@@ -6,6 +6,11 @@ import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
 import {StartingPosition} from '../enums/starting-position';
 
+export interface LineVideo{
+  url: string;
+  title: string;
+}
+
 /**
  * Model of a climbing area's line.
  */
@@ -14,7 +19,7 @@ export class Line extends AbstractModel {
   name: string;
   description: string;
   slug: string;
-  video: string;
+  videos: LineVideo[];
   grade: Grade;
   rating: number;
   type: LineType;
@@ -48,6 +53,7 @@ export class Line extends AbstractModel {
   dihedral: boolean;
   compression: boolean;
   arete: boolean;
+  mantle: boolean;
 
   topoImages: TopoImage[];
 
@@ -70,7 +76,7 @@ export class Line extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(line, payload);
     line.name = payload.name;
     line.description = payload.description;
-    line.video = payload.video;
+    line.videos = payload.videos ? payload.videos : [];
     line.slug = payload.slug;
 
     line.grade = gradeMap.FB[payload.gradeName];
@@ -106,6 +112,7 @@ line.startingPosition = payload.startingPosition;
     line.dihedral = payload.dihedral;
     line.compression = payload.compression;
     line.arete = payload.arete;
+    line.mantle = payload.mantle;
 
     line.topoImages = payload.linePaths.map(linePathJson => {
       const linePath = LinePath.deserialize(linePathJson);
@@ -127,7 +134,7 @@ line.startingPosition = payload.startingPosition;
     return {
       name: line.name,
       description: line.description,
-      video: line.video ? line.video : null,
+      videos: line.videos ? line.videos : null,
       gradeScale: 'FB',
       gradeName: line.grade.name,
       rating: line.rating,
@@ -162,6 +169,7 @@ line.startingPosition = payload.startingPosition;
       dihedral: line.dihedral,
       compression: line.compression,
       arete: line.arete,
+      mantle: line.mantle,
     };
   }
 

@@ -11,6 +11,8 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {filter, take} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadCrags} from '../../../ngrx/actions/core.actions';
 
 @Component({
   selector: 'lc-menu',
@@ -27,6 +29,7 @@ export class MenuComponent implements OnInit {
 
   constructor(private cragsService: CragsService,
               private translocoService: TranslocoService,
+              private actions: Actions,
               private store: Store) {
   }
 
@@ -55,13 +58,7 @@ export class MenuComponent implements OnInit {
           label: this.translocoService.translate(marker('menu.topo')),
           icon: 'pi pi-fw pi-map',
           routerLink: '/topo',
-          items: [
-            {
-              label: this.translocoService.translate(marker('menu.newCrag')),
-              icon: 'pi pi-fw pi-plus',
-              routerLink: '/topo/create-crag',
-            }
-          ]
+          items: []
         },
         {
           label: this.translocoService.translate(marker('menu.ticklist')),
@@ -78,18 +75,34 @@ export class MenuComponent implements OnInit {
           icon: 'pi pi-fw pi-instagram'
         },
       ];
-      this.cragsService.getCrags().subscribe(crags => {
-        crags.map(crag => {
-          this.items[1].items.splice(-2, 0, {
-            label: crag.name,
-            icon: 'pi pi-fw pi-map',
-            routerLink: `/topo/${crag.slug}`
-          })
-        })
-      })
     });
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
+    this.buildCragNavigationMenu();
+    this.actions.pipe(ofType(reloadCrags)).subscribe(() => {
+      this.buildCragNavigationMenu();
+    })
+  }
+
+  /**
+   * Builds the crags navigation menu.
+   */
+  buildCragNavigationMenu() {
+    this.cragsService.getCrags().subscribe(crags => {
+      this.items[1].items = [];
+      crags.map(crag => {
+        this.items[1].items.push({
+          label: crag.name,
+          icon: 'pi pi-fw pi-map',
+          routerLink: `/topo/${crag.slug}`
+        })
+      })
+      this.items[1].items.push({
+        label: this.translocoService.translate(marker('menu.newCrag')),
+        icon: 'pi pi-fw pi-plus',
+        routerLink: '/topo/create-crag',
+      })
+    })
   }
 
   /**

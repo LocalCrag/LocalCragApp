@@ -50,7 +50,8 @@ export class LinePathsService {
   public deleteLinePath(areaSlug: string, linePath: LinePath, topoImageId: string): Observable<null> {
     return this.http.delete(this.api.linePaths.delete(linePath.id)).pipe(
       tap(() => {
-        this.cache.clear(this.api.topoImages.getList(areaSlug))
+        this.cache.clear(this.api.lines.getList(areaSlug));
+        this.cache.clear(this.api.topoImages.getList(areaSlug));
         this.cache.clear(this.api.topoImages.getDetail(topoImageId));
       }),
       map(() => null)

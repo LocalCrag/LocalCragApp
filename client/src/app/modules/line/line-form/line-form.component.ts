@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -12,7 +12,7 @@ import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {Line} from '../../../models/line';
+import {Line, LineVideo} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
 import {Grade, GRADES} from '../../../utility/misc/grades';
 import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
@@ -20,6 +20,9 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
 
+/**
+ * Form component for lines.
+ */
 @Component({
   selector: 'lc-line-form',
   templateUrl: './line-form.component.html',
@@ -93,7 +96,7 @@ export class LineFormComponent {
     this.lineForm = this.fb.group({
       name: ['', [Validators.required]],
       description: [''],
-      video: ['', [httpUrlValidator()]],
+      videos: this.fb.array([]),
       grade: ['', [Validators.required]],
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
@@ -121,9 +124,10 @@ export class LineFormComponent {
       dihedral: [false],
       compression: [false],
       arete: [false],
+      mantle: [false],
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
-      if(newGrade.value < 0){ // Projects can't have ratings or FA info
+      if (newGrade.value < 0) { // Projects can't have ratings or FA info
         this.lineForm.get('rating').disable();
         this.lineForm.get('faYear').disable();
         this.lineForm.get('faName').disable();
@@ -139,13 +143,26 @@ export class LineFormComponent {
   }
 
   /**
+   * Adds a new line video control to the videos form array.
+   */
+  public addLineVideoFormControl() {
+    (this.lineForm.get('videos') as FormArray).push(this.fb.group({
+      url: [null, [Validators.required, httpUrlValidator()]],
+      title: [this.translocoService.translate(marker('videoTitle')), [Validators.required]]
+    }))
+  }
+
+  /**
    * Sets the form value based on an input crag and enables the form afterwards.
    */
   private setFormValue() {
+    this.line.videos.map(video => {
+      this.addLineVideoFormControl();
+    });
     this.lineForm.patchValue({
       name: this.line.name,
       description: this.line.description,
-      video: this.line.video,
+      videos: this.line.videos,
       grade: this.line.grade,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
@@ -173,6 +190,7 @@ export class LineFormComponent {
       dihedral: this.line.dihedral,
       compression: this.line.compression,
       arete: this.line.arete,
+      mantle: this.line.mantle,
     });
     this.lineForm.enable();
   }
@@ -197,10 +215,10 @@ export class LineFormComponent {
       const line = new Line();
       line.name = this.lineForm.get('name').value;
       line.description = this.lineForm.get('description').value;
-      line.video = this.lineForm.get('video').value;
+      line.videos = this.lineForm.get('videos').value;
       line.grade = this.lineForm.get('grade').value;
       line.rating = this.lineForm.get('rating').value;
-      line.faYear = this.lineForm.get('faYear').value? this.lineForm.get('faYear').value.getFullYear() : null;
+      line.faYear = this.lineForm.get('faYear').value ? this.lineForm.get('faYear').value.getFullYear() : null;
       line.faName = this.lineForm.get('faName').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
@@ -225,6 +243,7 @@ export class LineFormComponent {
       line.dihedral = this.lineForm.get('dihedral').value;
       line.compression = this.lineForm.get('compression').value;
       line.arete = this.lineForm.get('arete').value;
+      line.mantle = this.lineForm.get('mantle').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(this.areaSlug, line).subscribe(line => {
@@ -273,6 +292,14 @@ export class LineFormComponent {
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
       this.loadingState = LoadingState.DEFAULT;
     });
+  }
+
+  /**
+   * Deletes the line video form control at the given index from the videos form array.
+   * @param index Index of the control in the array.
+   */
+  public deleteLineVideoControl(index: number){
+    (this.lineForm.get('videos') as FormArray).removeAt(index)
   }
 
 

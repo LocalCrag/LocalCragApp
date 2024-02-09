@@ -9,3 +9,9 @@
   }
 
 }
+
+.link-list{
+  span~span::before {
+    content: ", ";
+  }
+}

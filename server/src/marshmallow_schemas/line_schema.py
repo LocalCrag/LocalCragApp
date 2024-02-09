@@ -11,7 +11,7 @@ class LineSchema(BaseEntitySchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
-    video = fields.String()
+    videos = fields.List(fields.Dict)
     type = EnumField(LineTypeEnum, by_value=True)
     rating = fields.Integer()
     gradeName = fields.String(attribute='grade_name')
@@ -46,6 +46,7 @@ class LineSchema(BaseEntitySchema):
     dihedral = fields.Boolean()
     compression = fields.Boolean()
     arete = fields.Boolean()
+    mantle = fields.Boolean()
 
     linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute='line_paths')
 

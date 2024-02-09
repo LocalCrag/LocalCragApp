@@ -7,6 +7,8 @@ import {HttpClient} from '@angular/common/http';
 import {CacheService} from '../../cache/cache.service';
 import {environment} from '../../../environments/environment';
 import {ItemOrder} from '../../interfaces/item-order.interface';
+import {Store} from '@ngrx/store';
+import {reloadCrags} from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for crags.
@@ -18,6 +20,7 @@ export class CragsService {
 
   constructor(private api: ApiService,
               private cache: CacheService,
+              private store: Store,
               private http: HttpClient) {
   }
 
@@ -32,6 +35,7 @@ export class CragsService {
     return this.http.post(this.api.crags.create(regionSlug), Crag.serialize(crag)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList(regionSlug));
+        this.store.dispatch(reloadCrags());
       }),
       map(Crag.deserialize)
     );
@@ -66,6 +70,7 @@ export class CragsService {
     return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.store.dispatch(reloadCrags());
       }),
       map(() => null)
     );
@@ -82,6 +87,7 @@ export class CragsService {
       tap(() => {
         this.cache.clear(this.api.crags.getDetail(crag.slug));
         this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.store.dispatch(reloadCrags());
       }),
       map(Crag.deserialize)
     );

@@ -55,7 +55,7 @@ class CreateLine(MethodView):
 
         new_line.name = line_data['name']
         new_line.description = line_data['description']
-        new_line.video = line_data['video']
+        new_line.videos = line_data['videos']
         new_line.grade_name = line_data['gradeName']
         new_line.grade_scale = line_data['gradeScale']
         new_line.type = line_data['type']
@@ -96,6 +96,7 @@ class CreateLine(MethodView):
         new_line.dihedral = line_data['dihedral']
         new_line.compression = line_data['compression']
         new_line.arete = line_data['arete']
+        new_line.mantle = line_data['mantle']
 
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
@@ -121,7 +122,7 @@ class UpdateLine(MethodView):
 
         line.name = line_data['name']
         line.description = line_data['description']
-        line.video = line_data['video']
+        line.videos = line_data['videos']
         line.grade_name = line_data['gradeName']
         line.grade_scale = line_data['gradeScale']
         line.type = line_data['type']
@@ -162,6 +163,7 @@ class UpdateLine(MethodView):
         line.dihedral = line_data['dihedral']
         line.compression = line_data['compression']
         line.arete = line_data['arete']
+        line.mantle = line_data['mantle']
 
         db.session.add(line)
         db.session.commit()

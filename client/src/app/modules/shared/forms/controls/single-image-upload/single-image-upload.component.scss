@@ -23,6 +23,9 @@ lc-single-image-upload {
 
   }
 
-
+  // Fix bad spacing below upload button
+  p-fileupload:not([hidden]) {
+    display: inline-block;
+  }
 
 }
