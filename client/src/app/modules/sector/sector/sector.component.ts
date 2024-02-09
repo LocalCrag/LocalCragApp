@@ -90,7 +90,7 @@ export class SectorComponent implements OnInit{
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/topo/${crag.slug}`
+          routerLink: `/topo/${crag.slug}/sectors`
         },
         {
           label: sector.name,

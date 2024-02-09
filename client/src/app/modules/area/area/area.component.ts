@@ -107,11 +107,11 @@ export class AreaComponent implements OnInit {
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/topo/${crag.slug}`
+          routerLink: `/topo/${crag.slug}/sectors`
         },
         {
           label: sector.name,
-          routerLink: `/topo/${crag.slug}/${sector.slug}`
+          routerLink: `/topo/${crag.slug}/${sector.slug}/areas`
         },
         {
           label: area.name,
