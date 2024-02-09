@@ -13,6 +13,10 @@ import {Line} from '../../../models/line';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {forkJoin} from 'rxjs';
 import {LinePathEditorComponent} from '../line-path-editor/line-path-editor.component';
+import {Title} from '@angular/platform-browser';
+import {TranslocoService} from '@ngneat/transloco';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {environment} from '../../../../environments/environment';
 
 /**
  * Form for line paths.
@@ -42,6 +46,8 @@ export class LinePathFormComponent {
               private store: Store,
               private route: ActivatedRoute,
               private router: Router,
+              private title: Title,
+              private translocoService: TranslocoService,
               private linesService: LinesService,
               private topoImagesService: TopoImagesService,
               private linePathsService: LinePathsService) {
@@ -56,6 +62,7 @@ export class LinePathFormComponent {
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
     this.refreshData();
+    this.title.setTitle(`${this.translocoService.translate(marker('addLinePathBrowserTitle'))} - ${environment.instanceName}`)
   }
 
   /**

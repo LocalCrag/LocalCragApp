@@ -10,6 +10,10 @@ import {LoadingState} from '../../../enums/loading-state';
 import {selectForgotPasswordLoadingState} from '../../../ngrx/selectors/auth.selectors';
 import {forgotPassword} from '../../../ngrx/actions/auth.actions';
 import {Router} from '@angular/router';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {environment} from '../../../../environments/environment';
+import {Title} from '@angular/platform-browser';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * A component that shows a form for requesting a reset password link per mail.
@@ -29,9 +33,9 @@ export class ForgotPasswordComponent implements OnInit{
   public loadingState$: Observable<LoadingState>;
   public loadingStates = LoadingState;
 
-  constructor(private authCrud: AuthCrudService,
+  constructor(private title: Title,
               private store: Store<AppState>,
-              private notifications: AppNotificationsService,
+              private translocoService: TranslocoService,
               private fb: FormBuilder) {
   }
 
@@ -39,6 +43,7 @@ export class ForgotPasswordComponent implements OnInit{
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    this.title.setTitle(`${this.translocoService.translate(marker('forgotPasswordBrowserTitle'))} - ${environment.instanceName}`)
     this.buildForm();
     this.loadingState$ = this.store.pipe(select(selectForgotPasswordLoadingState));
   }

@@ -20,6 +20,7 @@ export class TopoImageComponent implements OnInit {
   @Input() topoImage: TopoImage;
   @Input() linePathInProgress: LinePath = null;
   @Input() editorMode = false;
+  @Input() showLineNumbers = false;
 
   @Output() anchorClick: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Output() imageClick: EventEmitter<number[]> = new EventEmitter<number[]>();
@@ -29,7 +30,8 @@ export class TopoImageComponent implements OnInit {
   public height: number;
 
   private backgroundImage: any;
-  private stageLayer: Konva.Layer;
+  private lineLayer: Konva.Layer;
+  private numberLayer: Konva.Layer;
   private stage: Konva.Stage;
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
@@ -67,11 +69,14 @@ export class TopoImageComponent implements OnInit {
     this.backgroundImage.onload = () => {
       this.width = this.backgroundImage.width;
       this.height = this.backgroundImage.height;
-      this.lineSizeMultiplicator = this.width  / 350;
+      this.lineSizeMultiplicator = this.width / 350;
       this.loading = false;
       this.createKonvaStageAndLayer();
-      this.topoImage.linePaths.map(linePath => {
+      this.topoImage.linePaths.map((linePath, index) => {
         this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
+        if (this.showLineNumbers) {
+          this.drawLineNumber(linePath, String(index + 1));
+        }
       })
       if (this.linePathInProgress) {
         this.drawLine(this.linePathInProgress, 1)
@@ -93,8 +98,10 @@ export class TopoImageComponent implements OnInit {
       width: this.width,
       height: this.height,
     });
-    this.stageLayer = new Konva.Layer();
-    this.stage.add(this.stageLayer);
+    this.lineLayer = new Konva.Layer();
+    this.stage.add(this.lineLayer);
+    this.numberLayer = new Konva.Layer();
+    this.stage.add(this.numberLayer);
     const background = new Konva.Rect({
       width: this.width,
       height: this.height
@@ -103,7 +110,7 @@ export class TopoImageComponent implements OnInit {
     if (this.editorMode) {
       background.on('click', (event) => {
         event.cancelBubble = true;
-        this.imageClick.emit([event.evt.offsetX * (1/this.scale), event.evt.offsetY * (1/this.scale)]);
+        this.imageClick.emit([event.evt.offsetX * (1 / this.scale), event.evt.offsetY * (1 / this.scale)]);
       });
       background.on('mouseenter', () => {
         this.stage.container().style.cursor = 'pointer';
@@ -113,11 +120,11 @@ export class TopoImageComponent implements OnInit {
       })
     }
     this.fitStageIntoParentContainer();
-    this.stageLayer.add(background)
+    this.lineLayer.add(background)
   }
 
   /**
-   * Draws a line path oin the image.
+   * Draws a line path on the image.
    * @param linePath Line path to draw.
    * @param opacity Opacity of the line.
    */
@@ -133,8 +140,45 @@ export class TopoImageComponent implements OnInit {
       pointerWidth: 6 * this.lineSizeMultiplicator,
       opacity,
     });
-    this.stageLayer.add(line);
+    this.lineLayer.add(line);
     linePath.konvaLine = line;
+  }
+
+  /**
+   * Draws a rectangle on the image that contains the line number.
+   * @param linePath Line path for which to draw the numbered rectangle. First coordinate of the line path is the
+   * position of the rect.
+   * @param text Text to write in the rect.
+   */
+  drawLineNumber(linePath: LinePath, text: string) {
+    const absoluteCoordinates = this.getAbsoluteCoordinates([linePath.path[0], linePath.path[1]]);
+    const rectSize = 20 * this.lineSizeMultiplicator;
+    const rectangleGroup = new Konva.Group({
+      x: absoluteCoordinates[0] - (rectSize / 2),
+      y: absoluteCoordinates[1] - (rectSize / 2),
+      width: rectSize,
+      height: rectSize,
+    });
+    const rectangle = new Konva.Rect({
+      width: rectSize,
+      height: rectSize,
+      fill: 'yellow',
+      cornerRadius: rectSize / 6
+    });
+    rectangleGroup.add(rectangle);
+    const konvaText = new Konva.Text({
+      text,
+      fontSize: rectSize / 2,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      fill: '#000',
+      width: rectSize,
+      padding: rectSize / 4,
+      align: 'center'
+    });
+    rectangleGroup.add(konvaText);
+    this.numberLayer.add(rectangleGroup);
+    linePath.konvaRect = rectangle;
+    linePath.konvaText = konvaText;
   }
 
   /**
@@ -165,7 +209,7 @@ export class TopoImageComponent implements OnInit {
         anchor.fill('yellow');
         this.stage.container().style.cursor = 'default';
       })
-      this.stageLayer.add(anchor);
+      this.lineLayer.add(anchor);
     }
   }
 

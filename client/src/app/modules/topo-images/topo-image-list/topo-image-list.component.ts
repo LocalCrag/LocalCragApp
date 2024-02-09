@@ -190,6 +190,8 @@ export class TopoImageListComponent {
       linePath.konvaLine.fill('red');
       linePath.konvaLine.stroke('red');
       linePath.konvaLine.zIndex(topoImage.linePaths.length);
+      linePath.konvaRect.fill('red');
+      linePath.konvaText.fill('#fff')
     }
   }
 
@@ -202,6 +204,8 @@ export class TopoImageListComponent {
       linePath.konvaLine.fill('yellow');
       linePath.konvaLine.stroke('yellow');
       linePath.konvaLine.zIndex(1); // 0 is the BG image
+      linePath.konvaRect.fill('yellow');
+      linePath.konvaText.fill('#000')
     }
   }
 

@@ -18,6 +18,7 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
+import {Title} from '@angular/platform-browser';
 
 /**
  * Component for uploading topo images.
@@ -43,6 +44,8 @@ export class TopoImageFormComponent {
     constructor(private fb: FormBuilder,
                 private store: Store,
                 private route: ActivatedRoute,
+                private title: Title,
+                private translocoService: TranslocoService,
                 private router: Router,
                 private topoImagesService: TopoImagesService) {
     }
@@ -55,6 +58,7 @@ export class TopoImageFormComponent {
         this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+      this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
     }
 
     /**

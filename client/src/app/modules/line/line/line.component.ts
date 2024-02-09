@@ -81,7 +81,7 @@ export class LineComponent {
       this.sector = sector;
       this.area = area;
       this.line = line;
-      this.title.setTitle(`${crag.name} / ${sector.name} / ${area.name} / ${line.name} - ${environment.instanceName}`)
+      this.title.setTitle(`${line.name} / ${area.name} / ${sector.name} / ${crag.name} - ${environment.instanceName}`)
       this.items = [
         {
           label: this.translocoService.translate(marker('line.infos')),
@@ -109,15 +109,15 @@ export class LineComponent {
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/topo/${crag.slug}`
+          routerLink: `/topo/${crag.slug}/sectors`
         },
         {
           label: sector.name,
-          routerLink: `/topo/${crag.slug}/${sector.slug}`
+          routerLink: `/topo/${crag.slug}/${sector.slug}/areas`
         },
         {
           label: area.name,
-          routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}`
+          routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/lines`
         },
         {
           label: `${line.name} ${line.grade.name}`,

@@ -23,3 +23,21 @@
   width: 125px;
 }
 
+.line-number{
+  background-color: yellow;
+  border-radius: .25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-size: .9rem;
+}
+
+tr:hover{
+  .line-number{
+    background-color: red;
+    color: #fff;
+  }
+}

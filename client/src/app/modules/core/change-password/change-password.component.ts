@@ -10,6 +10,10 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
 import {passwordsValidator} from '../../../utility/validators/passwords.validator';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {environment} from '../../../../environments/environment';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * A component that shows a form for changing the user's password.
@@ -32,6 +36,8 @@ export class ChangePasswordComponent implements OnInit {
 
 
   constructor(private authCrudService: AuthCrudService,
+              private title: Title,
+              private translocoService: TranslocoService,
               private store: Store<AppState>,
               private router: Router,
               private fb: FormBuilder) {
@@ -41,6 +47,7 @@ export class ChangePasswordComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    this.title.setTitle(`${this.translocoService.translate(marker('changePasswordBrowserTitle'))} - ${environment.instanceName}`)
     this.buildForm();
   }
 

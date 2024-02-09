@@ -14,6 +14,7 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
+import {Title} from '@angular/platform-browser';
 
 /**
  * Form component for creating and editing sectors.
@@ -38,6 +39,7 @@ export class SectorFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private store: Store,
+              private title: Title,
               private route: ActivatedRoute,
               private router: Router,
               private sectorsService: SectorsService,
@@ -66,6 +68,7 @@ export class SectorFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       });
     } else {
+      this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${environment.instanceName}`)
       this.loadingState = LoadingState.DEFAULT;
     }
   }

@@ -16,6 +16,7 @@ import {RatingModule} from 'primeng/rating';
 import {LineModule} from '../line/line.module';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
+import {TagModule} from 'primeng/tag';
 
 
 @NgModule({
@@ -23,24 +24,25 @@ import {MessageModule} from 'primeng/message';
         TopoImageListComponent,
         TopoImageFormComponent,
     ],
-  imports: [
-    CommonModule,
-    CardModule,
-    DataViewModule,
-    DropdownModule,
-    FormsModule,
-    ButtonModule,
-    RouterLink,
-    SharedModule,
-    TranslocoModule,
-    ReactiveFormsModule,
-    ConfirmPopupModule,
-    TableModule,
-    RatingModule,
-    LineModule,
-    MessagesModule,
-    MessageModule
-  ],
+    imports: [
+        CommonModule,
+        CardModule,
+        DataViewModule,
+        DropdownModule,
+        FormsModule,
+        ButtonModule,
+        RouterLink,
+        SharedModule,
+        TranslocoModule,
+        ReactiveFormsModule,
+        ConfirmPopupModule,
+        TableModule,
+        RatingModule,
+        LineModule,
+        MessagesModule,
+        MessageModule,
+        TagModule
+    ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
     ],

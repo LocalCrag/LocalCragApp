@@ -69,7 +69,7 @@ export class AreaComponent implements OnInit {
       this.crag = crag;
       this.sector = sector;
       this.area = area;
-      this.title.setTitle(`${crag.name} / ${sector.name} / ${area.name} - ${environment.instanceName}`)
+      this.title.setTitle(`${area.name} / ${sector.name} / ${crag.name} - ${environment.instanceName}`)
       this.items = [
         {
           label: this.translocoService.translate(marker('area.infos')),
@@ -107,11 +107,11 @@ export class AreaComponent implements OnInit {
       this.breadcrumbs = [
         {
           label: crag.name,
-          routerLink: `/topo/${crag.slug}`
+          routerLink: `/topo/${crag.slug}/sectors`
         },
         {
           label: sector.name,
-          routerLink: `/topo/${crag.slug}/${sector.slug}`
+          routerLink: `/topo/${crag.slug}/${sector.slug}/areas`
         },
         {
           label: area.name,
