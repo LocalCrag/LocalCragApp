@@ -57,7 +57,7 @@ export class SectorComponent implements OnInit{
     ]).subscribe(([crag, sector, isLoggedIn]) => {
       this.crag = crag;
       this.sector = sector;
-      this.title.setTitle(`${crag.name} / ${sector.name} - ${environment.instanceName}`)
+      this.title.setTitle(`${sector.name} / ${crag.name} - ${environment.instanceName}`)
       this.items = [
         {
           label: this.translocoService.translate(marker('sector.infos')),

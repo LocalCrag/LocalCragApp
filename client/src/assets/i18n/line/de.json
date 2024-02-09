@@ -33,7 +33,7 @@
   "lineForm.startingPositionLabel": "Startposition",
   "lineForm.lineRatingLabel": "Bewertung",
   "lineForm.lineVideosLabel": "Videos",
-  "lineForm.lineVideoTitlePlaceholder": "Videotitel, z.B. \"Morpho-Beta\"",
+  "lineForm.lineVideoTitlePlaceholder": "Videotitel, z.B. Morpho-Beta",
   "lineForm.requiredValidationError": "Pflichtfeld",
   "lineForm.lineVideoUrlPlaceholder": "Video URL",
   "lineForm.invalidHttpUrlValidationError": "Ungültige URL",

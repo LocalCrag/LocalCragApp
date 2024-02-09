@@ -18,6 +18,7 @@ import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';
 import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
+import {Title} from '@angular/platform-browser';
 
 /**
  * Form component for creating and editing areas.
@@ -46,6 +47,7 @@ export class AreaFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private areasService: AreasService,
+              private title: Title,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
   }
@@ -72,6 +74,7 @@ export class AreaFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       });
     } else {
+      this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${environment.instanceName}`)
       this.loadingState = LoadingState.DEFAULT;
     }
   }

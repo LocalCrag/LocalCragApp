@@ -13,6 +13,10 @@ import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
 import {passwordsValidator} from '../../../utility/validators/passwords.validator';
+import {Title} from '@angular/platform-browser';
+import {TranslocoService} from '@ngneat/transloco';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'lc-reset-password',
@@ -36,7 +40,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy{
   constructor(private route: ActivatedRoute,
               private store: Store<AppState>,
               private router: Router,
-              private notifications: AppNotificationsService,
+              private title: Title,
+              private translocoService: TranslocoService,
               private fb: FormBuilder) {
   }
 
@@ -56,6 +61,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy{
       this.resetPasswordHash = params['hash'];
     });
     this.loadingState$ = this.store.pipe(select(selectResetPasswordLoadingState));
+    this.title.setTitle(`${this.translocoService.translate(marker('resetPasswordBrowserTitle'))} - ${environment.instanceName}`)
   }
 
   /**

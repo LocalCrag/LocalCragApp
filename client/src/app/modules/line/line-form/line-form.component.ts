@@ -19,6 +19,7 @@ import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-n
 import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
+import {Title} from '@angular/platform-browser';
 
 /**
  * Form component for lines.
@@ -55,6 +56,7 @@ export class LineFormComponent {
 
   constructor(private fb: FormBuilder,
               private store: Store,
+              private  title: Title,
               private route: ActivatedRoute,
               private router: Router,
               private linesService: LinesService,
@@ -85,6 +87,7 @@ export class LineFormComponent {
         this.loadingState = LoadingState.DEFAULT;
       });
     } else {
+      this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${environment.instanceName}`)
       this.loadingState = LoadingState.DEFAULT;
     }
   }

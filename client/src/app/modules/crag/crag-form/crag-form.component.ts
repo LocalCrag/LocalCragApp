@@ -14,6 +14,7 @@ import {catchError} from 'rxjs/operators';
 import {ConfirmationService} from 'primeng/api';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {Title} from '@angular/platform-browser';
 
 /**
  * A component for creating and editing crags.
@@ -38,6 +39,7 @@ export class CragFormComponent implements OnInit {
               private store: Store,
               private route: ActivatedRoute,
               private router: Router,
+              private title: Title,
               private cragsService: CragsService,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
@@ -63,6 +65,7 @@ export class CragFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       });
     } else {
+      this.title.setTitle(`${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${environment.instanceName}`)
       this.loadingState = LoadingState.DEFAULT;
     }
   }
