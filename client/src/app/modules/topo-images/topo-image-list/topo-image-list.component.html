@@ -26,7 +26,7 @@
     <ng-template let-topoImage pTemplate="listItem">
       <div class="col-12">
         <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-          <lc-topo-image [topoImage]="topoImage"
+          <lc-topo-image [topoImage]="topoImage" [showLineNumbers]="true"
                          class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
           <div class="flex flex-column sm:flex-column justify-content-between align-items-center
                      xl:align-items-start flex-1 gap-4">
@@ -70,12 +70,13 @@
                   </div>
                 </div>
               </ng-template>
-              <ng-template pTemplate="body" let-linePath>
+              <ng-template pTemplate="body" let-linePath let-rowIndex="rowIndex">
                 <tr (mouseenter)="highlightLinePath(linePath, topoImage)" (mouseleave)="unhighlightLinePath(linePath)"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                     class="line-row">
+                  <td class="number-column"><div class="line-number">{{rowIndex + 1}}</div></td>
                   <td class="name-column">{{ linePath.line.name }}</td>
-                  <td class="grade-column">{{ linePath.line.grade.name }}</td>
+                  <td class="grade-column">{{ linePath.line.grade.name | transloco }}</td>
                   <td class="style-column">
                     <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>
                   </td>
