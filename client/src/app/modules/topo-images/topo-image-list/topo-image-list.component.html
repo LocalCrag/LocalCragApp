@@ -74,7 +74,11 @@
                 <tr (mouseenter)="highlightLinePath(linePath, topoImage)" (mouseleave)="unhighlightLinePath(linePath)"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                     class="line-row">
-                  <td class="number-column"><div class="line-number">{{rowIndex + 1}}</div></td>
+                  <td class="number-column">
+                    <div class="line-number">
+                      {{rowIndex + 1}}
+                    </div>
+                  </td>
                   <td class="name-column">{{ linePath.line.name }}</td>
                   <td class="grade-column">{{ linePath.line.grade.name | transloco }}</td>
                   <td class="style-column">

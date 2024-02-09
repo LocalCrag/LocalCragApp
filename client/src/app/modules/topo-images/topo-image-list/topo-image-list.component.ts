@@ -187,11 +187,11 @@ export class TopoImageListComponent {
    */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
-      linePath.konvaLine.fill('red');
-      linePath.konvaLine.stroke('red');
+      linePath.konvaLine.fill(environment.arrowHighlightColor);
+      linePath.konvaLine.stroke(environment.arrowHighlightColor);
       linePath.konvaLine.zIndex(topoImage.linePaths.length);
-      linePath.konvaRect.fill('red');
-      linePath.konvaText.fill('#fff')
+      linePath.konvaRect.fill(environment.arrowHighlightColor);
+      linePath.konvaText.fill(environment.arrowHighlightTextColor)
     }
   }
 
@@ -201,11 +201,11 @@ export class TopoImageListComponent {
    */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
-      linePath.konvaLine.fill('yellow');
-      linePath.konvaLine.stroke('yellow');
+      linePath.konvaLine.fill(environment.arrowColor);
+      linePath.konvaLine.stroke(environment.arrowColor);
       linePath.konvaLine.zIndex(1); // 0 is the BG image
-      linePath.konvaRect.fill('yellow');
-      linePath.konvaText.fill('#000')
+      linePath.konvaRect.fill(environment.arrowColor);
+      linePath.konvaText.fill(environment.arrowTextColor)
     }
   }
 
@@ -248,4 +248,5 @@ export class TopoImageListComponent {
     });
   }
 
+  protected readonly environment = environment;
 }

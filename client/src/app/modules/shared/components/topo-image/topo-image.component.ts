@@ -3,6 +3,7 @@ import {TopoImage} from '../../../../models/topo-image';
 import Konva from 'konva';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
+import {environment} from '../../../../../environments/environment';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -131,8 +132,8 @@ export class TopoImageComponent implements OnInit {
   drawLine(linePath: LinePath, opacity: number) {
     const line = new Konva.Arrow({
       points: this.getAbsoluteCoordinates(linePath.path),
-      stroke: 'yellow',
-      fill: 'yellow',
+      stroke: environment.arrowColor,
+      fill: environment.arrowColor,
       strokeWidth: 2 * this.lineSizeMultiplicator,
       lineCap: 'square',
       tension: 0,
@@ -152,7 +153,7 @@ export class TopoImageComponent implements OnInit {
    */
   drawLineNumber(linePath: LinePath, text: string) {
     const absoluteCoordinates = this.getAbsoluteCoordinates([linePath.path[0], linePath.path[1]]);
-    const rectSize = 20 * this.lineSizeMultiplicator;
+    const rectSize = 11 * this.lineSizeMultiplicator;
     const rectangleGroup = new Konva.Group({
       x: absoluteCoordinates[0] - (rectSize / 2),
       y: absoluteCoordinates[1] - (rectSize / 2),
@@ -162,17 +163,17 @@ export class TopoImageComponent implements OnInit {
     const rectangle = new Konva.Rect({
       width: rectSize,
       height: rectSize,
-      fill: 'yellow',
+      fill: environment.arrowColor,
       cornerRadius: rectSize / 6
     });
     rectangleGroup.add(rectangle);
     const konvaText = new Konva.Text({
       text,
-      fontSize: rectSize / 2,
+      fontSize: rectSize / 1.2,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      fill: '#000',
+      fill: environment.arrowTextColor,
       width: rectSize,
-      padding: rectSize / 4,
+      padding: rectSize / 8,
       align: 'center'
     });
     rectangleGroup.add(konvaText);
@@ -193,8 +194,8 @@ export class TopoImageComponent implements OnInit {
         x: absoluteCoordinates[i * 2],
         y: absoluteCoordinates[i * 2 + 1],
         radius: 10,
-        fill: 'yellow',
-        stroke: 'black',
+        fill: environment.arrowColor,
+        stroke: environment.arrowTextColor,
         strokeWidth: 1,
       });
       anchor.on('click', (event) => {
@@ -202,11 +203,11 @@ export class TopoImageComponent implements OnInit {
         this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
       });
       anchor.on('mouseenter', () => {
-        anchor.fill('red');
+        anchor.fill(environment.arrowHighlightColor);
         this.stage.container().style.cursor = 'pointer';
       })
       anchor.on('mouseleave', () => {
-        anchor.fill('yellow');
+        anchor.fill(environment.arrowColor);
         this.stage.container().style.cursor = 'default';
       })
       this.lineLayer.add(anchor);

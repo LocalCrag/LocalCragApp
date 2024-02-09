@@ -5,6 +5,7 @@ import {AppState} from '../../ngrx/reducers';
 import {tryAutoLogin} from '../../ngrx/actions/auth.actions';
 import {checkShowCookieAlert} from '../../ngrx/actions/app-level-alerts.actions';
 import {checkIsMobile} from '../../ngrx/actions/device.actions';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'lc-root',
@@ -15,6 +16,10 @@ export class CoreComponent {
 
   constructor(private primengConfig: PrimeNGConfig,
               public store: Store<AppState>) {
+    document.documentElement.style.setProperty('--arrow-color', environment.arrowColor);
+    document.documentElement.style.setProperty('--arrow-text-color', environment.arrowTextColor);
+    document.documentElement.style.setProperty('--arrow-highlight-color', environment.arrowHighlightColor);
+    document.documentElement.style.setProperty('--arrow-highlight-text-color', environment.arrowHighlightTextColor);
   }
 
   @HostListener('window:resize', ['$event'])

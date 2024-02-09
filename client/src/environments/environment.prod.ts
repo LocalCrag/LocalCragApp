@@ -3,5 +3,9 @@ export const environment = {
   apiHost: 'https://localcrag.engelmann.cloud',
   regionSlug: 'eifel',
   language: 'de',
-  instanceName: 'Glees Bouldering'
+  instanceName: 'Glees Bouldering',
+  arrowColor: 'rgb(255 224 22)',
+  arrowTextColor: '#000',
+  arrowHighlightColor: '#ff0000',
+  arrowHighlightTextColor: '#fff',
 };

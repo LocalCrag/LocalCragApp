@@ -24,20 +24,20 @@
 }
 
 .line-number{
-  background-color: yellow;
+  background-color: var(--arrow-color);
+  color: var(--arrow-text-color);
   border-radius: .25rem;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #000;
   font-size: .9rem;
 }
 
 tr:hover{
   .line-number{
-    background-color: red;
-    color: #fff;
+    background-color: var(--arrow-highlight-color);
+    color: var(--arrow-highlight-text-color);
   }
 }
