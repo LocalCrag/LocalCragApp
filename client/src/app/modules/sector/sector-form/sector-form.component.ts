@@ -15,6 +15,8 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {Title} from '@angular/platform-browser';
+import {latValidator} from '../../../utility/validators/lat.validator';
+import {lngValidator} from '../../../utility/validators/lng.validator';
 
 /**
  * Form component for creating and editing sectors.
@@ -81,7 +83,9 @@ export class SectorFormComponent implements OnInit {
       name: ['', [Validators.required]],
       description: [''],
       shortDescription: [''],
-      portraitImage: [null]
+      portraitImage: [null],
+      lat: ['', [latValidator()]],
+      lng: ['', [lngValidator()]],
     });
   }
 
@@ -94,6 +98,8 @@ export class SectorFormComponent implements OnInit {
       description: this.sector.description,
       shortDescription: this.sector.shortDescription,
       portraitImage: this.sector.portraitImage,
+      lat: this.sector.lat,
+      lng: this.sector.lng,
     });
     this.sectorForm.enable();
   }
@@ -120,6 +126,8 @@ export class SectorFormComponent implements OnInit {
       sector.description = this.sectorForm.get('description').value
       sector.shortDescription = this.sectorForm.get('shortDescription').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
+      sector.lat = this.sectorForm.get('lat').value ? Number(this.sectorForm.get('lat').value) : null;
+      sector.lng = this.sectorForm.get('lng').value ? Number(this.sectorForm.get('lng').value) : null;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {

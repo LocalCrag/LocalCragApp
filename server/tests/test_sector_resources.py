@@ -10,6 +10,8 @@ def test_successful_create_sector(client):
         "description": "Der Klassikersektor",
         "shortDescription": "Classic.",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 12.13,
+        "lng": 42.42,
     }
 
     rv = client.post('/api/crags/brione/sectors', headers=access_headers, json=sector_data)
@@ -21,6 +23,8 @@ def test_successful_create_sector(client):
     assert res['shortDescription'] == "Classic."
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
+    assert res['lat'] == 12.13
+    assert res['lng'] == 42.42
 
 
 def test_successful_get_sectors(client):
@@ -34,12 +38,16 @@ def test_successful_get_sectors(client):
     assert res[1]['shortDescription'] == ""
     assert res[1]['portraitImage'] == None
     assert res[1]['orderIndex'] == 1
+    assert res[1]['lat'] == None
+    assert res[1]['lng'] == None
     assert res[0]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
     assert res[0]['slug'] == "schattental"
     assert res[0]['name'] == "Schattental"
     assert res[0]['shortDescription'] == "Kurze Beschreibung zum Schattental"
     assert res[0]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res[0]['orderIndex'] == 0
+    assert res[0]['lat'] == None
+    assert res[0]['lng'] == None
 
 
 def test_successful_get_sector(client):
@@ -52,6 +60,8 @@ def test_successful_get_sector(client):
     assert res['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res['description'] == "<p>Lange Beschreibung zum Schattental</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zum Schattental"
+    assert res['lat'] == None
+    assert res['lng'] == None
 
 
 def test_get_deleted_sector(client):
@@ -75,6 +85,8 @@ def test_successful_edit_sector(client):
         "description": "Test edit",
         "shortDescription": "Test",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 42.1,
+        "lng": 42.2,
     }
 
     rv = client.put('/api/sectors/schattental', headers=access_headers, json=sector_data)
@@ -86,6 +98,8 @@ def test_successful_edit_sector(client):
     assert res['shortDescription'] == "Test"
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
+    assert res['lat'] == 42.1
+    assert res['lng'] == 42.2
 
 
 def test_successful_order_sectors(client):
