@@ -49,17 +49,21 @@ import {CragModule} from '../crag/crag.module';
 import {DeviceEffects} from '../../ngrx/effects/device.effects';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {TranslocoService} from '@ngneat/transloco';
+import {forkJoin} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 export function preloadTranslations(transloco: TranslocoService) {
-  return function () {
+  return () => {
     transloco.setActiveLang(environment.language);
-    transloco.load(environment.language).subscribe()
-    transloco.load('crag/' + environment.language).subscribe()
-    transloco.load('sector/' + environment.language).subscribe()
-    transloco.load('area/' + environment.language).subscribe()
-    transloco.load('line/' + environment.language).subscribe()
-    transloco.load('topoImage/' + environment.language).subscribe()
-    transloco.load('linePath/' + environment.language).subscribe()
+    return forkJoin([
+      transloco.load(environment.language),
+      transloco.load('crag/' + environment.language),
+      transloco.load('sector/' + environment.language),
+      transloco.load('area/' + environment.language),
+      transloco.load('line/' + environment.language),
+      transloco.load('topoImage/' + environment.language),
+      transloco.load('linePath/' + environment.language),
+    ]);
   }
 }
 

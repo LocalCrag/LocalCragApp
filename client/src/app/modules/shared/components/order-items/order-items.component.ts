@@ -28,7 +28,7 @@ export class OrderItemsComponent {
 
   constructor(private dialogConfig: DynamicDialogConfig,
               private ref: DynamicDialogRef) {
-    this.items = this.dialogConfig.data.items;
+    this.items = [...this.dialogConfig.data.items];
     this.itemsName = this.dialogConfig.data.itemsName;
     this.callback = this.dialogConfig.data.callback;
     this.slugParameter = this.dialogConfig.data.slugParameter;

@@ -22,6 +22,7 @@ import { OrderItemsComponent } from './components/order-items/order-items.compon
 import {OrderListModule} from 'primeng/orderlist';
 import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
 import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
+import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 
 /**
  * Module for shared components, pipes etc.
@@ -41,6 +42,7 @@ import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
     OrderItemsComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
+    SanitizeHtmlPipe,
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,8 @@ import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
     SingleImageUploadComponent,
     TopoImageComponent,
     AsFormArrayPipe,
-    AsFormGroupPipe
+    AsFormGroupPipe,
+    SanitizeHtmlPipe
   ]
 })
 export class SharedModule {

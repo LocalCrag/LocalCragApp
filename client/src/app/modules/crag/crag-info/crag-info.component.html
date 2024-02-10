@@ -2,14 +2,14 @@
 
   <ng-container *ngIf="crag">
 
-    <section [innerHTML]="crag.description"></section>
+    <section [innerHTML]="crag.description | sanitizeHtml"></section>
 
     <p-messages severity="warn">
       <ng-template pTemplate>
         <div class="flex flex-row gap-3">
           <div class="flex"><i class="pi pi-exclamation-triangle mr-1"></i><strong>{{t('cragRules')}}</strong></div>
           <div class="flex">
-            <div class="quill-content" [innerHTML]="crag.rules"></div>
+            <div class="quill-content" [innerHTML]="crag.rules | sanitizeHtml"></div>
           </div>
         </div>
       </ng-template>
