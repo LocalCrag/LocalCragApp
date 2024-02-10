@@ -4,7 +4,8 @@ from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateAre
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder
-from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder
+from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
+    UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder
@@ -61,6 +62,7 @@ def configure_api(app):
     line_bp.add_url_rule('/<string:line_slug>', view_func=GetLine.as_view('get_line_details'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=UpdateLine.as_view('update_line'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=DeleteLine.as_view('delete_line'))
+    line_bp.add_url_rule('/<string:line_slug>/line-paths/update-order', view_func=UpdateLinePathOrderForLine.as_view('update_line_path_order_for_line'))
     app.register_blueprint(line_bp, url_prefix='/api/lines')
 
     # Area API

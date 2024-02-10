@@ -84,11 +84,10 @@ export class TopoImagesService {
     return this.http.put(this.api.topoImages.updateOrder(areaSlug), newOrder).pipe(
       tap(() => {
         this.cache.clear(this.api.topoImages.getList(areaSlug));
+        this.cache.clear(this.api.lines.getList(areaSlug));
       }),
       map(() => null)
     );
   }
-
-
 
 }

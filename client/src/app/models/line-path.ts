@@ -10,12 +10,13 @@ export class LinePath extends AbstractModel {
 
   path: number[];
   line: Line;
-  konvaLine: Konva.Line;
-  konvaRect: Konva.Rect;
-  konvaText: Konva.Text;
+  orderIndex: number;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
+  konvaLine: Konva.Line;
+  konvaRect: Konva.Rect;
+  konvaText: Konva.Text;
 
   constructor() {
     super();
@@ -32,6 +33,7 @@ export class LinePath extends AbstractModel {
     const linePath = new LinePath();
     AbstractModel.deserializeAbstractAttributes(linePath, payload);
     linePath.path =  payload.path;
+    linePath.orderIndex =  payload.orderIndex;
     linePath.line = payload.line ? Line.deserialize(payload.line) : null;
     return linePath;
   }

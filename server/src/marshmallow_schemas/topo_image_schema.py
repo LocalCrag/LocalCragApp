@@ -16,6 +16,7 @@ class TopoImageSchema(BaseEntitySchema):
 
 class TopoImageSchemaForLines(BaseEntitySchema):
     image = fields.Nested(file_schema, attribute='file')
+    orderIndex = fields.Int(attribute='order_index')
 
 
 topo_image_schema = TopoImageSchema()

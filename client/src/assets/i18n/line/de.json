@@ -75,6 +75,7 @@
   "lineForm.deleteLineButtonLabel": "Linie löschen",
   "lineForm.editLineTitle": "Linie bearbeiten",
   "lineForm.createLineTitle": "Linie erstellen",
+  "line.reorderLinePathsForLineButtonLabel": "Topo Bilder ordnen",
   "line.videoBeta": "Videobeta",
   "line.rating": "Bewertung",
   "line.FA": "FA",

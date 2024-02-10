@@ -599,13 +599,17 @@ def test_successful_get_lines(client):
     assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
     assert res[0]['slug'] == "super-spreader"
     assert res[0]['name'] == "Super-Spreader"
-    assert len(res[0]['linePaths']) == 1
+    assert len(res[0]['linePaths']) == 2
+    assert res[0]['linePaths'][0]['orderIndex'] == 0
     assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
     assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
     assert res[1]['slug'] == "treppe"
     assert res[1]['name'] == "Treppe"
     assert len(res[1]['linePaths']) == 1
+    assert res[1]['linePaths'][0]['orderIndex'] == 1
     assert res[1]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
 
 
 def test_successful_get_line(client):
@@ -647,8 +651,10 @@ def test_successful_get_line(client):
     assert res["arete"] == False
     assert res["mantle"] == False
     assert res['id'] is not None
-    assert len(res['linePaths']) == 1
+    assert len(res['linePaths']) == 2
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert res['linePaths'][0]['orderIndex'] == 0
+    assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
 
 
 def test_get_deleted_line(client):
@@ -748,4 +754,6 @@ def test_successful_edit_line(client):
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert res['linePaths'][0]['orderIndex'] == 1
+    assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
 

@@ -230,6 +230,8 @@ export class TopoImageListComponent {
 
   /**
    * Opens the reordering dialog for the line paths.
+   *
+   * @param topoImage Topo image for which to order the lines.
    */
   reorderLinePaths(topoImage: TopoImage) {
     this.ref = this.dialogService.open(OrderItemsComponent, {
@@ -244,6 +246,7 @@ export class TopoImageListComponent {
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.cache.clear(this.api.topoImages.getList(this.areaSlug));
+      this.cache.clear(this.api.lines.getList(this.areaSlug));
       this.refreshData();
     });
   }

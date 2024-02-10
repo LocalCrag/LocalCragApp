@@ -32,6 +32,7 @@ export class LinePathsService {
   public addLinePath(linePath: LinePath, topoImageId: string, areaSlug: string): Observable<LinePath> {
     return this.http.post(this.api.linePaths.addLinePath(topoImageId), LinePath.serialize(linePath)).pipe(
       tap(() => {
+        this.cache.clear(this.api.lines.getList(areaSlug));
         this.cache.clear(this.api.topoImages.getList(areaSlug));
         this.cache.clear(this.api.topoImages.getDetail(topoImageId));
       }),
@@ -69,6 +70,22 @@ export class LinePathsService {
     return this.http.put(this.api.linePaths.updateOrder(topoImageId), newOrder).pipe(
       tap(() => {
         this.cache.clear(this.api.topoImages.getDetail(topoImageId));
+      }),
+      map(() => null)
+    );
+  }
+
+  /**
+   * Updates the order of the line paths for a line.
+   *
+   * @param newOrder Sector order.
+   * @param lineSlug Slug of the line that the line paths are in.
+   * @return Observable of null.
+   */
+  public updateLinePathOrderForLines(newOrder: ItemOrder, lineSlug: string, ): Observable<null> {
+    return this.http.put(this.api.linePaths.updateOrderForLines(lineSlug), newOrder).pipe(
+      tap(() => {
+        this.cache.clear(this.api.lines.getDetail(lineSlug));
       }),
       map(() => null)
     );
