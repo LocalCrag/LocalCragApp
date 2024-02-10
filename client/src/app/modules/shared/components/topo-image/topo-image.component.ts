@@ -1,9 +1,20 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {TopoImage} from '../../../../models/topo-image';
 import Konva from 'konva';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
+import {timer} from 'rxjs';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -37,57 +48,64 @@ export class TopoImageComponent implements OnInit {
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef,
+              private cdr: ChangeDetectorRef) {
   }
+
 
   /**
    * Loads the background image and draws the lines on it.
    */
   ngOnInit() {
-    // Load the background image in the appropriate size and set line path size based on it
-    this.backgroundImage = new Image();
+    // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
+    // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
+    // kind of solved by using a timeout...
+    setTimeout(()=>{
+      // Load the background image in the appropriate size and set line path size based on it
+      this.backgroundImage = new Image();
 
-    const containerWidth = this.el.nativeElement.offsetWidth;
-    this.backgroundImage.src = this.topoImage.image.path;
+      const containerWidth = this.el.nativeElement.offsetWidth;
+      this.backgroundImage.src = this.topoImage.image.path;
 
-    if (containerWidth <= ThumbnailWidths.XS) {
-      this.backgroundImage.src = this.topoImage.image.thumbnailXS;
-    }
-    if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
-      this.backgroundImage.src = this.topoImage.image.thumbnailS;
-    }
-    if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
-      this.backgroundImage.src = this.topoImage.image.thumbnailM;
-    }
-    if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
-      this.backgroundImage.src = this.topoImage.image.thumbnailL;
-    }
-    if (containerWidth > ThumbnailWidths.L) {
-      this.backgroundImage.src = this.topoImage.image.thumbnailXL;
-    }
+      if (containerWidth <= ThumbnailWidths.XS) {
+        this.backgroundImage.src = this.topoImage.image.thumbnailXS;
+      }
+      if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
+        this.backgroundImage.src = this.topoImage.image.thumbnailS;
+      }
+      if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
+        this.backgroundImage.src = this.topoImage.image.thumbnailM;
+      }
+      if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
+        this.backgroundImage.src = this.topoImage.image.thumbnailL;
+      }
+      if (containerWidth > ThumbnailWidths.L) {
+        this.backgroundImage.src = this.topoImage.image.thumbnailXL;
+      }
 
-    // Draw lines after image is fully loaded
-    this.backgroundImage.onload = () => {
-      this.width = this.backgroundImage.width;
-      this.height = this.backgroundImage.height;
-      this.lineSizeMultiplicator = this.width / 350;
-      this.loading = false;
-      this.createKonvaStageAndLayer();
-      this.topoImage.linePaths.map((linePath, index) => {
-        this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
-        if (this.showLineNumbers) {
-          this.drawLineNumber(linePath, String(index + 1));
+      // Draw lines after image is fully loaded
+      this.backgroundImage.onload = () => {
+        this.width = this.backgroundImage.width;
+        this.height = this.backgroundImage.height;
+        this.lineSizeMultiplicator = this.width / 350;
+        this.loading = false;
+        this.createKonvaStageAndLayer();
+        this.topoImage.linePaths.map((linePath, index) => {
+          this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
+          if (this.showLineNumbers) {
+            this.drawLineNumber(linePath, String(index + 1));
+          }
+        })
+        if (this.linePathInProgress) {
+          this.drawLine(this.linePathInProgress, 1)
         }
-      })
-      if (this.linePathInProgress) {
-        this.drawLine(this.linePathInProgress, 1)
+        if (this.editorMode) {
+          this.topoImage.linePaths.map(linePath => {
+            this.drawAnchors(linePath);
+          });
+        }
       }
-      if (this.editorMode) {
-        this.topoImage.linePaths.map(linePath => {
-          this.drawAnchors(linePath);
-        });
-      }
-    }
+    })
   }
 
   /**
