@@ -2,13 +2,18 @@
 
   <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" *ngIf="line">
 
-    <lc-topo-image class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
-                   [topoImage]="line.topoImages[0]" *ngIf="line.topoImages.length > 0"></lc-topo-image>
-
-    <img class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"
-         [src]="'assets/placeholder.png'"
-         *ngIf="line.topoImages.length === 0"
-         [alt]="line.name"/>
+    <div class="w-9 sm:w-16rem xl:w-30rem  flex flex-column mx-auto gap-3 ">
+      <lc-topo-image class=" shadow-2 flex  border-round"
+                     [topoImage]="topoImage" *ngFor="let topoImage of line.topoImages"></lc-topo-image>
+      <img class="block  border-round"
+           [src]="'assets/placeholder.png'"
+           *ngIf="line.topoImages.length === 0"
+           [alt]="line.name"/>
+      <p-button label="{{t('reorderLinePathsForLineButtonLabel')}}" icon="pi pi-sort" (click)="reorderLinePaths()"
+                [disabled]="line.topoImages?.length < 2"
+                styleClass=" p-button-sm"
+                *ngIf="isLoggedIn$ | async"></p-button>
+    </div>
 
     <div
       class="flex flex-column  justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
@@ -16,8 +21,8 @@
 
       <div [innerHTML]="line.description" *ngIf="line.description"></div>
       <div *ngIf="line.videos">{{t('videoBeta')}}:
-      <span class="link-list">
-        <span *ngFor="let video of line.videos" ><a [href]="video.url" target="_blank">{{video.title}}</a></span>
+        <span class="link-list">
+        <span *ngFor="let video of line.videos"><a [href]="video.url" target="_blank">{{video.title}}</a></span>
       </span>
       </div>
       <div>{{t('rating')}}:
@@ -25,7 +30,6 @@
       </div>
       <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
         *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
-
     </div>
 
   </div>

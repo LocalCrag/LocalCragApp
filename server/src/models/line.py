@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
 from models.base_entity import BaseEntity
@@ -56,4 +57,4 @@ class Line(HasSlug, BaseEntity):
     arete = db.Column(db.Boolean, nullable=False, default=False)
     mantle = db.Column(db.Boolean, nullable=False, default=False)
 
-    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select")
+    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index_for_line.asc()')

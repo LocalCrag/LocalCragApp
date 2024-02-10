@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
@@ -16,6 +17,9 @@ class LinePath(BaseEntity):
     topo_image: Mapped["TopoImage"] = relationship()
     path = db.Column(JSON, nullable=False)
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
+    order_index_for_line = db.Column(db.Integer, nullable=False, server_default='0')
+
+
 
     @classmethod
     def exists_for_topo_image(cls, topo_image_id, line_id):

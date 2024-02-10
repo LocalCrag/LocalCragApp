@@ -12,6 +12,8 @@ export class Sector extends AbstractModel {
   slug: string;
   portraitImage: File;
   orderIndex: number;
+  lat: number;
+  lng: number;
 
   /**
    * Parses a sector.
@@ -26,6 +28,8 @@ export class Sector extends AbstractModel {
     sector.description = payload.description;
     sector.shortDescription = payload.shortDescription;
     sector.slug = payload.slug;
+    sector.lat = payload.lat;
+    sector.lng = payload.lng;
     sector.orderIndex = payload.orderIndex;
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return sector;
@@ -43,6 +47,8 @@ export class Sector extends AbstractModel {
       description: sector.description,
       shortDescription: sector.shortDescription,
       portraitImage: sector.portraitImage ?  sector.portraitImage.id : null,
+      lat: sector.lat,
+      lng: sector.lng,
     };
   }
 

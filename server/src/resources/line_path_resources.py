@@ -9,6 +9,7 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.line_path_schema import line_path_schema
+from models.line import Line
 from models.line_path import LinePath
 from models.user import User
 from util.validators import validate_order_payload
@@ -74,6 +75,28 @@ class UpdateLinePathOrder(MethodView):
 
         for line_path in line_paths:
             line_path.order_index = new_order[str(line_path.id)]
+            db.session.add(line_path)
+
+        db.session.commit()
+
+        return jsonify(None), 200
+
+
+class UpdateLinePathOrderForLine(MethodView):
+    @jwt_required()
+    def put(self, line_slug):
+        """
+        Changes the order index of line paths for lines.
+        """
+        new_order = request.json
+        line: Line = Line.find_by_slug(line_slug)
+        line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.line_id == line.id)
+
+        if not validate_order_payload(new_order, line_paths):
+            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+
+        for line_path in line_paths:
+            line_path.order_index_for_line = new_order[str(line_path.id)]
             db.session.add(line_path)
 
         db.session.commit()

@@ -12,9 +12,11 @@ class LinePathSchema(BaseEntitySchema):
     line = fields.Nested(line_schema, attribute='line')
     path = fields.List(fields.Float)
 
+
 class LinePathSchemaForLines(BaseEntitySchema):
     path = fields.List(fields.Float)
     topoImage = fields.Nested("TopoImageSchemaForLines", attribute='topo_image')
+    orderIndex = fields.Int(attribute='order_index')
 
 
 line_path_schema = LinePathSchema()

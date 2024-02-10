@@ -6,7 +6,7 @@ import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
 import {StartingPosition} from '../enums/starting-position';
 
-export interface LineVideo{
+export interface LineVideo {
   url: string;
   title: string;
 }
@@ -59,6 +59,7 @@ export class Line extends AbstractModel {
 
   // UI specific attributes, not related to data model
   disabled = false;
+  blockOrderIndex: number; // Set after ordering for easy efficient reuse of ng prime data view order feature
 
   constructor() {
     super();
@@ -84,7 +85,7 @@ export class Line extends AbstractModel {
     line.type = payload.type;
     line.faYear = payload.faYear;
     line.faName = payload.faName;
-line.startingPosition = payload.startingPosition;
+    line.startingPosition = payload.startingPosition;
 
     line.eliminate = payload.eliminate;
     line.traverse = payload.traverse;

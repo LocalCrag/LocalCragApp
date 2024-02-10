@@ -50,6 +50,20 @@
           <lc-single-image-upload lcFormControl formControlName="portraitImage"></lc-single-image-upload>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('latLabel')}}</label>
+          <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('lngLabel')}}</label>
+          <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
+        </div>
+
       </form>
 
       <div class="form-actions">

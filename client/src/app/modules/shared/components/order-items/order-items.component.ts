@@ -23,6 +23,7 @@ export class OrderItemsComponent {
   public showLinePathLineName = false;
 
   private callback: (payload: any, slug?: string) => Observable<any>;
+  private idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
   private slugParameter: string;
 
   constructor(private dialogConfig: DynamicDialogConfig,
@@ -33,6 +34,7 @@ export class OrderItemsComponent {
     this.slugParameter = this.dialogConfig.data.slugParameter;
     this.showImage = this.dialogConfig.data.showImage ? this.dialogConfig.data.showImage : false;
     this.showLinePathLineName = this.dialogConfig.data.showLinePathLineName ? this.dialogConfig.data.showLinePathLineName : false;
+    this.idAccessor = this.dialogConfig.data.idAccessor ? this.dialogConfig.data.idAccessor : this.idAccessor;
   }
 
   /**
@@ -49,10 +51,10 @@ export class OrderItemsComponent {
     this.loadingState = LoadingState.LOADING;
     const newOrder = {};
     this.items.forEach((item, index) => {
-      newOrder[item.id] = index;
+      newOrder[this.idAccessor(item)] = index;
     });
     let callback = this.callback(newOrder);
-    if(this.slugParameter){
+    if (this.slugParameter) {
       callback = this.callback(newOrder, this.slugParameter)
     }
     callback.subscribe(() => {

@@ -55,6 +55,8 @@ class CreateSector(MethodView):
         new_sector.description = sector_data['description']
         new_sector.short_description = sector_data['shortDescription']
         new_sector.portrait_image_id = sector_data['portraitImage']
+        new_sector.lat = sector_data['lat']
+        new_sector.lng = sector_data['lng']
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
@@ -79,6 +81,8 @@ class UpdateSector(MethodView):
         sector.description = sector_data['description']
         sector.short_description = sector_data['shortDescription']
         sector.portrait_image_id = sector_data['portraitImage']
+        sector.lat = sector_data['lat']
+        sector.lng = sector_data['lng']
         db.session.add(sector)
         db.session.commit()
 

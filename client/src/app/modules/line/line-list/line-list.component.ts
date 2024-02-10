@@ -56,6 +56,8 @@ export class LineListComponent implements OnInit {
       this.lines = lines;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
+        {label: this.translocoService.translate(marker('sortByBlockAscending')), value: '!blockOrderIndex'},
+        {label: this.translocoService.translate(marker('sortByBlockDescending')), value: 'blockOrderIndex'},
         {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
         {label: this.translocoService.translate(marker('sortZA')), value: 'name'}
       ];

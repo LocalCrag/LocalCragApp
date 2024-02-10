@@ -57,6 +57,7 @@ export class ApiService {
   public linePaths = {
     addLinePath: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths`,
     updateOrder: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,
+    updateOrderForLines: (lineSlug: string): string => `${this.apiHost}lines/${lineSlug}/line-paths/update-order`,
     delete: (id: string): string => `${this.apiHost}line-paths/${id}`,
   };
 

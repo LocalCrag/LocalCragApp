@@ -1,7 +1,7 @@
 import uuid
 
 import magic
-from PIL import Image
+from PIL import Image, ExifTags, ImageOps
 from werkzeug.datastructures import FileStorage
 
 from models.file import File
@@ -60,6 +60,9 @@ def handle_image_upload(path: str, file, qquuid):
     :return: Media object representing the image.
     """
     img = Image.open(path)
+
+    ImageOps.exif_transpose(img, in_place=True)
+
     extension = img.format.lower()
     img.save('uploads/{}.{}'.format(qquuid, extension))
     file_object = File()

@@ -46,6 +46,9 @@
                 <div>{{ grade.name | transloco }}</div>
               </div>
             </ng-template>
+            <ng-template let-selectedGrade pTemplate="selectedItem">
+              {{ selectedGrade.name | transloco }}
+            </ng-template>
           </p-dropdown>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>

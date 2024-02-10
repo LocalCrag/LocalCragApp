@@ -13,6 +13,8 @@ class SectorSchema(BaseEntitySchema):
     shortDescription = fields.String(attribute='short_description')
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
     orderIndex = fields.Int(attribute='order_index')
+    lat = fields.Float()
+    lng = fields.Float()
 
 
 class SectorDetailSchema(SectorSchema):
