@@ -37,6 +37,8 @@
   "login.loginButtonLabel": "Login",
   "login.forgotPasswordButtonLabel": "Passwort vergessen?",
   "menu.searchPlaceholder": "Suche...",
+  "notFound.title": "Error 404 - Kein Fels in Sicht!",
+  "notFound.description": "Die angeforderte Seite <code>{{url}}</code> kann nicht gefunden werden.",
   "refreshLoginModal.passwordPlaceholder": "Passwort",
   "refreshLoginModal.required": "Pflichtfeld",
   "refreshLoginModal.logoutButtonLabel": "Logout",
