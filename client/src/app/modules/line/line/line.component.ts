@@ -89,16 +89,16 @@ export class LineComponent {
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}`,
           routerLinkActiveOptions: {exact: true}
         },
-        {
-          label: this.translocoService.translate(marker('line.gallery')),
-          icon: 'pi pi-fw pi-images',
-          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
-        },
-        {
-          label: this.translocoService.translate(marker('line.ascents')),
-          icon: 'pi pi-fw pi-users',
-          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
-        },
+        // {
+        //   label: this.translocoService.translate(marker('line.gallery')),
+        //   icon: 'pi pi-fw pi-images',
+        //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
+        // },
+        // {
+        //   label: this.translocoService.translate(marker('line.ascents')),
+        //   icon: 'pi pi-fw pi-users',
+        //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
+        // },
         {
           label: this.translocoService.translate(marker('line.edit')),
           icon: 'pi pi-fw pi-file-edit',

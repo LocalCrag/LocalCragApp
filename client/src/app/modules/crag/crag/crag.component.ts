@@ -63,16 +63,16 @@ export class CragComponent implements OnInit {
             icon: 'pi pi-fw pi-sitemap',
             routerLink: `/topo/${this.crag.slug}/sectors`,
           },
-          {
-            label: this.translocoService.translate(marker('crag.gallery')),
-            icon: 'pi pi-fw pi-images',
-            routerLink: `/topo/${this.crag.slug}/gallery`,
-          },
-          {
-            label: this.translocoService.translate(marker('crag.ascents')),
-            icon: 'pi pi-fw pi-users',
-            routerLink: `/topo/${this.crag.slug}/ascents`,
-          },
+          // {
+          //   label: this.translocoService.translate(marker('crag.gallery')),
+          //   icon: 'pi pi-fw pi-images',
+          //   routerLink: `/topo/${this.crag.slug}/gallery`,
+          // },
+          // {
+          //   label: this.translocoService.translate(marker('crag.ascents')),
+          //   icon: 'pi pi-fw pi-users',
+          //   routerLink: `/topo/${this.crag.slug}/ascents`,
+          // },
           {
             label: this.translocoService.translate(marker('crag.edit')),
             icon: 'pi pi-fw pi-file-edit',
