@@ -60,10 +60,10 @@ export class MenuComponent implements OnInit {
           routerLink: '/topo',
           items: []
         },
-        {
-          label: this.translocoService.translate(marker('menu.ticklist')),
-          icon: 'pi pi-fw pi-check-square'
-        },
+        // {
+        //   label: this.translocoService.translate(marker('menu.ticklist')),
+        //   icon: 'pi pi-fw pi-check-square'
+        // },
         {
           label: this.translocoService.translate(marker('menu.youtube')),
           url: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',

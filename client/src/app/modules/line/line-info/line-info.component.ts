@@ -71,7 +71,7 @@ export class LineInfoComponent {
     this.ref = this.dialogService.open(OrderItemsComponent, {
       header: this.translocoService.translate(marker('reorderLinePathsForLineDialogTitle')),
       data: {
-        items: [...this.line.topoImages],
+        items: this.line.topoImages,
         itemsName: this.translocoService.translate(marker('reorderLinePathsForLineDialogItemsName')),
         callback: this.linePathsService.updateLinePathOrderForLines.bind(this.linePathsService),
         slugParameter: this.line.slug,
