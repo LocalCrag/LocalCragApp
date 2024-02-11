@@ -7,8 +7,11 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
+from models.area import Area
 from models.crag import Crag
+from models.line import Line
 from models.region import Region
+from models.sector import Sector
 from models.user import User
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
@@ -120,3 +123,15 @@ class UpdateCragOrder(MethodView):
         db.session.commit()
 
         return jsonify(None), 200
+
+
+class GetCragGrades(MethodView):
+
+    def get(self, crag_slug):
+        """
+        Returns the grades of all lines of a crag.
+        """
+        crag_id = Crag.get_id_by_slug(crag_slug)
+        result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
+            Sector.crag_id == crag_id).all()
+        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

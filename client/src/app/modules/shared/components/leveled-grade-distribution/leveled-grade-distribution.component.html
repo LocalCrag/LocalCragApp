@@ -1,18 +1,24 @@
-<div class="flex align-items-center gap-3">
+<div class="flex align-items-center gap-3" *ngIf="grades">
   <p-tag styleClass="lvl-1">
-    <p-badge [value]="'28'" styleClass="neutral-badge"></p-badge>
+    <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
     bis 5C
   </p-tag>
   <p-tag styleClass="lvl-2">
-    <p-badge [value]="'42'" styleClass="neutral-badge"></p-badge>
+    <p-badge [value]="level2 | toString" styleClass="neutral-badge"></p-badge>
     6A - 6C+
   </p-tag>
   <p-tag styleClass="lvl-3">
-    <p-badge [value]="'27'" styleClass="neutral-badge"></p-badge>
+    <p-badge [value]="level3 | toString" styleClass="neutral-badge"></p-badge>
     7A - 7C+
   </p-tag>
   <p-tag styleClass="lvl-4">
-    <p-badge [value]="'2'" styleClass="neutral-badge"></p-badge>
+    <p-badge [value]="level4 | toString" styleClass="neutral-badge"></p-badge>
     ab 8A
   </p-tag>
+  <p-tag styleClass="lvl-5">
+    <p-badge [value]="level5 | toString" styleClass="neutral-badge"></p-badge>
+    Projekte
+  </p-tag>
 </div>
+
+<p-skeleton width="50%"  height="4rem" *ngIf="!grades"></p-skeleton>

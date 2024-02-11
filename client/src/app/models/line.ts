@@ -1,6 +1,6 @@
 import {AbstractModel} from './abstract-model';
 import {LineType} from '../enums/line-type';
-import {Grade, gradeMap} from '../utility/misc/grades';
+import {deserializeGrade, Grade, gradeMap} from '../utility/misc/grades';
 import {LinePath} from './line-path';
 import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
@@ -80,7 +80,7 @@ export class Line extends AbstractModel {
     line.videos = payload.videos ? payload.videos : [];
     line.slug = payload.slug;
 
-    line.grade = gradeMap.FB[payload.gradeName];
+    line.grade = deserializeGrade(payload);
     line.rating = payload.rating;
     line.type = payload.type;
     line.faYear = payload.faYear;

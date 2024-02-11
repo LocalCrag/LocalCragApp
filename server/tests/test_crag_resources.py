@@ -141,3 +141,14 @@ def test_order_crags_bad_indexes(client):
     }
     rv = client.put('/api/crags/update-order', headers=access_headers, json=new_order)
     assert rv.status_code == 400
+
+
+def test_successful_get_crag_grades(client):
+    rv = client.get('/api/crags/brione/grades')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['gradeName'] == "1"
+    assert res[0]['gradeScale'] == "FB"
+    assert res[1]['gradeName'] == "8A"
+    assert res[1]['gradeScale'] == "FB"

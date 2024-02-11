@@ -1,6 +1,7 @@
 from marshmallow import fields
 from marshmallow_enum import EnumField
 
+from extensions import ma
 from models.enums.line_type_enum import LineTypeEnum
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema

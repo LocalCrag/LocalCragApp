@@ -7,6 +7,7 @@ import {map, tap} from 'rxjs/operators';
 import {CacheService} from '../../cache/cache.service';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {environment} from '../../../environments/environment';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 /**
  * CRUD service for sectors.
@@ -104,6 +105,16 @@ export class SectorsService {
       }),
       map(() => null)
     );
+  }
+
+  /**
+   * Returns a list of Grades.
+   *
+   * @param sectorSlug Slug of the sector to return the grades for.
+   * @return Observable of a list of Grades.
+   */
+  public getSectorGrades(sectorSlug: string): Observable<Grade[]> {
+    return this.cache.get(this.api.sectors.getGrades(sectorSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 }

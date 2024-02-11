@@ -25,6 +25,7 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}crags/${slug}`,
     delete: (slug: string): string => `${this.apiHost}crags/${slug}`,
     update: (slug: string): string => `${this.apiHost}crags/${slug}`,
+    getGrades: (slug: string): string => `${this.apiHost}crags/${slug}/grades`,
     updateOrder: (): string => `${this.apiHost}crags/update-order`,
   };
 
@@ -34,6 +35,7 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     delete: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     update: (slug: string): string => `${this.apiHost}sectors/${slug}`,
+    getGrades: (slug: string): string => `${this.apiHost}sectors/${slug}/grades`,
     updateOrder: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
   };
 
@@ -43,6 +45,7 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}areas/${slug}`,
     delete: (slug: string): string => `${this.apiHost}areas/${slug}`,
     update: (slug: string): string => `${this.apiHost}areas/${slug}`,
+    getGrades: (slug: string): string => `${this.apiHost}areas/${slug}/grades`,
     updateOrder: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
   };
 

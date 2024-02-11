@@ -24,6 +24,7 @@ def test_successful_create_area(client):
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
 
+
 def test_create_area_invalid_lat(client):
     access_headers, refresh_headers = get_login_headers(client)
     area_data = {
@@ -36,6 +37,7 @@ def test_create_area_invalid_lat(client):
 
     rv = client.post('/api/sectors/schattental/areas', headers=access_headers, json=area_data)
     assert rv.status_code == 400
+
 
 def test_create_area_invalid_lng(client):
     access_headers, refresh_headers = get_login_headers(client)
@@ -119,6 +121,7 @@ def test_successful_edit_area(client):
     assert res['portraitImage'] == None
     assert res['id'] is not None
 
+
 def test_successful_order_areas(client):
     access_headers, refresh_headers = get_login_headers(client)
 
@@ -144,3 +147,14 @@ def test_successful_order_areas(client):
     assert res[1]['orderIndex'] == 1
     assert res[0]['id'] == "8c3c70ca-c66c-4e45-85c0-72d46778bec4"
     assert res[0]['orderIndex'] == 0
+
+
+def test_successful_get_area_grades(client):
+    rv = client.get('/api/areas/dritter-block-von-links/grades')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['gradeName'] == "1"
+    assert res[0]['gradeScale'] == "FB"
+    assert res[1]['gradeName'] == "8A"
+    assert res[1]['gradeScale'] == "FB"
