@@ -43,7 +43,7 @@ export class SectorListComponent {
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
 
-  constructor(private sectorsService: SectorsService,
+  constructor(public sectorsService: SectorsService,
               private route: ActivatedRoute,
               private dialogService: DialogService,
               private store: Store,
