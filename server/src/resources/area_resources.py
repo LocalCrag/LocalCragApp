@@ -11,6 +11,7 @@ from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
+from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
@@ -127,3 +128,14 @@ class UpdateAreaOrder(MethodView):
         db.session.commit()
 
         return jsonify(None), 200
+
+
+class GetAreaGrades(MethodView):
+
+    def get(self, area_slug):
+        """
+        Returns the grades of all lines of an area.
+        """
+        area_id = Area.get_id_by_slug(area_slug)
+        result = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id).all()
+        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

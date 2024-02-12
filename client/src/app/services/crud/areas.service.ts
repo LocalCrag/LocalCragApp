@@ -8,6 +8,7 @@ import {map, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {Area} from '../../models/area';
 import {ItemOrder} from '../../interfaces/item-order.interface';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 /**
  * CRUD service for areas.
@@ -105,6 +106,16 @@ export class AreasService {
       }),
       map(() => null)
     );
+  }
+
+  /**
+   * Returns a list of Grades.
+   *
+   * @param areaSlug Slug of the area to return the grades for.
+   * @return Observable of a list of Grades.
+   */
+  public getAreaGrades(areaSlug: string): Observable<Grade[]> {
+    return this.cache.get(this.api.areas.getGrades(areaSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 }

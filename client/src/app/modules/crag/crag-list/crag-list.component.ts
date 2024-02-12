@@ -40,7 +40,7 @@ export class CragListComponent implements OnInit {
   public isMobile$: Observable<boolean>;
   public ref: DynamicDialogRef | undefined;
 
-  constructor(private cragsService: CragsService,
+  constructor(public cragsService: CragsService,
               private store: Store,
               private dialogService: DialogService,
               private translocoService: TranslocoService) {

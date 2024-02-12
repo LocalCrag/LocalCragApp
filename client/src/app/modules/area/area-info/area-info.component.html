@@ -7,7 +7,7 @@
     <section *ngIf="area.lat && area.lng">GPS: <a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:{{area.lat}}+{{area.lng}}">{{area.lat}}, {{area.lng}}</a> </section>
 
     <h4>{{t('gradeDistribution')}}:</h4>
-    <lc-leveled-grade-distribution></lc-leveled-grade-distribution>
+    <lc-leveled-grade-distribution [fetchingObservable]="fetchAreaGrades"></lc-leveled-grade-distribution>
 
   </ng-container>
 

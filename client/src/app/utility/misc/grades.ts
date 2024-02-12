@@ -146,3 +146,11 @@ function buildGradeMap() {
 }
 
 buildGradeMap();
+
+/**
+ * Parses a grade.
+ * @param payload Payload containing the grade information.
+ */
+export const deserializeGrade = (payload: any): Grade => {
+  return gradeMap.FB[payload.gradeName]
+}

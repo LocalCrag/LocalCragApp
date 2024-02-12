@@ -32,7 +32,7 @@
                 <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                   <div class="text-2xl font-bold text-900">{{ sector.name }}</div>
                   {{sector.shortDescription}}
-                  <lc-leveled-grade-distribution></lc-leveled-grade-distribution>
+                  <lc-leveled-grade-distribution [fetchingObservable]="sectorsService.getSectorGrades(sector.slug)"></lc-leveled-grade-distribution>
                 </div>
               </div>
             </div>

@@ -44,7 +44,7 @@ export class AreaListComponent implements OnInit{
   public sectorSlug: string;
   public ref: DynamicDialogRef | undefined;
 
-  constructor(private areasService: AreasService,
+  constructor(public areasService: AreasService,
               private store: Store,
               private dialogService: DialogService,
               private route: ActivatedRoute,

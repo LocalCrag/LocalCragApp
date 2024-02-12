@@ -1,14 +1,16 @@
 from flask import Blueprint
 
-from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder
+from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder, \
+    GetAreaGrades
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
-from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder
+from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
+    GetCragGrades
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
-    UpdateSectorOrder
+    UpdateSectorOrder, GetSectorGrades
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
     GetTopoImage, UpdateTopoImageOrder
 from resources.upload_resources import UploadFile
@@ -70,6 +72,7 @@ def configure_api(app):
     area_bp.add_url_rule('/<string:area_slug>', view_func=GetArea.as_view('get_area_details'))
     area_bp.add_url_rule('/<string:area_slug>', view_func=UpdateArea.as_view('update_area'))
     area_bp.add_url_rule('/<string:area_slug>', view_func=DeleteArea.as_view('delete_area'))
+    area_bp.add_url_rule('/<string:area_slug>/grades', view_func=GetAreaGrades.as_view('get_area_grades'))
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=GetLines.as_view('get_lines'))
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=CreateLine.as_view('create_line'))
     area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=GetTopoImages.as_view('get_topo_images'))
@@ -95,6 +98,7 @@ def configure_api(app):
     sector_bp.add_url_rule('/<string:sector_slug>', view_func=GetSector.as_view('get_sector_details'))
     sector_bp.add_url_rule('/<string:sector_slug>', view_func=UpdateSector.as_view('update_sector'))
     sector_bp.add_url_rule('/<string:sector_slug>', view_func=DeleteSector.as_view('delete_sector'))
+    sector_bp.add_url_rule('/<string:sector_slug>/grades', view_func=GetSectorGrades.as_view('get_sector_grades'))
     sector_bp.add_url_rule('/<string:sector_slug>/areas', view_func=GetAreas.as_view('get_areas'))
     sector_bp.add_url_rule('/<string:sector_slug>/areas', view_func=CreateArea.as_view('create_area'))
     sector_bp.add_url_rule('/<string:sector_slug>/areas/update-order', view_func=UpdateAreaOrder.as_view('update_area_order'))
@@ -106,6 +110,7 @@ def configure_api(app):
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=GetCrag.as_view('get_crag_details'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=UpdateCrag.as_view('update_crag'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=DeleteCrag.as_view('delete_crag'))
+    crag_bp.add_url_rule('/<string:crag_slug>/grades', view_func=GetCragGrades.as_view('get_crag_grades'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=GetSectors.as_view('get_sectors'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors', view_func=CreateSector.as_view('create_sector'))
     crag_bp.add_url_rule('/<string:crag_slug>/sectors/update-order', view_func=UpdateSectorOrder.as_view('update_sector_order'))

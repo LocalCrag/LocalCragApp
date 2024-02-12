@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {CragsService} from '../../../services/crud/crags.service';
 import {Crag} from '../../../models/crag';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Observable} from 'rxjs';
+import {Grade} from '../../../utility/misc/grades';
 
 /**
  * Component that shows information about a crag.
@@ -16,6 +18,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 export class CragInfoComponent implements OnInit {
 
   public crag: Crag;
+  public fetchCragGrades: Observable<Grade[]>;
 
   constructor(private route: ActivatedRoute,
               private cragsService: CragsService) {
@@ -28,7 +31,8 @@ export class CragInfoComponent implements OnInit {
       this.cragsService.getCrag(cragSlug).subscribe(crag => {
         this.crag = crag;
       });
-    })
+      this.fetchCragGrades = this.cragsService.getCragGrades(cragSlug);
+    });
   }
 
 

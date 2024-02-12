@@ -23,6 +23,8 @@ import {OrderListModule} from 'primeng/orderlist';
 import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
 import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
+import { ToStringPipe } from './pipes/to-string.pipe';
+import {SkeletonModule} from 'primeng/skeleton';
 
 /**
  * Module for shared components, pipes etc.
@@ -43,6 +45,7 @@ import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
     AsFormArrayPipe,
     AsFormGroupPipe,
     SanitizeHtmlPipe,
+    ToStringPipe,
   ],
   imports: [
     CommonModule,
@@ -52,7 +55,8 @@ import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
     ImageModule,
     TranslocoModule,
     ProgressSpinnerModule,
-    OrderListModule
+    OrderListModule,
+    SkeletonModule
   ],
   exports: [
     MomentPipe,
@@ -67,7 +71,7 @@ import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
     TopoImageComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
   ]
 })
 export class SharedModule {

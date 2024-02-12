@@ -9,6 +9,7 @@ import {environment} from '../../../environments/environment';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {Store} from '@ngrx/store';
 import {reloadCrags} from '../../ngrx/actions/core.actions';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 /**
  * CRUD service for crags.
@@ -107,5 +108,17 @@ export class CragsService {
       map(() => null)
     );
   }
+
+
+  /**
+   * Returns a list of Grades.
+   *
+   * @param cragSlug Slug of the crag to return the grades for.
+   * @return Observable of a list of Grades.
+   */
+  public getCragGrades(cragSlug: string): Observable<Grade[]> {
+    return this.cache.get(this.api.crags.getGrades(cragSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+  }
+
 
 }

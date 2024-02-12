@@ -4,6 +4,8 @@ import {ActivatedRoute} from '@angular/router';
 import {CragsService} from '../../../services/crud/crags.service';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
+import {Observable} from 'rxjs';
+import {Grade} from '../../../utility/misc/grades';
 
 @Component({
   selector: 'lc-sector-info',
@@ -13,6 +15,7 @@ import {SectorsService} from '../../../services/crud/sectors.service';
 export class SectorInfoComponent implements OnInit{
 
   public sector: Sector;
+  public fetchSectorGrades: Observable<Grade[]>;
 
   constructor(private route: ActivatedRoute,
               private sectorsService: SectorsService) {
@@ -23,6 +26,7 @@ export class SectorInfoComponent implements OnInit{
     this.sectorsService.getSector(sectorSlug).subscribe(sector => {
       this.sector = sector;
     });
+    this.fetchSectorGrades = this.sectorsService.getSectorGrades(sectorSlug);
   }
 
 }

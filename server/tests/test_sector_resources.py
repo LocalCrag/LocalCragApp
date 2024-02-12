@@ -127,3 +127,14 @@ def test_successful_order_sectors(client):
     assert res[1]['orderIndex'] == 1
     assert res[0]['id'] == "5f186998-7712-4a85-a623-a5126836a2b1"
     assert res[0]['orderIndex'] == 0
+
+
+def test_successful_get_sector_grades(client):
+    rv = client.get('/api/sectors/schattental/grades')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['gradeName'] == "1"
+    assert res[0]['gradeScale'] == "FB"
+    assert res[1]['gradeName'] == "8A"
+    assert res[1]['gradeScale'] == "FB"
