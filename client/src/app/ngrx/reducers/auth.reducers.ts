@@ -1,7 +1,7 @@
 import * as AuthActions from './../actions/auth.actions';
 import {Action, createReducer, on} from '@ngrx/store';
 import {User} from '../../models/user';
-import jwtDecode, {JwtPayload} from 'jwt-decode';
+import {jwtDecode, JwtPayload} from 'jwt-decode';
 import {LoadingState} from '../../enums/loading-state';
 
 /**
