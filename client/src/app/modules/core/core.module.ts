@@ -100,7 +100,7 @@ export function preloadTranslations(transloco: TranslocoService) {
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production
-    }),
+    , connectInZone: true}),
     EffectsModule.forRoot([
       AuthEffects,
       DeviceEffects,
