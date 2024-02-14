@@ -12,7 +12,7 @@
                         styleClass="md:mb-0"></p-dropdown>
             <div class="flex justify-content-end gap-3">
               <p-button label="{{t('newCragButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/create-crag"
-              *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
+                        *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
               <p-button icon="pi pi-plus" routerLink="/topo/create-crag"
                         *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
               <p-button label="{{t('reorderCragsButtonLabel')}}" icon="pi pi-sort" (click)="reorderCrags()"
@@ -24,18 +24,22 @@
             </div>
           </div>
         </ng-template>
-        <ng-template let-crag pTemplate="listItem">
-          <div class="col-12 clickable-data-item" routerLink="/topo/{{crag.slug}}">
-            <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-              <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                   [src]="crag.portraitImage ? crag.portraitImage.thumbnailM : 'assets/placeholder.png'"
-                   [alt]="crag.name"/>
-              <div
-                class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                  <div class="text-2xl font-bold text-900">{{ crag.name }}</div>
-                  {{crag.shortDescription}}
-                  <lc-leveled-grade-distribution [fetchingObservable]="cragsService.getCragGrades(crag.slug)"></lc-leveled-grade-distribution>
+        <ng-template let-crags pTemplate="list">
+          <div class="grid grid-nogutter">
+            <div class="col-12 clickable-data-item" routerLink="/topo/{{crag.slug}}"
+                 *ngFor="let crag of crags; let first = first">
+              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                   [ngClass]="{ 'border-top-1 surface-border': !first }">
+                <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                     [src]="crag.portraitImage ? crag.portraitImage.thumbnailM : 'assets/placeholder.png'"
+                     [alt]="crag.name"/>
+                <div
+                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                  <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                    <div class="text-2xl font-bold text-900">{{ crag.name }}</div>
+                    <div [innerHTML]="crag.shortDescription | sanitizeHtml"></div>
+                    <lc-leveled-grade-distribution [fetchingObservable]="cragsService.getCragGrades(crag.slug)"></lc-leveled-grade-distribution>
+                  </div>
                 </div>
               </div>
             </div>

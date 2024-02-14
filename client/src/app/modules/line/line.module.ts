@@ -34,7 +34,7 @@ import { LineInfoComponent } from './line-info/line-info.component';
     LineFormComponent,
     LineListComponent,
     LineBoolPropListComponent,
-    LineInfoComponent
+    LineInfoComponent,
   ],
   imports: [
     CommonModule,

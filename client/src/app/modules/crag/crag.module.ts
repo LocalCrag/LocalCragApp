@@ -23,6 +23,9 @@ import {SectorModule} from '../sector/sector.module';
 import {CragInfoComponent} from './crag-info/crag-info.component';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
+import {
+    GradeDistributionBarChartComponent
+} from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 
 
 /**
@@ -35,29 +38,30 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
     CragComponent,
     CragInfoComponent
   ],
-  imports: [
-    CommonModule,
-    CardModule,
-    TranslocoModule,
-    SharedModule,
-    InputTextModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    ButtonModule,
-    DataViewModule,
-    TagModule,
-    BadgeModule,
-    RouterLink,
-    DropdownModule,
-    MessagesModule,
-    EditorModule,
-    TabMenuModule,
-    ConfirmPopupModule,
-    SectorModule,
-    SkeletonModule,
-    BreadcrumbModule
-  ],
+    imports: [
+        CommonModule,
+        CardModule,
+        TranslocoModule,
+        SharedModule,
+        InputTextModule,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        ButtonModule,
+        DataViewModule,
+        TagModule,
+        BadgeModule,
+        RouterLink,
+        DropdownModule,
+        MessagesModule,
+        EditorModule,
+        TabMenuModule,
+        ConfirmPopupModule,
+        SectorModule,
+        SkeletonModule,
+        BreadcrumbModule,
+        GradeDistributionBarChartComponent
+    ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
   ],

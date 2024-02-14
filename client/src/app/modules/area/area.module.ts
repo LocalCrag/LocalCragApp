@@ -26,6 +26,9 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {LineModule} from '../line/line.module';
 import {TopoImagesModule} from '../topo-images/topo-images.module';
 import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module';
+import {
+    GradeDistributionBarChartComponent
+} from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 
 
 @NgModule({
@@ -58,7 +61,8 @@ import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module'
         BreadcrumbModule,
         LineModule,
         TopoImagesModule,
-        LinePathEditorModule
+        LinePathEditorModule,
+        GradeDistributionBarChartComponent
     ],
     exports: [
         AreaListComponent

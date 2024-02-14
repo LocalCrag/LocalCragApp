@@ -1,9 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {
+  provideTransloco,
   Translation,
-  TRANSLOCO_CONFIG,
-  TRANSLOCO_LOADER,
-  translocoConfig,
   TranslocoLoader,
   TranslocoModule
 } from '@ngneat/transloco';
@@ -36,16 +34,15 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 @NgModule({
   exports: [TranslocoModule],
   providers: [
-    {
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
+    provideTransloco({
+      config: {
         availableLangs: ['de'],
         defaultLang: environment.language,
         fallbackLang: 'de',
         prodMode: environment.production,
-      })
-    },
-    {provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader}
+      },
+      loader: TranslocoHttpLoader
+    }),
   ]
 })
 export class TranslocoRootModule {

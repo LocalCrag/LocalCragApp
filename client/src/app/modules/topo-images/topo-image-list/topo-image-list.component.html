@@ -23,9 +23,11 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-topoImage pTemplate="listItem">
-      <div class="col-12">
-        <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+    <ng-template let-topoImages pTemplate="list">
+      <div class="grid grid-nogutter">
+      <div class="col-12" *ngFor="let topoImage of topoImages; let first = first">
+        <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+             [ngClass]="{ 'border-top-1 surface-border': !first }">
           <lc-topo-image [topoImage]="topoImage" [showLineNumbers]="true"
                          class="w-9 sm:w-16rem xl:w-30rem shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
           <div class="flex flex-column sm:flex-column justify-content-between align-items-center
@@ -99,6 +101,7 @@
 
           </div>
         </div>
+      </div>
       </div>
     </ng-template>
   </p-dataView>

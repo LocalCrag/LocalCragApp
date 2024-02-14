@@ -1,11 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
-import {IsLoggedOutGuard} from '../../guards/is-logged-out.guard';
 import {NewsComponent} from './news/news.component';
 import {ImprintComponent} from './imprint/imprint.component';
 import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
-import {IsLoggedInGuard} from '../../guards/is-logged-in.guard';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
@@ -32,6 +30,8 @@ import {LineComponent} from '../line/line/line.component';
 import {TopoImageListComponent} from '../topo-images/topo-image-list/topo-image-list.component';
 import {TopoImageFormComponent} from '../topo-images/topo-image-form/topo-image-form.component';
 import {LinePathFormComponent} from '../line-path-editor/line-path-form/line-path-form.component';
+import {isLoggedOut} from '../../guards/is-logged-out';
+import {isLoggedIn} from '../../guards/is-logged-in';
 
 const routes: Routes = [
   {
@@ -49,27 +49,27 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [IsLoggedOutGuard],
+    canActivate: [isLoggedOut],
   },
   {
     path: 'change-password',
     component: ChangePasswordComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
-    canActivate: [IsLoggedOutGuard],
+    canActivate: [isLoggedOut],
   },
   {
     path: 'forgot-password-check-mailbox',
     component: ForgotPasswordCheckMailboxComponent,
-    canActivate: [IsLoggedOutGuard],
+    canActivate: [isLoggedOut],
   },
   {
     path: 'reset-password/:hash',
     component: ResetPasswordComponent,
-    canActivate: [IsLoggedOutGuard],
+    canActivate: [isLoggedOut],
   },
   {
     path: 'topo',
@@ -78,7 +78,7 @@ const routes: Routes = [
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'topo/:crag-slug',
@@ -118,12 +118,12 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
-    canActivate: [IsLoggedInGuard]
+    canActivate: [isLoggedIn]
   },
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'topo/:crag-slug/:sector-slug',
@@ -163,22 +163,22 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
-    canActivate: [IsLoggedInGuard]
+    canActivate: [isLoggedIn]
   },
   {
     path: 'topo/:crag-slug/:sector-slug/create-area',
     component: AreaFormComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
     component: LineFormComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/add-topo-image',
     component: TopoImageFormComponent,
-    canActivate: [IsLoggedInGuard],
+    canActivate: [isLoggedIn],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
@@ -230,7 +230,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
-    canActivate: [IsLoggedInGuard]
+    canActivate: [isLoggedIn]
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug',
@@ -246,12 +246,12 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
     component: LineFormComponent,
-    canActivate: [IsLoggedInGuard]
+    canActivate: [isLoggedIn]
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
     component: LinePathFormComponent,
-    canActivate: [IsLoggedInGuard]
+    canActivate: [isLoggedIn]
   },
   {
     component: NotFoundComponent,
