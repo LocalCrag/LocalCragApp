@@ -21,6 +21,9 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AreaModule} from '../area/area.module';
+import {
+    GradeDistributionBarChartComponent
+} from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 
 
 @NgModule({
@@ -33,27 +36,28 @@ import {AreaModule} from '../area/area.module';
   exports: [
     SectorListComponent
   ],
-  imports: [
-    RouterLink,
-    CommonModule,
-    CardModule,
-    TranslocoModule,
-    DataViewModule,
-    InputTextModule,
-    InputTextareaModule,
-    ButtonModule,
-    SharedModule,
-    DropdownModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TabMenuModule,
-    SkeletonModule,
-    MessagesModule,
-    BreadcrumbModule,
-    EditorModule,
-    ConfirmPopupModule,
-    AreaModule,
-  ],
+    imports: [
+        RouterLink,
+        CommonModule,
+        CardModule,
+        TranslocoModule,
+        DataViewModule,
+        InputTextModule,
+        InputTextareaModule,
+        ButtonModule,
+        SharedModule,
+        DropdownModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TabMenuModule,
+        SkeletonModule,
+        MessagesModule,
+        BreadcrumbModule,
+        EditorModule,
+        ConfirmPopupModule,
+        AreaModule,
+        GradeDistributionBarChartComponent,
+    ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}
   ],
