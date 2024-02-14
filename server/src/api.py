@@ -9,6 +9,7 @@ from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, 
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
+from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
@@ -121,3 +122,12 @@ def configure_api(app):
     regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=GetCrags.as_view('get_crags'))
     regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=CreateCrag.as_view('create_crag'))
     app.register_blueprint(regions_bp, url_prefix='/api/regions')
+
+    # Post API
+    post_bp = Blueprint('posts', __name__)
+    post_bp.add_url_rule('', view_func=GetPosts.as_view('get_posts'))
+    post_bp.add_url_rule('', view_func=CreatePost.as_view('create_post'))
+    post_bp.add_url_rule('/<string:post_slug>', view_func=GetPost.as_view('get_post'))
+    post_bp.add_url_rule('/<string:post_slug>', view_func=DeletePost.as_view('delete_post'))
+    post_bp.add_url_rule('/<string:post_slug>', view_func=UpdatePost.as_view('update_post'))
+    app.register_blueprint(post_bp, url_prefix='/api/posts')
