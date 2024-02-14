@@ -20,6 +20,11 @@ export class AppNotificationsService {
   private isMobile: boolean;
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> = new Map<NotificationIdentifier, NotificationType>([
+    [NotificationIdentifier.LINE_CREATED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.LINE_CREATED_TITLE)
+     * t(notifications.LINE_CREATED_MESSAGE)
+     **/
     [NotificationIdentifier.LINE_PATH_DELETED, NotificationType.SUCCESS],
     /**
      * t(notifications.LINE_PATH_DELETED_TITLE)

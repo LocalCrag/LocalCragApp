@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -31,7 +31,7 @@ import {Title} from '@angular/platform-browser';
   providers: [ConfirmationService]
 })
 @UntilDestroy()
-export class LineFormComponent {
+export class LineFormComponent implements OnInit{
 
   @ViewChild(FormDirective) formDirective: FormDirective;
 
@@ -100,7 +100,7 @@ export class LineFormComponent {
       name: ['', [Validators.required]],
       description: [''],
       videos: this.fb.array([]),
-      grade: ['', [Validators.required]],
+      grade: [null, [Validators.required]],
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],
