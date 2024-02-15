@@ -51,8 +51,7 @@ export class MenuComponent implements OnInit {
         {
           label: this.translocoService.translate(marker('menu.news')),
           icon: 'pi pi-fw pi-megaphone',
-          routerLink: '/',
-          routerLinkActiveOptions: {exact: true}
+          routerLink: '/news',
         },
         {
           label: this.translocoService.translate(marker('menu.topo')),
