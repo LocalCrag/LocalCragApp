@@ -98,6 +98,7 @@ export class SectorFormComponent implements OnInit {
    * Sets the form value based on an input sector and enables the form afterwards.
    */
   private setFormValue() {
+    this.sectorForm.enable();
     this.sectorForm.patchValue({
       name: this.sector.name,
       description: this.sector.description,
@@ -106,7 +107,6 @@ export class SectorFormComponent implements OnInit {
       lat: this.sector.lat,
       lng: this.sector.lng,
     });
-    this.sectorForm.enable();
   }
 
   /**

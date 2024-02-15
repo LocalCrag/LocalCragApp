@@ -28,7 +28,6 @@ export class MenuComponent implements OnInit {
   isMobile$: Observable<boolean>;
 
   constructor(private cragsService: CragsService,
-              private cdr: ChangeDetectorRef,
               private translocoService: TranslocoService,
               private actions: Actions,
               private store: Store) {

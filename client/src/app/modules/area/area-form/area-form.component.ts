@@ -101,6 +101,7 @@ export class AreaFormComponent implements OnInit {
    * Sets the form value based on an input sector and enables the form afterwards.
    */
   private setFormValue() {
+    this.areaForm.enable();
     this.areaForm.patchValue({
       name: this.area.name,
       description: this.area.description,
@@ -108,7 +109,6 @@ export class AreaFormComponent implements OnInit {
       lng: this.area.lng,
       portraitImage: this.area.portraitImage,
     });
-    this.areaForm.enable();
   }
 
   /**

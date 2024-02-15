@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -135,7 +135,7 @@ export class LineFormComponent implements OnInit{
       mantle: [false],
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
-      if (newGrade.value < 0) { // Projects can't have ratings or FA info
+      if (newGrade?.value < 0) { // Projects can't have ratings or FA info
         this.lineForm.get('rating').disable();
         this.lineForm.get('faYear').disable();
         this.lineForm.get('faName').disable();
@@ -167,6 +167,7 @@ export class LineFormComponent implements OnInit{
     this.line.videos.map(video => {
       this.addLineVideoFormControl();
     });
+    this.lineForm.enable();
     this.lineForm.patchValue({
       name: this.line.name,
       description: this.line.description,
@@ -200,7 +201,6 @@ export class LineFormComponent implements OnInit{
       arete: this.line.arete,
       mantle: this.line.mantle,
     });
-    this.lineForm.enable();
   }
 
   /**

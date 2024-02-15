@@ -93,6 +93,7 @@ export class CragFormComponent implements OnInit {
    * Sets the form value based on an input crag and enables the form afterwards.
    */
   private setFormValue() {
+    this.cragForm.enable();
     this.cragForm.patchValue({
       name: this.crag.name,
       description: this.crag.description,
@@ -100,7 +101,6 @@ export class CragFormComponent implements OnInit {
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
     });
-    this.cragForm.enable();
   }
 
   /**

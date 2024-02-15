@@ -110,11 +110,11 @@ export class PostFormComponent {
    * Sets the form value based on an input sector and enables the form afterwards.
    */
   private setFormValue() {
+    this.postForm.enable();
     this.postForm.patchValue({
       title: this.post.title,
       text: this.post.text,
     });
-    this.postForm.enable();
   }
 
   /**
