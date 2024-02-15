@@ -10,6 +10,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 class PostSchema(BaseEntitySchema):
     title = fields.String()
     text = fields.String()
+    slug = fields.String()
 
 
 post_schema = PostSchema()

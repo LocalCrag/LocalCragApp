@@ -1,6 +1,7 @@
 <ng-container *transloco="let t, read: 'sector.sectorList'">
 
   <p-dataView #dv [value]="sectors" [sortField]="sortField" [sortOrder]="sortOrder"
+              [emptyMessage]="t('noSectorsFoundEmptyMessage')"
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
       <div class="flex flex-row justify-content-between">

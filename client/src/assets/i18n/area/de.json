@@ -20,5 +20,6 @@
   "areaForm.createAreaTitle": "Neuen Bereich erstellen",
   "area.gradeDistribution": "Gradverteilung",
   "areaList.newAreaButtonLabel": "Neuer Bereich",
-  "areaList.reorderAreasButtonLabel": "Bereiche ordnen"
+  "areaList.reorderAreasButtonLabel": "Bereiche ordnen",
+  "areaList.noAreasFoundEmptyMessage": "Keine Bereiche gefunden"
 }

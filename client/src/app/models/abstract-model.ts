@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import {User} from './user';
 
 /**
  * The most basic model.

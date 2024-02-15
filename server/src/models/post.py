@@ -13,6 +13,7 @@ class Post(HasSlug, BaseEntity):
     """
     __tablename__ = 'posts'
 
+    slug_target_column = 'title'
     slug_blocklist = ['create-post']
     title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=True)

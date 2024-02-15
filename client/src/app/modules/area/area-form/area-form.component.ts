@@ -19,6 +19,7 @@ import {AreasService} from '../../../services/crud/areas.service';
 import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
 
 /**
  * Form component for creating and editing areas.
@@ -32,6 +33,7 @@ import {Title} from '@angular/platform-browser';
 export class AreaFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(Editor) editor: Editor;
 
   public areaForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -72,6 +74,9 @@ export class AreaFormComponent implements OnInit {
         this.area = area;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
+        if (this.editor) {
+          this.editor.getQuill().enable();
+        }
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${environment.instanceName}`)
@@ -178,4 +183,5 @@ export class AreaFormComponent implements OnInit {
       this.loadingState = LoadingState.DEFAULT;
     });
   }
+
 }

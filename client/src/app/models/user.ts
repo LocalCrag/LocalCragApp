@@ -15,6 +15,8 @@ export class User extends AbstractModel {
   locked: boolean;
   activatedAt: moment.Moment;
 
+  fullname: string;
+
 
   /**
    * Parses a user from a JSON representation.
@@ -33,6 +35,7 @@ export class User extends AbstractModel {
     user.activated = payload.activated;
     user.locked = payload.locked;
     user.activatedAt = moment.utc(payload.activatedAt).local();
+    user.fullname = `${user.firstname} ${user.lastname}`;
     return user;
   }
 

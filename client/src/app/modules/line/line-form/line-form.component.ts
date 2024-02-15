@@ -20,6 +20,7 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
 import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
 
 /**
  * Form component for lines.
@@ -34,6 +35,7 @@ import {Title} from '@angular/platform-browser';
 export class LineFormComponent implements OnInit{
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(Editor) editor: Editor;
 
   public lineForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -85,6 +87,9 @@ export class LineFormComponent implements OnInit{
         this.line = line;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
+        if (this.editor) {
+          this.editor.getQuill().enable();
+        }
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${environment.instanceName}`)

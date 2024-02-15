@@ -17,6 +17,7 @@ import {SectorsService} from '../../../services/crud/sectors.service';
 import {Title} from '@angular/platform-browser';
 import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
+import {Editor} from 'primeng/editor';
 
 /**
  * Form component for creating and editing sectors.
@@ -30,6 +31,7 @@ import {lngValidator} from '../../../utility/validators/lng.validator';
 export class SectorFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(Editor) editor: Editor;
 
   public sectorForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -68,6 +70,9 @@ export class SectorFormComponent implements OnInit {
         this.sector = sector;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
+        if(this.editor) {
+          this.editor.getQuill().enable();
+        }
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${environment.instanceName}`)

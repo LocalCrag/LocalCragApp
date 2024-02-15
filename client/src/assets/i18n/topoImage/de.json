@@ -10,6 +10,7 @@
   "topoImageList.lines": "Linien",
   "topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
   "topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",
+  "topoImageList.noTopoImagesFoundEmptyMessage": "Keine Topo Bilder gefunden",
   "topoImageForm.topoImageImageImageLabel": "Bild",
   "topoImageList.deleteTopoImageButtonLabel": "Löschen"
 }

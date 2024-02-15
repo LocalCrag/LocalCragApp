@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
-import {NewsComponent} from './news/news.component';
 import {ImprintComponent} from './imprint/imprint.component';
 import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
@@ -32,11 +31,28 @@ import {TopoImageFormComponent} from '../topo-images/topo-image-form/topo-image-
 import {LinePathFormComponent} from '../line-path-editor/line-path-form/line-path-form.component';
 import {isLoggedOut} from '../../guards/is-logged-out';
 import {isLoggedIn} from '../../guards/is-logged-in';
+import {PostListComponent} from '../blog/post-list/post-list.component';
+import {PostFormComponent} from '../blog/post-form/post-form.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: NewsComponent
+    pathMatch: 'full',
+    redirectTo: 'news'
+  },
+  {
+    path: 'news',
+    component: PostListComponent
+  },
+  {
+    path: 'news/create-post',
+    component: PostFormComponent,
+    canActivate: [isLoggedIn],
+  },
+  {
+    path: 'news/:post-slug/edit',
+    component: PostFormComponent,
+    canActivate: [isLoggedIn]
   },
   {
     path: 'imprint',

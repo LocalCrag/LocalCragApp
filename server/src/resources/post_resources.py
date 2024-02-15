@@ -91,3 +91,6 @@ class DeletePost(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
+
+
+# todo tests for posts
