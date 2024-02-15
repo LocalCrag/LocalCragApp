@@ -1,0 +1,49 @@
+<ng-container *transloco="let t, read: 'posts.postList'">
+
+  <div class="content">
+    <p-card header="{{t('postListTitle')}}">
+
+      <p-dataView #dv [value]="posts" [sortField]="sortField" [sortOrder]="sortOrder"
+                  [emptyMessage]="t('noPostsFoundEmptyMessage')"
+                  [loading]="loading === loadingStates.LOADING">
+        <ng-template pTemplate="header">
+          <div class="flex flex-row justify-content-between">
+            <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
+                        optionLabel="label" (onChange)="onSortChange($event)"
+                        styleClass="md:mb-0"></p-dropdown>
+            <div class="flex justify-content-end gap-3">
+              <p-button label="{{t('newPostButtonLabel')}}" icon="pi pi-plus" routerLink="/news/create-post"
+                        *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
+              <p-button icon="pi pi-plus" routerLink="/news/create-post"
+                        *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-posts pTemplate="list">
+          <div class="grid grid-nogutter">
+            <div class="col-12"
+                 *ngFor="let post of posts; let first = first">
+              <div class="flex flex-column  xl:align-items-start p-4 gap-2"
+                   [ngClass]="{ 'border-top-1 surface-border': !first }">
+                <div class="text-2xl font-bold text-900 flex w-full">
+                  <div class="flex-grow-1 flex align-items-center">{{ post.title }}</div>
+                  <div class="flex flex-grow-0 gap-3">
+                    <p-button label="{{t('editPostButtonLabel')}}" icon="pi pi-file-edit" routerLink="/news/{{post.slug}}/edit"
+                              styleClass="pr-0"
+                              *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)" [text]="true"></p-button>
+                    <p-button icon="pi pi-plus" routerLink="/news/{{post.slug}}/edit"
+                              *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)" [text]="true"></p-button>
+                  </div>
+                </div>
+                <div class="text-xs">{{t('byUserAtDate', {user: post.createdBy.fullname, date: post.timeCreated | moment : 'DD.MM.YYYY'})}}</div>
+                <div [innerHTML]="post.text | sanitizeHtml"></div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+
+    </p-card>
+  </div>
+
+</ng-container>

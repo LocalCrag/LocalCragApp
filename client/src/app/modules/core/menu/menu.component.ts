@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
@@ -89,6 +89,7 @@ export class MenuComponent implements OnInit {
    */
   buildCragNavigationMenu() {
     this.cragsService.getCrags().subscribe(crags => {
+      this.items = [...this.items];
       this.items[1].items = [];
       crags.map(crag => {
         this.items[1].items.push({

@@ -14,6 +14,7 @@ def str_to_slug(name: str) -> str:
     name = re.sub('[ä]', 'ae', name)
     name = re.sub('[ö]', 'oe', name)
     name = re.sub('[ü]', 'ue', name)
+    name = re.sub('[ß]', 'ss', name)
     name = re.sub('[^a-z0-9]', '-', name)
     return name.strip('-')
 

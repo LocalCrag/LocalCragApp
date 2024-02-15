@@ -25,7 +25,6 @@ import {RefreshTokenInterceptor} from '../../utility/http-interceptors/refresh-t
 import {JWTInterceptor} from '../../utility/http-interceptors/jwt.interceptor';
 import {ContentTypeInterceptor} from '../../utility/http-interceptors/content-type.interceptor';
 import {ReactiveFormsModule} from '@angular/forms';
-import {NewsComponent} from './news/news.component';
 import {CardModule} from 'primeng/card';
 import {MenuModule} from 'primeng/menu';
 import {FooterComponent} from './footer/footer.component';
@@ -72,7 +71,6 @@ export function preloadTranslations(transloco: TranslocoService) {
     CoreComponent,
     MenuComponent,
     LoginComponent,
-    NewsComponent,
     FooterComponent,
     ImprintComponent,
     DataPrivacyStatementComponent,

@@ -19,6 +19,14 @@ export class ApiService {
     changePassword: (): string => `${this.apiHost}change-password`,
   };
 
+  public posts = {
+    create: (): string => `${this.apiHost}posts`,
+    getList: (): string => `${this.apiHost}posts`,
+    getDetail: (slug: string): string => `${this.apiHost}posts/${slug}`,
+    delete: (slug: string): string => `${this.apiHost}posts/${slug}`,
+    update: (slug: string): string => `${this.apiHost}posts/${slug}`,
+  };
+
   public crags = {
     create: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
     getList: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,

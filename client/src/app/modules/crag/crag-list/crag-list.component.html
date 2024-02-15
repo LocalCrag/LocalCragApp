@@ -4,6 +4,7 @@
     <p-card header="{{t('cragListTitle')}}">
 
       <p-dataView #dv [value]="crags" [sortField]="sortField" [sortOrder]="sortOrder"
+                  [emptyMessage]="t('noCragsFoundEmptyMessage')"
                   [loading]="loading === loadingStates.LOADING">
         <ng-template pTemplate="header">
           <div class="flex flex-row justify-content-between">

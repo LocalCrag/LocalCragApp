@@ -22,5 +22,6 @@
   "sectorForm.createSectorTitle": "Sektor erstellen",
   "sector.gradeDistribution": "Gradverteilung",
   "sectorList.newSectorButtonLabel": "Neuer Sektor",
-  "sectorList.reorderSectorsButtonLabel": "Sektoren ordnen"
+  "sectorList.reorderSectorsButtonLabel": "Sektoren ordnen",
+  "sectorList.noSectorsFoundEmptyMessage": "Keine Sektoren gefunden"
 }

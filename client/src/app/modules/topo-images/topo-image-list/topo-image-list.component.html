@@ -1,6 +1,7 @@
 <ng-container *transloco="let t, read: 'topoImage.topoImageList'">
 
   <p-dataView #dv [value]="topoImages" [sortField]="sortField" [sortOrder]="sortOrder"
+              [emptyMessage]="t('noTopoImagesFoundEmptyMessage')"
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
       <div class="flex flex-row justify-content-between">

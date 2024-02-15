@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {LoadingState} from '../../../enums/loading-state';
@@ -15,6 +15,7 @@ import {ConfirmationService} from 'primeng/api';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
 
 /**
  * A component for creating and editing crags.
@@ -28,6 +29,8 @@ import {Title} from '@angular/platform-browser';
 export class CragFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChildren(Editor) editors: QueryList<Editor>;
+
 
   public cragForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -63,6 +66,9 @@ export class CragFormComponent implements OnInit {
         this.crag = crag;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
+        this.editors?.map(editor => {
+          editor.getQuill().enable();
+        });
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${environment.instanceName}`)
@@ -87,6 +93,7 @@ export class CragFormComponent implements OnInit {
    * Sets the form value based on an input crag and enables the form afterwards.
    */
   private setFormValue() {
+    this.cragForm.enable();
     this.cragForm.patchValue({
       name: this.crag.name,
       description: this.crag.description,
@@ -94,7 +101,6 @@ export class CragFormComponent implements OnInit {
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
     });
-    this.cragForm.enable();
   }
 
   /**

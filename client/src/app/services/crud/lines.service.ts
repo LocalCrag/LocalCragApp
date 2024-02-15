@@ -26,7 +26,7 @@ export class LinesService {
    *
    * @param line Line to persist.
    * @param areaSlug Slug of the area to create the line in.
-   * @return Observable of a Crag.
+   * @return Observable of a Line.
    */
   public createLine(line: Line, areaSlug: string): Observable<Line> {
     return this.http.post(this.api.lines.create(areaSlug), Line.serialize(line)).pipe(

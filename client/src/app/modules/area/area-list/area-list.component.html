@@ -1,6 +1,7 @@
 <ng-container *transloco="let t, read: 'area.areaList'">
 
   <p-dataView #dv [value]="areas" [sortField]="sortField" [sortOrder]="sortOrder"
+              [emptyMessage]="t('noAreasFoundEmptyMessage')"
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
       <div class="flex flex-row justify-content-between">

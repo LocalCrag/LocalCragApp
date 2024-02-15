@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -20,6 +20,7 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
 import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
 
 /**
  * Form component for lines.
@@ -34,6 +35,7 @@ import {Title} from '@angular/platform-browser';
 export class LineFormComponent implements OnInit{
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(Editor) editor: Editor;
 
   public lineForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -85,6 +87,9 @@ export class LineFormComponent implements OnInit{
         this.line = line;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
+        if (this.editor) {
+          this.editor.getQuill().enable();
+        }
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${environment.instanceName}`)
@@ -130,7 +135,7 @@ export class LineFormComponent implements OnInit{
       mantle: [false],
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
-      if (newGrade.value < 0) { // Projects can't have ratings or FA info
+      if (newGrade?.value < 0) { // Projects can't have ratings or FA info
         this.lineForm.get('rating').disable();
         this.lineForm.get('faYear').disable();
         this.lineForm.get('faName').disable();
@@ -162,6 +167,7 @@ export class LineFormComponent implements OnInit{
     this.line.videos.map(video => {
       this.addLineVideoFormControl();
     });
+    this.lineForm.enable();
     this.lineForm.patchValue({
       name: this.line.name,
       description: this.line.description,
@@ -195,7 +201,6 @@ export class LineFormComponent implements OnInit{
       arete: this.line.arete,
       mantle: this.line.mantle,
     });
-    this.lineForm.enable();
   }
 
   /**
