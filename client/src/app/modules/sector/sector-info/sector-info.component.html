@@ -5,7 +5,7 @@
     <h4>{{t('gradeDistribution')}}:</h4>
     <lc-grade-distribution-bar-chart [fetchingObservable]="fetchSectorGrades"></lc-grade-distribution-bar-chart>
 
-    <section [innerHTML]="sector.description | sanitizeHtml"></section>
+    <section [innerHTML]="sector.description | sanitizeHtml"  class="quill-content"></section>
 
     <section *ngIf="sector.lat && sector.lng">GPS: <a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:{{sector.lat}}+{{sector.lng}}">{{sector.lat}}, {{sector.lng}}</a> </section>
 

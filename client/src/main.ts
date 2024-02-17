@@ -1,8 +1,12 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {enableProdMode} from '@angular/core';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
-import { CoreModule } from './app/modules/core/core.module';
-import { environment } from './environments/environment';
+import {CoreModule} from './app/modules/core/core.module';
+import {environment} from './environments/environment';
+
+import Quill from "quill";
+import ImageUploader from "quill-image-uploader";
+
 
 if (environment.production) {
   enableProdMode();
@@ -10,3 +14,5 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(CoreModule)
   .catch(err => console.error(err));
+
+Quill.register("modules/imageUploader", ImageUploader);

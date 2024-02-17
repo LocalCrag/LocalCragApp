@@ -13,9 +13,9 @@
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-column gap-2" lcControlGroup >
           <label class="form-label">{{t('postTextLabel')}}</label>
-          <p-editor formControlName="text" lcFormControl
+          <p-editor formControlName="text" lcFormControl [modules]="quillModules"
                     [style]="{ height: '500px' }" [readonly]="loadingState === loadingStates.LOADING">
             <ng-template pTemplate="header">
               <span class="ql-formats">
@@ -28,7 +28,8 @@
                   <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Ordered List"></button>
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+                  <button type="button" class="ql-image" aria-label="Image"></button>
               </span>
             </ng-template>
           </p-editor>

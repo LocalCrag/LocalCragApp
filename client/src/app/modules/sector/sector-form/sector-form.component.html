@@ -18,15 +18,25 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorShortDescriptionLabel')}}</label>
-          <textarea pInputTextarea formControlName="shortDescription"
-                    placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
-                    lcFormControl rows="3"></textarea>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <p-editor formControlName="shortDescription" lcFormControl placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+              </span>
+            </ng-template>
+          </p-editor>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorDescriptionLabel')}}</label>
           <p-editor formControlName="description" lcFormControl placeholder="{{t('sectorDescriptionPlaceholder')}}"
+                    [modules]="quillModules"
                     [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
             <ng-template pTemplate="header">
               <span class="ql-formats">
@@ -39,7 +49,8 @@
                   <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Ordered List"></button>
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+                  <button type="button" class="ql-image" aria-label="Image"></button>
               </span>
             </ng-template>
           </p-editor>

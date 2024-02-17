@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -18,6 +18,7 @@ import {Title} from '@angular/platform-browser';
 import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Editor} from 'primeng/editor';
+import {UploadService} from '../../../services/crud/upload.service';
 
 /**
  * Form component for creating and editing sectors.
@@ -31,13 +32,14 @@ import {Editor} from 'primeng/editor';
 export class SectorFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChild(Editor) editor: Editor;
+  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   public sectorForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public sector: Sector;
   public editMode = false;
+  public quillModules: any;
 
   private cragSlug: string;
 
@@ -47,8 +49,10 @@ export class SectorFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private sectorsService: SectorsService,
+              private uploadService: UploadService,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
+    this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
   /**
@@ -70,9 +74,9 @@ export class SectorFormComponent implements OnInit {
         this.sector = sector;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
-        if(this.editor) {
-          this.editor.getQuill().enable();
-        }
+        this.editors?.map(editor => {
+          editor.getQuill().enable();
+        });
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${environment.instanceName}`)
@@ -86,8 +90,8 @@ export class SectorFormComponent implements OnInit {
   private buildForm() {
     this.sectorForm = this.fb.group({
       name: ['', [Validators.required]],
-      description: [''],
-      shortDescription: [''],
+      description: [null],
+      shortDescription: [null],
       portraitImage: [null],
       lat: ['', [latValidator()]],
       lng: ['', [lngValidator()]],

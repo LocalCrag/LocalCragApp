@@ -52,6 +52,8 @@ class CreateCrag(MethodView):
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data['name']
+        new_crag.lat = crag_data['lat']
+        new_crag.lng = crag_data['lng']
         new_crag.description = crag_data['description']
         new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = crag_data['rules']
@@ -77,6 +79,8 @@ class UpdateCrag(MethodView):
         crag: Crag = Crag.find_by_slug(crag_slug)
 
         crag.name = crag_data['name']
+        crag.lat = crag_data['lat']
+        crag.lng = crag_data['lng']
         crag.description = crag_data['description']
         crag.short_description = crag_data['shortDescription']
         crag.rules = crag_data['rules']

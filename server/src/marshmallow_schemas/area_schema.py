@@ -10,12 +10,15 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 class AreaSchema(BaseEntitySchema):
     name = fields.String()
     slug = fields.String()
-    lat = fields.Float()
-    lng = fields.Float()
-    description = fields.String(attribute='description')
+    shortDescription = fields.String(attribute='short_description')
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
     orderIndex = fields.Int(attribute='order_index')
 
+class AreaDetailSchema(AreaSchema):
+    lat = fields.Float()
+    lng = fields.Float()
+    description = fields.String(attribute='description')
 
-area_schema = AreaSchema()
+
+area_schema = AreaDetailSchema()
 areas_schema = AreaSchema(many=True)

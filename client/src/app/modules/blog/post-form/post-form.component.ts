@@ -24,6 +24,7 @@ import {Editor, EditorModule} from 'primeng/editor';
 import {InputTextModule} from 'primeng/inputtext';
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../shared/shared.module';
+import {UploadService} from '../../../services/crud/upload.service';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -56,16 +57,21 @@ export class PostFormComponent {
   public loadingStates = LoadingState;
   public post: Post;
   public editMode = false;
+  public quillModules: any;
 
   constructor(private fb: FormBuilder,
               private store: Store,
               private route: ActivatedRoute,
               private router: Router,
               private postsService: PostsService,
+              private uploadService: UploadService,
               private title: Title,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
+    this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
+
+
 
   /**
    * Builds the form on component initialization.

@@ -8,6 +8,7 @@ export class Area extends AbstractModel {
 
   name: string;
   description: string;
+  shortDescription: string;
   slug: string;
   portraitImage: File;
   lat: number;
@@ -25,6 +26,7 @@ export class Area extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(area, payload);
     area.name = payload.name;
     area.description = payload.description;
+    area.shortDescription = payload.shortDescription;
     area.lat = payload.lat;
     area.lng = payload.lng;
     area.slug = payload.slug;
@@ -43,6 +45,7 @@ export class Area extends AbstractModel {
     return {
       name: area.name,
       description: area.description,
+      shortDescription: area.shortDescription,
       lat: area.lat,
       lng: area.lng,
       portraitImage: area.portraitImage ? area.portraitImage.id : null,

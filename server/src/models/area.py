@@ -15,6 +15,7 @@ class Area(HasSlug, BaseEntity):
 
     slug_blocklist = ['edit', 'create-area', 'lines', 'gallery', 'ascents']
     name = db.Column(db.String(120), nullable=False)
+    short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)

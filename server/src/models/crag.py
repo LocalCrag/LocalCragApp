@@ -23,6 +23,8 @@ class Crag(HasSlug, BaseEntity):
     portrait_image = db.relationship('File', lazy='joined')
     sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select")
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
+    lat = db.Column(db.Float, nullable=True)
+    lng = db.Column(db.Float, nullable=True)
 
     @classmethod
     def find_max_order_index(cls) -> int:
