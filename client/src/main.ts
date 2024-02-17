@@ -16,3 +16,5 @@ platformBrowserDynamic().bootstrapModule(CoreModule)
   .catch(err => console.error(err));
 
 Quill.register("modules/imageUploader", ImageUploader);
+
+
