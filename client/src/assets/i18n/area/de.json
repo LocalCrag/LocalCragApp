@@ -3,6 +3,8 @@
   "areaForm.areaNameLabel": "Bereichsname",
   "areaForm.areaNamePlaceholder": "z.B. Bruno Block",
   "areaForm.required": "Pflichtfeld",
+  "areaForm.areaShortDescriptionLabel": "Kurzbeschreibung",
+  "areaForm.areaShortDescriptionPlaceholder": "Infos zum Bereich, kurz und knackig zusammengefasst...",
   "areaForm.areaDescriptionLabel": "Beschreibung",
   "areaForm.areaDescriptionPlaceholder": "Allgemeine Infos zum Bereich.",
   "areaForm.areaPortraitImageLabel": "Bild",
