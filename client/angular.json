@@ -34,7 +34,8 @@
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.css",
-              "node_modules/quill/dist/quill.snow.css"
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/quill-image-uploader/dist/quill.imageUploader.min.css"
             ],
             "scripts": [
               "node_modules/quill/dist/quill.js"

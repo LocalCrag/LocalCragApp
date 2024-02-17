@@ -37,7 +37,7 @@
               class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
               <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                 <div class="text-2xl font-bold text-900">{{ sector.name }}</div>
-                <div [innerHTML]="sector.shortDescription | sanitizeHtml"></div>
+                <div [innerHTML]="sector.shortDescription | sanitizeHtml"  *ngIf="sector.shortDescription"></div>
                 <lc-leveled-grade-distribution [fetchingObservable]="sectorsService.getSectorGrades(sector.slug)"></lc-leveled-grade-distribution>
               </div>
             </div>

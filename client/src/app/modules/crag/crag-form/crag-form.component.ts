@@ -16,6 +16,9 @@ import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
+import {latValidator} from '../../../utility/validators/lat.validator';
+import {lngValidator} from '../../../utility/validators/lng.validator';
+import {UploadService} from '../../../services/crud/upload.service';
 
 /**
  * A component for creating and editing crags.
@@ -31,21 +34,23 @@ export class CragFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
-
   public cragForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public crag: Crag;
   public editMode = false;
+  public quillModules: any;
 
   constructor(private fb: FormBuilder,
               private store: Store,
               private route: ActivatedRoute,
               private router: Router,
               private title: Title,
+              private uploadService: UploadService,
               private cragsService: CragsService,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
+    this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
   /**
@@ -85,7 +90,9 @@ export class CragFormComponent implements OnInit {
       description: [''],
       shortDescription: [''],
       rules: [''],
-      portraitImage: [null]
+      portraitImage: [null],
+      lat: ['', [latValidator()]],
+      lng: ['', [lngValidator()]],
     });
   }
 
@@ -98,6 +105,8 @@ export class CragFormComponent implements OnInit {
       name: this.crag.name,
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
+      lat: this.crag.lat,
+      lng: this.crag.lng,
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
     });
@@ -124,6 +133,8 @@ export class CragFormComponent implements OnInit {
       crag.name = this.cragForm.get('name').value
       crag.description = this.cragForm.get('description').value
       crag.shortDescription = this.cragForm.get('shortDescription').value
+      crag.lat = this.cragForm.get('lat').value ? Number(this.cragForm.get('lat').value) : null;
+      crag.lng = this.cragForm.get('lng').value ? Number(this.cragForm.get('lng').value) : null;
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
       if (this.crag) {

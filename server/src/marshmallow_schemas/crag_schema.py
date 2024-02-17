@@ -16,6 +16,8 @@ class CragSchema(BaseEntitySchema):
 
 
 class CragDetailSchema(CragSchema):
+    lat = fields.Float()
+    lng = fields.Float()
     rules = fields.String()
     description = fields.String()
 

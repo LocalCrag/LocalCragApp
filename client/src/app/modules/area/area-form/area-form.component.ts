@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -20,6 +20,7 @@ import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
+import {UploadService} from '../../../services/crud/upload.service';
 
 /**
  * Form component for creating and editing areas.
@@ -33,13 +34,14 @@ import {Editor} from 'primeng/editor';
 export class AreaFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChild(Editor) editor: Editor;
+  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   public areaForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public area: Area;
   public editMode = false;
+  public quillModules: any;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -49,9 +51,11 @@ export class AreaFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private areasService: AreasService,
+              private uploadService: UploadService,
               private title: Title,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
+    this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
   /**
@@ -74,9 +78,9 @@ export class AreaFormComponent implements OnInit {
         this.area = area;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
-        if (this.editor) {
-          this.editor.getQuill().enable();
-        }
+        this.editors?.map(editor => {
+          editor.getQuill().enable();
+        });
       });
     } else {
       this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${environment.instanceName}`)
@@ -90,7 +94,8 @@ export class AreaFormComponent implements OnInit {
   private buildForm() {
     this.areaForm = this.fb.group({
       name: ['', [Validators.required]],
-      description: [''],
+      description: [null],
+      shortDescription: [null],
       lat: ['', [latValidator()]],
       lng: ['', [lngValidator()]],
       portraitImage: [null]
@@ -105,6 +110,7 @@ export class AreaFormComponent implements OnInit {
     this.areaForm.patchValue({
       name: this.area.name,
       description: this.area.description,
+      shortDescription: this.area.shortDescription,
       lat: this.area.lat,
       lng: this.area.lng,
       portraitImage: this.area.portraitImage,
@@ -131,6 +137,7 @@ export class AreaFormComponent implements OnInit {
       const area = new Area;
       area.name = this.areaForm.get('name').value;
       area.description = this.areaForm.get('description').value;
+      area.shortDescription = this.areaForm.get('shortDescription').value;
       area.lat = this.areaForm.get('lat').value ? Number(this.areaForm.get('lat').value) : null;
       area.lng = this.areaForm.get('lng').value ? Number(this.areaForm.get('lng').value) : null;
       area.portraitImage = this.areaForm.get('portraitImage').value;

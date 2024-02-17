@@ -6,11 +6,16 @@
   }
 }
 
+// todo move somewhere else, not related to typography really anymore
 .quill-content{
   p:first-of-type{
     margin-top: 0;
   }
   p:last-of-type{
     margin-bottom: 0;
+  }
+  // Restricts the maximum size of quill editor HTML content's images so the containers don't overflow
+  img{
+    max-width: 100%;
   }
 }

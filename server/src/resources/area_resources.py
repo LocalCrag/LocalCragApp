@@ -58,6 +58,7 @@ class CreateArea(MethodView):
         new_area.lat = area_data['lat']
         new_area.lng = area_data['lng']
         new_area.description = area_data['description']
+        new_area.short_description = area_data['shortDescription']
         new_area.portrait_image_id = area_data['portraitImage']
         new_area.sector_id = sector_id
         new_area.created_by_id = created_by.id
@@ -83,6 +84,7 @@ class UpdateArea(MethodView):
         area.lat = area_data['lat']
         area.lng = area_data['lng']
         area.description = area_data['description']
+        area.short_description = area_data['shortDescription']
         area.portrait_image_id = area_data['portraitImage']
         db.session.add(area)
         db.session.commit()

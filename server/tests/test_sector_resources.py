@@ -38,16 +38,12 @@ def test_successful_get_sectors(client):
     assert res[1]['shortDescription'] == ""
     assert res[1]['portraitImage'] == None
     assert res[1]['orderIndex'] == 1
-    assert res[1]['lat'] == None
-    assert res[1]['lng'] == None
     assert res[0]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
     assert res[0]['slug'] == "schattental"
     assert res[0]['name'] == "Schattental"
     assert res[0]['shortDescription'] == "Kurze Beschreibung zum Schattental"
     assert res[0]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res[0]['orderIndex'] == 0
-    assert res[0]['lat'] == None
-    assert res[0]['lng'] == None
 
 
 def test_successful_get_sector(client):

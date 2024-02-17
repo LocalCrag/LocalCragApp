@@ -35,8 +35,8 @@
                               *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)" [text]="true"></p-button>
                   </div>
                 </div>
-                <div class="text-xs">{{t('byUserAtDate', {user: post.createdBy.fullname, date: post.timeCreated | moment : 'DD.MM.YYYY'})}}</div>
-                <div [innerHTML]="post.text | sanitizeHtml"></div>
+                <div class="text-xs mb-2">{{t('byUserAtDate', {user: post.createdBy.fullname, date: post.timeCreated | moment : 'DD.MM.YYYY'})}}</div>
+                <div [innerHTML]="post.text | sanitizeHtml" class="quill-content"></div>
               </div>
             </div>
           </div>

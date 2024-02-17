@@ -11,6 +11,8 @@ def test_successful_create_crag(client):
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parken nur Samstag und Sonntag.",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 12.13,
+        "lng": 42.42,
     }
 
     rv = client.post('/api/regions/tessin/crags', headers=access_headers, json=crag_data)
@@ -21,6 +23,8 @@ def test_successful_create_crag(client):
     assert res['description'] == "Fodere et scandere."
     assert res['shortDescription'] == "Fodere et scandere 2."
     assert res['rules'] == "Parken nur Samstag und Sonntag."
+    assert res['lat'] == 12.13
+    assert res['lng'] == 42.42
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
 
@@ -55,6 +59,8 @@ def test_successful_get_crag(client):
     assert res['description'] == "<p>Lange Beschreibung zu Brione.</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zu Brione"
     assert res['rules'] == "<p>Briones Regeln.</p>"
+    assert res['lat'] == None
+    assert res['lng'] == None
 
 
 def test_get_deleted_crag(client):
@@ -79,6 +85,8 @@ def test_successful_edit_crag(client):
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parken nur Samstag und Sonntag 2.",
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
+        "lat": 42.1,
+        "lng": 42.2,
     }
 
     rv = client.put('/api/crags/brione', headers=access_headers, json=crag_data)
@@ -90,6 +98,8 @@ def test_successful_edit_crag(client):
     assert res['shortDescription'] == "Fodere et scandere 3."
     assert res['rules'] == "Parken nur Samstag und Sonntag 2."
     assert res['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
+    assert res['lat'] == 42.1
+    assert res['lng'] == 42.2
     assert res['id'] is not None
 
 
