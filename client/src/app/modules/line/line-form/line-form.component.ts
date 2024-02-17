@@ -21,6 +21,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
+import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 
 /**
  * Form component for lines.
@@ -258,12 +259,14 @@ export class LineFormComponent implements OnInit{
           this.store.dispatch(toastNotification(NotificationIdentifier.LINE_UPDATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, line.slug]);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
         });
       } else {
         this.linesService.createLine(line, this.areaSlug).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.LINE_CREATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
         });
       }
     } else {
@@ -299,6 +302,7 @@ export class LineFormComponent implements OnInit{
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_DELETED));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
       this.loadingState = LoadingState.DEFAULT;
+      this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
     });
   }
 

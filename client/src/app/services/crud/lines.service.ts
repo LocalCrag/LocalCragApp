@@ -7,6 +7,8 @@ import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {Line} from '../../models/line';
 import {TranslocoService} from '@ngneat/transloco';
+import {clearGradeCache} from '../../ngrx/actions/cache.actions';
+import {Store} from '@ngrx/store';
 
 /**
  * CRUD service for lines.

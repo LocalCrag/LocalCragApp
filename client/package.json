@@ -28,6 +28,7 @@
     "@ngrx/store": "^17.1.0",
     "@ngrx/store-devtools": "^17.1.0",
     "chart.js": "^4.4.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "jwt-decode": "^4.0.0",
     "konva": "^9.3.3",
     "moment": "^2.30.1",

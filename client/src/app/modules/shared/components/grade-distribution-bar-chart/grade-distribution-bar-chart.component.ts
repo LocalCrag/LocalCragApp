@@ -1,9 +1,10 @@
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Grade, GRADES} from '../../../../utility/misc/grades';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {ChartModule} from 'primeng/chart';
 import {NgIf} from '@angular/common';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
 
 /**
  * Component that shows grades in a bar chart.
@@ -13,63 +14,96 @@ import {NgIf} from '@angular/common';
   standalone: true,
   imports: [
     ChartModule,
-    NgIf
+    NgIf,
+    TranslocoDirective
   ],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class GradeDistributionBarChartComponent {
+export class GradeDistributionBarChartComponent implements OnChanges{
 
-  @Input() fetchingObservable: Observable<Grade[]>; // todo update when changes
+  @Input() fetchingObservable: Observable<Grade[]>;
   @Input() scaleName: string = 'FB';
 
   public grades: Grade[];
-
   public data: any;
   public options: any;
+  public totalCount: number;
+  public projectCount: number;
 
   constructor(private translocoService: TranslocoService) {
   }
 
-  ngOnInit() {
-    this.fetchingObservable.subscribe(grades => {
-      this.grades = grades;
-      this.buildGradeDistribution();
-    })
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes['fetchingObservable']){
+      this.fetchingObservable.subscribe(grades => {
+        this.grades = grades;
+        this.buildData();
+      })
+    }
+  }
 
+  ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const textColor = documentStyle.getPropertyValue('--text-color-secondary');
     this.options = {
+      layout: {
+        padding: {
+          left: 0,
+          right: 0,
+          top: 20,
+          bottom: 0
+        }
+      },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
+        tooltip: {
+          enabled: false
+        },
         legend: {
           display: false
+        },
+        datalabels: {
+          align: 'end',
+          offset: 0,
+          anchor: 'end',
+          color: textColor,
+          font: {
+            weight: 'normal'
+          },
+          clip: false
         }
       },
       scales: {
         y: {
+          border: {
+            display: false,
+          },
           beginAtZero: true,
           ticks: {
-            color: textColorSecondary,
+            color: textColor,
             beginAtZero: true,
-            callback: function(value) {if (value % 1 === 0) {return value;}}
+            display: false,
           },
           grid: {
-            color: surfaceBorder,
-            drawBorder: false
+            drawBorder: false,
+            display: false
           }
         },
         x: {
+          border: {
+            display: false,
+          },
           ticks: {
-            color: textColorSecondary
+            color: textColor,
+            maxRotation: 0,
+            autoSkip: false,
           },
           grid: {
-            color: surfaceBorder,
             drawBorder: false,
-              display:false
+            display: false
           }
         }
       }
@@ -79,24 +113,38 @@ export class GradeDistributionBarChartComponent {
   /**
    * Builds the charts.js data object for displaying the grades in a chart.
    */
-  buildGradeDistribution(){
-    const gradeValues =  GRADES[this.scaleName].map(grade => grade.value);
+  buildData() {
+    const genericProjectGrade: Grade = {
+      name: marker('GENERIC_PROJECT'),
+      value: 0
+    }
+    let gradesInScale = [...GRADES[this.scaleName]];
+    gradesInScale = gradesInScale.filter(grade => grade.value > 0);
+    gradesInScale.unshift(genericProjectGrade);
+    const gradeValues = gradesInScale.map(grade => grade.value);
     const gradeValueCount = {};
     gradeValues.map(gradeValue => {
       gradeValueCount[gradeValue] = 0;
     });
-    this.grades.map(grade => gradeValueCount[grade.value] += 1);
-    const labels = GRADES[this.scaleName].map(grade => this.translocoService.translate(grade.name));
-    const counts = gradeValues.map(gradeValue => gradeValueCount[gradeValue])
+    this.grades.map(grade => gradeValueCount[grade.value > 0 ? grade.value : 0] += 1);
+    const labels = gradesInScale.map(grade => this.translocoService.translate(grade.name));
+    const counts = gradeValues.map(gradeValue => gradeValueCount[gradeValue]);
+    const maxCount = Math.max(...counts);
+    const backgroundColors = counts.map(count => {
+      return `rgba(213, 30, 38, ${(count / maxCount) * 0.5 + 0.5})`; // todo get color from some config
+    });
     this.data = {
       labels: labels,
       datasets: [
         {
           data: counts,
-          borderWidth: 1
+          borderWidth: 0,
+          backgroundColor: backgroundColors,
         }
       ]
     };
+    this.projectCount = counts[0];
+    this.totalCount = this.grades.length;
   }
 
 }

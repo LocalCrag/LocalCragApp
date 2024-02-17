@@ -50,6 +50,7 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {TranslocoService} from '@ngneat/transloco';
 import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import {CacheEffects} from '../../ngrx/effects/cache.effects';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -104,6 +105,7 @@ export function preloadTranslations(transloco: TranslocoService) {
       DeviceEffects,
       AppLevelAlertsEffects,
       NotificationsEffects,
+      CacheEffects
     ]),
     TranslocoRootModule,
     ReactiveFormsModule,

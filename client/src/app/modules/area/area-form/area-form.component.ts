@@ -21,6 +21,7 @@ import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
+import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 
 /**
  * Form component for creating and editing areas.
@@ -188,6 +189,7 @@ export class AreaFormComponent implements OnInit {
       this.store.dispatch(toastNotification(NotificationIdentifier.AREA_DELETED));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
       this.loadingState = LoadingState.DEFAULT;
+      this.store.dispatch(clearGradeCache({area: null, crag: this.cragSlug, sector: this.sectorSlug}))
     });
   }
 
