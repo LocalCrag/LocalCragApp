@@ -12,6 +12,10 @@ GRADES = {
                 "value": -1
             },
             {
+                "name": 'UNGRADED',
+                "value": 0
+            },
+            {
                 "name": '1',
                 "value": 1
             },

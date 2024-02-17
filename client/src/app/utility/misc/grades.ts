@@ -16,6 +16,10 @@ export const GRADES: { [scaleName: string]: Grade[] } = {
       value: -1
     },
     {
+      name: marker('UNGRADED'),
+      value: 0
+    },
+    {
       name: marker('1'),
       value: 1
     },

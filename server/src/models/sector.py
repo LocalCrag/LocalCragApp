@@ -16,7 +16,7 @@ class Sector(HasSlug, BaseEntity):
 
     slug_blocklist = ['edit', 'create-sector', 'areas', 'gallery', 'ascents']
     name = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=True)
     short_description = db.Column(db.Text, nullable=True)
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)

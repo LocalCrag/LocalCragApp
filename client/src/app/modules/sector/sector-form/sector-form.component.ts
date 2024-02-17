@@ -19,6 +19,7 @@ import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
+import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 
 /**
  * Form component for creating and editing sectors.
@@ -184,6 +185,7 @@ export class SectorFormComponent implements OnInit {
       this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_DELETED));
       this.router.navigate(['/topo', this.cragSlug, 'sectors']);
       this.loadingState = LoadingState.DEFAULT;
+      this.store.dispatch(clearGradeCache({area: null, crag: this.cragSlug, sector: null}))
     });
   }
 

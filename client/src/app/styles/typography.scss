@@ -19,3 +19,13 @@
     max-width: 100%;
   }
 }
+
+a.title-link{
+  text-decoration: none;
+  color: var(--surface-900);
+  &:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--highlight-text-color)
+  }
+}
