@@ -16,7 +16,7 @@ class Line(HasSlug, BaseEntity):
     """
     __tablename__ = 'lines'
 
-    slug_blocklist = ['edit', 'create-line', 'gallery', 'ascents']
+    slug_blocklist = ['edit', 'create-line', 'gallery', 'ascents', 'add-topo-image']
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     videos = db.Column(JSON, nullable=True)
