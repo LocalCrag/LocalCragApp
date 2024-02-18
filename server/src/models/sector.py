@@ -14,7 +14,7 @@ class Sector(HasSlug, BaseEntity):
     """
     __tablename__ = 'sectors'
 
-    slug_blocklist = ['edit', 'create-sector', 'areas', 'gallery', 'ascents']
+    slug_blocklist = ['edit', 'create-sector', 'sectors', 'gallery', 'ascents']
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     short_description = db.Column(db.Text, nullable=True)

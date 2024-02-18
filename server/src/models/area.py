@@ -13,7 +13,7 @@ class Area(HasSlug, BaseEntity):
     """
     __tablename__ = 'areas'
 
-    slug_blocklist = ['edit', 'create-area', 'lines', 'gallery', 'ascents']
+    slug_blocklist = ['edit', 'create-area', 'areas', 'gallery', 'ascents']
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)

@@ -25,6 +25,7 @@ import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ToStringPipe } from './pipes/to-string.pipe';
 import {SkeletonModule} from 'primeng/skeleton';
+import {ChartModule} from 'primeng/chart';
 
 /**
  * Module for shared components, pipes etc.
@@ -47,17 +48,18 @@ import {SkeletonModule} from 'primeng/skeleton';
     SanitizeHtmlPipe,
     ToStringPipe,
   ],
-  imports: [
-    CommonModule,
-    TagModule,
-    BadgeModule,
-    FileUploadModule,
-    ImageModule,
-    TranslocoModule,
-    ProgressSpinnerModule,
-    OrderListModule,
-    SkeletonModule
-  ],
+    imports: [
+        CommonModule,
+        TagModule,
+        BadgeModule,
+        FileUploadModule,
+        ImageModule,
+        TranslocoModule,
+        ProgressSpinnerModule,
+        OrderListModule,
+        SkeletonModule,
+        ChartModule
+    ],
   exports: [
     MomentPipe,
     FormDirective,

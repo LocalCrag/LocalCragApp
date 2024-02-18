@@ -1,0 +1,44 @@
+:host{
+  width: 100%;
+  display: block;
+}
+
+.grade-distribution-stack{
+
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+
+  div{
+    padding: .25rem;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    white-space: nowrap;
+    min-width: fit-content;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .level-1{
+    background-color: var(--yellow-500);
+  }
+
+  .level-2{
+    background-color: var(--blue-500);
+  }
+
+  .level-3{
+    background-color: var(--red-500);
+  }
+
+  .level-4{
+    background-color: var(--gray-900);
+  }
+
+  .level-5{
+    background-color: var(--gray-500);
+  }
+
+}

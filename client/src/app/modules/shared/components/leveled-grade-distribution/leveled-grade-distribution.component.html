@@ -1,24 +1,28 @@
-<div class="flex align-items-center gap-3" *ngIf="grades">
-  <p-tag styleClass="lvl-1">
-    <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
-    bis 5C
-  </p-tag>
-  <p-tag styleClass="lvl-2">
-    <p-badge [value]="level2 | toString" styleClass="neutral-badge"></p-badge>
-    6A - 6C+
-  </p-tag>
-  <p-tag styleClass="lvl-3">
-    <p-badge [value]="level3 | toString" styleClass="neutral-badge"></p-badge>
-    7A - 7C+
-  </p-tag>
-  <p-tag styleClass="lvl-4">
-    <p-badge [value]="level4 | toString" styleClass="neutral-badge"></p-badge>
-    ab 8A
-  </p-tag>
-  <p-tag styleClass="lvl-5">
-    <p-badge [value]="level5 | toString" styleClass="neutral-badge"></p-badge>
-    Projekte
-  </p-tag>
-</div>
+<ng-container *transloco="let t">
 
-<p-skeleton width="50%"  height="4rem" *ngIf="!grades"></p-skeleton>
+  <p-skeleton width="50%" height="4rem" *ngIf="!grades"></p-skeleton>
+
+  <div class="grade-distribution-stack">
+    <div class="level-1" [style.width]="grades.length > 0 ? (level1 / grades.length) * 100 + '%' : '20%'">
+      <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel1')}}
+    </div>
+    <div class="level-2" [style.width]="grades.length > 0 ? (level2 / grades.length) * 100 + '%' : '20%'">
+      <p-badge [value]="level2 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel2')}}
+    </div>
+    <div class="level-3" [style.width]="grades.length > 0 ? (level3 / grades.length) * 100 + '%' : '20%'">
+      <p-badge [value]="level3 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel3')}}
+    </div>
+    <div class="level-4" [style.width]="grades.length > 0 ? (level4 / grades.length) * 100 + '%' : '20%'">
+      <p-badge [value]="level4 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel4')}}
+    </div>
+    <div class="level-5" [style.width]="grades.length > 0 ? (level5 / grades.length) * 100 + '%' : '20%'">
+      <p-badge [value]="level5 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel5')}}
+    </div>
+  </div>
+
+</ng-container>
