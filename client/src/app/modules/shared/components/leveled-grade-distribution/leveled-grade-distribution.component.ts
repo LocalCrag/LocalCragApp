@@ -1,19 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Grade} from '../../../../utility/misc/grades';
 
 /**
  * Component that displays a leveled grade distribution.
- * todo clear grade fetching caches after editing / creating / deleting a line
  */
 @Component({
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss']
 })
-export class LeveledGradeDistributionComponent implements OnInit {
+export class LeveledGradeDistributionComponent implements OnChanges {
 
-  @Input() fetchingObservable: Observable<Grade[]>; // todo update when changes
+  @Input() fetchingObservable: Observable<Grade[]>;
 
   public level1: number = 0;
   public level2: number = 0;
@@ -22,31 +21,33 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public level5: number = 0;
   public grades: Grade[];
 
-  ngOnInit() {
-    this.fetchingObservable.subscribe(grades => {
-      this.grades = grades;
-      this.buildGradeDistribution();
-    })
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['fetchingObservable']) {
+      this.fetchingObservable.subscribe(grades => {
+        this.grades = grades;
+        this.buildGradeDistribution();
+      })
+    }
   }
 
   /**
    * Sorts the grades in buckets and calculates the total count for each bucket.
    */
-  buildGradeDistribution(){
+  buildGradeDistribution() {
     this.grades.map(grade => {
-      if(grade.value < 0){
+      if (grade.value <= 0) {
         this.level5++;
       }
-      if(grade.value >= 0 && grade.value < 10){
+      if (grade.value > 0 && grade.value < 10) {
         this.level1++;
       }
-      if(grade.value >= 10 && grade.value < 16){
+      if (grade.value >= 10 && grade.value < 16) {
         this.level2++;
       }
-      if(grade.value >= 16 && grade.value < 22){
+      if (grade.value >= 16 && grade.value < 22) {
         this.level3++;
       }
-      if(grade.value >= 22 ){
+      if (grade.value >= 22) {
         this.level4++;
       }
     })
