@@ -38,6 +38,8 @@ export class TopoImageComponent implements OnInit {
   @Output() imageClick: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   public loading = true;
+  public skeletonWidth: number;
+  public skeletonHeight: number;
   public width: number;
   public height: number;
 
@@ -48,8 +50,7 @@ export class TopoImageComponent implements OnInit {
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
 
-  constructor(private el: ElementRef,
-              private cdr: ChangeDetectorRef) {
+  constructor(private el: ElementRef) {
   }
 
 
@@ -68,20 +69,26 @@ export class TopoImageComponent implements OnInit {
       this.backgroundImage.src = this.topoImage.image.path;
 
       if (containerWidth <= ThumbnailWidths.XS) {
+        this.skeletonWidth = ThumbnailWidths.XS;
         this.backgroundImage.src = this.topoImage.image.thumbnailXS;
       }
       if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
+        this.skeletonWidth = ThumbnailWidths.S;
         this.backgroundImage.src = this.topoImage.image.thumbnailS;
       }
       if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
+        this.skeletonWidth = ThumbnailWidths.M;
         this.backgroundImage.src = this.topoImage.image.thumbnailM;
       }
       if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
+        this.skeletonWidth = ThumbnailWidths.L;
         this.backgroundImage.src = this.topoImage.image.thumbnailL;
       }
       if (containerWidth > ThumbnailWidths.L) {
+        this.skeletonWidth = ThumbnailWidths.XL;
         this.backgroundImage.src = this.topoImage.image.thumbnailXL;
       }
+      this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
 
       // Draw lines after image is fully loaded
       this.backgroundImage.onload = () => {
