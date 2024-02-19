@@ -10,12 +10,13 @@ This was all perfetly possible by just using Wordpress or some forum software li
 
 ## Core features
 
-- **Self-hosted:** Kepp full control over all the data
+- **Self-hosted:** Keep full control over all the data
 - **Online topo:** Publish detailed information about crags, sectors, areas and lines 
 - **Line editor:** Draw lines for boulders and routes on images with a simple click-editor
 - **Ticklist:** Track your ascends and create todo lists
 - **Statistics:** Numerous statistics for lines and ascends
 - **News blog:** Publish news for your crags in a blog
+- **Multi language:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibilits to run your instances in multiple languages.
 - ... more to come! We have a lot of ideas. We are open to your ideas and accept pull requests.
 
 ## Runway
