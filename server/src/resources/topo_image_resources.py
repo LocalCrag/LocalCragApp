@@ -49,9 +49,8 @@ class DeleteTopoImage(MethodView):
         image: TopoImage = TopoImage.find_by_id(image_id)
 
         db.session.delete(image)
-        db.session.execute(text(
-            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > {} AND area_id = '{}'".format(
-                image.order_index, image.area_id)))
+        query = text("UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > :order_index AND area_id = :area_id")
+        db.session.execute(query, {'order_index': image.order_index, 'area_id': image.area_id})
         db.session.commit()
 
         return jsonify(None), 204

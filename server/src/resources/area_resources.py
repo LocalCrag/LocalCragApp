@@ -102,9 +102,8 @@ class DeleteArea(MethodView):
         area: Area = Area.find_by_slug(area_slug)
 
         db.session.delete(area)
-        db.session.execute(text(
-            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > {} AND sector_id = '{}'".format(
-                area.order_index, area.sector_id)))
+        query = text("UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id")
+        db.session.execute(query, {'order_index': area.order_index, 'sector_id': area.sector_id})
         db.session.commit()
 
         return jsonify(None), 204
