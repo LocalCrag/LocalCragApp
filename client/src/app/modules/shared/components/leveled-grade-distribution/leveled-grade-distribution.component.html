@@ -2,7 +2,11 @@
 
   <p-skeleton width="50%" height="4rem" *ngIf="!grades"></p-skeleton>
 
+
+
+
   <div class="grade-distribution-stack" *ngIf="grades">
+    <div class="total">{{grades.length}} {{t('lines')}}:</div>
     <div class="level-1" [style.width]="grades.length > 0 ? (level1 / grades.length) * 100 + '%' : '20%'">
       <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
       {{t('leveledGradeDistributionLevel1')}}

@@ -24,6 +24,7 @@ import {AreaModule} from '../area/area.module';
 import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import {ChipModule} from 'primeng/chip';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import {
         ConfirmPopupModule,
         AreaModule,
         GradeDistributionBarChartComponent,
+        ChipModule,
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}
