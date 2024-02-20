@@ -26,6 +26,7 @@ import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ToStringPipe } from './pipes/to-string.pipe';
 import {SkeletonModule} from 'primeng/skeleton';
 import {ChartModule} from 'primeng/chart';
+import {ChipModule} from 'primeng/chip';
 
 /**
  * Module for shared components, pipes etc.
@@ -58,7 +59,8 @@ import {ChartModule} from 'primeng/chart';
         ProgressSpinnerModule,
         OrderListModule,
         SkeletonModule,
-        ChartModule
+        ChartModule,
+        ChipModule
     ],
   exports: [
     MomentPipe,

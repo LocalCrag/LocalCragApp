@@ -1,13 +1,8 @@
 .auth-view {
 
   width: 100%;
-  background-image: url("../../assets/login-bg.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
 
-  .blur-container {
-    backdrop-filter: blur(2px);
+  .auth-container {
     height: 100%;
     width: 100%;
     display: flex;

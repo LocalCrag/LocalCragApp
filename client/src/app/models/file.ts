@@ -37,6 +37,9 @@ export class File extends AbstractModel {
     media.thumbnailL = payload.thumbnailL ? media.path.replace(/.([^.]*)$/, '_l.' + '$1') : null;
     media.thumbnailXL = payload.thumbnailXL ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1') : null;
     // When sizes are missing, set the next available size
+    if(!media.thumbnailXS){
+      media.thumbnailXS = media.path;
+    }
     if(!media.thumbnailS){
       media.thumbnailS = media.thumbnailXS;
     }

@@ -51,6 +51,7 @@ import {TranslocoService} from '@ngneat/transloco';
 import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {CacheEffects} from '../../ngrx/effects/cache.effects';
+import {BackgroundImageComponent} from './background-image/background-image.component';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -83,40 +84,42 @@ export function preloadTranslations(transloco: TranslocoService) {
     ForgotPasswordCheckMailboxComponent,
     NotFoundComponent
   ],
-  imports: [
-    SharedModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    CoreRoutingModule,
-    InputTextModule,
-    MenubarModule,
-    HttpClientModule,
-    ButtonModule,
-    PasswordModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers
-    }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production
-    , connectInZone: true}),
-    EffectsModule.forRoot([
-      AuthEffects,
-      DeviceEffects,
-      AppLevelAlertsEffects,
-      NotificationsEffects,
-      CacheEffects
-    ]),
-    TranslocoRootModule,
-    ReactiveFormsModule,
-    CardModule,
-    MenuModule,
-    MessagesModule,
-    MessageModule,
-    DialogModule,
-    ToastModule,
-    CragModule
-  ],
+    imports: [
+        SharedModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        CoreRoutingModule,
+        InputTextModule,
+        MenubarModule,
+        HttpClientModule,
+        ButtonModule,
+        PasswordModule,
+        StoreModule.forRoot(reducers, {
+            metaReducers
+        }),
+        StoreDevtoolsModule.instrument({
+            maxAge: 25,
+            logOnly: environment.production
+            , connectInZone: true
+        }),
+        EffectsModule.forRoot([
+            AuthEffects,
+            DeviceEffects,
+            AppLevelAlertsEffects,
+            NotificationsEffects,
+            CacheEffects
+        ]),
+        TranslocoRootModule,
+        ReactiveFormsModule,
+        CardModule,
+        MenuModule,
+        MessagesModule,
+        MessageModule,
+        DialogModule,
+        ToastModule,
+        CragModule,
+        BackgroundImageComponent
+    ],
   providers: [
     {
       provide: LOCALE_ID,

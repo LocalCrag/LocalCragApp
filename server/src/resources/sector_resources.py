@@ -101,9 +101,8 @@ class DeleteSector(MethodView):
         sector: Sector = Sector.find_by_slug(sector_slug)
 
         db.session.delete(sector)
-        db.session.execute(text(
-            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > {} AND crag_id = '{}'".format(
-                sector.order_index, sector.crag_id)))
+        query = text("UPDATE sectors SET order_index=order_index - 1 WHERE order_index > :order_index AND crag_id = :crag_id")
+        db.session.execute(query, {'order_index': sector.order_index, 'crag_id': sector.crag_id})
         db.session.commit()
 
         return jsonify(None), 204

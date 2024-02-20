@@ -101,8 +101,8 @@ class DeleteCrag(MethodView):
         crag: Crag = Crag.find_by_slug(crag_slug)
 
         db.session.delete(crag)
-        db.session.execute(text(
-            "UPDATE crags SET order_index=order_index - 1 WHERE order_index > {}".format(crag.order_index)))
+        query = text("UPDATE crags SET order_index=order_index - 1 WHERE order_index > :order_index")
+        db.session.execute(query, {'order_index': crag.order_index})
         db.session.commit()
 
         return jsonify(None), 204
