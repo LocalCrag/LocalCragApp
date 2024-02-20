@@ -33,6 +33,7 @@ import {isLoggedOut} from '../../guards/is-logged-out';
 import {isLoggedIn} from '../../guards/is-logged-in';
 import {PostListComponent} from '../blog/post-list/post-list.component';
 import {PostFormComponent} from '../blog/post-form/post-form.component';
+import {StaticBackgroundImages} from './background-image/background-image.component';
 
 const routes: Routes = [
   {
@@ -42,63 +43,102 @@ const routes: Routes = [
   },
   {
     path: 'news',
-    component: PostListComponent
+    component: PostListComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'news/create-post',
     component: PostFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'news/:post-slug/edit',
     component: PostFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'imprint',
-    component: ImprintComponent
+    component: ImprintComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'data-privacy-statement',
-    component: DataPrivacyStatementComponent
+    component: DataPrivacyStatementComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'login',
     component: LoginComponent,
     canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
   },
   {
     path: 'change-password',
     component: ChangePasswordComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
     canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
   },
   {
     path: 'forgot-password-check-mailbox',
     component: ForgotPasswordCheckMailboxComponent,
     canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
   },
   {
     path: 'reset-password/:hash',
     component: ResetPasswordComponent,
     canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
   },
   {
     path: 'topo',
     component: CragListComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug',
     component: CragComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
     children: [
       {
         path: '',
@@ -134,16 +174,25 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug',
     component: SectorComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
     children: [
       {
         path: '',
@@ -179,26 +228,41 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/create-area',
     component: AreaFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
     component: LineFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/add-topo-image',
     component: TopoImageFormComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
     component: AreaComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
     children: [
       {
         path: '',
@@ -246,11 +310,17 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug',
     component: LineComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
     children: [
       {
         path: '',
@@ -262,16 +332,25 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
     component: LineFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
     component: LinePathFormComponent,
-    canActivate: [isLoggedIn]
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
   },
   {
     component: NotFoundComponent,
-    path: '**'
+    path: '**',
+    data: {
+      backgroundImagePath: StaticBackgroundImages.NOT_FOUND
+    }
   }
 ];
 

@@ -3,8 +3,6 @@ import {Crag} from '../../../models/crag';
 import {LoadingState} from '../../../enums/loading-state';
 import {SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
@@ -71,7 +69,7 @@ export class PostListComponent implements OnInit{
     this.refreshData();
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${environment.instanceName}`)
+    this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${environment.instanceName}`);
   }
 
   /**
