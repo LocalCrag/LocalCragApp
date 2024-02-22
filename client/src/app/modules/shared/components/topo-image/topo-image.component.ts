@@ -88,6 +88,11 @@ export class TopoImageComponent implements OnInit {
         this.skeletonWidth = ThumbnailWidths.XL;
         this.backgroundImage.src = this.topoImage.image.thumbnailXL;
       }
+
+      // Fit skeleton to parent container
+      if(this.skeletonWidth > containerWidth){
+        this.skeletonWidth = containerWidth;
+      }
       this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
 
       // Draw lines after image is fully loaded
