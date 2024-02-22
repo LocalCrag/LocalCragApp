@@ -176,6 +176,8 @@ export class TopoImageListComponent {
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_DELETED));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1)
       linePath.konvaLine.destroy();
+      linePath.konvaRect.destroy();
+      linePath.konvaText.destroy();
       linePath.loadingState = LoadingState.DEFAULT;
     });
   }
