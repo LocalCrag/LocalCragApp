@@ -5,6 +5,36 @@ import {HttpClient} from '@angular/common/http';
 import {File} from '../../models/file';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {AlignAction, DeleteAction, ImageSpec, ResizeAction} from 'quill-blot-formatter';
+
+/**
+ * Adds event listeners for Blot Formatters ImageSpec to fix scrolling issues.
+ * Taken from: https://github.com/Fandom-OSS/quill-blot-formatter/issues/7
+ */
+class CustomImageSpec extends ImageSpec {
+  override getActions() {
+    return [DeleteAction, ResizeAction, AlignAction];
+  }
+
+  override init() {
+    this.formatter.quill.root.addEventListener('click', this.onClick);
+
+    // handling scroll event
+    this.formatter.quill.root.addEventListener('scroll', () => {
+      this.formatter.repositionOverlay();
+    });
+
+    // handling align
+    this.formatter.quill.on('editor-change', (eventName, ...args) => {
+      if (eventName === 'selection-change' && args[2] === 'api') {
+        setTimeout(() => {
+          this.formatter.repositionOverlay();
+        }, 10);
+      }
+    });
+  }
+}
+
 
 /**
  * Service for uploading a file.
@@ -23,7 +53,7 @@ export class UploadService {
    *
    * @return Observable of a File.
    */
-  public createLine(file: any): Observable<File> {
+  public uploadFile(file: any): Observable<File> {
     const formData = new FormData();
     formData.append("upload", file);
     return this.http.post(this.api.uploader.uploadFile(), formData).pipe(
@@ -39,12 +69,15 @@ export class UploadService {
       imageUploader: {
         upload: (file: any) => {
           return new Promise((resolve, reject) => {
-            this.createLine(file).subscribe(uploadedFile => {
+            this.uploadFile(file).subscribe(uploadedFile => {
               resolve(uploadedFile.thumbnailXL)
             })
           });
         },
       },
+      blotFormatter: {
+        specs: [CustomImageSpec]
+      }
     };
   }
 

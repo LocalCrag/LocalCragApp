@@ -1,5 +1,6 @@
 import {environment} from '../../environments/environment';
 import {AbstractModel} from './abstract-model';
+import {ThumbnailWidths} from '../enums/thumbnail-widths';
 
 /**
  * Model of a file object.
@@ -41,16 +42,16 @@ export class File extends AbstractModel {
       media.thumbnailXS = media.path;
     }
     if(!media.thumbnailS){
-      media.thumbnailS = media.thumbnailXS;
+      media.thumbnailS = media.width > ThumbnailWidths.XS ? media.path : media.thumbnailXS;
     }
     if(!media.thumbnailM){
-      media.thumbnailM = media.thumbnailS;
+        media.thumbnailM = media.width > ThumbnailWidths.S ? media.path : media.thumbnailS;
     }
     if(!media.thumbnailL){
-      media.thumbnailL = media.thumbnailM;
+      media.thumbnailL = media.width > ThumbnailWidths.M ? media.path : media.thumbnailM;
     }
     if(!media.thumbnailXL){
-      media.thumbnailXL = media.thumbnailL;
+      media.thumbnailXL = media.width > ThumbnailWidths.L ? media.path : media.thumbnailL;
     }
     return media;
   }
