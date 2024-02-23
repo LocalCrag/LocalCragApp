@@ -190,8 +190,10 @@ export class TopoImageComponent implements OnInit {
       width: rectSize,
       height: rectSize,
     });
+    // Scale rect horizontally by its text content's length, but exclude padding
+    const rectWidth = rectSize * text.length - (text.length - 1) * 2 * rectSize / 8;
     const rectangle = new Konva.Rect({
-      width: rectSize,
+      width: rectWidth,
       height: rectSize,
       fill: environment.arrowColor,
       cornerRadius: rectSize / 6
@@ -202,7 +204,7 @@ export class TopoImageComponent implements OnInit {
       fontSize: rectSize / 1.2,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       fill: environment.arrowTextColor,
-      width: rectSize,
+      width: rectWidth,
       padding: rectSize / 8,
       align: 'center'
     });
