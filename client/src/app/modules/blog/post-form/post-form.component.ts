@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -41,13 +41,13 @@ import {UploadService} from '../../../services/crud/upload.service';
     NgIf,
     ReactiveFormsModule,
     SharedModule,
-    TranslocoDirective
+    TranslocoDirective,
   ],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.scss',
   providers: [ConfirmationService]
 })
-export class PostFormComponent {
+export class PostFormComponent implements  OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
@@ -70,7 +70,6 @@ export class PostFormComponent {
               private confirmationService: ConfirmationService) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
-
 
 
   /**
@@ -101,6 +100,8 @@ export class PostFormComponent {
       this.loadingState = LoadingState.DEFAULT;
     }
   }
+
+
 
   /**
    * Builds the post form.

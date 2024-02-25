@@ -8,6 +8,7 @@ import Quill from "quill";
 import ImageUploader from "quill-image-uploader";
 import {Chart} from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import BlotFormatter from 'quill-blot-formatter';
 
 
 if (environment.production) {
@@ -18,6 +19,11 @@ platformBrowserDynamic().bootstrapModule(CoreModule)
   .catch(err => console.error(err));
 
 Quill.register("modules/imageUploader", ImageUploader);
+Quill.register('modules/blotFormatter', BlotFormatter);
+
+
+
+
 Chart.register(ChartDataLabels);
 
 

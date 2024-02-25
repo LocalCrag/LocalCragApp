@@ -15,6 +15,7 @@ import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
 import {timer} from 'rxjs';
+import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -61,58 +62,76 @@ export class TopoImageComponent implements OnInit {
     // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
     // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
     // kind of solved by using a timeout...
-    setTimeout(()=>{
-      // Load the background image in the appropriate size and set line path size based on it
-      this.backgroundImage = new Image();
-
-      const containerWidth = this.el.nativeElement.offsetWidth;
-      this.backgroundImage.src = this.topoImage.image.path;
-
-      if (containerWidth <= ThumbnailWidths.XS) {
-        this.skeletonWidth = ThumbnailWidths.XS;
-        this.backgroundImage.src = this.topoImage.image.thumbnailXS;
-      }
-      if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
-        this.skeletonWidth = ThumbnailWidths.S;
-        this.backgroundImage.src = this.topoImage.image.thumbnailS;
-      }
-      if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
-        this.skeletonWidth = ThumbnailWidths.M;
-        this.backgroundImage.src = this.topoImage.image.thumbnailM;
-      }
-      if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
-        this.skeletonWidth = ThumbnailWidths.L;
-        this.backgroundImage.src = this.topoImage.image.thumbnailL;
-      }
-      if (containerWidth > ThumbnailWidths.L) {
-        this.skeletonWidth = ThumbnailWidths.XL;
-        this.backgroundImage.src = this.topoImage.image.thumbnailXL;
-      }
-      this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
-
-      // Draw lines after image is fully loaded
+    setTimeout(() => {
+      this.calculateSkeletonDimensionsAndSetImageSource();
       this.backgroundImage.onload = () => {
-        this.width = this.backgroundImage.width;
-        this.height = this.backgroundImage.height;
-        this.lineSizeMultiplicator = this.width / 350;
-        this.loading = false;
-        this.createKonvaStageAndLayer();
-        this.topoImage.linePaths.map((linePath, index) => {
-          this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
-          if (this.showLineNumbers) {
-            this.drawLineNumber(linePath, String(index + 1));
-          }
-        })
-        if (this.linePathInProgress) {
-          this.drawLine(this.linePathInProgress, 1)
-        }
-        if (this.editorMode) {
-          this.topoImage.linePaths.map(linePath => {
-            this.drawAnchors(linePath);
-          });
-        }
+        this.drawLinesAndLabels();
       }
     })
+  }
+
+  calculateSkeletonDimensionsAndSetImageSource(){
+    this.backgroundImage = new Image();
+
+    const containerWidth = this.el.nativeElement.offsetWidth;
+    this.backgroundImage.src = this.topoImage.image.path;
+
+    if (containerWidth <= ThumbnailWidths.XS) {
+      this.skeletonWidth = ThumbnailWidths.XS;
+      this.backgroundImage.src = this.topoImage.image.thumbnailXS;
+    }
+    if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
+      this.skeletonWidth = ThumbnailWidths.S;
+      this.backgroundImage.src = this.topoImage.image.thumbnailS;
+    }
+    if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
+      this.skeletonWidth = ThumbnailWidths.M;
+      this.backgroundImage.src = this.topoImage.image.thumbnailM;
+    }
+    if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
+      this.skeletonWidth = ThumbnailWidths.L;
+      this.backgroundImage.src = this.topoImage.image.thumbnailL;
+    }
+    if (containerWidth > ThumbnailWidths.L) {
+      this.skeletonWidth = ThumbnailWidths.XL;
+      this.backgroundImage.src = this.topoImage.image.thumbnailXL;
+    }
+
+    // Fit skeleton to parent container
+    if (this.skeletonWidth > containerWidth) {
+      this.skeletonWidth = containerWidth;
+    }
+    this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
+  }
+
+  drawLinesAndLabels(){
+    this.width = this.backgroundImage.width;
+    this.height = this.backgroundImage.height;
+    this.lineSizeMultiplicator = this.width / 350;
+    this.loading = false;
+    this.createKonvaStageAndLayer();
+    const labels: Label[] = [];
+    this.topoImage.linePaths.map((linePath, index) => {
+      this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
+      if (this.showLineNumbers) {
+        labels.push(this.getLineLabel(linePath, String(index + 1)));
+      }
+    });
+    if (this.showLineNumbers) {
+      const PFLP = new PointFeatureLabelPlacement(this.width, this.height, labels);
+      PFLP.discreteGradientDescent();
+      this.topoImage.linePaths.map((linePath, index) => {
+        this.placeLineLabel(linePath, labels[index]);
+      });
+    }
+    if (this.linePathInProgress) {
+      this.drawLine(this.linePathInProgress, 1)
+    }
+    if (this.editorMode) {
+      this.topoImage.linePaths.map(linePath => {
+        this.drawAnchors(linePath);
+      });
+    }
   }
 
   /**
@@ -171,40 +190,62 @@ export class TopoImageComponent implements OnInit {
   }
 
   /**
-   * Draws a rectangle on the image that contains the line number.
-   * @param linePath Line path for which to draw the numbered rectangle. First coordinate of the line path is the
-   * position of the rect.
-   * @param text Text to write in the rect.
+   * Places a label for the given line path on the canvas.
+   * @param linePath Line path for which to place the label.
+   * @param label Label to place.
    */
-  drawLineNumber(linePath: LinePath, text: string) {
-    const absoluteCoordinates = this.getAbsoluteCoordinates([linePath.path[0], linePath.path[1]]);
-    const rectSize = 11 * this.lineSizeMultiplicator;
+  placeLineLabel(linePath: LinePath, label: Label) {
     const rectangleGroup = new Konva.Group({
-      x: absoluteCoordinates[0] - (rectSize / 2),
-      y: absoluteCoordinates[1] - (rectSize / 2),
-      width: rectSize,
-      height: rectSize,
+      x: label.position.x - (label.width / 2),
+      y: label.position.y - (label.height / 2),
+      width: label.width,
+      height: label.height,
     });
+    // Scale rect horizontally by its text content's length, but exclude padding
     const rectangle = new Konva.Rect({
-      width: rectSize,
-      height: rectSize,
+      width: label.width,
+      height: label.height,
       fill: environment.arrowColor,
-      cornerRadius: rectSize / 6
+      cornerRadius: label.height / 6
     });
     rectangleGroup.add(rectangle);
     const konvaText = new Konva.Text({
-      text,
-      fontSize: rectSize / 1.2,
+      text: label.text,
+      fontSize: label.height / 1.2,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       fill: environment.arrowTextColor,
-      width: rectSize,
-      padding: rectSize / 8,
+      width: label.width,
+      padding: label.height / 8,
       align: 'center'
     });
     rectangleGroup.add(konvaText);
     this.numberLayer.add(rectangleGroup);
     linePath.konvaRect = rectangle;
     linePath.konvaText = konvaText;
+  }
+
+  /**
+   * Returns a label object for the given line path.
+   * @param linePath Path to return label for.
+   * @param text Label text.
+   */
+  getLineLabel(linePath: LinePath, text: string): Label {
+    const absoluteCoordinates = this.getAbsoluteCoordinates([linePath.path[0], linePath.path[1]]);
+    const rectSize = 11 * this.lineSizeMultiplicator;
+    const rectWidth = rectSize * text.length - (text.length - 1) * 2 * rectSize / 8;
+    return {
+      position: {
+        x: absoluteCoordinates[0],
+        y: absoluteCoordinates[1],
+      },
+      width: rectWidth,
+      height: rectSize,
+      pointFeature: {
+        x: absoluteCoordinates[0],
+        y: absoluteCoordinates[1],
+      },
+      text
+    }
   }
 
   /**

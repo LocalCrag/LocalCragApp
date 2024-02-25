@@ -2,10 +2,16 @@ import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/
 import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {selectShowCookieAlert} from '../../../ngrx/selectors/app-level-alerts.selectors';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import {logout} from 'src/app/ngrx/actions/auth.actions';
+import {
+  cleanupCredentials,
+  loginSuccess,
+  logout,
+  logoutSuccess,
+  newAuthCredentials
+} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {filter, take} from 'rxjs/operators';
@@ -29,6 +35,7 @@ export class MenuComponent implements OnInit {
 
   constructor(private cragsService: CragsService,
               private translocoService: TranslocoService,
+              private cdr: ChangeDetectorRef,
               private actions: Actions,
               private store: Store) {
   }
@@ -78,7 +85,7 @@ export class MenuComponent implements OnInit {
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.buildCragNavigationMenu();
-    this.actions.pipe(ofType(reloadCrags)).subscribe(() => {
+    this.actions.pipe(ofType(reloadCrags, newAuthCredentials, cleanupCredentials)).subscribe(() => {
       this.buildCragNavigationMenu();
     })
   }
@@ -87,22 +94,25 @@ export class MenuComponent implements OnInit {
    * Builds the crags navigation menu.
    */
   buildCragNavigationMenu() {
-    this.cragsService.getCrags().subscribe(crags => {
-      this.items = [...this.items];
-      this.items[1].items = [];
-      crags.map(crag => {
-        this.items[1].items.push({
-          label: crag.name,
-          icon: 'pi pi-fw pi-map',
-          routerLink: `/topo/${crag.slug}`
+    forkJoin([this.cragsService.getCrags(), this.isLoggedIn$.pipe(take(1))])
+      .subscribe(([crags, isLoggedIn]) => {
+        this.items = [...this.items];
+        this.items[1].items = [];
+        crags.map(crag => {
+          this.items[1].items.push({
+            label: crag.name,
+            icon: 'pi pi-fw pi-map',
+            routerLink: `/topo/${crag.slug}`
+          })
         })
-      })
-      this.items[1].items.push({
-        label: this.translocoService.translate(marker('menu.newCrag')),
-        icon: 'pi pi-fw pi-plus',
-        routerLink: '/topo/create-crag',
-      })
-    })
+        if (isLoggedIn) {
+          this.items[1].items.push({
+            label: this.translocoService.translate(marker('menu.newCrag')),
+            icon: 'pi pi-fw pi-plus',
+            routerLink: '/topo/create-crag',
+          })
+        }
+      });
   }
 
   /**
