@@ -1,0 +1,19 @@
+<ng-container *ngIf="region">
+
+  <section [innerHTML]="region.rules | sanitizeHtml"></section>
+
+</ng-container>
+
+<ng-container *ngIf="!region">
+
+  <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
+  <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
+  <p-skeleton width="40%" height="4rem"></p-skeleton>
+
+</ng-container>
+

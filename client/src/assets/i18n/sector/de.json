@@ -7,6 +7,8 @@
   "sectorForm.sectorShortDescriptionPlaceholder": "Infos zum Sektor, kurz und knackig zusammengefasst...",
   "sectorForm.sectorDescriptionLabel": "Beschreibung",
   "sectorForm.sectorDescriptionPlaceholder": "Allgemeine Infos zum Sektor",
+  "sectorForm.sectorRulesLabel": "Regeln",
+  "sectorForm.sectorRulesPlaceholder": "Regeln des Sektors",
   "sectorForm.sectorPortraitImageLabel": "Bild",
   "sectorForm.latLabel": "Breitengrad",
   "sectorForm.latPlaceholder": "z.B. 50.44438",

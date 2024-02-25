@@ -13,7 +13,7 @@ class Crag(HasSlug, BaseEntity):
     """
     __tablename__ = 'crags'
 
-    slug_blocklist = ['create-crag', 'edit-region', 'areas', 'gallery', 'ascents']
+    slug_blocklist = ['create-crag', 'edit-region', 'areas', 'gallery', 'ascents', 'rules']
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)

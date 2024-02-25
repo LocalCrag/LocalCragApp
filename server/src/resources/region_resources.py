@@ -40,6 +40,7 @@ class UpdateRegion(MethodView):
         region: Region = Region.find_by_slug(region_slug)
 
         region.description = region_data['description']
+        region.rules = region_data['rules']
         db.session.add(region)
         db.session.commit()
 

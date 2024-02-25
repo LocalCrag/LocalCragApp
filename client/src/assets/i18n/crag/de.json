@@ -23,9 +23,9 @@
   "cragForm.editCragTitle": "Gebiet bearbeiten",
   "cragForm.createCragTitle": "Neues Gebiet erstellen",
   "crag.gradeDistribution": "Gradverteilung",
-  "crag.cragRules": "Gebietsregeln",
   "cragList.newCragButtonLabel": "Neues Gebiet",
   "cragList.reorderCragsButtonLabel": "Gebiete ordnen",
   "cragList.noCragsFoundEmptyMessage": "Keine Gebiete gefunden",
+  "crag.cragRules": "Gebietsregeln",
   "cragList.cragListTitle": "Gebiete"
 }

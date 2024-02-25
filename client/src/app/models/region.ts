@@ -11,6 +11,7 @@ export class Region extends AbstractModel {
   name: string;
   description: string;
   slug: string;
+  rules: string;
 
   /**
    * Parses a region.
@@ -24,6 +25,7 @@ export class Region extends AbstractModel {
     region.name = payload.name;
     region.description = payload.description;
     region.slug = payload.slug;
+    region.rules = payload.rules;
     return region;
   }
 
@@ -36,6 +38,7 @@ export class Region extends AbstractModel {
   public static serialize(region: Region): any {
     return {
       description: region.description,
+      rules: region.rules,
     };
   }
 

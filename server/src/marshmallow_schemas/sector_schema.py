@@ -19,6 +19,7 @@ class SectorDetailSchema(SectorSchema):
     description = fields.String()
     lat = fields.Float()
     lng = fields.Float()
+    rules = fields.String()
 
 
 sector_schema = SectorDetailSchema()

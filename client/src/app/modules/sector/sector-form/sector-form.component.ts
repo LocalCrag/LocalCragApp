@@ -94,6 +94,7 @@ export class SectorFormComponent implements OnInit {
       description: [null],
       shortDescription: [null],
       portraitImage: [null],
+      rules: [null],
       lat: ['', [latValidator()]],
       lng: ['', [lngValidator()]],
     });
@@ -111,6 +112,7 @@ export class SectorFormComponent implements OnInit {
       portraitImage: this.sector.portraitImage,
       lat: this.sector.lat,
       lng: this.sector.lng,
+      rules: this.sector.rules,
     });
   }
 
@@ -135,6 +137,7 @@ export class SectorFormComponent implements OnInit {
       sector.name = this.sectorForm.get('name').value
       sector.description = this.sectorForm.get('description').value
       sector.shortDescription = this.sectorForm.get('shortDescription').value
+      sector.rules = this.sectorForm.get('rules').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
       sector.lat = this.sectorForm.get('lat').value ? Number(this.sectorForm.get('lat').value) : null;
       sector.lng = this.sectorForm.get('lng').value ? Number(this.sectorForm.get('lng').value) : null;

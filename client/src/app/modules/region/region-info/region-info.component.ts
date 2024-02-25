@@ -42,8 +42,8 @@ export class RegionInfoComponent implements OnInit {
 
   ngOnInit() {
     this.region = null;
-    this.regionsService.getRegion(environment.regionSlug).subscribe(crag => {
-      this.region = crag;
+    this.regionsService.getRegion(environment.regionSlug).subscribe(region => {
+      this.region = region;
     });
     this.fetchRegionGrades = this.regionsService.getRegionGrades(environment.regionSlug);
   }

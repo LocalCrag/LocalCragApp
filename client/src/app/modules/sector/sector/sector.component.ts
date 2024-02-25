@@ -57,6 +57,7 @@ export class SectorComponent implements OnInit{
     ]).subscribe(([crag, sector, isLoggedIn]) => {
       this.crag = crag;
       this.sector = sector;
+      console.log(sector.rules);
       this.title.setTitle(`${sector.name} / ${crag.name} - ${environment.instanceName}`)
       this.items = [
         {
@@ -69,6 +70,12 @@ export class SectorComponent implements OnInit{
           label: this.translocoService.translate(marker('sector.areas')),
           icon: 'pi pi-fw pi-sitemap',
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
+        },
+        {
+          label: this.translocoService.translate(marker('sector.rules')),
+          icon: 'pi pi-fw pi-exclamation-triangle',
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/rules`,
+          visible: sector.rules !== null
         },
         // {
         //   label: this.translocoService.translate(marker('sector.gallery')),

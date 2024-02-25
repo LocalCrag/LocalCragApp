@@ -12,6 +12,7 @@ def test_successful_create_sector(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 12.13,
         "lng": 42.42,
+        "rules": "test rules",
     }
 
     rv = client.post('/api/crags/brione/sectors', headers=access_headers, json=sector_data)
@@ -25,6 +26,7 @@ def test_successful_create_sector(client):
     assert res['id'] is not None
     assert res['lat'] == 12.13
     assert res['lng'] == 42.42
+    assert res['rules'] == "test rules"
 
 
 def test_successful_get_sectors(client):
@@ -58,6 +60,7 @@ def test_successful_get_sector(client):
     assert res['shortDescription'] == "Kurze Beschreibung zum Schattental"
     assert res['lat'] == None
     assert res['lng'] == None
+    assert res['rules'] == None
 
 
 def test_get_deleted_sector(client):
@@ -83,6 +86,7 @@ def test_successful_edit_sector(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 42.1,
         "lng": 42.2,
+        "rules": "test rules",
     }
 
     rv = client.put('/api/sectors/schattental', headers=access_headers, json=sector_data)
@@ -96,6 +100,7 @@ def test_successful_edit_sector(client):
     assert res['id'] is not None
     assert res['lat'] == 42.1
     assert res['lng'] == 42.2
+    assert res['rules'] == "test rules"
 
 
 def test_successful_order_sectors(client):
