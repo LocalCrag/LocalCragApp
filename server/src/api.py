@@ -10,6 +10,7 @@ from resources.line_path_resources import CreateLinePath, DeleteLinePath, Update
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
+from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
@@ -119,8 +120,11 @@ def configure_api(app):
 
     # Region API
     regions_bp = Blueprint('regions', __name__)
+    regions_bp.add_url_rule('/<string:region_slug>', view_func=GetRegion.as_view('get_region_details'))
+    regions_bp.add_url_rule('/<string:region_slug>', view_func=UpdateRegion.as_view('update_region'))
     regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=GetCrags.as_view('get_crags'))
     regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=CreateCrag.as_view('create_crag'))
+    regions_bp.add_url_rule('/<string:region_slug>/grades', view_func=GetRegionGrades.as_view('get_region_grades'))
     app.register_blueprint(regions_bp, url_prefix='/api/regions')
 
     # Post API

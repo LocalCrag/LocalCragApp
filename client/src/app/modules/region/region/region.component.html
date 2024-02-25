@@ -1,0 +1,11 @@
+<div class="content">
+
+  <p-card header="{{region?.name}}">
+
+    <p-tabMenu [model]="items" [scrollable]="true" *ngIf="region"></p-tabMenu>
+
+    <router-outlet name="regionContent"></router-outlet>
+
+  </p-card>
+
+</div>

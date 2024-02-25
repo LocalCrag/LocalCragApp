@@ -63,7 +63,7 @@ export class MenuComponent implements OnInit {
         {
           label: this.translocoService.translate(marker('menu.topo')),
           icon: 'pi pi-fw pi-map',
-          routerLink: '/topo',
+          routerLink: '/topo/crags',
           items: []
         },
         // {

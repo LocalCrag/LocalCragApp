@@ -34,6 +34,9 @@ import {isLoggedIn} from '../../guards/is-logged-in';
 import {PostListComponent} from '../blog/post-list/post-list.component';
 import {PostFormComponent} from '../blog/post-form/post-form.component';
 import {StaticBackgroundImages} from './background-image/background-image.component';
+import {RegionComponent} from '../region/region/region.component';
+import {RegionInfoComponent} from '../region/region-info/region-info.component';
+import {RegionFormComponent} from '../region/region-form/region-form.component';
 
 const routes: Routes = [
   {
@@ -120,7 +123,46 @@ const routes: Routes = [
   },
   {
     path: 'topo',
-    component: CragListComponent,
+    component: RegionComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        children: [
+          {
+            path: '',
+            component: RegionInfoComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
+        path: 'crags',
+        children: [
+          {
+            path: '',
+            component: CragListComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
+        path: 'gallery',
+        redirectTo: ''
+      },
+      {
+        path: 'ascents',
+        redirectTo: ''
+      },
+    ]
+  },
+  {
+    path: 'topo/edit-region',
+    component: RegionFormComponent,
+    canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
