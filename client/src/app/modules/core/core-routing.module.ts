@@ -37,6 +37,9 @@ import {StaticBackgroundImages} from './background-image/background-image.compon
 import {RegionComponent} from '../region/region/region.component';
 import {RegionInfoComponent} from '../region/region-info/region-info.component';
 import {RegionFormComponent} from '../region/region-form/region-form.component';
+import {CragRulesComponent} from '../crag/crag-rules/crag-rules.component';
+import {SectorRulesComponent} from '../sector/sector-rules/sector-rules.component';
+import {RegionRulesComponent} from '../region/region-rules/region-rules.component';
 
 const routes: Routes = [
   {
@@ -150,6 +153,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'rules',
+        children: [
+          {
+            path: '',
+            component: RegionRulesComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
         path: 'gallery',
         redirectTo: ''
       },
@@ -204,6 +217,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'rules',
+        children: [
+          {
+            path: '',
+            component: CragRulesComponent,
+            outlet: 'cragContent'
+          }
+        ]
+      },
+      {
         path: 'gallery',
         redirectTo: ''
       },
@@ -253,6 +276,16 @@ const routes: Routes = [
           {
             path: '',
             component: AreaListComponent,
+            outlet: 'sectorContent'
+          }
+        ]
+      },
+      {
+        path: 'rules',
+        children: [
+          {
+            path: '',
+            component: SectorRulesComponent,
             outlet: 'sectorContent'
           }
         ]

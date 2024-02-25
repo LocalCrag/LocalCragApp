@@ -14,6 +14,7 @@ export class Sector extends AbstractModel {
   orderIndex: number;
   lat: number;
   lng: number;
+  rules: string;
 
   /**
    * Parses a sector.
@@ -31,6 +32,7 @@ export class Sector extends AbstractModel {
     sector.lat = payload.lat;
     sector.lng = payload.lng;
     sector.orderIndex = payload.orderIndex;
+    sector.rules = payload.rules;
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return sector;
   }
@@ -49,6 +51,7 @@ export class Sector extends AbstractModel {
       portraitImage: sector.portraitImage ?  sector.portraitImage.id : null,
       lat: sector.lat,
       lng: sector.lng,
+      rules: sector.rules,
     };
   }
 

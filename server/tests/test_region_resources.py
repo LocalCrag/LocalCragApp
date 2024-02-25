@@ -11,12 +11,14 @@ def test_successful_get_region(client):
     assert res['name'] == "Tessin"
     assert res['slug'] == "tessin"
     assert res['description'] == "Tolle Region"
+    assert res['rules'] == None
 
 
 def test_successful_edit_region(client):
     access_headers, refresh_headers = get_login_headers(client)
     crag_data = {
         "description": "Fodere et scandere. 2",
+        "rules": "test rules"
     }
 
     rv = client.put('/api/regions/tessin', headers=access_headers, json=crag_data)
@@ -26,6 +28,7 @@ def test_successful_edit_region(client):
     assert res['name'] == "Tessin"
     assert res['slug'] == "tessin"
     assert res['description'] == "Fodere et scandere. 2"
+    assert res['rules'] == "test rules"
 
 
 def test_successful_get_region_grades(client):

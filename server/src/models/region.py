@@ -11,3 +11,4 @@ class Region(HasSlug, BaseEntity):
 
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    rules = db.Column(db.Text, nullable=True)

@@ -35,5 +35,4 @@ export class CragInfoComponent implements OnInit {
     });
   }
 
-
 }

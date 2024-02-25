@@ -92,6 +92,7 @@ export class RegionFormComponent implements OnInit {
   private buildForm() {
     this.regionForm = this.fb.group({
       description: [''],
+      rules: [''],
     });
   }
 
@@ -102,6 +103,7 @@ export class RegionFormComponent implements OnInit {
     this.regionForm.enable();
     this.regionForm.patchValue({
       description: this.region.description,
+      rules: this.region.rules,
     });
   }
 
@@ -120,6 +122,7 @@ export class RegionFormComponent implements OnInit {
       this.loadingState = LoadingState.LOADING;
       const region = new Region();
       region.description = this.regionForm.get('description').value
+      region.rules = this.regionForm.get('rules').value
       region.slug = environment.regionSlug;
       this.regionsService.updateRegion(region).subscribe(region => {
         this.store.dispatch(toastNotification(NotificationIdentifier.REGION_UPDATED));

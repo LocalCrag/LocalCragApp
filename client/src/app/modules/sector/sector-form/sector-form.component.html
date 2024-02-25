@@ -58,6 +58,23 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('sectorRulesLabel')}}</label>
+          <p-editor formControlName="rules" lcFormControl placeholder="{{t('sectorRulesPlaceholder')}}"
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+              <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+              </span>
+            </ng-template>
+          </p-editor>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorPortraitImageLabel')}}</label>
           <lc-single-image-upload lcFormControl formControlName="portraitImage"></lc-single-image-upload>
         </div>

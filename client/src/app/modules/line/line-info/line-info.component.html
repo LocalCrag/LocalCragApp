@@ -20,7 +20,7 @@
       <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
 
       <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"></div>
-      <div *ngIf="line.videos">{{t('videoBeta')}}:
+      <div *ngIf="line.videos?.length > 0">{{t('videoBeta')}}:
         <span class="link-list">
         <span *ngFor="let video of line.videos"><a [href]="video.url" target="_blank">{{video.title}}</a></span>
       </span>

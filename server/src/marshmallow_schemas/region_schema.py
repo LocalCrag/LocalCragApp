@@ -11,6 +11,7 @@ class RegionSchema(BaseEntitySchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
+    rules = fields.String()
 
 
 region_schema = RegionSchema()
