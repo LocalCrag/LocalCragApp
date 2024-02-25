@@ -24,7 +24,9 @@ def test_successful_create_line(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -63,7 +65,9 @@ def test_successful_create_line(client):
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
+    assert res["lowball"] == True
     assert res["noTopout"] == True
+    assert res["badDropzone"] == True
     assert res["roof"] == True
     assert res["slab"] == True
     assert res["vertical"] == True
@@ -107,7 +111,9 @@ def test_successful_create_line_with_project_status(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -147,7 +153,9 @@ def test_successful_create_line_with_project_status(client):
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
+    assert res["lowball"] == True
     assert res["noTopout"] == True
+    assert res["badDropzone"] == True
     assert res["roof"] == True
     assert res["slab"] == True
     assert res["vertical"] == True
@@ -192,7 +200,9 @@ def test_create_line_invalid_fa_year(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -239,7 +249,9 @@ def test_create_line_invalid_rating(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -286,7 +298,9 @@ def test_create_line_invalid_video_url(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -333,7 +347,9 @@ def test_create_line_invalid_grade_name(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -380,7 +396,9 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -427,7 +445,9 @@ def test_create_line_invalid_grade_scale(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -474,7 +494,9 @@ def test_create_line_invalid_line_type(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -520,7 +542,9 @@ def test_create_line_invalid_line_starting_position(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -565,7 +589,9 @@ def test_create_line_invalid_video_payload(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -630,7 +656,9 @@ def test_successful_get_line(client):
     assert res["eliminate"] == False
     assert res["traverse"] == False
     assert res["highball"] == False
+    assert res["lowball"] == False
     assert res["noTopout"] == True
+    assert res["badDropzone"] == False
     assert res["roof"] == False
     assert res["slab"] == False
     assert res["vertical"] == False
@@ -692,7 +720,9 @@ def test_successful_edit_line(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "lowball": True,
         "noTopout": True,
+        "badDropzone": True,
         "roof": True,
         "slab": True,
         "vertical": True,
@@ -731,7 +761,9 @@ def test_successful_edit_line(client):
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
+    assert res["lowball"] == True
     assert res["noTopout"] == True
+    assert res["badDropzone"] == True
     assert res["roof"] == True
     assert res["slab"] == True
     assert res["vertical"] == True

@@ -73,7 +73,9 @@ class CreateLine(MethodView):
         new_line.eliminate = line_data['eliminate']
         new_line.traverse = line_data['traverse']
         new_line.highball = line_data['highball']
+        new_line.lowball = line_data['lowball']
         new_line.no_topout = line_data['noTopout']
+        new_line.bad_dropzone = line_data['badDropzone']
 
         new_line.roof = line_data['roof']
         new_line.slab = line_data['slab']
@@ -140,7 +142,9 @@ class UpdateLine(MethodView):
         line.eliminate = line_data['eliminate']
         line.traverse = line_data['traverse']
         line.highball = line_data['highball']
+        line.lowball = line_data['lowball']
         line.no_topout = line_data['noTopout']
+        line.bad_dropzone = line_data['badDropzone']
 
         line.roof = line_data['roof']
         line.slab = line_data['slab']

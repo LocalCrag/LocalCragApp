@@ -114,7 +114,9 @@ export class LineFormComponent implements OnInit{
       eliminate: [false],
       traverse: [false],
       highball: [false],
+      lowball: [false],
       noTopout: [false],
+      badDropzone: [false],
       roof: [false],
       slab: [false],
       vertical: [false],
@@ -181,7 +183,9 @@ export class LineFormComponent implements OnInit{
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
+      lowball: this.line.lowball,
       noTopout: this.line.noTopout,
+      badDropzone: this.line.badDropzone,
       roof: this.line.roof,
       slab: this.line.slab,
       vertical: this.line.vertical,
@@ -233,7 +237,9 @@ export class LineFormComponent implements OnInit{
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;
+      line.lowball = this.lineForm.get('lowball').value;
       line.noTopout = this.lineForm.get('noTopout').value;
+      line.badDropzone = this.lineForm.get('badDropzone').value;
       line.roof = this.lineForm.get('roof').value;
       line.slab = this.lineForm.get('slab').value;
       line.vertical = this.lineForm.get('vertical').value;

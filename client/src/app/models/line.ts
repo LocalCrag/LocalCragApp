@@ -30,7 +30,9 @@ export class Line extends AbstractModel {
   eliminate: boolean;
   traverse: boolean;
   highball: boolean;
+  lowball: boolean;
   noTopout: boolean;
+  badDropzone: boolean;
 
   roof: boolean;
   slab: boolean;
@@ -90,7 +92,9 @@ export class Line extends AbstractModel {
     line.eliminate = payload.eliminate;
     line.traverse = payload.traverse;
     line.highball = payload.highball;
+    line.lowball = payload.lowball;
     line.noTopout = payload.noTopout;
+    line.badDropzone = payload.badDropzone;
 
     line.roof = payload.roof;
     line.slab = payload.slab;
@@ -147,7 +151,9 @@ export class Line extends AbstractModel {
       eliminate: line.eliminate,
       traverse: line.traverse,
       highball: line.highball,
+      lowball: line.lowball,
       noTopout: line.noTopout,
+      badDropzone: line.badDropzone,
 
       roof: line.roof,
       slab: line.slab,
