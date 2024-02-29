@@ -31,7 +31,7 @@
                     <p-button label="{{t('editPostButtonLabel')}}" icon="pi pi-file-edit" routerLink="/news/{{post.slug}}/edit"
                               styleClass="pr-0"
                               *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)" [text]="true"></p-button>
-                    <p-button icon="pi pi-plus" routerLink="/news/{{post.slug}}/edit"
+                    <p-button icon="pi pi-file-edit" routerLink="/news/{{post.slug}}/edit"
                               *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)" [text]="true"></p-button>
                   </div>
                 </div>

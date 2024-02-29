@@ -1,0 +1,9 @@
+@use "media-queries" as m;
+
+.p-card{
+  @include m.on-mobile{
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100%;
+  }
+}
