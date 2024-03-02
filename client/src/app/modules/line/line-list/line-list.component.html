@@ -40,7 +40,7 @@
                 <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
               </div>
               <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
-              <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"></div>
+              <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"  class="quill-content"></div>
             </div>
           </div>
         </div>
