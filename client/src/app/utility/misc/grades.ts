@@ -190,7 +190,7 @@ export const GRADES: { [scaleName: string]: Grade[] } = {
       value: 21
     },
     {
-      name: marker('>8'),
+      name: marker('≥8'),
       value: 29
     },
   ]

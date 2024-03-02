@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostListener,
   Input,
   OnInit,
   Output,
@@ -117,7 +117,7 @@ export class TopoImageComponent implements OnInit {
         labels.push(this.getLineLabel(linePath, String(index + 1)));
       }
     });
-    if (this.showLineNumbers) {
+    if (this.showLineNumbers && labels.length > 0) {
       const PFLP = new PointFeatureLabelPlacement(this.width, this.height, labels);
       PFLP.discreteGradientDescent();
       this.topoImage.linePaths.map((linePath, index) => {
@@ -154,8 +154,16 @@ export class TopoImageComponent implements OnInit {
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
       background.on('click', (event) => {
+        console.log(event);
         event.cancelBubble = true;
         this.imageClick.emit([event.evt.offsetX * (1 / this.scale), event.evt.offsetY * (1 / this.scale)]);
+      });
+      background.on('touchstart', (event) => {
+        event.cancelBubble = true;
+        const rect = (event.evt.target as HTMLElement).getBoundingClientRect();
+        const offsetX = event.evt.targetTouches[0].clientX - rect.left;
+        const offsetY = event.evt.targetTouches[0].clientY - rect.top;
+        this.imageClick.emit([offsetX * (1 / this.scale), offsetY * (1 / this.scale)]);
       });
       background.on('mouseenter', () => {
         this.stage.container().style.cursor = 'pointer';
