@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {ConfirmationService, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
@@ -31,7 +31,8 @@ import {CacheService} from '../../../cache/cache.service';
   providers: [
     ConfirmationService,
     DialogService
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 @UntilDestroy()
 export class TopoImageListComponent {
