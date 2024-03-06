@@ -14,8 +14,9 @@ import Konva from 'konva';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
-import {timer} from 'rxjs';
+import {debounceTime, fromEvent, timer} from 'rxjs';
 import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -26,6 +27,7 @@ import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+@UntilDestroy()
 export class TopoImageComponent implements OnInit {
 
   @ViewChild('konvaContainer') konvaContainer: ElementRef;
@@ -63,14 +65,22 @@ export class TopoImageComponent implements OnInit {
     // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
     // kind of solved by using a timeout...
     setTimeout(() => {
-      this.calculateSkeletonDimensionsAndSetImageSource();
-      this.backgroundImage.onload = () => {
-        this.drawLinesAndLabels();
-      }
+      this.render();
+    })
+    // Needs to be recalculated on window resize
+    fromEvent(window, 'resize').pipe(debounceTime(50), untilDestroyed(this)).subscribe(() => {
+      this.render();
     })
   }
 
-  calculateSkeletonDimensionsAndSetImageSource(){
+  render() {
+    this.calculateSkeletonDimensionsAndSetImageSource();
+    this.backgroundImage.onload = () => {
+      this.drawLinesAndLabels();
+    }
+  }
+
+  calculateSkeletonDimensionsAndSetImageSource() {
     this.backgroundImage = new Image();
 
     const containerWidth = this.el.nativeElement.offsetWidth;
@@ -104,7 +114,7 @@ export class TopoImageComponent implements OnInit {
     this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
   }
 
-  drawLinesAndLabels(){
+  drawLinesAndLabels() {
     this.width = this.backgroundImage.width;
     this.height = this.backgroundImage.height;
     this.lineSizeMultiplicator = this.width / 350;
