@@ -1,31 +1,16 @@
-@use "../../../styles/media-queries" as m;
+@mixin container-650 {
+  @container (max-width: 650px) {
+    @content;
+  }
+}
+
+@mixin container-450 {
+  @container (max-width: 450px) {
+    @content;
+  }
+}
 
 lc-topo-image-list {
-
-  .line-table {
-    width: 100%;
-  }
-
-  .line-row:hover {
-    cursor: pointer;
-  }
-
-  .name-column {
-    width: 20%;
-  }
-
-  .grade-column {
-    width: 10%;
-  }
-
-
-  .style-column {
-    width: 60%;
-  }
-
-  .rating-column {
-    width: 125px;
-  }
 
   .line-number {
     background-color: var(--arrow-color);
@@ -39,43 +24,70 @@ lc-topo-image-list {
     font-size: .9rem;
   }
 
-  tr:hover {
-    .line-number {
-      background-color: var(--arrow-highlight-color);
-      color: var(--arrow-highlight-text-color);
+  .line-table {
+    width: 100%;
+    border-top: 1px solid var(--surface-200);
+    border-bottom: 1px solid var(--surface-200);
+    padding-bottom: .5rem;
+    container-type: inline-size;
+
+    .table-header {
+      background-color: var(--surface-50);
+      font-weight: 700;
+      color: var(--surface-700);
+      padding: .5rem;
+    }
+
+  }
+
+  .line-row-grid{
+    display:grid;
+    gap: .5rem;
+    grid-template-columns: min-content auto 80px 250px min-content;
+    grid-template-rows: min-content;
+    @include container-650 {
+      grid-template-columns: min-content auto 80px 0 min-content;
+      .line-row .style-column{
+        visibility: hidden;
+        height: 0;
+        overflow:hidden;
+      }
+    }
+    @include container-450 {
+      grid-template-columns: min-content auto 40px 0 min-content;
+      .line-row .style-column{
+        visibility: hidden;
+        height: 0;
+        overflow:hidden;
+      }
     }
   }
 
-  //p-table {
-  //  table {
-  //    table-layout: fixed;
-  //  }
-  //}
+  .line-row {
+    display: grid;
+    grid-column: span 5;
+    grid-template-columns: subgrid;
+    border-top: 1px solid var(--surface-200);
+    padding-top: .5rem;
 
-  tr{
-    display: flex;
-  }
-
-  td {
-    @include m.on-mobile {
-      &.rating-column {
-        width: max-content;
-      }
-      &.grade-column {
-        max-width: 50px;
-      }
-      &.action-column {
-        width: max-content;
-      }
-      &.number-column {
-        width: max-content;
-      }
-      &.name-column {
-        overflow-wrap: break-word;
-        width: fill-available;
+    &:hover {
+      cursor: pointer;
+      .line-number {
+        background-color: var(--arrow-highlight-color);
+        color: var(--arrow-highlight-text-color);
       }
     }
-  }
 
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    .name-column, .grade-column{
+      overflow: hidden;
+    hyphens: auto;
+    }
+
+  }
 
 }
