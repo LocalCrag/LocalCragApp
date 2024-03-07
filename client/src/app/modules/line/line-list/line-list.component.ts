@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Area} from '../../../models/area';
 import {LoadingState} from '../../../enums/loading-state';
-import {SelectItem} from 'primeng/api';
+import {PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
@@ -56,10 +56,10 @@ export class LineListComponent implements OnInit {
       this.lines = lines;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortByBlockAscending')), value: '!blockOrderIndex'},
-        {label: this.translocoService.translate(marker('sortByBlockDescending')), value: 'blockOrderIndex'},
-        {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
-        {label: this.translocoService.translate(marker('sortZA')), value: 'name'}
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortByBlockAscending')), value: '!blockOrderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortByBlockDescending')), value: 'blockOrderIndex'},
+        {icon: PrimeIcons.SORT_ALPHA_DOWN, label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
+        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'}
       ];
       this.sortKey = this.sortOptions[0];
     });

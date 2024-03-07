@@ -1,3 +1,5 @@
+@use "../../../styles/media-queries" as m;
+
 :host{
   background-size: cover;
   background-repeat: no-repeat;
@@ -15,6 +17,13 @@
     width: 100%;
     height: 100%;
     backdrop-filter: blur(2px);
+
+    @include m.on-mobile{
+      backdrop-filter: blur(10px);
+    }
+
   }
+
+
 
 }

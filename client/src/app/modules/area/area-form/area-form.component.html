@@ -80,14 +80,14 @@
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('createAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-plus"
+        <p-button label="{{t('createAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
-        <p-button label="{{t('editAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-plus"
+        <p-button label="{{t('editAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                   styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
         <p-button label="{{t('deleteAreaButtonLabel')}}" (click)="confirmDeleteArea($event)" icon="pi pi-trash"
-                  styleClass="p-button-danger" class="ml-3"
+                  styleClass="p-button-danger" class="ml-3 responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
         <p-confirmPopup></p-confirmPopup>
       </div>

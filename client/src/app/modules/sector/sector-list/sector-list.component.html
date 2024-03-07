@@ -7,19 +7,27 @@
       <div class="flex flex-row justify-content-between">
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                     optionLabel="label" (onChange)="onSortChange($event)"
-                    styleClass="md:mb-0"></p-dropdown>
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <div class="flex justify-content-end gap-3">
-          <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus"
+          <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/create-sector"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/create-sector"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    *ngIf="(isLoggedIn$ | async) "></p-button>
           <p-button label="{{t('reorderSectorsButtonLabel')}}" icon="pi pi-sort" (click)="reorderSectors()"
-                    [disabled]="sectors?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-sort" (click)="reorderSectors()"
-                    [disabled]="sectors?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    [disabled]="sectors?.length < 2" class="responsive-button"
+                    *ngIf="(isLoggedIn$ | async)"></p-button>
         </div>
       </div>
     </ng-template>
@@ -37,7 +45,7 @@
               class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
               <div class="flex flex-column align-items-center sm:align-items-start gap-3  w-full">
                 <a class="text-2xl font-bold title-link" routerLink="/topo/{{cragSlug}}/{{sector.slug}}">{{ sector.name }}</a>
-                <div [innerHTML]="sector.shortDescription | sanitizeHtml"  *ngIf="sector.shortDescription"></div>
+                <div [innerHTML]="sector.shortDescription | sanitizeHtml"  *ngIf="sector.shortDescription"  class="quill-content"></div>
                 <lc-leveled-grade-distribution #gradeDistribution [fetchingObservable]="sectorsService.getSectorGrades(sector.slug)"></lc-leveled-grade-distribution>
               </div>
             </div>

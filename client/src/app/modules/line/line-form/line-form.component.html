@@ -1,7 +1,5 @@
 <ng-container *transloco="let t, read: 'line.lineForm'">
 
-
-
   <div class="content">
 
     <p-card header="{{editMode ? t('editLineTitle') : t('createLineTitle')}}">
@@ -76,14 +74,14 @@
 
           <div *ngFor="let lineVideoGroup of (lineForm.get('videos') | asFormArray).controls; index as i"
                [formGroup]="lineVideoGroup | asFormGroup" class="flex flex-row gap-3">
-            <div lcControlGroup class=" flex flex-column flex-1">
+            <div lcControlGroup class=" flex flex-column flex-1 video-input-container">
               <input type="text" pInputText formControlName="title" placeholder="{{t('lineVideoTitlePlaceholder')}}"
                      lcFormControl/>
               <div>
                 <small class="p-error" *lcIfError="'required'">{{t('requiredValidationError')}}</small>
               </div>
             </div>
-            <div lcControlGroup class=" flex flex-column flex-1">
+            <div lcControlGroup class=" flex flex-column flex-1 video-input-container">
               <input type="text" pInputText formControlName="url" placeholder="{{t('lineVideoUrlPlaceholder')}}"
                      lcFormControl/>
               <div>
@@ -115,7 +113,6 @@
                       [maxDate]="today" [readonlyInput]="true"></p-calendar>
           <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
         </div>
-
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('linePropertiesLabel')}}</label>
@@ -188,14 +185,14 @@
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+        <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
-        <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-plus"
+        <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                   styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
         <p-button label="{{t('deleteLineButtonLabel')}}" (click)="confirmDeleteLine($event)" icon="pi pi-trash"
-                  styleClass="p-button-danger" class="ml-3"
+                  styleClass="p-button-danger" class="ml-3 responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
         <p-confirmPopup></p-confirmPopup>
       </div>

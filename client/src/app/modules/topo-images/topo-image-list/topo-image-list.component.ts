@@ -1,9 +1,9 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
-import {ConfirmationService, SelectItem} from 'primeng/api';
+import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router, Scroll} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
@@ -20,6 +20,8 @@ import {OrderItemsComponent} from '../../shared/components/order-items/order-ite
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../cache/cache.service';
+import {ViewportScroller} from '@angular/common';
+import {filter} from 'rxjs/operators';
 
 /**
  * Component that lists all topo images in an area.
@@ -31,7 +33,8 @@ import {CacheService} from '../../../cache/cache.service';
   providers: [
     ConfirmationService,
     DialogService
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 @UntilDestroy()
 export class TopoImageListComponent {
@@ -39,7 +42,6 @@ export class TopoImageListComponent {
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
-  public loadingState = LoadingState.INITIAL_LOADING;
   public sortOptions: SelectItem[];
   public sortKey: SelectItem;
   public sortOrder: number;
@@ -51,6 +53,8 @@ export class TopoImageListComponent {
   public areaSlug: string;
   public ref: DynamicDialogRef | undefined;
 
+  private scrollTarget: Scroll;
+
   constructor(private topoImagesService: TopoImagesService,
               private api: ApiService,
               private cache: CacheService,
@@ -59,7 +63,18 @@ export class TopoImageListComponent {
               private dialogService: DialogService,
               private linePathsService: LinePathsService,
               private route: ActivatedRoute,
-              private translocoService: TranslocoService) {
+              private translocoService: TranslocoService,
+              private router: Router,
+              private viewportScroller: ViewportScroller) {
+    this.router.events.pipe(filter((event): event is Scroll => event instanceof Scroll)
+    ).subscribe((e) => {
+      if (e.position) {
+        this.scrollTarget = e;
+        this.restoreScrollPosition();
+      } else {
+        this.scrollTarget = null;
+      }
+    });
   }
 
   /**
@@ -78,6 +93,7 @@ export class TopoImageListComponent {
    * Loads new data.
    */
   refreshData() {
+    this.loading = LoadingState.LOADING;
     forkJoin([
       this.topoImagesService.getTopoImages(this.areaSlug),
       this.translocoService.load(`${environment.language}`)
@@ -85,11 +101,23 @@ export class TopoImageListComponent {
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
       ];
       this.sortKey = this.sortOptions[0];
+      this.restoreScrollPosition();
     });
+  }
+
+  restoreScrollPosition(){
+    if(this.scrollTarget && this.loading === LoadingState.DEFAULT){
+      // CDR not working as expected here because topo image is using setTimeout because of konva bug...
+      // So I have to use setTimeout too
+      setTimeout(()=>{
+        this.viewportScroller.scrollToPosition(this.scrollTarget.position);
+        this.scrollTarget = null;
+      })
+    }
   }
 
   /**

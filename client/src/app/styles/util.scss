@@ -1,0 +1,10 @@
+@use "media-queries" as m;
+
+
+.hide-on-mobile{
+
+  @include m.on-mobile{
+    display: none;
+  }
+
+}

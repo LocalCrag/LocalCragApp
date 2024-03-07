@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostListener,
   Input,
   OnInit,
   Output,
@@ -14,8 +14,9 @@ import Konva from 'konva';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
-import {timer} from 'rxjs';
+import {debounceTime, fromEvent, timer} from 'rxjs';
 import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -26,6 +27,7 @@ import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+@UntilDestroy()
 export class TopoImageComponent implements OnInit {
 
   @ViewChild('konvaContainer') konvaContainer: ElementRef;
@@ -63,14 +65,22 @@ export class TopoImageComponent implements OnInit {
     // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
     // kind of solved by using a timeout...
     setTimeout(() => {
-      this.calculateSkeletonDimensionsAndSetImageSource();
-      this.backgroundImage.onload = () => {
-        this.drawLinesAndLabels();
-      }
+      this.render();
+    })
+    // Needs to be recalculated on window resize
+    fromEvent(window, 'resize').pipe(debounceTime(50), untilDestroyed(this)).subscribe(() => {
+      this.render();
     })
   }
 
-  calculateSkeletonDimensionsAndSetImageSource(){
+  render() {
+    this.calculateSkeletonDimensionsAndSetImageSource();
+    this.backgroundImage.onload = () => {
+      this.drawLinesAndLabels();
+    }
+  }
+
+  calculateSkeletonDimensionsAndSetImageSource() {
     this.backgroundImage = new Image();
 
     const containerWidth = this.el.nativeElement.offsetWidth;
@@ -104,7 +114,7 @@ export class TopoImageComponent implements OnInit {
     this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
   }
 
-  drawLinesAndLabels(){
+  drawLinesAndLabels() {
     this.width = this.backgroundImage.width;
     this.height = this.backgroundImage.height;
     this.lineSizeMultiplicator = this.width / 350;
@@ -117,7 +127,7 @@ export class TopoImageComponent implements OnInit {
         labels.push(this.getLineLabel(linePath, String(index + 1)));
       }
     });
-    if (this.showLineNumbers) {
+    if (this.showLineNumbers && labels.length > 0) {
       const PFLP = new PointFeatureLabelPlacement(this.width, this.height, labels);
       PFLP.discreteGradientDescent();
       this.topoImage.linePaths.map((linePath, index) => {
@@ -154,8 +164,16 @@ export class TopoImageComponent implements OnInit {
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
       background.on('click', (event) => {
+        console.log(event);
         event.cancelBubble = true;
         this.imageClick.emit([event.evt.offsetX * (1 / this.scale), event.evt.offsetY * (1 / this.scale)]);
+      });
+      background.on('touchstart', (event) => {
+        event.cancelBubble = true;
+        const rect = (event.evt.target as HTMLElement).getBoundingClientRect();
+        const offsetX = event.evt.targetTouches[0].clientX - rect.left;
+        const offsetY = event.evt.targetTouches[0].clientY - rect.top;
+        this.imageClick.emit([offsetX * (1 / this.scale), offsetY * (1 / this.scale)]);
       });
       background.on('mouseenter', () => {
         this.stage.container().style.cursor = 'pointer';

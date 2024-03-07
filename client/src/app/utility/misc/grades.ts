@@ -135,6 +135,64 @@ export const GRADES: { [scaleName: string]: Grade[] } = {
       name: marker('9A+'),
       value: 29
     },
+  ],
+  FB_CONDENSED: [
+    {
+      name: marker('1-3'),
+      value: 3
+    },
+    {
+      name: marker('4A'),
+      value: 4
+    },
+    {
+      name: marker('4B'),
+      value: 5
+    },
+    {
+      name: marker('4C'),
+      value: 6
+    },
+    {
+      name: marker('5A'),
+      value: 7
+    },
+    {
+      name: marker('5B'),
+      value: 8
+    },
+    {
+      name: marker('5C'),
+      value: 9
+    },
+    {
+      name: marker('6A'),
+      value: 11
+    },
+    {
+      name: marker('6B'),
+      value: 13
+    },
+    {
+      name: marker('6C'),
+      value: 15
+    },
+    {
+      name: marker('7A'),
+      value: 17
+    },
+    {
+      name: marker('7B'),
+      value: 19
+    },
+    {
+      name: marker('7C'),
+      value: 21
+    },
+    {
+      name: marker('≥8'),
+      value: 29
+    },
   ]
 }
 

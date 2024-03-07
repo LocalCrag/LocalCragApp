@@ -5,15 +5,27 @@
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
       <div class="flex flex-row justify-content-between">
+
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                     optionLabel="label" (onChange)="onSortChange($event)"
-                    styleClass="md:mb-0"></p-dropdown>
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <div class="flex justify-content-end">
           <p-button label="{{t('newLineButtonLabel')}}" icon="pi pi-plus"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
         </div>
       </div>
     </ng-template>
@@ -40,7 +52,7 @@
                 <p-rating [ngModel]="line.rating" [cancel]="false" [readonly]="true"></p-rating>
               </div>
               <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
-              <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"></div>
+              <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"  class="quill-content"></div>
             </div>
           </div>
         </div>

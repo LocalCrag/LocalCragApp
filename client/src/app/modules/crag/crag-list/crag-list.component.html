@@ -7,18 +7,26 @@
       <div class="flex flex-row justify-content-between">
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                     optionLabel="label" (onChange)="onSortChange($event)"
-                    styleClass="md:mb-0"></p-dropdown>
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <div class="flex justify-content-end gap-3">
           <p-button label="{{t('newCragButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/create-crag"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus" routerLink="/topo/create-crag"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
           <p-button label="{{t('reorderCragsButtonLabel')}}" icon="pi pi-sort" (click)="reorderCrags()"
-                    [disabled]="crags?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-sort" (click)="reorderCrags()"
-                    [disabled]="crags?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    [disabled]="crags?.length < 2" class="responsive-button"
+                    *ngIf="(isLoggedIn$ | async)"></p-button>
         </div>
       </div>
     </ng-template>
@@ -35,7 +43,7 @@
               class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
               <div class="flex flex-column align-items-center sm:align-items-start gap-3 w-full">
                 <a class="text-2xl font-bold title-link" routerLink="/topo/{{crag.slug}}">{{ crag.name }}</a>
-                <div [innerHTML]="crag.shortDescription | sanitizeHtml" *ngIf="crag.shortDescription"></div>
+                <div [innerHTML]="crag.shortDescription | sanitizeHtml" *ngIf="crag.shortDescription"  class="quill-content"></div>
                 <lc-leveled-grade-distribution
                   [fetchingObservable]="cragsService.getCragGrades(crag.slug)"></lc-leveled-grade-distribution>
               </div>

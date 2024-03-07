@@ -1,43 +1,93 @@
-.line-table {
-  width: 100%;
-}
-
-.line-row:hover{
-  cursor: pointer;
-}
-
-.name-column{
-  width: 20%;
-}
-
-.grade-column{
-  width: 10%;
-}
-
-
-.style-column{
-  width: 60%;
-}
-
-.rating-column{
-  width: 125px;
-}
-
-.line-number{
-  background-color: var(--arrow-color);
-  color: var(--arrow-text-color);
-  border-radius: .25rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: .9rem;
-}
-
-tr:hover{
-  .line-number{
-    background-color: var(--arrow-highlight-color);
-    color: var(--arrow-highlight-text-color);
+@mixin container-650 {
+  @container (max-width: 650px) {
+    @content;
   }
+}
+
+@mixin container-450 {
+  @container (max-width: 450px) {
+    @content;
+  }
+}
+
+lc-topo-image-list {
+
+  .line-number {
+    background-color: var(--arrow-color);
+    color: var(--arrow-text-color);
+    border-radius: .25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .9rem;
+  }
+
+  .line-table {
+    width: 100%;
+    border-top: 1px solid var(--surface-200);
+    border-bottom: 1px solid var(--surface-200);
+    padding-bottom: .5rem;
+    container-type: inline-size;
+
+    .table-header {
+      background-color: var(--surface-50);
+      font-weight: 700;
+      color: var(--surface-700);
+      padding: .5rem;
+    }
+
+  }
+
+  .line-row-grid{
+    display:grid;
+    gap: .5rem;
+    grid-template-columns: min-content auto 80px 250px min-content;
+    grid-template-rows: min-content;
+    @include container-650 {
+      grid-template-columns: min-content auto 80px 0 min-content;
+      .line-row .style-column{
+        visibility: hidden;
+        height: 0;
+        overflow:hidden;
+      }
+    }
+    @include container-450 {
+      grid-template-columns: min-content auto 40px 0 min-content;
+      .line-row .style-column{
+        visibility: hidden;
+        height: 0;
+        overflow:hidden;
+      }
+    }
+  }
+
+  .line-row {
+    display: grid;
+    grid-column: span 5;
+    grid-template-columns: subgrid;
+    border-top: 1px solid var(--surface-200);
+    padding-top: .5rem;
+
+    &:hover {
+      cursor: pointer;
+      .line-number {
+        background-color: var(--arrow-highlight-color);
+        color: var(--arrow-highlight-text-color);
+      }
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    .name-column, .grade-column{
+      overflow: hidden;
+    hyphens: auto;
+    }
+
+  }
+
 }

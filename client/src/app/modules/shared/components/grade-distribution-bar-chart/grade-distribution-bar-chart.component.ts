@@ -1,10 +1,11 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, HostListener, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {debounceTime, fromEvent, Observable} from 'rxjs';
 import {Grade, GRADES} from '../../../../utility/misc/grades';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {ChartModule} from 'primeng/chart';
 import {NgIf} from '@angular/common';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {MOBILE_BREAKPOINT} from '../../../../utility/misc/breakpoints';
 
 /**
  * Component that shows grades in a bar chart.
@@ -21,7 +22,7 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class GradeDistributionBarChartComponent implements OnChanges{
+export class GradeDistributionBarChartComponent implements OnChanges {
 
   @Input() fetchingObservable: Observable<Grade[]>;
   @Input() scaleName: string = 'FB';
@@ -33,10 +34,14 @@ export class GradeDistributionBarChartComponent implements OnChanges{
   public projectCount: number;
 
   constructor(private translocoService: TranslocoService) {
+    fromEvent(window, 'resize').pipe(debounceTime(200))
+      .subscribe(() => {
+        this.buildData();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes['fetchingObservable']){
+    if (changes['fetchingObservable']) {
       this.fetchingObservable.subscribe(grades => {
         this.grades = grades;
         this.buildData();
@@ -118,16 +123,38 @@ export class GradeDistributionBarChartComponent implements OnChanges{
       name: marker('GENERIC_PROJECT'),
       value: 0
     }
-    let gradesInScale = [...GRADES[this.scaleName]];
-    gradesInScale = gradesInScale.filter(grade => grade.value > 0);
-    gradesInScale.unshift(genericProjectGrade);
-    const gradeValues = gradesInScale.map(grade => grade.value);
+
+    // Condensed scale is needed if screen is too small to host all grades
+    let isCondensed = window.innerWidth <= MOBILE_BREAKPOINT;
+    const usedScaleName = isCondensed ? this.scaleName + '_CONDENSED' : this.scaleName;
+    let gradesInUsedScale = GRADES[usedScaleName];
+    gradesInUsedScale = gradesInUsedScale.filter(grade => grade.value > 0);
+    gradesInUsedScale.unshift(genericProjectGrade);
+
+    // Init a counting map
+    const gradeValues = gradesInUsedScale.map(grade => grade.value);
     const gradeValueCount = {};
     gradeValues.map(gradeValue => {
       gradeValueCount[gradeValue] = 0;
     });
-    this.grades.map(grade => gradeValueCount[grade.value > 0 ? grade.value : 0] += 1);
-    const labels = gradesInScale.map(grade => this.translocoService.translate(grade.name));
+
+    // Map keys from the full scale to keys of the used scale
+    const condensedSortingMap = {};
+    const gradesInFullScale = GRADES[this.scaleName];
+    gradesInFullScale.map(grade => {
+      for (let usedGrade of gradesInUsedScale) {
+        if (usedGrade.value >= grade.value) {
+          condensedSortingMap[grade.value] = usedGrade.value
+          break;
+        }
+      }
+    });
+
+    // Count values
+    this.grades.map(grade => gradeValueCount[condensedSortingMap[grade.value]] += 1);
+
+    // Build chart data
+    const labels = gradesInUsedScale.map(grade => this.translocoService.translate(grade.name));
     const counts = gradeValues.map(gradeValue => gradeValueCount[gradeValue]);
     const maxCount = Math.max(...counts);
     const backgroundColors = counts.map(count => {

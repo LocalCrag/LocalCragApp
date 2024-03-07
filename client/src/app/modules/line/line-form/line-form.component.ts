@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -12,7 +12,7 @@ import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {Line, LineVideo} from '../../../models/line';
+import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
 import {Grade, GRADES} from '../../../utility/misc/grades';
 import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
@@ -30,10 +30,10 @@ import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
   selector: 'lc-line-form',
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService],
 })
 @UntilDestroy()
-export class LineFormComponent implements OnInit{
+export class LineFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
@@ -59,10 +59,11 @@ export class LineFormComponent implements OnInit{
 
   constructor(private fb: FormBuilder,
               private store: Store,
-              private  title: Title,
+              private title: Title,
               private route: ActivatedRoute,
               private router: Router,
               private linesService: LinesService,
+              private cdr: ChangeDetectorRef,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
   }
@@ -164,13 +165,12 @@ export class LineFormComponent implements OnInit{
   }
 
   /**
-   * Sets the form value based on an input crag and enables the form afterwards.
+   * Sets the form value based on an input crag and enables the form afterward.
    */
   private setFormValue() {
     this.line.videos.map(video => {
       this.addLineVideoFormControl();
     });
-    this.lineForm.enable();
     this.lineForm.patchValue({
       name: this.line.name,
       description: this.line.description,
@@ -206,6 +206,7 @@ export class LineFormComponent implements OnInit{
       arete: this.line.arete,
       mantle: this.line.mantle,
     });
+    this.lineForm.enable();
   }
 
   /**
@@ -316,7 +317,7 @@ export class LineFormComponent implements OnInit{
    * Deletes the line video form control at the given index from the videos form array.
    * @param index Index of the control in the array.
    */
-  public deleteLineVideoControl(index: number){
+  public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index)
   }
 
