@@ -22,18 +22,12 @@
           </ng-template>
         </p-dropdown>
         <div class="flex justify-content-end gap-3">
-          <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus"
+          <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
                     *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus"
-                    routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
           <p-button label="{{t('reorderTopoImagesButtonLabel')}}" icon="pi pi-sort" (click)="reorderTopoImages()"
-                    [disabled]="topoImages?.length < 2"
+                    [disabled]="topoImages?.length < 2" class="responsive-button"
                     *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-sort" (click)="reorderTopoImages()"
-                    [disabled]="topoImages?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
         </div>
       </div>
     </ng-template>

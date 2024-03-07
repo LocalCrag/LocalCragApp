@@ -25,9 +25,7 @@
         <div class="flex justify-content-end">
           <p-button label="{{t('newLineButtonLabel')}}" icon="pi pi-plus"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
         </div>
       </div>
     </ng-template>

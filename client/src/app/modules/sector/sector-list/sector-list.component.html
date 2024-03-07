@@ -22,17 +22,12 @@
           </ng-template>
         </p-dropdown>
         <div class="flex justify-content-end gap-3">
-          <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus"
+          <p-button label="{{t('newSectorButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/create-sector"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-plus" routerLink="/topo/{{cragSlug}}/create-sector"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    *ngIf="(isLoggedIn$ | async) "></p-button>
           <p-button label="{{t('reorderSectorsButtonLabel')}}" icon="pi pi-sort" (click)="reorderSectors()"
-                    [disabled]="sectors?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-          <p-button icon="pi pi-sort" (click)="reorderSectors()"
-                    [disabled]="sectors?.length < 2"
-                    *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                    [disabled]="sectors?.length < 2" class="responsive-button"
+                    *ngIf="(isLoggedIn$ | async)"></p-button>
         </div>
       </div>
     </ng-template>
