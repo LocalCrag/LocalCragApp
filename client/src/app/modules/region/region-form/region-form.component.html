@@ -56,9 +56,10 @@
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('editRegionButtonLabel')}}" (click)="saveRegion()" icon="pi pi-plus"
+        <p-button label="{{t('editRegionButtonLabel')}}" (click)="saveRegion()" icon="pi pi-save"
+                  class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3"
+        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                   styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
       </div>
 

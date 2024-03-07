@@ -2,7 +2,7 @@ import {ChangeDetectorRef, OnDestroy, Pipe, PipeTransform} from '@angular/core';
 import {AsyncPipe} from '@angular/common';
 import {Observable, timer} from 'rxjs';
 import {map, startWith, takeWhile} from 'rxjs/operators';
-import * as moment from 'moment';
+import {differenceInMilliseconds} from 'date-fns';
 
 /**
  * Converts a date object to a string that's showing the amount of minutes between the current date and the passed date.
@@ -16,7 +16,7 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
   private async: AsyncPipe;
 
   private isDestroyed = false;
-  private value: moment.Moment;
+  private value: Date;
   private timer: Observable<string>;
 
   constructor(ref: ChangeDetectorRef) {
@@ -26,17 +26,17 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
   /**
    * Transforms the given date to the wanted string.
    *
-   * @param obj The moment object to convert.
+   * @param obj The Date object to convert.
    * @param args Optional arguments.
    * @returns Transformed string.
    */
-  public transform(obj: any, ...args: any[]): any {
+  public transform(obj: Date, ...args: any[]): any {
     if (obj === null) {
       return '';
     }
 
-    if (!moment.isMoment(obj)) {
-      throw new Error('MinutesRemainingPipe works only with moments');
+    if (!(obj instanceof Date)) {
+      throw new Error('MinutesRemainingPipe works only with Dates');
     }
 
     this.value = obj;
@@ -61,7 +61,7 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * @returns TimerObservable.
    */
   private getObservable() {
-    const initialDelay = this.value.diff(moment()) % 60000;
+    const initialDelay = differenceInMilliseconds(this.value, new Date()) % 60000;
     return timer(initialDelay, 60000).pipe(
       startWith(0),
       takeWhile(_ => !this.isDestroyed),
@@ -75,8 +75,8 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * @returns Minutes remaining string.
    */
   private remaining(): string {
-    const now = moment();
-    const remaining = Math.ceil(this.value.diff(now) / 1000 / 60);
+    const now = new Date();
+    const remaining = Math.ceil(differenceInMilliseconds(this.value, new Date()) / 1000 / 60);
     if (remaining === 1) {
       return '1 Minute';
     } else {

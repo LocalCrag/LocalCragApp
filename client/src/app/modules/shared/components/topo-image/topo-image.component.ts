@@ -10,13 +10,15 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import {TopoImage} from '../../../../models/topo-image';
-import Konva from 'konva';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
 import {debounceTime, fromEvent, timer} from 'rxjs';
 import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Store} from '@ngrx/store';
+import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
+import Konva from 'konva';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -52,8 +54,10 @@ export class TopoImageComponent implements OnInit {
   private stage: Konva.Stage;
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
+  private isMobile = false;
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef,
+              private store: Store) {
   }
 
 
@@ -61,16 +65,19 @@ export class TopoImageComponent implements OnInit {
    * Loads the background image and draws the lines on it.
    */
   ngOnInit() {
-    // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
-    // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
-    // kind of solved by using a timeout...
-    setTimeout(() => {
-      this.render();
-    })
-    // Needs to be recalculated on window resize
-    fromEvent(window, 'resize').pipe(debounceTime(50), untilDestroyed(this)).subscribe(() => {
-      this.render();
-    })
+    this.store.select(selectIsMobile).subscribe(isMobile => {
+      this.isMobile = isMobile;
+      // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
+      // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
+      // kind of solved by using a timeout...
+      setTimeout(() => {
+        this.render();
+      })
+      // Needs to be recalculated on window resize
+      fromEvent(window, 'resize').pipe(debounceTime(50), untilDestroyed(this)).subscribe(() => {
+        this.render();
+      })
+    });
   }
 
   render() {
@@ -272,17 +279,22 @@ export class TopoImageComponent implements OnInit {
    * @param linePath
    */
   drawAnchors(linePath: LinePath) {
+    const anchorFactor = this.isMobile ? 1.5 : 1;
     const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
     for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
       const anchor = new Konva.Circle({
         x: absoluteCoordinates[i * 2],
         y: absoluteCoordinates[i * 2 + 1],
-        radius: 10,
+        radius: 10 * anchorFactor,
         fill: environment.arrowColor,
         stroke: environment.arrowTextColor,
         strokeWidth: 1,
       });
       anchor.on('click', (event) => {
+        event.cancelBubble = true;
+        this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
+      });
+      anchor.on('tap', (event) => {
         event.cancelBubble = true;
         this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
       });
