@@ -1,9 +1,21 @@
 @use "media-queries" as m;
 
-.p-card{
-  @include m.on-mobile{
+.p-card {
+  @include m.on-mobile {
     border-radius: 0;
     box-shadow: none;
     min-height: 100%;
+  }
+}
+
+// Breadcrumb ellipsis for small screens
+p-breadcrumb {
+  .p-menuitem-text {
+    @include m.on-mobile {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100px
+    }
   }
 }
