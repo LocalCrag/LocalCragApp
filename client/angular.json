@@ -23,6 +23,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": ["quill", "konva", "quill-blot-formatter", "@ngneat/transloco-keys-manager/marker"],
             "assets": [
               "src/favicon.ico",
               "src/.htaccess",
