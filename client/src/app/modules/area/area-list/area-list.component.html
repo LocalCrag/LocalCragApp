@@ -7,7 +7,20 @@
       <div class="flex flex-row justify-content-between">
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                     optionLabel="label" (onChange)="onSortChange($event)"
-                    styleClass="md:mb-0"></p-dropdown>
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <div class="flex justify-content-end gap-3">
           <p-button label="{{t('newAreaButtonLabel')}}" icon="pi pi-plus"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/create-area"

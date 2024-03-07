@@ -12,7 +12,7 @@ import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {ActivatedRoute} from '@angular/router';
-import {SelectItem} from 'primeng/api';
+import {PrimeIcons, SelectItem} from 'primeng/api';
 import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
@@ -71,10 +71,10 @@ export class SectorListComponent {
       this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
-        {label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
-        {label: this.translocoService.translate(marker('sortZA')), value: 'name'}
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
+        {icon: PrimeIcons.SORT_ALPHA_DOWN, label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
+        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'}
       ];
       this.sortKey = this.sortOptions[0];
     });

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
-import {ConfirmationService, SelectItem} from 'primeng/api';
+import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router, Scroll} from '@angular/router';
@@ -101,8 +101,8 @@ export class TopoImageListComponent {
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
+        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
       ];
       this.sortKey = this.sortOptions[0];
       this.restoreScrollPosition();
