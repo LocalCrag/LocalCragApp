@@ -159,14 +159,16 @@ export class TopoImageComponent implements OnInit {
       container: this.konvaContainer.nativeElement,
       width: this.width,
       height: this.height,
+      preventDefault: this.editorMode,
     });
-    this.lineLayer = new Konva.Layer();
+    this.lineLayer = new Konva.Layer({preventDefault: this.editorMode,});
     this.stage.add(this.lineLayer);
-    this.numberLayer = new Konva.Layer();
+    this.numberLayer = new Konva.Layer({preventDefault: this.editorMode,});
     this.stage.add(this.numberLayer);
     const background = new Konva.Rect({
       width: this.width,
-      height: this.height
+      height: this.height,
+      preventDefault: this.editorMode,
     })
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
@@ -209,6 +211,7 @@ export class TopoImageComponent implements OnInit {
       pointerLength: 6 * this.lineSizeMultiplicator,
       pointerWidth: 6 * this.lineSizeMultiplicator,
       opacity,
+      preventDefault: this.editorMode,
     });
     this.lineLayer.add(line);
     linePath.konvaLine = line;
@@ -225,13 +228,15 @@ export class TopoImageComponent implements OnInit {
       y: label.position.y - (label.height / 2),
       width: label.width,
       height: label.height,
+      preventDefault: this.editorMode,
     });
     // Scale rect horizontally by its text content's length, but exclude padding
     const rectangle = new Konva.Rect({
       width: label.width,
       height: label.height,
       fill: environment.arrowColor,
-      cornerRadius: label.height / 6
+      cornerRadius: label.height / 6,
+      preventDefault: this.editorMode,
     });
     rectangleGroup.add(rectangle);
     const konvaText = new Konva.Text({
@@ -241,7 +246,8 @@ export class TopoImageComponent implements OnInit {
       fill: environment.arrowTextColor,
       width: label.width,
       padding: label.height / 8,
-      align: 'center'
+      align: 'center',
+      preventDefault: this.editorMode,
     });
     rectangleGroup.add(konvaText);
     this.numberLayer.add(rectangleGroup);
@@ -289,6 +295,7 @@ export class TopoImageComponent implements OnInit {
         fill: environment.arrowColor,
         stroke: environment.arrowTextColor,
         strokeWidth: 1,
+        preventDefault: this.editorMode,
       });
       anchor.on('click', (event) => {
         event.cancelBubble = true;
