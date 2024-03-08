@@ -40,25 +40,33 @@ lc-topo-image-list {
 
   }
 
-  .line-row-grid{
-    display:grid;
+  .line-row-grid {
+    display: grid;
     gap: .5rem;
     grid-template-columns: min-content auto 80px 250px min-content;
     grid-template-rows: min-content;
     @include container-650 {
       grid-template-columns: min-content auto 80px 0 min-content;
-      .line-row .style-column{
+      .line-row .style-column {
         visibility: hidden;
         height: 0;
-        overflow:hidden;
+        overflow: hidden;
       }
     }
     @include container-450 {
       grid-template-columns: min-content auto 40px 0 min-content;
-      .line-row .style-column{
+      .line-row .style-column {
         visibility: hidden;
         height: 0;
-        overflow:hidden;
+        overflow: hidden;
+      }
+      p-rating {
+        gap: .25rem;
+
+        svg {
+          width: 9px;
+          height: 9px
+        }
       }
     }
   }
@@ -72,6 +80,7 @@ lc-topo-image-list {
 
     &:hover {
       cursor: pointer;
+
       .line-number {
         background-color: var(--arrow-highlight-color);
         color: var(--arrow-highlight-text-color);
@@ -83,9 +92,9 @@ lc-topo-image-list {
       align-items: center;
     }
 
-    .name-column, .grade-column{
+    .name-column, .grade-column {
       overflow: hidden;
-    hyphens: auto;
+      hyphens: auto;
     }
 
   }
