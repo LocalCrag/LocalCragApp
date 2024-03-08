@@ -43,14 +43,14 @@
 
               <div class="line-table">
 
-                <div class="flex align-items-center justify-content-between table-header">
+                <div class="flex  table-header flex-column sm:flex-row gap-2 align-items-center">
                   <p-message severity="info" *ngIf="topoImage.linePaths.length === 0"
                              text="{{t('noLineAssignedToTopoImage')}}">
                   </p-message>
                   <div *ngIf="topoImage.linePaths.length > 0">
                     {{t('lines')}}
                   </div>
-                  <div *ngIf="isLoggedIn$ | async">
+                  <div *ngIf="isLoggedIn$ | async" class="justify-content-start sm:justify-content-end flex flex-grow-1">
                     <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
                               routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
                               [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
