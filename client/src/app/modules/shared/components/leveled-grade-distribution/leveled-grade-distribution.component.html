@@ -2,7 +2,7 @@
 
   <p-skeleton width="100%" height="2rem" *ngIf="!grades"></p-skeleton>
 
-  <div class="grade-distribution-stack" *ngIf="grades">
+  <div class="grade-distribution-stack hidden sm:flex" *ngIf="grades">
     <div class="total">{{grades.length}} {{t('lines')}}:</div>
     <div class="level-1" [style.width]="grades.length > 0 ? (level1 / grades.length) * 100 + '%' : '20%'">
       <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
@@ -24,6 +24,33 @@
       <p-badge [value]="level5 | toString" styleClass="neutral-badge"></p-badge>
       {{t('leveledGradeDistributionLevel5')}}
     </div>
+  </div>
+
+  <div class="grade-distribution-tags flex align-items-center gap-3 sm:hidden" *ngIf="grades">
+    <p-tag styleClass="total">
+      <p-badge [value]="grades.length + ''" styleClass="neutral-badge"></p-badge>
+       {{t('lines')}}:
+    </p-tag>
+    <p-tag styleClass="lvl-1">
+      <p-badge [value]="level1 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel1')}}
+    </p-tag>
+    <p-tag styleClass="lvl-2">
+      <p-badge [value]="level2 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel2')}}
+    </p-tag>
+    <p-tag styleClass="lvl-3">
+      <p-badge [value]="level3 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel3')}}
+    </p-tag>
+    <p-tag styleClass="lvl-4">
+      <p-badge [value]="level4 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel4')}}
+    </p-tag>
+    <p-tag styleClass="lvl-5">
+      <p-badge [value]="level5 | toString" styleClass="neutral-badge"></p-badge>
+      {{t('leveledGradeDistributionLevel5')}}
+    </p-tag>
   </div>
 
 </ng-container>
