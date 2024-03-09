@@ -1,5 +1,4 @@
 import {AbstractModel} from './abstract-model';
-import * as moment from 'moment';
 
 /**
  * Model of a user.
@@ -13,7 +12,7 @@ export class User extends AbstractModel {
   password: string;
   activated: boolean;
   locked: boolean;
-  activatedAt: moment.Moment;
+  activatedAt: Date;
 
   fullname: string;
 
@@ -34,7 +33,7 @@ export class User extends AbstractModel {
     user.lastname = payload.lastname;
     user.activated = payload.activated;
     user.locked = payload.locked;
-    user.activatedAt = moment.utc(payload.activatedAt).local();
+    user.activatedAt = new Date(payload.activatedAt + 'Z')
     user.fullname = `${user.firstname} ${user.lastname}`;
     return user;
   }

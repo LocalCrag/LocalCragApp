@@ -4,7 +4,7 @@
               [emptyMessage]="t('noAreasFoundEmptyMessage')"
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
-      <div class="flex flex-row justify-content-between">
+      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
                     optionLabel="label" (onChange)="onSortChange($event)"
                     styleClass="md:mb-0">
@@ -21,7 +21,7 @@
             </div>
           </ng-template>
         </p-dropdown>
-        <div class="flex justify-content-end gap-3">
+        <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newAreaButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/create-area"
                     *ngIf="(isLoggedIn$ | async)"></p-button>

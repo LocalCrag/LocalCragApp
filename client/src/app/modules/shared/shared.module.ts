@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MomentPipe} from './pipes/moment.pipe';
+import {DatePipe} from './pipes/date.pipe';
 import {FormDirective} from './forms/form.directive';
 import {IfNoErrorDirective} from './forms/if-no-error.directive';
 import {IfErrorDirective} from './forms/if-error.directive';
@@ -33,7 +33,7 @@ import {ChipModule} from 'primeng/chip';
  */
 @NgModule({
   declarations: [
-    MomentPipe,
+    DatePipe,
     FormDirective,
     IfNoErrorDirective,
     IfErrorDirective,
@@ -63,7 +63,7 @@ import {ChipModule} from 'primeng/chip';
         ChipModule
     ],
   exports: [
-    MomentPipe,
+    DatePipe,
     FormDirective,
     IfNoErrorDirective,
     IfErrorDirective,

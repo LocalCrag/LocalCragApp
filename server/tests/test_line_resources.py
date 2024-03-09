@@ -146,7 +146,7 @@ def test_successful_create_line_with_project_status(client):
     assert res['gradeName'] == "OPEN_PROJECT"
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
-    assert res["rating"] == None # Should be set to None automatically for projects!
+    assert res["rating"] == 5
     assert res["faYear"] == None # Should be set to None automatically for projects!
     assert res["faName"] == None # Should be set to None automatically for projects!
     assert res["startingPosition"] == 'FRENCH'

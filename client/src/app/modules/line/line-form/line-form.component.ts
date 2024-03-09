@@ -140,14 +140,12 @@ export class LineFormComponent implements OnInit {
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
       if (newGrade?.value < 0) { // Projects can't have ratings or FA info
-        this.lineForm.get('rating').disable();
         this.lineForm.get('faYear').disable();
         this.lineForm.get('faName').disable();
         this.lineForm.get('rating').setValue(null);
         this.lineForm.get('faYear').setValue(null);
         this.lineForm.get('faName').setValue(null);
       } else {
-        this.lineForm.get('rating').enable();
         this.lineForm.get('faYear').enable();
         this.lineForm.get('faName').enable();
       }

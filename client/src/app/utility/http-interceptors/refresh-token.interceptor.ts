@@ -3,12 +3,12 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {Observable, throwError} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {mergeMap, take} from 'rxjs/operators';
-import * as moment from 'moment';
-import {unixToMoment} from '../operators/unix-to-moment';
+import {unixToDate} from '../operators/unix-to-date';
 import {Actions, ofType} from '@ngrx/effects';
 import {AppState} from '../../ngrx/reducers';
 import {selectAccessTokenExpires} from '../../ngrx/selectors/auth.selectors';
 import {newAuthCredentials, refreshAccessToken, refreshAccessTokenFailed} from '../../ngrx/actions/auth.actions';
+import {isAfter} from 'date-fns';
 
 /**
  * Http interceptor that checks if the token is still valid and prepends a refresh token request if it is not.
@@ -31,10 +31,10 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.store.pipe(
       select(selectAccessTokenExpires),
-      unixToMoment,
+      unixToDate,
       take(1),
       mergeMap(accessTokenExpires => {
-        if (accessTokenExpires === null || accessTokenExpires.isAfter(moment())) {
+        if (accessTokenExpires === null || isAfter(accessTokenExpires, new Date())) {
           return next.handle(request);
         } else {
           this.store.dispatch(refreshAccessToken());

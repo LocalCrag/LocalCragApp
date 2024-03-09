@@ -1,6 +1,3 @@
-import * as moment from 'moment';
-import {User} from './user';
-
 /**
  * The most basic model.
  * The database base_entity's property created_by cannot be parsed here because importing User would result in circular
@@ -9,8 +6,8 @@ import {User} from './user';
 export class AbstractModel {
 
   id: string;
-  timeCreated: moment.Moment;
-  timeUpdated: moment.Moment;
+  timeCreated: Date;
+  timeUpdated: Date;
 
 
   /**
@@ -21,8 +18,8 @@ export class AbstractModel {
    */
   public static deserializeAbstractAttributes(model: AbstractModel, payload: any): void {
     model.id = payload.id;
-    model.timeCreated = moment.utc(payload.timeCreated).local();
-    model.timeUpdated = moment.utc(payload.timeUpdated).local();
+    model.timeCreated = new Date(payload.timeCreated + 'Z')
+    model.timeUpdated = new Date(payload.timeUpdated + 'Z')
   }
 
 }

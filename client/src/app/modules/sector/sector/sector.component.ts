@@ -67,15 +67,15 @@ export class SectorComponent implements OnInit{
           routerLinkActiveOptions: {exact: true}
         },
         {
-          label: this.translocoService.translate(marker('sector.areas')),
-          icon: 'pi pi-fw pi-sitemap',
-          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
-        },
-        {
           label: this.translocoService.translate(marker('sector.rules')),
           icon: 'pi pi-fw pi-exclamation-triangle',
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/rules`,
           visible: sector.rules !== null
+        },
+        {
+          label: this.translocoService.translate(marker('sector.areas')),
+          icon: 'pi pi-fw pi-sitemap',
+          routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
         },
         // {
         //   label: this.translocoService.translate(marker('sector.gallery')),

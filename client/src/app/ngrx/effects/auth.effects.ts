@@ -18,7 +18,6 @@ import {AuthCrudService} from '../../services/crud/auth-crud.service';
 import {Router} from '@angular/router';
 import {AppNotificationsService} from '../../services/core/app-notifications.service';
 import {forkJoin, of, timer} from 'rxjs';
-import * as moment from 'moment';
 import {
   selectAccessTokenExpires,
   selectAuthState,
@@ -28,10 +27,11 @@ import {
 import {HttpErrorResponse} from '@angular/common/http';
 import {bigIntTimer} from '../../utility/observables/bigint-timer';
 import {showRefreshTokenAboutToExpireAlert} from '../actions/app-level-alerts.actions';
-import {unixToMoment} from '../../utility/operators/unix-to-moment';
+import {unixToDate} from '../../utility/operators/unix-to-date';
 import {toastNotification} from '../actions/notifications.actions';
 import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
 import {LoginResponse} from '../../models/login-response';
+import {differenceInMilliseconds, isAfter, subMilliseconds} from 'date-fns';
 
 /**
  * Time before expiry before an access token gets refreshed. Accounts for an approximate server response delay of the refresh request
@@ -152,7 +152,7 @@ export class AuthEffects {
     ofType(AuthActions.newAuthCredentials),
     withLatestFrom(
       this.store.pipe(select(selectAuthState)),
-      this.store.pipe(select(selectRefreshTokenExpires), unixToMoment),
+      this.store.pipe(select(selectRefreshTokenExpires), unixToDate),
     ),
     map(([action, authState, refreshTokenExpiresValue]) => {
       // Store the credentials in the local storage for enabling auto login
@@ -169,7 +169,7 @@ export class AuthEffects {
       }
       // If credentials came from auto login we need to check if the old token is still valid
       if (action.fromAutoLogin) {
-        if (!refreshTokenExpiresValue.isAfter(moment())) {
+        if (!isAfter(refreshTokenExpiresValue, new Date())) {
           this.store.dispatch(autoLoginFailed());
         } else {
           this.store.dispatch(refreshAccessToken());
@@ -191,10 +191,10 @@ export class AuthEffects {
    */
   onStartAccessTokenRefreshTimer = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.startAccessTokenRefreshTimer),
-    withLatestFrom(this.store.pipe(select(selectAccessTokenExpires), unixToMoment)),
+    withLatestFrom(this.store.pipe(select(selectAccessTokenExpires), unixToDate)),
     tap(([_action, accessTokenExpiresValue]) => {
-      const now = moment();
-      const validityDelta = accessTokenExpiresValue.diff(now);
+      const now = new Date();
+      const validityDelta = differenceInMilliseconds(accessTokenExpiresValue, new Date());
       if (validityDelta > 0) {
         timer(validityDelta - REFRESH_ACCESS_TOKEN_BUFFER_TIME).pipe(
           // Cancel the timer when the user logs out
@@ -288,11 +288,11 @@ export class AuthEffects {
    */
   onStartRefreshTokenAboutToExpireTimer = createEffect(() => this.actions$.pipe(
     ofType(startRefreshTokenAboutToExpireTimer),
-    withLatestFrom(this.store.pipe(select(selectRefreshTokenExpires), unixToMoment)),
+    withLatestFrom(this.store.pipe(select(selectRefreshTokenExpires), unixToDate)),
     tap(([_action, refreshTokenExpiresValue]) => {
-      const now = moment();
-      const warningBeforeExpiry = refreshTokenExpiresValue.clone().subtract(REFRESH_TOKEN_EXPIRY_WARNING_TIME, 'ms');
-      let msUntilAlert = warningBeforeExpiry.diff(now);
+      const now = new Date();
+      const warningBeforeExpiry = subMilliseconds(refreshTokenExpiresValue, REFRESH_TOKEN_EXPIRY_WARNING_TIME)
+      let msUntilAlert = differenceInMilliseconds(warningBeforeExpiry, new Date());
       if (msUntilAlert < 0) { // Can happen, depending on servers JWT_REFRESH_TOKEN_EXPIRES setting
         msUntilAlert = 0;
       }
@@ -302,7 +302,7 @@ export class AuthEffects {
       ).subscribe(() => {
         this.store.dispatch(showRefreshTokenAboutToExpireAlert());
       });
-      bigIntTimer(refreshTokenExpiresValue.diff(now)).pipe(
+      bigIntTimer(differenceInMilliseconds(refreshTokenExpiresValue, new Date())).pipe(
         takeUntil(this.actions$.pipe(ofType(logout))),
         takeUntil(this.actions$.pipe(ofType(login))) // refresh login - not initial login
       ).subscribe(() => {

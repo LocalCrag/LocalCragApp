@@ -1,8 +1,8 @@
 <ng-container *transloco="let t, read: 'line.line'">
 
-  <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" *ngIf="line">
+  <div class="flex flex-column xl:flex-row xl:align-items-start gap-4" *ngIf="line">
 
-    <div class="w-9 sm:w-16rem xl:w-30rem  flex flex-column mx-auto gap-3 ">
+    <div class="w-12 sm:w-9 xl:w-5  flex flex-column mx-auto pt-4 gap-3 ">
       <lc-topo-image class=" shadow-2 flex  border-round"
                      [topoImage]="topoImage" *ngFor="let topoImage of line.topoImages"></lc-topo-image>
       <img class="block  border-round"

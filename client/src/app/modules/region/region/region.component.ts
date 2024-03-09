@@ -36,15 +36,12 @@ export class RegionComponent implements OnInit {
 
   public region: Region;
   public items: MenuItem[];
-  public breadcrumbs: MenuItem[] | undefined;
-  public breadcrumbHome: MenuItem | undefined;
 
   constructor(private regionsService: RegionsService,
               private translocoService: TranslocoService,
               private router: Router,
               private store: Store,
-              private title: Title,
-              private route: ActivatedRoute) {
+              private title: Title) {
   }
 
   ngOnInit() {
@@ -69,15 +66,15 @@ export class RegionComponent implements OnInit {
           routerLinkActiveOptions: {exact: true}
         },
         {
-          label: this.translocoService.translate(marker('region.crags')),
-          icon: 'pi pi-fw pi-sitemap',
-          routerLink: `/topo/crags`,
-        },
-        {
           label: this.translocoService.translate(marker('region.rules')),
           icon: 'pi pi-fw pi-exclamation-triangle',
           routerLink: `/topo/rules`,
           visible: region.rules !== null
+        },
+        {
+          label: this.translocoService.translate(marker('region.crags')),
+          icon: 'pi pi-fw pi-sitemap',
+          routerLink: `/topo/crags`,
         },
         // {
         //   label: this.translocoService.translate(marker('region.gallery')),
