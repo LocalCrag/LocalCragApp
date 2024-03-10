@@ -16,7 +16,7 @@
     </div>
 
     <div
-      class="flex flex-column  justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+      class="flex flex-column  justify-content-between align-items-center xl:align-items-start flex-1 gap-4 pt-4">
       <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
 
       <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"  class="quill-content"></div>
