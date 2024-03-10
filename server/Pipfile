@@ -25,6 +25,8 @@ shortuuid = "*"
 sqlalchemy = "*"
 marshmallow-enum = "*"
 validators = "*"
+install = "*"
+pytest-mock = "*"
 
 [dev-packages]
 

@@ -1,8 +1,8 @@
 import json
 
-from app import db, app
 from messages.messages import ResponseMessage
 from tests.utils.user_test_util import get_login_headers
+
 
 
 
@@ -21,13 +21,19 @@ def test_successful_get_users(client):
         assert type(user['locked']) == bool
 
 
-def test_successful_resend_invite_mail_role(client):
+def test_successful_resend_invite_mail_role(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
+
     access_headers, refresh_headers = get_login_headers(client)
     rv = client.put('/api/users/3543885f-e9ef-48c5-a396-6c898fb42409/resend-user-create-mail', headers=access_headers,
                     json=None)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res is None
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_unsuccessful_resend_invite_mail_role(client):
@@ -37,7 +43,9 @@ def test_unsuccessful_resend_invite_mail_role(client):
     assert rv.status_code == 400
 
 
-def test_successful_create_user(client):
+def test_successful_create_user(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     access_headers, refresh_headers = get_login_headers(client)
     user_data = {
         'firstname': 'Thorsten',
@@ -58,6 +66,9 @@ def test_successful_create_user(client):
     assert res['language'] == 'de'
     assert res['avatar'] is None
     assert res['colorScheme'] == 'LARA_LIGHT_TEAL'
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_unsuccessful_create_user_email_taken(client):

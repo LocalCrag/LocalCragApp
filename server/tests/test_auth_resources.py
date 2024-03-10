@@ -119,7 +119,9 @@ def test_forgot_password_wrong_email(client):
     assert res['message'] == ResponseMessage.USER_NOT_FOUND.value
 
 
-def test_forgot_password_successful(client):
+def test_forgot_password_successful(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     data = {
         'email': 'localcrag@fengelmann.de',
     }
@@ -127,6 +129,9 @@ def test_forgot_password_successful(client):
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.RESET_PASSWORD_MAIL_SENT.value
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_reset_password_hash_not_found(client):
@@ -141,7 +146,7 @@ def test_reset_password_hash_not_found(client):
 
 
 def test_reset_password_hash_expired(client):
-    # Manually add a hash with expired date too the user
+    # Manually add a hash with expired date to the user
     with app.app_context():
         user = User.find_by_email('localcrag@fengelmann.de')
         reset_hash = uuid4()
@@ -229,7 +234,7 @@ def test_token_user_does_not_exist(client):
     assert res['message'] == ResponseMessage.UNAUTHORIZED.value
 
 
-def test_revoked_access_token_bahaviour(client):
+def test_revoked_access_token_behaviour(client):
     access_headers, refresh_headers = get_login_headers(client)
     rv = client.post('/api/logout/access', headers=access_headers)
     assert rv.status_code == 200
@@ -243,7 +248,7 @@ def test_revoked_access_token_bahaviour(client):
     assert rv.status_code == 401
 
 
-def test_revoked_refresh_token_bahaviour(client):
+def test_revoked_refresh_token_behaviour(client):
     access_headers, refresh_headers = get_login_headers(client)
     rv = client.post('/api/logout/refresh', headers=refresh_headers)
     assert rv.status_code == 200
@@ -253,7 +258,9 @@ def test_revoked_refresh_token_bahaviour(client):
     assert rv.status_code == 401
 
 
-def test_forgot_password_with_non_activated_user(client):
+def test_forgot_password_with_non_activated_user(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     access_headers, refresh_headers = get_login_headers(client)
     user_data = {
         'firstname': 'Thorsten',
@@ -273,9 +280,14 @@ def test_forgot_password_with_non_activated_user(client):
     assert rv.status_code == 401
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.USER_NOT_ACTIVATED.value
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
 
-def test_reset_password_with_non_activated_user(client):
+def test_reset_password_with_non_activated_user(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     access_headers, refresh_headers = get_login_headers(client)
     user_data = {
         'firstname': 'Thorsten',
@@ -305,7 +317,9 @@ def test_reset_password_with_non_activated_user(client):
     assert rv.status_code == 401
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.USER_NOT_ACTIVATED.value
-
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_successful_change_password(client):
