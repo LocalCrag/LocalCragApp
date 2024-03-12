@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../../cache/cache.service';
+import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {Crag} from '../../models/crag';
 import {Observable} from 'rxjs';

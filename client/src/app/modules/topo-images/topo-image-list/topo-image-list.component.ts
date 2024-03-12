@@ -19,7 +19,7 @@ import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ApiService} from '../../../services/core/api.service';
-import {CacheService} from '../../../cache/cache.service';
+import {CacheService} from '../../../services/core/cache.service';
 import {ViewportScroller} from '@angular/common';
 import {filter} from 'rxjs/operators';
 

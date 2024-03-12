@@ -15,7 +15,7 @@ import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {ApiService} from '../../../services/core/api.service';
-import {CacheService} from '../../../cache/cache.service';
+import {CacheService} from '../../../services/core/cache.service';
 
 /**
  * Component that shows detailed information about a line.

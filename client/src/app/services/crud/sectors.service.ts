@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Sector} from '../../models/sector';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import {CacheService} from '../../cache/cache.service';
+import {CacheService} from '../core/cache.service';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {environment} from '../../../environments/environment';
 import {deserializeGrade, Grade} from '../../utility/misc/grades';

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {delay, Observable, OperatorFunction, share, shareReplay, timestamp} from 'rxjs';
-import {ErrorMappingHttpService} from '../services/core/error-mapping-http.service';
+import {ErrorMappingHttpService} from './error-mapping-http.service';
 import {map, tap} from 'rxjs/operators';
 
 /**
@@ -9,7 +9,7 @@ import {map, tap} from 'rxjs/operators';
  * @param makeRequest Request to make.
  * @param windowTime Time before making a second, third, ... request.
  */
-const createCachedSource = (makeRequest: () => Observable<any>, windowTime: number) => {
+export const createCachedSource = (makeRequest: () => Observable<any>, windowTime: number) => {
   let cache: any;
   return new Observable((obs) => {
     const isFresh = cache?.timestamp + windowTime > new Date().getTime();
@@ -49,7 +49,7 @@ export class CacheService {
    * @param operator Any kind of mapping function to apply after initial fetching from backend. Most probably should be
    * a mapping function to parse the JSON response in a model.
    * @return An observable of the resource of type T that should get fetched. This resource will be fetched only once
-   * during the span of this services cachingTime. Any requests coming after the initial one for the same path, will
+   * during the span of this service's cachingTime. Any requests coming after the initial one for the same path, will
    * be returned a replay.
    */
   public get<T>(path: string, operator: OperatorFunction<any, T>): Observable<T> {

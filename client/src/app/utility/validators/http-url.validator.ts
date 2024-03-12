@@ -11,7 +11,7 @@ export const httpUrlValidator = (): ValidatorFn => (control: AbstractControl): {
   }
   try {
     const newUrl = new URL(control.value);
-    return (newUrl.protocol === 'http:' || newUrl.protocol === 'https:') ? null : {invalidHttpUrl: true};
+    return ((newUrl.protocol === 'http:' || newUrl.protocol === 'https:') && newUrl.hostname.includes('.')) ? null : {invalidHttpUrl: true};
   } catch (err) {
     return {invalidHttpUrl: true};
   }
