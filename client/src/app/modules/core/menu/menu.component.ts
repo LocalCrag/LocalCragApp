@@ -51,7 +51,7 @@ export class MenuComponent implements OnInit {
         {
           label: this.translocoService.translate(marker('menu.logout')),
           icon: 'pi pi-fw pi-sign-out',
-          command: this.logout.bind(this)
+          command: this.logout.bind(this),
         }
       ]
       this.items = [

@@ -19,7 +19,8 @@
       <a href="https://www.cookiesandyou.com/" target="_blank">{{t('readMoreAboutCookies')}}</a>
     </div>
     <div class="alert-actions">
-      <p-button label="{{t('AcceptCookiesButton')}}" styleClass="p-button-text" (onClick)="allowCookies()"></p-button>
+      <p-button label="{{t('AcceptCookiesButton')}}" styleClass="p-button-text" (onClick)="allowCookies()"
+                data-cy="accept-cookies"></p-button>
     </div>
   </div>
 

@@ -5,7 +5,7 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jasmine"
-    ]
+    ],
   },
   "files": [
     "src/test.ts",
