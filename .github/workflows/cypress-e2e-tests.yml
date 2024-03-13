@@ -51,6 +51,10 @@ jobs:
           export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
           export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
 
+      - name: Copy assets
+        run: |
+          cp server/tests/assets/1847c84526574b0f9a15f258cf9a0de8_l.jpeg server/src/uploads/1847c84526574b0f9a15f258cf9a0de8_l.jpeg
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:

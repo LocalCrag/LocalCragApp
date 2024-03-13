@@ -76,10 +76,10 @@ describe('Forms test', () => {
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/f4625acb-b0fe-41f6-ab3c-fa258e586f2c/add-line-path');
     cy.get('[data-cy="line-dropdown"] > div').click()
     cy.get('[data-cy="line-dropdown-item"]').eq(1).click()
-    cy.get('lc-line-path-editor .konvajs-content').click(10,10)
-    cy.get('lc-line-path-editor .konvajs-content').click(100,100)
-    cy.get('lc-line-path-editor .konvajs-content').click(100,200)
-    cy.get('lc-line-path-editor .konvajs-content').click(200,250)
+    cy.get('lc-line-path-editor').click(10,10)
+    cy.get('lc-line-path-editor').click(100,100)
+    cy.get('lc-line-path-editor').click(100,200)
+    cy.get('lc-line-path-editor').click(200,250)
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images');
     cy.get('[data-cy="topo-image-list-item"]:nth-child(2) [data-cy="line-row"]').should('have.length', 2)
