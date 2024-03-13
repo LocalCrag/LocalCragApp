@@ -131,10 +131,6 @@ export const GRADES: { [scaleName: string]: Grade[] } = {
       name: marker('9A'),
       value: 28
     },
-    {
-      name: marker('9A+'),
-      value: 29
-    },
   ],
   FB_CONDENSED: [
     {
