@@ -127,10 +127,6 @@ GRADES = {
                 "name": '9A',
                 "value": 28
             },
-            {
-                "name": '9A+',
-                "value": 29
-            },
         ]
     }
 }
