@@ -53,6 +53,7 @@ jobs:
 
       - name: Copy assets
         run: |
+          mkdir server/src/uploads
           cp server/tests/assets/1847c84526574b0f9a15f258cf9a0de8_l.jpeg server/src/uploads/1847c84526574b0f9a15f258cf9a0de8_l.jpeg
 
       - name: Cypress run
