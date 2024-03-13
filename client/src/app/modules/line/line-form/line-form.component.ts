@@ -63,7 +63,6 @@ export class LineFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private linesService: LinesService,
-              private cdr: ChangeDetectorRef,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
   }
@@ -138,18 +137,22 @@ export class LineFormComponent implements OnInit {
       arete: [false],
       mantle: [false],
     });
-    this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe((newGrade: Grade) => {
-      if (newGrade?.value < 0) { // Projects can't have ratings or FA info
-        this.lineForm.get('faYear').disable();
-        this.lineForm.get('faName').disable();
-        this.lineForm.get('rating').setValue(null);
-        this.lineForm.get('faYear').setValue(null);
-        this.lineForm.get('faName').setValue(null);
-      } else {
-        this.lineForm.get('faYear').enable();
-        this.lineForm.get('faName').enable();
-      }
+    this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
+      this.setFormDisabledState();
     });
+  }
+
+  setFormDisabledState(){
+    if (this.lineForm.get('grade').value?.value < 0) { // Projects can't have ratings or FA info
+      this.lineForm.get('faYear').disable();
+      this.lineForm.get('faName').disable();
+      this.lineForm.get('rating').setValue(null);
+      this.lineForm.get('faYear').setValue(null);
+      this.lineForm.get('faName').setValue(null);
+    } else {
+      this.lineForm.get('faYear').enable();
+      this.lineForm.get('faName').enable();
+    }
   }
 
   /**
@@ -205,6 +208,7 @@ export class LineFormComponent implements OnInit {
       mantle: this.line.mantle,
     });
     this.lineForm.enable();
+    this.setFormDisabledState();
   }
 
   /**
