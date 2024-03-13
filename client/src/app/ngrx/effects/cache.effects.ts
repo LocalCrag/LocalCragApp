@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {map, tap} from 'rxjs/operators';
 import {checkIsMobile, setIsMobile} from '../actions/device.actions';
 import {clearGradeCache} from '../actions/cache.actions';
-import {CacheService} from '../../cache/cache.service';
+import {CacheService} from '../../services/core/cache.service';
 import {ApiService} from '../../services/core/api.service';
 
 /**

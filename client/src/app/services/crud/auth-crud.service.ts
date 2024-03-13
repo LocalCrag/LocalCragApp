@@ -25,7 +25,6 @@ export interface MessageResponse {
 export class AuthCrudService {
 
   constructor(private httpBackend: HttpBackendClientService,
-              private store: Store,
               private http: ErrorMappingHttpService,
               private api: ApiService) {
   }
@@ -122,7 +121,6 @@ export class AuthCrudService {
    * @return Http headers.
    */
   private getRefreshTokenHeaders(refreshToken: string): HttpHeaders {
-
     return new HttpHeaders({
       Authorization: `Bearer ${refreshToken}`,
       'Content-Type': 'application/json'

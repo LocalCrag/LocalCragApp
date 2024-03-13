@@ -11,10 +11,10 @@
 
                 <div class="flex flex-column gap-2" lcControlGroup>
                     <label class="form-label">{{t('lineLabel')}}</label>
-                    <p-dropdown formControlName="line" [options]="lines"
+                    <p-dropdown formControlName="line" [options]="lines" data-cy="line-dropdown"
                                 [optionDisabled]="'disabled'" placeholder="{{t('linePlaceholder')}}" lcFormControl>
                         <ng-template let-line pTemplate="item">
-                            <div class="flex align-items-center gap-2">
+                            <div class="flex align-items-center gap-2"  data-cy="line-dropdown-item">
                                 <div>{{ line.name }} {{line.grade.name | transloco}}</div>
                             </div>
                         </ng-template>
@@ -37,7 +37,7 @@
 
             <div class="form-actions">
                 <p-button label="{{t('addLinePathButtonLabel')}}" (click)="saveLinePath()" icon="pi pi-save"
-                          class="responsive-button"
+                          class="responsive-button" data-cy="submit"
                           [loading]="loadingState === loadingStates.LOADING" ></p-button>
                 <p-button label="{{t('leaveEditorButtonLabel')}}" (click)="leaveEditor()" class="ml-3 responsive-button"
                           styleClass="p-button-secondary" icon="pi pi-ban"></p-button>

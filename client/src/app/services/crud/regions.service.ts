@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../../cache/cache.service';
+import {CacheService} from '../core/cache.service';
 import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {Region} from '../../models/region';

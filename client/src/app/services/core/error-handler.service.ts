@@ -14,8 +14,7 @@ import {toastNotification} from '../../ngrx/actions/notifications.actions';
 })
 export class ErrorHandlerService {
 
-  constructor(private notifications: AppNotificationsService,
-              private store: Store<AppState>) {
+  constructor(private store: Store<AppState>) {
   }
 
   /**

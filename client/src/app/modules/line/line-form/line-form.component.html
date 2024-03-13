@@ -12,14 +12,15 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineNameLabel')}}</label>
           <input type="text" pInputText formControlName="name" placeholder="{{t('lineNamePlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl data-cy="line-form-name"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineDescriptionLabel')}}</label>
           <p-editor formControlName="description" lcFormControl placeholder="{{t('lineDescriptionPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                    data-cy="line-form-description">
             <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
@@ -35,10 +36,10 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineGradeLabel')}}</label>
-          <p-dropdown formControlName="grade" [options]="grades"
+          <p-dropdown formControlName="grade" [options]="grades"  data-cy="grade-dropdown"
                       optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
             <ng-template let-grade pTemplate="item">
-              <div class="flex align-items-center gap-2">
+              <div class="flex align-items-center gap-2" data-cy="grade-dropdown-item">
                 <div>{{ grade.name | transloco }}</div>
               </div>
             </ng-template>
@@ -51,9 +52,10 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('startingPositionLabel')}}</label>
-          <p-dropdown formControlName="startingPosition" [options]="startingPositions" lcFormControl>
+          <p-dropdown formControlName="startingPosition" [options]="startingPositions" lcFormControl
+                      data-cy="starting-position-dropdown">
             <ng-template let-startingPosition pTemplate="item">
-              <div class="flex align-items-center gap-2">
+              <div class="flex align-items-center gap-2" data-cy="starting-position-dropdown-item">
                 <div>{{ startingPosition | transloco }}</div>
               </div>
             </ng-template>
@@ -66,7 +68,7 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineRatingLabel')}}</label>
-          <p-rating formControlName="rating" lcFormControl [cancel]="false"></p-rating>
+          <p-rating formControlName="rating" lcFormControl [cancel]="false" data-cy="rating"></p-rating>
         </div>
 
         <div class="flex flex-column gap-2">
@@ -104,13 +106,13 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineFANameLabel')}}</label>
           <input type="text" pInputText formControlName="faName" placeholder="{{t('lineFANamePlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl data-cy="line-form-faName"/>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lineFAYearLabel')}}</label>
           <p-calendar formControlName="faYear" view="year" dateFormat="yy" inputId="faYear" lcFormControl
-                      [maxDate]="today" [readonlyInput]="true"></p-calendar>
+                      [maxDate]="today" [readonlyInput]="true"  data-cy="line-form-faYear"></p-calendar>
           <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
         </div>
 
@@ -119,7 +121,7 @@
           <p-checkbox label="{{t('lineEliminateLabel')}}" name="eliminate" [binary]="true" formControlName="eliminate"
                       lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineHighballLabel')}}" name="highball" [binary]="true" formControlName="highball"
-                      lcFormControl></p-checkbox>
+                      lcFormControl  data-cy="line-form-highball"></p-checkbox>
           <p-checkbox label="{{t('lineLowballLabel')}}" name="lowball" [binary]="true" formControlName="lowball"
                       lcFormControl></p-checkbox>
           <p-checkbox label="{{t('lineNoTopoutLabel')}}" name="noTopout" [binary]="true" formControlName="noTopout"
@@ -186,7 +188,7 @@
 
       <div class="form-actions">
         <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"></p-button>
         <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
         <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"

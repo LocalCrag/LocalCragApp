@@ -12,13 +12,13 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('areaNameLabel')}}</label>
           <input type="text" pInputText formControlName="name" placeholder="{{t('areaNamePlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl data-cy="area-form-name"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('areaShortDescriptionLabel')}}</label>
-          <p-editor formControlName="shortDescription" lcFormControl
+          <p-editor formControlName="shortDescription" lcFormControl  data-cy="area-form-shortDescription"
                     placeholder="{{t('areaShortDescriptionPlaceholder')}}"
                     [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
             <ng-template pTemplate="header">
@@ -37,7 +37,7 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('areaDescriptionLabel')}}</label>
           <p-editor formControlName="description" lcFormControl placeholder="{{t('areaDescriptionPlaceholder')}}"
-                    [modules]="quillModules"
+                    [modules]="quillModules"  data-cy="area-form-description"
                     [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
             <ng-template pTemplate="header">
               <span class="ql-formats">
@@ -60,20 +60,21 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('areaPortraitImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="portraitImage"></lc-single-image-upload>
+          <lc-single-image-upload lcFormControl formControlName="portraitImage"  data-cy="area-form-portraitImage">
+          </lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('latLabel')}}</label>
           <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl  data-cy="area-form-lat"/>
           <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lngLabel')}}</label>
           <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl  data-cy="area-form-lng"/>
           <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
         </div>
 
@@ -81,7 +82,7 @@
 
       <div class="form-actions">
         <p-button label="{{t('createAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"  data-cy="submit"></p-button>
         <p-button label="{{t('editAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
         <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"

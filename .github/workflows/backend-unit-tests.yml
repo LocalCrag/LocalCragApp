@@ -1,0 +1,54 @@
+name: Backend unit tests
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+jobs:
+  backend-unit-tests:
+    environment: Testing
+    runs-on: ubuntu-latest
+    services:
+      test_db:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: localcrag_test
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Installing pipenv dependencies
+        run: |
+          cd server/src
+          pipenv install
+
+      - name: Setup database
+        run: |
+          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
+          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
+
+      - name: Run Tests
+        run: |
+          cd server/src
+          export PYTHONPATH=.
+          export LOCALCRAG_CONFIG=config/test-ci.cfg
+          pipenv run pytest ../tests

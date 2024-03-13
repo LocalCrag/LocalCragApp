@@ -4,6 +4,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from flask import current_app
 
 from app import app
 
@@ -11,10 +12,15 @@ from app import app
 @pytest.fixture
 def client():
     # Load dump
-    subprocess.check_output(
-        "export PGPASSWORD=''; pg_restore -h {} -p {} -U {} -d {} --format=c --clean -j 4 ../tests/dumps/localcrag_test_dump.sql".format(
-            'localhost', 5432, 'postgres', 'localcrag_test'
-        ), shell=True)
+    with app.app_context():
+        subprocess.check_output(
+            "export PGPASSWORD={}; pg_restore --no-privileges --no-owner -h {} -p {} -U {} -d {} --format=c --clean -j 4 ../tests/dumps/localcrag_test_dump.sql".format(
+                current_app.config['TEST_POSTGRES_PASSWORD'],
+                current_app.config['TEST_POSTGRES_HOST'],
+                current_app.config['TEST_POSTGRES_PORT'],
+                current_app.config['TEST_POSTGRES_ROLE'],
+                current_app.config['TEST_POSTGRES_DBNAME'],
+            ), shell=True)
 
     # Return client
     return app.test_client()

@@ -9,5 +9,4 @@ export const unixToDate = (msStream: Observable<number>): Observable<Date> => ms
     return new Date(ms * 1000);
   }
   return null as any;
-}
-));
+}));

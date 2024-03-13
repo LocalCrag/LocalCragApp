@@ -11,19 +11,22 @@
       <form [formGroup]="loginForm" lcForm>
 
         <div class="card-container block" lcControlGroup>
-          <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}" lcFormControl/>
+          <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}"
+                 lcFormControl data-cy="login-form-email"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
           <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
-                      placeholder="{{t('passwordPlaceholder')}}"></p-password>
+                      placeholder="{{t('passwordPlaceholder')}}"
+                      data-cy="login-form-password"></p-password>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
       </form>
 
       <p-button label="{{t('loginButtonLabel')}}" (click)="login()"
+                data-cy="login-form-submit"
                 [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
 
       <p-button label="{{t('forgotPasswordButtonLabel')}}" styleClass="p-button-link" class="forgot-pw-button"

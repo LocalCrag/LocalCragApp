@@ -12,14 +12,15 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorNameLabel')}}</label>
           <input type="text" pInputText formControlName="name" placeholder="{{t('sectorNamePlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl data-cy="sector-form-name"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorShortDescriptionLabel')}}</label>
           <p-editor formControlName="shortDescription" lcFormControl placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                    data-cy="sector-form-shortDescription">
             <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
@@ -36,7 +37,7 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorDescriptionLabel')}}</label>
           <p-editor formControlName="description" lcFormControl placeholder="{{t('sectorDescriptionPlaceholder')}}"
-                    [modules]="quillModules"
+                    [modules]="quillModules"  data-cy="sector-form-description"
                     [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
             <ng-template pTemplate="header">
               <span class="ql-formats">
@@ -60,7 +61,8 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorRulesLabel')}}</label>
           <p-editor formControlName="rules" lcFormControl placeholder="{{t('sectorRulesPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                    data-cy="sector-form-rules">
             <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
@@ -76,20 +78,21 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('sectorPortraitImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="portraitImage"></lc-single-image-upload>
+          <lc-single-image-upload lcFormControl formControlName="portraitImage"  data-cy="sector-form-portraitImage">
+          </lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('latLabel')}}</label>
           <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl  data-cy="sector-form-lat"/>
           <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('lngLabel')}}</label>
           <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
-                 lcFormControl/>
+                 lcFormControl  data-cy="sector-form-lng"/>
           <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
         </div>
 
@@ -97,7 +100,7 @@
 
       <div class="form-actions">
         <p-button label="{{t('createSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"></p-button>
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"  data-cy="submit"></p-button>
         <p-button label="{{t('editSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
                   [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
         <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"

@@ -6,6 +6,7 @@ from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAcc
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
     GetCragGrades
+from resources.health_resources import Health
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
@@ -30,10 +31,15 @@ def configure_api(app):
     Sets up all routes of the app by using flask blueprints.
     :param app: App to attach the routes to.
     """
+    # Health API
+    health_bp = Blueprint('health', __name__, )
+    health_bp.add_url_rule('', view_func=Health.as_view('health'))
+    app.register_blueprint(health_bp, url_prefix='/api/health')
+
     # Upload API
-    subject_bp = Blueprint('upload', __name__, )
-    subject_bp.add_url_rule('', view_func=UploadFile.as_view('upload_file'))
-    app.register_blueprint(subject_bp, url_prefix='/api/upload')
+    upload_bp = Blueprint('upload', __name__, )
+    upload_bp.add_url_rule('', view_func=UploadFile.as_view('upload_file'))
+    app.register_blueprint(upload_bp, url_prefix='/api/upload')
 
     # Auth API
     auth_bp = Blueprint('auth', __name__, )
