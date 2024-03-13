@@ -14,7 +14,7 @@ def client():
     # Load dump
     with app.app_context():
         subprocess.check_output(
-            "export PGPASSWORD={}; pg_restore -h {} -p {} -U {} -d {} --format=c --clean -j 4 ../tests/dumps/localcrag_test_dump.sql".format(
+            "export PGPASSWORD={}; pg_restore --no-privileges --no-owner -h {} -p {} -U {} -d {} --format=c --clean -j 4 ../tests/dumps/localcrag_test_dump.sql".format(
                 current_app.config['TEST_POSTGRES_PASSWORD'],
                 current_app.config['TEST_POSTGRES_HOST'],
                 current_app.config['TEST_POSTGRES_PORT'],
