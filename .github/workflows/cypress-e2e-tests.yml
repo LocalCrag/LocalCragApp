@@ -56,8 +56,8 @@ jobs:
         with:
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
-          start: npm run start:cypress-test-backend
-          wait-on: 'http://127.0.0.1:5000/api/health' # Waits for above
+          start: npm run start:cypress-test-backend, npm run start
+          wait-on: 'http://127.0.0.1:5000/api/health', 'http://127.0.0.1:4200'
           # Records to Cypress Cloud
           # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
           record: true
