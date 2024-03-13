@@ -76,6 +76,7 @@ describe('Forms test', () => {
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/f4625acb-b0fe-41f6-ab3c-fa258e586f2c/add-line-path');
     cy.get('[data-cy="line-dropdown"] > div').click()
     cy.get('[data-cy="line-dropdown-item"]').eq(1).click()
+    cy.wait(1000)
     cy.get('lc-line-path-editor').click(10,10)
     cy.get('lc-line-path-editor').click(100,100)
     cy.get('lc-line-path-editor').click(100,200)
