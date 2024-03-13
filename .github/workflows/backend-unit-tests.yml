@@ -4,6 +4,9 @@ jobs:
   backend-unit-tests:
     environment: Testing
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        containers: [ 1, 2 ]
     services:
       test_db:
         image: postgres:14-alpine
@@ -22,7 +25,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v1
