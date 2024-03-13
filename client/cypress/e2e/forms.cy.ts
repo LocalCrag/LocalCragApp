@@ -27,4 +27,17 @@ describe('Forms test', () => {
     cy.visit('localhost:4200/topo/brione/sectors');
     cy.get('[data-cy="sector-list-item"]').last().contains('Düsterwald')
   })
+  it('creates an area', () => {
+    cy.login();
+    cy.visit('localhost:4200/topo/brione/schattental/create-area');
+    cy.get('[data-cy="area-form-name"]').focus().type('Oben')
+    cy.get('[data-cy="area-form-shortDescription"] .ql-editor').focus().type('Oben ist toll.')
+    cy.get('[data-cy="area-form-description"] .ql-editor').focus().type('Oben ist sehr toll.')
+    cy.get('[data-cy="area-form-portraitImage"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
+    cy.get('[data-cy="area-form-lat"]').focus().type('90')
+    cy.get('[data-cy="area-form-lng"]').focus().type('180')
+    cy.get('[data-cy="submit"]').click()
+    cy.visit('localhost:4200/topo/brione/schattental/areas');
+    cy.get('[data-cy="area-list-item"]').last().contains('Oben')
+  })
 })
