@@ -71,6 +71,7 @@ describe('Forms test', () => {
     }));
   })
   it('draws a line on a topo image', () => {
+    cy.viewport(1920 , 1080)
     cy.login();
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/f4625acb-b0fe-41f6-ab3c-fa258e586f2c/add-line-path');
     cy.get('[data-cy="line-dropdown"] > div').click()
