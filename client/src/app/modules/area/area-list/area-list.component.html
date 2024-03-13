@@ -34,7 +34,7 @@
     <ng-template let-areas pTemplate="list">
       <div class="grid grid-nogutter">
         <div class="col-12 clickable-data-item" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{area.slug}}/topo-images"
-             *ngFor="let area of areas; let first = first">
+             *ngFor="let area of areas; let first = first"  data-cy="area-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
             <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
