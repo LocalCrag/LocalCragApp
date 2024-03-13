@@ -1,5 +1,9 @@
 name: Backend unit tests
-on: [push]
+on:
+  pull_request:
+    branches:
+      - main
+      - next
 jobs:
   backend-unit-tests:
     environment: Testing
