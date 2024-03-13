@@ -9,7 +9,7 @@ jobs:
         image: postgres:14-alpine
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: ''
           POSTGRES_DB: localcrag_test
         ports:
           - 5432:5432
@@ -39,8 +39,8 @@ jobs:
 
       - name: Setup database
         run: |
-          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
-          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
+          export PGPASSWORD=''; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
+          export PGPASSWORD=''; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
 
       - name: Run Tests
         run: |
