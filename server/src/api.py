@@ -15,7 +15,7 @@ from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
-    GetTopoImage, UpdateTopoImageOrder
+    GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
     ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
@@ -92,6 +92,7 @@ def configure_api(app):
     area_bp = Blueprint('topo-images', __name__)
     area_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
     area_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
+    area_bp.add_url_rule('/<string:image_id>', view_func=UpdateTopoImage.as_view('update_topo_image'))
     area_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
     area_bp.add_url_rule('/<string:image_id>/line-paths/update-order', view_func=UpdateLinePathOrder.as_view('update_line_path_order'))
     app.register_blueprint(area_bp, url_prefix='/api/topo-images')
