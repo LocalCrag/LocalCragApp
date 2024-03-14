@@ -117,6 +117,7 @@ export class LineFormComponent implements OnInit {
       lowball: [false],
       noTopout: [false],
       badDropzone: [false],
+      childFriendly: [false],
       roof: [false],
       slab: [false],
       vertical: [false],
@@ -187,6 +188,7 @@ export class LineFormComponent implements OnInit {
       lowball: this.line.lowball,
       noTopout: this.line.noTopout,
       badDropzone: this.line.badDropzone,
+      childFriendly: this.line.childFriendly,
       roof: this.line.roof,
       slab: this.line.slab,
       vertical: this.line.vertical,
@@ -243,6 +245,7 @@ export class LineFormComponent implements OnInit {
       line.lowball = this.lineForm.get('lowball').value;
       line.noTopout = this.lineForm.get('noTopout').value;
       line.badDropzone = this.lineForm.get('badDropzone').value;
+      line.childFriendly = this.lineForm.get('childFriendly').value;
       line.roof = this.lineForm.get('roof').value;
       line.slab = this.lineForm.get('slab').value;
       line.vertical = this.lineForm.get('vertical').value;

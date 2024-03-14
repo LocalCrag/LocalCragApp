@@ -35,6 +35,7 @@ class Line(HasSlug, BaseEntity):
     lowball = db.Column(db.Boolean, nullable=False, default=False)
     no_topout = db.Column(db.Boolean, nullable=False, default=False)
     bad_dropzone = db.Column(db.Boolean, nullable=False, default=False)
+    child_friendly = db.Column(db.Boolean, nullable=False, default=False)
 
     roof = db.Column(db.Boolean, nullable=False, default=False)
     slab = db.Column(db.Boolean, nullable=False, default=False)
