@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {Area} from '../../../models/area';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
@@ -19,7 +18,8 @@ import {LinesService} from '../../../services/crud/lines.service';
 @Component({
   selector: 'lc-line-list',
   templateUrl: './line-list.component.html',
-  styleUrls: ['./line-list.component.scss']
+  styleUrls: ['./line-list.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LineListComponent implements OnInit {
 
@@ -65,6 +65,14 @@ export class LineListComponent implements OnInit {
     });
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
+  }
+
+  openVideo(event: MouseEvent, line: Line){
+    event.preventDefault();
+    event.stopPropagation();
+    if(line.videos.length > 0){
+      window.open(line.videos[0].url);
+    }
   }
 
   /**

@@ -1,20 +1,29 @@
-.line-info-container{
-  width: 100%;
-}
+lc-line-list {
 
-.line-name{
-
-  display: grid;
-  grid-template-columns: auto max-content;
-  width: 100%;
-
-  p-rating{
-    align-self: flex-end;
+  .line-info-container {
+    width: 100%;
   }
 
-}
+  .line-name {
 
-.line-link{
-  color: inherit;
-  text-decoration: inherit;
+    display: grid;
+    grid-template-columns: auto max-content;
+    width: 100%;
+
+    p-rating {
+      align-self: flex-end;
+    }
+
+  }
+
+  .line-link {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .video-button p-button button {
+    justify-content: flex-start;
+    padding-left: 0;
+  }
+
 }

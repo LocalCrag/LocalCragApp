@@ -22,6 +22,7 @@ import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../services/core/cache.service';
 import {ViewportScroller} from '@angular/common';
 import {filter} from 'rxjs/operators';
+import {Line} from '../../../models/line';
 
 /**
  * Component that lists all topo images in an area.
@@ -117,6 +118,14 @@ export class TopoImageListComponent {
         this.viewportScroller.scrollToPosition(this.scrollTarget.position);
         this.scrollTarget = null;
       })
+    }
+  }
+
+  openVideo(event: MouseEvent, line: Line){
+    event.preventDefault();
+    event.stopPropagation();
+    if(line.videos.length > 0){
+      window.open(line.videos[0].url);
     }
   }
 

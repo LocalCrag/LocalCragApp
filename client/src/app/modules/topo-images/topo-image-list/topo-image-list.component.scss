@@ -43,10 +43,10 @@ lc-topo-image-list {
   .line-row-grid {
     display: grid;
     gap: .5rem;
-    grid-template-columns: min-content auto 80px 250px min-content;
+    grid-template-columns: min-content auto min-content 80px 250px min-content;
     grid-template-rows: min-content;
     @include container-650 {
-      grid-template-columns: min-content auto 80px 0 min-content;
+      grid-template-columns: min-content auto min-content 80px 0 min-content;
       .line-row .style-column {
         visibility: hidden;
         height: 0;
@@ -54,7 +54,7 @@ lc-topo-image-list {
       }
     }
     @include container-450 {
-      grid-template-columns: min-content auto 40px 0 min-content;
+      grid-template-columns: min-content auto min-content 40px 0 min-content;
       .line-row .style-column {
         visibility: hidden;
         height: 0;
@@ -75,7 +75,7 @@ lc-topo-image-list {
     color: inherit;
     text-decoration: inherit;
     display: grid;
-    grid-column: span 5;
+    grid-column: span 6;
     grid-template-columns: subgrid;
     border-top: 1px solid var(--surface-200);
     padding-top: .5rem;
