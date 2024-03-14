@@ -72,6 +72,8 @@ lc-topo-image-list {
   }
 
   .line-row {
+    color: inherit;
+    text-decoration: inherit;
     display: grid;
     grid-column: span 5;
     grid-template-columns: subgrid;

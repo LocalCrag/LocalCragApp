@@ -31,7 +31,7 @@
     </ng-template>
     <ng-template let-lines pTemplate="list">
       <div class="grid grid-nogutter">
-      <div class="col-12 clickable-data-item" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{line.slug}}"
+      <a class="col-12 clickable-data-item line-link" routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{line.slug}}"
            *ngFor="let line of lines; let first = first"  data-cy="line-list-item">
         <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
              [ngClass]="{ 'border-top-1 surface-border': !first }">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        </div>
+        </a>
       </div>
     </ng-template>
   </p-dataView>

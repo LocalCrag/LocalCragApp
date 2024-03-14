@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="line-row-grid">
-                  <div class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"
+                  <a class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"
                        (mouseenter)="highlightLinePath(linePath, topoImage)"
                        (mouseleave)="unhighlightLinePath(linePath)"
                        routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
@@ -112,7 +112,7 @@
                         <p-confirmPopup></p-confirmPopup>
                       </ng-container>
                     </div>
-                  </div>
+                  </a>
                 </div>
 
               </div>
