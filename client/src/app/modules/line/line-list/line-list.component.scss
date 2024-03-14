@@ -1,15 +1,29 @@
-.line-info-container{
-  width: 100%;
-}
+lc-line-list {
 
-.line-name{
+  .line-info-container {
+    width: 100%;
+  }
 
-  display: grid;
-  grid-template-columns: auto max-content;
-  width: 100%;
+  .line-name {
 
-  p-rating{
-    align-self: flex-end;
+    display: grid;
+    grid-template-columns: auto max-content;
+    width: 100%;
+
+    p-rating {
+      align-self: flex-end;
+    }
+
+  }
+
+  .line-link {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .video-button p-button button {
+    justify-content: flex-start;
+    padding-left: 0;
   }
 
 }

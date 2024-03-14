@@ -83,11 +83,11 @@
                 </div>
 
                 <div class="line-row-grid">
-                  <div class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"
-                       (mouseenter)="highlightLinePath(linePath, topoImage)"
-                       (mouseleave)="unhighlightLinePath(linePath)"
-                       routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
-                       data-cy="line-row">
+                  <a class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"
+                     (mouseenter)="highlightLinePath(linePath, topoImage)"
+                     (mouseleave)="unhighlightLinePath(linePath)"
+                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
+                     data-cy="line-row">
                     <div class="number-column">
                       <div class="line-number">
                         {{i + 1}}
@@ -98,6 +98,12 @@
                     </div>
                     <div class="grade-column">
                       {{ linePath.line.grade.name | transloco }}
+                    </div>
+                    <div class="video-column">
+                      <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text"
+                                *ngIf="linePath.line.videos?.length > 0"
+                                (click)="openVideo($event, linePath.line)">
+                      </p-button>
                     </div>
                     <div class="style-column">
                       <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>
@@ -112,7 +118,7 @@
                         <p-confirmPopup></p-confirmPopup>
                       </ng-container>
                     </div>
-                  </div>
+                  </a>
                 </div>
 
               </div>
