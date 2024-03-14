@@ -29,6 +29,7 @@ line_args = {
     "lowball": fields.Boolean(required=True, allow_none=False),
     "noTopout": fields.Boolean(required=True, allow_none=False),
     "badDropzone": fields.Boolean(required=True, allow_none=False),
+    "childFriendly": fields.Boolean(required=True, allow_none=False),
 
     "roof": fields.Boolean(required=True, allow_none=False),
     "slab": fields.Boolean(required=True, allow_none=False),

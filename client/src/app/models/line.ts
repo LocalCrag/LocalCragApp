@@ -33,6 +33,7 @@ export class Line extends AbstractModel {
   lowball: boolean;
   noTopout: boolean;
   badDropzone: boolean;
+  childFriendly: boolean;
 
   roof: boolean;
   slab: boolean;
@@ -95,6 +96,7 @@ export class Line extends AbstractModel {
     line.lowball = payload.lowball;
     line.noTopout = payload.noTopout;
     line.badDropzone = payload.badDropzone;
+    line.childFriendly = payload.childFriendly;
 
     line.roof = payload.roof;
     line.slab = payload.slab;
@@ -154,6 +156,7 @@ export class Line extends AbstractModel {
       lowball: line.lowball,
       noTopout: line.noTopout,
       badDropzone: line.badDropzone,
+      childFriendly: line.childFriendly,
 
       roof: line.roof,
       slab: line.slab,

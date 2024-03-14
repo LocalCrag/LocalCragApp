@@ -75,6 +75,7 @@ class CreateLine(MethodView):
         new_line.lowball = line_data['lowball']
         new_line.no_topout = line_data['noTopout']
         new_line.bad_dropzone = line_data['badDropzone']
+        new_line.child_friendly = line_data['childFriendly']
 
         new_line.roof = line_data['roof']
         new_line.slab = line_data['slab']
@@ -143,6 +144,7 @@ class UpdateLine(MethodView):
         line.lowball = line_data['lowball']
         line.no_topout = line_data['noTopout']
         line.bad_dropzone = line_data['badDropzone']
+        line.child_friendly = line_data['childFriendly']
 
         line.roof = line_data['roof']
         line.slab = line_data['slab']

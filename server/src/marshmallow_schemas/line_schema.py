@@ -27,6 +27,7 @@ class LineSchema(BaseEntitySchema):
     lowball = fields.Boolean()
     noTopout = fields.Boolean(attribute='no_topout')
     badDropzone = fields.Boolean(attribute='bad_dropzone')
+    childFriendly = fields.Boolean(attribute='child_friendly')
 
     roof = fields.Boolean()
     slab = fields.Boolean()
