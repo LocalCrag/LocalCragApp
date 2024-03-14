@@ -14,6 +14,44 @@
                     <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
                 </div>
 
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label">{{t('topoImageTitleLabel')}}</label>
+                <input type="text" pInputText formControlName="title" placeholder="{{t('topoImageTitlePlaceholder')}}"
+                       lcFormControl data-cy="topo-image-form-name-title"/>
+              </div>
+
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label">{{t('topoImageDescriptionLabel')}}</label>
+                <p-editor formControlName="description" lcFormControl placeholder="{{t('topoImageDescriptionPlaceholder')}}"
+                          [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                          data-cy="topo-image-form-description">
+                  <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+                    <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+              </span>
+                  </ng-template>
+                </p-editor>
+              </div>
+
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label">{{t('latLabel')}}</label>
+                <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
+                       lcFormControl  data-cy="topo-image-form-lat"/>
+                <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
+              </div>
+
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label">{{t('lngLabel')}}</label>
+                <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
+                       lcFormControl  data-cy="topo-image-form-lng"/>
+                <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
+              </div>
+
             </form>
 
             <div class="form-actions">

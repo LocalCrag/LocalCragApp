@@ -24,76 +24,88 @@ import {Title} from '@angular/platform-browser';
  * Component for uploading topo images.
  */
 @Component({
-    selector: 'lc-topo-image-form',
-    templateUrl: './topo-image-form.component.html',
-    styleUrls: ['./topo-image-form.component.scss']
+  selector: 'lc-topo-image-form',
+  templateUrl: './topo-image-form.component.html',
+  styleUrls: ['./topo-image-form.component.scss']
 })
 export class TopoImageFormComponent {
 
-    @ViewChild(FormDirective) formDirective: FormDirective;
+  // TODO add implementation for editing: image cannot be changed
+  // TODO add GPS form control
+  // TODO show topo image properties in list and detail UI
 
-    public topoImageForm: FormGroup;
-    public loadingState = LoadingState.DEFAULT;
-    public loadingStates = LoadingState;
-    public topoImage: TopoImage;
+  @ViewChild(FormDirective) formDirective: FormDirective;
 
-    private cragSlug: string;
-    private sectorSlug: string;
-    private areaSlug: string;
+  public topoImageForm: FormGroup;
+  public loadingState = LoadingState.DEFAULT;
+  public loadingStates = LoadingState;
+  public topoImage: TopoImage;
 
-    constructor(private fb: FormBuilder,
-                private store: Store,
-                private route: ActivatedRoute,
-                private title: Title,
-                private translocoService: TranslocoService,
-                private router: Router,
-                private topoImagesService: TopoImagesService) {
-    }
+  private cragSlug: string;
+  private sectorSlug: string;
+  private areaSlug: string;
 
-    /**
-     * Builds the form on component initialization.
-     */
-    ngOnInit() {
-        this.buildForm();
-        this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
-        this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-        this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
-      this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
-    }
+  constructor(private fb: FormBuilder,
+              private store: Store,
+              private route: ActivatedRoute,
+              private title: Title,
+              private translocoService: TranslocoService,
+              private router: Router,
+              private topoImagesService: TopoImagesService) {
+  }
 
-    /**
-     * Builds the area form.
-     */
-    private buildForm() {
-        this.topoImageForm = this.fb.group({
-            image: [null, [Validators.required]]
-        });
-    }
+  /**
+   * Builds the form on component initialization.
+   */
+  ngOnInit() {
+    this.buildForm();
+    this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
+    this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+    this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+    this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+  }
+
+  /**
+   * Builds the area form.
+   */
+  private buildForm() {
+    this.topoImageForm = this.fb.group({
+      image: [null, [Validators.required]],
+      lat: [null, [latValidator()]],
+      lng: [null, [lngValidator()]],
+      title: [null],
+      description: [null],
+    });
+  }
 
 
-    /**
-     * Cancels the form.
-     */
-    cancel() {
+  /**
+   * Cancels the form.
+   */
+  cancel() {
+    this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
+  }
+
+  /**
+   * Saves the topo image and navigates to the topo image list.
+   */
+  public saveTopoImage() {
+    if (this.topoImageForm.valid) {
+      this.loadingState = LoadingState.LOADING;
+      const topoImage = new TopoImage();
+      topoImage.image = this.topoImageForm.get('image').value;
+      topoImage.title = this.topoImageForm.get('title').value;
+      topoImage.description = this.topoImageForm.get('description').value;
+      topoImage.lat = this.topoImageForm.get('lat').value;
+      topoImage.lng = this.topoImageForm.get('lng').value;
+      this.topoImagesService.addTopoImage(topoImage, this.areaSlug).subscribe(area => {
+        this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED));
         this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
+        this.loadingState = LoadingState.DEFAULT;
+      });
+    } else {
+      this.formDirective.markAsTouched();
     }
-
-    /**
-     * Saves the topo image and navigates to the topo image list.
-     */
-    public saveTopoImage() {
-        if (this.topoImageForm.valid) {
-            this.loadingState = LoadingState.LOADING;
-            const topoImage = new TopoImage();
-            topoImage.image = this.topoImageForm.get('image').value;
-            this.topoImagesService.addTopoImage(topoImage, this.areaSlug).subscribe(area => {
-                this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED));
-                this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
-                this.loadingState = LoadingState.DEFAULT;
-            });
-        } else {
-            this.formDirective.markAsTouched();
-        }
-    }
+  }
 
 }

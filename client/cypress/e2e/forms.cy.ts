@@ -64,7 +64,10 @@ describe('Forms test', () => {
     cy.get('[data-cy="topo-image-list-item"]').its('length').then((numBefore => {
       cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/add-topo-image');
       cy.get('[data-cy="topo-image-input"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-      cy.wait(500)
+      cy.get('[data-cy="topo-image-form-lat"]').focus().type('90')
+      cy.get('[data-cy="topo-image-form-lng"]').focus().type('180')
+      cy.get('[data-cy="topo-image-form-title"]').focus().type('Toller Block')
+      cy.get('[data-cy="topo-image-form-description"] .ql-editor').focus().type('Sehr großer Block eh')
       cy.get('[data-cy="submit"]').click()
       cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images');
       cy.get('[data-cy="topo-image-list-item"]').should('have.length', numBefore + 1)
