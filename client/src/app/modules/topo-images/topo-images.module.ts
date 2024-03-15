@@ -19,6 +19,7 @@ import {MessageModule} from 'primeng/message';
 import {TagModule} from 'primeng/tag';
 import {InputTextModule} from 'primeng/inputtext';
 import {EditorModule} from 'primeng/editor';
+import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {EditorModule} from 'primeng/editor';
     MessageModule,
     TagModule,
     InputTextModule,
-    EditorModule
+    EditorModule,
+    TopoImageDetailsComponent
   ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
