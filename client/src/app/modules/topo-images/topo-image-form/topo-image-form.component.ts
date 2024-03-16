@@ -93,8 +93,7 @@ export class TopoImageFormComponent {
   private buildForm() {
     this.topoImageForm = this.fb.group({
       image: [null, [Validators.required]],
-      lat: [null, [latValidator()]],
-      lng: [null, [lngValidator()]],
+      gps: [null],
       title: [null],
       description: [null],
     });
@@ -105,8 +104,7 @@ export class TopoImageFormComponent {
     this.topoImageForm.patchValue({
       title: this.topoImage.title,
       description: this.topoImage.description,
-      lat: this.topoImage.lat,
-      lng: this.topoImage.lng,
+      gps: this.topoImage.gps,
       image: this.topoImage.image,
     });
     this.topoImageForm.get('image').disable();
@@ -130,8 +128,7 @@ export class TopoImageFormComponent {
       topoImage.image = this.topoImageForm.get('image').value;
       topoImage.title = this.topoImageForm.get('title').value;
       topoImage.description = this.topoImageForm.get('description').value;
-      topoImage.lat = this.topoImageForm.get('lat').value;
-      topoImage.lng = this.topoImageForm.get('lng').value;
+      topoImage.gps = this.topoImageForm.get('gps').value;
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
         this.topoImagesService.updateTopoImage(topoImage, this.areaSlug).subscribe(() => {

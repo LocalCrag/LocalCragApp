@@ -20,6 +20,7 @@ import {TagModule} from 'primeng/tag';
 import {InputTextModule} from 'primeng/inputtext';
 import {EditorModule} from 'primeng/editor';
 import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details.component';
+import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details
     TagModule,
     InputTextModule,
     EditorModule,
-    TopoImageDetailsComponent
+    TopoImageDetailsComponent,
+    GpsComponent
   ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}

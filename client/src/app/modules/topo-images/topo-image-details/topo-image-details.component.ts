@@ -21,7 +21,7 @@ export class TopoImageDetailsComponent {
   @Input() topoImage: TopoImage;
 
   openGPS(){
-    window.open(`https://maps.google.com/?q=${this.topoImage.lat},${this.topoImage.lng}`)
+    window.open(`https://maps.google.com/?q=${this.topoImage.gps.lat},${this.topoImage.gps.lng}`)
   }
 
 }
