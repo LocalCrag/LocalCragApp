@@ -36,8 +36,11 @@
         <div class="col-12" *ngFor="let topoImage of topoImages; let first = first" data-cy="topo-image-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
-            <lc-topo-image [topoImage]="topoImage" [showLineNumbers]="true"
-                           class="w-12 sm:w-9 xl:w-5 shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
+            <div class="w-12 sm:w-9 xl:w-5 align-self-center">
+              <lc-topo-image [topoImage]="topoImage" [showLineNumbers]="true"
+                             class=" shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
+              <lc-topo-image-details [topoImage]="topoImage"></lc-topo-image-details>
+            </div>
             <div class="flex flex-column sm:flex-column justify-content-between align-items-center
                      xl:align-items-start flex-1 gap-4">
 
@@ -55,24 +58,17 @@
                     <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
                               routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
                               [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
-                              *ngIf="!(isMobile$ | async)"
-                              styleClass=" p-button-sm"></p-button>
-                    <p-button icon="pi pi-plus"
-                              *ngIf="isMobile$ | async"
-                              routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
-                              [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
-                              styleClass=" p-button-sm"></p-button>
+                              styleClass="p-button-sm"
+                              class="responsive-button"></p-button>
                     <p-button label="{{t('reorderLinePathsButtonLabel')}}" icon="pi pi-sort"
                               (click)="reorderLinePaths(topoImage)"
                               [disabled]="topoImage.linePaths?.length < 2"
                               styleClass=" p-button-sm"
-                              class="ml-2"
-                              *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-                    <p-button icon="pi pi-sort" (click)="reorderLinePaths(topoImage)"
-                              [disabled]="topoImage.linePaths?.length < 2"
-                              styleClass=" p-button-sm"
-                              class="ml-2"
-                              *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                              class="ml-2 responsive-button"></p-button>
+                    <p-button label="{{t('editTopoImageButtonLabel')}}" icon="pi pi-pencil"
+                              class="ml-2 responsive-button"
+                              routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/edit"
+                              styleClass=" p-button-sm"></p-button>
                     <p-button icon="pi pi-trash"
                               class="ml-2"
                               (click)="confirmDeleteTopoImage($event, topoImage)"

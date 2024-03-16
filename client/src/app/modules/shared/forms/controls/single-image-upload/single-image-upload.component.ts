@@ -37,7 +37,6 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
 
   constructor(private api: ApiService,
               private inj: Injector) {
-
   }
 
   /**
@@ -120,22 +119,6 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
   removeMedia() {
     this.file = null;
     this.onChange();
-  }
-
-  /**
-   * Cancels the upload.
-   */
-  cancelUpload() {
-    this.uploader.clear();
-    this.uploadInProgress = false;
-  }
-
-  /**
-   * Sets the error flag and shows an alert that the image could not be loaded.
-   */
-  onImageLoadError() {
-    this.imageLoading = false;
-    this.imageLoadingError = true;
   }
 
   /**

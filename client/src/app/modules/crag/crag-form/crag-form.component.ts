@@ -91,8 +91,7 @@ export class CragFormComponent implements OnInit {
       shortDescription: [''],
       rules: [''],
       portraitImage: [null],
-      lat: ['', [latValidator()]],
-      lng: ['', [lngValidator()]],
+      gps: [null],
     });
   }
 
@@ -105,8 +104,7 @@ export class CragFormComponent implements OnInit {
       name: this.crag.name,
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
-      lat: this.crag.lat,
-      lng: this.crag.lng,
+      gps: this.crag.gps,
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
     });
@@ -133,8 +131,7 @@ export class CragFormComponent implements OnInit {
       crag.name = this.cragForm.get('name').value
       crag.description = this.cragForm.get('description').value
       crag.shortDescription = this.cragForm.get('shortDescription').value
-      crag.lat = this.cragForm.get('lat').value ? Number(this.cragForm.get('lat').value) : null;
-      crag.lng = this.cragForm.get('lng').value ? Number(this.cragForm.get('lng').value) : null;
+      crag.gps = this.cragForm.get('gps').value;
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
       if (this.crag) {
@@ -172,7 +169,6 @@ export class CragFormComponent implements OnInit {
         accept: () => {
           this.deleteCrag();
         },
-
       });
     });
   }

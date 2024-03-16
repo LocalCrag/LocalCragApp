@@ -2,6 +2,7 @@ import {AbstractModel} from './abstract-model';
 import {File} from './file';
 import {Observable} from 'rxjs';
 import {Grade} from '../utility/misc/grades';
+import {GPS} from '../interfaces/gps.interface';
 
 /**
  * Model of a climbing crag.
@@ -15,8 +16,8 @@ export class Crag extends AbstractModel {
   slug: string;
   portraitImage: File;
   orderIndex: number;
-  lat: number;
-  lng: number;
+  gps: GPS;
+
 
   /**
    * Parses a crag.
@@ -32,8 +33,7 @@ export class Crag extends AbstractModel {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.slug = payload.slug;
-    crag.lng = payload.lng;
-    crag.lat = payload.lat;
+    crag.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     return crag;
@@ -51,8 +51,8 @@ export class Crag extends AbstractModel {
       description: crag.description,
       shortDescription: crag.shortDescription,
       rules: crag.rules,
-      lat: crag.lat,
-      lng: crag.lng,
+      lng: crag.gps ? crag.gps.lng : null,
+      lat: crag.gps ? crag.gps.lat : null,
       portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
     };
   }

@@ -26,6 +26,7 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 
 
 /**
@@ -60,7 +61,8 @@ import {
         SectorModule,
         SkeletonModule,
         BreadcrumbModule,
-        GradeDistributionBarChartComponent
+        GradeDistributionBarChartComponent,
+        GpsComponent
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}

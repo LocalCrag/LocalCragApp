@@ -29,6 +29,7 @@ import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module'
 import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import {
         LineModule,
         TopoImagesModule,
         LinePathEditorModule,
-        GradeDistributionBarChartComponent
+        GradeDistributionBarChartComponent,
+        GpsComponent
     ],
     exports: [
         AreaListComponent

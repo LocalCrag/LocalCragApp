@@ -3,8 +3,11 @@
   <div class="flex flex-column xl:flex-row xl:align-items-start gap-4" *ngIf="line">
 
     <div class="w-12 sm:w-9 xl:w-5  flex flex-column mx-auto pt-4 gap-3 ">
-      <lc-topo-image class=" shadow-2 flex  border-round"
-                     [topoImage]="topoImage" *ngFor="let topoImage of line.topoImages"></lc-topo-image>
+      <div *ngFor="let topoImage of line.topoImages">
+        <lc-topo-image class=" shadow-2 flex  border-round"
+                       [topoImage]="topoImage"></lc-topo-image>
+        <lc-topo-image-details [topoImage]="topoImage"></lc-topo-image-details>
+      </div>
       <img class="block  border-round"
            [src]="'assets/placeholder.png'"
            *ngIf="line.topoImages.length === 0"
@@ -19,7 +22,7 @@
       class="flex flex-column  justify-content-between align-items-center xl:align-items-start flex-1 gap-4 pt-4">
       <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
 
-      <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description"  class="quill-content"></div>
+      <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description" class="quill-content"></div>
       <div *ngIf="line.videos?.length > 0">{{t('videoBeta')}}:
         <span class="link-list">
         <span *ngFor="let video of line.videos"><a [href]="video.url" target="_blank">{{video.title}}</a></span>

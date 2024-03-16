@@ -8,6 +8,8 @@ import {map, tap} from 'rxjs/operators';
 import {LinePath} from '../../models/line-path';
 import {Crag} from '../../models/crag';
 import {ItemOrder} from '../../interfaces/item-order.interface';
+import {environment} from '../../../environments/environment';
+import {reloadCrags} from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for topo images.
@@ -37,6 +39,23 @@ export class TopoImagesService {
             map(TopoImage.deserialize)
         );
     }
+
+  /**
+   * Updates a TopoImage.
+   *
+   * @param topoImage TopoImage to persist.
+   * @param areaSlug Slug of the area the topo image is in.
+   * @return Observable of null.
+   */
+  public updateTopoImage(topoImage: TopoImage, areaSlug: string): Observable<TopoImage> {
+    return this.http.put(this.api.topoImages.update(topoImage.id), TopoImage.serialize(topoImage)).pipe(
+      tap(() => {
+        this.cache.clear(this.api.topoImages.getList(areaSlug))
+        this.cache.clear(this.api.topoImages.getDetail(topoImage.id))
+      }),
+      map(TopoImage.deserialize)
+    );
+  }
 
     /**
      * Returns a list of TopoImages for an area.

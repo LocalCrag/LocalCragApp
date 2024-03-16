@@ -29,6 +29,10 @@ class AddTopoImage(MethodView):
 
         new_topo_image: TopoImage = TopoImage()
         new_topo_image.file_id = topo_image_data['image']
+        new_topo_image.lat = topo_image_data['lat']
+        new_topo_image.lng = topo_image_data['lng']
+        new_topo_image.title = topo_image_data['title']
+        new_topo_image.description = topo_image_data['description']
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
@@ -37,6 +41,22 @@ class AddTopoImage(MethodView):
         db.session.commit()
 
         return topo_image_schema.dump(new_topo_image), 201
+
+
+class UpdateTopoImage(MethodView):
+    @jwt_required()
+    def put(self, image_id):
+        topo_image_data = parser.parse(topo_image_args, request)
+        topo_image: TopoImage = TopoImage.find_by_id(image_id)
+
+        topo_image.lat = topo_image_data['lat']
+        topo_image.lng = topo_image_data['lng']
+        topo_image.title = topo_image_data['title']
+        topo_image.description = topo_image_data['description']
+        db.session.add(topo_image)
+        db.session.commit()
+
+        return topo_image_schema.dump(topo_image), 200
 
 
 class DeleteTopoImage(MethodView):
@@ -49,7 +69,8 @@ class DeleteTopoImage(MethodView):
         image: TopoImage = TopoImage.find_by_id(image_id)
 
         db.session.delete(image)
-        query = text("UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > :order_index AND area_id = :area_id")
+        query = text(
+            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > :order_index AND area_id = :area_id")
         db.session.execute(query, {'order_index': image.order_index, 'area_id': image.area_id})
         db.session.commit()
 

@@ -68,6 +68,7 @@ export class ApiService {
     getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
+    update: (id: string): string => `${this.apiHost}topo-images/${id}`,
     updateOrder: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
   };
 

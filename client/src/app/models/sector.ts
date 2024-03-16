@@ -1,5 +1,6 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
+import {GPS} from '../interfaces/gps.interface';
 
 /**
  * Model of a climbing crag's sector.
@@ -12,8 +13,7 @@ export class Sector extends AbstractModel {
   slug: string;
   portraitImage: File;
   orderIndex: number;
-  lat: number;
-  lng: number;
+  gps: GPS;
   rules: string;
 
   /**
@@ -29,8 +29,7 @@ export class Sector extends AbstractModel {
     sector.description = payload.description;
     sector.shortDescription = payload.shortDescription;
     sector.slug = payload.slug;
-    sector.lat = payload.lat;
-    sector.lng = payload.lng;
+    sector.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     sector.orderIndex = payload.orderIndex;
     sector.rules = payload.rules;
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
@@ -49,8 +48,8 @@ export class Sector extends AbstractModel {
       description: sector.description,
       shortDescription: sector.shortDescription,
       portraitImage: sector.portraitImage ?  sector.portraitImage.id : null,
-      lat: sector.lat,
-      lng: sector.lng,
+      lng: sector.gps ? sector.gps.lng : null,
+      lat: sector.gps ? sector.gps.lat : null,
       rules: sector.rules,
     };
   }
