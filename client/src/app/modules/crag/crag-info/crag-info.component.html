@@ -7,7 +7,7 @@
 
     <section [innerHTML]="crag.description | sanitizeHtml"  class="quill-content"></section>
 
-    <section *ngIf="crag.gps.lat && crag.gps.lng">GPS: <a target="_blank" href="https://maps.google.com/?q={{crag.gps.lat}},{{crag.gps.lng}}">{{crag.gps.lat}}, {{crag.gps.lng}}</a> </section>
+    <section *ngIf="crag.gps">GPS: <a target="_blank" href="https://maps.google.com/?q={{crag.gps.lat}},{{crag.gps.lng}}">{{crag.gps.lat}}, {{crag.gps.lng}}</a> </section>
 
   </ng-container>
 

@@ -160,7 +160,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
       navigator.geolocation.getCurrentPosition((position) => {
         this.gpsForm.get('lat').setValue(position.coords.latitude);
         this.gpsForm.get('lng').setValue(position.coords.longitude);
-        this.accuracy = position.coords.accuracy;
+        this.accuracy = Math.round(position.coords.accuracy);
         this.positionLoading = false;
         this.gpsForm.enable();
         this.onChange();
@@ -168,6 +168,10 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
       }, () => {
         this.gpsLoadingError = true;
         this.positionLoading = false;
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000,
       });
     } else {
       this.gpsLoadingError = true;
