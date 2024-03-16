@@ -333,6 +333,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:image-id/edit',
+    component: TopoImageFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
     component: AreaComponent,
     data: {

@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -19,6 +19,7 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
 
 /**
  * Component for uploading topo images.
@@ -30,15 +31,16 @@ import {Title} from '@angular/platform-browser';
 })
 export class TopoImageFormComponent {
 
-  // TODO add implementation for editing: image cannot be changed
   // TODO add GPS form control
 
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   public topoImageForm: FormGroup;
   public loadingState = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
   public topoImage: TopoImage;
+  public editMode = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -61,7 +63,28 @@ export class TopoImageFormComponent {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
-    this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+    const imageId = this.route.snapshot.paramMap.get('image-id');
+    if (imageId) {
+      this.editMode = true;
+      this.topoImageForm.disable();
+      this.topoImagesService.getTopoImage(imageId).pipe(catchError(e => {
+        if (e.status === 404) {
+          this.router.navigate(['/not-found']);
+        }
+        return of(e);
+      })).subscribe(topoImage => {
+        this.topoImage = topoImage;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+        this.editors?.map(editor => {
+          editor.getQuill().enable();
+        });
+      });
+      this.title.setTitle(`${this.translocoService.translate(marker('editTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+    } else {
+      this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+      this.loadingState = LoadingState.DEFAULT;
+    }
   }
 
   /**
@@ -75,6 +98,18 @@ export class TopoImageFormComponent {
       title: [null],
       description: [null],
     });
+  }
+
+  private setFormValue() {
+    this.topoImageForm.enable();
+    this.topoImageForm.patchValue({
+      title: this.topoImage.title,
+      description: this.topoImage.description,
+      lat: this.topoImage.lat,
+      lng: this.topoImage.lng,
+      image: this.topoImage.image,
+    });
+    this.topoImageForm.get('image').disable();
   }
 
 
@@ -97,11 +132,20 @@ export class TopoImageFormComponent {
       topoImage.description = this.topoImageForm.get('description').value;
       topoImage.lat = this.topoImageForm.get('lat').value;
       topoImage.lng = this.topoImageForm.get('lng').value;
-      this.topoImagesService.addTopoImage(topoImage, this.areaSlug).subscribe(area => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED));
-        this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
-        this.loadingState = LoadingState.DEFAULT;
-      });
+      if (this.topoImage) {
+        topoImage.id = this.topoImage.id;
+        this.topoImagesService.updateTopoImage(topoImage, this.areaSlug).subscribe(() => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_UPDATED));
+          this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
+          this.loadingState = LoadingState.DEFAULT;
+        });
+      } else {
+        this.topoImagesService.addTopoImage(topoImage, this.areaSlug).subscribe(() => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED));
+          this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
+          this.loadingState = LoadingState.DEFAULT;
+        });
+      }
     } else {
       this.formDirective.markAsTouched();
     }
