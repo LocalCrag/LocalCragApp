@@ -97,8 +97,7 @@ export class AreaFormComponent implements OnInit {
       name: ['', [Validators.required]],
       description: [null],
       shortDescription: [null],
-      lat: ['', [latValidator()]],
-      lng: ['', [lngValidator()]],
+      gps: [null],
       portraitImage: [null]
     });
   }
@@ -112,8 +111,7 @@ export class AreaFormComponent implements OnInit {
       name: this.area.name,
       description: this.area.description,
       shortDescription: this.area.shortDescription,
-      lat: this.area.lat,
-      lng: this.area.lng,
+      gps: this.area.gps,
       portraitImage: this.area.portraitImage,
     });
   }
@@ -139,8 +137,7 @@ export class AreaFormComponent implements OnInit {
       area.name = this.areaForm.get('name').value;
       area.description = this.areaForm.get('description').value;
       area.shortDescription = this.areaForm.get('shortDescription').value;
-      area.lat = this.areaForm.get('lat').value ? Number(this.areaForm.get('lat').value) : null;
-      area.lng = this.areaForm.get('lng').value ? Number(this.areaForm.get('lng').value) : null;
+      area.gps = this.areaForm.get('gps').value;
       area.portraitImage = this.areaForm.get('portraitImage').value;
       if (this.area) {
         area.slug = this.area.slug;

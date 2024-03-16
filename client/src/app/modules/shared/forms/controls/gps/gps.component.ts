@@ -132,8 +132,8 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   onChange() {
     if (this.gpsForm.valid && this.gpsForm.get('lat').value && this.gpsForm.get('lng').value) {
       this.gps = {
-        lat: this.gpsForm.get('lat').value,
-        lng: this.gpsForm.get('lng').value
+        lat: Number(this.gpsForm.get('lat').value),
+        lng: Number(this.gpsForm.get('lng').value)
       }
     } else {
       this.gps = null;

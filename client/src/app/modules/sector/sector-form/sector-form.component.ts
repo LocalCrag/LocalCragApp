@@ -95,8 +95,7 @@ export class SectorFormComponent implements OnInit {
       shortDescription: [null],
       portraitImage: [null],
       rules: [null],
-      lat: ['', [latValidator()]],
-      lng: ['', [lngValidator()]],
+      gps: [null],
     });
   }
 
@@ -110,8 +109,7 @@ export class SectorFormComponent implements OnInit {
       description: this.sector.description,
       shortDescription: this.sector.shortDescription,
       portraitImage: this.sector.portraitImage,
-      lat: this.sector.lat,
-      lng: this.sector.lng,
+      gps: this.sector.gps,
       rules: this.sector.rules,
     });
   }
@@ -139,8 +137,7 @@ export class SectorFormComponent implements OnInit {
       sector.shortDescription = this.sectorForm.get('shortDescription').value
       sector.rules = this.sectorForm.get('rules').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
-      sector.lat = this.sectorForm.get('lat').value ? Number(this.sectorForm.get('lat').value) : null;
-      sector.lng = this.sectorForm.get('lng').value ? Number(this.sectorForm.get('lng').value) : null;
+      sector.gps = this.sectorForm.get('gps').value;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {

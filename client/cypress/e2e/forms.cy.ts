@@ -7,8 +7,8 @@ describe('Forms test', () => {
     cy.get('[data-cy="crag-form-description"] .ql-editor').focus().type('Ferschweiler ist sehr toll.')
     cy.get('[data-cy="crag-form-rules"] .ql-editor').focus().type('Kein Feuer machen!')
     cy.get('[data-cy="crag-form-portraitImage"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-    cy.get('[data-cy="crag-form-lat"]').focus().type('90')
-    cy.get('[data-cy="crag-form-lng"]').focus().type('180')
+    cy.get('[data-cy="crag-form-gps"] input').eq(0).focus().type('90')
+    cy.get('[data-cy="crag-form-gps"] input').eq(1).focus().type('180')
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/crags');
     cy.get('[data-cy="crag-list-item"]').last().contains('Ferschweiler')
@@ -21,8 +21,8 @@ describe('Forms test', () => {
     cy.get('[data-cy="sector-form-description"] .ql-editor').focus().type('Düsterwald ist sehr toll.')
     cy.get('[data-cy="sector-form-rules"] .ql-editor').focus().type('Kein Feuer machen!')
     cy.get('[data-cy="sector-form-portraitImage"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-    cy.get('[data-cy="sector-form-lat"]').focus().type('90')
-    cy.get('[data-cy="sector-form-lng"]').focus().type('180')
+    cy.get('[data-cy="sector-form-gps"] input').eq(0).focus().type('90')
+    cy.get('[data-cy="sector-form-gps"] input').eq(1).focus().type('180')
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/brione/sectors');
     cy.get('[data-cy="sector-list-item"]').last().contains('Düsterwald')
@@ -34,8 +34,8 @@ describe('Forms test', () => {
     cy.get('[data-cy="area-form-shortDescription"] .ql-editor').focus().type('Oben ist toll.')
     cy.get('[data-cy="area-form-description"] .ql-editor').focus().type('Oben ist sehr toll.')
     cy.get('[data-cy="area-form-portraitImage"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-    cy.get('[data-cy="area-form-lat"]').focus().type('90')
-    cy.get('[data-cy="area-form-lng"]').focus().type('180')
+    cy.get('[data-cy="area-form-gps"] input').eq(0).focus().type('90')
+    cy.get('[data-cy="area-form-gps"] input').eq(1).focus().type('180')
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/brione/schattental/areas');
     cy.get('[data-cy="area-list-item"]').last().contains('Oben')
@@ -64,8 +64,8 @@ describe('Forms test', () => {
     cy.get('[data-cy="topo-image-list-item"]').its('length').then((numBefore => {
       cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/add-topo-image');
       cy.get('[data-cy="topo-image-input"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-      cy.get('[data-cy="topo-image-form-lat"]').focus().type('90')
-      cy.get('[data-cy="topo-image-form-lng"]').focus().type('180')
+      cy.get('[data-cy="topo-image-form-gps"] input').eq(0).focus().type('90')
+      cy.get('[data-cy="topo-image-form-gps"] input').eq(1).focus().type('180')
       cy.get('[data-cy="topo-image-form-title"]').focus().type('Toller Block')
       cy.get('[data-cy="topo-image-form-description"] .ql-editor').focus().type('Sehr großer Block eh')
       cy.get('[data-cy="submit"]').click()

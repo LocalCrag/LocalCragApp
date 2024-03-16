@@ -25,6 +25,7 @@ import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {ChipModule} from 'primeng/chip';
+import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import {ChipModule} from 'primeng/chip';
         AreaModule,
         GradeDistributionBarChartComponent,
         ChipModule,
+        GpsComponent,
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}

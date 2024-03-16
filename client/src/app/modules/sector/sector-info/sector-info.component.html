@@ -7,7 +7,7 @@
 
     <section [innerHTML]="sector.description | sanitizeHtml"  class="quill-content"></section>
 
-    <section *ngIf="sector.lat && sector.lng">GPS: <a target="_blank" href="https://maps.google.com/?q={{sector.lat}},{{sector.lng}}">{{sector.lat}}, {{sector.lng}}</a> </section>
+    <section *ngIf="sector.gps.lat && sector.gps.lng">GPS: <a target="_blank" href="https://maps.google.com/?q={{sector.gps.lat}},{{sector.gps.lng}}">{{sector.gps.lat}}, {{sector.gps.lng}}</a> </section>
 
   </ng-container>
 

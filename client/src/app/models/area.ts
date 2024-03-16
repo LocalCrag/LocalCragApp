@@ -1,5 +1,6 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
+import {GPS} from '../interfaces/gps.interface';
 
 /**
  * Model of a climbing sector's area.
@@ -11,8 +12,7 @@ export class Area extends AbstractModel {
   shortDescription: string;
   slug: string;
   portraitImage: File;
-  lat: number;
-  lng: number;
+  gps: GPS;
   orderIndex: number;
 
   /**
@@ -27,8 +27,7 @@ export class Area extends AbstractModel {
     area.name = payload.name;
     area.description = payload.description;
     area.shortDescription = payload.shortDescription;
-    area.lat = payload.lat;
-    area.lng = payload.lng;
+    area.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     area.slug = payload.slug;
     area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
@@ -46,8 +45,8 @@ export class Area extends AbstractModel {
       name: area.name,
       description: area.description,
       shortDescription: area.shortDescription,
-      lat: area.lat,
-      lng: area.lng,
+      lng: area.gps ? area.gps.lng : null,
+      lat: area.gps ? area.gps.lat : null,
       portraitImage: area.portraitImage ? area.portraitImage.id : null,
     };
   }

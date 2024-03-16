@@ -31,8 +31,6 @@ import {Editor} from 'primeng/editor';
 })
 export class TopoImageFormComponent {
 
-  // TODO add GPS form control
-
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 

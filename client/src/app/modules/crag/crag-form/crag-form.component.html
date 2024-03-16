@@ -89,17 +89,8 @@
 
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('latLabel')}}</label>
-          <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
-                 lcFormControl  data-cy="crag-form-lat"/>
-          <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('lngLabel')}}</label>
-          <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
-                 lcFormControl  data-cy="crag-form-lng"/>
-          <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
+          <label class="form-label">{{t('gpsLabel')}}</label>
+          <lc-gps formControlName="gps" lcFormControl data-cy="crag-form-gps"></lc-gps>
         </div>
 
       </form>
