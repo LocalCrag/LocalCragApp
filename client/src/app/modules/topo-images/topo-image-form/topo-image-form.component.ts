@@ -32,7 +32,6 @@ export class TopoImageFormComponent {
 
   // TODO add implementation for editing: image cannot be changed
   // TODO add GPS form control
-  // TODO show topo image properties in list and detail UI
 
   @ViewChild(FormDirective) formDirective: FormDirective;
 

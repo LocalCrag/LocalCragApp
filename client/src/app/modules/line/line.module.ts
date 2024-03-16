@@ -26,6 +26,7 @@ import {CalendarModule} from 'primeng/calendar';
 import {CheckboxModule} from 'primeng/checkbox';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 import { LineInfoComponent } from './line-info/line-info.component';
+import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-image-details.component';
 
 
 @NgModule({
@@ -36,31 +37,32 @@ import { LineInfoComponent } from './line-info/line-info.component';
     LineBoolPropListComponent,
     LineInfoComponent,
   ],
-  imports: [
-    CommonModule,
-    CardModule,
-    TranslocoModule,
-    SharedModule,
-    InputTextModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    ButtonModule,
-    DataViewModule,
-    TagModule,
-    BadgeModule,
-    RouterLink,
-    DropdownModule,
-    MessagesModule,
-    EditorModule,
-    TabMenuModule,
-    ConfirmPopupModule,
-    SkeletonModule,
-    BreadcrumbModule,
-    RatingModule,
-    CalendarModule,
-    CheckboxModule,
-  ],
+    imports: [
+        CommonModule,
+        CardModule,
+        TranslocoModule,
+        SharedModule,
+        InputTextModule,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        ButtonModule,
+        DataViewModule,
+        TagModule,
+        BadgeModule,
+        RouterLink,
+        DropdownModule,
+        MessagesModule,
+        EditorModule,
+        TabMenuModule,
+        ConfirmPopupModule,
+        SkeletonModule,
+        BreadcrumbModule,
+        RatingModule,
+        CalendarModule,
+        CheckboxModule,
+        TopoImageDetailsComponent,
+    ],
     exports: [
         LineListComponent,
         LineBoolPropListComponent

@@ -36,7 +36,7 @@
         <div class="col-12" *ngFor="let topoImage of topoImages; let first = first" data-cy="topo-image-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
-            <div class="w-12 sm:w-9 xl:w-5 ">
+            <div class="w-12 sm:w-9 xl:w-5 align-self-center">
             <lc-topo-image [topoImage]="topoImage" [showLineNumbers]="true"
                            class=" shadow-2 block xl:block mx-auto border-round"></lc-topo-image>
             <lc-topo-image-details  [topoImage]="topoImage"></lc-topo-image-details>
