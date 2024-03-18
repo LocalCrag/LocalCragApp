@@ -3,10 +3,8 @@ from flask import current_app
 from app import app
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from helpers.user_helpers import create_user
 from models.mixins.has_slug import str_to_slug
 from models.region import Region
-from models.user import User
 
 
 def add_region():

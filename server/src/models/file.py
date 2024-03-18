@@ -1,3 +1,6 @@
+from flask import current_app
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from extensions import db
 from models.base_entity import BaseEntity
 
@@ -18,3 +21,7 @@ class File(BaseEntity):
     thumbnail_m = db.Column(db.Boolean, nullable=True)
     thumbnail_l = db.Column(db.Boolean, nullable=True)
     thumbnail_xl = db.Column(db.Boolean, nullable=True)
+
+    @hybrid_property
+    def filename_with_host(self):
+        return current_app.config['SPACES_ENDPOINT'].replace('://', '://{}.'.format(current_app.config['SPACES_BUCKET'])) + '/' + self.filename

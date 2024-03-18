@@ -7,7 +7,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 
 
 class FileSchema(BaseEntitySchema):
-    filename = fields.String()
+    filename = fields.String(attribute='filename_with_host')
     originalFilename = fields.String(attribute='original_filename')
     width = fields.Integer()
     height = fields.Integer()

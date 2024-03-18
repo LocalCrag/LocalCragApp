@@ -18,7 +18,7 @@ class DefaultConfig(object):
     SMTP_PASSWORD = 'YOUR_SMTP_PASSWORD'
     SMTP_PORT = 'YOUR_SMTP_PORT'
     FRONTEND_HOST = 'https://localcrag.de'
-    CORS_ORIGINS = 'https://localcrag.de'
+    CORS_ORIGINS = 'https://localcrag.de' # todo test on prod
     SUPERADMIN_FIRSTNAME = 'Felix'
     SUPERADMIN_LASTNAME = 'Engelmann'
     SUPERADMIN_EMAIL = 'localcrag@fengelmann.de'
