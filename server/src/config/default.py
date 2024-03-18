@@ -8,7 +8,7 @@ class DefaultConfig(object):
     SECRET_KEY = 'thisKeyIsNotSecretChangeIt'
     JWT_SECRET_KEY = 'thisKeyIsNotSecretChangeIt'
     JWT_BLACKLIST_ENABLED = True
-    JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+    JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']  # todo isn't this now blocklist?
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     ERROR_404_HELP = False
