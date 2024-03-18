@@ -44,6 +44,3 @@ setup_webargs_error_handlers()
 def check_if_token_in_blocklist(_jwt_header, jwt_payload):
     jti = jwt_payload['jti']
     return RevokedToken.is_jti_blocklisted(jti)
-
-def wsgi():
-    return app
