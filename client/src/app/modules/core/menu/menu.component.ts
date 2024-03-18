@@ -35,7 +35,6 @@ export class MenuComponent implements OnInit {
 
   constructor(private cragsService: CragsService,
               private translocoService: TranslocoService,
-              private cdr: ChangeDetectorRef,
               private actions: Actions,
               private store: Store) {
   }

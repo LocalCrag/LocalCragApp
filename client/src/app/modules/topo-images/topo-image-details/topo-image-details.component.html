@@ -1,16 +1,16 @@
-<div *ngIf="topoImage.title || (topoImage.gps && topoImage.gps)"
-     class="flex justify-content-center align-items-center mt-2">
-  <p-button label="GPS" [text]="true" icon="pi pi-map-marker" size="small"
-            *ngIf="topoImage.gps" class="positioning-button"></p-button>
-  <div class="flex-grow-1 flex justify-content-center">
-    <h5 class="mt-0 mb-0 inline-block" *ngIf="topoImage.title">{{topoImage.title}}</h5>
+<ng-container *transloco="let t, read: 'topoImage.topoImageDetail'">
+
+  <div *ngIf="topoImage.title || (topoImage.gps && topoImage.gps)"
+       class="flex justify-content-center align-items-center mt-2">
+    <lc-gps-button [gps]="topoImage.gps" *ngIf="topoImage.gps" class="positioning-button"></lc-gps-button>
+    <div class="flex-grow-1 flex justify-content-center">
+      <h5 class="mt-0 mb-0 inline-block" *ngIf="topoImage.title">{{topoImage.title}}</h5>
+    </div>
+    <lc-gps-button [gps]="topoImage.gps" *ngIf="topoImage.gps"></lc-gps-button>
   </div>
-  <p-button label="GPS" [text]="true" icon="pi pi-map-marker" size="small"
-            (click)="openGPS()"
-            *ngIf="topoImage.gps"></p-button>
-</div>
 
-<section *ngIf="topoImage.description"
-         class="text-xs flex justify-content-center"
-         [innerHTML]="topoImage.description | sanitizeHtml"></section>
+  <section *ngIf="topoImage.description"
+           class="text-xs flex justify-content-center"
+           [innerHTML]="topoImage.description | sanitizeHtml"></section>
 
+</ng-container>

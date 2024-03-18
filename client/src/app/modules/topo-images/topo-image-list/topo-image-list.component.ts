@@ -187,6 +187,7 @@ export class TopoImageListComponent {
    */
   confirmDeleteLinePath(event: Event, linePath: LinePath, topoImage: TopoImage) {
     event.stopPropagation();
+    event.preventDefault();
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,

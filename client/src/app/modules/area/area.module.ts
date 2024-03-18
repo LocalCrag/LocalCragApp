@@ -30,6 +30,7 @@ import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
+import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
         TopoImagesModule,
         LinePathEditorModule,
         GradeDistributionBarChartComponent,
-        GpsComponent
+        GpsComponent,
+        GpsButtonComponent
     ],
     exports: [
         AreaListComponent
