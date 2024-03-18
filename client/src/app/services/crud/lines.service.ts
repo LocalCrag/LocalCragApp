@@ -34,6 +34,7 @@ export class LinesService {
     return this.http.post(this.api.lines.create(areaSlug), Line.serialize(line)).pipe(
       tap(() => {
         this.cache.clear(this.api.lines.getList(areaSlug));
+        this.cache.clear(this.api.topoImages.getList(areaSlug));
       }),
       map(Line.deserialize)
     );
@@ -90,6 +91,7 @@ export class LinesService {
       tap(() => {
         this.cache.clear(this.api.lines.getDetail(line.slug));
         this.cache.clear(this.api.lines.getList(areaSlug));
+        this.cache.clear(this.api.topoImages.getList(areaSlug));
       }),
       map(Line.deserialize)
     );
