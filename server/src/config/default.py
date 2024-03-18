@@ -25,3 +25,4 @@ class DefaultConfig(object):
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
     MAX_IMAGE_SIZE = 20
+    REGION = 'Tessin'
