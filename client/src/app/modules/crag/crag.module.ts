@@ -27,6 +27,7 @@ import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
+import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 
 
 /**
@@ -62,7 +63,8 @@ import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
         SkeletonModule,
         BreadcrumbModule,
         GradeDistributionBarChartComponent,
-        GpsComponent
+        GpsComponent,
+        GpsButtonComponent
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}

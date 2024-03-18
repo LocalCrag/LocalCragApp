@@ -3,6 +3,8 @@ import {ButtonModule} from 'primeng/button';
 import {TopoImage} from '../../../models/topo-image';
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../shared/shared.module';
+import {TranslocoDirective} from '@ngneat/transloco';
+import {GpsButtonComponent} from '../../shared/components/gps-button/gps-button.component';
 
 @Component({
   selector: 'lc-topo-image-details',
@@ -10,7 +12,9 @@ import {SharedModule} from '../../shared/shared.module';
   imports: [
     ButtonModule,
     NgIf,
-    SharedModule
+    SharedModule,
+    TranslocoDirective,
+    GpsButtonComponent
   ],
   templateUrl: './topo-image-details.component.html',
   styleUrl: './topo-image-details.component.scss',
@@ -19,9 +23,5 @@ import {SharedModule} from '../../shared/shared.module';
 export class TopoImageDetailsComponent {
 
   @Input() topoImage: TopoImage;
-
-  openGPS(){
-    window.open(`https://maps.google.com/?q=${this.topoImage.gps.lat},${this.topoImage.gps.lng}`)
-  }
 
 }

@@ -1,0 +1,10 @@
+<ng-container *transloco="let t, read: 'gpsButton'">
+
+  <p-splitButton label="{{t('gps')}}"
+                 icon="pi pi-map-marker"
+                 styleClass="p-button-text"
+                 (onClick)="openGPS()"
+                 [model]="items">
+  </p-splitButton>
+
+</ng-container>
