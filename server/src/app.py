@@ -1,10 +1,4 @@
-import uuid
-
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import inspect
-from sqlalchemy.orm import make_transient
-from sqlalchemy.util import symbol
 
 from api import configure_api
 from error_handling.http_error_handlers import setup_http_error_handlers
@@ -46,12 +40,10 @@ app = create_app()
 
 setup_webargs_error_handlers()
 
-
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(_jwt_header, jwt_payload):
     jti = jwt_payload['jti']
     return RevokedToken.is_jti_blocklisted(jti)
 
-
-if __name__ == "__main__":
-    app.run()
+def wsgi():
+    return app
