@@ -3,6 +3,7 @@ import os
 from flask import Flask
 
 from api import configure_api
+from config.env_var_config import overwrite_config_by_env_vars
 from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
@@ -29,10 +30,10 @@ def create_app():
                         static_url_path='/uploads',
                         static_folder='uploads')
     application.config.from_object('config.default.DefaultConfig')
-    if "LOCALCRAG_CONFIG" in os.environ:
-        application.config.from_envvar('LOCALCRAG_CONFIG')
-    else:
-        application.config.from_object('config.env-var-config.EnvVarConfig')
+    application.config.from_envvar('LOCALCRAG_CONFIG')
+    overwrite_config_by_env_vars()
+    # else:
+    #     application.config.from_object('config.env-var-config.EnvVarConfig')
 
     register_extensions(application)
 
