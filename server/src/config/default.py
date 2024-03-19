@@ -26,3 +26,9 @@ class DefaultConfig(object):
     MAX_FILE_SIZE = 200
     MAX_IMAGE_SIZE = 20
     REGION = 'Tessin'
+    SPACES_SECRET_KEY = 'test'
+    SPACES_ACCESS_KEY = 'test'
+    SPACES_ENDPOINT = 'http://0.0.0.0:4566'
+    SPACES_REGION = 'eu-central-1'
+    SPACES_BUCKET = 'lc-test-bucket'
+    SPACES_ACCESS_ENDPOINT = None

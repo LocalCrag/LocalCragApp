@@ -24,4 +24,14 @@ class File(BaseEntity):
 
     @hybrid_property
     def filename_with_host(self):
-        return current_app.config['SPACES_ENDPOINT'].replace('://', '://{}.'.format(current_app.config['SPACES_BUCKET'])) + '/' + self.filename
+        endpoint = current_app.config['SPACES_ENDPOINT']
+        if current_app.config['SPACES_ACCESS_ENDPOINT']:
+            endpoint = current_app.config['SPACES_ACCESS_ENDPOINT']
+        protocol, host = endpoint.split('://')
+        result = '{}://{}.{}/{}'.format(
+            protocol,
+            current_app.config['SPACES_BUCKET'],
+            host,
+            self.filename
+        )
+        return result
