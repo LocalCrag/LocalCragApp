@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:cypress-test-backend": "cd ../server/src && export PYTHONPATH=. && export LOCALCRAG_CONFIG=config/test-ci.cfg && pipenv run flask run",
+    "start:cypress-test-backend": "cd ../server/src && export PYTHONPATH=. && export LOCALCRAG_CONFIG=config/test-ci-e2e.cfg && pipenv run flask run",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
