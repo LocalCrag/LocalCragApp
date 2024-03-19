@@ -31,7 +31,7 @@ def create_app():
                         static_folder='uploads')
     application.config.from_object('config.default.DefaultConfig')
     application.config.from_envvar('LOCALCRAG_CONFIG')
-    overwrite_config_by_env_vars()
+    overwrite_config_by_env_vars(application)
     # else:
     #     application.config.from_object('config.env-var-config.EnvVarConfig')
 

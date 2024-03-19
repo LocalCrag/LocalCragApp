@@ -21,7 +21,7 @@ from flask import current_app
 #     FRONTEND_HOST = os.environ.get("FRONTEND_HOST")
 
 
-def overwrite_config_by_env_vars():
+def overwrite_config_by_env_vars(app):
     var_names = [
         'SQLALCHEMY_DATABASE_URI',
         'SECRET_KEY',
@@ -41,4 +41,4 @@ def overwrite_config_by_env_vars():
     ]
     for var_name  in var_names:
         if os.environ.get(var_name):
-            current_app[var_name] = os.environ.get(var_name)
+            app.config[var_name] = os.environ.get(var_name)
