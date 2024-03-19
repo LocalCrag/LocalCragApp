@@ -24,6 +24,8 @@ class File(BaseEntity):
 
     @hybrid_property
     def filename_with_host(self):
+        if not current_app.config['SPACES_ENDPOINT'] and not current_app.config['SPACES_ACCESS_ENDPOINT']:
+            return self.filename
         endpoint = current_app.config['SPACES_ENDPOINT']
         if current_app.config['SPACES_ACCESS_ENDPOINT']:
             endpoint = current_app.config['SPACES_ACCESS_ENDPOINT']
