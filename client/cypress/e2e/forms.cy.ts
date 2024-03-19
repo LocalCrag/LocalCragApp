@@ -64,7 +64,7 @@ describe('Forms test', () => {
     cy.get('[data-cy="topo-image-list-item"]').its('length').then((numBefore => {
       cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/add-topo-image');
       cy.get('[data-cy="topo-image-input"] input').focus().selectFile('cypress/fixtures/images/peter.jpeg', {force: true})
-      cy.wait(5000);
+      cy.wait(2000); // As we are testing the live DO Spaces, we should wait a little extra..
       cy.get('[data-cy="topo-image-form-gps"] input').eq(0).focus().type('90')
       cy.get('[data-cy="topo-image-form-gps"] input').eq(1).focus().type('180')
       cy.get('[data-cy="topo-image-form-title"]').focus().type('Toller Block')
