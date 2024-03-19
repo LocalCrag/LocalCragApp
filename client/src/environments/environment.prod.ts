@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiHost: 'https://localcrag.engelmann.cloud',
+  apiHost: '',
   regionSlug: 'eifel',
   language: 'de',
   instanceName: 'Glees Bouldering',

@@ -1,3 +1,4 @@
+import io
 import os
 import pathlib
 import shutil
@@ -67,3 +68,10 @@ def remove_temp_folder(temp_folder):
     """
     if os.path.isdir(temp_folder):
         shutil.rmtree(temp_folder)
+
+
+def get_image_bytes(img):
+    in_mem_file = io.BytesIO()
+    img.save(in_mem_file, format=img.format)
+    in_mem_file.seek(0)
+    return in_mem_file

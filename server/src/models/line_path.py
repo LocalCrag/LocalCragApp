@@ -13,8 +13,8 @@ class LinePath(BaseEntity):
 
     line_id: Mapped[UUID] = mapped_column(db.ForeignKey("lines.id"), primary_key=True)
     topo_image_id: Mapped[UUID] = mapped_column(db.ForeignKey("topo_images.id"), primary_key=True)
-    line: Mapped["Line"] = relationship()
-    topo_image: Mapped["TopoImage"] = relationship()
+    line: Mapped["Line"] = relationship(overlaps="line_paths")
+    topo_image: Mapped["TopoImage"] = relationship(overlaps="line_paths")
     path = db.Column(JSON, nullable=False)
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     order_index_for_line = db.Column(db.Integer, nullable=False, server_default='0')

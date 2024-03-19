@@ -27,6 +27,8 @@ marshmallow-enum = "*"
 validators = "*"
 install = "*"
 pytest-mock = "*"
+boto3 = "*"
+moto = "*"
 
 [dev-packages]
 

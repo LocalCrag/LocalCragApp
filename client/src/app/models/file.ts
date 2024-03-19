@@ -31,7 +31,7 @@ export class File extends AbstractModel {
     media.originalFilename = payload.originalFilename;
     media.width = payload.width;
     media.height = payload.height;
-    media.path = `${environment.apiHost}/uploads/${payload.filename}`;
+    media.path = payload.filename;
     media.thumbnailXS = payload.thumbnailXS ? media.path.replace(/.([^.]*)$/, '_xs.' + '$1') : null;
     media.thumbnailS = payload.thumbnailS ? media.path.replace(/.([^.]*)$/, '_s.' + '$1') : null;
     media.thumbnailM = payload.thumbnailM ? media.path.replace(/.([^.]*)$/, '_m.' + '$1') : null;

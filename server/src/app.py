@@ -1,12 +1,9 @@
-import uuid
+import os
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import inspect
-from sqlalchemy.orm import make_transient
-from sqlalchemy.util import symbol
 
 from api import configure_api
+from config.env_var_config import overwrite_config_by_env_vars
 from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
@@ -33,7 +30,11 @@ def create_app():
                         static_url_path='/uploads',
                         static_folder='uploads')
     application.config.from_object('config.default.DefaultConfig')
-    application.config.from_envvar('LOCALCRAG_CONFIG')
+    if "LOCALCRAG_CONFIG" in os.environ:
+        application.config.from_envvar('LOCALCRAG_CONFIG')
+    overwrite_config_by_env_vars(application)
+    # else:
+    #     application.config.from_object('config.env-var-config.EnvVarConfig')
 
     register_extensions(application)
 
@@ -45,7 +46,6 @@ def create_app():
 app = create_app()
 
 setup_webargs_error_handlers()
-
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(_jwt_header, jwt_payload):

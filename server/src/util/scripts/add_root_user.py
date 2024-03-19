@@ -8,6 +8,7 @@ from models.user import User
 def add_root_user():
     """
     Adds the initial root user account.
+    todo rename to superadmin
     """
     with app.app_context():
         if not User.find_by_email(current_app.config['SUPERADMIN_EMAIL']):
@@ -18,6 +19,7 @@ def add_root_user():
                 "language": 'de'
             }
             create_user(user_data)
+            print('Added superadmin user.')
 
 
 if __name__ == "__main__":
