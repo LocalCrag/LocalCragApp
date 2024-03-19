@@ -3,6 +3,9 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import boto3
+import botocore
+import moto
 import pytest
 from flask import current_app
 
@@ -24,6 +27,33 @@ def client():
 
     # Return client
     return app.test_client()
+
+
+@pytest.fixture
+def s3_mock():
+    with app.app_context():
+        mock = moto.mock_aws()
+        try:
+            mock.start()
+            # conn = boto3.resource('s3', region_name=app.config['SPACES_REGION'])
+            # conn.create_bucket(Bucket=app.config['SPACES_BUCKET'],
+            #                    CreateBucketConfiguration={"LocationConstraint": app.config['SPACES_REGION']})
+
+            session = boto3.session.Session()
+            client = session.client('s3',
+                                    endpoint_url=current_app.config['SPACES_ENDPOINT'],
+                                    config=botocore.config.Config(s3={'addressing_style': 'virtual'}),
+                                    region_name=current_app.config['SPACES_REGION'],
+                                    aws_access_key_id=current_app.config['SPACES_ACCESS_KEY'],
+                                    aws_secret_access_key=current_app.config['SPACES_SECRET_KEY'])
+            client.create_bucket(Bucket=app.config['SPACES_BUCKET'],
+                               CreateBucketConfiguration={"LocationConstraint": app.config['SPACES_REGION']})
+
+            # with TargetFileSystem() as target_fs:
+            #     copy_assets(test_fs, target_fs)
+            yield client
+        finally:
+            mock.stop()
 
 
 def remove_upload_test_files():
