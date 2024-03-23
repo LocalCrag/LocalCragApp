@@ -10,6 +10,7 @@ from resources.health_resources import Health
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
+from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
 from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
@@ -89,18 +90,18 @@ def configure_api(app):
     app.register_blueprint(area_bp, url_prefix='/api/areas')
 
     # Topo image API
-    area_bp = Blueprint('topo-images', __name__)
-    area_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
-    area_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
-    area_bp.add_url_rule('/<string:image_id>', view_func=UpdateTopoImage.as_view('update_topo_image'))
-    area_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
-    area_bp.add_url_rule('/<string:image_id>/line-paths/update-order', view_func=UpdateLinePathOrder.as_view('update_line_path_order'))
-    app.register_blueprint(area_bp, url_prefix='/api/topo-images')
+    topo_image_bp = Blueprint('topo-images', __name__)
+    topo_image_bp.add_url_rule('/<string:image_id>', view_func=DeleteTopoImage.as_view('delete_topo_image'))
+    topo_image_bp.add_url_rule('/<string:image_id>', view_func=GetTopoImage.as_view('get_topo_image'))
+    topo_image_bp.add_url_rule('/<string:image_id>', view_func=UpdateTopoImage.as_view('update_topo_image'))
+    topo_image_bp.add_url_rule('/<string:image_id>/line-paths', view_func=CreateLinePath.as_view('create_line_path'))
+    topo_image_bp.add_url_rule('/<string:image_id>/line-paths/update-order', view_func=UpdateLinePathOrder.as_view('update_line_path_order'))
+    app.register_blueprint(topo_image_bp, url_prefix='/api/topo-images')
 
     # Line path API
-    area_bp = Blueprint('line-paths', __name__)
-    area_bp.add_url_rule('/<string:line_path_id>', view_func=DeleteLinePath.as_view('delete_line_path'))
-    app.register_blueprint(area_bp, url_prefix='/api/line-paths')
+    line_path_bp = Blueprint('line-paths', __name__)
+    line_path_bp.add_url_rule('/<string:line_path_id>', view_func=DeleteLinePath.as_view('delete_line_path'))
+    app.register_blueprint(line_path_bp, url_prefix='/api/line-paths')
 
     # Sector API
     sector_bp = Blueprint('sectors', __name__)
@@ -126,13 +127,13 @@ def configure_api(app):
     app.register_blueprint(crag_bp, url_prefix='/api/crags')
 
     # Region API
-    regions_bp = Blueprint('regions', __name__)
-    regions_bp.add_url_rule('/<string:region_slug>', view_func=GetRegion.as_view('get_region_details'))
-    regions_bp.add_url_rule('/<string:region_slug>', view_func=UpdateRegion.as_view('update_region'))
-    regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=GetCrags.as_view('get_crags'))
-    regions_bp.add_url_rule('/<string:region_slug>/crags', view_func=CreateCrag.as_view('create_crag'))
-    regions_bp.add_url_rule('/<string:region_slug>/grades', view_func=GetRegionGrades.as_view('get_region_grades'))
-    app.register_blueprint(regions_bp, url_prefix='/api/regions')
+    region_bp = Blueprint('regions', __name__)
+    region_bp.add_url_rule('/<string:region_slug>', view_func=GetRegion.as_view('get_region_details'))
+    region_bp.add_url_rule('/<string:region_slug>', view_func=UpdateRegion.as_view('update_region'))
+    region_bp.add_url_rule('/<string:region_slug>/crags', view_func=GetCrags.as_view('get_crags'))
+    region_bp.add_url_rule('/<string:region_slug>/crags', view_func=CreateCrag.as_view('create_crag'))
+    region_bp.add_url_rule('/<string:region_slug>/grades', view_func=GetRegionGrades.as_view('get_region_grades'))
+    app.register_blueprint(region_bp, url_prefix='/api/regions')
 
     # Post API
     post_bp = Blueprint('posts', __name__)
@@ -142,3 +143,12 @@ def configure_api(app):
     post_bp.add_url_rule('/<string:post_slug>', view_func=DeletePost.as_view('delete_post'))
     post_bp.add_url_rule('/<string:post_slug>', view_func=UpdatePost.as_view('update_post'))
     app.register_blueprint(post_bp, url_prefix='/api/posts')
+
+    # Menu pages API
+    menu_page_bp = Blueprint('menu-pages', __name__)
+    menu_page_bp.add_url_rule('', view_func=GetMenuPages.as_view('get_manu_pages'))
+    menu_page_bp.add_url_rule('', view_func=CreateMenuPage.as_view('create_manu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=GetMenuPage.as_view('get_manu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=DeleteMenuPage.as_view('delete_manu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=UpdateMenuPage.as_view('update_manu_page'))
+    app.register_blueprint(menu_page_bp, url_prefix='/api/menu-pages')
