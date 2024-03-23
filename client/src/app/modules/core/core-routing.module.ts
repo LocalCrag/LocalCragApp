@@ -40,6 +40,8 @@ import {RegionFormComponent} from '../region/region-form/region-form.component';
 import {CragRulesComponent} from '../crag/crag-rules/crag-rules.component';
 import {SectorRulesComponent} from '../sector/sector-rules/sector-rules.component';
 import {RegionRulesComponent} from '../region/region-rules/region-rules.component';
+import {MenuPagesListComponent} from '../menu-pages/menu-pages-list/menu-pages-list.component';
+import {MenuPagesFormComponent} from '../menu-pages/menu-pages-form/menu-pages-form.component';
 
 const routes: Routes = [
   {
@@ -65,6 +67,29 @@ const routes: Routes = [
   {
     path: 'news/:post-slug/edit',
     component: PostFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-pages',
+    component: MenuPagesListComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-pages/create-menu-page',
+    component: MenuPagesFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-pages/:menu-page-slug/edit',
+    component: MenuPagesFormComponent,
     canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT

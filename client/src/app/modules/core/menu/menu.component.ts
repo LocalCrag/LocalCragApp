@@ -48,6 +48,16 @@ export class MenuComponent implements OnInit {
           routerLink: '/change-password'
         },
         {
+          icon: 'pi pi-fw pi-file',
+          label: this.translocoService.translate(marker('menu.menuPages')),
+          routerLink: '/menu-pages'
+        },
+        {
+          icon: 'pi pi-fw pi-bars',
+          label: this.translocoService.translate(marker('menu.menus')),
+          routerLink: '/menus'
+        },
+        {
           label: this.translocoService.translate(marker('menu.logout')),
           icon: 'pi pi-fw pi-sign-out',
           command: this.logout.bind(this),

@@ -27,6 +27,14 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}posts/${slug}`,
   };
 
+  public menuPages = {
+    create: (): string => `${this.apiHost}menu-pages`,
+    getList: (): string => `${this.apiHost}menu-pages`,
+    getDetail: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
+    delete: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
+    update: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
+  };
+
   public regions = {
     getDetail: (slug: string): string => `${this.apiHost}regions/${slug}`,
     update: (slug: string): string => `${this.apiHost}regions/${slug}`,

@@ -1,36 +1,34 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
+import {Editor, EditorModule} from 'primeng/editor';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Area} from '../../../models/area';
+import {Post} from '../../../models/post';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AreasService} from '../../../services/crud/areas.service';
+import {PostsService} from '../../../services/crud/posts.service';
+import {UploadService} from '../../../services/crud/upload.service';
 import {Title} from '@angular/platform-browser';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {ConfirmationService} from 'primeng/api';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
+import {catchError} from 'rxjs/operators';
+import {of} from 'rxjs';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {Post} from '../../../models/post';
-import {PostsService} from '../../../services/crud/posts.service';
+import {MenuPage} from '../../../models/menu-page';
+import {MenuPagesService} from '../../../services/crud/menu-pages.service';
 import {ButtonModule} from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {Editor, EditorModule} from 'primeng/editor';
 import {InputTextModule} from 'primeng/inputtext';
 import {NgIf} from '@angular/common';
+import {PaginatorModule} from 'primeng/paginator';
 import {SharedModule} from '../../shared/shared.module';
-import {UploadService} from '../../../services/crud/upload.service';
 
-/**
- * Form component for creating, editing and deleting blog posts.
- */
 @Component({
-  selector: 'lc-post-form',
+  selector: 'lc-menu-pages-form',
   standalone: true,
   imports: [
     ButtonModule,
@@ -39,23 +37,24 @@ import {UploadService} from '../../../services/crud/upload.service';
     EditorModule,
     InputTextModule,
     NgIf,
+    PaginatorModule,
     ReactiveFormsModule,
     SharedModule,
-    TranslocoDirective,
+    TranslocoDirective
   ],
-  templateUrl: './post-form.component.html',
-  styleUrl: './post-form.component.scss',
+  templateUrl: './menu-pages-form.component.html',
+  styleUrl: './menu-pages-form.component.scss',
   providers: [ConfirmationService]
 })
-export class PostFormComponent implements  OnInit {
+export class MenuPagesFormComponent  implements  OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
 
-  public postForm: FormGroup;
+  public menuPageForm: FormGroup;
   public loadingState = LoadingState.LOADING;
   public loadingStates = LoadingState;
-  public post: Post;
+  public menuPage: MenuPage;
   public editMode = false;
   public quillModules: any;
 
@@ -63,7 +62,7 @@ export class PostFormComponent implements  OnInit {
               private store: Store,
               private route: ActivatedRoute,
               private router: Router,
-              private postsService: PostsService,
+              private menuPagesService: MenuPagesService,
               private uploadService: UploadService,
               private title: Title,
               private translocoService: TranslocoService,
@@ -77,18 +76,18 @@ export class PostFormComponent implements  OnInit {
    */
   ngOnInit() {
     this.buildForm();
-    const postSlug = this.route.snapshot.paramMap.get('post-slug');
-    if (postSlug) {
-      this.title.setTitle(`${this.translocoService.translate(marker('editPostFormBrowserTitle'))} - ${environment.instanceName}`)
+    const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
+    if (menuPageSlug) {
+      this.title.setTitle(`${this.translocoService.translate(marker('editMenuPageFormBrowserTitle'))} - ${environment.instanceName}`)
       this.editMode = true;
-      this.postForm.disable();
-      this.postsService.getPost(postSlug).pipe(catchError(e => {
+      this.menuPageForm.disable();
+      this.menuPagesService.getMenuPage(menuPageSlug).pipe(catchError(e => {
         if (e.status === 404) {
           this.router.navigate(['/not-found']);
         }
         return of(e);
-      })).subscribe(post => {
-        this.post = post;
+      })).subscribe(menuPage => {
+        this.menuPage = menuPage;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
         if (this.editor) {
@@ -96,7 +95,7 @@ export class PostFormComponent implements  OnInit {
         }
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('postFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.title.setTitle(`${this.translocoService.translate(marker('menuPageFormBrowserTitle'))} - ${environment.instanceName}`)
       this.loadingState = LoadingState.DEFAULT;
     }
   }
@@ -104,23 +103,23 @@ export class PostFormComponent implements  OnInit {
 
 
   /**
-   * Builds the post form.
+   * Builds the menu page form.
    */
   private buildForm() {
-    this.postForm = this.fb.group({
+    this.menuPageForm = this.fb.group({
       title: [null, [Validators.required]],
       text: [null, [Validators.required]],
     });
   }
 
   /**
-   * Sets the form value based on an input sector and enables the form afterwards.
+   * Sets the form value based on an input sector and enables the form afterward.
    */
   private setFormValue() {
-    this.postForm.enable();
-    this.postForm.patchValue({
-      title: this.post.title,
-      text: this.post.text,
+    this.menuPageForm.enable();
+    this.menuPageForm.patchValue({
+      title: this.menuPage.title,
+      text: this.menuPage.text,
     });
   }
 
@@ -128,29 +127,29 @@ export class PostFormComponent implements  OnInit {
    * Cancels the form.
    */
   cancel() {
-    this.router.navigate(['/news']);
+    this.router.navigate(['/menu-pages']);
   }
 
   /**
-   * Saves the post and navigates to the post list.
+   * Saves the menu page and navigates to the menu page list.
    */
-  public savePost() {
-    if (this.postForm.valid) {
+  public saveMenuPage() {
+    if (this.menuPageForm.valid) {
       this.loadingState = LoadingState.LOADING;
-      const post = new Post;
-      post.title = this.postForm.get('title').value;
-      post.text = this.postForm.get('text').value;
-      if (this.post) {
-        post.slug = this.post.slug;
-        this.postsService.updatePost(post).subscribe(post => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.POST_UPDATED));
-          this.router.navigate(['/news']);
+      const menuPage = new MenuPage();
+      menuPage.title = this.menuPageForm.get('title').value;
+      menuPage.text = this.menuPageForm.get('text').value;
+      if (this.menuPage) {
+        menuPage.slug = this.menuPage.slug;
+        this.menuPagesService.updateMenuPage(menuPage).subscribe(post => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_UPDATED));
+          this.router.navigate(['/menu-pages']);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.postsService.createPost(post).subscribe(post => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.POST_CREATED));
-          this.router.navigate(['/news']);
+        this.menuPagesService.createMenuPage(menuPage).subscribe(post => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_CREATED));
+          this.router.navigate(['/menu-pages']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -160,32 +159,32 @@ export class PostFormComponent implements  OnInit {
   }
 
   /**
-   * Asks if the post should really get deleted.
+   * Asks if the menu page should really get deleted.
    * @param event Click event.
    */
-  confirmDeletePost(event: Event) {
+  confirmDeleteMenuPage(event: Event) {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('posts.askReallyWantToDeletePost')),
-        acceptLabel: this.translocoService.translate(marker('posts.yesDelete')),
+        message: this.translocoService.translate(marker('menuPages.askReallyWantToDeleteMenuPage')),
+        acceptLabel: this.translocoService.translate(marker('menuPages.yesDelete')),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('posts.noDontDelete')),
+        rejectLabel: this.translocoService.translate(marker('menuPages.noDontDelete')),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.deletePost();
+          this.deleteMenuPage();
         },
       });
     });
   }
 
   /**
-   * Deletes the post and navigates to the post list.
+   * Deletes the menu page and navigates to the menu pages list.
    */
-  public deletePost() {
-    this.postsService.deletePost(this.post).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.POST_DELETED));
-      this.router.navigate(['/news']);
+  public deleteMenuPage() {
+    this.menuPagesService.deleteMenuPage(this.menuPage).subscribe(() => {
+      this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_DELETED));
+      this.router.navigate(['/menu-pages']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }
