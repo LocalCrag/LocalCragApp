@@ -134,9 +134,11 @@ export class MenuItemsFormComponent implements OnInit {
     if (this.menuItemForm.get('type').value === MenuItemType.MENU_PAGE) {
       this.menuItemForm.get('menuPage').setValidators([Validators.required])
       this.menuItemForm.get('menuPage').enable();
+      this.menuItemForm.get('menuPage').setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
     } else {
       this.menuItemForm.get('menuPage').setValidators([])
       this.menuItemForm.get('menuPage').disable();
+      this.menuItemForm.get('menuPage').setValue(null);
     }
   }
 
