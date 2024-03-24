@@ -41,7 +41,7 @@ export class MenuItem extends AbstractModel {
     return {
       type: menuItem.type,
       position: menuItem.position,
-      menuPage: menuItem.menuPage?.id,
+      menuPage:  menuItem.menuPage?  menuItem.menuPage.id : null,
     };
   }
 
