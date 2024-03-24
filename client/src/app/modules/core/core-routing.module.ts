@@ -44,6 +44,7 @@ import {MenuPagesListComponent} from '../menu-pages/menu-pages-list/menu-pages-l
 import {MenuPagesFormComponent} from '../menu-pages/menu-pages-form/menu-pages-form.component';
 import {MenuItemsListComponent} from '../menu-pages/menu-items-list/menu-items-list.component';
 import {MenuItemsFormComponent} from '../menu-pages/menu-items-form/menu-items-form.component';
+import {MenuPageDetailComponent} from '../menu-pages/menu-page-detail/menu-page-detail.component';
 
 const routes: Routes = [
   {
@@ -75,7 +76,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'menu-pages',
+    path: 'pages',
     component: MenuPagesListComponent,
     canActivate: [isLoggedIn],
     data: {
@@ -83,7 +84,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'menu-pages/create-menu-page',
+    path: 'pages/create-menu-page',
     component: MenuPagesFormComponent,
     canActivate: [isLoggedIn],
     data: {
@@ -91,7 +92,14 @@ const routes: Routes = [
     }
   },
   {
-    path: 'menu-pages/:menu-page-slug/edit',
+    path: 'pages/:menu-page-slug',
+    component: MenuPageDetailComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'pages/:menu-page-slug/edit',
     component: MenuPagesFormComponent,
     canActivate: [isLoggedIn],
     data: {

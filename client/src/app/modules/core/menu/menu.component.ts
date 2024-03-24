@@ -50,7 +50,7 @@ export class MenuComponent implements OnInit {
         {
           icon: 'pi pi-fw pi-file',
           label: this.translocoService.translate(marker('menu.menuPages')),
-          routerLink: '/menu-pages'
+          routerLink: '/pages'
         },
         {
           icon: 'pi pi-fw pi-bars',

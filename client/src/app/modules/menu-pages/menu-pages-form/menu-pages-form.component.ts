@@ -127,7 +127,7 @@ export class MenuPagesFormComponent  implements  OnInit {
    * Cancels the form.
    */
   cancel() {
-    this.router.navigate(['/menu-pages']);
+    this.router.navigate(['/pages']);
   }
 
   /**
@@ -143,13 +143,13 @@ export class MenuPagesFormComponent  implements  OnInit {
         menuPage.slug = this.menuPage.slug;
         this.menuPagesService.updateMenuPage(menuPage).subscribe(post => {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_UPDATED));
-          this.router.navigate(['/menu-pages']);
+          this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
         this.menuPagesService.createMenuPage(menuPage).subscribe(post => {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_CREATED));
-          this.router.navigate(['/menu-pages']);
+          this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -184,7 +184,7 @@ export class MenuPagesFormComponent  implements  OnInit {
   public deleteMenuPage() {
     this.menuPagesService.deleteMenuPage(this.menuPage).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_DELETED));
-      this.router.navigate(['/menu-pages']);
+      this.router.navigate(['/pages']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }

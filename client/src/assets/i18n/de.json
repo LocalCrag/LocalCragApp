@@ -95,6 +95,7 @@
   "menuPages.menuPageForm.editMenuPageTitle": "Menü Seite bearbeiten",
   "menuPages.menuPageForm.createMenuPageTitle": "Menü Seite erstellen",
   "menuPages.menuPageList.newMenuPageButtonLabel": "Neue Menü Seite",
+  "menuPages.menuPageList.visitMenuPageButtonLabel": "Besuchen",
   "menuPages.menuPageList.editMenuPageButtonLabel": "Bearbeiten",
   "menuPages.menuPageList.noMenuPagesFoundEmptyMessage": "Keine Menü Seiten gefunden.",
   "menuPages.menuPageList.menuPagesListTitle": "Menü Seiten",
