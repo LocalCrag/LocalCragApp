@@ -92,5 +92,3 @@ class DeletePost(MethodView):
 
         return jsonify(None), 204
 
-
-# todo tests for posts

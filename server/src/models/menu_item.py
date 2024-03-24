@@ -19,7 +19,7 @@ class MenuItem(BaseEntity):
     type = db.Column(db.Enum(MenuItemTypeEnum), nullable=False)
     position = db.Column(db.Enum(MenuItemPositionEnum), nullable=False)
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), primary_key=True)
+    menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
     menu_page: Mapped["MenuPage"] = relationship()
 
     @classmethod

@@ -82,4 +82,3 @@ class DeleteMenuPage(MethodView):
 
         return jsonify(None), 204
 
-# todo tests for menu_pages

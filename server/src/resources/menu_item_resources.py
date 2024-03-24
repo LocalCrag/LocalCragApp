@@ -78,7 +78,7 @@ class UpdateMenuItem(MethodView):
         db.session.add(menu_item)
         db.session.commit()
 
-        return menu_page_schema.dump(menu_item), 200
+        return menu_item_schema.dump(menu_item), 200
 
 
 class DeleteMenuItem(MethodView):
@@ -137,4 +137,3 @@ class UpdateMenuItemBottomOrder(MethodView):
 
         return jsonify(None), 200
 
-# todo tests for menu_items

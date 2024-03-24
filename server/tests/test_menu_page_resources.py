@@ -5,12 +5,12 @@ from tests.utils.user_test_util import get_login_headers
 
 def test_successful_create_menu_page(client):
     access_headers, refresh_headers = get_login_headers(client)
-    crag_data = {
+    menu_page_data = {
         "title": "Glees ist gesperrt!",
         "text": "<p>Haha, verarscht!</p>",
     }
 
-    rv = client.post('/api/menu-pages', headers=access_headers, json=crag_data)
+    rv = client.post('/api/menu-pages', headers=access_headers, json=menu_page_data)
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['title'] == "Glees ist gesperrt!"
@@ -60,12 +60,12 @@ def test_successful_delete_menu_page(client):
 
 def test_successful_edit_menu_page(client):
     access_headers, refresh_headers = get_login_headers(client)
-    crag_data = {
+    menu_page_data = {
         "title": "Alles außer Eifel",
         "text": "ist soft bewertet",
     }
 
-    rv = client.put('/api/menu-pages/impressum', headers=access_headers, json=crag_data)
+    rv = client.put('/api/menu-pages/impressum', headers=access_headers, json=menu_page_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['slug'] == "alles-ausser-eifel"

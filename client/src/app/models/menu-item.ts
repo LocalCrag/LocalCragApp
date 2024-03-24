@@ -14,7 +14,6 @@ export class MenuItem extends AbstractModel {
 
   type: MenuItemType;
   position: MenuItemPosition;
-  orderIndex: number;
   menuPage: MenuPage;
 
   /**
@@ -28,7 +27,6 @@ export class MenuItem extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(menuItem, payload);
     menuItem.type = payload.type;
     menuItem.position = payload.position;
-    menuItem.orderIndex = payload.orderIndex;
     menuItem.menuPage = payload.menuPage ? MenuPage.deserialize(payload.menuPage) : null;
     return menuItem;
   }
