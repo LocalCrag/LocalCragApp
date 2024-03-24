@@ -10,6 +10,8 @@ from resources.health_resources import Health
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
+from resources.menu_item_resources import GetMenuItems, CreateMenuItem, GetMenuItem, DeleteMenuItem, UpdateMenuItem, \
+    UpdateMenuItemTopOrder, UpdateMenuItemBottomOrder
 from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
 from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
@@ -146,9 +148,20 @@ def configure_api(app):
 
     # Menu pages API
     menu_page_bp = Blueprint('menu-pages', __name__)
-    menu_page_bp.add_url_rule('', view_func=GetMenuPages.as_view('get_manu_pages'))
-    menu_page_bp.add_url_rule('', view_func=CreateMenuPage.as_view('create_manu_page'))
-    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=GetMenuPage.as_view('get_manu_page'))
-    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=DeleteMenuPage.as_view('delete_manu_page'))
-    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=UpdateMenuPage.as_view('update_manu_page'))
+    menu_page_bp.add_url_rule('', view_func=GetMenuPages.as_view('get_menu_pages'))
+    menu_page_bp.add_url_rule('', view_func=CreateMenuPage.as_view('create_menu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=GetMenuPage.as_view('get_menu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=DeleteMenuPage.as_view('delete_menu_page'))
+    menu_page_bp.add_url_rule('/<string:menu_page_slug>', view_func=UpdateMenuPage.as_view('update_menu_page'))
     app.register_blueprint(menu_page_bp, url_prefix='/api/menu-pages')
+
+    # Menu items API
+    menu_item_bp = Blueprint('menu-items', __name__)
+    menu_item_bp.add_url_rule('', view_func=GetMenuItems.as_view('get_manu_items'))
+    menu_item_bp.add_url_rule('', view_func=CreateMenuItem.as_view('create_menu_item'))
+    menu_item_bp.add_url_rule('/<string:menu_item_id>', view_func=GetMenuItem.as_view('get_menu_item'))
+    menu_item_bp.add_url_rule('/<string:menu_item_id>', view_func=DeleteMenuItem.as_view('delete_menu_item'))
+    menu_item_bp.add_url_rule('/<string:menu_item_id>', view_func=UpdateMenuItem.as_view('update_menu_item'))
+    menu_item_bp.add_url_rule('/update-order-top', view_func=UpdateMenuItemTopOrder.as_view('update_menu_item_top_order'))
+    menu_item_bp.add_url_rule('/update-order-bottom', view_func=UpdateMenuItemBottomOrder.as_view('update_menu_item_bottom_order'))
+    app.register_blueprint(menu_item_bp, url_prefix='/api/menu-pages')
