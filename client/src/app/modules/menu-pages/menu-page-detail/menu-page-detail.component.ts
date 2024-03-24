@@ -6,6 +6,8 @@ import {SharedModule} from '../../shared/shared.module';
 import {MenuPagesService} from '../../../services/crud/menu-pages.service';
 import {ActivatedRoute} from '@angular/router';
 import {LoadingState} from '../../../enums/loading-state';
+import {NgIf} from '@angular/common';
+import {SkeletonModule} from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-menu-page-detail',
@@ -13,7 +15,9 @@ import {LoadingState} from '../../../enums/loading-state';
   imports: [
     CardModule,
     TranslocoDirective,
-    SharedModule
+    SharedModule,
+    NgIf,
+    SkeletonModule
   ],
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss'
