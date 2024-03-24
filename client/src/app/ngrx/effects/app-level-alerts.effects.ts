@@ -5,7 +5,6 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {AppState} from '../reducers';
 import {tap} from 'rxjs/operators';
-import {AppNotificationsService} from '../../services/core/app-notifications.service';
 import {checkShowCookieAlert, cookiesAccepted, showCookieAlert} from '../actions/app-level-alerts.actions';
 import {toastNotification} from '../actions/notifications.actions';
 import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
@@ -41,7 +40,6 @@ export class AppLevelAlertsEffects {
   ), {dispatch: false});
 
   constructor(
-    private notifications: AppNotificationsService,
     private actions$: Actions,
     private store: Store<AppState>) {
   }

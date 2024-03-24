@@ -3,6 +3,7 @@ import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {AbstractModel} from '../../../../models/abstract-model';
 import {LoadingState} from '../../../../enums/loading-state';
 import {Observable} from 'rxjs';
+import {MenuItemType} from '../../../../enums/menu-item-type';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -21,6 +22,8 @@ export class OrderItemsComponent {
   public loadingStates = LoadingState;
   public showImage = false;
   public showLinePathLineName = false;
+  public showMenuItemTitle = false;
+  public menuItemTypes = MenuItemType;
 
   private callback: (payload: any, slug?: string) => Observable<any>;
   private idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
@@ -34,6 +37,7 @@ export class OrderItemsComponent {
     this.slugParameter = this.dialogConfig.data.slugParameter;
     this.showImage = this.dialogConfig.data.showImage ? this.dialogConfig.data.showImage : false;
     this.showLinePathLineName = this.dialogConfig.data.showLinePathLineName ? this.dialogConfig.data.showLinePathLineName : false;
+    this.showMenuItemTitle = this.dialogConfig.data.showMenuItemTitle ? this.dialogConfig.data.showMenuItemTitle : false;
     this.idAccessor = this.dialogConfig.data.idAccessor ? this.dialogConfig.data.idAccessor : this.idAccessor;
   }
 
@@ -63,4 +67,5 @@ export class OrderItemsComponent {
     });
   }
 
+  protected readonly MenuItemType = MenuItemType;
 }

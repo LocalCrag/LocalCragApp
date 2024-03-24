@@ -132,7 +132,7 @@ export class PostFormComponent implements  OnInit {
   }
 
   /**
-   * Saves the area and navigates to the area list.
+   * Saves the post and navigates to the post list.
    */
   public savePost() {
     if (this.postForm.valid) {

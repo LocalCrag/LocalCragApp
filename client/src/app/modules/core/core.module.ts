@@ -28,8 +28,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {CardModule} from 'primeng/card';
 import {MenuModule} from 'primeng/menu';
 import {FooterComponent} from './footer/footer.component';
-import {ImprintComponent} from './imprint/imprint.component';
-import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {SharedModule} from '../shared/shared.module';
 import {MessagesModule} from 'primeng/messages';
@@ -52,6 +50,7 @@ import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {CacheEffects} from '../../ngrx/effects/cache.effects';
 import {BackgroundImageComponent} from './background-image/background-image.component';
+import {MenuItemsService} from '../../services/crud/menu-items.service';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -68,14 +67,18 @@ export function preloadTranslations(transloco: TranslocoService) {
   }
 }
 
+export function preloadMenus(menuItemsService: MenuItemsService) {
+  return () => {
+    return menuItemsService.getMenuItems();
+  }
+}
+
 @NgModule({
   declarations: [
     CoreComponent,
     MenuComponent,
     LoginComponent,
     FooterComponent,
-    ImprintComponent,
-    DataPrivacyStatementComponent,
     ChangePasswordComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
@@ -151,6 +154,12 @@ export function preloadTranslations(transloco: TranslocoService) {
       multi: true,
       deps: [TranslocoService],
       useFactory: preloadTranslations
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [MenuItemsService],
+      useFactory: preloadMenus
     }
   ],
   bootstrap: [CoreComponent]

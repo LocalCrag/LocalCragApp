@@ -1,6 +1,6 @@
 # Configuring localstack
 
-LocalCrag is built to use s3 like object storage instead of filesystem for storing data like images. Currently we host 
+LocalCrag is built to use s3 like object storage instead of filesystem for storing data like images. Currently, we host 
 our instances on the digitalocean app platform and use the spaces object storage in production. 
 
 For local development a local replacement is needed if you don't want to interact with the cloud. We opted for 

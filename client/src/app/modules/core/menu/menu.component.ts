@@ -1,24 +1,20 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {forkJoin, Observable} from 'rxjs';
-import {selectShowCookieAlert} from '../../../ngrx/selectors/app-level-alerts.selectors';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import {
-  cleanupCredentials,
-  loginSuccess,
-  logout,
-  logoutSuccess,
-  newAuthCredentials
-} from 'src/app/ngrx/actions/auth.actions';
+import {cleanupCredentials, logout, newAuthCredentials} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {filter, take} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
+import {take} from 'rxjs/operators';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Actions, ofType} from '@ngrx/effects';
-import {reloadCrags} from '../../../ngrx/actions/core.actions';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {MenuItemsService} from '../../../services/crud/menu-items.service';
+import {MenuItemPosition} from '../../../enums/menu-item-position';
+import {MenuItemType} from '../../../enums/menu-item-type';
+import {Crag} from '../../../models/crag';
 
 @Component({
   selector: 'lc-menu',
@@ -34,84 +30,110 @@ export class MenuComponent implements OnInit {
   isMobile$: Observable<boolean>;
 
   constructor(private cragsService: CragsService,
+              private menuItemsService: MenuItemsService,
               private translocoService: TranslocoService,
               private actions: Actions,
               private store: Store) {
   }
 
   ngOnInit() {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.userMenuItems = [
-        {
-          icon: 'pi pi-fw pi-pencil',
-          label: this.translocoService.translate(marker('menu.changePassword')),
-          routerLink: '/change-password'
-        },
-        {
-          label: this.translocoService.translate(marker('menu.logout')),
-          icon: 'pi pi-fw pi-sign-out',
-          command: this.logout.bind(this),
-        }
-      ]
-      this.items = [
-        {
-          label: this.translocoService.translate(marker('menu.news')),
-          icon: 'pi pi-fw pi-megaphone',
-          routerLink: '/news',
-        },
-        {
-          label: this.translocoService.translate(marker('menu.topo')),
-          icon: 'pi pi-fw pi-map',
-          routerLink: '/topo/crags',
-          items: []
-        },
-        // {
-        //   label: this.translocoService.translate(marker('menu.ticklist')),
-        //   icon: 'pi pi-fw pi-check-square'
-        // },
-        {
-          label: this.translocoService.translate(marker('menu.youtube')),
-          url: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',
-          icon: 'pi pi-fw pi-youtube'
-        },
-        {
-          label: this.translocoService.translate(marker('menu.instagram')),
-          url: 'https://www.instagram.com/gleesbouldering/',
-          icon: 'pi pi-fw pi-instagram'
-        },
-      ];
-    });
+    this.userMenuItems = [
+      {
+        icon: 'pi pi-fw pi-pencil',
+        label: this.translocoService.translate(marker('menu.changePassword')),
+        routerLink: '/change-password'
+      },
+      {
+        icon: 'pi pi-fw pi-file',
+        label: this.translocoService.translate(marker('menu.menuPages')),
+        routerLink: '/pages'
+      },
+      {
+        icon: 'pi pi-fw pi-bars',
+        label: this.translocoService.translate(marker('menu.menus')),
+        routerLink: '/menu-items'
+      },
+      {
+        label: this.translocoService.translate(marker('menu.logout')),
+        icon: 'pi pi-fw pi-sign-out',
+        command: this.logout.bind(this),
+      }
+    ]
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.buildCragNavigationMenu();
-    this.actions.pipe(ofType(reloadCrags, newAuthCredentials, cleanupCredentials)).subscribe(() => {
-      this.buildCragNavigationMenu();
+    this.buildMenu();
+    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe(() => {
+      this.buildMenu();
     })
   }
 
-  /**
-   * Builds the crags navigation menu.
-   */
-  buildCragNavigationMenu() {
-    forkJoin([this.cragsService.getCrags(), this.isLoggedIn$.pipe(take(1))])
-      .subscribe(([crags, isLoggedIn]) => {
-        this.items = [...this.items];
-        this.items[1].items = [];
-        crags.map(crag => {
-          this.items[1].items.push({
-            label: crag.name,
-            icon: 'pi pi-fw pi-map',
-            routerLink: `/topo/${crag.slug}`
-          })
-        })
-        if (isLoggedIn) {
-          this.items[1].items.push({
-            label: this.translocoService.translate(marker('menu.newCrag')),
-            icon: 'pi pi-fw pi-plus',
-            routerLink: '/topo/create-crag',
-          })
+  buildMenu() {
+    forkJoin([
+      this.menuItemsService.getMenuItems(),
+      this.cragsService.getCrags(),
+      this.isLoggedIn$.pipe(take(1))
+    ]).subscribe(([menuItems, crags, isLoggedIn]) => {
+      this.items = [];
+      const menuItemsTop = menuItems.filter(menuItem => menuItem.position === MenuItemPosition.TOP);
+      menuItemsTop.map(menuItem => {
+        switch (menuItem.type) {
+          case MenuItemType.MENU_PAGE:
+            this.items.push({
+              label: menuItem.menuPage.title,
+              routerLink: 'pages/' + menuItem.menuPage.slug,
+            })
+            break;
+          case MenuItemType.NEWS:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.news')),
+              icon: 'pi pi-fw pi-megaphone',
+              routerLink: '/news',
+            });
+            break;
+          case MenuItemType.INSTAGRAM:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.instagram')),
+              url: 'https://www.instagram.com/gleesbouldering/',
+              icon: 'pi pi-fw pi-instagram'
+            });
+            break;
+          case MenuItemType.YOUTUBE:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.youtube')),
+              url: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',
+              icon: 'pi pi-fw pi-youtube'
+            });
+            break;
+          case MenuItemType.TOPO:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.topo')),
+              icon: 'pi pi-fw pi-map',
+              routerLink: '/topo/crags',
+              items: this.buildCragNavigationMenu(crags, isLoggedIn)
+            });
+            break;
         }
       });
+    })
+  }
+
+  buildCragNavigationMenu(crags: Crag[], isLoggedIn: boolean) {
+    const cragItems = [];
+    crags.map(crag => {
+      cragItems.push({
+        label: crag.name,
+        icon: 'pi pi-fw pi-map',
+        routerLink: `/topo/${crag.slug}`
+      })
+    })
+    if (isLoggedIn) {
+      cragItems.push({
+        label: this.translocoService.translate(marker('menu.newCrag')),
+        icon: 'pi pi-fw pi-plus',
+        routerLink: '/topo/create-crag',
+      })
+    }
+    return cragItems;
   }
 
   /**

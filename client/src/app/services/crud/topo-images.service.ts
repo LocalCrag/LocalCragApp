@@ -9,7 +9,7 @@ import {LinePath} from '../../models/line-path';
 import {Crag} from '../../models/crag';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {environment} from '../../../environments/environment';
-import {reloadCrags} from '../../ngrx/actions/core.actions';
+import {reloadMenus} from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for topo images.

@@ -21,7 +21,7 @@ p-breadcrumb {
 }
 
 // Hide button labels on small screens
-p-button.responsive-button {
+p-button.responsive-button, button.responsive-button {
   .p-button-label {
     @include m.on-mobile {
       display: none;

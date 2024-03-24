@@ -8,7 +8,7 @@ import {CacheService} from '../core/cache.service';
 import {environment} from '../../../environments/environment';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {Store} from '@ngrx/store';
-import {reloadCrags} from '../../ngrx/actions/core.actions';
+import {reloadMenus} from '../../ngrx/actions/core.actions';
 import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 /**
@@ -36,7 +36,7 @@ export class CragsService {
     return this.http.post(this.api.crags.create(regionSlug), Crag.serialize(crag)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList(regionSlug));
-        this.store.dispatch(reloadCrags());
+        this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
     );
@@ -71,7 +71,7 @@ export class CragsService {
     return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList(environment.regionSlug));
-        this.store.dispatch(reloadCrags());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );
@@ -88,7 +88,7 @@ export class CragsService {
       tap(() => {
         this.cache.clear(this.api.crags.getDetail(crag.slug));
         this.cache.clear(this.api.crags.getList(environment.regionSlug));
-        this.store.dispatch(reloadCrags());
+        this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
     );
