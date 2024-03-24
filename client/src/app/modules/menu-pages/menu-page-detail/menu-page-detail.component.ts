@@ -4,7 +4,7 @@ import {TranslocoDirective} from '@ngneat/transloco';
 import {MenuPage} from '../../../models/menu-page';
 import {SharedModule} from '../../shared/shared.module';
 import {MenuPagesService} from '../../../services/crud/menu-pages.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {LoadingState} from '../../../enums/loading-state';
 import {NgIf} from '@angular/common';
 import {SkeletonModule} from 'primeng/skeleton';
@@ -28,6 +28,7 @@ export class MenuPageDetailComponent implements OnInit{
   public loadingState = LoadingState.LOADING;
 
   constructor(private menuPagesService: MenuPagesService,
+              private router: Router,
               private route: ActivatedRoute) {
   }
 
@@ -36,6 +37,8 @@ export class MenuPageDetailComponent implements OnInit{
     this.menuPagesService.getMenuPage(menuPageSlug).subscribe(menuPage => {
       this.menuPage = menuPage;
       this.loadingState = LoadingState.DEFAULT;
+    }, ()=>{
+      this.router.navigate(['not-found']);
     });
   }
 

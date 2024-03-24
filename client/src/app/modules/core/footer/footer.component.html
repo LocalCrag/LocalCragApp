@@ -1,6 +1,6 @@
 <ng-container *transloco="let t, read: 'footer'">
 
-  <div class="footer-menu">
+  <div class="footer-menu" *ngIf="menuItems.length > 0">
     <ng-container *ngFor="let menuItem of menuItems">
       <p-button *ngIf="menuItem.routerLink"
                 label="{{menuItem.title}}"
