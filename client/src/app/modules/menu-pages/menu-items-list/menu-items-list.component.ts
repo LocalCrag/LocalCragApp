@@ -20,6 +20,7 @@ import {MenuItemType} from '../../../enums/menu-item-type';
 import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -110,6 +111,7 @@ export class MenuItemsListComponent implements OnInit {
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
+      this.store.dispatch(reloadMenus());
     });
   }
 

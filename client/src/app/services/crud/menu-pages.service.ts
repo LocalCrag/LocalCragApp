@@ -79,6 +79,7 @@ export class MenuPagesService {
       tap(() => {
         this.cache.clear(this.api.menuPages.getDetail(menuPage.slug));
         this.cache.clear(this.api.menuPages.getList());
+        this.cache.clear(this.api.menuItems.getList());
       }),
       map(MenuPage.deserialize)
     );

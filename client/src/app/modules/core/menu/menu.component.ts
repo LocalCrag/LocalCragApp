@@ -18,7 +18,7 @@ import {filter, take} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Actions, ofType} from '@ngrx/effects';
-import {reloadCrags} from '../../../ngrx/actions/core.actions';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
 
 @Component({
   selector: 'lc-menu',
@@ -94,7 +94,7 @@ export class MenuComponent implements OnInit {
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.buildCragNavigationMenu();
-    this.actions.pipe(ofType(reloadCrags, newAuthCredentials, cleanupCredentials)).subscribe(() => {
+    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe(() => {
       this.buildCragNavigationMenu();
     })
   }

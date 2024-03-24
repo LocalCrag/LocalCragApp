@@ -28,8 +28,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {CardModule} from 'primeng/card';
 import {MenuModule} from 'primeng/menu';
 import {FooterComponent} from './footer/footer.component';
-import {ImprintComponent} from './imprint/imprint.component';
-import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {SharedModule} from '../shared/shared.module';
 import {MessagesModule} from 'primeng/messages';
@@ -74,8 +72,6 @@ export function preloadTranslations(transloco: TranslocoService) {
     MenuComponent,
     LoginComponent,
     FooterComponent,
-    ImprintComponent,
-    DataPrivacyStatementComponent,
     ChangePasswordComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,

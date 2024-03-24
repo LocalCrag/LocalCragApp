@@ -1,8 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
-import {ImprintComponent} from './imprint/imprint.component';
-import {DataPrivacyStatementComponent} from './data-privacy-statement/data-privacy-statement.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
@@ -126,20 +124,6 @@ const routes: Routes = [
     path: 'menu-items/:menu-item-id/edit',
     component: MenuItemsFormComponent,
     canActivate: [isLoggedIn],
-    data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
-  },
-  {
-    path: 'imprint',
-    component: ImprintComponent,
-    data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
-  },
-  {
-    path: 'data-privacy-statement',
-    component: DataPrivacyStatementComponent,
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }

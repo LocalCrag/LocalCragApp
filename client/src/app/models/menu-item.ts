@@ -17,7 +17,6 @@ export class MenuItem extends AbstractModel {
   orderIndex: number;
   menuPage: MenuPage;
 
-
   /**
    * Parses a menu item.
    *

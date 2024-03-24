@@ -27,6 +27,7 @@ import {ButtonModule} from 'primeng/button';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {MenuItemPosition} from '../../../enums/menu-item-position';
 import {getInstanceEquivalentFromList} from '../../../utility/array-operations';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -174,12 +175,14 @@ export class MenuItemsFormComponent implements OnInit {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_UPDATED));
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(reloadMenus());
         });
       } else {
         this.menuItemsService.createMenuItem(menuItem).subscribe(() => {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_CREATED));
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(reloadMenus());
         });
       }
     } else {
@@ -213,6 +216,7 @@ export class MenuItemsFormComponent implements OnInit {
   public deleteMenuItem() {
     this.menuItemsService.deleteMenuItem(this.menuItem).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_DELETED));
+      this.store.dispatch(reloadMenus());
       this.router.navigate(['/menu-items']);
       this.loadingState = LoadingState.DEFAULT;
     });

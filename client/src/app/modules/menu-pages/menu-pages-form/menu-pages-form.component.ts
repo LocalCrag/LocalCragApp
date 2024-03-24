@@ -26,6 +26,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {NgIf} from '@angular/common';
 import {PaginatorModule} from 'primeng/paginator';
 import {SharedModule} from '../../shared/shared.module';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
 
 @Component({
   selector: 'lc-menu-pages-form',
@@ -145,12 +146,14 @@ export class MenuPagesFormComponent  implements  OnInit {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_UPDATED));
           this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(reloadMenus());
         });
       } else {
         this.menuPagesService.createMenuPage(menuPage).subscribe(post => {
           this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_CREATED));
           this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(reloadMenus());
         });
       }
     } else {
@@ -184,6 +187,7 @@ export class MenuPagesFormComponent  implements  OnInit {
   public deleteMenuPage() {
     this.menuPagesService.deleteMenuPage(this.menuPage).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.MENU_PAGE_DELETED));
+      this.store.dispatch(reloadMenus());
       this.router.navigate(['/pages']);
       this.loadingState = LoadingState.DEFAULT;
     });
