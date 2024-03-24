@@ -35,6 +35,16 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
   };
 
+  public menuItems = {
+    create: (): string => `${this.apiHost}menu-items`,
+    getList: (): string => `${this.apiHost}menu-items`,
+    getDetail: (id: string): string => `${this.apiHost}menu-items/${id}`,
+    delete: (id: string): string => `${this.apiHost}menu-items/${id}`,
+    update: (id: string): string => `${this.apiHost}menu-items/${id}`,
+    updateOrderTop: (): string => `${this.apiHost}menu-items/update-order-top`,
+    updateOrderBottom: (): string => `${this.apiHost}menu-items/update-order-bottom`,
+  };
+
   public regions = {
     getDetail: (slug: string): string => `${this.apiHost}regions/${slug}`,
     update: (slug: string): string => `${this.apiHost}regions/${slug}`,

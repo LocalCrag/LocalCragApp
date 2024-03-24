@@ -4,7 +4,7 @@ import {ActivatedRoute, ActivatedRouteSnapshot, ActivationStart, Router} from '@
 export enum StaticBackgroundImages {
   DEFAULT = 'assets/bg.jpeg',
   AUTH = 'assets/login-bg.jpeg',
-  NOT_FOUND = 'assets/404.jpg',
+  NOT_FOUND = 'assets/404.jpeg',
 }
 
 /**

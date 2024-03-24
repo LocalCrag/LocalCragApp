@@ -22,7 +22,7 @@ class GetMenuItems(MethodView):
         """
         Returns all menu items.
         """
-        menu_items: MenuItem = MenuItem.return_all()
+        menu_items: MenuItem = MenuItem.return_all(order_by=lambda: MenuItem.order_index.asc())
         return jsonify(menu_items_schema.dump(menu_items)), 200
 
 
@@ -50,6 +50,7 @@ class CreateMenuItem(MethodView):
         new_menu_item.position = menu_item_data['position']
         new_menu_item.menu_page_id = menu_item_data['menuPage']
         new_menu_item.created_by_id = created_by.id
+        new_menu_item.order_index = MenuItem.find_max_order_index_at_position(new_menu_item.position) +1
 
         db.session.add(new_menu_item)
         db.session.commit()
@@ -67,9 +68,13 @@ class UpdateMenuItem(MethodView):
         menu_item_data = parser.parse(menu_item_args, request)
         menu_item: MenuItem = MenuItem.find_by_id(menu_item_id)
 
+        if menu_item.position != menu_item_data['position']:
+            menu_item.order_index = MenuItem.find_max_order_index_at_position( menu_item_data['position']) +1
+
         menu_item.type = menu_item_data['type']
         menu_item.position = menu_item_data['position']
         menu_item.menu_page_id = menu_item_data['menuPage']
+
         db.session.add(menu_item)
         db.session.commit()
 
@@ -109,6 +114,8 @@ class UpdateMenuItemTopOrder(MethodView):
 
         db.session.commit()
 
+        return jsonify(None), 200
+
 
 class UpdateMenuItemBottomOrder(MethodView):
     @jwt_required()
@@ -127,5 +134,7 @@ class UpdateMenuItemBottomOrder(MethodView):
             db.session.add(menu_item)
 
         db.session.commit()
+
+        return jsonify(None), 200
 
 # todo tests for menu_items

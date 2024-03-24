@@ -164,4 +164,4 @@ def configure_api(app):
     menu_item_bp.add_url_rule('/<string:menu_item_id>', view_func=UpdateMenuItem.as_view('update_menu_item'))
     menu_item_bp.add_url_rule('/update-order-top', view_func=UpdateMenuItemTopOrder.as_view('update_menu_item_top_order'))
     menu_item_bp.add_url_rule('/update-order-bottom', view_func=UpdateMenuItemBottomOrder.as_view('update_menu_item_bottom_order'))
-    app.register_blueprint(menu_item_bp, url_prefix='/api/menu-pages')
+    app.register_blueprint(menu_item_bp, url_prefix='/api/menu-items')

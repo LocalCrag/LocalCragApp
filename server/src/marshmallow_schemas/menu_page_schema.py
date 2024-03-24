@@ -7,11 +7,14 @@ from models.file import File
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 
 
-class MenuPageSchema(BaseEntitySchema):
+class MenuPageMinSchema(BaseEntitySchema):
     title = fields.String()
-    text = fields.String()
     slug = fields.String()
+
+class MenuPageSchema(MenuPageMinSchema):
+    text = fields.String()
 
 
 menu_page_schema = MenuPageSchema()
+menu_page_min_schema = MenuPageMinSchema()
 menu_pages_schema = MenuPageSchema(many=True)

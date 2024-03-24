@@ -42,6 +42,8 @@ import {SectorRulesComponent} from '../sector/sector-rules/sector-rules.componen
 import {RegionRulesComponent} from '../region/region-rules/region-rules.component';
 import {MenuPagesListComponent} from '../menu-pages/menu-pages-list/menu-pages-list.component';
 import {MenuPagesFormComponent} from '../menu-pages/menu-pages-form/menu-pages-form.component';
+import {MenuItemsListComponent} from '../menu-pages/menu-items-list/menu-items-list.component';
+import {MenuItemsFormComponent} from '../menu-pages/menu-items-form/menu-items-form.component';
 
 const routes: Routes = [
   {
@@ -75,6 +77,7 @@ const routes: Routes = [
   {
     path: 'menu-pages',
     component: MenuPagesListComponent,
+    canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -90,6 +93,30 @@ const routes: Routes = [
   {
     path: 'menu-pages/:menu-page-slug/edit',
     component: MenuPagesFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-items',
+    component: MenuItemsListComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-items/create-menu-item/:position',
+    component: MenuItemsFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'menu-items/:menu-item-id/edit',
+    component: MenuItemsFormComponent,
     canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
