@@ -45,28 +45,28 @@ export class FooterComponent implements OnInit{
             break;
           case MenuItemType.NEWS:
             this.menuItems.push({
-              title: this.translocoService.translate('news'),
+              title: this.translocoService.translate('menu.news'),
               routerLink: 'news',
               link: null
             });
             break;
           case MenuItemType.TOPO:
             this.menuItems.push({
-              title: this.translocoService.translate('topo'),
+              title: this.translocoService.translate('menu.topo'),
               routerLink: 'topo',
               link: null
             });
             break;
           case MenuItemType.YOUTUBE:
             this.menuItems.push({
-              title: this.translocoService.translate('youtube'),
+              title: this.translocoService.translate('menu.youtube'),
               routerLink: null,
               link: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',// todo
             });
             break;
           case MenuItemType.INSTAGRAM:
             this.menuItems.push({
-              title: this.translocoService.translate('instagram'),
+              title: this.translocoService.translate('menu.instagram'),
               routerLink: null,
               link: 'https://www.instagram.com/gleesbouldering/', // todo
             });

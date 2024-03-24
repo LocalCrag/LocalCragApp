@@ -50,6 +50,7 @@ import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {CacheEffects} from '../../ngrx/effects/cache.effects';
 import {BackgroundImageComponent} from './background-image/background-image.component';
+import {MenuItemsService} from '../../services/crud/menu-items.service';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -63,6 +64,12 @@ export function preloadTranslations(transloco: TranslocoService) {
       transloco.load('topoImage/' + environment.language),
       transloco.load('linePath/' + environment.language),
     ]);
+  }
+}
+
+export function preloadMenus(menuItemsService: MenuItemsService) {
+  return () => {
+    return menuItemsService.getMenuItems();
   }
 }
 
@@ -147,6 +154,12 @@ export function preloadTranslations(transloco: TranslocoService) {
       multi: true,
       deps: [TranslocoService],
       useFactory: preloadTranslations
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [MenuItemsService],
+      useFactory: preloadMenus
     }
   ],
   bootstrap: [CoreComponent]
