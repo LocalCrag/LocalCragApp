@@ -13,6 +13,7 @@ import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {Title} from '@angular/platform-browser';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-crag',
@@ -50,7 +51,9 @@ export class CragComponent implements OnInit {
         this.translocoService.load(`${environment.language}`)
       ]).subscribe(([crag, isLoggedIn]) => {
         this.crag = crag;
-        this.title.setTitle(`${crag.name} - ${environment.instanceName}`)
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${crag.name} - ${instanceName}`);
+        });
         this.items = [
           {
             label: this.translocoService.translate(marker('crag.infos')),

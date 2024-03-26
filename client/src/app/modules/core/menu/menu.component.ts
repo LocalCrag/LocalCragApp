@@ -15,6 +15,12 @@ import {MenuItemsService} from '../../../services/crud/menu-items.service';
 import {MenuItemPosition} from '../../../enums/menu-item-position';
 import {MenuItemType} from '../../../enums/menu-item-type';
 import {Crag} from '../../../models/crag';
+import {
+  selectInstagramUrl, selectInstanceName,
+  selectLogoImage,
+  selectYoutubeUrl
+} from '../../../ngrx/selectors/instance-settings.selectors';
+import {File} from '../../../models/file';
 
 @Component({
   selector: 'lc-menu',
@@ -28,6 +34,8 @@ export class MenuComponent implements OnInit {
   userMenuItems: MenuItem[] = [];
   isLoggedIn$: Observable<boolean>;
   isMobile$: Observable<boolean>;
+  logoImage$: Observable<File>;
+  instanceName$: Observable<string>;
 
   constructor(private cragsService: CragsService,
               private menuItemsService: MenuItemsService,
@@ -54,11 +62,18 @@ export class MenuComponent implements OnInit {
         routerLink: '/menu-items'
       },
       {
+        icon: 'pi pi-fw pi-cog',
+        label: this.translocoService.translate(marker('menu.instanceSettings')),
+        routerLink: '/instance-settings'
+      },
+      {
         label: this.translocoService.translate(marker('menu.logout')),
         icon: 'pi pi-fw pi-sign-out',
         command: this.logout.bind(this),
       }
     ]
+    this.logoImage$ = this.store.pipe(select(selectLogoImage));
+    this.instanceName$ = this.store.pipe(select(selectInstanceName));
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.buildMenu();
@@ -71,8 +86,10 @@ export class MenuComponent implements OnInit {
     forkJoin([
       this.menuItemsService.getMenuItems(),
       this.cragsService.getCrags(),
+      this.store.select(selectYoutubeUrl).pipe(take(1)),
+      this.store.select(selectInstagramUrl).pipe(take(1)),
       this.isLoggedIn$.pipe(take(1))
-    ]).subscribe(([menuItems, crags, isLoggedIn]) => {
+    ]).subscribe(([menuItems, crags,youtubeUrl, instagramUrl, isLoggedIn]) => {
       this.items = [];
       const menuItemsTop = menuItems.filter(menuItem => menuItem.position === MenuItemPosition.TOP);
       menuItemsTop.map(menuItem => {
@@ -93,14 +110,14 @@ export class MenuComponent implements OnInit {
           case MenuItemType.INSTAGRAM:
             this.items.push({
               label: this.translocoService.translate(marker('menu.instagram')),
-              url: 'https://www.instagram.com/gleesbouldering/',
+              url: instagramUrl,
               icon: 'pi pi-fw pi-instagram'
             });
             break;
           case MenuItemType.YOUTUBE:
             this.items.push({
               label: this.translocoService.translate(marker('menu.youtube')),
-              url: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',
+              url: youtubeUrl,
               icon: 'pi pi-fw pi-youtube'
             });
             break;

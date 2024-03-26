@@ -125,6 +125,8 @@ def configure_api(app):
 
     # Crag API
     crag_bp = Blueprint('crags', __name__)
+    crag_bp.add_url_rule('', view_func=GetCrags.as_view('get_crags'))
+    crag_bp.add_url_rule('', view_func=CreateCrag.as_view('create_crag'))
     crag_bp.add_url_rule('/update-order', view_func=UpdateCragOrder.as_view('update_crag_order'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=GetCrag.as_view('get_crag_details'))
     crag_bp.add_url_rule('/<string:crag_slug>', view_func=UpdateCrag.as_view('update_crag'))
@@ -136,13 +138,11 @@ def configure_api(app):
     app.register_blueprint(crag_bp, url_prefix='/api/crags')
 
     # Region API
-    region_bp = Blueprint('regions', __name__)
-    region_bp.add_url_rule('/<string:region_slug>', view_func=GetRegion.as_view('get_region_details'))
-    region_bp.add_url_rule('/<string:region_slug>', view_func=UpdateRegion.as_view('update_region'))
-    region_bp.add_url_rule('/<string:region_slug>/crags', view_func=GetCrags.as_view('get_crags'))
-    region_bp.add_url_rule('/<string:region_slug>/crags', view_func=CreateCrag.as_view('create_crag'))
-    region_bp.add_url_rule('/<string:region_slug>/grades', view_func=GetRegionGrades.as_view('get_region_grades'))
-    app.register_blueprint(region_bp, url_prefix='/api/regions')
+    region_bp = Blueprint('region', __name__)
+    region_bp.add_url_rule('', view_func=GetRegion.as_view('get_region_details'))
+    region_bp.add_url_rule('', view_func=UpdateRegion.as_view('update_region'))
+    region_bp.add_url_rule('/grades', view_func=GetRegionGrades.as_view('get_region_grades'))
+    app.register_blueprint(region_bp, url_prefix='/api/region')
 
     # Post API
     post_bp = Blueprint('posts', __name__)

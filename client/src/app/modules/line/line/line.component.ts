@@ -17,6 +17,7 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-line',
@@ -81,7 +82,9 @@ export class LineComponent {
       this.sector = sector;
       this.area = area;
       this.line = line;
-      this.title.setTitle(`${line.name} ${this.translocoService.translate(line.grade.name)} / ${area.name} / ${sector.name} / ${crag.name} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${line.name} ${this.translocoService.translate(line.grade.name)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`);
+      });
       this.items = [
         {
           label: this.translocoService.translate(marker('line.infos')),

@@ -21,6 +21,7 @@ import {MenuPage} from '../../../models/menu-page';
 import {MenuPagesService} from '../../../services/crud/menu-pages.service';
 import {SharedModule} from '../../shared/shared.module';
 import {FormsModule} from '@angular/forms';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-pages-list',
@@ -42,7 +43,7 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './menu-pages-list.component.html',
   styleUrl: './menu-pages-list.component.scss'
 })
-export class MenuPagesListComponent implements OnInit{
+export class MenuPagesListComponent implements OnInit {
 
   public menuPages: MenuPage[];
   public loading = LoadingState.LOADING;
@@ -67,7 +68,9 @@ export class MenuPagesListComponent implements OnInit{
     this.refreshData();
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.title.setTitle(`${this.translocoService.translate(marker('menuPagesListBrowserTitle'))} - ${environment.instanceName}`);
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('menuPagesListBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
   /**

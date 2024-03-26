@@ -21,6 +21,7 @@ import {OrderItemsComponent} from '../../shared/components/order-items/order-ite
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -70,7 +71,9 @@ export class MenuItemsListComponent implements OnInit {
     this.refreshData();
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.title.setTitle(`${this.translocoService.translate(marker('menuItemsListBrowserTitle'))} - ${environment.instanceName}`);
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('menuItemsListBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
   /**

@@ -22,6 +22,7 @@ import {StartingPosition} from '../../../enums/starting-position';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form component for lines.
@@ -93,7 +94,9 @@ export class LineFormComponent implements OnInit {
         }
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`)
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }

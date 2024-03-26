@@ -25,6 +25,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../shared/shared.module';
 import {UploadService} from '../../../services/crud/upload.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -47,7 +48,7 @@ import {UploadService} from '../../../services/crud/upload.service';
   styleUrl: './post-form.component.scss',
   providers: [ConfirmationService]
 })
-export class PostFormComponent implements  OnInit {
+export class PostFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
@@ -79,7 +80,9 @@ export class PostFormComponent implements  OnInit {
     this.buildForm();
     const postSlug = this.route.snapshot.paramMap.get('post-slug');
     if (postSlug) {
-      this.title.setTitle(`${this.translocoService.translate(marker('editPostFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('editPostFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.editMode = true;
       this.postForm.disable();
       this.postsService.getPost(postSlug).pipe(catchError(e => {
@@ -96,11 +99,12 @@ export class PostFormComponent implements  OnInit {
         }
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('postFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('postFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }
-
 
 
   /**

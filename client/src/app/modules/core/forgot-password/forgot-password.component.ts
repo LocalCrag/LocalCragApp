@@ -14,6 +14,7 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {Title} from '@angular/platform-browser';
 import {TranslocoService} from '@ngneat/transloco';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component that shows a form for requesting a reset password link per mail.
@@ -43,7 +44,9 @@ export class ForgotPasswordComponent implements OnInit{
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.title.setTitle(`${this.translocoService.translate(marker('forgotPasswordBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('forgotPasswordBrowserTitle'))} - ${instanceName}`);
+    });
     this.buildForm();
     this.loadingState$ = this.store.pipe(select(selectForgotPasswordLoadingState));
   }

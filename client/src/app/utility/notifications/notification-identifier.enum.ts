@@ -2,6 +2,7 @@
  * Defines identifiers for all notifications in the system.
  */
 export enum NotificationIdentifier {
+  INSTANCE_SETTINGS_UPDATED = 'INSTANCE_SETTINGS_UPDATED',
   REGION_UPDATED = 'REGION_UPDATED',
   USER_NOT_ACTIVATED = 'USER_NOT_ACTIVATED',
   LOGIN_SUCCESS = 'LOGIN_SUCCESS',

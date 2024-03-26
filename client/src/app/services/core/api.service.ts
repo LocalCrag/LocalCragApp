@@ -19,6 +19,11 @@ export class ApiService {
     changePassword: (): string => `${this.apiHost}change-password`,
   };
 
+  public instanceSettings = {
+    getDetail: (): string => `${this.apiHost}instance-settings`,
+    update: (): string => `${this.apiHost}instance-settings`,
+  };
+
   public posts = {
     create: (): string => `${this.apiHost}posts`,
     getList: (): string => `${this.apiHost}posts`,
@@ -45,15 +50,15 @@ export class ApiService {
     updateOrderBottom: (): string => `${this.apiHost}menu-items/update-order-bottom`,
   };
 
-  public regions = {
-    getDetail: (slug: string): string => `${this.apiHost}regions/${slug}`,
-    update: (slug: string): string => `${this.apiHost}regions/${slug}`,
-    getGrades: (slug: string): string => `${this.apiHost}regions/${slug}/grades`,
+  public region = {
+    getDetail: (): string => `${this.apiHost}region`,
+    update: (): string => `${this.apiHost}region`,
+    getGrades: (): string => `${this.apiHost}region/grades`,
   };
 
   public crags = {
-    create: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
-    getList: (regionSlug: string): string => `${this.apiHost}regions/${regionSlug}/crags`,
+    create: (): string => `${this.apiHost}crags`,
+    getList: (): string => `${this.apiHost}crags`,
     getDetail: (slug: string): string => `${this.apiHost}crags/${slug}`,
     delete: (slug: string): string => `${this.apiHost}crags/${slug}`,
     update: (slug: string): string => `${this.apiHost}crags/${slug}`,

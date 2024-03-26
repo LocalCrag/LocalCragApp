@@ -17,6 +17,7 @@ import {Title} from '@angular/platform-browser';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-reset-password',
@@ -61,7 +62,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy{
       this.resetPasswordHash = params['hash'];
     });
     this.loadingState$ = this.store.pipe(select(selectResetPasswordLoadingState));
-    this.title.setTitle(`${this.translocoService.translate(marker('resetPasswordBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('resetPasswordBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
   /**

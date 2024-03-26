@@ -19,14 +19,11 @@ from webargs_schemas.crag_args import crag_args
 
 class GetCrags(MethodView):
 
-    def get(self, region_slug):
+    def get(self):
         """
         Returns all crags.
-        @param region_slug: Slug of the region to return the crags for.
         """
-        region_id = Region.get_id_by_slug(region_slug)
-        crags: Crag = Crag.return_all(filter=lambda: Crag.region_id == region_id,
-                                      order_by=lambda: Crag.order_index.asc())
+        crags: Crag = Crag.return_all(order_by=lambda: Crag.order_index.asc())
         return jsonify(crags_schema.dump(crags)), 200
 
 
@@ -42,13 +39,12 @@ class GetCrag(MethodView):
 
 class CreateCrag(MethodView):
     @jwt_required()
-    def post(self, region_slug):
+    def post(self):
         """
         Create a crag.
         """
         crag_data = parser.parse(crag_args, request)
         created_by = User.find_by_email(get_jwt_identity())
-        region_id = Region.get_id_by_slug(region_slug)
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data['name']
@@ -58,7 +54,6 @@ class CreateCrag(MethodView):
         new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = crag_data['rules']
         new_crag.portrait_image_id = crag_data['portraitImage']
-        new_crag.region_id = region_id
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
 

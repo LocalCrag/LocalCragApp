@@ -19,6 +19,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Store} from '@ngrx/store';
 import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
+import {selectInstanceSettingsState} from '../../../../ngrx/selectors/instance-settings.selectors';
+import {take} from 'rxjs/operators';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -173,7 +175,6 @@ export class TopoImageComponent implements OnInit {
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
       background.on('click', (event) => {
-        console.log(event);
         event.cancelBubble = true;
         this.imageClick.emit([event.evt.offsetX * (1 / this.scale), event.evt.offsetY * (1 / this.scale)]);
       });
@@ -201,20 +202,22 @@ export class TopoImageComponent implements OnInit {
    * @param opacity Opacity of the line.
    */
   drawLine(linePath: LinePath, opacity: number) {
-    const line = new Konva.Arrow({
-      points: this.getAbsoluteCoordinates(linePath.path),
-      stroke: environment.arrowColor,
-      fill: environment.arrowColor,
-      strokeWidth: 2 * this.lineSizeMultiplicator,
-      lineCap: 'square',
-      tension: 0,
-      pointerLength: 6 * this.lineSizeMultiplicator,
-      pointerWidth: 6 * this.lineSizeMultiplicator,
-      opacity,
-      preventDefault: this.editorMode,
+    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
+      const line = new Konva.Arrow({
+        points: this.getAbsoluteCoordinates(linePath.path),
+        stroke: instanceSettingsState.arrowColor,
+        fill: instanceSettingsState.arrowColor,
+        strokeWidth: 2 * this.lineSizeMultiplicator,
+        lineCap: 'square',
+        tension: 0,
+        pointerLength: 6 * this.lineSizeMultiplicator,
+        pointerWidth: 6 * this.lineSizeMultiplicator,
+        opacity,
+        preventDefault: this.editorMode,
+      });
+      this.lineLayer.add(line);
+      linePath.konvaLine = line;
     });
-    this.lineLayer.add(line);
-    linePath.konvaLine = line;
   }
 
   /**
@@ -223,36 +226,38 @@ export class TopoImageComponent implements OnInit {
    * @param label Label to place.
    */
   placeLineLabel(linePath: LinePath, label: Label) {
-    const rectangleGroup = new Konva.Group({
-      x: label.position.x - (label.width / 2),
-      y: label.position.y - (label.height / 2),
-      width: label.width,
-      height: label.height,
-      preventDefault: this.editorMode,
-    });
-    // Scale rect horizontally by its text content's length, but exclude padding
-    const rectangle = new Konva.Rect({
-      width: label.width,
-      height: label.height,
-      fill: environment.arrowColor,
-      cornerRadius: label.height / 6,
-      preventDefault: this.editorMode,
-    });
-    rectangleGroup.add(rectangle);
-    const konvaText = new Konva.Text({
-      text: label.text,
-      fontSize: label.height / 1.2,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      fill: environment.arrowTextColor,
-      width: label.width,
-      padding: label.height / 8,
-      align: 'center',
-      preventDefault: this.editorMode,
-    });
-    rectangleGroup.add(konvaText);
-    this.numberLayer.add(rectangleGroup);
-    linePath.konvaRect = rectangle;
-    linePath.konvaText = konvaText;
+    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
+      const rectangleGroup = new Konva.Group({
+        x: label.position.x - (label.width / 2),
+        y: label.position.y - (label.height / 2),
+        width: label.width,
+        height: label.height,
+        preventDefault: this.editorMode,
+      });
+      // Scale rect horizontally by its text content's length, but exclude padding
+      const rectangle = new Konva.Rect({
+        width: label.width,
+        height: label.height,
+        fill: instanceSettingsState.arrowColor,
+        cornerRadius: label.height / 6,
+        preventDefault: this.editorMode,
+      });
+      rectangleGroup.add(rectangle);
+      const konvaText = new Konva.Text({
+        text: label.text,
+        fontSize: label.height / 1.2,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        fill: instanceSettingsState.arrowTextColor,
+        width: label.width,
+        padding: label.height / 8,
+        align: 'center',
+        preventDefault: this.editorMode,
+      });
+      rectangleGroup.add(konvaText);
+      this.numberLayer.add(rectangleGroup);
+      linePath.konvaRect = rectangle;
+      linePath.konvaText = konvaText;
+    })
   }
 
   /**
@@ -285,36 +290,38 @@ export class TopoImageComponent implements OnInit {
    * @param linePath
    */
   drawAnchors(linePath: LinePath) {
-    const anchorFactor = this.isMobile ? 1.5 : 1;
-    const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
-    for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
-      const anchor = new Konva.Circle({
-        x: absoluteCoordinates[i * 2],
-        y: absoluteCoordinates[i * 2 + 1],
-        radius: 10 * anchorFactor,
-        fill: environment.arrowColor,
-        stroke: environment.arrowTextColor,
-        strokeWidth: 1,
-        preventDefault: this.editorMode,
-      });
-      anchor.on('click', (event) => {
-        event.cancelBubble = true;
-        this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
-      });
-      anchor.on('tap', (event) => {
-        event.cancelBubble = true;
-        this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
-      });
-      anchor.on('mouseenter', () => {
-        anchor.fill(environment.arrowHighlightColor);
-        this.stage.container().style.cursor = 'pointer';
-      })
-      anchor.on('mouseleave', () => {
-        anchor.fill(environment.arrowColor);
-        this.stage.container().style.cursor = 'default';
-      })
-      this.lineLayer.add(anchor);
-    }
+    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
+      const anchorFactor = this.isMobile ? 1.5 : 1;
+      const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
+      for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
+        const anchor = new Konva.Circle({
+          x: absoluteCoordinates[i * 2],
+          y: absoluteCoordinates[i * 2 + 1],
+          radius: 10 * anchorFactor,
+          fill: instanceSettingsState.arrowColor,
+          stroke: instanceSettingsState.arrowTextColor,
+          strokeWidth: 1,
+          preventDefault: this.editorMode,
+        });
+        anchor.on('click', (event) => {
+          event.cancelBubble = true;
+          this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
+        });
+        anchor.on('tap', (event) => {
+          event.cancelBubble = true;
+          this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
+        });
+        anchor.on('mouseenter', () => {
+          anchor.fill(instanceSettingsState.arrowHighlightColor);
+          this.stage.container().style.cursor = 'pointer';
+        })
+        anchor.on('mouseleave', () => {
+          anchor.fill(instanceSettingsState.arrowColor);
+          this.stage.container().style.cursor = 'default';
+        })
+        this.lineLayer.add(anchor);
+      }
+    })
   }
 
   /**

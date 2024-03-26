@@ -28,6 +28,7 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {MenuItemPosition} from '../../../enums/menu-item-position';
 import {getInstanceEquivalentFromList} from '../../../utility/array-operations';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -100,14 +101,18 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuPages = menuPages;
       this.buildForm();
       if (menuItem) {
-        this.title.setTitle(`${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${environment.instanceName}`)
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${instanceName}`)
+        });
         this.editMode = true;
         this.menuItemForm.disable();
         this.menuItem = menuItem;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
       } else {
-        this.title.setTitle(`${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${environment.instanceName}`)
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`)
+        });
         this.loadingState = LoadingState.DEFAULT;
       }
     })

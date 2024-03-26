@@ -11,7 +11,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {ButtonModule} from 'primeng/button';
 import {LoginComponent} from './login/login.component';
 import {PasswordModule} from 'primeng/password';
-import {StoreModule} from '@ngrx/store';
+import {Store, StoreModule} from '@ngrx/store';
 import {metaReducers, reducers} from '../../ngrx/reducers';
 import {environment} from '../../../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
@@ -47,10 +47,12 @@ import {DeviceEffects} from '../../ngrx/effects/device.effects';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {TranslocoService} from '@ngneat/transloco';
 import {forkJoin} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {CacheEffects} from '../../ngrx/effects/cache.effects';
 import {BackgroundImageComponent} from './background-image/background-image.component';
 import {MenuItemsService} from '../../services/crud/menu-items.service';
+import {InstanceSettingsService} from '../../services/crud/instance-settings.service';
+import {updateInstanceSettings} from '../../ngrx/actions/instance-settings.actions';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -73,6 +75,14 @@ export function preloadMenus(menuItemsService: MenuItemsService) {
   }
 }
 
+export function preloadInstanceSettings(instanceSettingsService: InstanceSettingsService, store: Store) {
+  return () => {
+    return instanceSettingsService.getInstanceSettings().pipe(map(instanceSettings => {
+      store.dispatch(updateInstanceSettings({settings: instanceSettings}))
+    }));
+  }
+}
+
 @NgModule({
   declarations: [
     CoreComponent,
@@ -87,42 +97,42 @@ export function preloadMenus(menuItemsService: MenuItemsService) {
     ForgotPasswordCheckMailboxComponent,
     NotFoundComponent
   ],
-    imports: [
-        SharedModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        CoreRoutingModule,
-        InputTextModule,
-        MenubarModule,
-        HttpClientModule,
-        ButtonModule,
-        PasswordModule,
-        StoreModule.forRoot(reducers, {
-            metaReducers
-        }),
-        StoreDevtoolsModule.instrument({
-            maxAge: 25,
-            logOnly: environment.production
-            , connectInZone: true
-        }),
-        EffectsModule.forRoot([
-            AuthEffects,
-            DeviceEffects,
-            AppLevelAlertsEffects,
-            NotificationsEffects,
-            CacheEffects
-        ]),
-        TranslocoRootModule,
-        ReactiveFormsModule,
-        CardModule,
-        MenuModule,
-        MessagesModule,
-        MessageModule,
-        DialogModule,
-        ToastModule,
-        CragModule,
-        BackgroundImageComponent
-    ],
+  imports: [
+    SharedModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    CoreRoutingModule,
+    InputTextModule,
+    MenubarModule,
+    HttpClientModule,
+    ButtonModule,
+    PasswordModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production
+      , connectInZone: true
+    }),
+    EffectsModule.forRoot([
+      AuthEffects,
+      DeviceEffects,
+      AppLevelAlertsEffects,
+      NotificationsEffects,
+      CacheEffects
+    ]),
+    TranslocoRootModule,
+    ReactiveFormsModule,
+    CardModule,
+    MenuModule,
+    MessagesModule,
+    MessageModule,
+    DialogModule,
+    ToastModule,
+    CragModule,
+    BackgroundImageComponent
+  ],
   providers: [
     {
       provide: LOCALE_ID,
@@ -158,9 +168,15 @@ export function preloadMenus(menuItemsService: MenuItemsService) {
     {
       provide: APP_INITIALIZER,
       multi: true,
+      deps: [InstanceSettingsService, Store],
+      useFactory: preloadInstanceSettings
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
       deps: [MenuItemsService],
       useFactory: preloadMenus
-    }
+    },
   ],
   bootstrap: [CoreComponent]
 })

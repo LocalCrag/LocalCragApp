@@ -40,6 +40,10 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.favicon_image_id = instance_settings_data['faviconImage']
         instance_settings.auth_bg_image_id = instance_settings_data['authBgImage']
         instance_settings.main_bg_image_id = instance_settings_data['mainBgImage']
+        instance_settings.arrow_color = instance_settings_data['arrowColor']
+        instance_settings.arrow_text_color = instance_settings_data['arrowTextColor']
+        instance_settings.arrow_highlight_color = instance_settings_data['arrowHighlightColor']
+        instance_settings.arrow_highlight_text_color = instance_settings_data['arrowHighlightTextColor']
         db.session.add(instance_settings)
         db.session.commit()
 

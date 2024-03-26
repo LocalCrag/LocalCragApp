@@ -1,15 +1,20 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {ActivatedRoute, ActivatedRouteSnapshot, ActivationStart, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {selectAuthBgImage, selectMainBgImage} from '../../../ngrx/selectors/instance-settings.selectors';
 
 export enum StaticBackgroundImages {
+  DEFAULT,
+  AUTH ,
+  NOT_FOUND,
+}
+
+export enum StaticBackgroundImageDefaults {
   DEFAULT = 'assets/bg.jpeg',
   AUTH = 'assets/login-bg.jpeg',
   NOT_FOUND = 'assets/404.jpeg',
 }
 
-/**
- * Component that shows a cover size background image. The image that is displayed is set via route data.
- */
 @Component({
   selector: 'lc-background-image',
   standalone: true,
@@ -20,13 +25,11 @@ export enum StaticBackgroundImages {
 export class BackgroundImageComponent implements OnInit {
 
   constructor(private el: ElementRef,
+              private store: Store,
               private router: Router) {
     this.setBackgroundImage(StaticBackgroundImages.DEFAULT);
   }
 
-  /**
-   * Subscribe to route data changes and set a new background image if `backgroundImagePath` is given.
-   */
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof ActivationStart) {
@@ -38,12 +41,24 @@ export class BackgroundImageComponent implements OnInit {
     })
   }
 
-  /**
-   * Set the background image on the component.
-   * @param path Path of the background image.
-   */
-  setBackgroundImage(path: string) {
-    this.el.nativeElement.style.backgroundImage = `url(${path})`;
+  setBackgroundImage(type: StaticBackgroundImages) {
+    switch (type){
+      case StaticBackgroundImages.DEFAULT:
+        this.store.select(selectMainBgImage).subscribe(bgImage=>{
+          const path = bgImage ? bgImage.thumbnailXL : StaticBackgroundImageDefaults.DEFAULT;
+          this.el.nativeElement.style.backgroundImage = `url(${path})`;
+        });
+        break;
+      case StaticBackgroundImages.AUTH:
+        this.store.select(selectAuthBgImage).subscribe(bgImage=>{
+          const path = bgImage ? bgImage.thumbnailXL : StaticBackgroundImageDefaults.AUTH;
+          this.el.nativeElement.style.backgroundImage = `url(${path})`;
+        });
+        break;
+      case StaticBackgroundImages.NOT_FOUND:
+          this.el.nativeElement.style.backgroundImage = `url(${StaticBackgroundImageDefaults.NOT_FOUND})`;
+        break;
+    }
   }
 
 }

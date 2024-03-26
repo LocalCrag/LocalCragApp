@@ -43,6 +43,7 @@ import {MenuPagesFormComponent} from '../menu-pages/menu-pages-form/menu-pages-f
 import {MenuItemsListComponent} from '../menu-pages/menu-items-list/menu-items-list.component';
 import {MenuItemsFormComponent} from '../menu-pages/menu-items-form/menu-items-form.component';
 import {MenuPageDetailComponent} from '../menu-pages/menu-page-detail/menu-page-detail.component';
+import {InstanceSettingsFormComponent} from './instance-settings-form/instance-settings-form.component';
 
 const routes: Routes = [
   {
@@ -164,6 +165,14 @@ const routes: Routes = [
     path: 'reset-password/:hash',
     component: ResetPasswordComponent,
     canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'instance-settings',
+    component: InstanceSettingsFormComponent,
+    canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }

@@ -15,6 +15,10 @@ def test_successful_get_instance_settings(client):
     assert res['faviconImage'] == None
     assert res['mainBgImage'] == None
     assert res['authBgImage'] == None
+    assert res['arrowColor'] == '#FFE016'
+    assert res['arrowTextColor'] == '#000000'
+    assert res['arrowHighlightColor'] == '#FF0000'
+    assert res['arrowHighlightTextColor'] == '#FFFFFF'
 
 
 def test_successful_edit_instance_settings(client):
@@ -28,6 +32,10 @@ def test_successful_edit_instance_settings(client):
         "faviconImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "mainBgImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "authBgImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "arrowColor": '#AAAAAA',
+        "arrowTextColor": '#BBBBBB',
+        "arrowHighlightColor": '#CCCCCC',
+        "arrowHighlightTextColor": '#DDDDDD',
     }
     rv = client.put('/api/instance-settings', headers=access_headers, json=post_data)
     assert rv.status_code == 200
@@ -40,3 +48,7 @@ def test_successful_edit_instance_settings(client):
     assert res['faviconImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['mainBgImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['authBgImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
+    assert res['arrowColor'] == '#AAAAAA'
+    assert res['arrowTextColor'] == '#BBBBBB'
+    assert res['arrowHighlightColor'] == '#CCCCCC'
+    assert res['arrowHighlightTextColor'] == '#DDDDDD'

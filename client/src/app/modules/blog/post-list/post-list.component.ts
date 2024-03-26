@@ -20,6 +20,7 @@ import {RouterLink} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {Title} from '@angular/platform-browser';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component that shows a list of blog posts.
@@ -69,7 +70,9 @@ export class PostListComponent implements OnInit{
     this.refreshData();
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${environment.instanceName}`);
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
   /**

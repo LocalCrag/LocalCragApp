@@ -5,6 +5,8 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {LoadingState} from '../../../enums/loading-state';
 import {Router} from '@angular/router';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {Store} from '@ngrx/store';
 
 /**
  * A 404 error page.
@@ -21,12 +23,15 @@ export class NotFoundComponent implements OnInit{
   public url: string;
 
   constructor(private title: Title,
+              private store: Store,
               private translocoService: TranslocoService) {
   }
 
   ngOnInit() {
     this.url = window.location.href;
-    this.title.setTitle(`${this.translocoService.translate(marker('notFoundPageBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('notFoundPageBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
 }

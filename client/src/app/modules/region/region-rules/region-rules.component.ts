@@ -9,7 +9,7 @@ import {TranslocoDirective} from '@ngneat/transloco';
 import {Region} from '../../../models/region';
 import {Observable} from 'rxjs';
 import {Grade} from '../../../utility/misc/grades';
-import {RegionsService} from '../../../services/crud/regions.service';
+import {RegionService} from '../../../services/crud/region.service';
 import {environment} from '../../../../environments/environment';
 import {ActivatedRoute, Router} from '@angular/router';
 
@@ -33,14 +33,14 @@ export class RegionRulesComponent {
 
   public region: Region;
 
-  constructor(private regionsService: RegionsService,
+  constructor(private regionsService: RegionService,
               private route: ActivatedRoute,
               private router: Router) {
   }
 
   ngOnInit() {
     this.region = null;
-    this.regionsService.getRegion(environment.regionSlug).subscribe(region => {
+    this.regionsService.getRegion().subscribe(region => {
       this.region = region;
       if (!this.region.rules) {
         this.router.navigate(['../'], {relativeTo: this.route});

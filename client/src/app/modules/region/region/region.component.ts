@@ -17,7 +17,8 @@ import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Region} from '../../../models/region';
-import {RegionsService} from '../../../services/crud/regions.service';
+import {RegionService} from '../../../services/crud/region.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-region',
@@ -37,7 +38,7 @@ export class RegionComponent implements OnInit {
   public region: Region;
   public items: MenuItem[];
 
-  constructor(private regionsService: RegionsService,
+  constructor(private regionsService: RegionService,
               private translocoService: TranslocoService,
               private router: Router,
               private store: Store,
@@ -47,7 +48,7 @@ export class RegionComponent implements OnInit {
   ngOnInit() {
     this.region = null;
     forkJoin([
-      this.regionsService.getRegion(environment.regionSlug).pipe(catchError(e => {
+      this.regionsService.getRegion().pipe(catchError(e => {
         if (e.status === 404) {
           this.router.navigate(['/not-found']);
         }
@@ -57,7 +58,9 @@ export class RegionComponent implements OnInit {
       this.translocoService.load(`${environment.language}`)
     ]).subscribe(([region, isLoggedIn]) => {
       this.region = region;
-      this.title.setTitle(`${region.name} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${region.name} - ${instanceName}`)
+      });
       this.items = [
         {
           label: this.translocoService.translate(marker('region.infos')),

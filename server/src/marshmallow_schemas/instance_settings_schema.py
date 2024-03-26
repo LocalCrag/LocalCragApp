@@ -17,6 +17,11 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     faviconImage = fields.Nested(file_schema, attribute='favicon_image')
     authBgImage = fields.Nested(file_schema, attribute='auth_bg_image')
     mainBgImage = fields.Nested(file_schema, attribute='main_bg_image')
+    arrowColor = fields.String(attribute="arrow_color")
+    arrowTextColor = fields.String(attribute="arrow_text_color")
+    arrowHighlightColor = fields.String(attribute="arrow_highlight_color")
+    arrowHighlightTextColor = fields.String(attribute="arrow_highlight_text_color")
+
 
 
 instance_settings_schema = InstanceSettingsSchema()

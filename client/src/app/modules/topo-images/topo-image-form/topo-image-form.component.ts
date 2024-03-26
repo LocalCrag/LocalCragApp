@@ -20,6 +20,7 @@ import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Component for uploading topo images.
@@ -78,9 +79,13 @@ export class TopoImageFormComponent {
           editor.getQuill().enable();
         });
       });
-      this.title.setTitle(`${this.translocoService.translate(marker('editTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('editTopoImageBrowserTitle'))} - ${instanceName}`)
+      });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${instanceName}`)
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }

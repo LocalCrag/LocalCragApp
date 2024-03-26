@@ -1,0 +1,97 @@
+<ng-container *transloco="let t, read: 'instanceSettings.instanceSettingsForm'">
+
+  <div class="content">
+
+    <p-card header="{{t('editInstanceSettings')}}">
+
+      <form [formGroup]="instanceSettingsForm" lcForm>
+
+        <p-divider align="center" type="solid" class="mb-2 block"><b>{{t('commonSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('instanceNameLabel')}}</label>
+          <input type="text" pInputText formControlName="instanceName" placeholder="{{t('instanceNamePlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('copyrightOwnerLabel')}}</label>
+          <input type="text" pInputText formControlName="copyrightOwner" placeholder="{{t('copyrightOwnerPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('menuSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('youtubeUrlLabel')}}</label>
+          <input type="text" pInputText formControlName="youtubeUrl" placeholder="{{t('youtubeUrlPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('instagramUrlLabel')}}</label>
+          <input type="text" pInputText formControlName="instagramUrl" placeholder="{{t('instagramUrlPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('imagesSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('logoImageLabel')}}</label>
+          <lc-single-image-upload lcFormControl formControlName="logoImage"></lc-single-image-upload>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('faviconImageLabel')}}</label>
+          <lc-single-image-upload lcFormControl formControlName="faviconImage"></lc-single-image-upload>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('mainBgImageLabel')}}</label>
+          <lc-single-image-upload lcFormControl formControlName="mainBgImage"></lc-single-image-upload>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('authBgImageLabel')}}</label>
+          <lc-single-image-upload lcFormControl formControlName="authBgImage"></lc-single-image-upload>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('arrowsSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('arrowColorLabel')}}</label>
+          <p-colorPicker formControlName="arrowColor"></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('arrowTextColorLabel')}}</label>
+          <p-colorPicker formControlName="arrowTextColor"></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('arrowHighlightColorLabel')}}</label>
+          <p-colorPicker formControlName="arrowHighlightColor"></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('arrowHighlightTextColorLabel')}}</label>
+          <p-colorPicker formControlName="arrowHighlightTextColor"></p-colorPicker>
+        </div>
+
+      </form>
+
+      <div class="form-actions">
+        <p-button label="{{t('editInstanceSettingsButtonLabel')}}" (click)="saveInstanceSettings()"
+                  icon="pi pi-save" class="responsive-button"
+                  [loading]="loadingState === loadingStates.LOADING"></p-button>
+      </div>
+
+    </p-card>
+
+  </div>
+
+</ng-container>

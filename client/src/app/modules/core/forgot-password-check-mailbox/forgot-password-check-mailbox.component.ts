@@ -3,6 +3,8 @@ import {Title} from '@angular/platform-browser';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
+import {Store} from '@ngrx/store';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Displays a message, requesting the user to check his mailbox for a password reset link.
@@ -17,11 +19,14 @@ export class ForgotPasswordCheckMailboxComponent implements OnInit{
   @HostBinding('class.auth-view') authView: boolean = true;
 
   constructor(private title: Title,
+              private store: Store,
               private translocoService: TranslocoService) {
   }
 
   ngOnInit() {
-    this.title.setTitle(`${this.translocoService.translate(marker('forgotPasswordCheckMailboxBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('forgotPasswordCheckMailboxBrowserTitle'))} - ${instanceName}`)
+    });
   }
 
 }

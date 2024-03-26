@@ -11,7 +11,7 @@ import {ActivatedRoute} from '@angular/router';
 import {CragsService} from '../../../services/crud/crags.service';
 import {untilDestroyed} from '@ngneat/until-destroy';
 import {Region} from '../../../models/region';
-import {RegionsService} from '../../../services/crud/regions.service';
+import {RegionService} from '../../../services/crud/region.service';
 import {environment} from '../../../../environments/environment';
 import {NgIf} from '@angular/common';
 import {TranslocoDirective} from '@ngneat/transloco';
@@ -37,15 +37,15 @@ export class RegionInfoComponent implements OnInit {
   public region: Region;
   public fetchRegionGrades: Observable<Grade[]>;
 
-  constructor(private regionsService: RegionsService) {
+  constructor(private regionsService: RegionService) {
   }
 
   ngOnInit() {
     this.region = null;
-    this.regionsService.getRegion(environment.regionSlug).subscribe(region => {
+    this.regionsService.getRegion().subscribe(region => {
       this.region = region;
     });
-    this.fetchRegionGrades = this.regionsService.getRegionGrades(environment.regionSlug);
+    this.fetchRegionGrades = this.regionsService.getRegionGrades();
   }
 
 }

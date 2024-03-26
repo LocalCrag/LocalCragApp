@@ -15,6 +15,7 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-area',
@@ -69,7 +70,9 @@ export class AreaComponent implements OnInit {
       this.crag = crag;
       this.sector = sector;
       this.area = area;
-      this.title.setTitle(`${area.name} / ${sector.name} / ${crag.name} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`);
+      });
       this.items = [
         {
           label: this.translocoService.translate(marker('area.infos')),

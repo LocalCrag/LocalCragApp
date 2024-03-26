@@ -21,8 +21,9 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../services/core/cache.service';
 import {ViewportScroller} from '@angular/common';
-import {filter} from 'rxjs/operators';
+import {filter, take} from 'rxjs/operators';
 import {Line} from '../../../models/line';
+import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Component that lists all topo images in an area.
@@ -102,29 +103,37 @@ export class TopoImageListComponent {
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+          label: this.translocoService.translate(marker('sortAscending')),
+          value: '!orderIndex'
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN,
+          label: this.translocoService.translate(marker('sortDescending')),
+          value: 'orderIndex'
+        },
       ];
       this.sortKey = this.sortOptions[0];
       this.restoreScrollPosition();
     });
   }
 
-  restoreScrollPosition(){
-    if(this.scrollTarget && this.loading === LoadingState.DEFAULT){
+  restoreScrollPosition() {
+    if (this.scrollTarget && this.loading === LoadingState.DEFAULT) {
       // CDR not working as expected here because topo image is using setTimeout because of konva bug...
       // So I have to use setTimeout too
-      setTimeout(()=>{
+      setTimeout(() => {
         this.viewportScroller.scrollToPosition(this.scrollTarget.position);
         this.scrollTarget = null;
       })
     }
   }
 
-  openVideo(event: MouseEvent, line: Line){
+  openVideo(event: MouseEvent, line: Line) {
     event.preventDefault();
     event.stopPropagation();
-    if(line.videos.length > 0){
+    if (line.videos.length > 0) {
       window.open(line.videos[0].url);
     }
   }
@@ -227,11 +236,13 @@ export class TopoImageListComponent {
    */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
-      linePath.konvaLine.fill(environment.arrowHighlightColor);
-      linePath.konvaLine.stroke(environment.arrowHighlightColor);
-      linePath.konvaLine.zIndex(topoImage.linePaths.length);
-      linePath.konvaRect.fill(environment.arrowHighlightColor);
-      linePath.konvaText.fill(environment.arrowHighlightTextColor)
+      this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
+        linePath.konvaLine.fill(instanceSettingsState.arrowHighlightColor);
+        linePath.konvaLine.stroke(instanceSettingsState.arrowHighlightColor);
+        linePath.konvaLine.zIndex(topoImage.linePaths.length);
+        linePath.konvaRect.fill(instanceSettingsState.arrowHighlightColor);
+        linePath.konvaText.fill(instanceSettingsState.arrowHighlightTextColor)
+      })
     }
   }
 
@@ -241,11 +252,13 @@ export class TopoImageListComponent {
    */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
-      linePath.konvaLine.fill(environment.arrowColor);
-      linePath.konvaLine.stroke(environment.arrowColor);
-      linePath.konvaLine.zIndex(1); // 0 is the BG image
-      linePath.konvaRect.fill(environment.arrowColor);
-      linePath.konvaText.fill(environment.arrowTextColor)
+      this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
+        linePath.konvaLine.fill(instanceSettingsState.arrowColor);
+        linePath.konvaLine.stroke(instanceSettingsState.arrowColor);
+        linePath.konvaLine.zIndex(1); // 0 is the BG image
+        linePath.konvaRect.fill(instanceSettingsState.arrowColor);
+        linePath.konvaText.fill(instanceSettingsState.arrowTextColor)
+      })
     }
   }
 

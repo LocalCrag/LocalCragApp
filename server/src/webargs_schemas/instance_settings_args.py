@@ -10,4 +10,8 @@ instance_settings_args = {
     "faviconImage": fields.String(required=True, allow_none=True),
     "authBgImage": fields.String(required=True, allow_none=True),
     "mainBgImage": fields.String(required=True, allow_none=True),
+    "arrowColor": fields.Str(required=True),
+    "arrowTextColor": fields.Str(required=True),
+    "arrowHighlightColor": fields.Str(required=True),
+    "arrowHighlightTextColor": fields.Str(required=True),
 }

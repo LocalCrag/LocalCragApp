@@ -29,13 +29,12 @@ export class CragsService {
    * Creates a Crag.
    *
    * @param crag Crag to persist.
-   * @param regionSlug Slug of the region to create the crag in.
    * @return Observable of a Crag.
    */
-  public createCrag(crag: Crag, regionSlug: string): Observable<Crag> {
-    return this.http.post(this.api.crags.create(regionSlug), Crag.serialize(crag)).pipe(
+  public createCrag(crag: Crag): Observable<Crag> {
+    return this.http.post(this.api.crags.create(), Crag.serialize(crag)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList(regionSlug));
+        this.cache.clear(this.api.crags.getList());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -48,7 +47,7 @@ export class CragsService {
    * @return Observable of a list of Crags.
    */
   public getCrags(): Observable<Crag[]> {
-    return this.cache.get(this.api.crags.getList(environment.regionSlug), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
+    return this.cache.get(this.api.crags.getList(), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 
   /**
@@ -70,7 +69,7 @@ export class CragsService {
   public deleteCrag(crag: Crag): Observable<null> {
     return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.cache.clear(this.api.crags.getList());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -87,7 +86,7 @@ export class CragsService {
     return this.http.put(this.api.crags.update(crag.slug), Crag.serialize(crag)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getDetail(crag.slug));
-        this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.cache.clear(this.api.crags.getList());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -103,7 +102,7 @@ export class CragsService {
   public updateCragOrder(newOrder: ItemOrder): Observable<null> {
     return this.http.put(this.api.crags.updateOrder(), newOrder).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList(environment.regionSlug));
+        this.cache.clear(this.api.crags.getList());
       }),
       map(() => null)
     );

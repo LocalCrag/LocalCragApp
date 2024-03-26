@@ -2,15 +2,16 @@
 
   <p-menubar [model]="items" [autoDisplay]="true" [autoHide]="true" data-cy="main-menu">
     <ng-template pTemplate="start">
-      <img src="../../../../assets/logo.webp" height="40" class="mr-2">
+      <img [src]="(logoImage$ | async).thumbnailM" height="40" class="mr-2 flex" *ngIf="logoImage$ | async">
+      <strong *ngIf="!(logoImage$ | async)">{{instanceName$ | async}}</strong>
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex justify-content-center flex-wrap gap-2">
-<!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
+        <!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
         <p-menu #menu [model]="userMenuItems" [popup]="true" data-cy="auth-menu"></p-menu>
-        <p-button icon="pi pi-user"  (click)="menu.toggle($event)" severity="secondary"
+        <p-button icon="pi pi-user" (click)="menu.toggle($event)" severity="secondary"
                   *ngIf="isLoggedIn$ | async" [text]="true" data-cy="auth-menu-button"></p-button>
-        <p-button icon="pi pi-user"  routerLink="login" severity="secondary"
+        <p-button icon="pi pi-user" routerLink="login" severity="secondary"
                   *ngIf="!(isLoggedIn$ | async)" [text]="true" data-cy="navbar-login"></p-button>
       </div>
     </ng-template>
