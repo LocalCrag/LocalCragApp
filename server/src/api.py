@@ -7,6 +7,7 @@ from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAcc
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
     GetCragGrades
 from resources.health_resources import Health
+from resources.instance_settings_resources import GetInstanceSettings, UpdateInstanceSettings
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
@@ -38,6 +39,12 @@ def configure_api(app):
     health_bp = Blueprint('health', __name__, )
     health_bp.add_url_rule('', view_func=Health.as_view('health'))
     app.register_blueprint(health_bp, url_prefix='/api/health')
+
+    # Instance settings API
+    instance_settings_bp = Blueprint('instance-settings', __name__, )
+    instance_settings_bp.add_url_rule('', view_func=GetInstanceSettings.as_view('get_instance_settings'))
+    instance_settings_bp.add_url_rule('', view_func=UpdateInstanceSettings.as_view('update_instance_settings'))
+    app.register_blueprint(instance_settings_bp, url_prefix='/api/instance-settings')
 
     # Upload API
     upload_bp = Blueprint('upload', __name__, )
