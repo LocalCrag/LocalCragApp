@@ -13,7 +13,7 @@ def add_region():
     """
     with app.app_context():
         try:
-            Region.find_by_slug(str_to_slug(current_app.config['REGION']))
+            Region.return_it()
         except NotFound:
             new_region = Region()
             new_region.name = current_app.config['REGION']
