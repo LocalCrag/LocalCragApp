@@ -27,6 +27,7 @@ import {NgIf} from '@angular/common';
 import {PaginatorModule} from 'primeng/paginator';
 import {SharedModule} from '../../shared/shared.module';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-pages-form',
@@ -47,7 +48,7 @@ import {reloadMenus} from '../../../ngrx/actions/core.actions';
   styleUrl: './menu-pages-form.component.scss',
   providers: [ConfirmationService]
 })
-export class MenuPagesFormComponent  implements  OnInit {
+export class MenuPagesFormComponent implements OnInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
@@ -79,7 +80,9 @@ export class MenuPagesFormComponent  implements  OnInit {
     this.buildForm();
     const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
     if (menuPageSlug) {
-      this.title.setTitle(`${this.translocoService.translate(marker('editMenuPageFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('editMenuPageFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.editMode = true;
       this.menuPageForm.disable();
       this.menuPagesService.getMenuPage(menuPageSlug).pipe(catchError(e => {
@@ -96,11 +99,12 @@ export class MenuPagesFormComponent  implements  OnInit {
         }
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('menuPageFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('menuPageFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }
-
 
 
   /**

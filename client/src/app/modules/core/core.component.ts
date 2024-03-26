@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../ngrx/reducers';
@@ -8,34 +8,49 @@ import {checkIsMobile} from '../../ngrx/actions/device.actions';
 import {environment} from '../../../environments/environment';
 import {Title} from '@angular/platform-browser';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {
+    selectFaviconImage,
+    selectInstanceName,
+    selectInstanceSettingsState
+} from '../../ngrx/selectors/instance-settings.selectors';
+import {take} from 'rxjs/operators';
 
 @Component({
-  selector: 'lc-root',
-  templateUrl: './core.component.html',
-  styleUrls: ['./core.component.scss']
+    selector: 'lc-root',
+    templateUrl: './core.component.html',
+    styleUrls: ['./core.component.scss']
 })
-export class CoreComponent {
+export class CoreComponent implements OnInit {
 
-  constructor(private primengConfig: PrimeNGConfig,
-              private title: Title,
-              public store: Store<AppState>) {
-    document.documentElement.style.setProperty('--arrow-color', environment.arrowColor);
-    document.documentElement.style.setProperty('--arrow-text-color', environment.arrowTextColor);
-    document.documentElement.style.setProperty('--arrow-highlight-color', environment.arrowHighlightColor);
-    document.documentElement.style.setProperty('--arrow-highlight-text-color', environment.arrowHighlightTextColor);
-    this.title.setTitle(environment.instanceName);
-  }
+    constructor(private primengConfig: PrimeNGConfig,
+                private title: Title,
+                public store: Store<AppState>) {
+        const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+        this.store.select(selectInstanceSettingsState).subscribe(instanceSettingsState => {
+            document.documentElement.style.setProperty('--arrow-color', instanceSettingsState.arrowColor);
+            document.documentElement.style.setProperty('--arrow-text-color', instanceSettingsState.arrowTextColor);
+            document.documentElement.style.setProperty('--arrow-highlight-color', instanceSettingsState.arrowHighlightColor);
+            document.documentElement.style.setProperty('--arrow-highlight-text-color', instanceSettingsState.arrowHighlightTextColor);
+            if (instanceSettingsState.faviconImage) {
+                favIcon.href = instanceSettingsState.faviconImage.thumbnailS;
+            }
+        });
+        this.store.select(selectInstanceName).pipe(take(1)).subscribe(instanceName => {
+            this.title.setTitle(instanceName);
+        });
+    }
 
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.store.dispatch(checkIsMobile());
-  }
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.store.dispatch(checkIsMobile());
+    }
 
-  ngOnInit() {
-    this.primengConfig.ripple = true;
-    this.store.dispatch(tryAutoLogin());
-    this.store.dispatch(checkShowCookieAlert());
-    this.store.dispatch(checkIsMobile());
-  }
+    ngOnInit() {
+        this.primengConfig.ripple = true;
+        this.store.dispatch(tryAutoLogin());
+        this.store.dispatch(checkShowCookieAlert());
+        this.store.dispatch(checkIsMobile());
+
+    }
 
 }

@@ -19,6 +19,7 @@ import {Editor} from 'primeng/editor';
 import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {UploadService} from '../../../services/crud/upload.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component for creating and editing crags.
@@ -76,7 +77,9 @@ export class CragFormComponent implements OnInit {
         });
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }
@@ -142,7 +145,7 @@ export class CragFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag, environment.regionSlug).subscribe(crag => {
+        this.cragsService.createCrag(crag).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
           this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;

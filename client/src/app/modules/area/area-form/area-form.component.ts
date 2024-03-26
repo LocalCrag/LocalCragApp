@@ -22,6 +22,7 @@ import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form component for creating and editing areas.
@@ -84,7 +85,9 @@ export class AreaFormComponent implements OnInit {
         });
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }

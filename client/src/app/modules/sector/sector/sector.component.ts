@@ -13,13 +13,14 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
 })
-export class SectorComponent implements OnInit{
+export class SectorComponent implements OnInit {
 
   public crag: Crag;
   public sector: Sector;
@@ -57,8 +58,9 @@ export class SectorComponent implements OnInit{
     ]).subscribe(([crag, sector, isLoggedIn]) => {
       this.crag = crag;
       this.sector = sector;
-      console.log(sector.rules);
-      this.title.setTitle(`${sector.name} / ${crag.name} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${sector.name} / ${crag.name} - ${instanceName}`)
+      });
       this.items = [
         {
           label: this.translocoService.translate(marker('sector.infos')),
@@ -103,7 +105,7 @@ export class SectorComponent implements OnInit{
           label: sector.name,
         },
       ];
-      this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo'};
+      this.breadcrumbHome = {icon: 'pi pi-map', routerLink: '/topo'};
     })
   }
 

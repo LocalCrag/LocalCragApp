@@ -19,7 +19,7 @@ import {latValidator} from '../../../utility/validators/lat.validator';
 import {lngValidator} from '../../../utility/validators/lng.validator';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {RegionsService} from '../../../services/crud/regions.service';
+import {RegionService} from '../../../services/crud/region.service';
 import {Region} from '../../../models/region';
 import {CardModule} from 'primeng/card';
 import {SharedModule} from '../../shared/shared.module';
@@ -60,7 +60,7 @@ export class RegionFormComponent implements OnInit {
               private store: Store,
               private router: Router,
               private uploadService: UploadService,
-              private regionsService: RegionsService) {
+              private regionsService: RegionService) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -71,7 +71,7 @@ export class RegionFormComponent implements OnInit {
     this.buildForm();
     this.editMode = true;
     this.regionForm.disable();
-    this.regionsService.getRegion(environment.regionSlug).pipe(catchError(e => {
+    this.regionsService.getRegion().pipe(catchError(e => {
       if (e.status === 404) {
         this.router.navigate(['/not-found']);
       }
@@ -123,7 +123,6 @@ export class RegionFormComponent implements OnInit {
       const region = new Region();
       region.description = this.regionForm.get('description').value
       region.rules = this.regionForm.get('rules').value
-      region.slug = environment.regionSlug;
       this.regionsService.updateRegion(region).subscribe(region => {
         this.store.dispatch(toastNotification(NotificationIdentifier.REGION_UPDATED));
         this.router.navigate(['/topo']);

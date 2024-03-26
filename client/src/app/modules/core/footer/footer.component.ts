@@ -6,6 +6,8 @@ import {TranslocoService} from '@ngneat/transloco';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from '@ngrx/effects';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {Observable} from 'rxjs';
+import {selectCopyrightOwner} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-footer',
@@ -17,13 +19,16 @@ export class FooterComponent implements OnInit{
 
   public currentYear = (new Date()).getFullYear();
   public menuItems: {title: string, routerLink: string, link: string}[] = [];
+  public copyrightOwner$: Observable<string>;
 
   constructor(private menuItemsService: MenuItemsService,
+              private store: Store,
               private actions: Actions,
               private translocoService: TranslocoService) {
   }
 
   ngOnInit() {
+    this.copyrightOwner$ = this.store.select(selectCopyrightOwner);
     this.buildMenu();
     this.actions.pipe(ofType(reloadMenus)).subscribe(() => {
       this.buildMenu();

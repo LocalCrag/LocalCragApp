@@ -20,24 +20,22 @@ from webargs_schemas.region_args import region_args
 
 
 class GetRegion(MethodView):
-    def get(self, region_slug):
+    def get(self):
         """
         Returns a detailed region.
-        @param region_slug: Slug of the region to return.
         """
-        region: Region = Region.find_by_slug(slug=region_slug)
+        region: Region = Region.return_it()
         return region_schema.dump(region), 200
 
 
 class UpdateRegion(MethodView):
     @jwt_required()
-    def put(self, region_slug):
+    def put(self):
         """
         Edit a region.
-        @param region_slug: Slug of the region to update.
         """
         region_data = parser.parse(region_args, request)
-        region: Region = Region.find_by_slug(region_slug)
+        region: Region = Region.return_it()
 
         region.description = region_data['description']
         region.rules = region_data['rules']
@@ -49,11 +47,9 @@ class UpdateRegion(MethodView):
 
 class GetRegionGrades(MethodView):
 
-    def get(self, region_slug):
+    def get(self):
         """
-        Returns the grades of all lines of a region.
+        Returns the grades of all lines of the region.
         """
-        region_id = Region.get_id_by_slug(region_slug)
-        result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).join(Crag).filter(
-            Crag.region_id == region_id).all()
+        result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).join(Crag).all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

@@ -17,6 +17,7 @@ import {Title} from '@angular/platform-browser';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form for line paths.
@@ -62,7 +63,9 @@ export class LinePathFormComponent {
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
     this.refreshData();
-    this.title.setTitle(`${this.translocoService.translate(marker('addLinePathBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('addLinePathBrowserTitle'))} - ${instanceName}`);
+    });
   }
 
   /**

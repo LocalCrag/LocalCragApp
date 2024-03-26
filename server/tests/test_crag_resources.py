@@ -15,7 +15,7 @@ def test_successful_create_crag(client):
         "lng": 42.42,
     }
 
-    rv = client.post('/api/regions/tessin/crags', headers=access_headers, json=crag_data)
+    rv = client.post('/api/crags', headers=access_headers, json=crag_data)
     assert rv.status_code == 201
     res = json.loads(rv.data)
     assert res['name'] == "Glees"
@@ -30,7 +30,7 @@ def test_successful_create_crag(client):
 
 
 def test_successful_get_crags(client):
-    rv = client.get('/api/regions/tessin/crags')
+    rv = client.get('/api/crags')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert len(res) == 2
@@ -106,7 +106,7 @@ def test_successful_edit_crag(client):
 def test_successful_order_crags(client):
     access_headers, refresh_headers = get_login_headers(client)
 
-    rv = client.get('/api/regions/tessin/crags')
+    rv = client.get('/api/crags')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res[0]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
@@ -121,7 +121,7 @@ def test_successful_order_crags(client):
     rv = client.put('/api/crags/update-order', headers=access_headers, json=new_order)
     assert rv.status_code == 200
 
-    rv = client.get('/api/regions/tessin/crags')
+    rv = client.get('/api/crags')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res[1]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"

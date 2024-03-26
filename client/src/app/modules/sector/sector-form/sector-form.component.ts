@@ -20,6 +20,7 @@ import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form component for creating and editing sectors.
@@ -80,7 +81,9 @@ export class SectorFormComponent implements OnInit {
         });
       });
     } else {
-      this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${environment.instanceName}`)
+      this.store.select(selectInstanceName).subscribe(instanceName => {
+        this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`);
+      });
       this.loadingState = LoadingState.DEFAULT;
     }
   }

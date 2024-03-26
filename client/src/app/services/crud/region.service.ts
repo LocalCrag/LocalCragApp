@@ -15,7 +15,7 @@ import {deserializeGrade, Grade} from '../../utility/misc/grades';
 @Injectable({
   providedIn: 'root'
 })
-export class RegionsService {
+export class RegionService {
 
   constructor(private api: ApiService,
               private cache: CacheService,
@@ -25,11 +25,10 @@ export class RegionsService {
   /**
    * Returns a Region.
    *
-   * @param slug Slug of the Region to load.
    * @return Observable of a Region.
    */
-  public getRegion(slug: string): Observable<Region> {
-    return this.cache.get(this.api.regions.getDetail(slug), map(Region.deserialize));
+  public getRegion(): Observable<Region> {
+    return this.cache.get(this.api.region.getDetail(), map(Region.deserialize));
   }
 
   /**
@@ -39,9 +38,9 @@ export class RegionsService {
    * @return Observable of null.
    */
   public updateRegion(region: Region): Observable<Region> {
-    return this.http.put(this.api.regions.update(region.slug), Region.serialize(region)).pipe(
+    return this.http.put(this.api.region.update(), Region.serialize(region)).pipe(
       tap(() => {
-        this.cache.clear(this.api.regions.getDetail(region.slug));
+        this.cache.clear(this.api.region.getDetail());
       }),
       map(Region.deserialize)
     );
@@ -50,11 +49,10 @@ export class RegionsService {
   /**
    * Returns a list of Grades.
    *
-   * @param regionSlug Slug of the region to return the grades for.
    * @return Observable of a list of Grades.
    */
-  public getRegionGrades(regionSlug: string): Observable<Grade[]> {
-    return this.cache.get(this.api.regions.getGrades(regionSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+  public getRegionGrades(): Observable<Grade[]> {
+    return this.cache.get(this.api.region.getGrades(), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 }

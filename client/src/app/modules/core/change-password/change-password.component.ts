@@ -14,6 +14,7 @@ import {Title} from '@angular/platform-browser';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {TranslocoService} from '@ngneat/transloco';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component that shows a form for changing the user's password.
@@ -47,7 +48,9 @@ export class ChangePasswordComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.title.setTitle(`${this.translocoService.translate(marker('changePasswordBrowserTitle'))} - ${environment.instanceName}`)
+    this.store.select(selectInstanceName).subscribe(instanceName => {
+      this.title.setTitle(`${this.translocoService.translate(marker('changePasswordBrowserTitle'))} - ${instanceName}`);
+    });
     this.buildForm();
   }
 
