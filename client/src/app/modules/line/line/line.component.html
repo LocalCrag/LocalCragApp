@@ -1,6 +1,10 @@
 <div class="content">
 
-  <p-card header="{{line?.name}} {{line?.grade.name | transloco}}">
+  <p-card>
+
+    <ng-template pTemplate="header">
+      <div class="card-header p-card-title">{{line?.name}} <span class="grade">{{line?.grade.name | transloco}}</span></div>
+    </ng-template>
 
     <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
 
