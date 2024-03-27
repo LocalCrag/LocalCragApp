@@ -147,6 +147,7 @@
   "invalidLng": "Ungültiger Längengrad",
   "getGPSPosition": "Position bestimmen",
   "gpsLoadedSuccessfullyWithAccuracyX": "GPS Position bestimmt. Genauigkeit {{x}} m",
+  "gpsLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement": "GPS Position bestimmt. Genauigkeit {{x}} m. Genauigkeitsverbesserung läuft...",
   "gpsCouldNotBeLoaded": "GPS Position konnte nicht bestimmt werden. Eventuell untersützt Dein Gerät diese Funktion nicht oder es fehlen Berechtigungen.",
   "singleImageUploader.browseFilesButtonLabel": "Durchsuchen",
   "BOTTOM": "Footer",

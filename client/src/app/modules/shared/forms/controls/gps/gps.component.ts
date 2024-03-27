@@ -55,6 +55,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   public gpsLoadingError = false;
 
   private gps: GPS;
+  private fetchFinishTime: number;
 
   constructor(private fb: FormBuilder,
               private inj: Injector) {
@@ -151,31 +152,53 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   }
 
   getGeoLocation() {
+    this.gpsForm.get('lat').setValue(null);
+    this.gpsForm.get('lng').setValue(null);
     this.gpsLoadingSuccess = false;
     this.gpsLoadingError = false;
     this.accuracy = null;
     if (navigator.geolocation) {
       this.positionLoading = true;
       this.gpsForm.disable();
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.gpsForm.get('lat').setValue(position.coords.latitude);
-        this.gpsForm.get('lng').setValue(position.coords.longitude);
-        this.accuracy = Math.round(position.coords.accuracy);
-        this.positionLoading = false;
-        this.gpsForm.enable();
-        this.onChange();
-        this.gpsLoadingSuccess = true;
-      }, () => {
-        this.gpsLoadingError = true;
-        this.positionLoading = false;
-      }, {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000,
-      });
+      this.fetchFinishTime = Date.now() + 30000;
+      this.fetchGeoLocationLoop();
     } else {
       this.gpsLoadingError = true;
     }
+  }
+
+  private fetchGeoLocationLoop(){
+    navigator.geolocation.getCurrentPosition((position) => {
+      if(!this.accuracy || Math.round(position.coords.accuracy) < this.accuracy) {
+        this.gpsForm.get('lat').setValue(position.coords.latitude);
+        this.gpsForm.get('lng').setValue(position.coords.longitude);
+        this.accuracy = Math.round(position.coords.accuracy);
+      }
+      this.gpsLoadingSuccess = true;
+      if(Date.now() < this.fetchFinishTime){
+        this.fetchGeoLocationLoop();
+      } else {
+        this.finishFetchingGeoLocation();
+      }
+    }, (e) => {
+      if(this.gpsLoadingSuccess){
+        // If we already have a position, errors don't matter
+        this.finishFetchingGeoLocation();
+      } else {
+        this.gpsLoadingError = true;
+        this.positionLoading = false;
+      }
+    }, {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 5000,
+    });
+  }
+
+  private finishFetchingGeoLocation(){
+    this.positionLoading = false;
+    this.gpsForm.enable();
+    this.onChange();
   }
 
 }

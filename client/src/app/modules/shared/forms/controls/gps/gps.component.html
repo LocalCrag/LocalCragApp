@@ -30,8 +30,10 @@
   </form>
 
   <div class="mt-3" *ngIf="gpsLoadingSuccess || gpsLoadingError">
-    <p-message *ngIf="gpsLoadingSuccess" severity="success"
+    <p-message *ngIf="gpsLoadingSuccess && !positionLoading" severity="success"
                text="{{t('gpsLoadedSuccessfullyWithAccuracyX', {x: accuracy})}}"></p-message>
+    <p-message *ngIf="gpsLoadingSuccess && positionLoading" severity="success"
+               text="{{t('gpsLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement', {x: accuracy})}}"></p-message>
     <p-message *ngIf="gpsLoadingError" severity="error" text="{{t('gpsCouldNotBeLoaded')}}"></p-message>
   </div>
 
