@@ -1,7 +1,7 @@
 <div class="content">
 
   <p-card header="{{menuPage?.title}}">
-    <div [innerHTML]="menuPage.text | sanitizeHtml" *ngIf="menuPage"></div>
+    <div [innerHTML]="menuPage.text | sanitizeHtml" *ngIf="menuPage" class="quill-content"></div>
     <ng-container *ngIf="!menuPage">
       <p-skeleton height="2rem" styleClass="mb-4"></p-skeleton>
       <p-skeleton width="50rem" height="4rem" styleClass="mb-2"></p-skeleton>

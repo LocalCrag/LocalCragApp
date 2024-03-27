@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {Crag} from '../../../models/crag';
 import {Sector} from '../../../models/sector';
 import {Area} from '../../../models/area';
@@ -22,7 +22,8 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
 @Component({
   selector: 'lc-line',
   templateUrl: './line.component.html',
-  styleUrls: ['./line.component.scss']
+  styleUrls: ['./line.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LineComponent {
 
