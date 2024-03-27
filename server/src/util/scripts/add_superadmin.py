@@ -5,10 +5,9 @@ from helpers.user_helpers import create_user
 from models.user import User
 
 
-def add_root_user():
+def add_superadmin():
     """
-    Adds the initial root user account.
-    todo rename to superadmin
+    Adds the initial superadmin user account.
     """
     with app.app_context():
         if not User.find_by_email(current_app.config['SUPERADMIN_EMAIL']):
@@ -23,4 +22,4 @@ def add_root_user():
 
 
 if __name__ == "__main__":
-    add_root_user()
+    add_superadmin()

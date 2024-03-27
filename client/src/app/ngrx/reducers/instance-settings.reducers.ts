@@ -15,6 +15,7 @@ export interface InstanceSettingsState {
   arrowTextColor: string;
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
+    barChartColor: string;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -30,6 +31,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowTextColor: null,
   arrowHighlightColor: null,
   arrowHighlightTextColor: null,
+    barChartColor: null,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -48,6 +50,7 @@ const instanceSettingsReducer = createReducer(
     arrowTextColor: action.settings.arrowTextColor,
     arrowHighlightColor: action.settings.arrowHighlightColor,
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
+      barChartColor: action.settings.barChartColor,
   })),
 );
 

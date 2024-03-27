@@ -44,6 +44,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.arrow_text_color = instance_settings_data['arrowTextColor']
         instance_settings.arrow_highlight_color = instance_settings_data['arrowHighlightColor']
         instance_settings.arrow_highlight_text_color = instance_settings_data['arrowHighlightTextColor']
+        instance_settings.bar_chart_color = instance_settings_data['barChartColor']
         db.session.add(instance_settings)
         db.session.commit()
 

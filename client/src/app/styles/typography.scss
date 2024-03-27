@@ -10,25 +10,6 @@
   color: #000000;
 }
 
-// todo move somewhere else, not related to typography really anymore
-.quill-content{
-
-  overflow-wrap: break-word;
-
-  p:first-of-type{
-    margin-top: 0;
-  }
-  p:last-of-type{
-    margin-bottom: 0;
-  }
-  // Restricts the maximum size of quill editor HTML content's images so the containers don't overflow
-  img, iframe{
-    max-width: 100%;
-    object-fit: contain;
-    height: auto;
-    min-height: 400px;
-  }
-}
 
 a.title-link{
   text-decoration: none;

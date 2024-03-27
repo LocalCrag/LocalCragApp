@@ -16,7 +16,7 @@ def register_extensions(application):
     jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
-    cors.init_app(application, resources={r"/api/*": {"origins": application.config['FRONTEND_HOST']}})
+    cors.init_app(application, origins=[application.config['FRONTEND_HOST']])
 
 
 def configure_extensions(application):
@@ -33,8 +33,6 @@ def create_app():
     if "LOCALCRAG_CONFIG" in os.environ:
         application.config.from_envvar('LOCALCRAG_CONFIG')
     overwrite_config_by_env_vars(application)
-    # else:
-    #     application.config.from_object('config.env-var-config.EnvVarConfig')
 
     register_extensions(application)
 

@@ -13,9 +13,7 @@
                         styleClass="md:mb-0"></p-dropdown>
             <div class="flex justify-content-end gap-3">
               <p-button label="{{t('newMenuPageButtonLabel')}}" icon="pi pi-plus" routerLink="/pages/create-menu-page"
-                        *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)"></p-button>
-              <p-button icon="pi pi-plus" routerLink="/pages/create-menu-page"
-                        *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)"></p-button>
+                        class="responsive-button"></p-button>
             </div>
           </div>
         </ng-template>
@@ -31,10 +29,8 @@
                     <p-button label="{{t('visitMenuPageButtonLabel')}}" icon="pi pi-eye" routerLink="/pages/{{menuPage.slug}}"
                               styleClass="pr-0 responsive-button" [text]="true"></p-button>
                     <p-button label="{{t('editMenuPageButtonLabel')}}" icon="pi pi-file-edit" routerLink="/pages/{{menuPage.slug}}/edit"
-                              styleClass="pr-0"
-                              *ngIf="(isLoggedIn$ | async) && !(isMobile$ | async)" [text]="true"></p-button>
-                    <p-button icon="pi pi-file-edit" routerLink="/pages/{{menuPage.slug}}/edit"
-                              *ngIf="(isLoggedIn$ | async) && (isMobile$ | async)" [text]="true"></p-button>
+                              styleClass="pr-0" class="responsive-button" [text]="true"></p-button>
+
                   </div>
                 </div>
               </div>

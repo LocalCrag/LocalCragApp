@@ -82,6 +82,13 @@
           <p-colorPicker formControlName="arrowHighlightTextColor"></p-colorPicker>
         </div>
 
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('chartSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('barChartColorLabel')}}</label>
+          <p-colorPicker formControlName="barChartColor" format="rgb"></p-colorPicker>
+        </div>
+
       </form>
 
       <div class="form-actions">

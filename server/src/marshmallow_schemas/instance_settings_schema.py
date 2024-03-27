@@ -21,6 +21,8 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     arrowTextColor = fields.String(attribute="arrow_text_color")
     arrowHighlightColor = fields.String(attribute="arrow_highlight_color")
     arrowHighlightTextColor = fields.String(attribute="arrow_highlight_text_color")
+    barChartColor = fields.String(attribute="bar_chart_color")
+
 
 
 

@@ -16,6 +16,7 @@ def test_successful_create_menu_item(client):
     res = json.loads(rv.data)
     assert res['type'] == "MENU_PAGE"
     assert res['position'] == "BOTTOM"
+    assert res['orderIndex'] == 2
     assert res['menuPage']['title'] == "Datenschutzerklärung"
     assert res['id'] is not None
 
@@ -28,16 +29,18 @@ def test_successful_get_menu_items(client):
     assert res[1]['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
     assert res[1]['type'] == "NEWS"
     assert res[1]['position'] == "TOP"
+    assert res[1]['orderIndex'] == 0
     assert res[1]['menuPage'] == None
 
 
-def test_successful_get_menu_page(client):
+def test_successful_get_menu_item(client):
     rv = client.get('/api/menu-items/6b99766e-4597-492f-a8f1-450f1af7cfa1')
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
     assert res['type'] == "NEWS"
     assert res['position'] == "TOP"
+    assert res['orderIndex'] == 0
     assert res['menuPage'] == None
 
 
@@ -68,6 +71,7 @@ def test_successful_edit_menu_item(client):
     res = json.loads(rv.data)
     assert res['type'] == "MENU_PAGE"
     assert res['position'] == "BOTTOM"
+    assert res['orderIndex'] == 2
     assert res['menuPage']['title'] == "Datenschutzerklärung"
     assert res['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
 

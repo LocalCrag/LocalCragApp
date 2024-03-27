@@ -175,7 +175,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
         this.accuracy = Math.round(position.coords.accuracy);
       }
       this.gpsLoadingSuccess = true;
-      if(Date.now() < this.fetchFinishTime){
+      if(Date.now() < this.fetchFinishTime && this.accuracy > 5){
         this.fetchGeoLocationLoop();
       } else {
         this.finishFetchingGeoLocation();

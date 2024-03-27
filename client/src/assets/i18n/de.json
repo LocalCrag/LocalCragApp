@@ -63,6 +63,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Pfeil-Textfarbe",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Pfeilfarbe hervorgehoben",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Pfeil-Textfarbe hervorgehoben",
+  "instanceSettings.instanceSettingsForm.chartSettings": "Diagramme",
+  "instanceSettings.instanceSettingsForm.barChartColorLabel": "Balkendiagrammfarbe",
   "instanceSettings.instanceSettingsForm.editInstanceSettingsButtonLabel": "Speichern",
   "instanceSettings.instanceSettingsForm.editInstanceSettings": "Einstellungen",
   "login.title": "Login",

@@ -17,6 +17,7 @@ export class InstanceSettings {
   arrowTextColor: string;
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
+  barChartColor: string;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -33,6 +34,7 @@ export class InstanceSettings {
     instanceSettings.arrowTextColor = payload.arrowTextColor;
     instanceSettings.arrowHighlightColor = payload.arrowHighlightColor;
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
+    instanceSettings.barChartColor = payload.barChartColor;
     return instanceSettings;
   }
 
@@ -50,6 +52,7 @@ export class InstanceSettings {
       arrowTextColor: instanceSettings.arrowTextColor,
       arrowHighlightColor: instanceSettings.arrowHighlightColor,
       arrowHighlightTextColor: instanceSettings.arrowHighlightTextColor,
+      barChartColor: instanceSettings.barChartColor,
     };
   }
 
