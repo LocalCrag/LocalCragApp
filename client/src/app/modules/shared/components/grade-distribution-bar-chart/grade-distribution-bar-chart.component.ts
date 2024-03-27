@@ -162,11 +162,18 @@ export class GradeDistributionBarChartComponent implements OnChanges {
             // Build chart data
             const labels = gradesInUsedScale.map(grade => this.translocoService.translate(grade.name));
             const counts = gradeValues.map(gradeValue => gradeValueCount[gradeValue]);
+            this.projectCount = counts[0];
             const maxCount = Math.max(...counts);
             const backgroundColors = counts.map(count => {
                 const rgbObject = getRgbObject(barChartColor);
                 return `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, ${(count / maxCount) * 0.5 + 0.5})`;
             });
+            const includeProjectsInChart = false;
+            if(!includeProjectsInChart){
+                labels.shift();
+                counts.shift();
+                backgroundColors.shift();
+            }
             this.data = {
                 labels: labels,
                 datasets: [
@@ -177,7 +184,6 @@ export class GradeDistributionBarChartComponent implements OnChanges {
                     }
                 ]
             };
-            this.projectCount = counts[0];
             this.totalCount = this.grades.length;
         })
     }
