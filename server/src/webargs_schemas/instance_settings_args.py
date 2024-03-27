@@ -14,4 +14,5 @@ instance_settings_args = {
     "arrowTextColor": fields.Str(required=True),
     "arrowHighlightColor": fields.Str(required=True),
     "arrowHighlightTextColor": fields.Str(required=True),
+    "barChartColor": fields.Str(required=True),
 }

@@ -31,6 +31,8 @@ class InstanceSettings(db.Model):
     arrow_text_color = db.Column(db.String(7), nullable=False, server_default='#000000')
     arrow_highlight_color = db.Column(db.String(7), nullable=False, server_default='#FF0000')
     arrow_highlight_text_color = db.Column(db.String(7), nullable=False, server_default='#FFFFFF')
+    bar_chart_color = db.Column(db.String(30), nullable=False, server_default='rgb(213, 30, 38)')
+
 
     @classmethod
     def return_it(cls):

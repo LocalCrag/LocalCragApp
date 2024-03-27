@@ -46,5 +46,10 @@ export const selectFaviconImage = createSelector(
   instanceSettingsState => instanceSettingsState.faviconImage
 );
 
+export const selectBarChartColor = createSelector(
+    selectInstanceSettingsState,
+    instanceSettingsState => instanceSettingsState.barChartColor
+);
+
 
 

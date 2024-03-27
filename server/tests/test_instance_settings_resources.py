@@ -19,6 +19,7 @@ def test_successful_get_instance_settings(client):
     assert res['arrowTextColor'] == '#000000'
     assert res['arrowHighlightColor'] == '#FF0000'
     assert res['arrowHighlightTextColor'] == '#FFFFFF'
+    assert res['barChartColor'] == 'rgb(213, 30, 38)'
 
 
 def test_successful_edit_instance_settings(client):
@@ -36,6 +37,7 @@ def test_successful_edit_instance_settings(client):
         "arrowTextColor": '#BBBBBB',
         "arrowHighlightColor": '#CCCCCC',
         "arrowHighlightTextColor": '#DDDDDD',
+        "barChartColor": 'rgb(213, 30, 39)',
     }
     rv = client.put('/api/instance-settings', headers=access_headers, json=post_data)
     assert rv.status_code == 200
@@ -52,3 +54,4 @@ def test_successful_edit_instance_settings(client):
     assert res['arrowTextColor'] == '#BBBBBB'
     assert res['arrowHighlightColor'] == '#CCCCCC'
     assert res['arrowHighlightTextColor'] == '#DDDDDD'
+    assert res['barChartColor'] == 'rgb(213, 30, 39)'

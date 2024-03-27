@@ -7,8 +7,6 @@ class DefaultConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'thisKeyIsNotSecretChangeIt'
     JWT_SECRET_KEY = 'thisKeyIsNotSecretChangeIt'
-    JWT_BLACKLIST_ENABLED = True
-    JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']  # todo isn't this now blocklist?
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     ERROR_404_HELP = False
@@ -18,7 +16,6 @@ class DefaultConfig(object):
     SMTP_PASSWORD = 'YOUR_SMTP_PASSWORD'
     SMTP_PORT = 'YOUR_SMTP_PORT'
     FRONTEND_HOST = 'https://localcrag.de'
-    CORS_ORIGINS = 'https://localcrag.de' # todo test on prod
     SUPERADMIN_FIRSTNAME = 'Felix'
     SUPERADMIN_LASTNAME = 'Engelmann'
     SUPERADMIN_EMAIL = 'localcrag@fengelmann.de'

@@ -27,6 +27,7 @@ def test_successful_create_crag(client):
     assert res['lng'] == 42.42
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
+    assert res['orderIndex'] == 2
 
 
 def test_successful_get_crags(client):
@@ -55,6 +56,7 @@ def test_successful_get_crag(client):
     assert res['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
     assert res['name'] == "Brione"
     assert res['slug'] == "brione"
+    assert res['orderIndex'] == 0
     assert res['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res['description'] == "<p>Lange Beschreibung zu Brione.</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zu Brione"
@@ -100,6 +102,7 @@ def test_successful_edit_crag(client):
     assert res['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res['lat'] == 42.1
     assert res['lng'] == 42.2
+    assert res['orderIndex'] == 0
     assert res['id'] is not None
 
 

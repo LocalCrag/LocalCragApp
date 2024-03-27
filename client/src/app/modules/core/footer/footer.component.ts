@@ -6,8 +6,13 @@ import {TranslocoService} from '@ngneat/transloco';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from '@ngrx/effects';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
-import {Observable} from 'rxjs';
-import {selectCopyrightOwner} from '../../../ngrx/selectors/instance-settings.selectors';
+import {forkJoin, Observable} from 'rxjs';
+import {
+  selectCopyrightOwner,
+  selectInstagramUrl,
+  selectYoutubeUrl
+} from '../../../ngrx/selectors/instance-settings.selectors';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-footer',
@@ -37,7 +42,11 @@ export class FooterComponent implements OnInit{
 
   buildMenu(){
     this.menuItems = [];
-    this.menuItemsService.getMenuItems().subscribe(menuItems => {
+    forkJoin([
+      this.menuItemsService.getMenuItems(),
+      this.store.select(selectYoutubeUrl).pipe(take(1)),
+      this.store.select(selectInstagramUrl).pipe(take(1)),
+    ]).subscribe(([menuItems,youtubeUrl, instagramUrl]) => {
       const menuItemsBottom = menuItems.filter(menuItem => menuItem.position === MenuItemPosition.BOTTOM);
       menuItemsBottom.map(menuItem => {
         switch (menuItem.type){
@@ -66,14 +75,14 @@ export class FooterComponent implements OnInit{
             this.menuItems.push({
               title: this.translocoService.translate('menu.youtube'),
               routerLink: null,
-              link: 'https://www.youtube.com/channel/UCVcSFPVAiKbg3QLDNdXIl-Q',// todo
+              link: youtubeUrl
             });
             break;
           case MenuItemType.INSTAGRAM:
             this.menuItems.push({
               title: this.translocoService.translate('menu.instagram'),
               routerLink: null,
-              link: 'https://www.instagram.com/gleesbouldering/', // todo
+              link: instagramUrl
             });
             break;
         }
