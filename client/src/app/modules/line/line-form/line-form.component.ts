@@ -150,7 +150,6 @@ export class LineFormComponent implements OnInit {
     if (this.lineForm.get('grade').value?.value < 0) { // Projects can't have ratings or FA info
       this.lineForm.get('faYear').disable();
       this.lineForm.get('faName').disable();
-      this.lineForm.get('rating').setValue(null);
       this.lineForm.get('faYear').setValue(null);
       this.lineForm.get('faName').setValue(null);
     } else {
