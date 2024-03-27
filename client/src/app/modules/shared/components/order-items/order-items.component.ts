@@ -4,6 +4,8 @@ import {AbstractModel} from '../../../../models/abstract-model';
 import {LoadingState} from '../../../../enums/loading-state';
 import {Observable} from 'rxjs';
 import {MenuItemType} from '../../../../enums/menu-item-type';
+import {Store} from '@ngrx/store';
+import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -24,12 +26,14 @@ export class OrderItemsComponent {
   public showLinePathLineName = false;
   public showMenuItemTitle = false;
   public menuItemTypes = MenuItemType;
+  public isMobile$: Observable<boolean>;
 
   private callback: (payload: any, slug?: string) => Observable<any>;
   private idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
   private slugParameter: string;
 
   constructor(private dialogConfig: DynamicDialogConfig,
+              private store: Store,
               private ref: DynamicDialogRef) {
     this.items = [...this.dialogConfig.data.items];
     this.itemsName = this.dialogConfig.data.itemsName;
@@ -39,6 +43,7 @@ export class OrderItemsComponent {
     this.showLinePathLineName = this.dialogConfig.data.showLinePathLineName ? this.dialogConfig.data.showLinePathLineName : false;
     this.showMenuItemTitle = this.dialogConfig.data.showMenuItemTitle ? this.dialogConfig.data.showMenuItemTitle : false;
     this.idAccessor = this.dialogConfig.data.idAccessor ? this.dialogConfig.data.idAccessor : this.idAccessor;
+    this.isMobile$ = this.store.select(selectIsMobile);
   }
 
   /**
@@ -67,5 +72,4 @@ export class OrderItemsComponent {
     });
   }
 
-  protected readonly MenuItemType = MenuItemType;
 }
