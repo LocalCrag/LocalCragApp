@@ -8,6 +8,8 @@ import {CacheService} from '../core/cache.service';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {environment} from '../../../environments/environment';
 import {deserializeGrade, Grade} from '../../utility/misc/grades';
+import {Store} from '@ngrx/store';
+import {reloadMenus} from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for sectors.
@@ -19,6 +21,7 @@ export class SectorsService {
 
   constructor(private api: ApiService,
               private cache: CacheService,
+              private store: Store,
               private http: HttpClient) {
   }
 
@@ -33,6 +36,8 @@ export class SectorsService {
     return this.http.post(this.api.sectors.create(cragSlug), Sector.serialize(sector)).pipe(
       tap(() => {
         this.cache.clear(this.api.sectors.getList(cragSlug))
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(Sector.deserialize)
     );
@@ -69,6 +74,8 @@ export class SectorsService {
       tap(() => {
         this.cache.clear(this.api.sectors.getList(cragSlug))
         this.cache.clear(this.api.sectors.getDetail(sector.slug))
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );
@@ -85,7 +92,9 @@ export class SectorsService {
     return this.http.put(this.api.sectors.update(sector.slug), Sector.serialize(sector)).pipe(
       tap(() => {
         this.cache.clear(this.api.sectors.getList(cragSlug));
-        this.cache.clear(this.api.sectors.getDetail(sector.slug))
+        this.cache.clear(this.api.sectors.getDetail(sector.slug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(Sector.deserialize)
     );
@@ -102,6 +111,8 @@ export class SectorsService {
     return this.http.put(this.api.sectors.updateOrder(cragSlug), newOrder).pipe(
       tap(() => {
         this.cache.clear(this.api.sectors.getList(cragSlug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );

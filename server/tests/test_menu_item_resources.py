@@ -109,3 +109,26 @@ def test_successful_order_menu_items_top(client):
     assert res[1]['orderIndex'] == 0
     assert res[3]['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
     assert res[3]['orderIndex'] == 1
+
+
+def test_successful_get_crag_menu_structure(client):
+    rv = client.get('/api/menu-items/crag-menu-structure')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
+    assert res[0]['slug'] == "brione"
+    assert res[0]['name'] == "Brione"
+    assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
+    assert res[1]['slug'] == "chironico"
+    assert res[1]['name'] == "Chironico"
+
+    assert res[0]['sectors'][0]['slug'] == "schattental"
+    assert res[0]['sectors'][0]['name'] == "Schattental"
+    assert res[0]['sectors'][1]['slug'] == "oben"
+    assert res[0]['sectors'][1]['name'] == "Oben"
+
+    assert res[0]['sectors'][0]['areas'][0]['slug'] == "dritter-block-von-links"
+    assert res[0]['sectors'][0]['areas'][0]['name'] == "Dritter Block von links"
+    assert res[0]['sectors'][0]['areas'][1]['slug'] == "noch-ein-bereich"
+    assert res[0]['sectors'][0]['areas'][1]['name'] == "Noch ein Bereich"

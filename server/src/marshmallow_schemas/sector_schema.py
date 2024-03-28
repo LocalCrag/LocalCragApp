@@ -1,6 +1,7 @@
 from marshmallow import fields
 
 from extensions import ma
+from marshmallow_schemas.area_schema import AreaMenuSchema
 from marshmallow_schemas.file_schema import FileSchema, file_schema
 from models.file import File
 
@@ -20,6 +21,11 @@ class SectorDetailSchema(SectorSchema):
     lat = fields.Float()
     lng = fields.Float()
     rules = fields.String()
+
+class SectorMenuSchema(ma.SQLAlchemySchema):
+    name = fields.String()
+    slug = fields.String()
+    areas = fields.List(fields.Nested(AreaMenuSchema()))
 
 
 sector_schema = SectorDetailSchema()

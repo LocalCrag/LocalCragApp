@@ -21,7 +21,8 @@ class Sector(HasSlug, BaseEntity):
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
-    areas = db.relationship("Area", cascade="all,delete", backref="sector", lazy="select")
+    areas = db.relationship("Area", cascade="all,delete", backref="sector", lazy="select",
+                            order_by='Area.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)

@@ -134,3 +134,5 @@ class GetCragGrades(MethodView):
         result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
             Sector.crag_id == crag_id).all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
+
+

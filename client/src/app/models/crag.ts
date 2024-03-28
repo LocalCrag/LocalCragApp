@@ -3,6 +3,7 @@ import {File} from './file';
 import {Observable} from 'rxjs';
 import {Grade} from '../utility/misc/grades';
 import {GPS} from '../interfaces/gps.interface';
+import {Sector} from './sector';
 
 /**
  * Model of a climbing crag.
@@ -17,6 +18,7 @@ export class Crag extends AbstractModel {
   portraitImage: File;
   orderIndex: number;
   gps: GPS;
+  sectors: Sector[];
 
 
   /**
@@ -36,6 +38,7 @@ export class Crag extends AbstractModel {
     crag.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
+    crag.sectors = payload.sectors ? payload.sectors.map(Sector.deserialize) : null;
     return crag;
   }
 

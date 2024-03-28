@@ -5,12 +5,16 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
+from marshmallow_schemas.crag_schema import crags_schema, crags_menu_schema
 from marshmallow_schemas.menu_item_schema import menu_items_schema, menu_item_schema
 from marshmallow_schemas.menu_page_schema import menu_pages_schema, menu_page_schema
+from models.area import Area
+from models.crag import Crag
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
 from models.menu_page import MenuPage
+from models.sector import Sector
 from models.user import User
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
@@ -141,3 +145,10 @@ class UpdateMenuItemBottomOrder(MethodView):
         db.session.commit()
 
         return jsonify(None), 200
+
+
+class GetCragMenuStructure(MethodView):
+
+    def get(self):
+        crags: Crag = db.session.query(Crag).join(Sector, isouter=True).join(Area, isouter=True).order_by(Crag.order_index.asc()).all()
+        return jsonify(crags_menu_schema.dump(crags)), 200

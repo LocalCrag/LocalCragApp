@@ -35,6 +35,7 @@ export class CragsService {
     return this.http.post(this.api.crags.create(), Crag.serialize(crag)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -70,6 +71,7 @@ export class CragsService {
     return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -87,6 +89,7 @@ export class CragsService {
       tap(() => {
         this.cache.clear(this.api.crags.getDetail(crag.slug));
         this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -103,6 +106,8 @@ export class CragsService {
     return this.http.put(this.api.crags.updateOrder(), newOrder).pipe(
       tap(() => {
         this.cache.clear(this.api.crags.getList());
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );
