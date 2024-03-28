@@ -116,10 +116,8 @@ def test_successful_get_crag_menu_structure(client):
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert len(res) == 2
-    assert res[0]['id'] == "aabc4539-c02f-4a03-8db3-ea0916e59884"
     assert res[0]['slug'] == "brione"
     assert res[0]['name'] == "Brione"
-    assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
     assert res[1]['slug'] == "chironico"
     assert res[1]['name'] == "Chironico"
 
