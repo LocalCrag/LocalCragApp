@@ -97,6 +97,7 @@ export class MenuComponent implements OnInit {
           case MenuItemType.MENU_PAGE:
             this.items.push({
               label: menuItem.menuPage.title,
+              icon: `pi pi-fw ${menuItem.icon}`,
               routerLink: 'pages/' + menuItem.menuPage.slug,
             })
             break;

@@ -20,7 +20,7 @@ import {MenuItemsService} from '../../../services/crud/menu-items.service';
 import {MenuItemType} from '../../../enums/menu-item-type';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {CardModule} from 'primeng/card';
-import {NgIf} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import {PaginatorModule} from 'primeng/paginator';
 import {SharedModule} from '../../shared/shared.module';
 import {ButtonModule} from 'primeng/button';
@@ -42,7 +42,8 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
     ReactiveFormsModule,
     TranslocoPipe,
     ButtonModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    NgClass
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',
@@ -69,6 +70,19 @@ export class MenuItemsFormComponent implements OnInit {
   public positions = [
     MenuItemPosition.TOP,
     MenuItemPosition.BOTTOM,
+  ]
+  public icons = [
+    marker('pi-book'),
+    marker('pi-building'),
+    marker('pi-calendar'),
+    marker('pi-camera'),
+    marker('pi-cloud'),
+    marker('pi-envelope'),
+    marker('pi-flag'),
+    marker('pi-globe'),
+    marker('pi-home'),
+    marker('pi-shield'),
+    marker('pi-wallet'),
   ]
 
   constructor(private fb: FormBuilder,
@@ -128,11 +142,13 @@ export class MenuItemsFormComponent implements OnInit {
     this.menuItemForm = this.fb.group({
       type: [MenuItemType.MENU_PAGE, [Validators.required]],
       position: [position, [Validators.required]],
-      menuPage: [this.menuPages.length > 0 ? this.menuPages[0] : null, [Validators.required]],
+      menuPage: [null],
+      icon: [null],
     });
     this.menuItemForm.get('type').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
       this.setValidators();
     });
+    this.setValidators();
   }
 
   private setValidators() {
@@ -140,10 +156,16 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm.get('menuPage').setValidators([Validators.required])
       this.menuItemForm.get('menuPage').enable();
       this.menuItemForm.get('menuPage').setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
+      this.menuItemForm.get('icon').setValidators([Validators.required])
+      this.menuItemForm.get('icon').enable();
+      this.menuItemForm.get('icon').setValue(this.icons[0]);
     } else {
       this.menuItemForm.get('menuPage').setValidators([])
       this.menuItemForm.get('menuPage').disable();
       this.menuItemForm.get('menuPage').setValue(null);
+      this.menuItemForm.get('icon').setValidators([])
+      this.menuItemForm.get('icon').disable();
+      this.menuItemForm.get('icon').setValue(null);
     }
   }
 
@@ -155,6 +177,7 @@ export class MenuItemsFormComponent implements OnInit {
     this.menuItemForm.patchValue({
       type: this.menuItem.type,
       position: this.menuItem.position,
+      icon: this.menuItem.icon,
       menuPage: getInstanceEquivalentFromList(this.menuItem.menuPage, this.menuPages)
     });
   }
@@ -176,6 +199,7 @@ export class MenuItemsFormComponent implements OnInit {
       menuItem.type = this.menuItemForm.get('type').value;
       menuItem.position = this.menuItemForm.get('position').value;
       menuItem.menuPage = this.menuItemForm.get('menuPage').value;
+      menuItem.icon = this.menuItemForm.get('icon').value;
       if (this.menuItem) {
         menuItem.id = this.menuItem.id;
         this.menuItemsService.updateMenuItem(menuItem).subscribe(() => {

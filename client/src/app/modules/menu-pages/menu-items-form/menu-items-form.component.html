@@ -54,6 +54,23 @@
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('iconLabel')}}</label>
+          <p-dropdown formControlName="icon" [options]="icons" lcFormControl>
+            <ng-template let-icon pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <i class="pi" [ngClass]="icon"></i>
+                <div>{{ icon | transloco }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedIcon pTemplate="selectedItem">
+              <i class="pi" [ngClass]="selectedIcon"></i>
+              {{ selectedIcon | transloco }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
       </form>
 
       <div class="form-actions">

@@ -15,6 +15,7 @@ export class MenuItem extends AbstractModel {
   type: MenuItemType;
   position: MenuItemPosition;
   menuPage: MenuPage;
+  icon: string;
 
   /**
    * Parses a menu item.
@@ -27,6 +28,7 @@ export class MenuItem extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(menuItem, payload);
     menuItem.type = payload.type;
     menuItem.position = payload.position;
+    menuItem.icon = payload.icon;
     menuItem.menuPage = payload.menuPage ? MenuPage.deserialize(payload.menuPage) : null;
     return menuItem;
   }
@@ -41,6 +43,7 @@ export class MenuItem extends AbstractModel {
     return {
       type: menuItem.type,
       position: menuItem.position,
+      icon: menuItem.icon,
       menuPage:  menuItem.menuPage?  menuItem.menuPage.id : null,
     };
   }
