@@ -14,10 +14,16 @@ class AreaSchema(BaseEntitySchema):
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
     orderIndex = fields.Int(attribute='order_index')
 
+
 class AreaDetailSchema(AreaSchema):
     lat = fields.Float()
     lng = fields.Float()
     description = fields.String(attribute='description')
+
+
+class AreaMenuSchema(ma.SQLAlchemySchema):
+    name = fields.String()
+    slug = fields.String()
 
 
 area_schema = AreaDetailSchema()

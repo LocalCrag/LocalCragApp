@@ -7,6 +7,7 @@ import {map, tap} from 'rxjs/operators';
 import {MenuItem} from '../../models/menu-item';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {environment} from '../../../environments/environment';
+import {Crag} from '../../models/crag';
 
 /**
  * CRUD service for menu items.
@@ -114,6 +115,10 @@ export class MenuItemsService {
       }),
       map(() => null)
     );
+  }
+
+  public getCragMenuStructure(): Observable<Crag[]> {
+    return this.cache.get(this.api.menuItems.getCragMenuStructure(), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 
 

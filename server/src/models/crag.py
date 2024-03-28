@@ -20,7 +20,7 @@ class Crag(HasSlug, BaseEntity):
     rules = db.Column(db.Text, nullable=True)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
-    sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select")
+    sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select", order_by='Sector.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)

@@ -14,6 +14,7 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 class MenuItemSchema(BaseEntitySchema):
     type = EnumField(MenuItemTypeEnum, by_value=True)
     position = EnumField(MenuItemPositionEnum, by_value=True)
+    icon = fields.String()
     menuPage = fields.Nested(menu_page_min_schema, attribute='menu_page')
     orderIndex = fields.Int(attribute='order_index')
 

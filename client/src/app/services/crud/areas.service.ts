@@ -9,6 +9,8 @@ import {environment} from '../../../environments/environment';
 import {Area} from '../../models/area';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {deserializeGrade, Grade} from '../../utility/misc/grades';
+import {reloadMenus} from '../../ngrx/actions/core.actions';
+import {Store} from '@ngrx/store';
 
 /**
  * CRUD service for areas.
@@ -20,6 +22,7 @@ export class AreasService {
 
   constructor(private api: ApiService,
               private cache: CacheService,
+              private store: Store,
               private http: HttpClient) {
   }
 
@@ -34,6 +37,8 @@ export class AreasService {
     return this.http.post(this.api.areas.create(sectorSlug), Area.serialize(area)).pipe(
       tap(() => {
         this.cache.clear(this.api.areas.getList(sectorSlug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(Area.deserialize)
     );
@@ -70,6 +75,8 @@ export class AreasService {
     return this.http.delete(this.api.areas.delete(area.slug)).pipe(
       tap(() => {
         this.cache.clear(this.api.areas.getList(sectorSlug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );
@@ -87,6 +94,8 @@ export class AreasService {
       tap(() => {
         this.cache.clear(this.api.areas.getDetail(area.slug));
         this.cache.clear(this.api.areas.getList(sectorSlug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(Area.deserialize)
     );
@@ -103,6 +112,8 @@ export class AreasService {
     return this.http.put(this.api.areas.updateOrder(sectorSlug), newOrder).pipe(
       tap(() => {
         this.cache.clear(this.api.areas.getList(sectorSlug));
+        this.cache.clear(this.api.menuItems.getCragMenuStructure());
+        this.store.dispatch(reloadMenus());
       }),
       map(() => null)
     );

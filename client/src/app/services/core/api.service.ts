@@ -48,6 +48,7 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}menu-items/${id}`,
     updateOrderTop: (): string => `${this.apiHost}menu-items/update-order-top`,
     updateOrderBottom: (): string => `${this.apiHost}menu-items/update-order-bottom`,
+    getCragMenuStructure: (): string => `${this.apiHost}menu-items/crag-menu-structure`,
   };
 
   public region = {

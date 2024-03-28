@@ -8,7 +8,8 @@ def test_successful_create_menu_item(client):
     menu_item_data = {
         "type": "MENU_PAGE",
         "position": "BOTTOM",
-        "menuPage": "f2b0606f-46f6-4012-be67-5315bba154d2"
+        "menuPage": "f2b0606f-46f6-4012-be67-5315bba154d2",
+        "icon": "test"
     }
 
     rv = client.post('/api/menu-items', headers=access_headers, json=menu_item_data)
@@ -17,6 +18,7 @@ def test_successful_create_menu_item(client):
     assert res['type'] == "MENU_PAGE"
     assert res['position'] == "BOTTOM"
     assert res['orderIndex'] == 2
+    assert res['icon'] == "test"
     assert res['menuPage']['title'] == "Datenschutzerklärung"
     assert res['id'] is not None
 
@@ -31,6 +33,7 @@ def test_successful_get_menu_items(client):
     assert res[1]['position'] == "TOP"
     assert res[1]['orderIndex'] == 0
     assert res[1]['menuPage'] == None
+    assert res[1]['icon'] == None
 
 
 def test_successful_get_menu_item(client):
@@ -42,6 +45,7 @@ def test_successful_get_menu_item(client):
     assert res['position'] == "TOP"
     assert res['orderIndex'] == 0
     assert res['menuPage'] == None
+    assert res['icon'] == None
 
 
 def test_get_deleted_menu_item(client):
@@ -63,7 +67,8 @@ def test_successful_edit_menu_item(client):
     menu_item_data = {
         "type": "MENU_PAGE",
         "position": "BOTTOM",
-        "menuPage": "f2b0606f-46f6-4012-be67-5315bba154d2"
+        "menuPage": "f2b0606f-46f6-4012-be67-5315bba154d2",
+        "icon": None
     }
 
     rv = client.put('/api/menu-items/6b99766e-4597-492f-a8f1-450f1af7cfa1', headers=access_headers, json=menu_item_data)
@@ -72,8 +77,10 @@ def test_successful_edit_menu_item(client):
     assert res['type'] == "MENU_PAGE"
     assert res['position'] == "BOTTOM"
     assert res['orderIndex'] == 2
+    assert res['icon'] == None
     assert res['menuPage']['title'] == "Datenschutzerklärung"
     assert res['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
+
 
 def test_successful_order_menu_items_top(client):
     access_headers, refresh_headers = get_login_headers(client)
@@ -103,3 +110,23 @@ def test_successful_order_menu_items_top(client):
     assert res[3]['id'] == "6b99766e-4597-492f-a8f1-450f1af7cfa1"
     assert res[3]['orderIndex'] == 1
 
+
+def test_successful_get_crag_menu_structure(client):
+    rv = client.get('/api/menu-items/crag-menu-structure')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2
+    assert res[0]['slug'] == "brione"
+    assert res[0]['name'] == "Brione"
+    assert res[1]['slug'] == "chironico"
+    assert res[1]['name'] == "Chironico"
+
+    assert res[0]['sectors'][0]['slug'] == "schattental"
+    assert res[0]['sectors'][0]['name'] == "Schattental"
+    assert res[0]['sectors'][1]['slug'] == "oben"
+    assert res[0]['sectors'][1]['name'] == "Oben"
+
+    assert res[0]['sectors'][0]['areas'][0]['slug'] == "dritter-block-von-links"
+    assert res[0]['sectors'][0]['areas'][0]['name'] == "Dritter Block von links"
+    assert res[0]['sectors'][0]['areas'][1]['slug'] == "noch-ein-bereich"
+    assert res[0]['sectors'][0]['areas'][1]['name'] == "Noch ein Bereich"

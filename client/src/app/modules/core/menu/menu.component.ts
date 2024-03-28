@@ -85,11 +85,10 @@ export class MenuComponent implements OnInit {
   buildMenu() {
     forkJoin([
       this.menuItemsService.getMenuItems(),
-      this.cragsService.getCrags(),
+      this.menuItemsService.getCragMenuStructure(),
       this.store.select(selectYoutubeUrl).pipe(take(1)),
       this.store.select(selectInstagramUrl).pipe(take(1)),
-      this.isLoggedIn$.pipe(take(1))
-    ]).subscribe(([menuItems, crags,youtubeUrl, instagramUrl, isLoggedIn]) => {
+    ]).subscribe(([menuItems, crags,youtubeUrl, instagramUrl]) => {
       this.items = [];
       const menuItemsTop = menuItems.filter(menuItem => menuItem.position === MenuItemPosition.TOP);
       menuItemsTop.map(menuItem => {
@@ -97,6 +96,7 @@ export class MenuComponent implements OnInit {
           case MenuItemType.MENU_PAGE:
             this.items.push({
               label: menuItem.menuPage.title,
+              icon: `pi pi-fw ${menuItem.icon}`,
               routerLink: 'pages/' + menuItem.menuPage.slug,
             })
             break;
@@ -126,7 +126,7 @@ export class MenuComponent implements OnInit {
               label: this.translocoService.translate(marker('menu.topo')),
               icon: 'pi pi-fw pi-map',
               routerLink: '/topo/crags',
-              items: this.buildCragNavigationMenu(crags, isLoggedIn)
+              items: this.buildCragNavigationMenu(crags)
             });
             break;
         }
@@ -134,22 +134,26 @@ export class MenuComponent implements OnInit {
     })
   }
 
-  buildCragNavigationMenu(crags: Crag[], isLoggedIn: boolean) {
+  buildCragNavigationMenu(crags: Crag[]) {
     const cragItems = [];
     crags.map(crag => {
       cragItems.push({
         label: crag.name,
-        icon: 'pi pi-fw pi-map',
-        routerLink: `/topo/${crag.slug}`
+        routerLink: `/topo/${crag.slug}/sectors`,
+        items: crag.sectors.map(sector => {
+          return {
+            label: sector.name,
+            routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+            items: sector.areas.map(area => {
+              return {
+                label: area.name,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
+              }
+            })
+          }
+        })
       })
     })
-    if (isLoggedIn) {
-      cragItems.push({
-        label: this.translocoService.translate(marker('menu.newCrag')),
-        icon: 'pi pi-fw pi-plus',
-        routerLink: '/topo/create-crag',
-      })
-    }
     return cragItems;
   }
 
