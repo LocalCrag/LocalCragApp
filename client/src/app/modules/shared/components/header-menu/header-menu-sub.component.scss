@@ -142,6 +142,14 @@ lc-header-menu-sub.root, lc-header-menu-sub.is-mobile > .item > .item-content {
   transform: rotate(90deg);
 }
 
+lc-header-menu-sub:not(.is-mobile) .root-child > .item-wrapper > .item-angle{
+  padding-left: 0;
+}
+
+lc-header-menu-sub:not(.is-mobile) .root-child > .item-wrapper > .item-content{
+  max-width: none;
+}
+
 .item-angle {
   padding-left: .75rem;
   padding-right: 1.25rem;
