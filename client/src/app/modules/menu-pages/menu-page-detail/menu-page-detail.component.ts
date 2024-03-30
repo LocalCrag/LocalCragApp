@@ -8,6 +8,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {LoadingState} from '../../../enums/loading-state';
 import {NgIf} from '@angular/common';
 import {SkeletonModule} from 'primeng/skeleton';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-menu-page-detail',
@@ -22,6 +23,7 @@ import {SkeletonModule} from 'primeng/skeleton';
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss'
 })
+@UntilDestroy()
 export class MenuPageDetailComponent implements OnInit{
 
   public menuPage: MenuPage;
@@ -33,12 +35,14 @@ export class MenuPageDetailComponent implements OnInit{
   }
 
   ngOnInit() {
-    const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
-    this.menuPagesService.getMenuPage(menuPageSlug).subscribe(menuPage => {
-      this.menuPage = menuPage;
-      this.loadingState = LoadingState.DEFAULT;
-    }, ()=>{
-      this.router.navigate(['not-found']);
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
+      const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
+      this.menuPagesService.getMenuPage(menuPageSlug).subscribe(menuPage => {
+        this.menuPage = menuPage;
+        this.loadingState = LoadingState.DEFAULT;
+      }, () => {
+        this.router.navigate(['not-found']);
+      });
     });
   }
 
