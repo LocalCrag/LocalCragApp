@@ -1,10 +1,7 @@
-from marshmallow import fields
-
-from extensions import ma
-from marshmallow_schemas.file_schema import FileSchema, file_schema
-from models.file import File
+from marshmallow import fields, post_dump
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from util.bucket_placeholders import replace_bucket_placeholders
 
 
 class RegionSchema(BaseEntitySchema):
@@ -12,6 +9,12 @@ class RegionSchema(BaseEntitySchema):
     description = fields.String()
     slug = fields.String()
     rules = fields.String()
+
+    @post_dump
+    def handle_bucket_placeholders(self, data, **kwargs):
+        data['rules'] = replace_bucket_placeholders(data['rules'])
+        data['description'] = replace_bucket_placeholders(data['description'])
+        return data
 
 
 region_schema = RegionSchema()

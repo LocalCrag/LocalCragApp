@@ -1,4 +1,4 @@
-from marshmallow import fields
+from marshmallow import fields, post_dump
 
 from extensions import ma
 from marshmallow_schemas.file_schema import FileSchema, file_schema
@@ -6,6 +6,7 @@ from marshmallow_schemas.sector_schema import SectorMenuSchema
 from models.file import File
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from util.bucket_placeholders import replace_bucket_placeholders
 
 
 class CragSchema(BaseEntitySchema):
@@ -21,6 +22,12 @@ class CragDetailSchema(CragSchema):
     lng = fields.Float()
     rules = fields.String()
     description = fields.String()
+
+    @post_dump
+    def handle_bucket_placeholders(self, data, **kwargs):
+        data['description'] = replace_bucket_placeholders(data['description'])
+        data['rules'] = replace_bucket_placeholders(data['rules'])
+        return data
 
 
 class CragMenuSchema(ma.SQLAlchemySchema):

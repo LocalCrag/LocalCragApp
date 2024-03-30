@@ -14,6 +14,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.bucket_placeholders import add_bucket_placeholders, replace_bucket_placeholders
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.region_args import region_args
@@ -37,8 +38,8 @@ class UpdateRegion(MethodView):
         region_data = parser.parse(region_args, request)
         region: Region = Region.return_it()
 
-        region.description = region_data['description']
-        region.rules = region_data['rules']
+        region.description = add_bucket_placeholders(region_data['description'])
+        region.rules = add_bucket_placeholders(region_data['rules'])
         db.session.add(region)
         db.session.commit()
 

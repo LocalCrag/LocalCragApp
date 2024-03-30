@@ -21,7 +21,7 @@ localstack. Here are our notes on how to install and run it:
 
 **Notes:**
 
-- `localhost` as endpoint wasn't working for me so I had to use `0.0.0.0`
+- `localhost` as endpoint wasn't working for me, so I had to use `0.0.0.0`
 - The endpoint for downloading files from localstack differs from digitalocean. On DO it's the same as for the upload. 
 - On localstack I had to use `http://s3.localhost:4566` as `SPACES_ACCESS_ENDPOINT`. Leave this variable `None` if you 
 find a way to match the two endpoints.

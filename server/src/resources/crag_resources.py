@@ -13,6 +13,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.bucket_placeholders import add_bucket_placeholders
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -50,9 +51,9 @@ class CreateCrag(MethodView):
         new_crag.name = crag_data['name']
         new_crag.lat = crag_data['lat']
         new_crag.lng = crag_data['lng']
-        new_crag.description = crag_data['description']
+        new_crag.description = add_bucket_placeholders(crag_data['description'])
         new_crag.short_description = crag_data['shortDescription']
-        new_crag.rules = crag_data['rules']
+        new_crag.rules = add_bucket_placeholders(crag_data['rules'])
         new_crag.portrait_image_id = crag_data['portraitImage']
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
@@ -76,9 +77,9 @@ class UpdateCrag(MethodView):
         crag.name = crag_data['name']
         crag.lat = crag_data['lat']
         crag.lng = crag_data['lng']
-        crag.description = crag_data['description']
+        crag.description = add_bucket_placeholders(crag_data['description'])
         crag.short_description = crag_data['shortDescription']
-        crag.rules = crag_data['rules']
+        crag.rules = add_bucket_placeholders(crag_data['rules'])
         crag.portrait_image_id = crag_data['portraitImage']
         db.session.add(crag)
         db.session.commit()

@@ -1,4 +1,4 @@
-from marshmallow import fields
+from marshmallow import fields, post_dump
 
 from extensions import ma
 from marshmallow_schemas.area_schema import AreaMenuSchema
@@ -6,6 +6,7 @@ from marshmallow_schemas.file_schema import FileSchema, file_schema
 from models.file import File
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from util.bucket_placeholders import replace_bucket_placeholders
 
 
 class SectorSchema(BaseEntitySchema):
@@ -21,6 +22,12 @@ class SectorDetailSchema(SectorSchema):
     lat = fields.Float()
     lng = fields.Float()
     rules = fields.String()
+
+    @post_dump
+    def handle_bucket_placeholders(self, data, **kwargs):
+        data['description'] = replace_bucket_placeholders(data['description'])
+        data['rules'] = replace_bucket_placeholders(data['rules'])
+        return data
 
 class SectorMenuSchema(ma.SQLAlchemySchema):
     name = fields.String()

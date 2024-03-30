@@ -15,6 +15,7 @@ from models.post import Post
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.bucket_placeholders import add_bucket_placeholders
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.post_args import post_args
@@ -51,7 +52,7 @@ class CreatePost(MethodView):
 
         new_post: Post = Post()
         new_post.title = post_data['title']
-        new_post.text = post_data['text']
+        new_post.text = add_bucket_placeholders(post_data['text'])
         new_post.created_by_id = created_by.id
 
         db.session.add(new_post)
@@ -71,7 +72,7 @@ class UpdatePost(MethodView):
         post: Post = Post.find_by_slug(post_slug)
 
         post.title = post_data['title']
-        post.text = post_data['text']
+        post.text = add_bucket_placeholders(post_data['text'])
         db.session.add(post)
         db.session.commit()
 

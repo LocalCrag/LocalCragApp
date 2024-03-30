@@ -15,6 +15,7 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.bucket_placeholders import add_bucket_placeholders
 from util.validators import validate_order_payload
 
 from webargs_schemas.area_args import area_args
@@ -57,7 +58,7 @@ class CreateArea(MethodView):
         new_area.name = area_data['name']
         new_area.lat = area_data['lat']
         new_area.lng = area_data['lng']
-        new_area.description = area_data['description']
+        new_area.description = add_bucket_placeholders(area_data['description'])
         new_area.short_description = area_data['shortDescription']
         new_area.portrait_image_id = area_data['portraitImage']
         new_area.sector_id = sector_id
@@ -83,7 +84,7 @@ class UpdateArea(MethodView):
         area.name = area_data['name']
         area.lat = area_data['lat']
         area.lng = area_data['lng']
-        area.description = area_data['description']
+        area.description = add_bucket_placeholders(area_data['description'])
         area.short_description = area_data['shortDescription']
         area.portrait_image_id = area_data['portraitImage']
         db.session.add(area)
