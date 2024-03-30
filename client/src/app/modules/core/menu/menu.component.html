@@ -1,6 +1,6 @@
 <ng-container *transloco="let t, read: 'menu'">
 
-  <p-menubar [model]="items" [autoDisplay]="true" [autoHide]="true" data-cy="main-menu">
+  <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template pTemplate="start">
       <img [src]="(logoImage$ | async).thumbnailM" height="40" class="mr-2 flex" *ngIf="logoImage$ | async">
       <strong *ngIf="!(logoImage$ | async)">{{instanceName$ | async}}</strong>
@@ -15,6 +15,6 @@
                   *ngIf="!(isLoggedIn$ | async)" [text]="true" data-cy="navbar-login"></p-button>
       </div>
     </ng-template>
-  </p-menubar>
+  </lc-header-menu>
 
 </ng-container>
