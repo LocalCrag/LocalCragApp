@@ -44,14 +44,14 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('gpsLabel')}}</label>
-          <lc-gps formControlName="gps" lcFormControl data-cy="topo-image-form-gps"></lc-gps>
+          <lc-gps formControlName="gps" lcFormControl data-cy="topo-image-form-gps" #gps></lc-gps>
         </div>
 
       </form>
 
       <div class="form-actions">
         <p-button label="{{t('addTopoImageButtonLabel')}}" (click)="saveTopoImage()" icon="pi pi-save"
-                  class="responsive-button" data-cy="submit"
+                  class="responsive-button" data-cy="submit" [disabled]="gps.positionLoading"
                   [loading]="loadingState === loadingStates.LOADING"></p-button>
         <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                   styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
