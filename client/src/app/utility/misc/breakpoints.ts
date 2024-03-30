@@ -1,1 +1,2 @@
 export const MOBILE_BREAKPOINT = 800;
+export const MOBILE_BREAKPOINT_HEADER_MENU = 960;

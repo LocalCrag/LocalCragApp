@@ -53,6 +53,7 @@ import {BackgroundImageComponent} from './background-image/background-image.comp
 import {MenuItemsService} from '../../services/crud/menu-items.service';
 import {InstanceSettingsService} from '../../services/crud/instance-settings.service';
 import {updateInstanceSettings} from '../../ngrx/actions/instance-settings.actions';
+import {HeaderMenuComponent} from '../shared/components/header-menu/header-menu.component';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -97,42 +98,43 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
     ForgotPasswordCheckMailboxComponent,
     NotFoundComponent
   ],
-  imports: [
-    SharedModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    CoreRoutingModule,
-    InputTextModule,
-    MenubarModule,
-    HttpClientModule,
-    ButtonModule,
-    PasswordModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers
-    }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production
-      , connectInZone: true
-    }),
-    EffectsModule.forRoot([
-      AuthEffects,
-      DeviceEffects,
-      AppLevelAlertsEffects,
-      NotificationsEffects,
-      CacheEffects
-    ]),
-    TranslocoRootModule,
-    ReactiveFormsModule,
-    CardModule,
-    MenuModule,
-    MessagesModule,
-    MessageModule,
-    DialogModule,
-    ToastModule,
-    CragModule,
-    BackgroundImageComponent
-  ],
+    imports: [
+        SharedModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        CoreRoutingModule,
+        InputTextModule,
+        MenubarModule,
+        HttpClientModule,
+        ButtonModule,
+        PasswordModule,
+        StoreModule.forRoot(reducers, {
+            metaReducers
+        }),
+        StoreDevtoolsModule.instrument({
+            maxAge: 25,
+            logOnly: environment.production
+            , connectInZone: true
+        }),
+        EffectsModule.forRoot([
+            AuthEffects,
+            DeviceEffects,
+            AppLevelAlertsEffects,
+            NotificationsEffects,
+            CacheEffects
+        ]),
+        TranslocoRootModule,
+        ReactiveFormsModule,
+        CardModule,
+        MenuModule,
+        MessagesModule,
+        MessageModule,
+        DialogModule,
+        ToastModule,
+        CragModule,
+        BackgroundImageComponent,
+        HeaderMenuComponent
+    ],
   providers: [
     {
       provide: LOCALE_ID,
