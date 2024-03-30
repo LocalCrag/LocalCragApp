@@ -54,8 +54,10 @@ export class SectorListComponent {
    * Loads the sectors on initialization.
    */
   ngOnInit() {
-    this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
-    this.refreshData();
+    this.route.parent.parent.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
+      this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
+      this.refreshData();
+    });
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
