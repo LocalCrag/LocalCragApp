@@ -25,3 +25,4 @@ def replace_bucket_placeholders(text):
         return text.replace(bucket_placeholder, bucket_placeholder_target)
     else:
         return text
+
