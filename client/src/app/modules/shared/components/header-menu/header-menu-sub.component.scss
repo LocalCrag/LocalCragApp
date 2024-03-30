@@ -9,7 +9,7 @@ lc-header-menu-sub {
     padding: .5rem 0;
     box-shadow: 0 2px 12px #0000001a;
     width: 12.5rem;
-    z-index: 2;
+    z-index: 3;
     left: 100%;
     display: none;
 
@@ -31,7 +31,7 @@ lc-header-menu-sub {
 
   &.is-mobile {
     background-color: #ffffff;
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     top: 100%;
     flex-direction: column;
@@ -121,6 +121,7 @@ lc-header-menu-sub {
   word-wrap: break-word;
   display: flex;
   align-items: center;
+  overflow-wrap: anywhere;
 
   &.no-sub-menu {
     padding: .75rem 1.25rem .75rem 1.25rem;
@@ -156,6 +157,11 @@ lc-header-menu-sub:not(.is-mobile) .root-child > .item-wrapper > .item-content{
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.item-angle-placeholder {
+  display: flex;
+  flex-grow: 1;
 }
 
 .menu-icon {

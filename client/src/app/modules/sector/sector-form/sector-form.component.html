@@ -84,16 +84,18 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('gpsLabel')}}</label>
-          <lc-gps formControlName="gps" lcFormControl data-cy="sector-form-gps"></lc-gps>
+          <lc-gps formControlName="gps" lcFormControl data-cy="sector-form-gps" #gps></lc-gps>
         </div>
 
       </form>
 
       <div class="form-actions">
         <p-button label="{{t('createSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"  data-cy="submit"></p-button>
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"  data-cy="submit"
+                  [disabled]="gps.positionLoading"></p-button>
         <p-button label="{{t('editSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
+                  [disabled]="gps.positionLoading"></p-button>
         <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                   styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
         <p-button label="{{t('deleteSectorButtonLabel')}}" (click)="confirmDeleteSector($event)" icon="pi pi-trash"
