@@ -78,44 +78,94 @@
                   </div>
                 </div>
 
-                <div class="line-row-grid">
-                  <a class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"
+                <div class="line-table-wrapper">
+                  <a class="line-table-row" *ngFor="let linePath of topoImage.linePaths; index as i"
                      (mouseenter)="highlightLinePath(linePath, topoImage)"
                      (mouseleave)="unhighlightLinePath(linePath)"
                      routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                      data-cy="line-row">
-                    <div class="number-column">
+
+                    <div class="line-table-column-number">
                       <div class="line-number">
                         {{i + 1}}
                       </div>
                     </div>
-                    <div class="name-column">
-                      {{ linePath.line.name }}
-                    </div>
-                    <div class="grade-column">
-                      {{ linePath.line.grade.name | transloco }}
-                    </div>
-                    <div class="video-column">
-                      <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text"
-                                *ngIf="linePath.line.videos?.length > 0"
-                                (click)="openVideo($event, linePath.line)">
-                      </p-button>
-                    </div>
-                    <div class="style-column">
-                      <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>
-                    </div>
-                    <div class="rating-column">
-                      <p-rating [ngModel]="linePath.line.rating" [readonly]="true" [cancel]="false"></p-rating>
-                      <ng-container *ngIf="(isLoggedIn$ | async)">
-                        <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
-                                  [loading]="linePath.loadingState"
-                                  [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
-                                  (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
-                        <p-confirmPopup></p-confirmPopup>
-                      </ng-container>
+                    <div class="line-table-column-info">
+                      <div class="line-table-column-info-top-row">
+                        <div class="line-table-info-name">
+                          {{ linePath.line.name }}
+                        </div>
+                        <div class="line-table-info-grade">
+                          <div class="grade">
+                            <div class="grade-ellipsis">
+                          {{ linePath.line.grade.name | transloco }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="line-table-info-style">
+                          <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>
+                        </div>
+                      </div>
+                      <div class="line-table-column-info-bottom-row">
+                        <div class="line-table-info-rating">
+                          <p-rating [ngModel]="linePath.line.rating" [readonly]="true" [cancel]="false"></p-rating>
+                        </div>
+                        <div class="line-table-info-actions">
+                          <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text"
+                                    *ngIf="linePath.line.videos?.length > 0"
+                                    (click)="openVideo($event, linePath.line)">
+                          </p-button>
+                          <ng-container *ngIf="(isLoggedIn$ | async)">
+                            <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
+                                      [loading]="linePath.loadingState"
+                                      [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
+                                      (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
+                            <p-confirmPopup></p-confirmPopup>
+                          </ng-container>
+                        </div>
+                      </div>
                     </div>
                   </a>
                 </div>
+
+                <!--                <div class="line-row-grid">-->
+                <!--                  <a class="line-row" *ngFor="let linePath of topoImage.linePaths; index as i"-->
+                <!--                     (mouseenter)="highlightLinePath(linePath, topoImage)"-->
+                <!--                     (mouseleave)="unhighlightLinePath(linePath)"-->
+                <!--                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"-->
+                <!--                     data-cy="line-row">-->
+                <!--                    <div class="number-column">-->
+                <!--                      <div class="line-number">-->
+                <!--                        {{i + 1}}-->
+                <!--                      </div>-->
+                <!--                    </div>-->
+                <!--                    <div class="name-column">-->
+                <!--                      {{ linePath.line.name }}-->
+                <!--                    </div>-->
+                <!--                    <div class="grade-column">-->
+                <!--                      {{ linePath.line.grade.name | transloco }}-->
+                <!--                    </div>-->
+                <!--                    <div class="video-column">-->
+                <!--                      <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text"-->
+                <!--                                *ngIf="linePath.line.videos?.length > 0"-->
+                <!--                                (click)="openVideo($event, linePath.line)">-->
+                <!--                      </p-button>-->
+                <!--                    </div>-->
+                <!--                    <div class="style-column">-->
+                <!--                      <lc-line-bool-prop-list [line]="linePath.line"></lc-line-bool-prop-list>-->
+                <!--                    </div>-->
+                <!--                    <div class="rating-column">-->
+                <!--                      <p-rating [ngModel]="linePath.line.rating" [readonly]="true" [cancel]="false"></p-rating>-->
+                <!--                      <ng-container *ngIf="(isLoggedIn$ | async)">-->
+                <!--                        <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"-->
+                <!--                                  [loading]="linePath.loadingState"-->
+                <!--                                  [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"-->
+                <!--                                  (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>-->
+                <!--                        <p-confirmPopup></p-confirmPopup>-->
+                <!--                      </ng-container>-->
+                <!--                    </div>-->
+                <!--                  </a>-->
+                <!--                </div>-->
 
               </div>
             </div>
