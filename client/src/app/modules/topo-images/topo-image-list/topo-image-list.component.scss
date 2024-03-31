@@ -4,12 +4,6 @@
   }
 }
 
-@mixin container-450 {
-  @container (max-width: 450px) {
-    @content;
-  }
-}
-
 lc-topo-image-list {
 
   .line-number {
@@ -22,6 +16,19 @@ lc-topo-image-list {
     justify-content: center;
     align-items: center;
     font-size: .9rem;
+  }
+
+  .grade {
+    background-color: var(--surface-200);
+    color: var(--surface-900);
+    border-radius: .25rem;
+    font-size: .9rem;
+    justify-content: center;
+    align-items: center;
+    min-height: 1.5rem;
+    padding: .125rem .375rem .125rem .375rem;
+    display: flex;
+    text-align: center;
   }
 
   .line-table {
@@ -40,63 +47,181 @@ lc-topo-image-list {
 
   }
 
-  .line-row-grid {
-    display: grid;
-    gap: .5rem;
-    grid-template-columns: min-content auto min-content 80px 250px min-content;
-    grid-template-rows: min-content;
-    @include container-650 {
-      grid-template-columns: min-content auto min-content 80px 0 min-content;
-      .line-row .style-column {
-        visibility: hidden;
-        height: 0;
-        overflow: hidden;
-      }
-    }
-    @include container-450 {
-      grid-template-columns: min-content auto min-content 40px 0 min-content;
-      .line-row .style-column {
-        visibility: hidden;
-        height: 0;
-        overflow: hidden;
-      }
-      p-rating {
-        gap: .25rem;
+}
 
-        svg {
-          width: 9px;
-          height: 9px
+
+lc-topo-image-list {
+
+  .line-table-wrapper {
+
+    .line-table-row {
+
+      display: flex;
+      color: inherit;
+      text-decoration: inherit;
+      border-top: 1px solid var(--surface-200);
+      padding-top: .25rem;
+      padding-bottom: .25rem;
+
+      &:hover {
+        cursor: pointer;
+
+        .line-number {
+          background-color: var(--arrow-highlight-color);
+          color: var(--arrow-highlight-text-color);
         }
       }
-    }
-  }
 
-  .line-row {
-    color: inherit;
-    text-decoration: inherit;
-    display: grid;
-    grid-column: span 6;
-    grid-template-columns: subgrid;
-    border-top: 1px solid var(--surface-200);
-    padding-top: .5rem;
-
-    &:hover {
-      cursor: pointer;
-
-      .line-number {
-        background-color: var(--arrow-highlight-color);
-        color: var(--arrow-highlight-text-color);
+      .line-table-column-number {
+        flex-basis: 2rem;
+        display: flex;
+        justify-content: left;
+        align-items: center;
       }
-    }
 
-    div {
-      display: flex;
-      align-items: center;
-    }
+      .line-table-column-info {
+        flex-basis: calc(100% - 2rem);
+        display: flex;
+        flex-wrap: wrap;
 
-    .name-column, .grade-column {
-      overflow: hidden;
-      hyphens: auto;
+        .line-table-column-info-top-row {
+          flex-basis: calc(100% - 13rem);
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+
+          .line-table-info-name {
+            font-weight: 500;
+            flex-basis: 40%;
+            display: flex;
+            justify-content: left;
+            align-items: center;
+          }
+
+          .line-table-info-grade {
+            font-weight: 500;
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            text-align: left;
+            flex-basis: 30%;
+
+            .grade-ellipsis {
+              max-width: min-content;
+            }
+
+          }
+
+          .line-table-info-style {
+            display: flex;
+            align-items: center;
+            flex-basis: 30%;
+            padding-right: .5rem;
+          }
+
+        }
+
+        .line-table-column-info-bottom-row {
+          flex-basis: 13rem;
+          display: flex;
+          flex-direction: row;
+
+          .line-table-info-rating {
+            display: flex;
+            align-items: center;
+            flex-basis: calc(100% - 9rem)
+          }
+
+          .line-table-info-actions {
+            display: flex;
+            flex-direction: row;
+            flex-basis: 9rem;
+            justify-content: right;
+            align-items: center;
+
+            p-button {
+              margin-right: -.75rem
+            }
+          }
+        }
+      }
+
+      @include container-650 {
+        .line-table-column-number {
+          flex-basis: 2rem;
+          display: flex;
+          align-items: flex-start;
+          padding-top: .125rem;
+        }
+        .line-table-column-info {
+          flex-basis: calc(100% - 2rem);
+          display: flex;
+          flex-wrap: wrap;
+
+
+          .line-table-column-info-top-row {
+            padding-top: .125rem;
+            flex-basis: 100%;
+            display: flex;
+            flex-direction: row;
+
+            .line-table-info-name {
+              font-weight: bold;
+              flex-basis: calc(100% - 8rem);
+              display: flex;
+              align-items: center;
+            }
+
+            .line-table-info-grade {
+              font-weight: 500;
+              display: flex;
+              justify-content: right;
+              text-align: right;
+              flex-basis: 8rem;
+
+              .grade-ellipsis {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                max-width: 7rem;
+              }
+
+            }
+
+            .line-table-info-style {
+              margin-top: .5rem;
+              font-size: 10px;
+              padding-right: 0;
+              flex-basis: 100%;
+            }
+          }
+
+          .line-table-column-info-bottom-row {
+            flex-basis: 100%;
+            display: flex;
+            flex-direction: row;
+
+            .line-table-info-rating {
+              display: flex;
+              align-items: center;
+              flex-basis: calc(100% - 8rem)
+            }
+
+            .line-table-info-actions {
+              display: flex;
+              flex-direction: row;
+              flex-basis: 8rem;
+              justify-content: right;
+
+              p-button {
+                margin-right: -.75rem
+              }
+            }
+          }
+        }
+
+      }
+
     }
 
   }
