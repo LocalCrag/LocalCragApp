@@ -27,6 +27,7 @@ import {CheckboxModule} from 'primeng/checkbox';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 import { LineInfoComponent } from './line-info/line-info.component';
 import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-image-details.component';
+import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-
         CalendarModule,
         CheckboxModule,
         TopoImageDetailsComponent,
+        HasPermissionDirective,
     ],
     exports: [
         LineListComponent,

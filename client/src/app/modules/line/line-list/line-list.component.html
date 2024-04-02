@@ -25,7 +25,7 @@
         <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newLineButtonLabel')}}" icon="pi pi-plus"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/create-line"
-                    *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
+                    *isModerator="true" class="responsive-button"></p-button>
         </div>
       </div>
     </ng-template>

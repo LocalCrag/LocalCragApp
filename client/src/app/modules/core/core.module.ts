@@ -54,6 +54,7 @@ import {MenuItemsService} from '../../services/crud/menu-items.service';
 import {InstanceSettingsService} from '../../services/crud/instance-settings.service';
 import {updateInstanceSettings} from '../../ngrx/actions/instance-settings.actions';
 import {HeaderMenuComponent} from '../shared/components/header-menu/header-menu.component';
+import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -133,7 +134,8 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
         ToastModule,
         CragModule,
         BackgroundImageComponent,
-        HeaderMenuComponent
+        HeaderMenuComponent,
+        HasPermissionDirective
     ],
   providers: [
     {

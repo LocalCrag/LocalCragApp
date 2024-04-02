@@ -15,6 +15,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.instance_settings_args import instance_settings_args
@@ -28,6 +29,7 @@ class GetInstanceSettings(MethodView):
 
 class UpdateInstanceSettings(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self):
         instance_settings_data = parser.parse(instance_settings_args, request)
         instance_settings: InstanceSettings = InstanceSettings.return_it()

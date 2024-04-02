@@ -7,7 +7,6 @@ import {ActivatedRoute, Router, Scroll} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
@@ -48,7 +47,6 @@ export class TopoImageListComponent {
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
@@ -89,7 +87,6 @@ export class TopoImageListComponent {
       this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
       this.refreshData();
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 

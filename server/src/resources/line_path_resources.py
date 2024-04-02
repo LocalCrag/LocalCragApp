@@ -12,6 +12,7 @@ from marshmallow_schemas.line_path_schema import line_path_schema
 from models.line import Line
 from models.line_path import LinePath
 from models.user import User
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
 from webargs_schemas.line_path_args import line_path_args
@@ -19,6 +20,7 @@ from webargs_schemas.line_path_args import line_path_args
 
 class CreateLinePath(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self, image_id):
         """
         Adds a line path to a topo image.
@@ -45,6 +47,7 @@ class CreateLinePath(MethodView):
 
 class DeleteLinePath(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, line_path_id):
         """
         Delete a topo image.
@@ -62,6 +65,7 @@ class DeleteLinePath(MethodView):
 
 class UpdateLinePathOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, image_id):
         """
         Changes the order index of line paths.
@@ -83,6 +87,7 @@ class UpdateLinePathOrder(MethodView):
 
 class UpdateLinePathOrderForLine(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, line_slug):
         """
         Changes the order index of line paths for lines.

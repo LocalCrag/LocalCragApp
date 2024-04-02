@@ -7,8 +7,6 @@ import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import {filter, take} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
@@ -36,7 +34,6 @@ export class CragListComponent implements OnInit {
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public ref: DynamicDialogRef | undefined;
 
@@ -51,7 +48,6 @@ export class CragListComponent implements OnInit {
    */
   ngOnInit() {
     this.refreshData();
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 

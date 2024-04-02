@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 
 from flask import current_app, render_template
 
+from i18n.change_email_address_mail import change_email_address_mail
 from i18n.create_user_mail import create_user_mail
 from i18n.reset_password_mail import reset_password_mail
 from models.user import User
@@ -67,7 +68,24 @@ def send_forgot_password_email(user: User):
     msg['To'] = user.email
     action_link = '{}/reset-password/{}'.format(current_app.config['FRONTEND_HOST'], user.reset_password_hash)
     template = render_template('reset-password-mail.html', name='{} {}'.format(user.firstname, user.lastname),
-                               action_link=action_link, **i18n_keyword_arg_dict)
+                               action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
+                               **i18n_keyword_arg_dict)
+    msg.attach(MIMEText(template, 'html'))
+
+    send_generic_mail(msg)
+
+
+def send_change_email_address_email(user: User):
+    """
+    Sends a change email address mail to the user.
+    :param user: User to send the change email address mail to.
+    """
+    msg, i18n_keyword_arg_dict = prepare_message(user, change_email_address_mail)
+    msg['To'] = user.email
+    action_link = '{}/change-email/{}'.format(current_app.config['FRONTEND_HOST'], user.new_email_hash)
+    template = render_template('change-email-address-mail.html', name='{} {}'.format(user.firstname, user.lastname),
+                               action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
+                               **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
 
     send_generic_mail(msg)
@@ -83,6 +101,20 @@ def send_create_user_email(password: str, created_user: User):
     template = render_template('create-user-mail.html', firstname=created_user.firstname,
                                lastname=created_user.lastname, action_link=action_link,
                                password=password, email=created_user.email,
+                               frontend_host=current_app.config['FRONTEND_HOST'],
+                               **i18n_keyword_arg_dict)
+    msg.attach(MIMEText(template, 'html'))
+
+    send_generic_mail(msg)
+
+
+def send_user_registered_email(created_user: User):
+    msg, i18n_keyword_arg_dict = prepare_message(created_user, create_user_mail)
+    msg['To'] = created_user.email
+    action_link = '{}/activate-account'.format(current_app.config['FRONTEND_HOST'])
+    template = render_template('create-user-mail.html', firstname=created_user.firstname,
+                               lastname=created_user.lastname, action_link=action_link, email=created_user.email,
+                               frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
 

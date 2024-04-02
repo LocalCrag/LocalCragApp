@@ -17,8 +17,9 @@ from messages.marshalling_objects import SimpleMessage, AuthResponse
 from messages.messages import ResponseMessage
 from models.revoked_token import RevokedToken
 from models.user import User
+from util.auth import get_access_token_claims
 from util.email import send_forgot_password_email
-from util.security_util import check_user_authorized
+from util.security_util import check_auth_claims
 from webargs_schemas.forgot_password_args import forgot_password_args
 from webargs_schemas.login_args import login_args
 from webargs_schemas.reset_password_args import reset_password_args
@@ -36,11 +37,8 @@ class UserLogin(MethodView):
         if not current_user:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
-        if current_user.locked:
-            raise Unauthorized(ResponseMessage.USER_LOCKED.value)
-
         if User.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=data['email'])
+            access_token = create_access_token(identity=data['email'], additional_claims=get_access_token_claims(current_user))
             refresh_token = create_refresh_token(identity=data['email'])
             auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                          current_user,
@@ -61,7 +59,6 @@ class UserLogin(MethodView):
 
 class UserLogoutAccess(MethodView):
     @jwt_required()
-    @check_user_authorized()
     def post(self):
         """
         Invalidates a users access token.
@@ -75,7 +72,6 @@ class UserLogoutAccess(MethodView):
 
 class UserLogoutRefresh(MethodView):
     @jwt_required(refresh=True)
-    @check_user_authorized()
     def post(self):
         """
         Invalidates a users refresh token.
@@ -89,13 +85,12 @@ class UserLogoutRefresh(MethodView):
 
 class TokenRefresh(MethodView):
     @jwt_required(refresh=True)
-    @check_user_authorized()
     def post(self):
         """
         Refreshes a users access token.
         """
-        current_user = g.user
-        access_token = create_access_token(identity=current_user.email)
+        current_user  = User.find_by_email(get_jwt_identity())
+        access_token = create_access_token(identity=current_user.email, additional_claims=get_access_token_claims(current_user))
         auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                      current_user,
                                      access_token=access_token)
@@ -146,7 +141,7 @@ class ResetPassword(MethodView):
         user.reset_password_hash_created = None
         db.session.add(user)
         db.session.commit()
-        access_token = create_access_token(identity=user.email)
+        access_token = create_access_token(identity=user.email, additional_claims=get_access_token_claims(user))
         refresh_token = create_refresh_token(identity=user.email)
         auth_response = AuthResponse(ResponseMessage.PASSWORD_RESET.value,
                                      user,

@@ -27,7 +27,6 @@ def test_successful_login(client):
     assert res['user']['firstname'] == 'Felix'
     assert res['user']['lastname'] == 'Engelmann'
     assert isinstance(res['user']['id'], str)
-    assert res['user']['colorScheme'] == 'LARA_LIGHT_TEAL'
     assert res['user']['language'] == 'de'
     assert res['user']['timeCreated'] is not None
     assert res['user']['timeUpdated'] is None
@@ -208,7 +207,6 @@ def test_reset_password_success(client):
     assert res['accessToken'] != res['refreshToken']
     assert res['user']['email'] == 'localcrag@fengelmann.de'
     assert isinstance(res['user']['id'], str)
-    assert res['user']['colorScheme'] == 'LARA_LIGHT_TEAL'
     assert res['user']['language'] == 'de'
     assert res['user']['timeCreated'] is not None
     assert res['user']['timeUpdated'] is not None
@@ -266,9 +264,6 @@ def test_forgot_password_with_non_activated_user(client, mocker):
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'felix.engelmann@fengelmann.de',
-        'language': 'de',
-        'colorScheme': 'LARA_LIGHT_TEAL',
-        'avatar': None,
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
@@ -293,9 +288,6 @@ def test_reset_password_with_non_activated_user(client, mocker):
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'felix.engelmann@fengelmann.de',
-        'language': 'de',
-        'colorScheme': 'LARA_LIGHT_TEAL',
-        'avatar': None,
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
@@ -356,3 +348,97 @@ def test_change_password_password_old_pw_incorrect(client):
     assert rv.status_code == 401
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.OLD_PASSWORD_INCORRECT.value
+
+def test_permission_levels(client):
+    # Create a USER
+    access_headers, refresh_headers = get_login_headers(client)
+    data = {
+        'promotionTarget': 'USER',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 200
+
+    # Test to access admin resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    data = {
+        'promotionTarget': 'USER',
+    }
+    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 401
+
+    # Test to access moderator resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    crag_data = {
+        "name": "Glees",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
+        "rules": "Parken nur Samstag und Sonntag.",
+        "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 12.13,
+        "lng": 42.42,
+    }
+
+    rv = client.post('/api/crags', headers=access_headers, json=crag_data)
+    assert rv.status_code == 401
+
+    # Create a MEMBER
+    access_headers, refresh_headers = get_login_headers(client)
+    data = {
+        'promotionTarget': 'MEMBER',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 200
+
+    # Test to access admin resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    data = {
+        'promotionTarget': 'USER',
+    }
+    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 401
+
+    # Test to access moderator resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    crag_data = {
+        "name": "Glees",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
+        "rules": "Parken nur Samstag und Sonntag.",
+        "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 12.13,
+        "lng": 42.42,
+    }
+
+    rv = client.post('/api/crags', headers=access_headers, json=crag_data)
+    assert rv.status_code == 401
+
+    # Create a MODERATOR
+    access_headers, refresh_headers = get_login_headers(client)
+    data = {
+        'promotionTarget': 'MODERATOR',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 200
+
+    # Test to access admin resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    data = {
+        'promotionTarget': 'USER',
+    }
+    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 401
+
+    # Test to access moderator resource
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
+    crag_data = {
+        "name": "Glees",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
+        "rules": "Parken nur Samstag und Sonntag.",
+        "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "lat": 12.13,
+        "lng": 42.42,
+    }
+
+    rv = client.post('/api/crags', headers=access_headers, json=crag_data)
+    assert rv.status_code == 201

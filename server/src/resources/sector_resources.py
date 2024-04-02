@@ -16,6 +16,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
@@ -45,6 +46,7 @@ class GetSector(MethodView):
 
 class CreateSector(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self, crag_slug):
         """
         Create a sector.
@@ -73,6 +75,7 @@ class CreateSector(MethodView):
 
 class UpdateSector(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, sector_slug):
         """
         Edit a sector.
@@ -96,6 +99,7 @@ class UpdateSector(MethodView):
 
 class DeleteSector(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, sector_slug):
         """
         Delete a sector.
@@ -113,6 +117,7 @@ class DeleteSector(MethodView):
 
 class UpdateSectorOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, crag_slug):
         """
         Changes the order index of sectors.

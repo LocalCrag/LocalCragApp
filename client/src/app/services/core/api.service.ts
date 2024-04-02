@@ -24,6 +24,17 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public users = {
+    register: (): string => `${this.apiHost}users`,
+    getList: (): string => `${this.apiHost}users`,
+    updateAccount: (): string => `${this.apiHost}users/account`,
+    resendUserCreateMail: (id: string): string => `${this.apiHost}users/${id}/resend-user-create-mail`,
+    delete: (id: string): string => `${this.apiHost}users/${id}`,
+    promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
+    changeEmail: (): string => `${this.apiHost}users/account/change-email`,
+    getEmailTaken: (email: string): string => `${this.apiHost}users/email-taken/${email}`,
+  };
+
   public posts = {
     create: (): string => `${this.apiHost}posts`,
     getList: (): string => `${this.apiHost}posts`,

@@ -10,9 +10,9 @@
         <!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
         <p-menu #menu [model]="userMenuItems" [popup]="true" data-cy="auth-menu"></p-menu>
         <p-button icon="pi pi-user" (click)="menu.toggle($event)" severity="secondary"
-                  *ngIf="isLoggedIn$ | async" [text]="true" data-cy="auth-menu-button"></p-button>
+                  *isLoggedIn="true" [text]="true" data-cy="auth-menu-button"></p-button>
         <p-button icon="pi pi-user" routerLink="login" severity="secondary"
-                  *ngIf="!(isLoggedIn$ | async)" [text]="true" data-cy="navbar-login"></p-button>
+                  *isLoggedOut="true" [text]="true" data-cy="navbar-login"></p-button>
       </div>
     </ng-template>
   </lc-header-menu>

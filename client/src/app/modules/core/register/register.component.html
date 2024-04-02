@@ -1,0 +1,47 @@
+<ng-container *transloco="let t, read: 'register'">
+
+  <div class="auth-container">
+
+    <div class="card login-card">
+
+      <h3>{{t('registerTitle')}}</h3>
+
+      {{t('description')}}
+
+      <form [formGroup]="registrationForm" lcForm>
+
+        <div class="card-container block" lcControlGroup>
+          <input type="text" pInputText formControlName="firstname" placeholder="{{t('firstnamePlaceholder')}}"
+                 lcFormControl data-cy="register-form-firstname"/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="card-container block" lcControlGroup>
+          <input type="text" pInputText formControlName="lastname" placeholder="{{t('lastnamePlaceholder')}}"
+                 lcFormControl data-cy="register-form-lastname"/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        </div>
+
+        <div class="card-container block" lcControlGroup>
+          <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}"
+                 lcFormControl data-cy="register-form-email"/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'pattern'">{{t('invalidEmailHint')}}</small>
+          <small class="p-error" *lcIfError="'emailTaken'">{{t('emailTaken')}}</small>
+        </div>
+
+      </form>
+
+      <p-button label="{{t('registerButtonLabel')}}" (click)="register()"
+                data-cy="register-form-submit"
+                [loading]="loadingState === loadingStates.LOADING"></p-button>
+
+      <p-button label="{{t('cancelButtonLabel')}}" styleClass="p-button-link" class="link-button w-min"
+                [routerLink]="'/login'"></p-button>
+
+
+    </div>
+
+  </div>
+
+</ng-container>

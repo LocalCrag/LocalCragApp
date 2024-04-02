@@ -20,6 +20,36 @@ export class AppNotificationsService {
   private isMobile: boolean;
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> = new Map<NotificationIdentifier, NotificationType>([
+    [NotificationIdentifier.LOGIN_ERROR, NotificationType.ERROR],
+    /**
+     * t(notifications.LOGIN_ERROR_TITLE)
+     * t(notifications.LOGIN_ERROR_MESSAGE)
+     **/
+    [NotificationIdentifier.USER_PROMOTED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.USER_PROMOTED_TITLE)
+     * t(notifications.USER_PROMOTED_MESSAGE)
+     **/
+    [NotificationIdentifier.USER_DELETED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.USER_DELETED_TITLE)
+     * t(notifications.USER_DELETED_MESSAGE)
+     **/
+    [NotificationIdentifier.CREATE_USER_MAIL_SENT, NotificationType.SUCCESS],
+    /**
+     * t(notifications.CREATE_USER_MAIL_SENT_TITLE)
+     * t(notifications.CREATE_USER_MAIL_SENT_MESSAGE)
+     **/
+    [NotificationIdentifier.ACCOUNT_SETTINGS_UPDATED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.ACCOUNT_SETTINGS_UPDATED_TITLE)
+     * t(notifications.ACCOUNT_SETTINGS_UPDATED_MESSAGE)
+     **/
+    [NotificationIdentifier.USER_REGISTERED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.USER_REGISTERED_TITLE)
+     * t(notifications.USER_REGISTERED_MESSAGE)
+     **/
     [NotificationIdentifier.INSTANCE_SETTINGS_UPDATED, NotificationType.SUCCESS],
     /**
      * t(notifications.INSTANCE_SETTINGS_UPDATED_TITLE)

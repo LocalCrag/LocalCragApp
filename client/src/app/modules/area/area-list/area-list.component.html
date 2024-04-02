@@ -24,10 +24,10 @@
         <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newAreaButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/create-area"
-                    *ngIf="(isLoggedIn$ | async)"></p-button>
+                    *isModerator="true"></p-button>
           <p-button label="{{t('reorderAreasButtonLabel')}}" icon="pi pi-sort" (click)="reorderAreas()"
                     [disabled]="areas?.length < 2" class="responsive-button"
-                    *ngIf="(isLoggedIn$ | async)"></p-button>
+                    *isModerator="true"></p-button>
         </div>
       </div>
     </ng-template>

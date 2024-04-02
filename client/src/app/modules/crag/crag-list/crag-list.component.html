@@ -23,10 +23,10 @@
         </p-dropdown>
         <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newCragButtonLabel')}}" icon="pi pi-plus" routerLink="/topo/create-crag"
-                    *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
+                    *isModerator="true" class="responsive-button"></p-button>
           <p-button label="{{t('reorderCragsButtonLabel')}}" icon="pi pi-sort" (click)="reorderCrags()"
                     [disabled]="crags?.length < 2" class="responsive-button"
-                    *ngIf="(isLoggedIn$ | async)"></p-button>
+                    *isModerator="true"></p-button>
         </div>
       </div>
     </ng-template>

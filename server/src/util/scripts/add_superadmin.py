@@ -1,6 +1,7 @@
 from flask import current_app
 
 from app import app
+from extensions import db
 from helpers.user_helpers import create_user
 from models.user import User
 
@@ -15,9 +16,13 @@ def add_superadmin():
                 "firstname": current_app.config['SUPERADMIN_FIRSTNAME'],
                 "lastname": current_app.config['SUPERADMIN_LASTNAME'],
                 "email": current_app.config['SUPERADMIN_EMAIL'],
-                "language": 'de'
             }
-            create_user(user_data)
+            user = create_user(user_data)
+            user.admin = True
+            user.moderator = True
+            user.member = True
+            db.session.add(user)
+            db.session.commit()
             print('Added superadmin user.')
 
 

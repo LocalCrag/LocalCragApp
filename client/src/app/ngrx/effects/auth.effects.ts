@@ -130,6 +130,16 @@ export class AuthEffects {
   ));
 
   /**
+   * Notifies the user about unsuccessful login .
+   */
+  onLoginError = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.loginError),
+    map(action => {
+      this.store.dispatch(toastNotification(NotificationIdentifier.LOGIN_ERROR));
+    })
+  ), {dispatch: false});
+
+  /**
    * Notifies the user about successful login and navigates him to the start page.
    * Also, the new authorization credentials are stored for later use.
    */
@@ -141,6 +151,23 @@ export class AuthEffects {
       return newAuthCredentials({loginResponse: action.loginResponse, fromAutoLogin: false, initialCredentials: true});
     })
   ));
+
+  onUpdateAccountSettings = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.updateAccountSettings),
+    withLatestFrom(
+      this.store.pipe(select(selectAuthState)),
+    ),
+    map(([action, authState]) => {
+      // Store the new user in the local storage for enabling auto login
+      const autoLoginObject: LoginResponse = {
+        accessToken: authState.accessToken,
+        refreshToken: authState.refreshToken,
+        user: action.user,
+        message: '',
+      };
+      localStorage.setItem('LocalCragAuth', JSON.stringify(autoLoginObject));
+    })
+  ), {dispatch: false});
 
   /**
    * Stores new authorization credentials and performs actions to keep the session alive:
@@ -346,7 +373,6 @@ export class AuthEffects {
 
   constructor(
     private authCrud: AuthCrudService,
-    private notifications: AppNotificationsService,
     private actions$: Actions,
     private router: Router,
     private store: Store<AppState>) {

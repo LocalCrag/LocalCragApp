@@ -1,5 +1,6 @@
 import {createAction, props} from '@ngrx/store';
 import {LoginResponse} from '../../models/login-response';
+import {User} from '../../models/user';
 
 
 export const forgotPassword = createAction(
@@ -13,6 +14,11 @@ export const forgotPasswordSuccess = createAction(
 
 export const forgotPasswordError = createAction(
   '[Forgot Password Page] Forgot password error',
+);
+
+export const updateAccountSettings = createAction(
+  '[Account Settings] Update settings',
+  props<{ user: User }>()
 );
 
 export const resetPassword = createAction(

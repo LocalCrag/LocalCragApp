@@ -79,6 +79,7 @@ const authReducer = createReducer(
       accessTokenExpires: jwtDecode<JwtPayload>(accessToken).exp,
     };
   }),
+  on(AuthActions.updateAccountSettings, (state, action) => ({...state, user: action.user})),
   on(AuthActions.resetPassword, state => ({...state, resetPasswordLoadingState: LoadingState.LOADING})),
   on(AuthActions.resetPasswordError, state => ({...state, resetPasswordLoadingState: LoadingState.DEFAULT})),
   on(AuthActions.resetPasswordSuccess, state => ({...state, resetPasswordLoadingState: LoadingState.DEFAULT})),

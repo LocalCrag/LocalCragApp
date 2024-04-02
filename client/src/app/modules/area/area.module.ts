@@ -31,6 +31,7 @@ import {
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
+import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.com
         LinePathEditorModule,
         GradeDistributionBarChartComponent,
         GpsComponent,
-        GpsButtonComponent
+        GpsButtonComponent,
+        HasPermissionDirective
     ],
     exports: [
         AreaListComponent

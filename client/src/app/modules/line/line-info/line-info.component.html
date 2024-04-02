@@ -15,7 +15,7 @@
       <p-button label="{{t('reorderLinePathsForLineButtonLabel')}}" icon="pi pi-sort" (click)="reorderLinePaths()"
                 [disabled]="line.topoImages?.length < 2"
                 styleClass=" p-button-sm"
-                *ngIf="isLoggedIn$ | async"></p-button>
+                *isModerator="true"></p-button>
     </div>
 
     <div

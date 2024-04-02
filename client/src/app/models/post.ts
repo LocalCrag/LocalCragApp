@@ -26,7 +26,7 @@ export class Post extends AbstractModel {
     post.title = payload.title;
     post.text = payload.text;
     post.slug = payload.slug;
-    post.createdBy =User.deserialize(payload.createdBy);
+    post.createdBy = payload.createdBy ? User.deserialize(payload.createdBy) : null;
     return post;
   }
 
