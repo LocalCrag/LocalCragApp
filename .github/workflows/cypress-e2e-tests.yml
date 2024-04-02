@@ -16,7 +16,7 @@ jobs:
         containers: [1, 2] # Uses 2 parallel instances
     services:
       test_db:
-        image: postgres:14-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

@@ -20,7 +20,6 @@ def upgrade():
     conn = op.get_bind()
     conn.execute(text("UPDATE users SET admin = true"))
     conn.execute(text("UPDATE users SET member = true"))
-    conn.execute(text("UPDATE users SET moderator = true"))
 
 
 def downgrade():
