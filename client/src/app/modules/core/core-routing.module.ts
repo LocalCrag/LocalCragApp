@@ -44,6 +44,14 @@ import {MenuItemsListComponent} from '../menu-pages/menu-items-list/menu-items-l
 import {MenuItemsFormComponent} from '../menu-pages/menu-items-form/menu-items-form.component';
 import {MenuPageDetailComponent} from '../menu-pages/menu-page-detail/menu-page-detail.component';
 import {InstanceSettingsFormComponent} from './instance-settings-form/instance-settings-form.component';
+import {RegisterComponent} from './register/register.component';
+import {RegisterCheckMailboxComponent} from './register-check-mailbox/register-check-mailbox.component';
+import {ActivateAccountComponent} from './activate-account/activate-account.component';
+import {AccountFormComponent} from './account-form/account-form.component';
+import {ChangeEmailComponent} from './change-email/change-email.component';
+import {UserListComponent} from '../user/user-list/user-list.component';
+import {isModerator} from '../../guards/is-moderator';
+import {isAdmin} from '../../guards/is-admin';
 
 const routes: Routes = [
   {
@@ -61,7 +69,7 @@ const routes: Routes = [
   {
     path: 'news/create-post',
     component: PostFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -69,7 +77,7 @@ const routes: Routes = [
   {
     path: 'news/:post-slug/edit',
     component: PostFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -77,7 +85,7 @@ const routes: Routes = [
   {
     path: 'pages',
     component: MenuPagesListComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -85,7 +93,7 @@ const routes: Routes = [
   {
     path: 'pages/create-menu-page',
     component: MenuPagesFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -100,7 +108,7 @@ const routes: Routes = [
   {
     path: 'pages/:menu-page-slug/edit',
     component: MenuPagesFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -108,7 +116,7 @@ const routes: Routes = [
   {
     path: 'menu-items',
     component: MenuItemsListComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -116,7 +124,7 @@ const routes: Routes = [
   {
     path: 'menu-items/create-menu-item/:position',
     component: MenuItemsFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -124,7 +132,7 @@ const routes: Routes = [
   {
     path: 'menu-items/:menu-item-id/edit',
     component: MenuItemsFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -141,6 +149,37 @@ const routes: Routes = [
     path: 'change-password',
     component: ChangePasswordComponent,
     canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'register-check-mailbox',
+    component: RegisterCheckMailboxComponent,
+    canActivate: [isLoggedOut],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'account',
+    component: AccountFormComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'activate-account',
+    component: ActivateAccountComponent,
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }
@@ -170,9 +209,25 @@ const routes: Routes = [
     }
   },
   {
+    path: 'change-email/:hash',
+    component: ChangeEmailComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
     path: 'instance-settings',
     component: InstanceSettingsFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'users',
+    component: UserListComponent,
+    canActivate: [isAdmin],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }
@@ -228,7 +283,7 @@ const routes: Routes = [
   {
     path: 'topo/edit-region',
     component: RegionFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -236,7 +291,7 @@ const routes: Routes = [
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -292,7 +347,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -300,7 +355,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -356,7 +411,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -364,7 +419,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/create-area',
     component: AreaFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -372,7 +427,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
     component: LineFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -380,7 +435,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/add-topo-image',
     component: TopoImageFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -388,7 +443,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:image-id/edit',
     component: TopoImageFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -446,7 +501,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -468,7 +523,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
     component: LineFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -476,7 +531,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
     component: LinePathFormComponent,
-    canActivate: [isLoggedIn],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }

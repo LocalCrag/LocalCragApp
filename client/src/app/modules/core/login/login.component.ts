@@ -28,8 +28,7 @@ export class LoginComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingState$: Observable<LoadingState>;
 
-  constructor(private router: Router,
-              private store: Store<AppState>,
+  constructor(private store: Store<AppState>,
               private fb: FormBuilder) {
   }
 

@@ -11,6 +11,7 @@ from models.grades import GRADES
 from models.line import Line
 from models.sector import Sector
 from models.user import User
+from util.security_util import check_auth_claims
 from util.validators import cross_validate_grade
 
 from webargs_schemas.line_args import line_args
@@ -40,6 +41,7 @@ class GetLine(MethodView):
 
 class CreateLine(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self, area_slug):
         """
         Creates a line.
@@ -111,6 +113,7 @@ class CreateLine(MethodView):
 
 class UpdateLine(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, line_slug):
         """
         Edit a line.
@@ -177,6 +180,7 @@ class UpdateLine(MethodView):
 
 class DeleteLine(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, line_slug):
         """
         Delete a line.

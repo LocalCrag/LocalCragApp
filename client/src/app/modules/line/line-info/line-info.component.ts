@@ -13,7 +13,6 @@ import {TranslocoService} from '@ngneat/transloco';
 import {LinePathsService} from '../../../services/crud/line-paths.service';
 import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../services/core/cache.service';
 
@@ -33,7 +32,6 @@ export class LineInfoComponent {
 
   public line: Line;
   public ref: DynamicDialogRef | undefined;
-  public isLoggedIn$: Observable<boolean>;
 
   private lineSlug: string;
   private areaSlug: string;
@@ -49,7 +47,6 @@ export class LineInfoComponent {
   }
 
   ngOnInit() {
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.refreshData();

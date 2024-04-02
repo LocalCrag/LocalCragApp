@@ -21,8 +21,8 @@ from resources.sector_resources import GetSectors, GetSector, UpdateSector, Dele
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
     GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
-from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, CreateUser, \
-    ResendUserCreateMail, LockUser, UnlockUser, UpdateUser, DeleteUser, FindUser
+from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, \
+    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser
 from models.region import Region
 from models.crag import Crag
 from models.sector import Sector
@@ -65,16 +65,16 @@ def configure_api(app):
     # User API
     user_bp = Blueprint('users', __name__, )
     user_bp.add_url_rule('', view_func=GetUsers.as_view('get_user_list'))
-    user_bp.add_url_rule('', view_func=CreateUser.as_view('create_user'))
+    user_bp.add_url_rule('', view_func=RegisterUser.as_view('register_user'))
     user_bp.add_url_rule('/<string:user_id>', view_func=DeleteUser.as_view('delete_user'))
-    user_bp.add_url_rule('/<string:user_id>/lock', view_func=LockUser.as_view('lock_user'))
-    user_bp.add_url_rule('/me',
-                         view_func=UpdateUser.as_view('update_user'))
-    user_bp.add_url_rule('/<string:user_id>/unlock', view_func=UnlockUser.as_view('unlock_user'))
+    user_bp.add_url_rule('/<string:user_id>/promote', view_func=PromoteUser.as_view('promote_user'))
+    user_bp.add_url_rule('/account',
+                         view_func=UpdateAccountSettings.as_view('update_account_settings'))
+    user_bp.add_url_rule('/account/change-email',
+                         view_func=ChangeEmail.as_view('change_email'))
     user_bp.add_url_rule('/<string:user_id>/resend-user-create-mail',
                          view_func=ResendUserCreateMail.as_view('resend_user_create_mail'))
     user_bp.add_url_rule('/email-taken/<email>', view_func=GetEmailTaken.as_view('get_email_taken'))
-    user_bp.add_url_rule('/find/<string:query>', view_func=FindUser.as_view('find_user'))
     app.register_blueprint(user_bp, url_prefix='/api/users')
 
     # Line API

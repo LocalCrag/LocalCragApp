@@ -8,7 +8,6 @@ import {select, Store} from '@ngrx/store';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';
@@ -38,7 +37,6 @@ export class AreaListComponent implements OnInit{
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
@@ -60,7 +58,6 @@ export class AreaListComponent implements OnInit{
       this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
       this.refreshData();
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 

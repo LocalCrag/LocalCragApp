@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
 import {LoadingState} from '../../../enums/loading-state';
 import {SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
@@ -21,6 +19,7 @@ import {FormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {Title} from '@angular/platform-browser';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
 
 /**
  * A component that shows a list of blog posts.
@@ -40,7 +39,8 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
     TranslocoDirective,
     FormsModule,
     NgClass,
-    SharedModule
+    SharedModule,
+    HasPermissionDirective
   ],
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.scss'
@@ -54,7 +54,6 @@ export class PostListComponent implements OnInit{
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
 
   constructor(public postsService: PostsService,
@@ -68,7 +67,6 @@ export class PostListComponent implements OnInit{
    */
   ngOnInit() {
     this.refreshData();
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe(instanceName => {
       this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${instanceName}`);

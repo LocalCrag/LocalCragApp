@@ -21,6 +21,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {EditorModule} from 'primeng/editor';
 import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details.component';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
+import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 
 
 @NgModule({
@@ -28,29 +29,30 @@ import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
         TopoImageListComponent,
         TopoImageFormComponent,
     ],
-  imports: [
-    CommonModule,
-    CardModule,
-    DataViewModule,
-    DropdownModule,
-    FormsModule,
-    ButtonModule,
-    RouterLink,
-    SharedModule,
-    TranslocoModule,
-    ReactiveFormsModule,
-    ConfirmPopupModule,
-    TableModule,
-    RatingModule,
-    LineModule,
-    MessagesModule,
-    MessageModule,
-    TagModule,
-    InputTextModule,
-    EditorModule,
-    TopoImageDetailsComponent,
-    GpsComponent
-  ],
+    imports: [
+        CommonModule,
+        CardModule,
+        DataViewModule,
+        DropdownModule,
+        FormsModule,
+        ButtonModule,
+        RouterLink,
+        SharedModule,
+        TranslocoModule,
+        ReactiveFormsModule,
+        ConfirmPopupModule,
+        TableModule,
+        RatingModule,
+        LineModule,
+        MessagesModule,
+        MessageModule,
+        TagModule,
+        InputTextModule,
+        EditorModule,
+        TopoImageDetailsComponent,
+        GpsComponent,
+        HasPermissionDirective
+    ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
     ],

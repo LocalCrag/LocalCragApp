@@ -16,6 +16,7 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.sector import Sector
 from models.user import User
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
 from webargs_schemas.menu_page_args import menu_page_args
@@ -43,6 +44,7 @@ class GetMenuItem(MethodView):
 
 class CreateMenuItem(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self):
         """
         Create a menu item.
@@ -67,6 +69,7 @@ class CreateMenuItem(MethodView):
 
 class UpdateMenuItem(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, menu_item_id):
         """
         Edit a menu item.
@@ -92,6 +95,7 @@ class UpdateMenuItem(MethodView):
 
 class DeleteMenuItem(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, menu_item_id):
         """
         Delete a menu item.
@@ -107,6 +111,7 @@ class DeleteMenuItem(MethodView):
 
 class UpdateMenuItemTopOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self):
         """
         Changes the order index of menu items with position TOP.
@@ -128,6 +133,7 @@ class UpdateMenuItemTopOrder(MethodView):
 
 class UpdateMenuItemBottomOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self):
         """
         Changes the order index of menu items with position BOTTOM.

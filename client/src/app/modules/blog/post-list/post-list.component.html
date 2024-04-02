@@ -13,7 +13,7 @@
                         styleClass="md:mb-0"></p-dropdown>
             <div class="flex justify-content-end gap-3">
               <p-button label="{{t('newPostButtonLabel')}}" icon="pi pi-plus" routerLink="/news/create-post"
-                        *ngIf="(isLoggedIn$ | async)" class="responsive-button"></p-button>
+                        *isModerator="true" class="responsive-button"></p-button>
             </div>
           </div>
         </ng-template>
@@ -28,10 +28,10 @@
                   <div class="flex flex-grow-0 gap-3">
                     <p-button label="{{t('editPostButtonLabel')}}" icon="pi pi-file-edit" routerLink="/news/{{post.slug}}/edit"
                               styleClass="pr-0" class="responsive-button"
-                              *ngIf="(isLoggedIn$ | async)" [text]="true"></p-button>
+                              *isModerator="true" [text]="true"></p-button>
                   </div>
                 </div>
-                <div class="text-xs mb-2">{{t('byUserAtDate', {user: post.createdBy.fullname, date: post.timeCreated | date : 'dd.MM.yyyy'})}}</div>
+                <div class="text-xs mb-2">{{t('byUserAtDate', {user: post.createdBy ? post.createdBy.fullname : t('deletedUser'), date: post.timeCreated | date : 'dd.MM.yyyy'})}}</div>
                 <div [innerHTML]="post.text | sanitizeHtml" class="quill-content"></div>
               </div>
             </div>

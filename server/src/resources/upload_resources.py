@@ -10,22 +10,22 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.file_schema import file_schema
 from messages.messages import ResponseMessage
+from models.user import User
 from uploader.errors import InvalidFiletypeUploaded, FilesizeLimitExceeded
 from uploader.media_upload_handler import handle_file_upload
-from util.security_util import check_user_authorized
+from util.security_util import check_auth_claims
 
 
 class UploadFile(MethodView):
 
     @jwt_required()
-    @check_user_authorized()
     def post(self):
         """
         Uploads a file and creates a file model object for it.
         """
         try:
             file = handle_file_upload(request.files.get('upload'))
-            file.created_by = g.user
+            file.created_by  = User.find_by_email(get_jwt_identity())
             db.session.add(file)
             db.session.commit()
             return file_schema.dump(file), 201

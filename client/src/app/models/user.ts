@@ -1,4 +1,5 @@
 import {AbstractModel} from './abstract-model';
+import {File} from './file';
 
 /**
  * Model of a user.
@@ -11,8 +12,11 @@ export class User extends AbstractModel {
   lastname: string;
   password: string;
   activated: boolean;
-  locked: boolean;
+  admin: boolean;
+  moderator: boolean;
+  member: boolean;
   activatedAt: Date;
+  avatar: File;
 
   fullname: string;
 
@@ -32,9 +36,12 @@ export class User extends AbstractModel {
     user.firstname = payload.firstname;
     user.lastname = payload.lastname;
     user.activated = payload.activated;
-    user.locked = payload.locked;
-    user.activatedAt = new Date(payload.activatedAt + 'Z')
+    user.admin = payload.admin;
+    user.moderator = payload.moderator;
+    user.member = payload.member;
+    user.activatedAt = new Date(payload.activatedAt + 'Z');
     user.fullname = `${user.firstname} ${user.lastname}`;
+    user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;
     return user;
   }
 
@@ -49,7 +56,6 @@ export class User extends AbstractModel {
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
-      password: user.password,
     };
   }
 
@@ -59,11 +65,12 @@ export class User extends AbstractModel {
    * @param user User to marshall.
    * @return Marshalled User contact info.
    */
-  public static serializeContactInfo(user: User): any {
+  public static serializeAccountInfo(user: User): any {
     return {
       firstname: user.firstname,
       lastname: user.lastname,
-      email: user.email
+      email: user.email,
+      avatar: user.avatar.id,
     };
   }
 

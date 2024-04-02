@@ -14,6 +14,7 @@ from models.region import Region
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -40,6 +41,7 @@ class GetCrag(MethodView):
 
 class CreateCrag(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self):
         """
         Create a crag.
@@ -66,6 +68,7 @@ class CreateCrag(MethodView):
 
 class UpdateCrag(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, crag_slug):
         """
         Edit a crag.
@@ -89,6 +92,7 @@ class UpdateCrag(MethodView):
 
 class DeleteCrag(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, crag_slug):
         """
         Delete a crag.
@@ -106,6 +110,7 @@ class DeleteCrag(MethodView):
 
 class UpdateCragOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self):
         """
         Changes the order index of crags.

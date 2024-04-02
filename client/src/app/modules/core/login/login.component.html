@@ -29,8 +29,11 @@
                 data-cy="login-form-submit"
                 [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
 
-      <p-button label="{{t('forgotPasswordButtonLabel')}}" styleClass="p-button-link" class="forgot-pw-button"
+      <p-button label="{{t('forgotPasswordButtonLabel')}}" styleClass="p-button-link" class="link-button"
                 [routerLink]="'/forgot-password'"></p-button>
+
+      <p-button label="{{t('registerButtonLabel')}}" styleClass="p-button-link" class="link-button"
+                [routerLink]="'/register'"></p-button>
 
     </div>
 

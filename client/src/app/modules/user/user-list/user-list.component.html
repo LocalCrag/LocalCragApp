@@ -1,0 +1,70 @@
+<ng-container *transloco="let t, read: 'users.list'">
+
+  <div class="content">
+
+    <p-card header="{{t('userListTitle')}}">
+
+      <p-dataView #dv [value]="users" [sortField]="sortField" [sortOrder]="sortOrder"
+                  [emptyMessage]="t('noUsersFoundEmptyMessage')"
+                  [loading]="loading === loadingStates.LOADING">
+        <ng-template pTemplate="header">
+          <div class="flex flex-column sm:flex-row justify-content-between gap-2">
+
+            <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
+                        optionLabel="label" (onChange)="onSortChange($event)"
+                        styleClass="md:mb-0">
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="sortKey">
+                  <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+                  <div>{{ sortKey.label }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <i [class]="option.icon" *ngIf="option.icon"></i>
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </ng-template>
+        <ng-template let-users pTemplate="list">
+          <div class="grid grid-nogutter">
+            <div class="col-12" *ngFor="let user of users; let first = first">
+              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                   [ngClass]="{ 'border-top-1 surface-border': !first }">
+                <div>
+                  <p-avatar image="assets/user.png" *ngIf="!user.avatar"
+                            styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                  <p-avatar image="{{user.avatar.thumbnailM}}" *ngIf="user.avatar"
+                            styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                </div>
+                <div class="flex flex-column flex-grow-1">
+                  <div class="text-xl font-bold text-900 mb-1">{{user.fullname}}</div>
+                  <small class="mb-3">{{user.email}}</small>
+                  <small class="mb-3" *ngIf="user.activated">{{t('userActivatedAt', {activationTime: user.activatedAt | date : 'dd.MM.yyyy HH:mm'})}}</small>
+                  <small class="mb-3" *ngIf="!user.activated">{{t('userNotActivatedYet')}}</small>
+                  <p-tag [value]="t('admin')" severity="success" *ngIf="user.admin"></p-tag>
+                  <p-tag [value]="t('moderator')"  *ngIf="user.moderator && !user.admin"></p-tag>
+                  <p-tag [value]="t('member')" severity="info" *ngIf="user.member && !user.moderator && !user.admin"></p-tag>
+                </div>
+                <div>
+
+                  <p-menu #menu [model]="(dynamicMenuItems$ | async)!"
+                          (onShow)="showUserMenu(user)" [popup]="true" appendTo="body"></p-menu>
+                  <p-button icon="pi pi-wrench" (click)="menu.toggle($event)" severity="secondary"
+                            *ngIf="currentUser.id !== user.id" [text]="true" label="{{t('userActions')}}" ></p-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+
+    </p-card>
+
+  </div>
+
+  <p-confirmDialog [style]="{maxWidth: '50vw'}"></p-confirmDialog>
+
+</ng-container>

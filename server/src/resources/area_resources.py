@@ -16,6 +16,7 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
 from webargs_schemas.area_args import area_args
@@ -46,6 +47,7 @@ class GetArea(MethodView):
 
 class CreateArea(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self, sector_slug):
         """
         Creates an area.
@@ -73,6 +75,7 @@ class CreateArea(MethodView):
 
 class UpdateArea(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, area_slug):
         """
         Edit an area.
@@ -95,6 +98,7 @@ class UpdateArea(MethodView):
 
 class DeleteArea(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, area_slug):
         """
         Delete an area.
@@ -112,6 +116,7 @@ class DeleteArea(MethodView):
 
 class UpdateAreaOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, sector_slug):
         """
         Changes the order index of areas.

@@ -1,9 +1,14 @@
 import json
+from datetime import datetime, timedelta
+from uuid import uuid4
 
+import pytz
+
+from app import app
+from extensions import db
 from messages.messages import ResponseMessage
+from models.user import User
 from tests.utils.user_test_util import get_login_headers
-
-
 
 
 def test_successful_get_users(client):
@@ -17,8 +22,13 @@ def test_successful_get_users(client):
         assert type(user['firstname']) == str
         assert type(user['lastname']) == str
         assert type(user['email']) == str
+        assert type(user['language']) == str
         assert type(user['activated']) == bool
-        assert type(user['locked']) == bool
+        assert type(user['admin']) == bool
+        assert type(user['moderator']) == bool
+        assert type(user['member']) == bool
+        assert type(user['activatedAt']) == str or user['activatedAt'] == None
+        assert type(user['avatar']) == dict or user['avatar'] == None
 
 
 def test_successful_resend_invite_mail_role(client, mocker):
@@ -43,7 +53,7 @@ def test_unsuccessful_resend_invite_mail_role(client):
     assert rv.status_code == 400
 
 
-def test_successful_create_user(client, mocker):
+def test_successful_register_user(client, mocker):
     mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
     mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     access_headers, refresh_headers = get_login_headers(client)
@@ -51,9 +61,6 @@ def test_successful_create_user(client, mocker):
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'felix.engelmann@fengelmann.de',
-        'language': 'de',
-        'avatar': None,
-        'colorScheme': 'LARA_LIGHT_TEAL'
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
@@ -65,7 +72,6 @@ def test_successful_create_user(client, mocker):
     assert not res['activated']
     assert res['language'] == 'de'
     assert res['avatar'] is None
-    assert res['colorScheme'] == 'LARA_LIGHT_TEAL'
     assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
     assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
     assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
@@ -77,74 +83,9 @@ def test_unsuccessful_create_user_email_taken(client):
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'localcrag@fengelmann.de',
-        'language': 'de',
-        'avatar': None,
-        'colorScheme': 'LARA_LIGHT_TEAL'
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 409
-
-
-def test_lock_user(client):
-    access_headers, refresh_headers = get_login_headers(client)
-
-    # Lock a user
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/lock', headers=access_headers, json=None)
-    assert rv.status_code == 200
-    res = json.loads(rv.data)
-    assert res is None
-
-    # Try to lock it again
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/lock', headers=access_headers, json=None)
-    assert rv.status_code == 400
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.USER_ALREADY_LOCKED.value
-
-    # Try to log in locked user
-    data = {
-        'email': 'localcrag2@fengelmann.de',
-        'password': '[vb+xLGgU?+Z]nXD3HmO'
-    }
-    rv = client.post('/api/login', json=data)
-    assert rv.status_code == 401
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.USER_LOCKED.value
-
-    # Unlock a user
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/unlock', headers=access_headers, json=None)
-    assert rv.status_code == 200
-    res = json.loads(rv.data)
-    assert res is None
-
-    # Try to unlock it again
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/unlock', headers=access_headers, json=None)
-    assert rv.status_code == 400
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.USER_ALREADY_UNLOCKED.value
-
-    # Try to lock yourself
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/lock', headers=access_headers, json=None)
-    assert rv.status_code == 400
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.CANNOT_LOCK_OWN_USER.value
-
-
-def test_use_tokens_of_locked_user(client):
-    access_headers_locked_user, refresh_headers_locked_user = get_login_headers(client, 'localcrag2@fengelmann.de',
-                                                                                '[vb+xLGgU?+Z]nXD3HmO')
-    access_headers, refresh_headers = get_login_headers(client)
-
-    # Lock the user
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/lock', headers=access_headers, json=None)
-    assert rv.status_code == 200
-    res = json.loads(rv.data)
-    assert res is None
-
-    # Try to load some data with locked user
-    rv = client.get('/api/users', headers=access_headers_locked_user)
-    assert rv.status_code == 401
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.USER_LOCKED.value
 
 
 def test_email_taken(client):
@@ -179,76 +120,122 @@ def test_delete_other_user(client):
     assert rv.status_code == 204
 
 
-def test_use_tokens_of_deleted_user(client):
-    access_headers_deleted_user, refresh_headers_deleted_user = get_login_headers(client,
-                                                                                  'localcrag2@fengelmann.de',
-                                                                                  '[vb+xLGgU?+Z]nXD3HmO')
-    access_headers, refresh_headers = get_login_headers(client)
-
-    # Delete the user
-    rv = client.delete('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=None)
-    assert rv.status_code == 204
-
-    rv = client.get('/api/users', headers=access_headers_deleted_user)
-    assert rv.status_code == 401
-    res = json.loads(rv.data)
-    assert res['message'] == ResponseMessage.UNAUTHORIZED.value
-
-
 def test_update_user(client):
     access_headers, refresh_headers = get_login_headers(client)
     data = {
-        'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'localcrag@fengelmann.de',
         'avatar': '6137f55a-6201-45ab-89c5-6e9c29739d61',
-        'colorScheme': 'LARA_DARK_TEAL'
     }
-    rv = client.put('/api/users/me', headers=access_headers, json=data)
+    rv = client.put('/api/users/account', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert res['language'] == 'en'
+    assert res['language'] == 'de'
     assert res['firstname'] == 'Thorsten'
     assert res['lastname'] == 'Test'
     assert res['avatar']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['avatar']['originalFilename'] == 'test.jpg'
-    assert res['colorScheme'] == 'LARA_DARK_TEAL'
     assert res['email'] == 'localcrag@fengelmann.de'
 
 
-def test_update_user_different_email(client):
+def test_update_user_different_email(client, mocker):
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     access_headers, refresh_headers = get_login_headers(client)
     data = {
-        'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'horstpopelfritze@fengelmann.de',
         'avatar': None,
-        'colorScheme': 'LARA_DARK_TEAL'
     }
-    rv = client.put('/api/users/me', headers=access_headers, json=data)
+    rv = client.put('/api/users/account', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert res['language'] == 'en'
+    assert res['language'] == 'de'
     assert res['firstname'] == 'Thorsten'
     assert res['lastname'] == 'Test'
     assert res['avatar'] is None
-    assert res['colorScheme'] == 'LARA_DARK_TEAL'
-    assert res['email'] == 'horstpopelfritze@fengelmann.de'
+    assert res['email'] == 'localcrag@fengelmann.de'  # Mail only updated in a separate step
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+
+
+def test_change_email(client):
+    # Manually add a hash to the user
+    with app.app_context():
+        user: User = User.find_by_email('localcrag@fengelmann.de')
+        reset_hash = uuid4()
+        user.new_email = 'localcrag42@fengelmann.de'
+        user.new_email_hash = reset_hash
+        user.new_email_hash_created = datetime.now(pytz.utc)
+        db.session.add(user)
+        db.session.commit()
+
+    data = {
+        'newEmailHash': reset_hash,
+    }
+    rv = client.put('/api/users/account/change-email', json=data)
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res['message'] == ResponseMessage.EMAIL_CHANGED.value
+    assert res['accessToken'] is not None
+    assert res['refreshToken'] is not None
+    assert res['accessToken'] != res['refreshToken']
+    assert res['user']['email'] == 'localcrag42@fengelmann.de'
+    assert isinstance(res['user']['id'], str)
+    assert res['user']['language'] == 'de'
+    assert res['user']['timeCreated'] is not None
+    assert res['user']['timeUpdated'] is not None
+    assert res['user']['avatar'] is None
+
+
+def test_change_email_invalid_token(client):
+    # Manually add a hash to the user
+    with app.app_context():
+        user: User = User.find_by_email('localcrag@fengelmann.de')
+        reset_hash = uuid4()
+        user.new_email = 'localcrag42@fengelmann.de'
+        user.new_email_hash = reset_hash
+        user.new_email_hash_created = datetime.now(pytz.utc)
+        db.session.add(user)
+        db.session.commit()
+
+    data = {
+        'newEmailHash': 'lol',
+    }
+    rv = client.put('/api/users/account/change-email', json=data)
+    assert rv.status_code == 401
+
+
+def test_change_email_expired_token(client):
+    # Manually add a hash to the user
+    with app.app_context():
+        user: User = User.find_by_email('localcrag@fengelmann.de')
+        reset_hash = uuid4()
+        user.new_email = 'localcrag42@fengelmann.de'
+        user.new_email_hash = reset_hash
+        user.new_email_hash_created = datetime.now(pytz.utc) - timedelta(days=1)
+        db.session.add(user)
+        db.session.commit()
+
+    data = {
+        'newEmailHash': reset_hash,
+    }
+    rv = client.put('/api/users/account/change-email', json=data)
+    assert rv.status_code == 401
 
 
 def test_update_user_taken_email(client):
     access_headers, refresh_headers = get_login_headers(client)
     data = {
-        'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'localcrag2@fengelmann.de',
         'avatar': None,
-        'colorScheme': 'LARA_DARK_TEAL'
     }
-    rv = client.put('/api/users/me', headers=access_headers, json=data)
+    rv = client.put('/api/users/account', headers=access_headers, json=data)
     assert rv.status_code == 409
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.USER_ALREADY_EXISTS.value
@@ -257,36 +244,45 @@ def test_update_user_taken_email(client):
 def test_update_user_invalid_email(client):
     access_headers, refresh_headers = get_login_headers(client)
     data = {
-        'language': 'en',
         'firstname': 'Thorsten',
         'lastname': 'Test',
         'email': 'localcragfengelmann.de',
         'avatar': None,
-        'colorScheme': 'LARA_DARK_TEAL'
     }
-    rv = client.put('/api/users/me', headers=access_headers, json=data)
+    rv = client.put('/api/users/account', headers=access_headers, json=data)
     assert rv.status_code == 400
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.EMAIL_INVALID.value
 
-
-def test_successful_find_users(client):
+def test_promote_user_to_member(client):
     access_headers, refresh_headers = get_login_headers(client)
-    rv = client.get('/api/users/find/lix', headers=access_headers)
+
+    data = {
+        'promotionTarget': 'USER',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 3
-    for user in res:
-        assert type(user['id']) == str
-        assert user['firstname'] == 'Felix'
-        assert user['lastname'] == 'Engelmann'
-        assert type(user['email']) == str
-        assert user['locked'] == False
+    assert res['admin'] == False
+    assert res['moderator'] == False
+    assert res['member'] == False
 
-
-def test_successful_find_users_no_results(client):
-    access_headers, refresh_headers = get_login_headers(client)
-    rv = client.get('/api/users/find/sarumanthewise', headers=access_headers)
+    data = {
+        'promotionTarget': 'MEMBER',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 0
+    assert res['admin'] == False
+    assert res['moderator'] == False
+    assert res['member'] == True
+
+    data = {
+        'promotionTarget': 'MODERATOR',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res['admin'] == False
+    assert res['moderator'] == True
+    assert res['member'] == True

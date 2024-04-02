@@ -7,13 +7,10 @@ import {DropdownModule} from 'primeng/dropdown';
 import {RouterLink} from '@angular/router';
 import {SelectItem} from 'primeng/api';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
-import {Post} from '../../../models/post';
 import {LoadingState} from '../../../enums/loading-state';
 import {forkJoin, Observable} from 'rxjs';
-import {PostsService} from '../../../services/crud/posts.service';
 import {select, Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
@@ -52,7 +49,6 @@ export class MenuPagesListComponent implements OnInit {
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
 
   constructor(public menuPagesService: MenuPagesService,
@@ -66,7 +62,6 @@ export class MenuPagesListComponent implements OnInit {
    */
   ngOnInit() {
     this.refreshData();
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe(instanceName => {
       this.title.setTitle(`${this.translocoService.translate(marker('menuPagesListBrowserTitle'))} - ${instanceName}`);

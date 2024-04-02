@@ -15,6 +15,7 @@ from models.region import Region
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders, replace_bucket_placeholders
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.region_args import region_args
@@ -31,6 +32,7 @@ class GetRegion(MethodView):
 
 class UpdateRegion(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self):
         """
         Edit a region.

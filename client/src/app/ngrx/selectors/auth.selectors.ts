@@ -30,6 +30,16 @@ export const selectIsLoggedIn = createSelector(
   authState => authState.isLoggedIn
 );
 
+export const selectIsAdmin = createSelector(
+  selectAuthState,
+  authState => authState.user?.admin
+);
+
+export const selectIsModerator = createSelector(
+  selectAuthState,
+  authState => authState.user?.moderator
+);
+
 export const selectIsLoggedOut = createSelector(
   selectAuthState,
   authState => !authState.isLoggedIn

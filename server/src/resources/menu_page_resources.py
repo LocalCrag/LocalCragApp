@@ -8,6 +8,7 @@ from marshmallow_schemas.menu_page_schema import menu_pages_schema, menu_page_sc
 from models.menu_page import MenuPage
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.security_util import check_auth_claims
 from webargs_schemas.menu_page_args import menu_page_args
 
 
@@ -33,6 +34,7 @@ class GetMenuPage(MethodView):
 
 class CreateMenuPage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self):
         """
         Create a menu page.
@@ -53,6 +55,7 @@ class CreateMenuPage(MethodView):
 
 class UpdateMenuPage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, menu_page_slug):
         """
         Edit a menu page.
@@ -71,6 +74,7 @@ class UpdateMenuPage(MethodView):
 
 class DeleteMenuPage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, menu_page_slug):
         """
         Delete a menu_page.

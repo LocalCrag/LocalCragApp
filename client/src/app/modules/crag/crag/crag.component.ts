@@ -10,7 +10,7 @@ import {forkJoin, of} from 'rxjs';
 import {catchError, take} from 'rxjs/operators';
 import {select, Store} from '@ngrx/store';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import { selectIsModerator} from '../../../ngrx/selectors/auth.selectors';
 import {Title} from '@angular/platform-browser';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
@@ -47,9 +47,9 @@ export class CragComponent implements OnInit {
           }
           return of(e);
         })),
-        this.store.pipe(select(selectIsLoggedIn), take(1)),
+        this.store.pipe(select(selectIsModerator), take(1)),
         this.translocoService.load(`${environment.language}`)
-      ]).subscribe(([crag, isLoggedIn]) => {
+      ]).subscribe(([crag, isModerator]) => {
         this.crag = crag;
         this.store.select(selectInstanceName).subscribe(instanceName => {
           this.title.setTitle(`${crag.name} - ${instanceName}`);
@@ -86,7 +86,7 @@ export class CragComponent implements OnInit {
             label: this.translocoService.translate(marker('crag.edit')),
             icon: 'pi pi-fw pi-file-edit',
             routerLink: `/topo/${this.crag.slug}/edit`,
-            visible: isLoggedIn,
+            visible: isModerator,
           },
         ];
         this.breadcrumbs = [

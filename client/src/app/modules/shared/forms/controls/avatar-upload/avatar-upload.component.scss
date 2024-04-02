@@ -1,0 +1,33 @@
+lc-avatar-upload {
+
+  .avatar-wrapper {
+
+    position: relative;
+
+    .avatar {
+      height: 6rem;
+      width: 6rem;
+      border-radius: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    p-progressspinner{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    p-button button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+  }
+
+}

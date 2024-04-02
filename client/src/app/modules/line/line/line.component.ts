@@ -12,7 +12,7 @@ import {select, Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
 import {forkJoin, of} from 'rxjs';
 import {catchError, take} from 'rxjs/operators';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import { selectIsModerator} from '../../../ngrx/selectors/auth.selectors';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Line} from '../../../models/line';
@@ -76,9 +76,9 @@ export class LineComponent {
         }
         return of(e);
       })),
-      this.store.pipe(select(selectIsLoggedIn), take(1)),
+      this.store.pipe(select(selectIsModerator), take(1)),
       this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([crag, sector, area, line, isLoggedIn]) => {
+    ]).subscribe(([crag, sector, area, line, isModerator]) => {
       this.crag = crag;
       this.sector = sector;
       this.area = area;
@@ -107,7 +107,7 @@ export class LineComponent {
           label: this.translocoService.translate(marker('line.edit')),
           icon: 'pi pi-fw pi-file-edit',
           routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
-          visible: isLoggedIn,
+          visible: isModerator,
         },
       ];
       this.breadcrumbs = [

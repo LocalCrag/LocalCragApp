@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {ActivatedRoute, ActivatedRouteSnapshot, ActivationStart, Router} from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, ActivationEnd, ActivationStart, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {selectAuthBgImage, selectMainBgImage} from '../../../ngrx/selectors/instance-settings.selectors';
 
@@ -32,7 +32,7 @@ export class BackgroundImageComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.subscribe(event => {
-      if (event instanceof ActivationStart) {
+      if (event instanceof ActivationEnd) {
         const data = event.snapshot.data;
         if ('backgroundImagePath' in data) {
           this.setBackgroundImage(data.backgroundImagePath);

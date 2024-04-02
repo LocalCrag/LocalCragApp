@@ -7,7 +7,6 @@ import {ActivatedRoute} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
@@ -30,7 +29,6 @@ export class LineListComponent implements OnInit {
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
@@ -63,7 +61,6 @@ export class LineListComponent implements OnInit {
       ];
       this.sortKey = this.sortOptions[0];
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 

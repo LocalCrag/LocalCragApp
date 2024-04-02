@@ -1,13 +1,10 @@
 import {Component} from '@angular/core';
-import {Crag} from '../../../models/crag';
 import {LoadingState} from '../../../enums/loading-state';
 import {forkJoin, Observable} from 'rxjs';
-import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
@@ -38,7 +35,6 @@ export class SectorListComponent {
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
@@ -58,7 +54,6 @@ export class SectorListComponent {
       this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
       this.refreshData();
     });
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 

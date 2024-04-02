@@ -12,6 +12,7 @@ from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image
 from models.area import Area
 from models.topo_image import TopoImage
 from models.user import User
+from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
 from webargs_schemas.topo_image_args import topo_image_args
@@ -19,6 +20,7 @@ from webargs_schemas.topo_image_args import topo_image_args
 
 class AddTopoImage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def post(self, area_slug):
         """
         Adds a topo image to the area.
@@ -45,6 +47,7 @@ class AddTopoImage(MethodView):
 
 class UpdateTopoImage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, image_id):
         topo_image_data = parser.parse(topo_image_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
@@ -61,6 +64,7 @@ class UpdateTopoImage(MethodView):
 
 class DeleteTopoImage(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def delete(self, image_id):
         """
         Delete a topo image.
@@ -101,6 +105,7 @@ class GetTopoImage(MethodView):
 
 class UpdateTopoImageOrder(MethodView):
     @jwt_required()
+    @check_auth_claims(moderator=True)
     def put(self, area_slug):
         """
         Changes the order index of topo images.

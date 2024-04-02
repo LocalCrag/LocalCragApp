@@ -3,7 +3,7 @@ import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {forkJoin, Observable} from 'rxjs';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import {selectAuthState} from '../../../ngrx/selectors/auth.selectors';
 import {cleanupCredentials, logout, newAuthCredentials} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
@@ -32,54 +32,80 @@ export class MenuComponent implements OnInit {
 
   items: MenuItem[] = [];
   userMenuItems: MenuItem[] = [];
-  isLoggedIn$: Observable<boolean>;
   isMobile$: Observable<boolean>;
   logoImage$: Observable<File>;
   instanceName$: Observable<string>;
 
-  constructor(private cragsService: CragsService,
-              private menuItemsService: MenuItemsService,
+  constructor(private menuItemsService: MenuItemsService,
               private translocoService: TranslocoService,
               private actions: Actions,
               private store: Store) {
   }
 
   ngOnInit() {
-    this.userMenuItems = [
-      {
-        icon: 'pi pi-fw pi-pencil',
-        label: this.translocoService.translate(marker('menu.changePassword')),
-        routerLink: '/change-password'
-      },
-      {
-        icon: 'pi pi-fw pi-file',
-        label: this.translocoService.translate(marker('menu.menuPages')),
-        routerLink: '/pages'
-      },
-      {
-        icon: 'pi pi-fw pi-bars',
-        label: this.translocoService.translate(marker('menu.menus')),
-        routerLink: '/menu-items'
-      },
-      {
-        icon: 'pi pi-fw pi-cog',
-        label: this.translocoService.translate(marker('menu.instanceSettings')),
-        routerLink: '/instance-settings'
-      },
-      {
-        label: this.translocoService.translate(marker('menu.logout')),
-        icon: 'pi pi-fw pi-sign-out',
-        command: this.logout.bind(this),
-      }
-    ]
     this.logoImage$ = this.store.pipe(select(selectLogoImage));
     this.instanceName$ = this.store.pipe(select(selectInstanceName));
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.buildMenu();
+    this.buildUserMenu();
     this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe(() => {
       this.buildMenu();
+      this.buildUserMenu();
     })
+  }
+
+  buildUserMenu(){
+    this.store.select(selectAuthState).pipe(take(1)).subscribe(authState => {
+      this.userMenuItems = [
+        {
+          label: this.translocoService.translate(marker('menu.systemCategory')),
+          visible: authState.user?.moderator,
+          items: [
+            {
+              icon: 'pi pi-fw pi-file',
+              label: this.translocoService.translate(marker('menu.menuPages')),
+              routerLink: '/pages'
+            },
+            {
+              icon: 'pi pi-fw pi-bars',
+              label: this.translocoService.translate(marker('menu.menus')),
+              routerLink: '/menu-items'
+            },
+            {
+              icon: 'pi pi-fw pi-users',
+              label: this.translocoService.translate(marker('menu.users')),
+              routerLink: '/users',
+              visible: authState.user?.admin,
+            },
+            {
+              icon: 'pi pi-fw pi-cog',
+              label: this.translocoService.translate(marker('menu.instanceSettings')),
+              routerLink: '/instance-settings'
+            },
+          ]
+        },
+        {
+          label:this.translocoService.translate(marker('menu.accountCategory')),
+          items: [
+            {
+              icon: 'pi pi-fw pi-user-edit',
+              label: this.translocoService.translate(marker('menu.account')),
+              routerLink: '/account'
+            },
+            {
+              icon: 'pi pi-fw pi-shield',
+              label: this.translocoService.translate(marker('menu.changePassword')),
+              routerLink: '/change-password'
+            },
+            {
+              label: this.translocoService.translate(marker('menu.logout')),
+              icon: 'pi pi-fw pi-sign-out',
+              command: this.logout.bind(this),
+            }
+          ]
+        },
+      ]
+    });
   }
 
   buildMenu() {

@@ -4,7 +4,6 @@ import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@ngneat/transloco';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
@@ -22,6 +21,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -36,7 +36,8 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
     TranslocoDirective,
     NgIf,
     NgForOf,
-    TranslocoPipe
+    TranslocoPipe,
+    HasPermissionDirective
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',
@@ -51,7 +52,6 @@ export class MenuItemsListComponent implements OnInit {
   public menuItemsBottom: MenuItem[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
-  public isLoggedIn$: Observable<boolean>;
   public isMobile$: Observable<boolean>;
   public menuItemTypes = MenuItemType;
   public ref: DynamicDialogRef | undefined;
@@ -69,7 +69,6 @@ export class MenuItemsListComponent implements OnInit {
    */
   ngOnInit() {
     this.refreshData();
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe(instanceName => {
       this.title.setTitle(`${this.translocoService.translate(marker('menuItemsListBrowserTitle'))} - ${instanceName}`);
