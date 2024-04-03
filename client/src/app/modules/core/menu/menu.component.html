@@ -10,7 +10,7 @@
         <!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
         <p-menu #menu [model]="userMenuItems" [popup]="true" data-cy="auth-menu"></p-menu>
         <p-avatar [image]="(currentUser$ | async).avatar ? (currentUser$ | async).avatar.thumbnailS : 'assets/user.png'"
-                  (click)="menu.toggle($event)"  *isLoggedIn="true"
+                  (click)="menu.toggle($event)"  *isLoggedIn="true" data-cy="auth-menu-button"
                   styleClass="mr-2" size="normal" shape="circle"></p-avatar>
         <p-button icon="pi pi-user" routerLink="login" severity="secondary"
                   *isLoggedOut="true" [text]="true" data-cy="navbar-login"></p-button>
