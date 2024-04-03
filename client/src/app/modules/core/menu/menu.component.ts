@@ -3,7 +3,7 @@ import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {forkJoin, Observable} from 'rxjs';
-import {selectAuthState} from '../../../ngrx/selectors/auth.selectors';
+import {selectAuthState, selectCurrentUser} from '../../../ngrx/selectors/auth.selectors';
 import {cleanupCredentials, logout, newAuthCredentials} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
@@ -21,6 +21,7 @@ import {
   selectYoutubeUrl
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import {File} from '../../../models/file';
+import {User} from '../../../models/user';
 
 @Component({
   selector: 'lc-menu',
@@ -35,6 +36,7 @@ export class MenuComponent implements OnInit {
   isMobile$: Observable<boolean>;
   logoImage$: Observable<File>;
   instanceName$: Observable<string>;
+  currentUser$: Observable<User>;
 
   constructor(private menuItemsService: MenuItemsService,
               private translocoService: TranslocoService,
@@ -46,6 +48,7 @@ export class MenuComponent implements OnInit {
     this.logoImage$ = this.store.pipe(select(selectLogoImage));
     this.instanceName$ = this.store.pipe(select(selectInstanceName));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
+    this.currentUser$ = this.store.pipe(select(selectCurrentUser));
     this.buildMenu();
     this.buildUserMenu();
     this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe(() => {
@@ -75,7 +78,7 @@ export class MenuComponent implements OnInit {
               icon: 'pi pi-fw pi-users',
               label: this.translocoService.translate(marker('menu.users')),
               routerLink: '/users',
-              visible: authState.user?.admin,
+              visible: authState.user?.moderator,
             },
             {
               icon: 'pi pi-fw pi-cog',

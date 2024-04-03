@@ -71,7 +71,6 @@ def test_access_logout_without_headers(client):
     rv = client.post('/api/logout/access')
     assert rv.status_code == 401
     res = json.loads(rv.data)
-    print(res)
     assert res['message'] == ResponseMessage.UNAUTHORIZED.value
 
 
@@ -349,21 +348,33 @@ def test_change_password_password_old_pw_incorrect(client):
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.OLD_PASSWORD_INCORRECT.value
 
-def test_permission_levels(client):
+def test_cannot_promote_admins(client):
     # Create a USER
     access_headers, refresh_headers = get_login_headers(client)
     data = {
         'promotionTarget': 'USER',
     }
     rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
-    assert rv.status_code == 200
+    assert rv.status_code == 401
+
+
+def test_permission_levels(client):
+    data = {
+        'promotionTarget': 'MODERATOR'
+    }
+
+    # Create a USER
+    with app.app_context():
+        user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
+        user.admin = False
+        user.moderator = False
+        user.member = False
+        db.session.add(user)
+        db.session.commit()
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource
@@ -382,19 +393,17 @@ def test_permission_levels(client):
     assert rv.status_code == 401
 
     # Create a MEMBER
-    access_headers, refresh_headers = get_login_headers(client)
-    data = {
-        'promotionTarget': 'MEMBER',
-    }
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
-    assert rv.status_code == 200
+    with app.app_context():
+        user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
+        user.admin = False
+        user.moderator = False
+        user.member = True
+        db.session.add(user)
+        db.session.commit()
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource
@@ -413,19 +422,17 @@ def test_permission_levels(client):
     assert rv.status_code == 401
 
     # Create a MODERATOR
-    access_headers, refresh_headers = get_login_headers(client)
-    data = {
-        'promotionTarget': 'MODERATOR',
-    }
-    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
-    assert rv.status_code == 200
+    with app.app_context():
+        user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
+        user.admin = False
+        user.moderator = True
+        user.member = True
+        db.session.add(user)
+        db.session.commit()
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource

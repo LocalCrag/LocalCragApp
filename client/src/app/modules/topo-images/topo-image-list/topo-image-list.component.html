@@ -27,7 +27,7 @@
                     *isModerator="true">></p-button>
           <p-button label="{{t('reorderTopoImagesButtonLabel')}}" icon="pi pi-sort" (click)="reorderTopoImages()"
                     [disabled]="topoImages?.length < 2" class="responsive-button"
-                    *isModerator="true">></p-button>
+                    *isModerator="true"></p-button>
         </div>
       </div>
     </ng-template>
@@ -53,7 +53,7 @@
                   <div *ngIf="topoImage.linePaths.length > 0">
                     {{t('lines')}}
                   </div>
-                  <div *isModerator="true">
+                  <div *isModerator="true"
                        class="justify-content-start sm:justify-content-end flex flex-grow-1">
                     <p-button label="{{t('addLineToImageButtonLabel')}}" icon="pi pi-plus"
                               routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/topo-images/{{topoImage.id}}/add-line-path"
@@ -115,7 +115,7 @@
                                     *ngIf="linePath.line.videos?.length > 0"
                                     (click)="openVideo($event, linePath.line)">
                           </p-button>
-                          <ng-container *isModerator="true">>
+                          <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
                                       [loading]="linePath.loadingState"
                                       [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"

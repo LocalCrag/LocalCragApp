@@ -14,7 +14,7 @@ import {ConfirmationService, MenuItem, PrimeIcons, SelectItem} from 'primeng/api
 import {BehaviorSubject, forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {selectCurrentUser} from '../../../ngrx/selectors/auth.selectors';
+import {selectCurrentUser, selectIsAdmin} from '../../../ngrx/selectors/auth.selectors';
 import {User} from '../../../models/user';
 import {UsersService} from '../../../services/crud/users.service';
 import {FormsModule} from '@angular/forms';
@@ -113,6 +113,7 @@ export class UserListComponent {
    * Using a BehaviourSubject as workaround for: https://github.com/primefaces/primeng/issues/13934
    */
   showUserMenu(user: User) {
+    this.store.select(selectIsAdmin).pipe(take(1)).subscribe(isAdmin=>{
     this.dynamicMenuItems$.next([
       {
         icon: 'pi pi-fw pi-user',
@@ -151,9 +152,11 @@ export class UserListComponent {
         label: this.translocoService.translate(marker('usersMenu.delete')),
         command: () => {
           this.confirmDeleteUser(user);
-        }
+        },
+        visible: isAdmin
       },
     ]);
+    })
   }
 
   /**

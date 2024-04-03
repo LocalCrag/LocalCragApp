@@ -86,6 +86,7 @@ lc-header-menu-sub {
   transition: box-shadow .2s;
   border-radius: 6px;
   flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     color: #4b5563;
@@ -112,9 +113,11 @@ lc-header-menu-sub {
   display: flex;
   width: 100%;
   flex-direction: row;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .item-content {
+  -webkit-tap-highlight-color: transparent;
   padding: .75rem 0 .75rem 1.25rem;
   flex-grow: 1;
   max-width: 9.5rem;
