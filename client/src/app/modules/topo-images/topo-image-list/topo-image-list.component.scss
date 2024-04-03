@@ -96,6 +96,8 @@ lc-topo-image-list {
             display: flex;
             justify-content: left;
             align-items: center;
+            hyphens: auto;
+            overflow-wrap: anywhere;
           }
 
           .line-table-info-grade {

@@ -27,7 +27,7 @@
                     *isModerator="true">></p-button>
           <p-button label="{{t('reorderTopoImagesButtonLabel')}}" icon="pi pi-sort" (click)="reorderTopoImages()"
                     [disabled]="topoImages?.length < 2" class="responsive-button"
-                    *isModerator="true">></p-button>
+                    *isModerator="true"></p-button>
         </div>
       </div>
     </ng-template>
@@ -115,7 +115,7 @@
                                     *ngIf="linePath.line.videos?.length > 0"
                                     (click)="openVideo($event, linePath.line)">
                           </p-button>
-                          <ng-container *isModerator="true">>
+                          <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
                                       [loading]="linePath.loadingState"
                                       [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
