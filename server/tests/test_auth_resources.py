@@ -360,10 +360,7 @@ def test_permission_levels(client):
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource
@@ -391,10 +388,7 @@ def test_permission_levels(client):
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource
@@ -422,10 +416,7 @@ def test_permission_levels(client):
 
     # Test to access admin resource
     access_headers, refresh_headers = get_login_headers(client, email='localcrag2@fengelmann.de')
-    data = {
-        'promotionTarget': 'USER',
-    }
-    rv = client.put('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    rv = client.delete('/api/users/1543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=data)
     assert rv.status_code == 401
 
     # Test to access moderator resource

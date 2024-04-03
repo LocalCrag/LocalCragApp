@@ -227,7 +227,7 @@ const routes: Routes = [
   {
     path: 'users',
     component: UserListComponent,
-    canActivate: [isAdmin],
+    canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }

@@ -54,7 +54,7 @@ class ChangePassword(MethodView):
 
 class GetUsers(MethodView):
     @jwt_required()
-    @check_auth_claims(admin=True)
+    @check_auth_claims(moderator=True)
     def get(self):
         """
         Returns the list of users.
@@ -77,7 +77,7 @@ class GetEmailTaken(MethodView):
 class ResendUserCreateMail(MethodView):
 
     @jwt_required()
-    @check_auth_claims(admin=True)
+    @check_auth_claims(moderator=True)
     def put(self, user_id):
         """
         Resends the user created mail for a user. The password is re-generated in this step. Only works for
@@ -193,11 +193,14 @@ class RegisterUser(MethodView):
 class PromoteUser(MethodView):
 
     @jwt_required()
-    @check_auth_claims(admin=True)
+    @check_auth_claims(moderator=True)
     def put(self, user_id):
         promotion_data = parser.parse(user_promotion_args, request)
         own_user = User.find_by_email(get_jwt_identity())
         user: User = User.find_by_id(user_id)
+
+        if user.admin:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
         if own_user.id == user.id:
             raise Conflict(ResponseMessage.CANNOT_PROMOTE_OWN_USER.value)

@@ -75,7 +75,7 @@ export class MenuComponent implements OnInit {
               icon: 'pi pi-fw pi-users',
               label: this.translocoService.translate(marker('menu.users')),
               routerLink: '/users',
-              visible: authState.user?.admin,
+              visible: authState.user?.moderator,
             },
             {
               icon: 'pi pi-fw pi-cog',

@@ -53,7 +53,7 @@
                   <p-menu #menu [model]="(dynamicMenuItems$ | async)!"
                           (onShow)="showUserMenu(user)" [popup]="true" appendTo="body"></p-menu>
                   <p-button icon="pi pi-wrench" (click)="menu.toggle($event)" severity="secondary"
-                            *ngIf="currentUser.id !== user.id" [text]="true" label="{{t('userActions')}}" ></p-button>
+                            *ngIf="currentUser.id !== user.id && !user.admin" [text]="true" label="{{t('userActions')}}" ></p-button>
                 </div>
               </div>
             </div>
