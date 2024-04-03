@@ -9,8 +9,9 @@
       <div class="flex justify-content-center flex-wrap gap-2">
         <!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
         <p-menu #menu [model]="userMenuItems" [popup]="true" data-cy="auth-menu"></p-menu>
-        <p-button icon="pi pi-user" (click)="menu.toggle($event)" severity="secondary"
-                  *isLoggedIn="true" [text]="true" data-cy="auth-menu-button"></p-button>
+        <p-avatar [image]="(currentUser$ | async).avatar ? (currentUser$ | async).avatar.thumbnailS : 'assets/user.png'"
+                  (click)="menu.toggle($event)"  *isLoggedIn="true"
+                  styleClass="mr-2" size="normal" shape="circle"></p-avatar>
         <p-button icon="pi pi-user" routerLink="login" severity="secondary"
                   *isLoggedOut="true" [text]="true" data-cy="navbar-login"></p-button>
       </div>
