@@ -1,0 +1,9 @@
+
+@use "media-queries" as m;
+
+
+.p-confirm-dialog-accept{
+  @include m.on-mobile {
+    margin-top: .5rem
+  }
+}
