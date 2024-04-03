@@ -255,6 +255,15 @@ def test_update_user_invalid_email(client):
     assert res['message'] == ResponseMessage.EMAIL_INVALID.value
 
 def test_promote_user_to_member(client):
+    # Remove admin prop first..
+    with app.app_context():
+        user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
+        user.admin = False
+        user.moderator = True
+        user.member = True
+        db.session.add(user)
+        db.session.commit()
+
     access_headers, refresh_headers = get_login_headers(client)
 
     data = {
