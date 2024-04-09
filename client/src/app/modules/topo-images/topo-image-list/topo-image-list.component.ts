@@ -23,6 +23,8 @@ import {ViewportScroller} from '@angular/common';
 import {filter, take} from 'rxjs/operators';
 import {Line} from '../../../models/line';
 import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
+import {AscentFormComponent} from '../../ascent/ascent-form/ascent-form.component';
+import {AscentFormTitleComponent} from '../../ascent/ascent-form-title/ascent-form-title.component';
 
 /**
  * Component that lists all topo images in an area.
@@ -135,6 +137,19 @@ export class TopoImageListComponent {
     if (line.videos.length > 0) {
       window.open(line.videos[0].url);
     }
+  }
+
+  addAscent(event: MouseEvent, line: Line) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.ref = this.dialogService.open(AscentFormComponent, {
+      templates: {
+        header: AscentFormTitleComponent,
+      },
+      data: {
+        line
+      },
+    });
   }
 
   /**

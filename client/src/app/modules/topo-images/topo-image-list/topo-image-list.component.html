@@ -24,7 +24,7 @@
         <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
-                    *isModerator="true">></p-button>
+                    *isModerator="true"></p-button>
           <p-button label="{{t('reorderTopoImagesButtonLabel')}}" icon="pi pi-sort" (click)="reorderTopoImages()"
                     [disabled]="topoImages?.length < 2" class="responsive-button"
                     *isModerator="true"></p-button>
@@ -114,6 +114,9 @@
                           <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text"
                                     *ngIf="linePath.line.videos?.length > 0"
                                     (click)="openVideo($event, linePath.line)">
+                          </p-button>
+                          <p-button icon="pi pi-check-square" styleClass="p-button-rounded p-button-text p-button-secondary"
+                                    (click)="addAscent($event, linePath.line)" *ngIf="linePath.line.grade.value >= 0">
                           </p-button>
                           <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"

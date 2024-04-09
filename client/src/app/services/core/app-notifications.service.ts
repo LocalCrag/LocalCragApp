@@ -20,6 +20,11 @@ export class AppNotificationsService {
   private isMobile: boolean;
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> = new Map<NotificationIdentifier, NotificationType>([
+    [NotificationIdentifier.ASCENT_ADDED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.ASCENT_ADDED_TITLE)
+     * t(notifications.ASCENT_ADDED_MESSAGE)
+     **/
     [NotificationIdentifier.LOGIN_ERROR, NotificationType.ERROR],
     /**
      * t(notifications.LOGIN_ERROR_TITLE)

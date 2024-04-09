@@ -130,3 +130,11 @@ GRADES = {
         ]
     }
 }
+
+
+def get_grade_value(grade_name, grade_scale, line_type):
+    grades = GRADES[line_type][grade_scale]
+    for grade in grades:
+        if grade['name'] == grade_name:
+            return grade['value']
+    raise ValueError()

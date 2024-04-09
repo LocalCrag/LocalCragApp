@@ -98,6 +98,10 @@ export class ApiService {
     updateOrder: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
   };
 
+  public ascents = {
+    create: (): string => `${this.apiHost}ascents`,
+  };
+
   public topoImages = {
     add: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,

@@ -27,3 +27,16 @@
   color: #000 !important;
   margin-right: .25rem;
 }
+
+.grade {
+  background-color: var(--surface-200);
+  color: var(--surface-900);
+  border-radius: .25rem;
+  font-size: .9rem;
+  justify-content: center;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: .125rem .375rem .125rem .375rem;
+  display: flex;
+  text-align: center;
+}

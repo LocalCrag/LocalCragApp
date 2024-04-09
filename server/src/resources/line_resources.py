@@ -7,9 +7,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.line_schema import lines_schema, line_schema
 from models.area import Area
-from models.grades import GRADES
 from models.line import Line
-from models.sector import Sector
 from models.user import User
 from util.security_util import check_auth_claims
 from util.validators import cross_validate_grade

@@ -2,6 +2,7 @@
  * Defines identifiers for all notifications in the system.
  */
 export enum NotificationIdentifier {
+  ASCENT_ADDED = 'ASCENT_ADDED',
   LOGIN_ERROR = 'LOGIN_ERROR',
   USER_PROMOTED = 'USER_PROMOTED',
   USER_DELETED = 'USER_DELETED',
