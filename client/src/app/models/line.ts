@@ -5,6 +5,7 @@ import {LinePath} from './line-path';
 import {TopoImage} from './topo-image';
 import {TranslocoService} from '@ngneat/transloco';
 import {StartingPosition} from '../enums/starting-position';
+import {Area} from './area';
 
 export interface LineVideo {
   url: string;
@@ -59,6 +60,7 @@ export class Line extends AbstractModel {
   mantle: boolean;
 
   topoImages: TopoImage[];
+  area: Area;
 
   // UI specific attributes, not related to data model
   disabled = false;
@@ -121,12 +123,13 @@ export class Line extends AbstractModel {
     line.arete = payload.arete;
     line.mantle = payload.mantle;
 
-    line.topoImages = payload.linePaths.map(linePathJson => {
+    line.topoImages = payload.linePaths ? payload.linePaths.map(linePathJson => {
       const linePath = LinePath.deserialize(linePathJson);
       const topoImage = TopoImage.deserialize(linePathJson.topoImage);
       topoImage.linePaths = [linePath];
       return topoImage;
-    })
+    }) : null;
+    line.area = payload.area ? Area.deserialize(payload.area) : null;
 
     return line;
   }

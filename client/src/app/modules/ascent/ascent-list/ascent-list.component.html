@@ -1,0 +1,192 @@
+<ng-container *transloco="let t, read: 'ascents.ascentList'">
+
+  <p-dataView #dv [value]="ascents" [sortField]="sortField" [sortOrder]="sortOrder"
+              [emptyMessage]="t('noAscentsFoundMessage')"
+              [loading]="loading === loadingStates.LOADING">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
+                    optionLabel="label" (onChange)="onSortChange($event)"
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </ng-template>
+    <ng-template let-ascents pTemplate="list">
+      <div class="grid grid-nogutter">
+        <div class="col-12 " *ngFor="let ascent of ascents; let first = first">
+          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
+               [ngClass]="{ 'border-top-1 surface-border': !first }">
+
+            <!-- DISPLAY FOR LARGE SCREENS -->
+            <div class="ascent-table-row-large">
+              <div class="ascent-table-user-info">
+                <p-avatar [image]="ascent.createdBy.avatar ? ascent.createdBy.avatar.thumbnailS : 'assets/user.png'"
+                          styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                <div class="username">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</div>
+              </div>
+              <div class="ascent-table-line-info">
+                <div class="ascent-table-line-name">
+                  {{ ascent.line.name }}
+                  <div class="grade">
+                    {{ ascent.line.grade.name | transloco }}
+                  </div>
+                </div>
+                <div class="ascent-table-line-location mt-1">
+                  {{ascent.line.area.sector.crag.name}}, {{ascent.line.area.sector.name}}, {{ascent.line.area.name}}
+                </div>
+              </div>
+              <div class="ascent-table-comment">
+                {{ascent.comment}}
+              </div>
+              <div class="ascent-table-rating">
+                <p-rating [ngModel]="ascent.rating" [readonly]="true" [cancel]="false"></p-rating>
+              </div>
+              <div class="ascent-table-grade">
+                <div class="grade">
+                  <i class="pi pi-angle-double-up" style="color: green" *ngIf="ascent | upgrade"></i>
+                  <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
+                  <i class="pi pi-angle-double-down" style="color: red" *ngIf="ascent | downgrade"></i>
+                  <div class="ml-1 grade-name">
+                    {{ ascent.grade.name | transloco }}
+                    <span *ngIf="ascent.soft">&nbsp;({{t('soft')}})</span>
+                    <span *ngIf="ascent.hard">&nbsp;({{t('hard')}})</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ascent-table-properties">
+                <p-tag severity="primary" value="{{t('fa')}}" *ngIf="ascent.fa" icon="pi pi-star"></p-tag>
+                <p-tag severity="primary" value="{{t('flash')}}" *ngIf="ascent.flash" icon="pi pi-bolt"></p-tag>
+                <p-tag severity="primary" value="{{t('withKneepad')}}" *ngIf="ascent.withKneepad"
+                       icon="pi pi-ticket"></p-tag>
+              </div>
+              <div class="ascent-table-date">
+                <i class="pi pi-calendar"></i>
+                <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
+                <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
+              </div>
+            </div>
+
+            <!-- DISPLAY FOR MEDIUM SCREENS -->
+            <div class="ascent-table-row-medium">
+              <div class="ascent-table-user-and-name-info">
+                <p-avatar [image]="ascent.createdBy.avatar ? ascent.createdBy.avatar.thumbnailS : 'assets/user.png'"
+                          styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                <div class="name-with-line">
+                  <div class="username">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</div>
+                  <div class="ascent-table-line-name">
+                    {{ ascent.line.name }}
+                    <div class="grade">
+                      {{ ascent.line.grade.name | transloco }}
+                    </div>
+                  </div>
+                  <div class="ascent-table-line-location mt-1">
+                    {{ascent.line.area.sector.crag.name}}, {{ascent.line.area.sector.name}}, {{ascent.line.area.name}}
+                  </div>
+                </div>
+              </div>
+              <div class="ascent-table-comment">
+                {{ascent.comment}}
+              </div>
+              <div class="ascent-table-rating">
+                <p-rating [ngModel]="ascent.rating" [readonly]="true" [cancel]="false"></p-rating>
+              </div>
+              <div class="ascent-table-grade">
+                <div class="grade">
+                  <i class="pi pi-angle-double-up" style="color: green" *ngIf="ascent | upgrade"></i>
+                  <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
+                  <i class="pi pi-angle-double-down" style="color: red" *ngIf="ascent | downgrade"></i>
+                  <div class="ml-1 grade-name">
+                    {{ ascent.grade.name | transloco }}
+                    <span *ngIf="ascent.soft">&nbsp;({{t('soft')}})</span>
+                    <span *ngIf="ascent.hard">&nbsp;({{t('hard')}})</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ascent-table-properties">
+                <p-tag severity="primary" value="{{t('fa')}}" *ngIf="ascent.fa" icon="pi pi-star"></p-tag>
+                <p-tag severity="primary" value="{{t('flash')}}" *ngIf="ascent.flash" icon="pi pi-bolt"></p-tag>
+                <p-tag severity="primary" value="{{t('withKneepad')}}" *ngIf="ascent.withKneepad"
+                       icon="pi pi-ticket"></p-tag>
+              </div>
+              <div class="ascent-table-date">
+                <i class="pi pi-calendar"></i>
+                <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
+                <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
+              </div>
+            </div>
+
+            <!-- DISPLAY FOR SMALL SCREENS -->
+            <div class="ascent-table-row-small">
+              <div class="ascent-table-user-and-name-info">
+                <p-avatar [image]="ascent.createdBy.avatar ? ascent.createdBy.avatar.thumbnailS : 'assets/user.png'"
+                          styleClass="mr-3" size="large" shape="circle"></p-avatar>
+                <div class="name-with-line">
+                  <div class="username">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</div>
+                  <div class="ascent-table-line-name">
+                    {{ ascent.line.name }}
+                    <div class="grade">
+                      {{ ascent.line.grade.name | transloco }}
+                    </div>
+                  </div>
+                  <div class="ascent-table-line-location mt-1">
+                    {{ascent.line.area.sector.crag.name}}, {{ascent.line.area.sector.name}}, {{ascent.line.area.name}}
+                  </div>
+                </div>
+              </div>
+              <div class="ascent-table-comment">
+                {{ascent.comment}}
+              </div>
+              <div class="property-row-very-small">
+                <p-tag severity="primary" value="{{t('fa')}}" *ngIf="ascent.fa" icon="pi pi-star"></p-tag>
+                <p-tag severity="primary" value="{{t('flash')}}" *ngIf="ascent.flash" icon="pi pi-bolt"></p-tag>
+                <p-tag severity="primary" value="{{t('withKneepad')}}" *ngIf="ascent.withKneepad"
+                       icon="pi pi-ticket"></p-tag>
+              </div>
+              <div class="ascent-table-bottom-row">
+                <div class="ascent-table-properties">
+                  <div class="grade">
+                    <i class="pi pi-angle-double-up" style="color: green" *ngIf="ascent | upgrade"></i>
+                    <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
+                    <i class="pi pi-angle-double-down" style="color: red" *ngIf="ascent | downgrade"></i>
+                    <div class="ml-1 grade-name">
+                      {{ ascent.grade.name | transloco }}
+                      <span *ngIf="ascent.soft">&nbsp;({{t('soft')}})</span>
+                      <span *ngIf="ascent.hard">&nbsp;({{t('hard')}})</span>
+                    </div>
+                  </div>
+                  <p-tag class="property-small" severity="primary" value="{{t('fa')}}" *ngIf="ascent.fa" icon="pi pi-star"></p-tag>
+                  <p-tag class="property-small" severity="primary" value="{{t('flash')}}" *ngIf="ascent.flash" icon="pi pi-bolt"></p-tag>
+                  <p-tag class="property-small" severity="primary" value="{{t('withKneepad')}}" *ngIf="ascent.withKneepad"
+                         icon="pi pi-ticket"></p-tag>
+                </div>
+                <div class="ascent-table-rating">
+                  <p-rating [ngModel]="ascent.rating" [readonly]="true" [cancel]="false"></p-rating>
+                </div>
+                <div class="ascent-table-date">
+                  <i class="pi pi-calendar"></i>
+                  <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
+                  <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+
+</ng-container>

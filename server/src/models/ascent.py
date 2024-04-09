@@ -11,7 +11,7 @@ class Ascent(BaseEntity):
     __tablename__ = 'ascents'
 
     line_id = db.Column(UUID(), db.ForeignKey('lines.id'), nullable=False)
-    line = db.relationship('Line', lazy='select')  # todo join when querying for user list
+    line = db.relationship('Line', lazy='select')
     flash = db.Column(db.Boolean, nullable=False, default=False)
     with_kneepad = db.Column(db.Boolean, nullable=False, default=False)
     fa = db.Column(db.Boolean, nullable=False, default=False)

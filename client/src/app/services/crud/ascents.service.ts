@@ -20,10 +20,15 @@ export class AscentsService {
               private http: HttpClient) {
   }
 
+  public getAscents(): Observable<Ascent[]> {
+    return this.cache.get(this.api.ascents.getList(), map((ascentListJson: any) => ascentListJson.map(Ascent.deserialize)));
+  }
+
   public createAscent(ascent: Ascent): Observable<Ascent> {
     return this.http.post(this.api.ascents.create(), Ascent.serialize(ascent)).pipe(
       map(Ascent.deserialize)
     );
+    // todo clear caches
   }
 
 }

@@ -8,6 +8,9 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
+
+
+
 class LineSchema(BaseEntitySchema):
     name = fields.String()
     description = fields.String()

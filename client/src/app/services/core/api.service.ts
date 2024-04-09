@@ -100,6 +100,7 @@ export class ApiService {
 
   public ascents = {
     create: (): string => `${this.apiHost}ascents`,
+    getList: (): string => `${this.apiHost}ascents`,
   };
 
   public topoImages = {

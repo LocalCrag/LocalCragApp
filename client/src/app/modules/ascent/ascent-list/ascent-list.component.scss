@@ -1,0 +1,386 @@
+lc-ascent-list {
+
+  .ascent-table-container {
+    container-type: inline-size;
+  }
+
+  // LARGE SCREEN
+
+  .ascent-table-row-large {
+    font-size: .9rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    .ascent-table-user-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 12rem;
+
+      .username {
+        white-space: nowrap;
+      }
+
+    }
+
+    .ascent-table-line-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-basis: 20rem;
+
+
+      .ascent-table-line-name {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: .5rem;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+
+        .grade {
+          overflow-wrap: normal;
+          word-break: keep-all;
+        }
+
+      }
+
+      .ascent-table-line-location {
+        font-size: .65rem;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        max-width: 100%;
+      }
+
+    }
+
+    .ascent-table-comment {
+      display: flex;
+      align-items: center;
+      flex-basis: 25rem;
+      flex-grow: 1;
+    }
+
+    .ascent-table-rating {
+      display: flex;
+      align-items: center;
+      flex-basis: 8rem;
+    }
+
+    .ascent-table-grade {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 6rem;
+
+      .grade-name {
+        display: flex;
+        flex-direction: row;
+      }
+
+    }
+
+    .ascent-table-properties {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      flex-basis: 7rem;
+
+      p-tag {
+        margin-top: .25rem;
+        margin-bottom: .25rem;
+      }
+
+      .p-tag-value {
+        white-space: nowrap;
+      }
+
+    }
+
+    .ascent-table-date {
+      display: flex;
+      gap: .5rem;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 6rem;
+    }
+
+  }
+
+  @container (max-width: 84rem) {
+    .ascent-table-row-large {
+      display: none;
+    }
+  }
+
+  // MEDIUM SCREEN
+
+  .ascent-table-row-medium {
+    font-size: .9rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    .ascent-table-user-and-name-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 20rem;
+
+      .name-with-line {
+        display: flex;
+        flex-direction: column;
+
+        .username {
+          white-space: nowrap;
+          font-weight: bolder;
+        }
+
+        .ascent-table-line-name {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: .5rem;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          hyphens: auto;
+
+          .grade {
+            overflow-wrap: normal;
+            word-break: keep-all;
+          }
+
+        }
+
+        .ascent-table-line-location {
+          font-size: .65rem;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          hyphens: auto;
+          max-width: 100%;
+        }
+
+      }
+
+    }
+
+    .ascent-table-comment {
+      display: flex;
+      align-items: center;
+      flex-basis: 18rem;
+      flex-grow: 1;
+    }
+
+    .ascent-table-rating {
+      display: flex;
+      align-items: center;
+      flex-basis: 8rem;
+    }
+
+    .ascent-table-grade {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 6rem;
+
+      .grade-name {
+        display: flex;
+        flex-direction: row;
+      }
+
+    }
+
+    .ascent-table-properties {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      flex-basis: 7rem;
+
+      p-tag {
+        margin-top: .25rem;
+        margin-bottom: .25rem;
+      }
+
+      .p-tag-value {
+        white-space: nowrap;
+      }
+
+    }
+
+    .ascent-table-date {
+      display: flex;
+      gap: .5rem;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 6rem;
+    }
+
+  }
+
+  @container (min-width: 84rem) {
+    .ascent-table-row-medium {
+      display: none;
+    }
+  }
+
+  @container (max-width: 65rem) {
+    .ascent-table-row-medium {
+      display: none;
+    }
+  }
+
+  // SMALL SCREEN
+
+  .ascent-table-row-small {
+    font-size: .9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    .ascent-table-user-and-name-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 100%;
+
+      .name-with-line {
+        display: flex;
+        flex-direction: column;
+
+        .username {
+          white-space: nowrap;
+          font-weight: bolder;
+        }
+
+        .ascent-table-line-name {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: .5rem;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          hyphens: auto;
+
+          .grade {
+            overflow-wrap: normal;
+            word-break: keep-all;
+          }
+
+        }
+
+        .ascent-table-line-location {
+          font-size: .65rem;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          hyphens: auto;
+          max-width: 100%;
+        }
+
+      }
+
+    }
+
+    .ascent-table-comment {
+      display: flex;
+      align-items: center;
+      flex-basis: 100%;
+    }
+
+    .ascent-table-bottom-row {
+
+      display: flex;
+      align-items: center;
+      flex-basis: 100%;
+
+      .ascent-table-properties {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        flex-basis: 7rem;
+        flex-grow: 1;
+        gap: .5rem;
+
+        .grade {
+
+          .grade-name {
+            display: flex;
+            flex-direction: row;
+          }
+
+        }
+
+        p-tag {
+          margin-top: .25rem;
+          margin-bottom: .25rem;
+        }
+
+        .p-tag-value {
+          white-space: nowrap;
+        }
+
+      }
+
+      .ascent-table-rating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-basis: 8rem;
+
+        p-rating {
+          margin-top: 3px; // Fixes weird off-center placement
+        }
+
+      }
+
+      .ascent-table-date {
+        margin-left: 1rem;
+        display: flex;
+        gap: .5rem;
+        flex-direction: row;
+        align-items: center;
+        flex-basis: 6rem;
+        justify-content: flex-end;
+      }
+
+    }
+
+    .property-row-very-small {
+      display: flex;
+      gap: .5rem;
+      flex-direction: row;
+    }
+
+    @container (max-width: 45rem) {
+      .property-small {
+        display: none;
+      }
+    }
+
+    @container (min-width: 45rem) {
+      .property-row-very-small {
+        display: none;
+      }
+    }
+
+  }
+
+  @container (min-width: 65rem) {
+    .ascent-table-row-small {
+      display: none;
+    }
+  }
+
+
+}

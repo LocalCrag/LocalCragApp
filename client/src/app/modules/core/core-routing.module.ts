@@ -52,6 +52,8 @@ import {ChangeEmailComponent} from './change-email/change-email.component';
 import {UserListComponent} from '../user/user-list/user-list.component';
 import {isModerator} from '../../guards/is-moderator';
 import {isAdmin} from '../../guards/is-admin';
+import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
+import {AscentsComponent} from '../ascent/ascents/ascents.component';
 
 const routes: Routes = [
   {
@@ -231,6 +233,21 @@ const routes: Routes = [
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }
+  },
+  {
+    path: 'ascents',
+    component: AscentsComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    },
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: AscentListComponent,
+        outlet: 'ascentsContent'
+      }
+    ]
   },
   {
     path: 'topo',

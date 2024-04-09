@@ -3,6 +3,7 @@ import {File} from './file';
 import {GPS} from '../interfaces/gps.interface';
 import {Area} from './area';
 import {A} from '@angular/cdk/keycodes';
+import {Crag} from './crag';
 
 /**
  * Model of a climbing crag's sector.
@@ -18,6 +19,7 @@ export class Sector extends AbstractModel {
   gps: GPS;
   rules: string;
   areas: Area[];
+  crag: Crag;
 
   /**
    * Parses a sector.
@@ -37,6 +39,7 @@ export class Sector extends AbstractModel {
     sector.rules = payload.rules;
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
+    sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     return sector;
   }
 

@@ -4,6 +4,7 @@ import {GPS} from '../interfaces/gps.interface';
 import {deserializeGrade, Grade} from '../utility/misc/grades';
 import {Line} from './line';
 import {format, formatISO, parseISO} from 'date-fns';
+import {User} from './user';
 
 export class Ascent extends AbstractModel {
 
@@ -18,6 +19,7 @@ export class Ascent extends AbstractModel {
   year: number;
   date: Date;
   line: Line;
+  createdBy: User;
 
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
@@ -31,7 +33,9 @@ export class Ascent extends AbstractModel {
     ascent.rating = payload.rating;
     ascent.comment = payload.comment;
     ascent.year = payload.year;
-    ascent.date = payload.date ? parseISO(payload.date) : null
+    ascent.date = payload.date ? parseISO(payload.date) : null;
+    ascent.line = payload.line ? Line.deserialize(payload.line) : null;
+    ascent.createdBy = User.deserialize(payload.createdBy);
     return ascent;
   }
 

@@ -7,6 +7,7 @@ class MenuItemTypeEnum(Enum):
     """
     MENU_PAGE = 'MENU_PAGE'
     TOPO = 'TOPO'
+    ASCENTS = 'ASCENTS'
     NEWS = 'NEWS'
     YOUTUBE = 'YOUTUBE'
     INSTAGRAM = 'INSTAGRAM'

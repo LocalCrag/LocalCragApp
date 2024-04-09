@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder, \
     GetAreaGrades
-from resources.ascent_resources import CreateAscent
+from resources.ascent_resources import CreateAscent, GetAscents
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
@@ -90,6 +90,7 @@ def configure_api(app):
     # Ascent API
     line_bp = Blueprint('ascents', __name__)
     line_bp.add_url_rule('', view_func=CreateAscent.as_view('create_ascent'))
+    line_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
     app.register_blueprint(line_bp, url_prefix='/api/ascents')
 
     # Area API

@@ -54,8 +54,9 @@
       <b>{{t('rating')}}</b>
     </p-divider>
 
-    <div class="flex flex-row gap-2 align-items-center justify-content-center" lcControlGroup>
+    <div class="flex flex-column gap-2 align-items-center justify-content-center" lcControlGroup>
       <p-rating formControlName="rating" lcFormControl [cancel]="false" data-cy="rating"></p-rating>
+      <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
     </div>
 
     <p-divider align="center" type="dotted">

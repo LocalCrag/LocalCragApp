@@ -9,10 +9,11 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
-from marshmallow_schemas.ascent_schema import ascent_schema
+from marshmallow_schemas.ascent_schema import ascent_schema, ascents_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
 from models.ascent import Ascent
+from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
 from models.grades import GRADES, get_grade_value
 from models.line import Line
@@ -28,17 +29,17 @@ from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args
 from webargs_schemas.topo_image_args import topo_image_args
 
 
-# class GetAreas(MethodView):
-#
-#     def get(self, sector_slug):
-#         """
-#         Returns all areas of a sector.
-#         """
-#         sector_id = Sector.get_id_by_slug(sector_slug)
-#         areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id,
-#                                             order_by=lambda: Area.order_index.asc())
-#         return jsonify(areas_schema.dump(areas)), 200
-#
+class GetAscents(MethodView):
+
+    def get(self):
+        ascents: List[Ascent] = (db.session.query(Ascent)
+                                 .join(Line)
+                                 .join(Area) #todo slow, uses many many selects and dosn't join correctly
+                                 .join(Sector)
+                                 .join(Crag)
+                                 .order_by(lambda: Ascent.time_created.desc()).all())# Ascent.return_all(order_by=lambda: Ascent.time_created.desc())
+        return jsonify(ascents_schema.dump(ascents)), 200
+
 #
 # class GetArea(MethodView):
 #     def get(self, area_slug):

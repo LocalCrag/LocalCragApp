@@ -97,7 +97,7 @@ export class AscentFormComponent implements OnInit {
   private buildForm() {
     this.ascentForm = this.fb.group({
       grade: [this.line.grade, [Validators.required]],
-      rating: [null],
+      rating: [null, [Validators.required]],
       year: [new Date(), [yearOfDateNotInFutureValidator()]],
       date: [new Date(), [dateNotInFutureValidator()]],
       soft: [false],
