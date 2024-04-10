@@ -1,7 +1,9 @@
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import column_property
 
 from extensions import db
+from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 

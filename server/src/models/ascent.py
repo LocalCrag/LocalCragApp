@@ -23,3 +23,6 @@ class Ascent(BaseEntity):
     comment = db.Column(db.Text, nullable=True)
     year = db.Column(db.Integer, nullable=True)
     date = db.Column(db.Date(), nullable=True)
+    crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
+    sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
+    area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)

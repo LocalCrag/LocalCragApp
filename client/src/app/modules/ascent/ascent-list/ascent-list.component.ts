@@ -24,6 +24,8 @@ import {UpgradePipe} from '../pipes/upgrade.pipe';
 import {DowngradePipe} from '../pipes/downgrade.pipe';
 import {ConsensusGradePipe} from '../pipes/consensus-grade.pipe';
 import {TagModule} from 'primeng/tag';
+import {Store} from '@ngrx/store';
+import {TicksService} from '../../../services/crud/ticks.service';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -76,7 +78,6 @@ export class AscentListComponent implements  OnInit{
   ngOnInit() {
     this.ascentsService.getAscents().subscribe(ascents => {
       this.ascents = ascents;
-      console.log(ascents);
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
         {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!timeCreated'}, // todo use some special ascent date

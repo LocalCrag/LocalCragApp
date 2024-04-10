@@ -32,6 +32,7 @@
     <ng-template let-lines pTemplate="list">
       <div class="grid grid-nogutter">
         <a class="col-12 clickable-data-item line-link"
+           [ngClass]="{ticked: ticks.has(line.id)}"
            routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{line.slug}}"
            *ngFor="let line of lines; let first = first" data-cy="line-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
@@ -54,10 +55,12 @@
                 </div>
                 <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
                 <div [innerHTML]="line.description | sanitizeHtml" *ngIf="line.description" class="quill-content"></div>
-                <div class="video-button" *ngIf="line.videos?.length > 0">
+                <div class="bottom-row" *ngIf="line.videos?.length > 0">
                   <p-button icon="pi pi-video" styleClass="p-button-rounded p-button-text" label="{{line.videos[0].title}}"
-                            (click)="openVideo($event, line)">
+                            (click)="openVideo($event, line)" class="video-button">
                   </p-button>
+                  <div class="flex-grow-1"></div>
+                  <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)"></lc-tick-button>
                 </div>
               </div>
             </div>

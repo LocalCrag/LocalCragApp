@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder, \
     GetAreaGrades
-from resources.ascent_resources import CreateAscent, GetAscents
+from resources.ascent_resources import CreateAscent, GetAscents, GetTicks
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
@@ -88,10 +88,15 @@ def configure_api(app):
     app.register_blueprint(line_bp, url_prefix='/api/lines')
 
     # Ascent API
-    line_bp = Blueprint('ascents', __name__)
-    line_bp.add_url_rule('', view_func=CreateAscent.as_view('create_ascent'))
-    line_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
-    app.register_blueprint(line_bp, url_prefix='/api/ascents')
+    ascent_bp = Blueprint('ascents', __name__)
+    ascent_bp.add_url_rule('', view_func=CreateAscent.as_view('create_ascent'))
+    ascent_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
+    app.register_blueprint(ascent_bp, url_prefix='/api/ascents')
+
+    # Ticks API
+    tick_bp = Blueprint('ticks', __name__)
+    tick_bp.add_url_rule('', view_func=GetTicks.as_view('get_ticks'))
+    app.register_blueprint(tick_bp, url_prefix='/api/ticks')
 
     # Area API
     area_bp = Blueprint('areas', __name__)

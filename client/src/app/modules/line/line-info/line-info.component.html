@@ -1,6 +1,6 @@
 <ng-container *transloco="let t, read: 'line.line'">
 
-  <div class="flex flex-column xl:flex-row xl:align-items-start gap-4" *ngIf="line">
+  <div class="flex flex-column xl:flex-row xl:align-items-start gap-4" *ngIf="line && ticks">
 
     <div class="w-12 sm:w-9 xl:w-5  flex flex-column mx-auto pt-4 gap-3 ">
       <div *ngFor="let topoImage of line.topoImages">
@@ -33,11 +33,12 @@
       </div>
       <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
         *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
+        <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)" [showLabel]="true"></lc-tick-button>
     </div>
 
   </div>
 
-  <ng-container *ngIf="!line">
+  <ng-container *ngIf="!line && !ticks">
 
     <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
     <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>

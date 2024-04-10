@@ -1,0 +1,14 @@
+<ng-container *transloco="let t, read: 'tickButton'">
+
+  <p-button styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+            label="{{ticked ? t('lineClimbed'): t('addAscent')}}"
+            (click)="addAscent($event)" [ngClass]="{'hide-label': !showLabel, 'disabled': ticked}" [disabled]="ticked">
+    <ng-template pTemplate="icon" *ngIf="!ticked">
+      <span class="material-symbols-rounded">add</span>
+    </ng-template>
+    <ng-template pTemplate="icon" *ngIf="ticked">
+      <span class="material-symbols-rounded-filled ticked">check_box</span>
+    </ng-template>
+  </p-button>
+
+</ng-container>

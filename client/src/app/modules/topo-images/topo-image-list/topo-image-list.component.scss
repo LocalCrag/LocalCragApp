@@ -50,6 +50,10 @@ lc-topo-image-list {
       padding-top: .25rem;
       padding-bottom: .25rem;
 
+      &.ticked{
+        background-color: var(--ticked-bg-color);
+      }
+
       &:hover {
         cursor: pointer;
 

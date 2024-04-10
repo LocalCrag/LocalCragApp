@@ -82,6 +82,7 @@
                   <a class="line-table-row" *ngFor="let linePath of topoImage.linePaths; index as i"
                      (mouseenter)="highlightLinePath(linePath, topoImage)"
                      (mouseleave)="unhighlightLinePath(linePath)"
+                     [ngClass]="{ticked: ticks.has(linePath.line.id)}"
                      routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                      data-cy="line-row">
 
@@ -115,9 +116,9 @@
                                     *ngIf="linePath.line.videos?.length > 0"
                                     (click)="openVideo($event, linePath.line)">
                           </p-button>
-                          <p-button icon="pi pi-check-square" styleClass="p-button-rounded p-button-text p-button-secondary"
-                                    (click)="addAscent($event, linePath.line)" *ngIf="linePath.line.grade.value >= 0">
-                          </p-button>
+                          <lc-tick-button [line]="linePath.line"
+                                          [ticked]="ticks.has(linePath.line.id)"
+                                          *ngIf="linePath.line.grade.value >= 0"></lc-tick-button>
                           <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
                                       [loading]="linePath.loadingState"

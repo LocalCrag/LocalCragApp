@@ -10,6 +10,50 @@
 @use "app/styles/util";
 @use "app/styles/confirm-dialog";
 
+/* fallback */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  src: url(assets/fonts/material-symbols.woff2) format('woff2');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-symbols-rounded-filled {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -17,6 +61,8 @@ body {
 
 html {
   height: 100vh;
+  --ticked-bg-color: #eafeee;
+  --ticked-color: var(--green-600);
 }
 
 body {
@@ -40,12 +86,12 @@ body {
   height: 100%;
   width: 100%;
 
-  @include m.on-mobile{
+  @include m.on-mobile {
     padding: 0 0;
   }
 
 }
 
-.p-confirm-popup{
+.p-confirm-popup {
   max-width: 500px;
 }

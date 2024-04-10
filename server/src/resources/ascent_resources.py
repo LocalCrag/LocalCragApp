@@ -25,7 +25,7 @@ from util.security_util import check_auth_claims
 from util.validators import validate_order_payload, cross_validate_grade
 
 from webargs_schemas.area_args import area_args
-from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args
+from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, ticks_args
 from webargs_schemas.topo_image_args import topo_image_args
 
 
@@ -34,11 +34,36 @@ class GetAscents(MethodView):
     def get(self):
         ascents: List[Ascent] = (db.session.query(Ascent)
                                  .join(Line)
-                                 .join(Area) #todo slow, uses many many selects and dosn't join correctly
+                                 .join(Area)  # todo slow, uses many many selects and dosn't join correctly
                                  .join(Sector)
                                  .join(Crag)
-                                 .order_by(lambda: Ascent.time_created.desc()).all())# Ascent.return_all(order_by=lambda: Ascent.time_created.desc())
+                                 .order_by(
+            lambda: Ascent.time_created.desc()).all())  # Ascent.return_all(order_by=lambda: Ascent.time_created.desc())
         return jsonify(ascents_schema.dump(ascents)), 200
+
+
+class GetTicks(MethodView):
+
+    def get(self):
+        user_id = request.args.get('user_id')
+        crag_id = request.args.get('crag_id')
+        sector_id = request.args.get('sector_id')
+        area_id = request.args.get('area_id')
+        line_id = request.args.get('line_id')
+        if not user_id or not (crag_id or sector_id or area_id or line_id):
+            raise BadRequest('Filter query params are not properly defined.')
+        query = db.session.query(Ascent.line_id).filter(Ascent.created_by_id == user_id)
+        if crag_id:
+            query = query.filter(Ascent.crag_id == crag_id)
+        if sector_id:
+            query = query.filter(Ascent.sector_id == sector_id)
+        if area_id:
+            query = query.filter(Ascent.area_id == area_id)
+        if line_id:
+            query = query.filter(Ascent.line_id == line_id)
+        line_ids = [row[0] for row in query.all()]
+        return jsonify(line_ids), 200
+
 
 #
 # class GetArea(MethodView):
@@ -66,6 +91,8 @@ class CreateAscent(MethodView):
             raise BadRequest('Cannot change grade scale of the climbed line.')
         if not cross_validate_grade(ascent_data['gradeName'], ascent_data['gradeScale'], line.type):
             raise BadRequest('Grade scale, name and line type do not match.')
+        if db.session.query(Ascent.line_id).filter(Ascent.created_by_id == created_by.id).filter(Ascent.line_id == ascent_data['line']).first():
+            raise BadRequest('Cannot log a line twice.')
 
         ascent: Ascent = Ascent()
         ascent.line_id = ascent_data['line']
@@ -81,6 +108,9 @@ class CreateAscent(MethodView):
         ascent.year = ascent_data['year']
         ascent.date = ascent_data['date']
         ascent.created_by_id = created_by.id
+        ascent.area_id = line.area_id
+        ascent.sector_id = Area.find_by_id(line.area_id).sector_id
+        ascent.crag_id = Sector.find_by_id(ascent.sector_id).crag_id
 
         db.session.add(ascent)
         db.session.commit()
@@ -127,4 +157,3 @@ class CreateAscent(MethodView):
 #         db.session.commit()
 #
 #         return jsonify(None), 204
-

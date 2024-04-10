@@ -24,6 +24,10 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public ticks = {
+    getList: (): string => `${this.apiHost}ticks`,
+  };
+
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,

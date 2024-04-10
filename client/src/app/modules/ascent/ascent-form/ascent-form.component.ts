@@ -80,13 +80,8 @@ export class AscentFormComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private dialogConfig: DynamicDialogConfig,
               private store: Store,
-              private title: Title,
               private ref: DynamicDialogRef,
-              private route: ActivatedRoute,
-              private router: Router,
-              private ascentsService: AscentsService,
-              private translocoService: TranslocoService,
-              private confirmationService: ConfirmationService) {
+              private ascentsService: AscentsService) {
     this.line = this.dialogConfig.data.line;
   }
 

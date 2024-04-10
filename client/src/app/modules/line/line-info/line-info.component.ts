@@ -11,10 +11,11 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {TranslocoService} from '@ngneat/transloco';
 import {LinePathsService} from '../../../services/crud/line-paths.service';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../services/core/cache.service';
+import {TicksService} from '../../../services/crud/ticks.service';
 
 /**
  * Component that shows detailed information about a line.
@@ -32,12 +33,14 @@ export class LineInfoComponent {
 
   public line: Line;
   public ref: DynamicDialogRef | undefined;
+  public ticks: Set<string>;
 
   private lineSlug: string;
   private areaSlug: string;
 
   constructor(private route: ActivatedRoute,
               private store: Store,
+              private ticksService: TicksService,
               private api: ApiService,
               private cache: CacheService,
               private translocoService: TranslocoService,
@@ -58,6 +61,9 @@ export class LineInfoComponent {
   refreshData() {
     this.linesService.getLine(this.lineSlug).subscribe(line => {
       this.line = line;
+      this.ticksService.getTicks(null, null, null, line.id).subscribe(ticks => {
+        this.ticks = ticks;
+      })
     });
   }
 

@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, mergeMap, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router, Scroll} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
@@ -25,6 +25,8 @@ import {Line} from '../../../models/line';
 import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
 import {AscentFormComponent} from '../../ascent/ascent-form/ascent-form.component';
 import {AscentFormTitleComponent} from '../../ascent/ascent-form-title/ascent-form-title.component';
+import {TicksService} from '../../../services/crud/ticks.service';
+import {AreasService} from '../../../services/crud/areas.service';
 
 /**
  * Component that lists all topo images in an area.
@@ -54,6 +56,7 @@ export class TopoImageListComponent {
   public sectorSlug: string;
   public areaSlug: string;
   public ref: DynamicDialogRef | undefined;
+  public ticks: Set<string>;
 
   private scrollTarget: Scroll;
 
@@ -62,6 +65,8 @@ export class TopoImageListComponent {
               private cache: CacheService,
               private store: Store,
               private confirmationService: ConfirmationService,
+              private ticksService: TicksService,
+              private areasService: AreasService,
               private dialogService: DialogService,
               private linePathsService: LinePathsService,
               private route: ActivatedRoute,
@@ -97,10 +102,14 @@ export class TopoImageListComponent {
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
-    forkJoin([
-      this.topoImagesService.getTopoImages(this.areaSlug),
-      this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([topoImages, e]) => {
+    this.areasService.getArea(this.areaSlug).pipe(mergeMap(area =>{
+      return forkJoin([
+        this.topoImagesService.getTopoImages(this.areaSlug),
+        this.ticksService.getTicks(null, null,area.id),
+        this.translocoService.load(`${environment.language}`)
+      ])
+    })).subscribe(([topoImages, ticks, e]) => {
+      this.ticks = ticks;
       this.topoImages = topoImages;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
@@ -137,19 +146,6 @@ export class TopoImageListComponent {
     if (line.videos.length > 0) {
       window.open(line.videos[0].url);
     }
-  }
-
-  addAscent(event: MouseEvent, line: Line) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.ref = this.dialogService.open(AscentFormComponent, {
-      templates: {
-        header: AscentFormTitleComponent,
-      },
-      data: {
-        line
-      },
-    });
   }
 
   /**
@@ -318,5 +314,4 @@ export class TopoImageListComponent {
     });
   }
 
-  protected readonly environment = environment;
 }
