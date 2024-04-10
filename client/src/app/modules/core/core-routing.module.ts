@@ -54,6 +54,7 @@ import {isModerator} from '../../guards/is-moderator';
 import {isAdmin} from '../../guards/is-admin';
 import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
 import {AscentsComponent} from '../ascent/ascents/ascents.component';
+import {UserDetailComponent} from '../user/user-detail/user-detail.component';
 
 const routes: Routes = [
   {
@@ -230,6 +231,13 @@ const routes: Routes = [
     path: 'users',
     component: UserListComponent,
     canActivate: [isModerator],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    }
+  },
+  {
+    path: 'users/:user-slug',
+    component: UserDetailComponent,
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
     }

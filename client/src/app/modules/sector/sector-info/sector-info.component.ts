@@ -6,13 +6,14 @@ import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {Observable} from 'rxjs';
 import {Grade} from '../../../utility/misc/grades';
-import {untilDestroyed} from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-sector-info',
   templateUrl: './sector-info.component.html',
   styleUrls: ['./sector-info.component.scss']
 })
+@UntilDestroy()
 export class SectorInfoComponent implements OnInit{
 
   public sector: Sector;
@@ -24,7 +25,6 @@ export class SectorInfoComponent implements OnInit{
 
   ngOnInit() {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
-      console.log(42);
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       this.sectorsService.getSector(sectorSlug).subscribe(sector => {
         this.sector = sector;

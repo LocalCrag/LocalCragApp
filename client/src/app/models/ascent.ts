@@ -21,6 +21,13 @@ export class Ascent extends AbstractModel {
   line: Line;
   createdBy: User;
 
+  // Helpers for easier template usage
+  routerLinkCrag: string;
+  routerLinkSector: string;
+  routerLinkArea: string;
+  routerLinkLine: string;
+  routerLinkCreatedBy: string;
+
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
     AbstractModel.deserializeAbstractAttributes(ascent, payload);
@@ -36,6 +43,13 @@ export class Ascent extends AbstractModel {
     ascent.date = payload.date ? parseISO(payload.date) : null;
     ascent.line = payload.line ? Line.deserialize(payload.line) : null;
     ascent.createdBy = User.deserialize(payload.createdBy);
+
+    ascent.routerLinkCrag = `/topo/${ascent.line.area.sector.crag.slug}`;
+    ascent.routerLinkSector = `${ascent.routerLinkCrag}/${ascent.line.area.sector.slug}`;
+    ascent.routerLinkArea = `${ascent.routerLinkSector}/${ascent.line.area.slug}`;
+    ascent.routerLinkLine = `${ascent.routerLinkArea}/${ascent.line.slug}`;
+    ascent.routerLinkCreatedBy = `/users/${ascent.createdBy.slug}`;
+
     return ascent;
   }
 

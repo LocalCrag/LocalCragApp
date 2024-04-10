@@ -10,6 +10,7 @@ export class User extends AbstractModel {
   newEmail: string;
   firstname: string;
   lastname: string;
+  slug: string;
   password: string;
   activated: boolean;
   admin: boolean;
@@ -35,6 +36,7 @@ export class User extends AbstractModel {
     user.newEmail = payload.newEmail;
     user.firstname = payload.firstname;
     user.lastname = payload.lastname;
+    user.slug = payload.slug;
     user.activated = payload.activated;
     user.admin = payload.admin;
     user.moderator = payload.moderator;
