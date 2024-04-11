@@ -300,6 +300,8 @@
   "reorderLinePathsForLineDialogItemsName": "Topo Bilder",
   "sortByBlockAscending": "Nach Block, aufsteigend",
   "sortByBlockDescending": "Nach Block, absteigend",
+  "sortByAscentsDescending": "Nach Begehungen, absteigend",
+  "sortByAscentsAscending": "Nach Begehungen, aufsteigend",
   "line.infos": "Infos",
   "line.edit": "Bearbeiten",
   "pi-book": "Buch",

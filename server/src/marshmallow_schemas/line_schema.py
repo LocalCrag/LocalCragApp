@@ -8,9 +8,6 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
-
-
-
 class LineSchema(BaseEntitySchema):
     name = fields.String()
     description = fields.String()
@@ -56,6 +53,8 @@ class LineSchema(BaseEntitySchema):
     mantle = fields.Boolean()
 
     linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute='line_paths')
+
+    ascentCount = fields.Integer(attribute='ascent_count')  # todo add to tests
 
 
 line_schema = LineSchema()

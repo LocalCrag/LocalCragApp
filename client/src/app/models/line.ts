@@ -61,6 +61,7 @@ export class Line extends AbstractModel {
 
   topoImages: TopoImage[];
   area: Area;
+  ascentCount: number;
 
   // UI specific attributes, not related to data model
   disabled = false;
@@ -130,6 +131,7 @@ export class Line extends AbstractModel {
       return topoImage;
     }) : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
+    line.ascentCount = payload.ascentCount;
 
     return line;
   }

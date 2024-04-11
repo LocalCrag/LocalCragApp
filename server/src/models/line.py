@@ -63,3 +63,6 @@ class Line(HasSlug, BaseEntity):
     mantle = db.Column(db.Boolean, nullable=False, default=False)
 
     line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index_for_line.asc()')
+
+    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+

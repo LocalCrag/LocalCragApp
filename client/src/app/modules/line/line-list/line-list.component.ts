@@ -66,7 +66,9 @@ export class LineListComponent implements OnInit {
         {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortByBlockAscending')), value: '!blockOrderIndex'},
         {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortByBlockDescending')), value: 'blockOrderIndex'},
         {icon: PrimeIcons.SORT_ALPHA_DOWN, label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
-        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'}
+        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'},
+        {icon: 'pi pi-sort-numeric-down-alt', label: this.translocoService.translate(marker('sortByAscentsDescending')), value: 'ascentCount'},
+        {icon: PrimeIcons.SORT_NUMERIC_DOWN, label: this.translocoService.translate(marker('sortByAscentsAscending')), value: '!ascentCount'},
       ];
       this.sortKey = this.sortOptions[0];
     });

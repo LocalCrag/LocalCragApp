@@ -112,6 +112,9 @@ class CreateAscent(MethodView):
         ascent.sector_id = Area.find_by_id(line.area_id).sector_id
         ascent.crag_id = Sector.find_by_id(ascent.sector_id).crag_id
 
+        line.ascent_count += 1
+
+        db.session.add(line)
         db.session.add(ascent)
         db.session.commit()
 
