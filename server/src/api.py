@@ -23,7 +23,7 @@ from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTop
     GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, \
-    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser
+    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser, GetUser
 from models.region import Region
 from models.crag import Crag
 from models.sector import Sector
@@ -68,6 +68,7 @@ def configure_api(app):
     user_bp.add_url_rule('', view_func=GetUsers.as_view('get_user_list'))
     user_bp.add_url_rule('', view_func=RegisterUser.as_view('register_user'))
     user_bp.add_url_rule('/<string:user_id>', view_func=DeleteUser.as_view('delete_user'))
+    user_bp.add_url_rule('/<string:user_slug>', view_func=GetUser.as_view('get_user'))
     user_bp.add_url_rule('/<string:user_id>/promote', view_func=PromoteUser.as_view('promote_user'))
     user_bp.add_url_rule('/account',
                          view_func=UpdateAccountSettings.as_view('update_account_settings'))

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {CardModule} from 'primeng/card';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
@@ -62,6 +62,11 @@ import {TicksService} from '../../../services/crud/ticks.service';
 })
 export class AscentListComponent implements  OnInit{
 
+  @Input() userId: string;
+  @Input() cragId: string;
+  @Input() sectorId: string;
+  @Input() areaId: string;
+
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.LOADING;
   public ascents: Ascent[];
@@ -76,7 +81,24 @@ export class AscentListComponent implements  OnInit{
   }
 
   ngOnInit() {
-    this.ascentsService.getAscents().subscribe(ascents => {
+    let filters = []
+    if(this.userId){
+      filters.push(`user_id=${this.userId}`);
+    }
+    if(this.cragId){
+      filters.push(`crag_id=${this.cragId}`);
+    }
+    if(this.sectorId){
+      filters.push(`sector_id=${this.sectorId}`);
+    }
+    if(this.areaId){
+      filters.push(`area_id=${this.areaId}`);
+    }
+    let filterString = ''
+    if(filters.length > 0){
+      filterString = `?${filters.join('&')}`;
+    }
+    this.ascentsService.getAscents(filterString).subscribe(ascents => {
       this.ascents = ascents;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
@@ -84,7 +106,7 @@ export class AscentListComponent implements  OnInit{
         {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'timeCreated'}, // todo use some special ascent date
       ];
       this.sortKey = this.sortOptions[0];
-    })
+    });
   }
 
 

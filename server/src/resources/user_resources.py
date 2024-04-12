@@ -30,6 +30,12 @@ from webargs_schemas.new_email_args import new_email_args
 from webargs_schemas.user_args import user_args, user_registration_args, user_promotion_args
 
 
+class GetUser(MethodView):
+    # todo add test
+    def get(self, user_slug):
+        return jsonify(user_schema.dump(User.find_by_slug(user_slug))), 200
+
+
 class ChangePassword(MethodView):
     @jwt_required()
     def put(self):

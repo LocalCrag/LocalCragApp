@@ -20,8 +20,8 @@ export class AscentsService {
               private http: HttpClient) {
   }
 
-  public getAscents(): Observable<Ascent[]> {
-    return this.cache.get(this.api.ascents.getList(), map((ascentListJson: any) => ascentListJson.map(Ascent.deserialize)));
+  public getAscents(filters: string): Observable<Ascent[]> {
+    return this.cache.get(this.api.ascents.getList(filters), map((ascentListJson: any) => ascentListJson.map(Ascent.deserialize)));
   }
 
   public createAscent(ascent: Ascent): Observable<Ascent> {

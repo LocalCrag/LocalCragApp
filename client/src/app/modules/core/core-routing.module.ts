@@ -55,6 +55,7 @@ import {isAdmin} from '../../guards/is-admin';
 import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
 import {AscentsComponent} from '../ascent/ascents/ascents.component';
 import {UserDetailComponent} from '../user/user-detail/user-detail.component';
+import {UserAscentsComponent} from '../user/user-ascents/user-ascents.component';
 
 const routes: Routes = [
   {
@@ -240,7 +241,15 @@ const routes: Routes = [
     component: UserDetailComponent,
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+    },
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: UserAscentsComponent,
+        outlet: 'userContent'
+      }
+    ]
   },
   {
     path: 'ascents',

@@ -31,6 +31,7 @@ export class ApiService {
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,
+    getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
     updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string => `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
@@ -104,7 +105,7 @@ export class ApiService {
 
   public ascents = {
     create: (): string => `${this.apiHost}ascents`,
-    getList: (): string => `${this.apiHost}ascents`,
+    getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
   };
 
   public topoImages = {

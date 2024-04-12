@@ -32,13 +32,32 @@ from webargs_schemas.topo_image_args import topo_image_args
 class GetAscents(MethodView):
 
     def get(self):
-        ascents: List[Ascent] = (db.session.query(Ascent)
+
+        user_id = request.args.get('user_id')
+        crag_id = request.args.get('crag_id')
+        sector_id = request.args.get('sector_id')
+        area_id = request.args.get('area_id')
+
+
+        query = (db.session.query(Ascent)
                                  .join(Line)
                                  .join(Area)  # todo slow, uses many many selects and dosn't join correctly
                                  .join(Sector)
-                                 .join(Crag)
-                                 .order_by(
-            lambda: Ascent.time_created.desc()).all())  # Ascent.return_all(order_by=lambda: Ascent.time_created.desc())
+                                 .join(Crag))
+
+
+        if crag_id:
+            query = query.filter(Ascent.crag_id == crag_id)
+        if sector_id:
+            query = query.filter(Ascent.sector_id == sector_id)
+        if area_id:
+            query = query.filter(Ascent.area_id == area_id)
+        if user_id:
+            query = query.filter(Ascent.created_by_id == user_id)
+
+        ascents: List[Ascent] = query.order_by(
+            lambda: Ascent.time_created.desc()).all()
+
         return jsonify(ascents_schema.dump(ascents)), 200
 
 

@@ -61,6 +61,11 @@ export class UsersService {
     return this.cache.get(this.api.users.getList(), map((userListJson: any) => userListJson.map(User.deserialize)))
   }
 
+
+  public getUser(slug: string): Observable<User> {
+    return this.cache.get(this.api.users.getDetail(slug), map(User.deserialize))
+  }
+
   public deleteUser(user: User): Observable<null> {
     return this.http.delete(this.api.users.delete(user.id)).pipe(
       tap(() => {

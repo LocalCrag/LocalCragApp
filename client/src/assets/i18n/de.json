@@ -357,6 +357,8 @@
   "reorderTopoImagesDialogItemsName": "Topo Bilder",
   "reorderLinePathsDialogTitle": "Linien ordnen",
   "reorderLinePathsDialogItemsName": "Linien",
+  "ascents": "Begehungen",
+  "user.ascents": "Begehungen",
   "usersMenu.promoteToUser": "Zu normalem Benutzer ernennen",
   "usersMenu.promoteToMember": "Zu Mitglied ernennen",
   "usersMenu.promoteToModerator": "Zu Moderator ernennen",

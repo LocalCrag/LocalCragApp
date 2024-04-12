@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {delay, Observable, OperatorFunction, share, shareReplay, timestamp} from 'rxjs';
-import {ErrorMappingHttpService} from './error-mapping-http.service';
 import {map, tap} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 /**
  * Returns an observable that caches an initial request for the given windowTime. After the windowTime is passed,
@@ -40,7 +40,7 @@ export class CacheService {
   private cachingTime = 24 * 60 * 60 * 1000;
   private objects: Map<string, Observable<any>> = new Map<string, Observable<any>>();
 
-  constructor(private http: ErrorMappingHttpService) {
+  constructor(private http: HttpClient) {
   }
 
   /**
