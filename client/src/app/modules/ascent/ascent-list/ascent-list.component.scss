@@ -121,6 +121,13 @@ lc-ascent-list {
       flex-basis: 6rem;
     }
 
+    .ascent-actions{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 3rem;
+    }
+
   }
 
   @container (max-width: 84rem) {
@@ -234,6 +241,13 @@ lc-ascent-list {
       flex-basis: 6rem;
     }
 
+    .ascent-actions{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 3rem;
+    }
+
   }
 
   @container (min-width: 84rem) {
@@ -266,6 +280,7 @@ lc-ascent-list {
 
       .name-with-line {
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
 
         .username {
@@ -297,6 +312,13 @@ lc-ascent-list {
           max-width: 100%;
         }
 
+      }
+
+      .ascent-actions{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-basis: 3rem;
       }
 
     }

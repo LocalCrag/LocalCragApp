@@ -76,6 +76,12 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
+              <div class="ascent-actions" *ngIf="userId">
+                <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
+                          *isOwnUser="ascent.createdBy"
+                          (click)="editAscent(ascent)">
+                </p-button>
+              </div>
             </div>
 
             <!-- DISPLAY FOR MEDIUM SCREENS -->
@@ -125,6 +131,12 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
+              <div class="ascent-actions" *ngIf="userId">
+                <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
+                          *isOwnUser="ascent.createdBy"
+                          (click)="editAscent(ascent)">
+                </p-button>
+              </div>
             </div>
 
             <!-- DISPLAY FOR SMALL SCREENS -->
@@ -143,6 +155,12 @@
                   <div class="ascent-table-line-location mt-1">
                     {{ascent.line.area.sector.crag.name}}, {{ascent.line.area.sector.name}}, {{ascent.line.area.name}}
                   </div>
+                </div>
+                <div class="ascent-actions" *ngIf="userId">
+                  <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
+                            *isOwnUser="ascent.createdBy"
+                            (click)="editAscent(ascent)">
+                  </p-button>
                 </div>
               </div>
               <div class="ascent-table-comment">

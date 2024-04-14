@@ -121,4 +121,9 @@ export class AscentListComponent implements  OnInit{
     }
   }
 
+  editAscent(ascent: Ascent){
+
+  }
+
+
 }
