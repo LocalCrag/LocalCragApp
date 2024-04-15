@@ -65,4 +65,6 @@ class Line(HasSlug, BaseEntity):
     line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index_for_line.asc()')
 
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+    ascents = db.relationship("Ascent", cascade="all,delete", lazy="select")
+
 

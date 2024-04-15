@@ -26,3 +26,5 @@ class Ascent(BaseEntity):
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
     area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
+    created_by_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
+
