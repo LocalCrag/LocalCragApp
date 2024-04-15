@@ -31,4 +31,11 @@ export class AscentsService {
     // todo clear caches
   }
 
+  public updateAscent(ascent: Ascent): Observable<Ascent> {
+    return this.http.put(this.api.ascents.update(ascent.id), Ascent.serialize(ascent)).pipe(
+      map(Ascent.deserialize)
+    );
+    // todo clear caches
+  }
+
 }

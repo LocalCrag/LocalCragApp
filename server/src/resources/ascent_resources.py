@@ -7,6 +7,7 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
 from marshmallow_schemas.ascent_schema import ascent_schema, ascents_schema
@@ -29,6 +30,9 @@ from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args,
 from webargs_schemas.topo_image_args import topo_image_args
 
 
+# todo handle user rating and grade
+
+
 class GetAscents(MethodView):
 
     def get(self):
@@ -38,13 +42,11 @@ class GetAscents(MethodView):
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
 
-
         query = (db.session.query(Ascent)
-                                 .join(Line)
-                                 .join(Area)  # todo slow, uses many many selects and dosn't join correctly
-                                 .join(Sector)
-                                 .join(Crag))
-
+                 .join(Line)
+                 .join(Area)  # todo slow, uses many many selects and dosn't join correctly
+                 .join(Sector)
+                 .join(Crag))
 
         if crag_id:
             query = query.filter(Ascent.crag_id == crag_id)
@@ -84,16 +86,6 @@ class GetTicks(MethodView):
         return jsonify(line_ids), 200
 
 
-#
-# class GetArea(MethodView):
-#     def get(self, area_slug):
-#         """
-#         Returns a detailed area.
-#         @param area_slug: Slug of the area to return.
-#         """
-#         area: Area = Area.find_by_slug(area_slug)
-#         return area_schema.dump(area), 200
-#
 
 class CreateAscent(MethodView):
     @jwt_required()
@@ -110,7 +102,8 @@ class CreateAscent(MethodView):
             raise BadRequest('Cannot change grade scale of the climbed line.')
         if not cross_validate_grade(ascent_data['gradeName'], ascent_data['gradeScale'], line.type):
             raise BadRequest('Grade scale, name and line type do not match.')
-        if db.session.query(Ascent.line_id).filter(Ascent.created_by_id == created_by.id).filter(Ascent.line_id == ascent_data['line']).first():
+        if db.session.query(Ascent.line_id).filter(Ascent.created_by_id == created_by.id).filter(
+                Ascent.line_id == ascent_data['line']).first():
             raise BadRequest('Cannot log a line twice.')
 
         ascent: Ascent = Ascent()
@@ -139,43 +132,52 @@ class CreateAscent(MethodView):
 
         return ascent_schema.dump(ascent), 201
 
-#
-# class UpdateArea(MethodView):
-#     @jwt_required()
-#     @check_auth_claims(moderator=True)
-#     def put(self, area_slug):
-#         """
-#         Edit an area.
-#         @param area_slug: Slug of the area to update.
-#         """
-#         area_data = parser.parse(area_args, request)
-#         area: Area = Area.find_by_slug(area_slug)
-#
-#         area.name = area_data['name']
-#         area.lat = area_data['lat']
-#         area.lng = area_data['lng']
-#         area.description = add_bucket_placeholders(area_data['description'])
-#         area.short_description = area_data['shortDescription']
-#         area.portrait_image_id = area_data['portraitImage']
-#         db.session.add(area)
-#         db.session.commit()
-#
-#         return area_schema.dump(area), 200
-#
-#
-# class DeleteArea(MethodView):
-#     @jwt_required()
-#     @check_auth_claims(moderator=True)
-#     def delete(self, area_slug):
-#         """
-#         Delete an area.
-#         @param area_slug: Slug of the area to delete.
-#         """
-#         area: Area = Area.find_by_slug(area_slug)
-#
-#         db.session.delete(area)
-#         query = text("UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id")
-#         db.session.execute(query, {'order_index': area.order_index, 'sector_id': area.sector_id})
-#         db.session.commit()
-#
-#         return jsonify(None), 204
+
+# todo prevent lines from being edited from line to project state - this will mess up ascents
+class UpdateAscent(MethodView):
+    @jwt_required()
+    def put(self, ascent_id):
+        ascent_data = parser.parse(ascent_args, request, validate=cross_validate_ascent_args)
+        ascent: Ascent = Ascent.find_by_id(ascent_id)
+
+        if not ascent.created_by.email == get_jwt_identity():
+            raise Unauthorized('Ascents can only be edited by users themselves.')
+
+        line: Line = Line.find_by_id(ascent.line_id)
+        if ascent_data['gradeScale'] != line.grade_scale:
+            raise BadRequest('Cannot change grade scale of the climbed line.')
+        if not cross_validate_grade(ascent_data['gradeName'], ascent_data['gradeScale'], line.type):
+            raise BadRequest('Grade scale, name and line type do not match.')
+
+        ascent.flash = ascent_data['flash']
+        ascent.fa = ascent_data['fa']
+        ascent.soft = ascent_data['soft']
+        ascent.hard = ascent_data['hard']
+        ascent.with_kneepad = ascent_data['withKneepad']
+        ascent.grade_name = ascent_data['gradeName']
+        ascent.grade_scale = ascent_data['gradeScale']
+        ascent.rating = ascent_data['rating']
+        ascent.comment = ascent_data['comment']
+        ascent.year = ascent_data['year']
+        ascent.date = ascent_data['date']
+
+        db.session.add(ascent)
+        db.session.commit()
+
+        return ascent_schema.dump(ascent), 201
+
+
+class DeleteAscent(MethodView):
+    @jwt_required()
+    def delete(self, ascent_id):
+        ascent: Ascent = Ascent.find_by_id(ascent_id)
+
+        if not ascent.created_by.email == get_jwt_identity():
+            raise Unauthorized('Ascents can only be deleted by users themselves.')
+
+        db.session.delete(ascent)
+        query = text("UPDATE lines SET ascent_count=ascent_count - 1 WHERE id  = :ascent_id")
+        db.session.execute(query, {'ascent_id': ascent_id})
+        db.session.commit()
+
+        return jsonify(None), 204

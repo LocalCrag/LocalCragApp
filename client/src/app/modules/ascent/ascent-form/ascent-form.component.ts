@@ -30,8 +30,11 @@ import {ToggleButtonModule} from 'primeng/togglebutton';
 import {dateNotInFutureValidator} from '../../../utility/validators/date-not-in-future.validator';
 import {DividerModule} from 'primeng/divider';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {filter} from 'rxjs/operators';
+import {catchError, filter} from 'rxjs/operators';
 import {MessageModule} from 'primeng/message';
+import {of} from 'rxjs';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -73,28 +76,36 @@ export class AscentFormComponent implements OnInit {
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public line: Line;
+  public ascent: Ascent;
   public grades = GRADES.FB.filter(grade => grade.value >= 0);
   public today = new Date();
   public gradeDifferenceWarning = false;
+  public editMode = false;
 
   constructor(private fb: FormBuilder,
               private dialogConfig: DynamicDialogConfig,
               private store: Store,
               private ref: DynamicDialogRef,
               private ascentsService: AscentsService) {
-    this.line = this.dialogConfig.data.line;
+    this.line = this.dialogConfig.data.line ? this.dialogConfig.data.line : this.dialogConfig.data.ascent.line;
   }
 
   ngOnInit() {
     this.buildForm();
+    this.ascent = this.dialogConfig.data.ascent;
+    if (this.ascent) {
+      this.editMode = true;
+      this.ascentForm.disable();
+      this.setFormValue();
+    }
   }
 
   private buildForm() {
     this.ascentForm = this.fb.group({
       grade: [this.line.grade, [Validators.required]],
       rating: [null, [Validators.required]],
-      year: [new Date(), [yearOfDateNotInFutureValidator()]],
-      date: [new Date(), [dateNotInFutureValidator()]],
+      year: [new Date(), [yearOfDateNotInFutureValidator(), Validators.required]],
+      date: [new Date(), [dateNotInFutureValidator(), Validators.required]],
       soft: [false],
       hard: [false],
       fa: [false],
@@ -114,6 +125,23 @@ export class AscentFormComponent implements OnInit {
     });
   }
 
+  private setFormValue() {
+    this.ascentForm.patchValue({
+      grade: this.ascent.grade,
+      rating: this.ascent.rating,
+      hard: this.ascent.hard,
+      soft: this.ascent.soft,
+      fa: this.ascent.fa,
+      flash: this.ascent.flash,
+      withKneepad: this.ascent.withKneepad,
+      comment: this.ascent.comment,
+      year: this.ascent.year ? new Date(this.ascent.year, 6, 15) : null,
+      date: this.ascent.date ? this.ascent.date : null,
+      yearOnly: this.ascent.year !== null
+    });
+    this.ascentForm.enable();
+  }
+
   public saveAscent() {
     if (this.ascentForm.valid) {
       this.loadingState = LoadingState.LOADING;
@@ -129,12 +157,22 @@ export class AscentFormComponent implements OnInit {
       ascent.withKneepad = this.ascentForm.get('withKneepad').value;
       ascent.comment = this.ascentForm.get('comment').value;
       ascent.line = this.line;
-      this.ascentsService.createAscent(ascent).subscribe(ascent => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_ADDED));
-        this.loadingState = LoadingState.DEFAULT;
-        // todo update stuff after saving
-        this.ref.close();
-      });
+      if(!this.editMode) {
+        this.ascentsService.createAscent(ascent).subscribe(ascent => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_ADDED));
+          this.loadingState = LoadingState.DEFAULT;
+          // todo update stuff after saving
+          this.ref.close();
+        });
+      } else {
+        ascent.id = this.ascent.id;
+        this.ascentsService.updateAscent(ascent).subscribe(ascent => {
+          this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_UPDATED));
+          this.loadingState = LoadingState.DEFAULT;
+          // todo update stuff after saving
+          this.ref.close();
+        });
+      }
     } else {
       this.formDirective.markAsTouched();
     }

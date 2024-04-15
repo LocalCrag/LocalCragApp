@@ -26,6 +26,9 @@ import {ConsensusGradePipe} from '../pipes/consensus-grade.pipe';
 import {TagModule} from 'primeng/tag';
 import {Store} from '@ngrx/store';
 import {TicksService} from '../../../services/crud/ticks.service';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {AscentFormComponent} from '../ascent-form/ascent-form.component';
+import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -58,7 +61,10 @@ import {TicksService} from '../../../services/crud/ticks.service';
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    DialogService,
+  ],
 })
 export class AscentListComponent implements  OnInit{
 
@@ -74,8 +80,11 @@ export class AscentListComponent implements  OnInit{
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
+  public ref: DynamicDialogRef | undefined;
+
 
   constructor(private ascentsService: AscentsService,
+              private dialogService: DialogService,
               private translocoService :TranslocoService) {
 
   }
@@ -122,7 +131,14 @@ export class AscentListComponent implements  OnInit{
   }
 
   editAscent(ascent: Ascent){
-
+    this.ref = this.dialogService.open(AscentFormComponent, {
+      templates: {
+        header: AscentFormTitleComponent,
+      },
+      data: {
+        ascent
+      },
+    });
   }
 
 

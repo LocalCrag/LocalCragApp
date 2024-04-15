@@ -12,11 +12,13 @@
                     appendTo="body"
                     [maxDate]="today" [readonlyInput]="true"  styleClass="w-full"></p-calendar>
         <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
+        <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
       </div>
       <div class="flex flex-column gap-2  flex-grow-1" lcControlGroup *ngIf="!ascentForm.get('yearOnly').value">
         <p-calendar formControlName="date" view="date" inputId="date" lcFormControl styleClass="w-full"  appendTo="body"
                     [maxDate]="today" [readonlyInput]="true" dateFormat="dd.mm.yy"></p-calendar>
         <small class="p-error" *lcIfError="'dateInFuture'">{{t('dateInFutureValidationError')}}</small>
+        <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
       </div>
       <p-toggleButton formControlName="yearOnly" [onLabel]="t('onlyYear')" [offLabel]="t('onlyYear')"></p-toggleButton>
     </div>
@@ -82,7 +84,8 @@
   </form>
 
   <div class="form-actions">
-    <p-button label="{{t('addAscentButtonLabel')}}" (click)="saveAscent()" styleClass="w-full"
+    <p-button label="{{ !editMode ? t('addAscentButtonLabel') : t('editAscentButtonLabel')}}"
+              (click)="saveAscent()" styleClass="w-full"
               [loading]="loadingState === loadingStates.LOADING" data-cy="submit"></p-button>
   </div>
 

@@ -22,7 +22,7 @@ export class AscentFormTitleComponent {
 
   constructor(private dialogConfig: DynamicDialogConfig,
               public ref: DynamicDialogRef) {
-    this.line = this.dialogConfig.data.line;
+    this.line = this.dialogConfig.data.line ? this.dialogConfig.data.line : this.dialogConfig.data.ascent.line;
   }
 
 }

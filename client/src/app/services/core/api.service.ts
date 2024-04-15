@@ -105,6 +105,8 @@ export class ApiService {
 
   public ascents = {
     create: (): string => `${this.apiHost}ascents`,
+    update: (id: string): string => `${this.apiHost}ascents/${id}`,
+    delete: (id: string): string => `${this.apiHost}ascents/${id}`,
     getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
   };
 
