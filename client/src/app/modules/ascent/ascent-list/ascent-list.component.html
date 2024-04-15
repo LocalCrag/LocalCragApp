@@ -81,6 +81,11 @@
                           *isOwnUser="ascent.createdBy"
                           (click)="editAscent(ascent)">
                 </p-button>
+                <p-button icon="pi pi-trash" severity="danger"
+                          (click)="confirmDeleteAscent($event, ascent)"
+                          styleClass="p-button-rounded p-button-text">
+                </p-button>
+                <p-confirmPopup></p-confirmPopup>
               </div>
             </div>
 

@@ -14,7 +14,7 @@ import {HasPermissionDirective} from '../../shared/directives/has-permission.dir
 import {SharedModule} from '../../shared/shared.module';
 import {LoadingState} from '../../../enums/loading-state';
 import {FormsModule} from '@angular/forms';
-import {PrimeIcons, SelectItem} from 'primeng/api';
+import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {LineModule} from '../../line/line.module';
@@ -29,6 +29,9 @@ import {TicksService} from '../../../services/crud/ticks.service';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {AscentFormComponent} from '../ascent-form/ascent-form.component';
 import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
+import {environment} from '../../../../environments/environment';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -64,6 +67,7 @@ import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.c
   encapsulation: ViewEncapsulation.None,
   providers: [
     DialogService,
+    ConfirmationService
   ],
 })
 export class AscentListComponent implements  OnInit{
@@ -85,6 +89,8 @@ export class AscentListComponent implements  OnInit{
 
   constructor(private ascentsService: AscentsService,
               private dialogService: DialogService,
+              private store: Store,
+              private confirmationService: ConfirmationService,
               private translocoService :TranslocoService) {
 
   }
@@ -141,5 +147,26 @@ export class AscentListComponent implements  OnInit{
     });
   }
 
+  confirmDeleteAscent(event: Event, ascent: Ascent) {
+    this.translocoService.load(`${environment.language}`).subscribe(() => {
+      this.confirmationService.confirm({
+        target: event.target,
+        message: this.translocoService.translate(marker('ascent.askReallyWantToDeleteAscent')),
+        acceptLabel: this.translocoService.translate(marker('ascent.yesDelete')),
+        acceptButtonStyleClass: 'p-button-danger',
+        rejectLabel: this.translocoService.translate(marker('ascent.noDontDelete')),
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.deleteAscent(ascent);
+        },
+      });
+    });
+  }
+
+  public deleteAscent(ascent: Ascent) {
+    this.ascentsService.deleteAscent(ascent).subscribe(() => {
+      this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_DELETED));
+    });
+  }
 
 }

@@ -8,6 +8,7 @@ import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {reloadMenus} from '../../ngrx/actions/core.actions';
 import {Ascent} from '../../models/ascent';
+import {Crag} from '../../models/crag';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,13 @@ export class AscentsService {
       map(Ascent.deserialize)
     );
     // todo clear caches
+  }
+
+  public deleteAscent(ascent: Ascent): Observable<null> {
+    return this.http.delete(this.api.ascents.delete(ascent.id)).pipe(
+      // todo clear caches
+      map(() => null)
+    );
   }
 
 }

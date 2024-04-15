@@ -35,6 +35,8 @@ import {MessageModule} from 'primeng/message';
 import {of} from 'rxjs';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {environment} from '../../../../environments/environment';
+import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -65,7 +67,7 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
 export class AscentFormComponent implements OnInit {
@@ -197,5 +199,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm.get('year').setValue(new Date());
     this.ascentForm.get('yearOnly').setValue(false);
   }
+
+
 
 }
