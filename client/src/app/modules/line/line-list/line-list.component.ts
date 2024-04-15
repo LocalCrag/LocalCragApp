@@ -12,6 +12,9 @@ import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
 import {AreasService} from '../../../services/crud/areas.service';
 import {TicksService} from '../../../services/crud/ticks.service';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Component that lists all lines in an area.
@@ -22,6 +25,7 @@ import {TicksService} from '../../../services/crud/ticks.service';
   styleUrls: ['./line-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+@UntilDestroy()
 export class LineListComponent implements OnInit {
 
   public lines: Line[];
@@ -39,6 +43,7 @@ export class LineListComponent implements OnInit {
 
   constructor(private linesService: LinesService,
               private store: Store,
+              private actions$: Actions,
               private areasService: AreasService,
               private ticksService: TicksService,
               private route: ActivatedRoute,
@@ -49,9 +54,17 @@ export class LineListComponent implements OnInit {
    * Loads the lines on initialization.
    */
   ngOnInit() {
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+      this.refreshData();
+    });
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
+    this.isMobile$ = this.store.pipe(select(selectIsMobile));
+    this.refreshData();
+  }
+
+  refreshData(){
     this.areasService.getArea(this.areaSlug).pipe(mergeMap(area => {
       return forkJoin([
         this.linesService.getLines(this.areaSlug),
@@ -72,7 +85,6 @@ export class LineListComponent implements OnInit {
       ];
       this.sortKey = this.sortOptions[0];
     });
-    this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   openVideo(event: MouseEvent, line: Line){

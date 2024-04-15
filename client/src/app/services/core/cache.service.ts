@@ -67,4 +67,17 @@ export class CacheService {
     this.objects.delete(path);
   }
 
+  /**
+   * Removes all items from the cache that have a key including the searchString.
+   * @param pathSearchString Item to remove.
+   */
+  public clearIfPathIncludes(pathSearchString: string){
+    const keys = Array.from(this.objects.keys());
+    keys.map(key => {
+      if(key.includes(pathSearchString)){
+        this.objects.delete(key);
+      }
+    })
+  }
+
 }

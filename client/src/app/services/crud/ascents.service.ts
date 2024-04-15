@@ -9,6 +9,7 @@ import {map, tap} from 'rxjs/operators';
 import {reloadMenus} from '../../ngrx/actions/core.actions';
 import {Ascent} from '../../models/ascent';
 import {Crag} from '../../models/crag';
+import {clearAscentCache, clearGradeCache} from '../../ngrx/actions/cache.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -27,22 +28,46 @@ export class AscentsService {
 
   public createAscent(ascent: Ascent): Observable<Ascent> {
     return this.http.post(this.api.ascents.create(), Ascent.serialize(ascent)).pipe(
-      map(Ascent.deserialize)
+      map(Ascent.deserialize),
+      tap(ascent => {
+        this.store.dispatch(clearAscentCache({
+          area: ascent.line.area.slug,
+          crag: ascent.line.area.sector.crag.slug,
+          line: ascent.line.slug,
+          user: ascent.createdBy.slug,
+          sector: ascent.line.area.sector.slug
+        }))
+      })
     );
-    // todo clear caches
   }
 
   public updateAscent(ascent: Ascent): Observable<Ascent> {
     return this.http.put(this.api.ascents.update(ascent.id), Ascent.serialize(ascent)).pipe(
-      map(Ascent.deserialize)
+      map(Ascent.deserialize),
+      tap(ascent => {
+        this.store.dispatch(clearAscentCache({
+          area: ascent.line.area.slug,
+          crag: ascent.line.area.sector.crag.slug,
+          line: ascent.line.slug,
+          user: ascent.createdBy.slug,
+          sector: ascent.line.area.sector.slug
+        }))
+      })
     );
-    // todo clear caches
   }
 
   public deleteAscent(ascent: Ascent): Observable<null> {
     return this.http.delete(this.api.ascents.delete(ascent.id)).pipe(
-      // todo clear caches
-      map(() => null)
+      map(() => null),
+      tap(() => {
+        this.store.dispatch(clearAscentCache({
+          area: ascent.line.area.slug,
+          crag: ascent.line.area.sector.crag.slug,
+          line: ascent.line.slug,
+          user: ascent.createdBy.slug,
+          sector: ascent.line.area.sector.slug
+        }))
+      })
     );
   }
 

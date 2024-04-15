@@ -27,6 +27,8 @@ import {AscentFormComponent} from '../../ascent/ascent-form/ascent-form.componen
 import {AscentFormTitleComponent} from '../../ascent/ascent-form-title/ascent-form-title.component';
 import {TicksService} from '../../../services/crud/ticks.service';
 import {AreasService} from '../../../services/crud/areas.service';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 
 /**
  * Component that lists all topo images in an area.
@@ -67,6 +69,7 @@ export class TopoImageListComponent {
               private confirmationService: ConfirmationService,
               private ticksService: TicksService,
               private areasService: AreasService,
+              private actions$: Actions,
               private dialogService: DialogService,
               private linePathsService: LinePathsService,
               private route: ActivatedRoute,
@@ -95,6 +98,9 @@ export class TopoImageListComponent {
       this.refreshData();
     });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+      this.refreshData();
+    });
   }
 
   /**

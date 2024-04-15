@@ -37,6 +37,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -163,7 +164,7 @@ export class AscentFormComponent implements OnInit {
         this.ascentsService.createAscent(ascent).subscribe(ascent => {
           this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_ADDED));
           this.loadingState = LoadingState.DEFAULT;
-          // todo update stuff after saving
+          this.store.dispatch(reloadAfterAscent());
           this.ref.close();
         });
       } else {
@@ -171,7 +172,7 @@ export class AscentFormComponent implements OnInit {
         this.ascentsService.updateAscent(ascent).subscribe(ascent => {
           this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_UPDATED));
           this.loadingState = LoadingState.DEFAULT;
-          // todo update stuff after saving
+          this.store.dispatch(reloadAfterAscent());
           this.ref.close();
         });
       }

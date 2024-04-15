@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {Area} from '../../../models/area';
 import {ActivatedRoute} from '@angular/router';
 import {AreasService} from '../../../services/crud/areas.service';
@@ -16,6 +16,8 @@ import {select, Store} from '@ngrx/store';
 import {ApiService} from '../../../services/core/api.service';
 import {CacheService} from '../../../services/core/cache.service';
 import {TicksService} from '../../../services/crud/ticks.service';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 
 /**
  * Component that shows detailed information about a line.
@@ -42,6 +44,7 @@ export class LineInfoComponent {
               private store: Store,
               private ticksService: TicksService,
               private api: ApiService,
+              private actions$: Actions,
               private cache: CacheService,
               private translocoService: TranslocoService,
               private dialogService: DialogService,
@@ -53,6 +56,9 @@ export class LineInfoComponent {
     this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.refreshData();
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+      this.refreshData();
+    });
   }
 
   /**

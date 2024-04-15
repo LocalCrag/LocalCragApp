@@ -32,6 +32,9 @@ import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.c
 import {environment} from '../../../../environments/environment';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {Actions, ofType} from '@ngrx/effects';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -70,12 +73,14 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
     ConfirmationService
   ],
 })
-export class AscentListComponent implements  OnInit{
+@UntilDestroy()
+export class AscentListComponent implements OnInit {
 
   @Input() userId: string;
   @Input() cragId: string;
   @Input() sectorId: string;
   @Input() areaId: string;
+  @Input() lineId: string;
 
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.LOADING;
@@ -90,35 +95,64 @@ export class AscentListComponent implements  OnInit{
   constructor(private ascentsService: AscentsService,
               private dialogService: DialogService,
               private store: Store,
+              private actions$: Actions,
               private confirmationService: ConfirmationService,
-              private translocoService :TranslocoService) {
+              private translocoService: TranslocoService) {
 
   }
 
   ngOnInit() {
+    this.refreshData();
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+      this.refreshData();
+    })
+  }
+
+  refreshData() {
     let filters = []
-    if(this.userId){
+    if (this.userId) {
       filters.push(`user_id=${this.userId}`);
     }
-    if(this.cragId){
+    if (this.cragId) {
       filters.push(`crag_id=${this.cragId}`);
     }
-    if(this.sectorId){
+    if (this.sectorId) {
       filters.push(`sector_id=${this.sectorId}`);
     }
-    if(this.areaId){
+    if (this.areaId) {
       filters.push(`area_id=${this.areaId}`);
     }
+    if (this.lineId) {
+      filters.push(`line_id=${this.lineId}`);
+    }
     let filterString = ''
-    if(filters.length > 0){
+    if (filters.length > 0) {
       filterString = `?${filters.join('&')}`;
     }
     this.ascentsService.getAscents(filterString).subscribe(ascents => {
       this.ascents = ascents;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!timeCreated'}, // todo use some special ascent date
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'timeCreated'}, // todo use some special ascent date
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+          label: this.translocoService.translate(marker('sortAscendingByDate')),
+          value: '!timeCreated'
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN,
+          label: this.translocoService.translate(marker('sortDescendingByDate')),
+          value: 'timeCreated'
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+          label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
+          value: '!ascentDate'
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN,
+          label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
+          value: 'ascentDate'
+        },
       ];
       this.sortKey = this.sortOptions[0];
     });
@@ -136,7 +170,7 @@ export class AscentListComponent implements  OnInit{
     }
   }
 
-  editAscent(ascent: Ascent){
+  editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
       templates: {
         header: AscentFormTitleComponent,
@@ -166,6 +200,7 @@ export class AscentListComponent implements  OnInit{
   public deleteAscent(ascent: Ascent) {
     this.ascentsService.deleteAscent(ascent).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_DELETED));
+      this.store.dispatch(reloadAfterAscent());
     });
   }
 
