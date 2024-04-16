@@ -15,6 +15,7 @@ class SectorSchema(BaseEntitySchema):
     shortDescription = fields.String(attribute='short_description')
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
     orderIndex = fields.Int(attribute='order_index')
+    ascentCount = fields.Integer(attribute='ascent_count')  # todo add to tests
 
 
 class SectorDetailSchema(SectorSchema):

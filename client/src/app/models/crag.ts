@@ -19,6 +19,8 @@ export class Crag extends AbstractModel {
   orderIndex: number;
   gps: GPS;
   sectors: Sector[];
+  ascentCount: number;
+
 
 
   /**
@@ -39,6 +41,7 @@ export class Crag extends AbstractModel {
     crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     crag.sectors = payload.sectors ? payload.sectors.map(Sector.deserialize) : null;
+    crag.ascentCount = payload.ascentCount;
     return crag;
   }
 

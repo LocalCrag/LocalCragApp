@@ -15,6 +15,7 @@ export class Area extends AbstractModel {
   portraitImage: File;
   gps: GPS;
   orderIndex: number;
+  ascentCount: number;
 
   sector: Sector;
 
@@ -35,6 +36,7 @@ export class Area extends AbstractModel {
     area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
+    area.ascentCount = payload.ascentCount;
     return area;
   }
 

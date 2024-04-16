@@ -27,6 +27,8 @@ class Sector(HasSlug, BaseEntity):
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
     rules = db.Column(db.Text, nullable=True)
+    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+
 
     @classmethod
     def find_max_order_index(cls, crag_id) -> int:

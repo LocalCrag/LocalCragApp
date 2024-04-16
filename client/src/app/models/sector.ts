@@ -20,6 +20,8 @@ export class Sector extends AbstractModel {
   rules: string;
   areas: Area[];
   crag: Crag;
+  ascentCount: number;
+
 
   /**
    * Parses a sector.
@@ -40,6 +42,7 @@ export class Sector extends AbstractModel {
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
     sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
+    sector.ascentCount = payload.ascentCount;
     return sector;
   }
 

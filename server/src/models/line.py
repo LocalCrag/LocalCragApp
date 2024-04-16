@@ -68,3 +68,4 @@ class Line(HasSlug, BaseEntity):
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select")
 
 
+

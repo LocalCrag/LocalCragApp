@@ -138,6 +138,8 @@ class UpdateLine(MethodView):
         else:
             line.fa_year = None
             line.fa_name = None
+            if line.ascent_count > 0: # todo add to tests
+                raise BadRequest('Cannot change a line to a project if it has been ticked!')
 
         line.eliminate = line_data['eliminate']
         line.traverse = line_data['traverse']

@@ -30,9 +30,6 @@ from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args,
 from webargs_schemas.topo_image_args import topo_image_args
 
 
-# todo handle user rating and grade
-
-
 class GetAscents(MethodView):
 
     def get(self):
@@ -86,7 +83,6 @@ class GetTicks(MethodView):
         return jsonify(line_ids), 200
 
 
-
 class CreateAscent(MethodView):
     @jwt_required()
     def post(self):
@@ -128,12 +124,12 @@ class CreateAscent(MethodView):
 
         db.session.add(line)
         db.session.add(ascent)
+        increment_ascent_counts(ascent)
         db.session.commit()
 
         return ascent_schema.dump(ascent), 201
 
 
-# todo prevent lines from being edited from line to project state - this will mess up ascents
 class UpdateAscent(MethodView):
     @jwt_required()
     def put(self, ascent_id):
@@ -176,8 +172,33 @@ class DeleteAscent(MethodView):
             raise Unauthorized('Ascents can only be deleted by users themselves.')
 
         db.session.delete(ascent)
-        query = text("UPDATE lines SET ascent_count=ascent_count - 1 WHERE id  = :ascent_id")
-        db.session.execute(query, {'ascent_id': ascent_id})
+        decrement_ascent_counts(ascent)
         db.session.commit()
 
         return jsonify(None), 204
+
+
+def increment_ascent_counts(ascent: Ascent):
+    query = text("UPDATE lines SET ascent_count=ascent_count + 1 WHERE id  = :line_id")
+    db.session.execute(query, {'line_id': ascent.line_id})
+    query = text("UPDATE areas SET ascent_count=ascent_count + 1 WHERE id  = :area_id")
+    db.session.execute(query, {'area_id': ascent.area_id})
+    query = text("UPDATE sectors SET ascent_count=ascent_count + 1 WHERE id  = :sector_id")
+    db.session.execute(query, {'sector_id': ascent.sector_id})
+    query = text("UPDATE crags SET ascent_count=ascent_count + 1 WHERE id  = :crag_id")
+    db.session.execute(query, {'crag_id': ascent.crag_id})
+    query = text("UPDATE regions SET ascent_count=ascent_count + 1")
+    db.session.execute(query)
+
+
+def decrement_ascent_counts(ascent: Ascent):
+    query = text("UPDATE lines SET ascent_count=ascent_count - 1 WHERE id  = :line_id")
+    db.session.execute(query, {'line_id': ascent.line_id})
+    query = text("UPDATE areas SET ascent_count=ascent_count - 1 WHERE id  = :area_id")
+    db.session.execute(query, {'area_id': ascent.area_id})
+    query = text("UPDATE sectors SET ascent_count=ascent_count - 1 WHERE id  = :sector_id")
+    db.session.execute(query, {'sector_id': ascent.sector_id})
+    query = text("UPDATE crags SET ascent_count=ascent_count - 1 WHERE id  = :crag_id")
+    db.session.execute(query, {'crag_id': ascent.crag_id})
+    query = text("UPDATE regions SET ascent_count=ascent_count - 1")
+    db.session.execute(query)
