@@ -24,8 +24,8 @@
       </div>
     </ng-template>
     <ng-template let-ascents pTemplate="list">
-      <div class="grid grid-nogutter">
-        <div class="col-12 " *ngFor="let ascent of ascents; let first = first">
+      <div class="grid grid-nogutter" >
+        <div class="col-12 " *ngFor="let ascent of ascents; let first = first" data-cy="ascent-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
 
@@ -72,7 +72,7 @@
                 <p-tag severity="primary" value="{{t('fa')}}" *ngIf="ascent.fa" icon="pi pi-star"></p-tag>
                 <p-tag severity="primary" value="{{t('flash')}}" *ngIf="ascent.flash" icon="pi pi-bolt"></p-tag>
                 <p-tag severity="primary" value="{{t('withKneepad')}}" *ngIf="ascent.withKneepad"
-                       icon="pi pi-ticket"></p-tag>
+                       icon="pi pi-ticket" data-cy="kneepadtag"></p-tag>
               </div>
               <div class="ascent-table-date">
                 <i class="pi pi-calendar"></i>
@@ -81,14 +81,14 @@
               </div>
               <div class="ascent-actions" *ngIf="userId">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          *isOwnUser="ascent.createdBy"
+                          *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
                 </p-button>
                 <p-button icon="pi pi-trash" severity="danger"
+                          data-cy="delete-ascent"
                           (click)="confirmDeleteAscent($event, ascent)"
                           styleClass="p-button-rounded p-button-text">
                 </p-button>
-                <p-confirmPopup></p-confirmPopup>
               </div>
             </div>
 
@@ -144,7 +144,7 @@
               </div>
               <div class="ascent-actions" *ngIf="userId">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          *isOwnUser="ascent.createdBy"
+                          *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
                 </p-button>
               </div>
@@ -172,7 +172,7 @@
                 </div>
                 <div class="ascent-actions" *ngIf="userId">
                   <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                            *isOwnUser="ascent.createdBy"
+                            *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
                             (click)="editAscent(ascent)">
                   </p-button>
                 </div>
@@ -223,5 +223,7 @@
       </div>
     </ng-template>
   </p-dataView>
+
+  <p-confirmPopup></p-confirmPopup>
 
 </ng-container>

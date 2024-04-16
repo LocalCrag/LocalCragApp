@@ -67,7 +67,7 @@
 
     <div class="flex flex-row gap-2" lcControlGroup>
       <textarea rows="2" cols="30" pInputTextarea lcFormControl formControlName="comment"
-                class="w-full"></textarea>
+                class="w-full" data-cy="comment"></textarea>
     </div>
 
     <p-divider align="center" type="dotted">
@@ -76,7 +76,7 @@
 
     <div class="flex flex-row gap-2 align-items-center justify-content-center" lcControlGroup>
       <p-toggleButton formControlName="flash" [onLabel]="t('flash')" [offLabel]="t('flash')"></p-toggleButton>
-      <p-toggleButton formControlName="withKneepad" [onLabel]="t('withKneepad')"
+      <p-toggleButton formControlName="withKneepad" [onLabel]="t('withKneepad')" data-cy="withKneepad"
                       [offLabel]="t('withKneepad')"></p-toggleButton>
       <p-toggleButton formControlName="fa" [onLabel]="t('fa')" [offLabel]="t('fa')"></p-toggleButton>
     </div>

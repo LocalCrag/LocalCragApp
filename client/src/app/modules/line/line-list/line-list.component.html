@@ -61,7 +61,7 @@
                             (click)="openVideo($event, line)" class="video-button">
                   </p-button>
                   <div class="flex-grow-1"></div>
-                  <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)"></lc-tick-button>
+                  <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)" *isLoggedIn="true"></lc-tick-button>
                 </div>
               </div>
             </div>
