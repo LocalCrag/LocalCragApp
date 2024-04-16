@@ -29,7 +29,7 @@ def test_successful_login(client):
     assert isinstance(res['user']['id'], str)
     assert res['user']['language'] == 'de'
     assert res['user']['timeCreated'] is not None
-    assert res['user']['timeUpdated'] is None
+    assert res['user']['timeUpdated'] is not None
     assert res['user']['avatar'] is None
 
 

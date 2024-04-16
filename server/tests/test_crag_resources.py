@@ -28,6 +28,7 @@ def test_successful_create_crag(client):
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
     assert res['orderIndex'] == 2
+    assert res['ascentCount'] == 0
 
 
 def test_successful_get_crags(client):
@@ -39,12 +40,14 @@ def test_successful_get_crags(client):
     assert res[0]['slug'] == "brione"
     assert res[0]['name'] == "Brione"
     assert res[0]['orderIndex'] == 0
+    assert res[0]['ascentCount'] == 1
     assert res[0]['shortDescription'] == "Kurze Beschreibung zu Brione"
     assert res[0]['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
     assert res[1]['slug'] == "chironico"
     assert res[1]['name'] == "Chironico"
     assert res[1]['orderIndex'] == 1
+    assert res[1]['ascentCount'] == 0
     assert res[1]['shortDescription'] == "Kurze Beschreibung zu Chironico"
     assert res[1]['portraitImage']['id'] == 'b668385f-9693-414a-a4c7-4da6f3ba405d'
 
@@ -57,6 +60,7 @@ def test_successful_get_crag(client):
     assert res['name'] == "Brione"
     assert res['slug'] == "brione"
     assert res['orderIndex'] == 0
+    assert res['ascentCount'] == 1
     assert res['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res['description'] == "<p>Lange Beschreibung zu Brione.</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zu Brione"
@@ -103,6 +107,7 @@ def test_successful_edit_crag(client):
     assert res['lat'] == 42.1
     assert res['lng'] == 42.2
     assert res['orderIndex'] == 0
+    assert res['ascentCount'] == 1
     assert res['id'] is not None
 
 

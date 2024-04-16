@@ -31,7 +31,6 @@ from webargs_schemas.user_args import user_args, user_registration_args, user_pr
 
 
 class GetUser(MethodView):
-    # todo add test
     def get(self, user_slug):
         return jsonify(user_schema.dump(User.find_by_slug(user_slug))), 200
 

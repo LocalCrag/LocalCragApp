@@ -9,7 +9,7 @@ class RegionSchema(BaseEntitySchema):
     description = fields.String()
     slug = fields.String()
     rules = fields.String()
-    ascentCount = fields.Integer(attribute='ascent_count')  # todo add to tests
+    ascentCount = fields.Integer(attribute='ascent_count')
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

@@ -54,7 +54,7 @@ class LineSchema(BaseEntitySchema):
 
     linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute='line_paths')
 
-    ascentCount = fields.Integer(attribute='ascent_count')  # todo add to tests
+    ascentCount = fields.Integer(attribute='ascent_count')
 
 
 line_schema = LineSchema()

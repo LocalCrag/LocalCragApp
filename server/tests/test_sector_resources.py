@@ -26,6 +26,7 @@ def test_successful_create_sector(client):
     assert res['id'] is not None
     assert res['lat'] == 12.13
     assert res['lng'] == 42.42
+    assert res['ascentCount'] == 0
     assert res['rules'] == "test rules"
 
 
@@ -40,12 +41,14 @@ def test_successful_get_sectors(client):
     assert res[1]['shortDescription'] == ""
     assert res[1]['portraitImage'] == None
     assert res[1]['orderIndex'] == 1
+    assert res[1]['ascentCount'] == 0
     assert res[0]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
     assert res[0]['slug'] == "schattental"
     assert res[0]['name'] == "Schattental"
     assert res[0]['shortDescription'] == "Kurze Beschreibung zum Schattental"
     assert res[0]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res[0]['orderIndex'] == 0
+    assert res[0]['ascentCount'] == 1
 
 
 def test_successful_get_sector(client):
@@ -55,6 +58,7 @@ def test_successful_get_sector(client):
     assert res['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
     assert res['name'] == "Schattental"
     assert res['slug'] == "schattental"
+    assert res['ascentCount'] == 1
     assert res['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res['description'] == "<p>Lange Beschreibung zum Schattental</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zum Schattental"
@@ -100,6 +104,7 @@ def test_successful_edit_sector(client):
     assert res['id'] is not None
     assert res['lat'] == 42.1
     assert res['lng'] == 42.2
+    assert res['ascentCount'] == 1
     assert res['rules'] == "test rules"
 
 
