@@ -31,11 +31,11 @@ export class AscentsService {
       map(Ascent.deserialize),
       tap(ascent => {
         this.store.dispatch(clearAscentCache({
-          area: ascent.line.area.slug,
-          crag: ascent.line.area.sector.crag.slug,
+          area: ascent.area.slug,
+          crag: ascent.crag.slug,
           line: ascent.line.slug,
           user: ascent.createdBy.slug,
-          sector: ascent.line.area.sector.slug
+          sector: ascent.sector.slug
         }))
       })
     );
@@ -46,11 +46,11 @@ export class AscentsService {
       map(Ascent.deserialize),
       tap(ascent => {
         this.store.dispatch(clearAscentCache({
-          area: ascent.line.area.slug,
-          crag: ascent.line.area.sector.crag.slug,
+          area: ascent.area.slug,
+          crag: ascent.crag.slug,
           line: ascent.line.slug,
           user: ascent.createdBy.slug,
-          sector: ascent.line.area.sector.slug
+          sector: ascent.sector.slug
         }))
       })
     );
@@ -61,11 +61,11 @@ export class AscentsService {
       map(() => null),
       tap(() => {
         this.store.dispatch(clearAscentCache({
-          area: ascent.line.area.slug,
-          crag: ascent.line.area.sector.crag.slug,
+          area: ascent.area.slug,
+          crag: ascent.crag.slug,
           line: ascent.line.slug,
           user: ascent.createdBy.slug,
-          sector: ascent.line.area.sector.slug
+          sector: ascent.sector.slug
         }))
       })
     );
