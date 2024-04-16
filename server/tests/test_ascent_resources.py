@@ -65,3 +65,23 @@ def test_successful_create_ascent(client):
     res = json.loads(rv.data)
     assert res['ascentCount'] == 2
 
+
+def test_log_twice(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": True,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 2,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeScale": "FB",
+        "gradeName": "6A",
+        "line": "1c39fd1f-6341-4161-a83f-e5de0f861c48",
+        "date": "2024-04-13"
+    }
+
+    rv = client.post('/api/ascents', headers=access_headers, json=ascent_data)
+    assert rv.status_code == 400
