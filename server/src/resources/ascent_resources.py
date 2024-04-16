@@ -87,8 +87,6 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         line: Line = Line.find_by_id(ascent_data['line'])
-        if not line:
-            raise BadRequest('Line doesn\'t exist.')
         if get_grade_value(ascent_data['gradeName'], ascent_data['gradeScale'], line.type) < 0:
             raise BadRequest('Projects cannot be ticked.')
         if ascent_data['gradeScale'] != line.grade_scale:
