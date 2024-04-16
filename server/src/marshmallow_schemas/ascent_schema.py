@@ -15,14 +15,12 @@ class AscentSectorSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
-    crag = fields.Nested(AscentCragSchema())
 
 
 class AscentAreaSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
-    sector = fields.Nested(AscentSectorSchema())
 
 
 class AscentLineSchema(ma.SQLAlchemySchema):
@@ -31,7 +29,6 @@ class AscentLineSchema(ma.SQLAlchemySchema):
     id = fields.String()
     gradeName = fields.String(attribute='grade_name')
     gradeScale = fields.String(attribute='grade_scale')
-    area = fields.Nested(AscentAreaSchema())
 
 
 class AscentSchema(BaseEntitySchema):
@@ -46,7 +43,10 @@ class AscentSchema(BaseEntitySchema):
     comment = fields.String()
     year = fields.Integer()
     date = fields.Date()
-    line = fields.Nested(AscentLineSchema(), allow_none=True)
+    line = fields.Nested(AscentLineSchema())
+    crag = fields.Nested(AscentCragSchema())
+    sector = fields.Nested(AscentSectorSchema())
+    area = fields.Nested(AscentAreaSchema())
 
 
 ascent_schema = AscentSchema()

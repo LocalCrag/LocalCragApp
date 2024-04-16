@@ -4,6 +4,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -39,11 +40,7 @@ class GetAscents(MethodView):
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
 
-        query = (db.session.query(Ascent)
-                 .join(Line)
-                 .join(Area)  # todo slow, uses many many selects and dosn't join correctly
-                 .join(Sector)
-                 .join(Crag))
+        query = db.session.query(Ascent)
 
         if crag_id:
             query = query.filter(Ascent.crag_id == crag_id)

@@ -15,6 +15,7 @@ import {RegionService} from '../../../services/crud/region.service';
 import {environment} from '../../../../environments/environment';
 import {NgIf} from '@angular/common';
 import {TranslocoDirective} from '@ngneat/transloco';
+import {AscentCountComponent} from '../../ascent/ascent-count/ascent-count.component';
 
 /**
  * Component that shows information about a region.
@@ -27,7 +28,8 @@ import {TranslocoDirective} from '@ngneat/transloco';
     SharedModule,
     SkeletonModule,
     NgIf,
-    TranslocoDirective
+    TranslocoDirective,
+    AscentCountComponent
   ],
   templateUrl: './region-info.component.html',
   styleUrl: './region-info.component.scss'

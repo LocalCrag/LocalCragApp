@@ -5,6 +5,10 @@ import {deserializeGrade, Grade} from '../utility/misc/grades';
 import {Line} from './line';
 import {format, formatISO, parseISO} from 'date-fns';
 import {User} from './user';
+import {Area} from './area';
+import {Sector} from './sector';
+import {Crag} from './crag';
+import {A} from '@angular/cdk/keycodes';
 
 export class Ascent extends AbstractModel {
 
@@ -19,6 +23,9 @@ export class Ascent extends AbstractModel {
   year: number;
   date: Date;
   line: Line;
+  area: Area;
+  sector: Sector;
+  crag: Crag;
   createdBy: User;
 
   // Helpers for easier template usage
@@ -43,11 +50,14 @@ export class Ascent extends AbstractModel {
     ascent.year = payload.year;
     ascent.date = payload.date ? parseISO(payload.date) : null;
     ascent.line = payload.line ? Line.deserialize(payload.line) : null;
+    ascent.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
+    ascent.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
+    ascent.area = payload.area ? Area.deserialize(payload.area) : null;
     ascent.createdBy = User.deserialize(payload.createdBy);
 
-    ascent.routerLinkCrag = `/topo/${ascent.line.area.sector.crag.slug}`;
-    ascent.routerLinkSector = `${ascent.routerLinkCrag}/${ascent.line.area.sector.slug}`;
-    ascent.routerLinkArea = `${ascent.routerLinkSector}/${ascent.line.area.slug}`;
+    ascent.routerLinkCrag = `/topo/${ascent.crag.slug}`;
+    ascent.routerLinkSector = `${ascent.routerLinkCrag}/${ascent.sector.slug}`;
+    ascent.routerLinkArea = `${ascent.routerLinkSector}/${ascent.area.slug}`;
     ascent.routerLinkLine = `${ascent.routerLinkArea}/${ascent.line.slug}`;
     ascent.routerLinkCreatedBy = `/users/${ascent.createdBy.slug}`;
 
