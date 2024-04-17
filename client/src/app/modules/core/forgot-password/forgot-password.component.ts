@@ -57,7 +57,7 @@ export class ForgotPasswordComponent implements OnInit{
   public requestResetPasswordMail() {
     if (this.forgotPasswordForm.valid) {
       this.store.dispatch(forgotPassword({
-        email: this.forgotPasswordForm.get('email').value
+        email: (this.forgotPasswordForm.get('email').value as string).toLowerCase()
       }));
     } else {
       this.formDirective.markAsTouched();

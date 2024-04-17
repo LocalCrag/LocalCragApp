@@ -75,7 +75,7 @@ class GetEmailTaken(MethodView):
         Checks if the given email is already taken.
         :param email: Email of the user to check.
         """
-        user = User.find_by_email(email)
+        user = User.find_by_email(email.lower())
         return jsonify(user is not None), 200
 
 
@@ -129,20 +129,20 @@ class UpdateAccountSettings(MethodView):
         user_data = parser.parse(user_args, request)
         user = User.find_by_email(get_jwt_identity())  # You can only edit your own user!
 
-        user_by_email = User.find_by_email(user_data['email'])
+        user_by_email = User.find_by_email(user_data['email'].lower())
         if user_by_email and user_by_email.id != user.id:
             # => The email exists for a user that is not the edited user
             raise Conflict(ResponseMessage.USER_ALREADY_EXISTS.value)
 
-        if not re.match(email_regex, user_data['email']):
+        if not re.match(email_regex, user_data['email'].lower()):
             raise BadRequest(ResponseMessage.EMAIL_INVALID.value)
 
         user.avatar_id = user_data['avatar']
         user.firstname = user_data['firstname']
         user.lastname = user_data['lastname']
 
-        if user.email != user_data['email']:
-            user.new_email = user_data['email']
+        if user.email != user_data['email'].lower():
+            user.new_email = user_data['email'].lower()
             user.new_email_hash = uuid4()
             user.new_email_hash_created = datetime.now()
             send_change_email_address_email(user)
@@ -184,10 +184,10 @@ class RegisterUser(MethodView):
     def post(self):
         user_data = parser.parse(user_registration_args, request)
 
-        if User.find_by_email(user_data['email']):
+        if User.find_by_email(user_data['email'].lower()):
             raise Conflict(ResponseMessage.USER_ALREADY_EXISTS.value)
 
-        if not re.match(email_regex, user_data['email']):
+        if not re.match(email_regex, user_data['email'].lower()):
             raise BadRequest(ResponseMessage.EMAIL_INVALID.value)
 
         created_user = create_user(user_data)

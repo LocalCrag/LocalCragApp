@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
   public login() {
     if (this.loginForm.valid) {
       this.store.dispatch(login({
-        email: this.loginForm.get('email').value,
+        email: (this.loginForm.get('email').value as string).toLowerCase() ,
         password: this.loginForm.get('password').value,
       }));
     } else {

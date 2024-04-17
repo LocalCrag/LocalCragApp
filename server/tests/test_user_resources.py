@@ -77,7 +77,7 @@ def test_successful_register_user(client, mocker):
     user_data = {
         'firstname': 'Thorsten',
         'lastname': 'Test',
-        'email': 'felix.engelmann@fengelmann.de',
+        'email': 'feliX.engelmann@fengelmann.de',
     }
     rv = client.post('/api/users', headers=access_headers, json=user_data)
     assert rv.status_code == 201
@@ -85,7 +85,7 @@ def test_successful_register_user(client, mocker):
     assert type(res['id']) == str
     assert res['firstname'] == 'Thorsten'
     assert res['lastname'] == 'Test'
-    assert res['email'] == 'felix.engelmann@fengelmann.de'
+    assert res['email'] == 'felix.engelmann@fengelmann.de' # expect it to be changed to lowercase
     assert not res['activated']
     assert res['language'] == 'de'
     assert res['avatar'] is None

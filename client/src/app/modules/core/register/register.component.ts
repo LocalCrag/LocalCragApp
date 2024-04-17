@@ -68,9 +68,9 @@ export class RegisterComponent implements OnInit {
     if (this.registrationForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const user = new User();
-      user.firstname = this.registrationForm.get('firstname').value
-      user.lastname = this.registrationForm.get('lastname').value
-      user.email = this.registrationForm.get('email').value
+      user.firstname = this.registrationForm.get('firstname').value;
+      user.lastname = this.registrationForm.get('lastname').value;
+      user.email = (this.registrationForm.get('email').value as string).toLowerCase();
       this.usersService.registerUser(user).subscribe(() => {
         this.store.dispatch(toastNotification(NotificationIdentifier.USER_REGISTERED));
         this.router.navigate(['/register-check-mailbox']);
