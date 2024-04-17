@@ -54,12 +54,14 @@ lc-topo-image-list {
         background-color: var(--ticked-bg-color);
       }
 
-      &:hover {
-        cursor: pointer;
+      @media(hover: hover) and (pointer: fine) { // Disables tap hover effect on mobile
+        &:hover {
+          cursor: pointer;
 
-        .line-number {
-          background-color: var(--arrow-highlight-color);
-          color: var(--arrow-highlight-text-color);
+          .line-number {
+            background-color: var(--arrow-highlight-color);
+            color: var(--arrow-highlight-text-color);
+          }
         }
       }
 
