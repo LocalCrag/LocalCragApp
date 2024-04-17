@@ -1,3 +1,5 @@
+@use "../../../styles/media-queries" as m;
+
 .fa {
 
   font-size: 11px;
@@ -10,12 +12,24 @@
 
 }
 
-.link-list{
-  span~span::before {
+.link-list {
+  span ~ span::before {
     content: ", ";
   }
 }
 
-lc-tick-button{
+lc-tick-button {
   margin-left: -1.45rem;
+}
+
+lc-line-bool-prop-list {
+  @include m.on-mobile {
+    text-align: center;
+  }
+}
+
+.line-description {
+  @include m.on-mobile {
+    text-align: center;
+  }
 }
