@@ -2,6 +2,7 @@ from flask import Blueprint
 
 from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder, \
     GetAreaGrades
+from resources.ascent_resources import CreateAscent, GetAscents, GetTicks, DeleteAscent, UpdateAscent
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
@@ -22,7 +23,7 @@ from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTop
     GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, \
-    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser
+    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser, GetUser
 from models.region import Region
 from models.crag import Crag
 from models.sector import Sector
@@ -67,6 +68,7 @@ def configure_api(app):
     user_bp.add_url_rule('', view_func=GetUsers.as_view('get_user_list'))
     user_bp.add_url_rule('', view_func=RegisterUser.as_view('register_user'))
     user_bp.add_url_rule('/<string:user_id>', view_func=DeleteUser.as_view('delete_user'))
+    user_bp.add_url_rule('/<string:user_slug>', view_func=GetUser.as_view('get_user'))
     user_bp.add_url_rule('/<string:user_id>/promote', view_func=PromoteUser.as_view('promote_user'))
     user_bp.add_url_rule('/account',
                          view_func=UpdateAccountSettings.as_view('update_account_settings'))
@@ -85,6 +87,19 @@ def configure_api(app):
     line_bp.add_url_rule('/<string:line_slug>/line-paths/update-order',
                          view_func=UpdateLinePathOrderForLine.as_view('update_line_path_order_for_line'))
     app.register_blueprint(line_bp, url_prefix='/api/lines')
+
+    # Ascent API
+    ascent_bp = Blueprint('ascents', __name__)
+    ascent_bp.add_url_rule('', view_func=CreateAscent.as_view('create_ascent'))
+    ascent_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
+    ascent_bp.add_url_rule('/<string:ascent_id>', view_func=DeleteAscent.as_view('delete_ascent'))
+    ascent_bp.add_url_rule('/<string:ascent_id>', view_func=UpdateAscent.as_view('update_ascent'))
+    app.register_blueprint(ascent_bp, url_prefix='/api/ascents')
+
+    # Ticks API
+    tick_bp = Blueprint('ticks', __name__)
+    tick_bp.add_url_rule('', view_func=GetTicks.as_view('get_ticks'))
+    app.register_blueprint(tick_bp, url_prefix='/api/ticks')
 
     # Area API
     area_bp = Blueprint('areas', __name__)

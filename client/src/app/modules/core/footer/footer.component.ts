@@ -71,6 +71,13 @@ export class FooterComponent implements OnInit{
               link: null
             });
             break;
+          case MenuItemType.ASCENTS:
+            this.menuItems.push({
+              title: this.translocoService.translate('menu.ascents'),
+              routerLink: 'ascents',
+              link: null
+            });
+            break;
           case MenuItemType.YOUTUBE:
             this.menuItems.push({
               title: this.translocoService.translate('menu.youtube'),

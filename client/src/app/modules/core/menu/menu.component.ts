@@ -158,6 +158,13 @@ export class MenuComponent implements OnInit {
               items: this.buildCragNavigationMenu(crags)
             });
             break;
+          case MenuItemType.ASCENTS:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.ascents')),
+              icon: 'pi pi-fw pi-check-square',
+              routerLink: '/ascents',
+            });
+            break;
         }
       });
     })

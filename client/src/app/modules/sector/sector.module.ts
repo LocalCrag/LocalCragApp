@@ -28,6 +28,7 @@ import {ChipModule} from 'primeng/chip';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
+import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import {HasPermissionDirective} from '../shared/directives/has-permission.direct
         GpsComponent,
         GpsButtonComponent,
         HasPermissionDirective,
+        AscentCountComponent,
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}

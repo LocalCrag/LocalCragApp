@@ -1,11 +1,17 @@
 import {Directive, Input, Renderer2, TemplateRef, ViewContainerRef} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {UserPromotionTargets} from '../../../enums/user-promotion-targets';
-import {selectIsAdmin, selectIsLoggedIn, selectIsModerator} from '../../../ngrx/selectors/auth.selectors';
+import {
+  selectCurrentUser,
+  selectIsAdmin,
+  selectIsLoggedIn,
+  selectIsModerator
+} from '../../../ngrx/selectors/auth.selectors';
+import {User} from '../../../models/user';
 
 
 @Directive({
-  selector: '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut]',
+  selector: '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser]',
   standalone: true
 })
 export class HasPermissionDirective {
@@ -15,6 +21,15 @@ export class HasPermissionDirective {
     private viewContainerRef: ViewContainerRef,
     private store: Store
   ) {
+  }
+
+  @Input()
+  set isOwnUser(testUser: User) {
+    if (testUser) {
+      this.store.select(selectCurrentUser).subscribe(user => {
+        this.decideView(testUser.id === user.id);
+      })
+    }
   }
 
   @Input()

@@ -22,6 +22,7 @@ import {EditorModule} from 'primeng/editor';
 import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details.component';
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
+import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import {HasPermissionDirective} from '../shared/directives/has-permission.direct
         EditorModule,
         TopoImageDetailsComponent,
         GpsComponent,
-        HasPermissionDirective
+        HasPermissionDirective,
+        TickButtonComponent
     ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}

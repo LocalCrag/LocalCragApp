@@ -1,0 +1,21 @@
+lc-tick-button {
+  button > span {
+    display: flex;
+  }
+
+  .ticked {
+    color: var(--ticked-color)
+  }
+
+  .hide-label .p-button-label {
+    display: none;
+  }
+
+  p-button.disabled {
+    opacity: 1 !important;
+
+    button:disabled {
+      opacity: 1 !important;
+    }
+  }
+}

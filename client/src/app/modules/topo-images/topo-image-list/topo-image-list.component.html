@@ -24,7 +24,7 @@
         <div class="flex justify-content-start sm:justify-content-end gap-3 ">
           <p-button label="{{t('newTopoImageButtonLabel')}}" icon="pi pi-plus" class="responsive-button"
                     routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/add-topo-image"
-                    *isModerator="true">></p-button>
+                    *isModerator="true"></p-button>
           <p-button label="{{t('reorderTopoImagesButtonLabel')}}" icon="pi pi-sort" (click)="reorderTopoImages()"
                     [disabled]="topoImages?.length < 2" class="responsive-button"
                     *isModerator="true"></p-button>
@@ -82,6 +82,7 @@
                   <a class="line-table-row" *ngFor="let linePath of topoImage.linePaths; index as i"
                      (mouseenter)="highlightLinePath(linePath, topoImage)"
                      (mouseleave)="unhighlightLinePath(linePath)"
+                     [ngClass]="{ticked: ticks.has(linePath.line.id)}"
                      routerLink="/topo/{{cragSlug}}/{{sectorSlug}}/{{areaSlug}}/{{linePath.line.slug}}"
                      data-cy="line-row">
 
@@ -98,7 +99,7 @@
                         <div class="line-table-info-grade">
                           <div class="grade">
                             <div class="grade-ellipsis">
-                          {{ linePath.line.grade.name | transloco }}
+                              {{ linePath.line.grade.name | transloco }}
                             </div>
                           </div>
                         </div>
@@ -115,6 +116,11 @@
                                     *ngIf="linePath.line.videos?.length > 0"
                                     (click)="openVideo($event, linePath.line)">
                           </p-button>
+                          <ng-container *isLoggedIn="true">
+                            <lc-tick-button [line]="linePath.line"
+                                            [ticked]="ticks.has(linePath.line.id)"
+                                            *ngIf="linePath.line.grade.value >= 0"></lc-tick-button>
+                          </ng-container>
                           <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"
                                       [loading]="linePath.loadingState"

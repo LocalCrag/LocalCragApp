@@ -87,6 +87,9 @@ export class LineFormComponent implements OnInit {
         return of(e);
       })).subscribe(line => {
         this.line = line;
+        if(this.line.ascentCount > 0){
+          this.grades = this.grades.filter(grade => grade.value >= 0);
+        }
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
         if (this.editor) {
@@ -109,7 +112,7 @@ export class LineFormComponent implements OnInit {
       name: ['', [Validators.required]],
       description: [''],
       videos: this.fb.array([]),
-      grade: [null, [Validators.required]],
+      grade: [null, [Validators.required, ]],
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null],

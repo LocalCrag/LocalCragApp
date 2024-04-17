@@ -11,6 +11,23 @@ from models.user import User
 from tests.utils.user_test_util import get_login_headers
 
 
+def test_successful_get_user(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    rv = client.get('/api/users/felix-engelmann', headers=access_headers)
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res['id'] == '1543885f-e9ef-48c5-a396-6c898fb42409'
+    assert res['firstname'] == 'Felix'
+    assert res['lastname'] == 'Engelmann'
+    assert res['email'] == 'localcrag@fengelmann.de'
+    assert res['language'] == 'de'
+    assert res['activated'] == True
+    assert res['admin'] == True
+    assert res['moderator'] == True
+    assert res['member'] == True
+    assert res['activatedAt'] == None
+    assert res['avatar'] == None
+
 def test_successful_get_users(client):
     access_headers, refresh_headers = get_login_headers(client)
     rv = client.get('/api/users', headers=access_headers)

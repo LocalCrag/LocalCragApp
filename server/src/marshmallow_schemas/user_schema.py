@@ -9,6 +9,7 @@ class UserSchema(BaseEntitySchema):
     email = fields.String()
     firstname = fields.String()
     lastname = fields.String()
+    slug = fields.String()
     language = fields.String()
     admin = fields.Boolean()
     moderator = fields.Boolean()

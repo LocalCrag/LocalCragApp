@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {map, tap} from 'rxjs/operators';
 import {checkIsMobile, setIsMobile} from '../actions/device.actions';
-import {clearGradeCache} from '../actions/cache.actions';
+import {clearAscentCache, clearGradeCache} from '../actions/cache.actions';
 import {CacheService} from '../../services/core/cache.service';
 import {ApiService} from '../../services/core/api.service';
 
@@ -12,9 +12,6 @@ import {ApiService} from '../../services/core/api.service';
 @Injectable()
 export class CacheEffects {
 
-  /**
-   * Checks if the device is a mobile devices and notifies the app about it.
-   */
   onClearGradeCache = createEffect(() => this.actions$.pipe(
     ofType(clearGradeCache),
     tap(props => {
@@ -25,6 +22,21 @@ export class CacheEffects {
         this.cache.clear(this.api.sectors.getGrades(props.sector));
       }
       this.cache.clear(this.api.crags.getGrades(props.crag));
+    })
+  ),{dispatch: false});
+
+  onClearAscentCache = createEffect(() => this.actions$.pipe(
+    ofType(clearAscentCache),
+    tap(props => {
+      this.cache.clearIfPathIncludes('ascents');
+      this.cache.clear(this.api.crags.getList());
+      this.cache.clear(this.api.sectors.getList(props.crag));
+      this.cache.clear(this.api.areas.getList(props.sector));
+      this.cache.clear(this.api.lines.getList(props.area));
+      this.cache.clear(this.api.crags.getDetail(props.crag));
+      this.cache.clear(this.api.sectors.getDetail(props.sector));
+      this.cache.clear(this.api.areas.getDetail(props.area));
+      this.cache.clear(this.api.lines.getDetail(props.line));
     })
   ),{dispatch: false});
 

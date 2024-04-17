@@ -15,6 +15,7 @@ class CragSchema(BaseEntitySchema):
     shortDescription = fields.String(attribute='short_description')
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
+    ascentCount = fields.Integer(attribute='ascent_count')
 
 
 class CragDetailSchema(CragSchema):

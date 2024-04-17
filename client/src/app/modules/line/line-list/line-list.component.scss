@@ -19,10 +19,26 @@ lc-line-list {
   .line-link {
     color: inherit;
     text-decoration: inherit;
+
+    &.ticked {
+      background-color: var(--ticked-bg-color);
+    }
   }
 
-  .video-button p-button button {
-    margin-left: -1.25rem;
+  .bottom-row{
+    display: flex;
+    width: 100%;
+
+    .video-button{
+      button{
+        margin-left: -1.25rem;
+      }
+    }
+
+    lc-tick-button{
+      margin-right: -1.25rem;
+    }
+
   }
 
 }

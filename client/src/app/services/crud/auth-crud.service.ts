@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ApiService} from '../core/api.service';
 import {HttpBackendClientService} from '../core/http-backend-client.service';
-import {ErrorMappingHttpService} from '../core/error-mapping-http.service';
 import {LoginResponse} from '../../models/login-response';
 import {map} from 'rxjs/operators';
-import {select, Store} from '@ngrx/store';
 
 
 /**
@@ -25,7 +23,7 @@ export interface MessageResponse {
 export class AuthCrudService {
 
   constructor(private httpBackend: HttpBackendClientService,
-              private http: ErrorMappingHttpService,
+              private http: HttpClient,
               private api: ApiService) {
   }
 

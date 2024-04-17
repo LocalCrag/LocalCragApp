@@ -24,6 +24,8 @@ class Crag(HasSlug, BaseEntity):
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
+    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+
 
     @classmethod
     def find_max_order_index(cls) -> int:

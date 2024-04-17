@@ -63,6 +63,7 @@ export class MenuItemsFormComponent implements OnInit {
   public types = [
     MenuItemType.MENU_PAGE,
     MenuItemType.TOPO,
+    MenuItemType.ASCENTS,
     MenuItemType.NEWS,
     MenuItemType.YOUTUBE,
     MenuItemType.INSTAGRAM,

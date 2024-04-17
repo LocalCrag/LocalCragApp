@@ -1,6 +1,7 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
 import {GPS} from '../interfaces/gps.interface';
+import {Sector} from './sector';
 
 /**
  * Model of a climbing sector's area.
@@ -14,6 +15,9 @@ export class Area extends AbstractModel {
   portraitImage: File;
   gps: GPS;
   orderIndex: number;
+  ascentCount: number;
+
+  sector: Sector;
 
   /**
    * Parses an area.
@@ -31,6 +35,8 @@ export class Area extends AbstractModel {
     area.slug = payload.slug;
     area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
+    area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
+    area.ascentCount = payload.ascentCount;
     return area;
   }
 

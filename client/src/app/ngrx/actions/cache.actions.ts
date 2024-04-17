@@ -5,3 +5,8 @@ export const clearGradeCache = createAction(
   props<{ area: string, sector: string, crag: string }>()
 );
 
+export const clearAscentCache = createAction(
+  '[Cache] Clear ascent cache',
+  props<{ area: string, sector: string, crag: string, line: string, user: string }>()
+);
+

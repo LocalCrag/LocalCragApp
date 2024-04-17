@@ -46,6 +46,7 @@
                 <div [innerHTML]="crag.shortDescription | sanitizeHtml" *ngIf="crag.shortDescription"  class="quill-content"></div>
                 <lc-leveled-grade-distribution
                   [fetchingObservable]="cragsService.getCragGrades(crag.slug)"></lc-leveled-grade-distribution>
+                <lc-ascent-count [ascentCount]="crag.ascentCount"></lc-ascent-count>
               </div>
             </div>
           </div>

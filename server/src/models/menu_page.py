@@ -13,7 +13,7 @@ class MenuPage(HasSlug, BaseEntity):
     """
     __tablename__ = 'menu_pages'
 
-    slug_target_column = 'title'
+    slug_target_columns = 'title'
     slug_blocklist = ['create-menu-page']
     title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=True)

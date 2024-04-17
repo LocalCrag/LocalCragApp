@@ -1,7 +1,9 @@
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import column_property
 
 from extensions import db
+from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -61,3 +63,9 @@ class Line(HasSlug, BaseEntity):
     mantle = db.Column(db.Boolean, nullable=False, default=False)
 
     line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index_for_line.asc()')
+
+    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+    ascents = db.relationship("Ascent", cascade="all,delete", lazy="select")
+
+
+

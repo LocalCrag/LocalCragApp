@@ -9,3 +9,7 @@
   z-index: 1130 !important;
 }
 
+// Fix weird grey blob left of dividers
+.p-divider-dotted.p-divider-horizontal:before {
+  border-left-style: none;
+}

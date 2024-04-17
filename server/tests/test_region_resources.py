@@ -11,6 +11,7 @@ def test_successful_get_region(client):
     assert res['name'] == "Tessin"
     assert res['description'] == "Tolle Region"
     assert res['rules'] == None
+    assert res['ascentCount'] == 1
 
 
 def test_successful_edit_region(client):
@@ -27,6 +28,7 @@ def test_successful_edit_region(client):
     assert res['name'] == "Tessin"
     assert res['description'] == "Fodere et scandere. 2"
     assert res['rules'] == "test rules"
+    assert res['ascentCount'] == 1
 
 
 def test_successful_get_region_grades(client):

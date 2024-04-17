@@ -6,13 +6,15 @@ from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
+from models.mixins.has_slug import HasSlug
 
 
-class User(BaseEntity):
+class User(HasSlug, BaseEntity):
     """
     Model of a user.
     """
     __tablename__ = 'users'
+    slug_target_columns = 'firstname, lastname'
 
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
@@ -31,6 +33,7 @@ class User(BaseEntity):
     admin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     moderator = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
+    ascents = db.relationship("Ascent", cascade="all,delete", backref="user", lazy="select")
 
     @staticmethod
     def generate_hash(password):

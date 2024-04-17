@@ -12,6 +12,8 @@ export class Region extends AbstractModel {
   description: string;
   slug: string;
   rules: string;
+  ascentCount: number;
+
 
   /**
    * Parses a region.
@@ -26,6 +28,7 @@ export class Region extends AbstractModel {
     region.description = payload.description;
     region.slug = payload.slug;
     region.rules = payload.rules;
+    region.ascentCount = payload.ascentCount;
     return region;
   }
 

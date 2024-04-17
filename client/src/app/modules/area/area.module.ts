@@ -32,6 +32,7 @@ import {
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
+import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import {HasPermissionDirective} from '../shared/directives/has-permission.direct
         GradeDistributionBarChartComponent,
         GpsComponent,
         GpsButtonComponent,
-        HasPermissionDirective
+        HasPermissionDirective,
+        AscentCountComponent
     ],
     exports: [
         AreaListComponent

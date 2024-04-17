@@ -1,0 +1,10 @@
+:host{
+  display: flex;
+  align-items: center;
+
+  .ticked{
+    margin-right: .25rem;
+    transform: translateX(-3px);
+  }
+
+}

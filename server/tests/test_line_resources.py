@@ -60,6 +60,7 @@ def test_successful_create_line(client):
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
     assert res["rating"] == 5
+    assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
     assert res["startingPosition"] == 'FRENCH'
@@ -150,6 +151,7 @@ def test_successful_create_line_with_project_status(client):
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
     assert res["rating"] == 5
+    assert res["ascentCount"] == 0
     assert res["faYear"] == None # Should be set to None automatically for projects!
     assert res["faName"] == None # Should be set to None automatically for projects!
     assert res["startingPosition"] == 'FRENCH'
@@ -638,6 +640,7 @@ def test_successful_get_lines(client):
     assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
     assert res[0]['slug'] == "super-spreader"
     assert res[0]['name'] == "Super-Spreader"
+    assert res[0]['ascentCount'] == 1
     assert len(res[0]['linePaths']) == 2
     assert res[0]['linePaths'][0]['orderIndex'] == 0
     assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -645,6 +648,7 @@ def test_successful_get_lines(client):
     assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
     assert res[1]['slug'] == "treppe"
     assert res[1]['name'] == "Treppe"
+    assert res[1]['ascentCount'] == 0
     assert len(res[1]['linePaths']) == 1
     assert res[1]['linePaths'][0]['orderIndex'] == 1
     assert res[1]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -663,6 +667,7 @@ def test_successful_get_line(client):
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
     assert res["rating"] == 5
+    assert res["ascentCount"] == 1
     assert res["faYear"] == 2024
     assert res["faName"] == "Felix Engelmann"
     assert res["startingPosition"] == 'SIT'
@@ -770,6 +775,7 @@ def test_successful_edit_line(client):
     assert res['gradeScale'] == "FB"
     assert res['type'] == "BOULDER"
     assert res["rating"] == 5
+    assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
     assert res["startingPosition"] == 'STAND'
@@ -805,3 +811,51 @@ def test_successful_edit_line(client):
     assert res['linePaths'][0]['orderIndex'] == 1
     assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
 
+def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
+    access_headers, refresh_headers = get_login_headers(client)
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
+        "gradeName": "OPEN_PROJECT",
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "rating": 5,
+        "faYear": 2016,
+        "faName": "Dave Graham",
+        "startingPosition": 'STAND',
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "lowball": True,
+        "noTopout": True,
+        "badDropzone": True,
+        "childFriendly": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
+    }
+
+    rv = client.put('/api/lines/super-spreader', headers=access_headers, json=line_data)
+    assert rv.status_code == 400

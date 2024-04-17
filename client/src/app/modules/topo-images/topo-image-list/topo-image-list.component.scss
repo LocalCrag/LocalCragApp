@@ -18,19 +18,6 @@ lc-topo-image-list {
     font-size: .9rem;
   }
 
-  .grade {
-    background-color: var(--surface-200);
-    color: var(--surface-900);
-    border-radius: .25rem;
-    font-size: .9rem;
-    justify-content: center;
-    align-items: center;
-    min-height: 1.5rem;
-    padding: .125rem .375rem .125rem .375rem;
-    display: flex;
-    text-align: center;
-  }
-
   .line-table {
     width: 100%;
     border-top: 1px solid var(--surface-200);
@@ -63,6 +50,10 @@ lc-topo-image-list {
       padding-top: .25rem;
       padding-bottom: .25rem;
 
+      &.ticked{
+        background-color: var(--ticked-bg-color);
+      }
+
       &:hover {
         cursor: pointer;
 
@@ -85,7 +76,7 @@ lc-topo-image-list {
         flex-wrap: wrap;
 
         .line-table-column-info-top-row {
-          flex-basis: calc(100% - 13rem);
+          flex-basis: calc(100% - 16rem);
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
@@ -124,20 +115,21 @@ lc-topo-image-list {
         }
 
         .line-table-column-info-bottom-row {
-          flex-basis: 13rem;
+          flex-basis: 16rem;
           display: flex;
           flex-direction: row;
+          overflow: hidden;
 
           .line-table-info-rating {
             display: flex;
             align-items: center;
-            flex-basis: calc(100% - 9rem)
+            flex-basis: calc(100% - 12rem)
           }
 
           .line-table-info-actions {
             display: flex;
             flex-direction: row;
-            flex-basis: 9rem;
+            flex-basis: 12rem;
             justify-content: right;
             align-items: center;
 
@@ -206,13 +198,13 @@ lc-topo-image-list {
             .line-table-info-rating {
               display: flex;
               align-items: center;
-              flex-basis: calc(100% - 8rem)
+              flex-basis: calc(100% - 11rem)
             }
 
             .line-table-info-actions {
               display: flex;
               flex-direction: row;
-              flex-basis: 8rem;
+              flex-basis: 11rem;
               justify-content: right;
 
               p-button {

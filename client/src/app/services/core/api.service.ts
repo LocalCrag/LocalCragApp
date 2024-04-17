@@ -24,9 +24,14 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public ticks = {
+    getList: (): string => `${this.apiHost}ticks`,
+  };
+
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,
+    getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
     updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string => `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
@@ -96,6 +101,13 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}areas/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}areas/${slug}/grades`,
     updateOrder: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
+  };
+
+  public ascents = {
+    create: (): string => `${this.apiHost}ascents`,
+    update: (id: string): string => `${this.apiHost}ascents/${id}`,
+    delete: (id: string): string => `${this.apiHost}ascents/${id}`,
+    getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
   };
 
   public topoImages = {

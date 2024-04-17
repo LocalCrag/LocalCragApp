@@ -28,6 +28,8 @@ import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-
 import { LineInfoComponent } from './line-info/line-info.component';
 import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-image-details.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
+import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
+import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 
 
 @NgModule({
@@ -64,6 +66,8 @@ import {HasPermissionDirective} from '../shared/directives/has-permission.direct
         CheckboxModule,
         TopoImageDetailsComponent,
         HasPermissionDirective,
+        TickButtonComponent,
+        AscentCountComponent,
     ],
     exports: [
         LineListComponent,
