@@ -74,7 +74,6 @@
                               (click)="confirmDeleteTopoImage($event, topoImage)"
                               [loading]="topoImage.loadingState"
                               styleClass="p-button-outlined p-button-danger p-button-sm"></p-button>
-                    <p-confirmPopup></p-confirmPopup>
                   </div>
                 </div>
 
@@ -126,7 +125,6 @@
                                       [loading]="linePath.loadingState"
                                       [disabled]="topoImage.loadingState !== loadingStates.DEFAULT"
                                       (click)="confirmDeleteLinePath($event, linePath, topoImage)"></p-button>
-                            <p-confirmPopup></p-confirmPopup>
                           </ng-container>
                         </div>
                       </div>
@@ -141,5 +139,8 @@
       </div>
     </ng-template>
   </p-dataView>
+
+  <p-confirmPopup></p-confirmPopup>
+
 
 </ng-container>
