@@ -32,6 +32,7 @@ export class Line extends AbstractModel {
   traverse: boolean;
   highball: boolean;
   lowball: boolean;
+  morpho: boolean;
   noTopout: boolean;
   badDropzone: boolean;
   childFriendly: boolean;
@@ -97,6 +98,7 @@ export class Line extends AbstractModel {
     line.traverse = payload.traverse;
     line.highball = payload.highball;
     line.lowball = payload.lowball;
+    line.morpho = payload.morpho;
     line.noTopout = payload.noTopout;
     line.badDropzone = payload.badDropzone;
     line.childFriendly = payload.childFriendly;
@@ -159,6 +161,7 @@ export class Line extends AbstractModel {
       traverse: line.traverse,
       highball: line.highball,
       lowball: line.lowball,
+      morpho: line.morpho,
       noTopout: line.noTopout,
       badDropzone: line.badDropzone,
       childFriendly: line.childFriendly,

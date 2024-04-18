@@ -25,6 +25,7 @@ class LineSchema(BaseEntitySchema):
     traverse = fields.Boolean()
     highball = fields.Boolean()
     lowball = fields.Boolean()
+    morpho = fields.Boolean()
     noTopout = fields.Boolean(attribute='no_topout')
     badDropzone = fields.Boolean(attribute='bad_dropzone')
     childFriendly = fields.Boolean(attribute='child_friendly')

@@ -28,6 +28,7 @@ line_args = {
     "traverse": fields.Boolean(required=True, allow_none=False),
     "highball": fields.Boolean(required=True, allow_none=False),
     "lowball": fields.Boolean(required=True, allow_none=False),
+    "morpho": fields.Boolean(required=True, allow_none=False),
     "noTopout": fields.Boolean(required=True, allow_none=False),
     "badDropzone": fields.Boolean(required=True, allow_none=False),
     "childFriendly": fields.Boolean(required=True, allow_none=False),

@@ -121,6 +121,7 @@ export class LineFormComponent implements OnInit {
       traverse: [false],
       highball: [false],
       lowball: [false],
+      morpho: [false],
       noTopout: [false],
       badDropzone: [false],
       childFriendly: [false],
@@ -191,6 +192,7 @@ export class LineFormComponent implements OnInit {
       traverse: this.line.traverse,
       highball: this.line.highball,
       lowball: this.line.lowball,
+      morpho: this.line.morpho,
       noTopout: this.line.noTopout,
       badDropzone: this.line.badDropzone,
       childFriendly: this.line.childFriendly,
@@ -248,6 +250,7 @@ export class LineFormComponent implements OnInit {
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;
       line.lowball = this.lineForm.get('lowball').value;
+      line.morpho = this.lineForm.get('morpho').value;
       line.noTopout = this.lineForm.get('noTopout').value;
       line.badDropzone = this.lineForm.get('badDropzone').value;
       line.childFriendly = this.lineForm.get('childFriendly').value;
