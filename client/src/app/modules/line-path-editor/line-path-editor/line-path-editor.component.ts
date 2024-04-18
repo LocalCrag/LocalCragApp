@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, forwardRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, forwardRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
-import {ActivatedRoute, Route} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {TopoImage} from '../../../models/topo-image';
 import {LinePath} from '../../../models/line-path';
 import {TopoImageComponent} from '../../shared/components/topo-image/topo-image.component';
@@ -20,6 +20,7 @@ import {TopoImageComponent} from '../../shared/components/topo-image/topo-image.
       multi: true,
     }
   ],
+  encapsulation: ViewEncapsulation.None
 })
 export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
 
@@ -104,6 +105,19 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    */
   writeValue(value: number[]): void {
     this.linePath.path = value;
+  }
+
+  undo(){
+    this.linePath.path.pop();
+    this.linePath.path.pop();
+    this.topoImageComponent.redrawLinePathInProgress();
+    this.onChange(this.linePath.path);
+  }
+
+  restart(){
+    this.linePath.path = [];
+    this.topoImageComponent.redrawLinePathInProgress();
+    this.onChange(this.linePath.path);
   }
 
 }

@@ -158,6 +158,8 @@
   "resetPassword.confirmNewPasswordPlaceholder": "Neues Passwort bestätigen",
   "resetPassword.passwordsDontMatchAlertText": "Passwörter stimmen nicht überein.",
   "resetPassword.changePasswordButtonLabel": "Passwort ändern",
+  "linePathEditor.undo": "Rückgängig",
+  "linePathEditor.restart": "Neu starten",
   "menuItems.menuItemForm.createMenuItemDescription": "Erstelle hier einen Menüpunkt für das Header- oder Footermenü. YouTube und Instaram Link können in den Instanzeinstellungen bearbeitet werden.",
   "menuItems.menuItemForm.typeLabel": "Typ",
   "menuItems.menuItemForm.required": "Pflichtfeld",
