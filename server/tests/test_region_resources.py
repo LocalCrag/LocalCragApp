@@ -18,14 +18,15 @@ def test_successful_edit_region(client):
     access_headers, refresh_headers = get_login_headers(client)
     crag_data = {
         "description": "Fodere et scandere. 2",
-        "rules": "test rules"
+        "rules": "test rules",
+        "name": "Nahetal"
     }
 
     rv = client.put('/api/region', headers=access_headers, json=crag_data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res['id'] == "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
-    assert res['name'] == "Tessin"
+    assert res['name'] == "Nahetal"
     assert res['description'] == "Fodere et scandere. 2"
     assert res['rules'] == "test rules"
     assert res['ascentCount'] == 1

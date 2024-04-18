@@ -25,6 +25,7 @@ import {CardModule} from 'primeng/card';
 import {SharedModule} from '../../shared/shared.module';
 import {ButtonModule} from 'primeng/button';
 import {NgIf} from '@angular/common';
+import {InputTextModule} from 'primeng/inputtext';
 
 /**
  * A component for editing regions.
@@ -39,7 +40,8 @@ import {NgIf} from '@angular/common';
     EditorModule,
     ButtonModule,
     NgIf,
-    TranslocoDirective
+    TranslocoDirective,
+    InputTextModule
   ],
   templateUrl: './region-form.component.html',
   styleUrl: './region-form.component.scss'
@@ -91,6 +93,7 @@ export class RegionFormComponent implements OnInit {
    */
   private buildForm() {
     this.regionForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [''],
       rules: [''],
     });
@@ -102,6 +105,7 @@ export class RegionFormComponent implements OnInit {
   private setFormValue() {
     this.regionForm.enable();
     this.regionForm.patchValue({
+      name: this.region.name,
       description: this.region.description,
       rules: this.region.rules,
     });
@@ -121,6 +125,7 @@ export class RegionFormComponent implements OnInit {
     if (this.regionForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const region = new Region();
+      region.name = this.regionForm.get('name').value
       region.description = this.regionForm.get('description').value
       region.rules = this.regionForm.get('rules').value
       this.regionsService.updateRegion(region).subscribe(region => {
