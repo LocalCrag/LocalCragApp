@@ -24,9 +24,9 @@
     </div>
 
     <div class="flex justify-content-center gap-2">
-      <p-button [label]="t('today')" size="small" severity="secondary" (click)="setToToday()"></p-button>
-      <p-button [label]="t('lastSaturday')"  size="small" severity="secondary" (click)="setToLastSaturday()"></p-button>
-      <p-button [label]="t('lastSunday')"  size="small" severity="secondary" (click)="setToLastSunday()"></p-button>
+      <p-button [label]="t('today')" size="small" severity="secondary" (click)="setToToday()"  styleClass="shrink-padding-on-mobile"></p-button>
+      <p-button [label]="t('lastSaturday')"  size="small" severity="secondary" (click)="setToLastSaturday()"  styleClass="shrink-padding-on-mobile"></p-button>
+      <p-button [label]="t('lastSunday')"  size="small" severity="secondary" (click)="setToLastSunday()"  styleClass="shrink-padding-on-mobile"></p-button>
     </div>
 
     <p-divider align="center" type="dotted">
@@ -75,10 +75,10 @@
     </p-divider>
 
     <div class="flex flex-row gap-2 align-items-center justify-content-center" lcControlGroup>
-      <p-toggleButton formControlName="flash" [onLabel]="t('flash')" [offLabel]="t('flash')"></p-toggleButton>
-      <p-toggleButton formControlName="withKneepad" [onLabel]="t('withKneepad')" data-cy="withKneepad"
+      <p-toggleButton formControlName="flash" [onLabel]="t('flash')" [offLabel]="t('flash')" styleClass="shrink-padding-on-mobile"></p-toggleButton>
+      <p-toggleButton formControlName="withKneepad" [onLabel]="t('withKneepad')" data-cy="withKneepad"  styleClass="shrink-padding-on-mobile"
                       [offLabel]="t('withKneepad')"></p-toggleButton>
-      <p-toggleButton formControlName="fa" [onLabel]="t('fa')" [offLabel]="t('fa')"></p-toggleButton>
+      <p-toggleButton formControlName="fa" [onLabel]="t('fa')" [offLabel]="t('fa')"  styleClass="shrink-padding-on-mobile"></p-toggleButton>
     </div>
 
   </form>

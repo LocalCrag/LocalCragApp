@@ -68,9 +68,9 @@ export class RegisterComponent implements OnInit {
     if (this.registrationForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const user = new User();
-      user.firstname = this.registrationForm.get('firstname').value
-      user.lastname = this.registrationForm.get('lastname').value
-      user.email = this.registrationForm.get('email').value
+      user.firstname = this.registrationForm.get('firstname').value;
+      user.lastname = this.registrationForm.get('lastname').value;
+      user.email = (this.registrationForm.get('email').value as string).toLowerCase();
       this.usersService.registerUser(user).subscribe(() => {
         this.store.dispatch(toastNotification(NotificationIdentifier.USER_REGISTERED));
         this.router.navigate(['/register-check-mailbox']);
@@ -83,10 +83,10 @@ export class RegisterComponent implements OnInit {
 
   private buildForm() {
     this.registrationForm = this.fb.group({
-      firstname: [null, [Validators.required]],
-      lastname: [null, [Validators.required]],
+      firstname: [null, [Validators.required, Validators.maxLength(120)]],
+      lastname: [null, [Validators.required, Validators.maxLength(120)]],
       email: [null, {
-        validators: [Validators.required, Validators.pattern(emailRegex)],
+        validators: [Validators.required, Validators.pattern(emailRegex), Validators.maxLength(120)],
         asyncValidators: [this.userValidators.emailValidator([])],
         updateOn: 'blur'
       }]

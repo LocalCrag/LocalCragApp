@@ -6,6 +6,14 @@
       <form [formGroup]="regionForm" lcForm>
 
         <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('regionNameLabel')}}</label>
+          <input type="text" pInputText formControlName="name" placeholder="{{t('regionNamePlaceholder')}}"
+                 lcFormControl data-cy="region-form-name"/>
+          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('regionDescriptionLabel')}}</label>
           <p-editor formControlName="description" lcFormControl placeholder="{{t('regionDescriptionPlaceholder')}}"
                     [modules]="quillModules"

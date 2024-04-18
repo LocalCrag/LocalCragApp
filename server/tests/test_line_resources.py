@@ -24,6 +24,7 @@ def test_successful_create_line(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "morpho": True,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -68,6 +69,7 @@ def test_successful_create_line(client):
     assert res["traverse"] == True
     assert res["highball"] == True
     assert res["lowball"] == True
+    assert res["morpho"] == True
     assert res["noTopout"] == True
     assert res["badDropzone"] == True
     assert res["childFriendly"] == True
@@ -114,6 +116,7 @@ def test_successful_create_line_with_project_status(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "morpho": True,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -158,6 +161,7 @@ def test_successful_create_line_with_project_status(client):
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
+    assert res["morpho"] == True
     assert res["lowball"] == True
     assert res["noTopout"] == True
     assert res["badDropzone"] == True
@@ -207,6 +211,7 @@ def test_create_line_invalid_fa_year(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -257,6 +262,7 @@ def test_create_line_invalid_rating(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -307,6 +313,7 @@ def test_create_line_invalid_video_url(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -356,6 +363,7 @@ def test_create_line_invalid_grade_name(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "morpho": True,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -406,6 +414,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "eliminate": True,
         "traverse": True,
         "highball": True,
+        "morpho": True,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -457,6 +466,7 @@ def test_create_line_invalid_grade_scale(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -507,6 +517,7 @@ def test_create_line_invalid_line_type(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -556,6 +567,7 @@ def test_create_line_invalid_line_starting_position(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -604,6 +616,7 @@ def test_create_line_invalid_video_payload(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -675,6 +688,7 @@ def test_successful_get_line(client):
     assert res["traverse"] == False
     assert res["highball"] == False
     assert res["lowball"] == False
+    assert res["morpho"] == False
     assert res["noTopout"] == True
     assert res["badDropzone"] == False
     assert res["childFriendly"] == False
@@ -748,6 +762,7 @@ def test_successful_edit_line(client):
         "vertical": True,
         "overhang": True,
         "athletic": True,
+        "morpho": True,
         "technical": True,
         "endurance": True,
         "cruxy": True,
@@ -783,6 +798,7 @@ def test_successful_edit_line(client):
     assert res["traverse"] == True
     assert res["highball"] == True
     assert res["lowball"] == True
+    assert res["morpho"] == True
     assert res["noTopout"] == True
     assert res["badDropzone"] == True
     assert res["childFriendly"] == True
@@ -833,6 +849,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
         "traverse": True,
         "highball": True,
         "lowball": True,
+        "morpho": True,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,

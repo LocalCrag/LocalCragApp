@@ -1,11 +1,19 @@
+@use "../../../styles/media-queries" as m;
+
+
 lc-topo-image-details{
 
   button{
     padding: 0;
   }
 
-  .positioning-button{
-    visibility: hidden;
+  .block-title{
+   justify-content: center;
+
+    @include m.on-mobile{
+      justify-content: start;
+    }
+
   }
 
 }

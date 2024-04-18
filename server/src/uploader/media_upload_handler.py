@@ -74,7 +74,7 @@ def handle_image_upload(path: str, file, qquuid):
     upload_file(spaces_client, get_image_bytes(img), filename)
 
     file_object = File()
-    file_object.filename = filename
+    file_object.filename = filename[:120]  # Max length of db field
     file_object.original_filename = file.filename
     file_object.height = img.height
     file_object.width = img.width

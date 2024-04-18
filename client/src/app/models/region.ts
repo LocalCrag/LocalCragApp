@@ -40,6 +40,7 @@ export class Region extends AbstractModel {
    */
   public static serialize(region: Region): any {
     return {
+      name: region.name,
       description: region.description,
       rules: region.rules,
     };

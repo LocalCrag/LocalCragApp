@@ -14,20 +14,23 @@
           <input type="text" pInputText formControlName="firstname" placeholder="{{t('firstnamePlaceholder')}}"
                  lcFormControl data-cy="register-form-firstname"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
           <input type="text" pInputText formControlName="lastname" placeholder="{{t('lastnamePlaceholder')}}"
                  lcFormControl data-cy="register-form-lastname"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
           <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}"
-                 lcFormControl data-cy="register-form-email"/>
+                 lcFormControl data-cy="register-form-email" class="email"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
           <small class="p-error" *lcIfError="'pattern'">{{t('invalidEmailHint')}}</small>
           <small class="p-error" *lcIfError="'emailTaken'">{{t('emailTaken')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
       </form>

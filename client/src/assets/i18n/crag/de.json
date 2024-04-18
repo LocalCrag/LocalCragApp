@@ -3,6 +3,7 @@
   "cragForm.cragNameLabel": "Gebietsname",
   "cragForm.cragNamePlaceholder": "z.B. Brione",
   "cragForm.required": "Pflichtfeld",
+  "cragForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "cragForm.cragShortDescriptionLabel": "Kurzbeschreibung",
   "cragForm.cragShortDescriptionPlaceholder": "Infos zum Gebiet, kurz und knackig zusammengefasst...",
   "cragForm.cragDescriptionLabel": "Beschreibung",

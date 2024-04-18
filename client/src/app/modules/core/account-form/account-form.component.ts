@@ -94,10 +94,10 @@ export class AccountFormComponent {
       this.currentUser = currentUser;
       this.accountForm = this.fb.group({
         avatar: [currentUser.avatar],
-        firstname: [currentUser.firstname, [Validators.required]],
-        lastname: [currentUser.lastname, [Validators.required]],
+        firstname: [currentUser.firstname, [Validators.required, Validators.maxLength(120)]],
+        lastname: [currentUser.lastname, [Validators.required, Validators.maxLength(120)]],
         email: [currentUser.email, {
-          validators: [Validators.required, Validators.pattern(emailRegex)],
+          validators: [Validators.required, Validators.pattern(emailRegex), Validators.maxLength(120)],
           asyncValidators: [this.userValidators.emailValidator([currentUser.email])],
           updateOn: 'blur'
         }

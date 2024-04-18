@@ -2,8 +2,7 @@
 
   <div *ngIf="topoImage.title || (topoImage.gps && topoImage.gps)"
        class="flex justify-content-center align-items-center mt-2">
-    <lc-gps-button [gps]="topoImage.gps" *ngIf="topoImage.gps" class="positioning-button"></lc-gps-button>
-    <div class="flex-grow-1 flex justify-content-center">
+    <div class="flex-grow-1 flex block-title">
       <h5 class="mt-0 mb-0 inline-block" *ngIf="topoImage.title">{{topoImage.title}}</h5>
     </div>
     <lc-gps-button [gps]="topoImage.gps" *ngIf="topoImage.gps"></lc-gps-button>

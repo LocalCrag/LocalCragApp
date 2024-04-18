@@ -40,6 +40,7 @@ class UpdateRegion(MethodView):
         region_data = parser.parse(region_args, request)
         region: Region = Region.return_it()
 
+        region.name = region_data['name']
         region.description = add_bucket_placeholders(region_data['description'])
         region.rules = add_bucket_placeholders(region_data['rules'])
         db.session.add(region)

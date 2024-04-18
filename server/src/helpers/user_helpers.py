@@ -16,7 +16,7 @@ def create_user(user_data, created_by=None) -> User:
     new_user = User()
     new_user.firstname = user_data['firstname']
     new_user.lastname = user_data['lastname']
-    new_user.email = user_data['email']
+    new_user.email = user_data['email'].lower()
     new_user.language = 'de'
     new_user.password = User.generate_hash(password)
     if created_by:

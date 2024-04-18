@@ -1,6 +1,7 @@
 import datetime
 
 import validators
+from marshmallow import validate
 from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
@@ -12,21 +13,22 @@ videos_args = {
 }
 
 line_args = {
-    "name": fields.Str(required=True),
+    "name": fields.Str(required=True, validate=validate.Length(max=120)),
     "description": fields.Str(required=True, allow_none=True),
     "videos": fields.List(fields.Nested(videos_args),  required=True, allow_none=True),
-    "gradeName": fields.Str(required=True, allow_none=False),
-    "gradeScale": fields.Str(required=True, allow_none=False),
+    "gradeName": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),
+    "gradeScale": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),
     "rating": fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None),
     "faYear": fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year),
-    "faName": fields.Str(required=True, allow_none=True),
+    "faName": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "startingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
 
     "eliminate": fields.Boolean(required=True, allow_none=False),
     "traverse": fields.Boolean(required=True, allow_none=False),
     "highball": fields.Boolean(required=True, allow_none=False),
     "lowball": fields.Boolean(required=True, allow_none=False),
+    "morpho": fields.Boolean(required=True, allow_none=False),
     "noTopout": fields.Boolean(required=True, allow_none=False),
     "badDropzone": fields.Boolean(required=True, allow_none=False),
     "childFriendly": fields.Boolean(required=True, allow_none=False),

@@ -89,7 +89,7 @@ export class CragFormComponent implements OnInit {
    */
   private buildForm() {
     this.cragForm = this.fb.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [''],
       shortDescription: [''],
       rules: [''],

@@ -82,10 +82,10 @@ export class InstanceSettingsFormComponent {
 
     private buildForm() {
         this.instanceSettingsForm = this.fb.group({
-            instanceName: [null, [Validators.required]],
-            copyrightOwner: [null, [Validators.required]],
-            youtubeUrl: [null, [httpUrlValidator()]],
-            instagramUrl: [null, [httpUrlValidator()]],
+            instanceName: [null, [Validators.required, Validators.maxLength(120)]],
+            copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
+            youtubeUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
+            instagramUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
             logoImage: [null],
             faviconImage: [null],
             authBgImage: [null],

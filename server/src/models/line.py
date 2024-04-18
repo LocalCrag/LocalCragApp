@@ -36,6 +36,7 @@ class Line(HasSlug, BaseEntity):
     highball = db.Column(db.Boolean, nullable=False, default=False)
     lowball = db.Column(db.Boolean, nullable=False, default=False)
     no_topout = db.Column(db.Boolean, nullable=False, default=False)
+    morpho = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
     bad_dropzone = db.Column(db.Boolean, nullable=False, default=False)
     child_friendly = db.Column(db.Boolean, nullable=False, default=False)
 

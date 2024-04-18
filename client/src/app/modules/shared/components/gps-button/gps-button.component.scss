@@ -1,10 +1,24 @@
-lc-gps-button{
-  .p-splitbutton-defaultbutton{
+@use "../../../../styles/media-queries" as m;
+
+
+lc-gps-button {
+  .p-splitbutton-defaultbutton {
     padding-left: 0;
     padding-right: 0;
   }
-  .p-button-icon-only{
+
+  .p-button-icon-only {
     width: 1.5rem;
     padding-left: .5rem;
   }
+
+  .p-tieredmenu {
+    @include m.on-mobile {
+      top: unset;
+      right: 0;
+      margin-left: auto;
+    }
+  }
+
+
 }
