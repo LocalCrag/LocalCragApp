@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {CardModule} from 'primeng/card';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
@@ -25,7 +25,6 @@ import {DowngradePipe} from '../pipes/downgrade.pipe';
 import {ConsensusGradePipe} from '../pipes/consensus-grade.pipe';
 import {TagModule} from 'primeng/tag';
 import {Store} from '@ngrx/store';
-import {TicksService} from '../../../services/crud/ticks.service';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {AscentFormComponent} from '../ascent-form/ascent-form.component';
 import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
@@ -35,6 +34,7 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 import {Actions, ofType} from '@ngrx/effects';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -63,7 +63,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
     UpgradePipe,
     DowngradePipe,
     ConsensusGradePipe,
-    TagModule
+    TagModule,
+    InfiniteScrollModule
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -90,6 +91,9 @@ export class AscentListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public ref: DynamicDialogRef | undefined;
+  public hasNextPage = false;
+
+  private currentPage = 1;
 
 
   constructor(private ascentsService: AscentsService,
@@ -104,12 +108,24 @@ export class AscentListComponent implements OnInit {
   ngOnInit() {
     this.refreshData();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+      this.currentPage = 1;
       this.refreshData();
     })
   }
 
+  loadNextPage(){
+    if(this.loading !== LoadingState.LOADING && this.hasNextPage) {
+      this.currentPage += 1;
+      this.refreshData()
+    }
+  }
+
   refreshData() {
-    let filters = []
+    this.loading = LoadingState.LOADING
+    if(this.currentPage === 1){
+      this.ascents = [];
+    }
+    let filters = [`page=${this.currentPage}`]
     if (this.userId) {
       filters.push(`user_id=${this.userId}`);
     }
@@ -125,13 +141,12 @@ export class AscentListComponent implements OnInit {
     if (this.lineId) {
       filters.push(`line_id=${this.lineId}`);
     }
-    let filterString = ''
-    if (filters.length > 0) {
-      filterString = `?${filters.join('&')}`;
-    }
+    const filterString = `?${filters.join('&')}`;
     this.ascentsService.getAscents(filterString).subscribe(ascents => {
-      this.ascents = ascents;
+      this.ascents.push(...ascents.items);
+      this.hasNextPage = ascents.hasNext;
       this.loading = LoadingState.DEFAULT;
+      // todo sort options must be included in db call now
       this.sortOptions = [
         {
           icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
@@ -204,4 +219,5 @@ export class AscentListComponent implements OnInit {
     });
   }
 
+  protected readonly LoadingState = LoadingState;
 }

@@ -48,6 +48,11 @@ class AscentSchema(BaseEntitySchema):
     sector = fields.Nested(AscentSectorSchema())
     area = fields.Nested(AscentAreaSchema())
 
+class PaginatedAscentsSchema(ma.SQLAlchemySchema):
+    items = fields.List(fields.Nested(AscentSchema()))
+    hasNext = fields.Boolean(attribute='has_next')
+
 
 ascent_schema = AscentSchema()
+paginated_ascents_schema = PaginatedAscentsSchema()
 ascents_schema = AscentSchema(many=True)

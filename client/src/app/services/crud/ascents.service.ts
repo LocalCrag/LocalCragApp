@@ -10,6 +10,7 @@ import {reloadMenus} from '../../ngrx/actions/core.actions';
 import {Ascent} from '../../models/ascent';
 import {Crag} from '../../models/crag';
 import {clearAscentCache, clearGradeCache} from '../../ngrx/actions/cache.actions';
+import {Paginated} from '../../models/paginated';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,8 @@ export class AscentsService {
               private http: HttpClient) {
   }
 
-  public getAscents(filters: string): Observable<Ascent[]> {
-    return this.cache.get(this.api.ascents.getList(filters), map((ascentListJson: any) => ascentListJson.map(Ascent.deserialize)));
+  public getAscents(filters: string): Observable<Paginated<Ascent>> {
+    return this.cache.get(this.api.ascents.getList(filters), map(payload => Paginated.deserialize(payload, Ascent.deserialize)));
   }
 
   public createAscent(ascent: Ascent): Observable<Ascent> {

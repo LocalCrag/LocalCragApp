@@ -31,6 +31,7 @@
   "ascents.ascentList.flash": "Flash",
   "ascents.ascentList.withKneepad": "Mit Kneepad",
   "ascents.ascentList.noAscentsFoundMessage": "Keine Begehungen gefunden",
+  "ascents.ascentList.loadMore": "Mehr laden...",
   "ascents.ascents.ascents": "Begehungen",
   "tickButton.lineClimbed": "Linie geklettert",
   "tickButton.addAscent": "Begehung hinzufügen",
