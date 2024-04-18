@@ -150,36 +150,40 @@ def test_create_ascent_non_existing_line(client):
 
 
 def test_successful_get_ascents(client):
-    rv = client.get('/api/ascents')
+    rv = client.get('/api/ascents?page=1')
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 1
-    assert res[0]['id'] == "55e840b9-2036-4725-a408-67d977adece5"
-    assert res[0]['flash'] == False
-    assert res[0]['fa'] == True
-    assert res[0]['soft'] == False
-    assert res[0]['hard'] == True
-    assert res[0]['withKneepad'] == True
-    assert res[0]['rating'] == 3
-    assert res[0]['comment'] == "Yeeha!"
-    assert res[0]['year'] == None
-    assert res[0]['gradeScale'] == "FB"
-    assert res[0]['gradeName'] == "8A"
-    assert res[0]['date'] == "2024-04-16"
-    assert res[0]['line']['slug'] == "super-spreader"
-    assert res[0]['area']['slug'] == "dritter-block-von-links"
-    assert res[0]['sector']['slug'] == "schattental"
-    assert res[0]['crag']['slug'] == "brione"
+    assert len(res['items']) == 1
+    assert res['items'][0]['id'] == "55e840b9-2036-4725-a408-67d977adece5"
+    assert res['items'][0]['flash'] == False
+    assert res['items'][0]['fa'] == True
+    assert res['items'][0]['soft'] == False
+    assert res['items'][0]['hard'] == True
+    assert res['items'][0]['withKneepad'] == True
+    assert res['items'][0]['rating'] == 3
+    assert res['items'][0]['comment'] == "Yeeha!"
+    assert res['items'][0]['year'] == None
+    assert res['items'][0]['gradeScale'] == "FB"
+    assert res['items'][0]['gradeName'] == "8A"
+    assert res['items'][0]['date'] == "2024-04-16"
+    assert res['items'][0]['line']['slug'] == "super-spreader"
+    assert res['items'][0]['area']['slug'] == "dritter-block-von-links"
+    assert res['items'][0]['sector']['slug'] == "schattental"
+    assert res['items'][0]['crag']['slug'] == "brione"
+    assert res['hasNext'] == False
 
-    rv = client.get('/api/ascents?crag_id=6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0')
+    rv = client.get('/api/ascents?crag_id=6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0&page=1')
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 0
+    assert len(res['items']) == 0
 
-    rv = client.get('/api/ascents?crag_id=aabc4539-c02f-4a03-8db3-ea0916e59884')
+    rv = client.get('/api/ascents?crag_id=aabc4539-c02f-4a03-8db3-ea0916e59884&page=1')
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 1
+    assert len(res['items']) == 1
+
+    rv = client.get('/api/ascents?page=2')
+    assert rv.status_code == 404
 
 
 def test_successful_get_ticks(client):
@@ -221,10 +225,10 @@ def test_delete_user_deletes_tick_but_not_line(client):
     assert rv.status_code == 204
 
     # Tick is gone
-    rv = client.get('/api/ascents')
+    rv = client.get('/api/ascents?page=1')
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 0
+    assert len(res['items']) == 0
 
     # Line must be still there
     rv = client.get('/api/lines/super-spreader')

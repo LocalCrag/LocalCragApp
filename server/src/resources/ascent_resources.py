@@ -11,7 +11,8 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
-from marshmallow_schemas.ascent_schema import ascent_schema, ascents_schema
+from marshmallow_schemas.ascent_schema import ascent_schema, ascents_schema, \
+    paginated_ascents_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
 from models.ascent import Ascent
@@ -39,6 +40,7 @@ class GetAscents(MethodView):
         crag_id = request.args.get('crag_id')
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
+        page = int(request.args.get('page'))
 
         query = db.session.query(Ascent)
 
@@ -52,9 +54,11 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.created_by_id == user_id)
 
         ascents: List[Ascent] = query.order_by(
-            lambda: Ascent.time_created.desc()).all()
+            lambda: Ascent.time_created.desc())
 
-        return jsonify(ascents_schema.dump(ascents)), 200
+        paginated_ascents = db.paginate(ascents, page=page, per_page=20)
+
+        return jsonify(paginated_ascents_schema.dump(paginated_ascents)), 200
 
 
 class GetTicks(MethodView):
