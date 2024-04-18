@@ -3,6 +3,7 @@
   "sectorForm.sectorNameLabel": "Sektorenname",
   "sectorForm.sectorNamePlaceholder": "z.B. Schattental",
   "sectorForm.required": "Pflichtfeld",
+  "sectorForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "sectorForm.sectorShortDescriptionLabel": "Kurzbeschreibung",
   "sectorForm.sectorShortDescriptionPlaceholder": "Infos zum Sektor, kurz und knackig zusammengefasst...",
   "sectorForm.sectorDescriptionLabel": "Beschreibung",

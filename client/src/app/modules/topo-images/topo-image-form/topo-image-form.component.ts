@@ -97,7 +97,7 @@ export class TopoImageFormComponent {
     this.topoImageForm = this.fb.group({
       image: [null, [Validators.required]],
       gps: [null],
-      title: [null],
+      title: [null, [Validators.maxLength(120)]],
       description: [null],
     });
   }

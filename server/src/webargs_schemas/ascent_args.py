@@ -1,5 +1,6 @@
 import datetime
 
+from marshmallow import validate
 from webargs import fields
 
 ticks_args = {
@@ -16,8 +17,8 @@ ascent_args = {
     "withKneepad": fields.Boolean(required=True),
     "soft": fields.Boolean(required=True),
     "hard": fields.Boolean(required=True),
-    "gradeName": fields.String(required=True),
-    "gradeScale": fields.String(required=True),
+    "gradeName": fields.String(required=True, validate=validate.Length(max=120)),
+    "gradeScale": fields.String(required=True, validate=validate.Length(max=120)),
     "rating": fields.Integer(required=True, allow_none=True),
     "comment": fields.Str(required=True, allow_none=True),
     "year": fields.Integer(required=True, allow_none=True, validate=lambda year: year <= datetime.date.today().year),

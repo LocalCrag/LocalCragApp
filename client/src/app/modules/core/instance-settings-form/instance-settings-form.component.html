@@ -13,6 +13,7 @@
           <input type="text" pInputText formControlName="instanceName" placeholder="{{t('instanceNamePlaceholder')}}"
                  lcFormControl/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -20,6 +21,7 @@
           <input type="text" pInputText formControlName="copyrightOwner" placeholder="{{t('copyrightOwnerPlaceholder')}}"
                  lcFormControl/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('menuSettings')}}</b></p-divider>
@@ -29,6 +31,7 @@
           <input type="text" pInputText formControlName="youtubeUrl" placeholder="{{t('youtubeUrlPlaceholder')}}"
                  lcFormControl/>
           <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -36,6 +39,7 @@
           <input type="text" pInputText formControlName="instagramUrl" placeholder="{{t('instagramUrlPlaceholder')}}"
                  lcFormControl/>
           <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('imagesSettings')}}</b></p-divider>

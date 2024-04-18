@@ -11,6 +11,7 @@
           <input type="text" pInputText formControlName="title" placeholder="{{t('postTitlePlaceholder')}}"
                  lcFormControl/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup >

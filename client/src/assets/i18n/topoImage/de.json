@@ -4,6 +4,7 @@
   "topoImageForm.required": "Pflichtfeld",
   "topoImageForm.topoImageTitleLabel": "Titel (optional)",
   "topoImageForm.topoImageTitlePlaceholder": "z.B. Bruno Block",
+  "topoImageForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "topoImageForm.topoImageDescriptionLabel": "Beschreibung (optional)",
   "topoImageForm.topoImageDescriptionPlaceholder": "Interessantes über den Block. Bleibt er z.B. lange nass? Hat er eine besondere Historie? Gibt es lockeren Fels? ...",
   "topoImageForm.gpsLabel": "GPS (optional)",

@@ -22,6 +22,7 @@
           <label class="form-label">{{t('topoImageTitleLabel')}}</label>
           <input type="text" pInputText formControlName="title" placeholder="{{t('topoImageTitlePlaceholder')}}"
                  lcFormControl data-cy="topo-image-form-title"/>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>

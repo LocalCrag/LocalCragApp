@@ -83,10 +83,10 @@ export class RegisterComponent implements OnInit {
 
   private buildForm() {
     this.registrationForm = this.fb.group({
-      firstname: [null, [Validators.required]],
-      lastname: [null, [Validators.required]],
+      firstname: [null, [Validators.required, Validators.maxLength(120)]],
+      lastname: [null, [Validators.required, Validators.maxLength(120)]],
       email: [null, {
-        validators: [Validators.required, Validators.pattern(emailRegex)],
+        validators: [Validators.required, Validators.pattern(emailRegex), Validators.maxLength(120)],
         asyncValidators: [this.userValidators.emailValidator([])],
         updateOn: 'blur'
       }]

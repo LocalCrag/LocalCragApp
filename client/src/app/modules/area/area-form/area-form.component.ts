@@ -97,7 +97,7 @@ export class AreaFormComponent implements OnInit {
    */
   private buildForm() {
     this.areaForm = this.fb.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       shortDescription: [null],
       gps: [null],

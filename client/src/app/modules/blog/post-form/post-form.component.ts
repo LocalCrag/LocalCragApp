@@ -112,7 +112,7 @@ export class PostFormComponent implements OnInit {
    */
   private buildForm() {
     this.postForm = this.fb.group({
-      title: [null, [Validators.required]],
+      title: [null, [Validators.required,  Validators.maxLength(120)]],
       text: [null, [Validators.required]],
     });
   }

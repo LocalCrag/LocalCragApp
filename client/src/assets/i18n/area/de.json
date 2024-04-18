@@ -3,6 +3,7 @@
   "areaForm.areaNameLabel": "Bereichsname",
   "areaForm.areaNamePlaceholder": "z.B. Bruno Block",
   "areaForm.required": "Pflichtfeld",
+  "areaForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "areaForm.areaShortDescriptionLabel": "Kurzbeschreibung",
   "areaForm.areaShortDescriptionPlaceholder": "Infos zum Bereich, kurz und knackig zusammengefasst...",
   "areaForm.areaDescriptionLabel": "Beschreibung",

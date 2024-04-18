@@ -14,6 +14,7 @@
           <input type="text" pInputText formControlName="name" placeholder="{{t('lineNamePlaceholder')}}"
                  lcFormControl data-cy="line-form-name"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -107,6 +108,7 @@
           <label class="form-label">{{t('lineFANameLabel')}}</label>
           <input type="text" pInputText formControlName="faName" placeholder="{{t('lineFANamePlaceholder')}}"
                  lcFormControl data-cy="line-form-faName"/>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
