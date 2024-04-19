@@ -9,6 +9,7 @@ import {User} from '../../models/user';
 import {LoginResponse} from '../../models/login-response';
 import {Sector} from '../../models/sector';
 import {UserPromotionTargets} from '../../enums/user-promotion-targets';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,10 @@ export class UsersService {
       }),
       map(User.deserialize)
     );
+  }
+
+  public getUserGrades(userSlug: string): Observable<Grade[]> {
+    return this.cache.get(this.api.users.getGrades(userSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 }

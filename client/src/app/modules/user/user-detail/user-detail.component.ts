@@ -63,6 +63,12 @@ export class UserDetailComponent {
           routerLink: `/users/${userSlug}/ascents`,
           routerLinkActiveOptions: {exact: true}
         },
+        {
+          label: this.translocoService.translate(marker('user.charts')),
+          icon: 'pi pi-fw pi-chart-bar',
+          routerLink: `/users/${userSlug}/charts`,
+          routerLinkActiveOptions: {exact: true}
+        },
       ];
     })
   }

@@ -61,6 +61,7 @@ import {SectorAscentsComponent} from '../sector/sector-ascents/sector-ascents.co
 import {AreaAscentsComponent} from '../area/area-ascents/area-ascents.component';
 import {LineAscentsComponent} from '../line/line-ascents/line-ascents.component';
 import {RegionAscentsComponent} from '../region/region-ascents/region-ascents.component';
+import {UserChartsComponent} from '../user/user-charts/user-charts.component';
 
 const routes: Routes = [
   {
@@ -251,9 +252,28 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: UserAscentsComponent,
-        outlet: 'userContent'
-      }
+        redirectTo: 'ascents'
+      },
+      {
+        path: 'ascents',
+        children: [
+          {
+            path: '',
+            component: UserAscentsComponent,
+            outlet: 'userContent'
+          }
+        ]
+      },
+      {
+        path: 'charts',
+        children: [
+          {
+            path: '',
+            component: UserChartsComponent,
+            outlet: 'userContent'
+          }
+        ]
+      },
     ]
   },
   {

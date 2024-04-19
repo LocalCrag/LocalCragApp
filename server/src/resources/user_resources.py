@@ -18,7 +18,9 @@ from marshmallow_schemas.simple_message_schema import simple_message_schema
 from marshmallow_schemas.user_schema import user_schema, user_list_schema
 from messages.marshalling_objects import SimpleMessage, AuthResponse
 from messages.messages import ResponseMessage
+from models.ascent import Ascent
 from models.enums.user_promotion_enum import UserPromotionEnum
+from models.line import Line
 from models.user import User
 from util.auth import get_access_token_claims
 from util.email import send_create_user_email, send_change_email_address_email
@@ -227,3 +229,12 @@ class PromoteUser(MethodView):
         db.session.add(user)
         db.session.commit()
         return user_schema.dump(user), 200
+
+
+class GetUserGrades(MethodView):
+
+    def get(self, user_slug):
+        user_id = User.get_id_by_slug(user_slug)
+        result = db.session.query(Line.grade_name, Line.grade_scale, Ascent).filter(Line.id == Ascent.line_id,
+                                                                                    Ascent.created_by_id == user_id).all()
+        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

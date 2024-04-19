@@ -23,7 +23,8 @@ from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTop
     GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, \
-    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser, GetUser
+    ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser, GetUser, \
+    GetUserGrades
 from models.region import Region
 from models.crag import Crag
 from models.sector import Sector
@@ -77,6 +78,7 @@ def configure_api(app):
     user_bp.add_url_rule('/<string:user_id>/resend-user-create-mail',
                          view_func=ResendUserCreateMail.as_view('resend_user_create_mail'))
     user_bp.add_url_rule('/email-taken/<email>', view_func=GetEmailTaken.as_view('get_email_taken'))
+    user_bp.add_url_rule('/<string:user_slug>/grades', view_func=GetUserGrades.as_view('get_user_grades'))
     app.register_blueprint(user_bp, url_prefix='/api/users')
 
     # Line API
