@@ -28,6 +28,7 @@ def test_successful_get_user(client):
     assert res['activatedAt'] == None
     assert res['avatar'] == None
 
+
 def test_successful_get_users(client):
     access_headers, refresh_headers = get_login_headers(client)
     rv = client.get('/api/users', headers=access_headers)
@@ -85,7 +86,7 @@ def test_successful_register_user(client, mocker):
     assert type(res['id']) == str
     assert res['firstname'] == 'Thorsten'
     assert res['lastname'] == 'Test'
-    assert res['email'] == 'felix.engelmann@fengelmann.de' # expect it to be changed to lowercase
+    assert res['email'] == 'felix.engelmann@fengelmann.de'  # expect it to be changed to lowercase
     assert not res['activated']
     assert res['language'] == 'de'
     assert res['avatar'] is None
@@ -271,6 +272,7 @@ def test_update_user_invalid_email(client):
     res = json.loads(rv.data)
     assert res['message'] == ResponseMessage.EMAIL_INVALID.value
 
+
 def test_promote_user_to_member(client):
     # Remove admin prop first..
     with app.app_context():
@@ -312,3 +314,12 @@ def test_promote_user_to_member(client):
     assert res['admin'] == False
     assert res['moderator'] == True
     assert res['member'] == True
+
+
+def test_successful_get_user_grades(client):
+    rv = client.get('/api/users/felix-engelmann/grades')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 1
+    assert res[0]['gradeName'] == "8A"
+    assert res[0]['gradeScale'] == "FB"

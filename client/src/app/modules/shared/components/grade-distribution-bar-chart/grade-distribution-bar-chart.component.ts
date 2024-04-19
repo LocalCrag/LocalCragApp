@@ -30,6 +30,7 @@ export class GradeDistributionBarChartComponent implements OnChanges {
 
     @Input() fetchingObservable: Observable<Grade[]>;
     @Input() scaleName: string = 'FB';
+    @Input() excludeProjects: boolean = false;
 
     public grades: Grade[];
     public data: any;

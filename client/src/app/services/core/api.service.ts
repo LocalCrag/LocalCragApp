@@ -38,6 +38,7 @@ export class ApiService {
     promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
     changeEmail: (): string => `${this.apiHost}users/account/change-email`,
     getEmailTaken: (email: string): string => `${this.apiHost}users/email-taken/${email}`,
+    getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
   };
 
   public posts = {

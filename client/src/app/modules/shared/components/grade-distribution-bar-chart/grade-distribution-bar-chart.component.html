@@ -1,4 +1,6 @@
 <ng-container *transloco="let t">
-<p-chart type="bar" [data]="data" [options]="options" *ngIf="grades"></p-chart>
-<div class="total">{{t('totalLines')}}: {{totalCount - projectCount}} ({{t('plusXProjects', {projects: projectCount})}})</div>
+  <p-chart type="bar" [data]="data" [options]="options" *ngIf="grades"></p-chart>
+  <div class="total">{{t('totalLines')}}: {{totalCount - projectCount}}
+    <span *ngIf="!excludeProjects">({{t('plusXProjects', {projects: projectCount})}})</span>
+  </div>
 </ng-container>

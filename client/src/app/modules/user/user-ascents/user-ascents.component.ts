@@ -38,7 +38,7 @@ export class UserAscentsComponent implements OnInit{
   }
 
   ngOnInit() {
-    const userSlug = this.route.snapshot.paramMap.get('user-slug');
+    const userSlug = this.route.snapshot.parent.parent.paramMap.get('user-slug');
     this.usersService.getUser(userSlug).pipe(catchError(e => {
       if (e.status === 404) {
         this.router.navigate(['/not-found']);
