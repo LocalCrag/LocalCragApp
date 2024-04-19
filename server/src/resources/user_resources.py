@@ -235,6 +235,6 @@ class GetUserGrades(MethodView):
 
     def get(self, user_slug):
         user_id = User.get_id_by_slug(user_slug)
-        result = db.session.query(Line.grade_name, Line.grade_scale, Ascent).filter(Line.id == Ascent.line_id,
+        result = db.session.query(Line.grade_name, Line.grade_scale, Ascent.line_id, Ascent.created_by_id).filter(Line.id == Ascent.line_id,
                                                                                     Ascent.created_by_id == user_id).all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
