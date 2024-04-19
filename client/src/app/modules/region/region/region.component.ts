@@ -84,11 +84,11 @@ export class RegionComponent implements OnInit {
         //   icon: 'pi pi-fw pi-images',
         //   routerLink: `/topo/gallery`,
         // },
-        // {
-        //   label: this.translocoService.translate(marker('region.ascents')),
-        //   icon: 'pi pi-fw pi-users',
-        //   routerLink: `/topo/ascents`,
-        // },
+        {
+          label: this.translocoService.translate(marker('region.ascents')),
+          icon: 'pi pi-fw pi-check-square',
+          routerLink: `/topo/ascents`,
+        },
         {
           label: this.translocoService.translate(marker('region.edit')),
           icon: 'pi pi-fw pi-file-edit',

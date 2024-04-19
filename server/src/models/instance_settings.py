@@ -1,7 +1,8 @@
 import datetime
 import uuid
 
-from sqlalchemy import func
+from flask import current_app
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
 from models.base_entity import BaseEntity
@@ -32,6 +33,10 @@ class InstanceSettings(db.Model):
     arrow_highlight_color = db.Column(db.String(7), nullable=False, server_default='#FF0000')
     arrow_highlight_text_color = db.Column(db.String(7), nullable=False, server_default='#FFFFFF')
     bar_chart_color = db.Column(db.String(30), nullable=False, server_default='rgb(213, 30, 38)')
+
+    @hybrid_property
+    def superadmin_email(self) -> str:
+        return current_app.config['SUPERADMIN_EMAIL']
 
 
     @classmethod

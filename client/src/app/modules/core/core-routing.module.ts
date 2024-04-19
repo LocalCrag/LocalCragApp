@@ -56,6 +56,11 @@ import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
 import {AscentsComponent} from '../ascent/ascents/ascents.component';
 import {UserDetailComponent} from '../user/user-detail/user-detail.component';
 import {UserAscentsComponent} from '../user/user-ascents/user-ascents.component';
+import {CragAscentsComponent} from '../crag/crag-ascents/crag-ascents.component';
+import {SectorAscentsComponent} from '../sector/sector-ascents/sector-ascents.component';
+import {AreaAscentsComponent} from '../area/area-ascents/area-ascents.component';
+import {LineAscentsComponent} from '../line/line-ascents/line-ascents.component';
+import {RegionAscentsComponent} from '../region/region-ascents/region-ascents.component';
 
 const routes: Routes = [
   {
@@ -253,18 +258,7 @@ const routes: Routes = [
   },
   {
     path: 'ascents',
-    component: AscentsComponent,
-    data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    },
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: AscentListComponent,
-        outlet: 'ascentsContent'
-      }
-    ]
+    redirectTo: 'topo/ascents'
   },
   {
     path: 'topo',
@@ -310,7 +304,13 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: RegionAscentsComponent,
+            outlet: 'regionContent'
+          }
+        ]
       },
     ]
   },
@@ -374,7 +374,13 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: CragAscentsComponent,
+            outlet: 'cragContent'
+          }
+        ]
       },
     ]
   },
@@ -438,7 +444,13 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: SectorAscentsComponent,
+            outlet: 'sectorContent'
+          }
+        ]
       },
     ]
   },
@@ -528,7 +540,13 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
-        redirectTo: ''
+        children: [
+          {
+            path: '',
+            component: AreaAscentsComponent,
+            outlet: 'areaContent'
+          }
+        ]
       },
     ]
   },
@@ -549,9 +567,20 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         component: LineInfoComponent,
         outlet: 'lineContent'
-      }
+      },
+      {
+        path: 'ascents',
+        children: [
+          {
+            path: '',
+            component: LineAscentsComponent,
+            outlet: 'lineContent'
+          }
+        ]
+      },
     ]
   },
   {

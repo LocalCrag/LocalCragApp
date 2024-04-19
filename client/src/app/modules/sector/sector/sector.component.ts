@@ -87,11 +87,11 @@ export class SectorComponent implements OnInit {
           //   icon: 'pi pi-fw pi-images',
           //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
           // },
-          // {
-          //   label: this.translocoService.translate(marker('sector.ascents')),
-          //   icon: 'pi pi-fw pi-users',
-          //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
-          // },
+          {
+            label: this.translocoService.translate(marker('sector.ascents')),
+            icon: 'pi pi-fw pi-check-square',
+            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
+          },
           {
             label: this.translocoService.translate(marker('sector.edit')),
             icon: 'pi pi-fw pi-file-edit',

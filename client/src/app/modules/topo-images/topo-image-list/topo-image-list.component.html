@@ -117,8 +117,7 @@
                           </p-button>
                           <ng-container *isLoggedIn="true">
                             <lc-tick-button [line]="linePath.line"
-                                            [ticked]="ticks.has(linePath.line.id)"
-                                            *ngIf="linePath.line.grade.value >= 0"></lc-tick-button>
+                                            [ticked]="ticks.has(linePath.line.id)"></lc-tick-button>
                           </ng-container>
                           <ng-container *isModerator="true">
                             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text"

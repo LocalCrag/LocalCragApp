@@ -98,11 +98,11 @@ export class AreaComponent implements OnInit {
           //   icon: 'pi pi-fw pi-images',
           //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
           // },
-          // {
-          //   label: this.translocoService.translate(marker('area.ascents')),
-          //   icon: 'pi pi-fw pi-users',
-          //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
-          // },
+          {
+            label: this.translocoService.translate(marker('area.ascents')),
+            icon: 'pi pi-fw pi-check-square',
+            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
+          },
           {
             label: this.translocoService.translate(marker('area.edit')),
             icon: 'pi pi-fw pi-file-edit',

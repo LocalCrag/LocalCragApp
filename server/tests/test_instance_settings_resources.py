@@ -15,6 +15,7 @@ def test_successful_get_instance_settings(client):
     assert res['faviconImage'] == None
     assert res['mainBgImage'] == None
     assert res['authBgImage'] == None
+    assert res['superadminEmail'] == 'localcrag@fengelmann.de'
     assert res['arrowColor'] == '#FFE016'
     assert res['arrowTextColor'] == '#000000'
     assert res['arrowHighlightColor'] == '#FF0000'
@@ -55,3 +56,4 @@ def test_successful_edit_instance_settings(client):
     assert res['arrowHighlightColor'] == '#CCCCCC'
     assert res['arrowHighlightTextColor'] == '#DDDDDD'
     assert res['barChartColor'] == 'rgb(213, 30, 39)'
+    assert res['superadminEmail'] == 'localcrag@fengelmann.de'
