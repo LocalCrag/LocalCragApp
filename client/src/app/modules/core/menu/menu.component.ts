@@ -91,6 +91,11 @@ export class MenuComponent implements OnInit {
           label:this.translocoService.translate(marker('menu.accountCategory')),
           items: [
             {
+              icon: 'pi pi-fw pi-user',
+              label: this.translocoService.translate(marker('menu.accountDetail')),
+              routerLink: `/users/${authState.user.slug}`
+            },
+            {
               icon: 'pi pi-fw pi-user-edit',
               label: this.translocoService.translate(marker('menu.account')),
               routerLink: '/account'
