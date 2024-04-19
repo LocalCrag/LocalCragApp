@@ -85,7 +85,7 @@ export class AscentListComponent implements OnInit {
   @Input() lineId: string;
 
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.LOADING;
+  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
   public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
   public sortOptions: SelectItem[];
@@ -93,8 +93,8 @@ export class AscentListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public ref: DynamicDialogRef | undefined;
-  public hasNextPage = false;
-  public currentPage = 1;
+  public hasNextPage = true;
+  public currentPage = 0;
 
 
   constructor(private ascentsService: AscentsService,
@@ -130,52 +130,49 @@ export class AscentListComponent implements OnInit {
       },
     ];
     this.sortKey = this.sortOptions[0];
-    this.refreshData();
+    this.loadNextPage();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
       this.currentPage = 1;
-      this.refreshData();
+      this.loadNextPage();
     })
   }
 
   loadNextPage(){
     if(this.loadingFirstPage !== LoadingState.LOADING &&this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
       this.currentPage += 1;
-      this.refreshData()
+      if(this.currentPage === 1){
+        this.loadingFirstPage = LoadingState.LOADING
+        this.ascents = [];
+      } else {
+        this.loadingAdditionalPage = LoadingState.LOADING;
+      }
+      let filters = [`page=${this.currentPage}`]
+      filters.push(...this.sortKey.value);
+      if (this.userId) {
+        filters.push(`user_id=${this.userId}`);
+      }
+      if (this.cragId) {
+        filters.push(`crag_id=${this.cragId}`);
+      }
+      if (this.sectorId) {
+        filters.push(`sector_id=${this.sectorId}`);
+      }
+      if (this.areaId) {
+        filters.push(`area_id=${this.areaId}`);
+      }
+      if (this.lineId) {
+        filters.push(`line_id=${this.lineId}`);
+      }
+      const filterString = `?${filters.join('&')}`;
+      this.ascentsService.getAscents(filterString).subscribe(ascents => {
+        this.ascents.push(...ascents.items);
+        this.hasNextPage = ascents.hasNext;
+        this.loadingFirstPage = LoadingState.DEFAULT;
+        this.loadingAdditionalPage = LoadingState.DEFAULT;
+      });
     }
   }
 
-  refreshData() {
-    if(this.currentPage === 1){
-      this.loadingFirstPage = LoadingState.LOADING
-      this.ascents = [];
-    } else {
-      this.loadingAdditionalPage = LoadingState.LOADING;
-    }
-    let filters = [`page=${this.currentPage}`]
-    filters.push(...this.sortKey.value);
-    if (this.userId) {
-      filters.push(`user_id=${this.userId}`);
-    }
-    if (this.cragId) {
-      filters.push(`crag_id=${this.cragId}`);
-    }
-    if (this.sectorId) {
-      filters.push(`sector_id=${this.sectorId}`);
-    }
-    if (this.areaId) {
-      filters.push(`area_id=${this.areaId}`);
-    }
-    if (this.lineId) {
-      filters.push(`line_id=${this.lineId}`);
-    }
-    const filterString = `?${filters.join('&')}`;
-    this.ascentsService.getAscents(filterString).subscribe(ascents => {
-      this.ascents.push(...ascents.items);
-      this.hasNextPage = ascents.hasNext;
-      this.loadingFirstPage = LoadingState.DEFAULT;
-      this.loadingAdditionalPage = LoadingState.DEFAULT;
-    });
-  }
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
