@@ -35,6 +35,7 @@ import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 import {Actions, ofType} from '@ngrx/effects';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -84,16 +85,16 @@ export class AscentListComponent implements OnInit {
   @Input() lineId: string;
 
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.LOADING;
+  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
+  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
   public sortOptions: SelectItem[];
   public sortKey: SelectItem;
   public sortOrder: number;
   public sortField: string;
   public ref: DynamicDialogRef | undefined;
-  public hasNextPage = false;
-
-  private currentPage = 1;
+  public hasNextPage = true;
+  public currentPage = 0;
 
 
   constructor(private ascentsService: AscentsService,
@@ -106,84 +107,77 @@ export class AscentListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refreshData();
+    this.sortOptions = [
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescendingByDate')),
+        value: ['order_by=time_created', 'order_direction=desc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscendingByDate')),
+        value: ['order_by=time_created', 'order_direction=asc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
+        value: ['order_by=ascent_date', 'order_direction=desc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
+        value: ['order_by=ascent_date', 'order_direction=asc']
+      },
+    ];
+    this.sortKey = this.sortOptions[0];
+    this.loadFirstPage();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
-      this.currentPage = 1;
-      this.refreshData();
+      this.loadFirstPage();
     })
   }
 
+  loadFirstPage(){
+    this.currentPage = 0;
+    this.hasNextPage = true;
+    this.loadNextPage();
+  }
+
   loadNextPage(){
-    if(this.loading !== LoadingState.LOADING && this.hasNextPage) {
+    if(this.loadingFirstPage !== LoadingState.LOADING &&this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
       this.currentPage += 1;
-      this.refreshData()
+      if(this.currentPage === 1){
+        this.loadingFirstPage = LoadingState.LOADING
+        this.ascents = [];
+      } else {
+        this.loadingAdditionalPage = LoadingState.LOADING;
+      }
+      let filters = [`page=${this.currentPage}`]
+      filters.push(...this.sortKey.value);
+      if (this.userId) {
+        filters.push(`user_id=${this.userId}`);
+      }
+      if (this.cragId) {
+        filters.push(`crag_id=${this.cragId}`);
+      }
+      if (this.sectorId) {
+        filters.push(`sector_id=${this.sectorId}`);
+      }
+      if (this.areaId) {
+        filters.push(`area_id=${this.areaId}`);
+      }
+      if (this.lineId) {
+        filters.push(`line_id=${this.lineId}`);
+      }
+      const filterString = `?${filters.join('&')}`;
+      this.ascentsService.getAscents(filterString).subscribe(ascents => {
+        this.ascents.push(...ascents.items);
+        this.hasNextPage = ascents.hasNext;
+        this.loadingFirstPage = LoadingState.DEFAULT;
+        this.loadingAdditionalPage = LoadingState.DEFAULT;
+      });
     }
   }
 
-  refreshData() {
-    this.loading = LoadingState.LOADING
-    if(this.currentPage === 1){
-      this.ascents = [];
-    }
-    let filters = [`page=${this.currentPage}`]
-    if (this.userId) {
-      filters.push(`user_id=${this.userId}`);
-    }
-    if (this.cragId) {
-      filters.push(`crag_id=${this.cragId}`);
-    }
-    if (this.sectorId) {
-      filters.push(`sector_id=${this.sectorId}`);
-    }
-    if (this.areaId) {
-      filters.push(`area_id=${this.areaId}`);
-    }
-    if (this.lineId) {
-      filters.push(`line_id=${this.lineId}`);
-    }
-    const filterString = `?${filters.join('&')}`;
-    this.ascentsService.getAscents(filterString).subscribe(ascents => {
-      this.ascents.push(...ascents.items);
-      this.hasNextPage = ascents.hasNext;
-      this.loading = LoadingState.DEFAULT;
-      // todo sort options must be included in db call now
-      this.sortOptions = [
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscendingByDate')),
-          value: '!timeCreated'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescendingByDate')),
-          value: 'timeCreated'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
-          value: '!ascentDate'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
-          value: 'ascentDate'
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
-    });
-  }
-
-
-  onSortChange(event: any) {
-    let value = event.value.value;
-    if (value.indexOf('!') === 0) {
-      this.sortOrder = 1;
-      this.sortField = value.substring(1, value.length);
-    } else {
-      this.sortOrder = -1;
-      this.sortField = value;
-    }
-  }
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
@@ -219,5 +213,4 @@ export class AscentListComponent implements OnInit {
     });
   }
 
-  protected readonly LoadingState = LoadingState;
 }

@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from flask import jsonify, request
@@ -41,6 +42,11 @@ class GetAscents(MethodView):
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
         page = int(request.args.get('page'))
+        order_by = request.args.get('order_by') or 'time_created'
+        order_direction = request.args.get('order_direction') or 'desc'
+
+        if order_by not in ['time_created', 'ascent_date'] or order_direction not in ['asc', 'desc']:
+            raise BadRequest('Invalid order by query parameters')
 
         query = db.session.query(Ascent)
 
@@ -53,10 +59,9 @@ class GetAscents(MethodView):
         if user_id:
             query = query.filter(Ascent.created_by_id == user_id)
 
-        ascents: List[Ascent] = query.order_by(
-            lambda: Ascent.time_created.desc())
+        query = query.order_by(text('{} {}'.format(order_by, order_direction)))
 
-        paginated_ascents = db.paginate(ascents, page=page, per_page=20)
+        paginated_ascents = db.paginate(query, page=page, per_page=20)
 
         return jsonify(paginated_ascents_schema.dump(paginated_ascents)), 200
 
@@ -119,6 +124,12 @@ class CreateAscent(MethodView):
         ascent.sector_id = Area.find_by_id(line.area_id).sector_id
         ascent.crag_id = Sector.find_by_id(ascent.sector_id).crag_id
 
+        # Set ascent date for ordering
+        if ascent.date:
+            ascent.ascent_date = ascent.date
+        else:
+            ascent.ascent_date = datetime.datetime.strptime(str(ascent.year), '%Y').date()
+
         line.ascent_count += 1
 
         db.session.add(line)
@@ -155,6 +166,12 @@ class UpdateAscent(MethodView):
         ascent.comment = ascent_data['comment']
         ascent.year = ascent_data['year']
         ascent.date = ascent_data['date']
+
+        # Set ascent date for ordering
+        if ascent.date:
+            ascent.ascent_date = ascent.date
+        else:
+            ascent.ascent_date = datetime.datetime.strptime(str(ascent.year), '%Y').date()
 
         db.session.add(ascent)
         db.session.commit()

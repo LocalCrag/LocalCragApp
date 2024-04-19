@@ -2,27 +2,28 @@
 
   <p-dataView #dv [value]="ascents" [sortField]="sortField" [sortOrder]="sortOrder"
               [emptyMessage]="t('noAscentsFoundMessage')"
-              [loading]="loading === loadingStates.LOADING">
-<!--    <ng-template pTemplate="header">-->
-<!--      <div class="flex flex-column sm:flex-row justify-content-between gap-2">-->
-<!--        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"-->
-<!--                    optionLabel="label" (onChange)="onSortChange($event)"-->
-<!--                    styleClass="md:mb-0">-->
-<!--          <ng-template pTemplate="selectedItem">-->
-<!--            <div class="flex align-items-center gap-2" *ngIf="sortKey">-->
-<!--              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>-->
-<!--              <div>{{ sortKey.label }}</div>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--          <ng-template let-option pTemplate="item">-->
-<!--            <div class="flex align-items-center gap-2">-->
-<!--              <i [class]="option.icon" *ngIf="option.icon"></i>-->
-<!--              <div>{{ option.label }}</div>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--        </p-dropdown>-->
-<!--      </div>-->
-<!--    </ng-template>-->
+              [loading]="loadingFirstPage === loadingStates.LOADING">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
+                    (onChange)="loadFirstPage()"
+                    optionLabel="label"
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="sortKey">
+              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+              <div>{{ sortKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="option.icon" *ngIf="option.icon"></i>
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </ng-template>
     <ng-template let-ascents pTemplate="list">
       <div class="grid grid-nogutter" >
         <div class="col-12 " *ngFor="let ascent of ascents; let first = first" data-cy="ascent-list-item">
@@ -225,12 +226,14 @@
   </p-dataView>
 
   <div class="flex justify-content-center mt-5">
-  <p-button label="{{t('loadMore')}}" [disabled]="!hasNextPage"
+  <p-button label="{{t('loadMore')}}"
+            *ngIf="hasNextPage"
             (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
-            [loading]="loading === LoadingState.LOADING"></p-button>
+            [loading]="loadingAdditionalPage === loadingStates.LOADING"></p-button>
   </div>
 
   <p-confirmPopup></p-confirmPopup>
