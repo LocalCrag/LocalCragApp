@@ -84,7 +84,8 @@ export class AscentListComponent implements OnInit {
   @Input() lineId: string;
 
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.LOADING;
+  public loadingFirstPage: LoadingState = LoadingState.LOADING;
+  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
   public sortOptions: SelectItem[];
   public sortKey: SelectItem;
@@ -114,16 +115,18 @@ export class AscentListComponent implements OnInit {
   }
 
   loadNextPage(){
-    if(this.loading !== LoadingState.LOADING && this.hasNextPage) {
+    if(this.loadingFirstPage !== LoadingState.LOADING &&this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
       this.currentPage += 1;
       this.refreshData()
     }
   }
 
   refreshData() {
-    this.loading = LoadingState.LOADING
     if(this.currentPage === 1){
+      this.loadingFirstPage = LoadingState.LOADING
       this.ascents = [];
+    } else {
+      this.loadingAdditionalPage = LoadingState.LOADING;
     }
     let filters = [`page=${this.currentPage}`]
     if (this.userId) {
@@ -145,7 +148,8 @@ export class AscentListComponent implements OnInit {
     this.ascentsService.getAscents(filterString).subscribe(ascents => {
       this.ascents.push(...ascents.items);
       this.hasNextPage = ascents.hasNext;
-      this.loading = LoadingState.DEFAULT;
+      this.loadingFirstPage = LoadingState.DEFAULT;
+      this.loadingAdditionalPage = LoadingState.DEFAULT;
       // todo sort options must be included in db call now
       this.sortOptions = [
         {

@@ -2,7 +2,7 @@
 
   <p-dataView #dv [value]="ascents" [sortField]="sortField" [sortOrder]="sortOrder"
               [emptyMessage]="t('noAscentsFoundMessage')"
-              [loading]="loading === loadingStates.LOADING">
+              [loading]="loadingFirstPage === loadingStates.LOADING">
 <!--    <ng-template pTemplate="header">-->
 <!--      <div class="flex flex-column sm:flex-row justify-content-between gap-2">-->
 <!--        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"-->
@@ -225,12 +225,14 @@
   </p-dataView>
 
   <div class="flex justify-content-center mt-5">
-  <p-button label="{{t('loadMore')}}" [disabled]="!hasNextPage"
+  <p-button label="{{t('loadMore')}}"
+            *ngIf="hasNextPage"
             (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
-            [loading]="loading === LoadingState.LOADING"></p-button>
+            [loading]="loadingAdditionalPage === LoadingState.LOADING"></p-button>
   </div>
 
   <p-confirmPopup></p-confirmPopup>
