@@ -31,3 +31,5 @@ class Ascent(BaseEntity):
     area = db.relationship('Area', lazy='joined')
     created_by_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
 
+    ascent_date = db.Column(db.Date(), nullable=False)
+

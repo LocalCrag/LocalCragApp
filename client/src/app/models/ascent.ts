@@ -34,7 +34,6 @@ export class Ascent extends AbstractModel {
   routerLinkArea: string;
   routerLinkLine: string;
   routerLinkCreatedBy: string;
-  ascentDate: Date;
 
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
@@ -60,12 +59,6 @@ export class Ascent extends AbstractModel {
     ascent.routerLinkArea = `${ascent.routerLinkSector}/${ascent.area.slug}`;
     ascent.routerLinkLine = `${ascent.routerLinkArea}/${ascent.line.slug}`;
     ascent.routerLinkCreatedBy = `/users/${ascent.createdBy.slug}`;
-
-    if(ascent.date){
-      ascent.ascentDate = ascent.date;
-    } else {
-      ascent.ascentDate = new Date(ascent.year, 0, 0)
-    }
 
     return ascent;
   }

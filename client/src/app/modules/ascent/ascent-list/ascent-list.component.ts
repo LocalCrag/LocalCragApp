@@ -35,6 +35,7 @@ import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 import {Actions, ofType} from '@ngrx/effects';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -93,8 +94,7 @@ export class AscentListComponent implements OnInit {
   public sortField: string;
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = false;
-
-  private currentPage = 1;
+  public currentPage = 1;
 
 
   constructor(private ascentsService: AscentsService,
@@ -107,6 +107,29 @@ export class AscentListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.sortOptions = [
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscendingByDate')),
+        value: ['order_by=time_created', 'order_direction=asc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescendingByDate')),
+        value: ['order_by=time_created', 'order_direction=desc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
+        value: ['order_by=ascent_date', 'order_direction=asc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
+        value: ['order_by=ascent_date', 'order_direction=desc']
+      },
+    ];
+    this.sortKey = this.sortOptions[0];
     this.refreshData();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
       this.currentPage = 1;
@@ -129,6 +152,7 @@ export class AscentListComponent implements OnInit {
       this.loadingAdditionalPage = LoadingState.LOADING;
     }
     let filters = [`page=${this.currentPage}`]
+    filters.push(...this.sortKey.value);
     if (this.userId) {
       filters.push(`user_id=${this.userId}`);
     }
@@ -150,43 +174,7 @@ export class AscentListComponent implements OnInit {
       this.hasNextPage = ascents.hasNext;
       this.loadingFirstPage = LoadingState.DEFAULT;
       this.loadingAdditionalPage = LoadingState.DEFAULT;
-      // todo sort options must be included in db call now
-      this.sortOptions = [
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscendingByDate')),
-          value: '!timeCreated'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescendingByDate')),
-          value: 'timeCreated'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
-          value: '!ascentDate'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
-          value: 'ascentDate'
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
     });
-  }
-
-
-  onSortChange(event: any) {
-    let value = event.value.value;
-    if (value.indexOf('!') === 0) {
-      this.sortOrder = 1;
-      this.sortField = value.substring(1, value.length);
-    } else {
-      this.sortOrder = -1;
-      this.sortField = value;
-    }
   }
 
   editAscent(ascent: Ascent) {
@@ -223,5 +211,4 @@ export class AscentListComponent implements OnInit {
     });
   }
 
-  protected readonly LoadingState = LoadingState;
 }
