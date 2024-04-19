@@ -6,7 +6,7 @@
     <ng-template pTemplate="header">
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
         <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
-                    (onChange)="currentPage = 0; hasNextPage=true; loadNextPage()"
+                    (onChange)="loadFirstPage()"
                     optionLabel="label"
                     styleClass="md:mb-0">
           <ng-template pTemplate="selectedItem">

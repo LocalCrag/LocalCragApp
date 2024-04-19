@@ -130,11 +130,16 @@ export class AscentListComponent implements OnInit {
       },
     ];
     this.sortKey = this.sortOptions[0];
-    this.loadNextPage();
+    this.loadFirstPage();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
-      this.currentPage = 1;
-      this.loadNextPage();
+      this.loadFirstPage();
     })
+  }
+
+  loadFirstPage(){
+    this.currentPage = 0;
+    this.hasNextPage = true;
+    this.loadNextPage();
   }
 
   loadNextPage(){
