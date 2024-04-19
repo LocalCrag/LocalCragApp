@@ -109,24 +109,24 @@ export class AscentListComponent implements OnInit {
   ngOnInit() {
     this.sortOptions = [
       {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-        label: this.translocoService.translate(marker('sortAscendingByDate')),
-        value: ['order_by=time_created', 'order_direction=asc']
-      },
-      {
         icon: PrimeIcons.SORT_AMOUNT_DOWN,
         label: this.translocoService.translate(marker('sortDescendingByDate')),
         value: ['order_by=time_created', 'order_direction=desc']
       },
       {
         icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-        label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
-        value: ['order_by=ascent_date', 'order_direction=asc']
+        label: this.translocoService.translate(marker('sortAscendingByDate')),
+        value: ['order_by=time_created', 'order_direction=asc']
       },
       {
         icon: PrimeIcons.SORT_AMOUNT_DOWN,
         label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
         value: ['order_by=ascent_date', 'order_direction=desc']
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
+        value: ['order_by=ascent_date', 'order_direction=asc']
       },
     ];
     this.sortKey = this.sortOptions[0];
