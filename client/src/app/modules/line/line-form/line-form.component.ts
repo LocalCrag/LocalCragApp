@@ -110,7 +110,7 @@ export class LineFormComponent implements OnInit {
   private buildForm() {
     this.lineForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(120)]],
-      description: [''],
+      description: [null],
       videos: this.fb.array([]),
       grade: [null, [Validators.required, ]],
       rating: [null],

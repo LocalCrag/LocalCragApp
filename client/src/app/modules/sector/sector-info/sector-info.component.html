@@ -5,7 +5,7 @@
     <h4>{{t('gradeDistribution')}}:</h4>
     <lc-grade-distribution-bar-chart [fetchingObservable]="fetchSectorGrades"></lc-grade-distribution-bar-chart>
 
-    <section [innerHTML]="sector.description | sanitizeHtml"  class="quill-content"></section>
+    <section [innerHTML]="sector.description | sanitizeHtml" *ngIf="sector.description"  class="quill-content"></section>
 
     <lc-gps-button [gps]="sector.gps" *ngIf="sector.gps"></lc-gps-button>
 
