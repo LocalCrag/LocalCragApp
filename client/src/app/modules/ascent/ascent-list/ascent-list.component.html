@@ -80,9 +80,9 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
-              <div class="ascent-actions" *ngIf="userId">
+              <div class="ascent-actions" *isOwnUser="ascent.createdBy">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
+                           data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
                 </p-button>
                 <p-button icon="pi pi-trash" severity="danger"
@@ -143,10 +143,15 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
-              <div class="ascent-actions" *ngIf="userId">
+              <div class="ascent-actions" *isOwnUser="ascent.createdBy">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
+                          data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
+                </p-button>
+                <p-button icon="pi pi-trash" severity="danger"
+                          data-cy="delete-ascent"
+                          (click)="confirmDeleteAscent($event, ascent)"
+                          styleClass="p-button-rounded p-button-text">
                 </p-button>
               </div>
             </div>
@@ -171,10 +176,15 @@
                     routerLink="{{ascent.routerLinkArea}}">{{ascent.area.name}}</a>
                   </div>
                 </div>
-                <div class="ascent-actions" *ngIf="userId">
+                <div class="ascent-actions" *isOwnUser="ascent.createdBy">
                   <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                            *isOwnUser="ascent.createdBy" data-cy="edit-ascent"
+                             data-cy="edit-ascent"
                             (click)="editAscent(ascent)">
+                  </p-button>
+                  <p-button icon="pi pi-trash" severity="danger"
+                            data-cy="delete-ascent"
+                            (click)="confirmDeleteAscent($event, ascent)"
+                            styleClass="p-button-rounded p-button-text">
                   </p-button>
                 </div>
               </div>
