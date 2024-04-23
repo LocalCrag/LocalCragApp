@@ -138,8 +138,8 @@ export class AscentFormComponent implements OnInit {
       flash: this.ascent.flash,
       withKneepad: this.ascent.withKneepad,
       comment: this.ascent.comment,
-      year: this.ascent.year ? new Date(this.ascent.year, 6, 15) : this.ascent.date,
-      date: this.ascent.date ? this.ascent.date : new Date(this.ascent.year, 6, 15),
+      year: this.ascent.year ? new Date(this.ascent.year, 1, 1) : this.ascent.date,
+      date: this.ascent.date ? this.ascent.date : new Date(this.ascent.year, 1, 1),
       yearOnly: this.ascent.year !== null
     });
     this.ascentForm.enable();

@@ -62,6 +62,9 @@ import {AreaAscentsComponent} from '../area/area-ascents/area-ascents.component'
 import {LineAscentsComponent} from '../line/line-ascents/line-ascents.component';
 import {RegionAscentsComponent} from '../region/region-ascents/region-ascents.component';
 import {UserChartsComponent} from '../user/user-charts/user-charts.component';
+import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
+import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component';
+import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
 
 const routes: Routes = [
   {
@@ -332,6 +335,16 @@ const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'ranking',
+        children: [
+          {
+            path: '',
+            component: RankingListComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
     ]
   },
   {
@@ -402,6 +415,16 @@ const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'ranking',
+        children: [
+          {
+            path: '',
+            component: CragRankingComponent,
+            outlet: 'cragContent'
+          }
+        ]
+      },
     ]
   },
   {
@@ -468,6 +491,16 @@ const routes: Routes = [
           {
             path: '',
             component: SectorAscentsComponent,
+            outlet: 'sectorContent'
+          }
+        ]
+      },
+      {
+        path: 'ranking',
+        children: [
+          {
+            path: '',
+            component: SectorRankingComponent,
             outlet: 'sectorContent'
           }
         ]
@@ -618,6 +651,10 @@ const routes: Routes = [
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
+  },
+  {
+    path: 'ranking',
+    redirectTo: 'topo/ranking'
   },
   {
     component: NotFoundComponent,

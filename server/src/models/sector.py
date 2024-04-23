@@ -29,6 +29,9 @@ class Sector(HasSlug, BaseEntity):
     rules = db.Column(db.Text, nullable=True)
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
 
+    rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
+
+
 
     @classmethod
     def find_max_order_index(cls, crag_id) -> int:

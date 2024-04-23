@@ -111,6 +111,10 @@ export class ApiService {
     getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
   };
 
+  public ranking = {
+    getList: (filters: string): string => `${this.apiHost}ranking${filters}`,
+  };
+
   public topoImages = {
     add: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
     getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,

@@ -93,6 +93,11 @@ export class SectorComponent implements OnInit {
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
           },
           {
+            label: this.translocoService.translate(marker('sector.ranking')),
+            icon: 'pi pi-fw pi-trophy',
+            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ranking`,
+          },
+          {
             label: this.translocoService.translate(marker('sector.edit')),
             icon: 'pi pi-fw pi-file-edit',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,

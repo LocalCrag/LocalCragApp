@@ -41,6 +41,7 @@ class GetAscents(MethodView):
         crag_id = request.args.get('crag_id')
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
+        line_id = request.args.get('line_id')
         page = int(request.args.get('page'))
         order_by = request.args.get('order_by') or 'time_created'
         order_direction = request.args.get('order_direction') or 'desc'
@@ -58,6 +59,8 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.area_id == area_id)
         if user_id:
             query = query.filter(Ascent.created_by_id == user_id)
+        if line_id:
+            query = query.filter(Ascent.line_id == line_id)
 
         query = query.order_by(text('{} {}'.format(order_by, order_direction)))
 
