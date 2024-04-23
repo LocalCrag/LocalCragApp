@@ -12,7 +12,7 @@ from models.sector import Sector
 from models.user import User
 
 
-def create_dummy_Ascents():
+def create_dummy_ascents():
     with app.app_context():
         n = 1000
         crags = Crag.return_all()
@@ -41,4 +41,4 @@ def create_dummy_Ascents():
 
 
 if __name__ == "__main__":
-    create_dummy_Ascents()
+    create_dummy_ascents()

@@ -170,6 +170,13 @@ export class MenuComponent implements OnInit {
               routerLink: '/ascents',
             });
             break;
+          case MenuItemType.RANKING:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.ranking')),
+              icon: 'pi pi-fw pi-trophy',
+              routerLink: '/ranking',
+            });
+            break;
         }
       });
     })

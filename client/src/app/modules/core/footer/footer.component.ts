@@ -78,6 +78,13 @@ export class FooterComponent implements OnInit{
               link: null
             });
             break;
+          case MenuItemType.RANKING:
+            this.menuItems.push({
+              title: this.translocoService.translate('menu.ranking'),
+              routerLink: 'ranking',
+              link: null
+            });
+            break;
           case MenuItemType.YOUTUBE:
             this.menuItems.push({
               title: this.translocoService.translate('menu.youtube'),

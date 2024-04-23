@@ -62,6 +62,8 @@ import {AreaAscentsComponent} from '../area/area-ascents/area-ascents.component'
 import {LineAscentsComponent} from '../line/line-ascents/line-ascents.component';
 import {RegionAscentsComponent} from '../region/region-ascents/region-ascents.component';
 import {UserChartsComponent} from '../user/user-charts/user-charts.component';
+import {RankingComponent} from '../ranking/ranking/ranking.component';
+import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
 
 const routes: Routes = [
   {
@@ -618,6 +620,26 @@ const routes: Routes = [
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
+  },
+  {
+    path: 'ranking',
+    component: RankingComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
+    },
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        children: [
+          {
+            path: '',
+            component: RankingListComponent,
+            outlet: 'rankingContent'
+          }
+        ]
+      },
+    ]
   },
   {
     component: NotFoundComponent,

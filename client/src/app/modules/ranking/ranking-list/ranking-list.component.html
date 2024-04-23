@@ -1,0 +1,52 @@
+<ng-container *transloco="let t, read: 'ascents.ascentList'">
+
+  <p-dataView #dv [value]="rankings" [sortField]="sortField" [sortOrder]="sortOrder"
+              [emptyMessage]="t('noRankingsFoundMessage')"
+              [loading]="loading === loadingStates.LOADING">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
+        <p-dropdown [options]="rankingTypes" [(ngModel)]="rankingType"
+                    (ngModelChange)="sortField = rankingType.value"
+                    optionLabel="label"
+                    styleClass="md:mb-0">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="rankingType">
+              <div>{{ rankingType.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </ng-template>
+    <ng-template let-ascents pTemplate="list">
+      <div class="grid grid-nogutter">
+        <div class="col-12 " *ngFor="let ranking of rankings; let first = first; let index = index">
+          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
+               [ngClass]="{ 'border-top-1 surface-border': !first }">
+
+            <div class="ranking-table-row">
+              <div class="ranking-table-rank">
+                {{index + 1}}.
+              </div>
+              <div class="ranking-table-user-info">
+                <p-avatar [image]="ranking.user.avatar ? ranking.user.avatar.thumbnailS : 'assets/user.png'"
+                          styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                <a class="username"
+                   routerLink="{{ranking.routerLinkUser}}">{{ranking.user.firstname}} {{ranking.user.lastname}}</a>
+              </div>
+              <div class="ranking-table-score">
+                {{ranking[sortField]}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+
+</ng-container>

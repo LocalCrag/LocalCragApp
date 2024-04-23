@@ -8,3 +8,4 @@ uploads/*
 !.idea/runConfigurations
 .coverage
 __pycache__/
+/src/config/alembic.cfg

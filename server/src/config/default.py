@@ -29,3 +29,4 @@ class DefaultConfig(object):
     SPACES_REGION = 'eu-central-1'
     SPACES_BUCKET = 'lc-test-bucket'
     SPACES_ACCESS_ENDPOINT = None
+    ENABLE_SCHEDULERS = True

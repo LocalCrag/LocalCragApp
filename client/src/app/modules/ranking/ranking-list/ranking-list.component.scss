@@ -1,0 +1,54 @@
+a {
+  text-decoration: none;
+  color: #4b5563;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+}
+
+.ranking-table-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+
+  .ranking-table-rank {
+    font-size: 1.5rem;
+    flex-basis: 4rem;
+  }
+
+  .ranking-table-user-info {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+
+    .username {
+      margin-left: .25rem
+    }
+
+  }
+
+  .ranking-table-score {
+    font-size: 1.5rem;
+  }
+
+}
+
+.ranking-table-container {
+  container-type: inline-size;
+}
+
+
+@container (max-width: 1000px) {
+  .ranking-table-row {
+    .ranking-table-rank {
+      font-size: 1rem;
+    }
+    .ranking-table-score {
+      font-size: 1rem;
+      font-weight: bolder;
+    }
+  }
+}

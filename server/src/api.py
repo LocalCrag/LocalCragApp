@@ -16,6 +16,7 @@ from resources.menu_item_resources import GetMenuItems, CreateMenuItem, GetMenuI
     UpdateMenuItemTopOrder, UpdateMenuItemBottomOrder, GetCragMenuStructure
 from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
+from resources.ranking_resources import GetRanking
 from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
@@ -30,6 +31,7 @@ from models.crag import Crag
 from models.sector import Sector
 from models.area import Area
 from models.line import Line
+from models.ranking import Ranking
 
 
 def configure_api(app):
@@ -97,6 +99,11 @@ def configure_api(app):
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=DeleteAscent.as_view('delete_ascent'))
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=UpdateAscent.as_view('update_ascent'))
     app.register_blueprint(ascent_bp, url_prefix='/api/ascents')
+
+    # Ranking API
+    ranking_bp = Blueprint('ranking', __name__)
+    ranking_bp.add_url_rule('', view_func=GetRanking.as_view('get_ranking'))
+    app.register_blueprint(ranking_bp, url_prefix='/api/ranking')
 
     # Ticks API
     tick_bp = Blueprint('ticks', __name__)
