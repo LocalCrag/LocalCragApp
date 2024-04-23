@@ -8,7 +8,7 @@ from models.ranking import Ranking
 from models.user import User
 
 
-def build_rankings(app = None):
+def build_rankings(app=None):
     if not app:
         app = scheduler.app
     with app.app_context():
@@ -27,8 +27,7 @@ def build_rankings(app = None):
             ranking.total_fa_count = 0
         users = User.return_all()
         for user in users:
-            print(user.firstname)
-
+            # Pagination needed for not generating too large requests
             page = 1
             has_next_page = True
             while has_next_page:
@@ -37,7 +36,6 @@ def build_rankings(app = None):
                 has_next_page = paginated_ascents.has_next
                 if paginated_ascents.has_next:
                     page += 1
-
 
                 for ascent in paginated_ascents.items:
                     line: Line = ascent.line
@@ -71,11 +69,11 @@ def build_rankings(app = None):
                         ranking.top_10_fa = sum(ranking.top_fa_values)
                         ranking.top_10_fa_exponential = sum([exponential_base ** x for x in ranking.top_fa_values])
                         ranking.top_10 = sum(sorted(ranking.top_values)[:10])
-                        ranking.top_10_exponential = sum([exponential_base ** x for x in sorted(ranking.top_values)[:10]])
+                        ranking.top_10_exponential = sum(
+                            [exponential_base ** x for x in sorted(ranking.top_values)[:10]])
                         db.session.add(ranking)
                         flag_modified(ranking, "top_fa_values")
                         flag_modified(ranking, "top_values")
-            print('pre commit')
             db.session.commit()
 
 
