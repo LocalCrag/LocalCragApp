@@ -25,6 +25,8 @@ class Crag(HasSlug, BaseEntity):
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+    rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
+
 
 
     @classmethod

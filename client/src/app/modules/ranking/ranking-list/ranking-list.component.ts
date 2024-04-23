@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {RankingService} from '../../../services/crud/ranking.service';
 import {Ranking} from '../../../models/ranking';
 import {LoadingState} from '../../../enums/loading-state';
@@ -38,6 +38,9 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './ranking-list.component.scss'
 })
 export class RankingListComponent implements OnInit {
+
+  @Input() cragId: string;
+  @Input() sectorId: string;
 
   public loadingStates = LoadingState;
   public rankings: Ranking[];
@@ -111,6 +114,12 @@ export class RankingListComponent implements OnInit {
   loadRanking() {
     this.loading = LoadingState.LOADING;
     let filters = `?line_type=${LineType.BOULDER}`;
+    if(this.cragId){
+      filters += `&crag_id=${this.cragId}`;
+    }
+    if(this.sectorId){
+      filters += `&sector_id=${this.sectorId}`;
+    }
     this.rankingService.getRanking(filters).subscribe(rankings => {
       this.rankings = rankings;
       this.sortField = this.rankingType.value;

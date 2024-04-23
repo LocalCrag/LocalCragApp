@@ -83,6 +83,11 @@ export class CragComponent implements OnInit {
             routerLink: `/topo/${this.crag.slug}/ascents`,
           },
           {
+            label: this.translocoService.translate(marker('crag.ranking')),
+            icon: 'pi pi-fw pi-trophy',
+            routerLink: `/topo/${this.crag.slug}/ranking`,
+          },
+          {
             label: this.translocoService.translate(marker('crag.edit')),
             icon: 'pi pi-fw pi-file-edit',
             routerLink: `/topo/${this.crag.slug}/edit`,

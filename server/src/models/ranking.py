@@ -8,10 +8,6 @@ from models.enums.line_type_enum import LineTypeEnum
 class Ranking(db.Model):
     __tablename__ = 'rankings'
 
-    # todo cascading
-    # todo tests for get route
-    # todo tests for ranking builder
-
     id = db.Column(UUID(), default=lambda u: str(uuid.uuid4()), unique=True, primary_key=True)
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=True)
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=True)

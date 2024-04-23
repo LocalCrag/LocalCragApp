@@ -90,6 +90,11 @@ export class RegionComponent implements OnInit {
           routerLink: `/topo/ascents`,
         },
         {
+          label: this.translocoService.translate(marker('region.ranking')),
+          icon: 'pi pi-fw pi-trophy',
+          routerLink: `/topo/ranking`,
+        },
+        {
           label: this.translocoService.translate(marker('region.edit')),
           icon: 'pi pi-fw pi-file-edit',
           routerLink: `/topo/edit-region`,

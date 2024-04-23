@@ -18,7 +18,11 @@ class GetRanking(MethodView):
         if line_type not in set(item.value for item in LineTypeEnum):
             raise BadRequest('Invalid line type')
 
+        if crag_id and sector_id:
+            raise BadRequest('Can either fetch crag OR sector OR global ranking.')
+
         query = db.session.query(Ranking)
+        query = query.filter(Ranking.type == line_type)
         query = query.filter(Ranking.crag_id == crag_id)
         query = query.filter(Ranking.sector_id == sector_id)
         rankings = query.all()

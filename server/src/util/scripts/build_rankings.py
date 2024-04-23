@@ -8,8 +8,10 @@ from models.ranking import Ranking
 from models.user import User
 
 
-def build_rankings():
-    with scheduler.app.app_context():
+def build_rankings(app = None):
+    if not app:
+        app = scheduler.app
+    with app.app_context():
         exponential_base = 1.5
 
         # Reset all rankings before recomputation

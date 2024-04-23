@@ -274,7 +274,7 @@ def test_update_user_invalid_email(client):
 
 
 def test_promote_user_to_member(client):
-    # Remove admin prop first..
+    # Remove admin prop first...
     with app.app_context():
         user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
         user.admin = False
