@@ -47,7 +47,9 @@ app = create_app()
 
 setup_webargs_error_handlers()
 
-start_schedulers()
+if app.config['ENABLE_SCHEDULERS']:
+    start_schedulers()
+
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(_jwt_header, jwt_payload):
