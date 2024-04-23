@@ -102,7 +102,7 @@
                   <a class="username"
                      routerLink="{{ascent.routerLinkCreatedBy}}">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</a>
                   <div class="ascent-table-line-name">
-                    {{ ascent.line.name }}
+                    <a routerLink="{{ascent.routerLinkLine}}">{{ ascent.line.name }}</a>
                     <div class="grade">
                       {{ ascent.line.grade.name | transloco }}
                     </div>
@@ -165,7 +165,7 @@
                   <a class="username"
                      routerLink="{{ascent.routerLinkCreatedBy}}">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</a>
                   <div class="ascent-table-line-name">
-                    {{ ascent.line.name }}
+                    <a routerLink="{{ascent.routerLinkLine}}">{{ ascent.line.name }}</a>
                     <div class="grade">
                       {{ ascent.line.grade.name | transloco }}
                     </div>
