@@ -27,6 +27,7 @@ def build_rankings(app = None):
             ranking.total_fa_count = 0
         users = User.return_all()
         for user in users:
+            print(user.firstname)
             ascents = Ascent.return_all(filter=lambda: Ascent.created_by_id == user.id)
             for ascent in ascents:
                 line: Line = ascent.line
@@ -64,6 +65,7 @@ def build_rankings(app = None):
                     db.session.add(ranking)
                     flag_modified(ranking, "top_fa_values")
                     flag_modified(ranking, "top_values")
+        print('pre commit')
         db.session.commit()
 
 
