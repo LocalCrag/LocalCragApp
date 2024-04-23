@@ -184,6 +184,7 @@ export class AscentListComponent implements OnInit {
       templates: {
         header: AscentFormTitleComponent,
       },
+      focusOnShow: false,
       data: {
         ascent
       },
