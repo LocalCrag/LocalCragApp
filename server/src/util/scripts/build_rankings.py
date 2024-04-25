@@ -51,6 +51,7 @@ def build_rankings(app=None):
     if not app:
         app = scheduler.app
     with app.app_context():
+        print('Starting ranking calculation...')
         exponential_base = 1.5
         users = User.return_all()
         for user in users:
@@ -59,6 +60,7 @@ def build_rankings(app=None):
             rankings = Ranking.return_all_for_user(user.id)
             for ranking in rankings:
                 ranking_map.add(ranking)
+                db.session.add(ranking)
             # Pagination needed for not generating too large requests
             page = 1
             has_next_page = True
@@ -106,6 +108,7 @@ def build_rankings(app=None):
                         flag_modified(ranking, "top_fa_values")
                         flag_modified(ranking, "top_values")
             db.session.commit()
+        print('Rankings successfully calculated.')
 
 
 if __name__ == "__main__":
