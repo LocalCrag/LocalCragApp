@@ -35,7 +35,7 @@ export class LeveledGradeDistributionComponent implements OnChanges {
    */
   buildGradeDistribution() {
     this.grades.map(grade => {
-      if (grade.value < 0) {
+      if (grade.value <= 0) {
         this.level5++;
       }
       if (grade.value > 0 && grade.value < 10) {
