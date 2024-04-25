@@ -2,10 +2,49 @@ from sqlalchemy.orm.attributes import flag_modified
 
 from extensions import db, scheduler
 from models.ascent import Ascent
+from models.enums.line_type_enum import LineTypeEnum
 from models.grades import get_grade_value
 from models.line import Line
 from models.ranking import Ranking
 from models.user import User
+
+
+class UserRankingMap():
+    user_id = None
+    map = {}
+
+    def __init__(self, user_id):
+        self.user_id = user_id
+
+    def add(self, ranking: Ranking):
+        ranking.reset()
+        if ranking.type not in self.map:
+            self.map[ranking.type] = {
+                'global': None,
+                'crags': {},
+                'sectors': {},
+            }
+        if not ranking.crag_id and not ranking.sector_id:
+            self.map[ranking.type]['global'] = ranking
+        if ranking.crag_id:
+            self.map[ranking.type]['crags'][ranking.crag_id] = ranking
+        if ranking.sector_id:
+            self.map[ranking.type]['sectors'][ranking.sector_id] = ranking
+
+    def get_global(self, type: LineTypeEnum):
+        if self.map[type]['global']:
+            return self.map[type]['global']
+        return Ranking.get_new_ranking(self.user_id, type)
+
+    def get_crag(self, type: LineTypeEnum, crag_id):
+        if self.map[type]['crags'][crag_id]:
+            return self.map[type]['crags'][crag_id]
+        return Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id)
+
+    def get_sector(self, type: LineTypeEnum, sector_id):
+        if self.map[type]['sectors'][sector_id]:
+            return self.map[type]['sectors'][sector_id]
+        return Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id)
 
 
 def build_rankings(app=None):
@@ -13,20 +52,13 @@ def build_rankings(app=None):
         app = scheduler.app
     with app.app_context():
         exponential_base = 1.5
-
-        # Reset all rankings before re-computation
-        rankings = Ranking.return_all()
-        for ranking in rankings:
-            ranking.top_values = []
-            ranking.top_fa_values = []
-            ranking.total = 0
-            ranking.total_exponential = 0
-            ranking.total_count = 0
-            ranking.total_fa = 0
-            ranking.total_fa_exponential = 0
-            ranking.total_fa_count = 0
         users = User.return_all()
         for user in users:
+            # Build ranking map
+            ranking_map = UserRankingMap(user.id)
+            rankings = Ranking.return_all_for_user(user.id)
+            for ranking in rankings:
+                ranking_map.add(ranking)
             # Pagination needed for not generating too large requests
             page = 1
             has_next_page = True
@@ -36,13 +68,12 @@ def build_rankings(app=None):
                 has_next_page = paginated_ascents.has_next
                 if paginated_ascents.has_next:
                     page += 1
-
                 for ascent in paginated_ascents.items:
                     line: Line = ascent.line
                     ascent_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
-                    global_ranking = Ranking.find_for_user(user.id, line.type)
-                    crag_ranking = Ranking.find_for_user(user.id, line.type, crag_id=ascent.crag_id)
-                    sector_ranking = Ranking.find_for_user(user.id, line.type, sector_id=ascent.sector_id)
+                    global_ranking = ranking_map.get_global(line.type)
+                    crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id)
+                    sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id)
                     for ranking in [global_ranking, crag_ranking, sector_ranking]:
                         ranking.total_count += 1
                         ranking.total += ascent_value
@@ -68,9 +99,9 @@ def build_rankings(app=None):
                         ranking.top_25_exponential = sum([exponential_base ** x for x in ranking.top_values])
                         ranking.top_10_fa = sum(ranking.top_fa_values)
                         ranking.top_10_fa_exponential = sum([exponential_base ** x for x in ranking.top_fa_values])
-                        ranking.top_10 = sum(sorted(ranking.top_values)[:10])
+                        ranking.top_10 = sum(sorted(ranking.top_values, reverse=True)[:10])
                         ranking.top_10_exponential = sum(
-                            [exponential_base ** x for x in sorted(ranking.top_values)[:10]])
+                            [exponential_base ** x for x in sorted(ranking.top_values, reverse=True)[:10]])
                         db.session.add(ranking)
                         flag_modified(ranking, "top_fa_values")
                         flag_modified(ranking, "top_values")
