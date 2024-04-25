@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {RankingService} from '../../../services/crud/ranking.service';
 import {Ranking} from '../../../models/ranking';
 import {LoadingState} from '../../../enums/loading-state';
@@ -6,7 +6,7 @@ import {LineType} from '../../../enums/line-type';
 import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {PrimeIcons, SelectItem, SharedModule} from 'primeng/api';
+import {SelectItem, SharedModule} from 'primeng/api';
 import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {ButtonModule} from 'primeng/button';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
@@ -35,7 +35,8 @@ import {FormsModule} from '@angular/forms';
     FormsModule
   ],
   templateUrl: './ranking-list.component.html',
-  styleUrl: './ranking-list.component.scss'
+  styleUrl: './ranking-list.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class RankingListComponent implements OnInit {
 
