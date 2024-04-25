@@ -36,6 +36,7 @@ import {Actions, ofType} from '@ngrx/effects';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {filter} from 'rxjs/operators';
+import {User} from '../../../models/user';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -78,7 +79,7 @@ import {filter} from 'rxjs/operators';
 @UntilDestroy()
 export class AscentListComponent implements OnInit {
 
-  @Input() userId: string;
+  @Input() user: User;
   @Input() cragId: string;
   @Input() sectorId: string;
   @Input() areaId: string;
@@ -153,8 +154,8 @@ export class AscentListComponent implements OnInit {
       }
       let filters = [`page=${this.currentPage}`]
       filters.push(...this.sortKey.value);
-      if (this.userId) {
-        filters.push(`user_id=${this.userId}`);
+      if (this.user) {
+        filters.push(`user_id=${this.user.id}`);
       }
       if (this.cragId) {
         filters.push(`crag_id=${this.cragId}`);
