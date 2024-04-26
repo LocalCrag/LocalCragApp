@@ -7,14 +7,16 @@ from extensions import db
 from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class User(HasSlug, BaseEntity):
+class User(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a user.
     """
     __tablename__ = 'users'
     slug_target_columns = 'firstname, lastname'
+    search_name_target_columns = ['firstname', 'lastname']
 
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)

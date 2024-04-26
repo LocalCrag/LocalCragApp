@@ -5,9 +5,10 @@ from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class Crag(HasSlug, BaseEntity):
+class Crag(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a climbing crag. Could be e.g. "Glees". Contains one or more sectors.
     """

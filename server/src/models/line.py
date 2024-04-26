@@ -10,9 +10,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class Line(HasSlug, BaseEntity):
+class Line(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """

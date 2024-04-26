@@ -6,9 +6,10 @@ from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class Sector(HasSlug, BaseEntity):
+class Sector(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a climbing crag's sector. Could be e.g. "Mordor". Contains one or more areas.
     """
