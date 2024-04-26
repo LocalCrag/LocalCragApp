@@ -37,12 +37,12 @@ class UserRankingMap():
         return Ranking.get_new_ranking(self.user_id, type)
 
     def get_crag(self, type: LineTypeEnum, crag_id):
-        if self.map[type]['crags'][crag_id]:
+        if crag_id in self.map[type]['crags']:
             return self.map[type]['crags'][crag_id]
         return Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id)
 
     def get_sector(self, type: LineTypeEnum, sector_id):
-        if self.map[type]['sectors'][sector_id]:
+        if sector_id in self.map[type]['sectors']:
             return self.map[type]['sectors'][sector_id]
         return Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id)
 
