@@ -9,7 +9,7 @@ from models.ranking import Ranking
 from models.user import User
 
 
-class UserRankingMap():
+class UserRankingMap:
     user_id = None
     map = {}
 
@@ -32,19 +32,19 @@ class UserRankingMap():
             self.map[ranking.type]['sectors'][ranking.sector_id] = ranking
 
     def get_global(self, type: LineTypeEnum):
-        if self.map[type]['global']:
-            return self.map[type]['global']
-        return Ranking.get_new_ranking(self.user_id, type)
+        if not self.map[type]['global']:
+            self.map[type]['global'] = Ranking.get_new_ranking(self.user_id, type)
+        return self.map[type]['global']
 
     def get_crag(self, type: LineTypeEnum, crag_id):
-        if crag_id in self.map[type]['crags']:
-            return self.map[type]['crags'][crag_id]
-        return Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id)
+        if crag_id not in self.map[type]['crags']:
+            self.map[type]['crags'][crag_id] = Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id)
+        return self.map[type]['crags'][crag_id]
 
     def get_sector(self, type: LineTypeEnum, sector_id):
-        if sector_id in self.map[type]['sectors']:
-            return self.map[type]['sectors'][sector_id]
-        return Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id)
+        if sector_id not in self.map[type]['sectors']:
+            self.map[type]['sectors'][sector_id] = Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id)
+        return self.map[type]['sectors'][sector_id]
 
 
 def build_rankings(app=None):
