@@ -15,15 +15,15 @@ class UserRankingMap():
 
     def __init__(self, user_id):
         self.user_id = user_id
-
-    def add(self, ranking: Ranking):
-        ranking.reset()
-        if ranking.type not in self.map:
-            self.map[ranking.type] = {
+        for type in LineTypeEnum:
+            self.map[type] = {
                 'global': None,
                 'crags': {},
                 'sectors': {},
             }
+
+    def add(self, ranking: Ranking):
+        ranking.reset()
         if not ranking.crag_id and not ranking.sector_id:
             self.map[ranking.type]['global'] = ranking
         if ranking.crag_id:
