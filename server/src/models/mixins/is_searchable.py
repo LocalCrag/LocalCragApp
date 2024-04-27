@@ -17,9 +17,11 @@ class IsSearchable:
 @event.listens_for(db.session, "before_commit")
 def update_searchable(session):
     new_items = [item for item in session.new if isinstance(item, IsSearchable)]
+    if new_items:
+        db.session.flush()
     for item in new_items:
         searchable = Searchable()
-        searchable.id = getattr(item, 'id') # todo id doesnt yet exist
+        searchable.id = getattr(item, 'id')
         searchable.type = item.searchable_type
         searchable.name = ''.join(
             [getattr(item, name_target_column) for name_target_column in item.name_target_columns])
@@ -30,8 +32,15 @@ def update_searchable(session):
         searchable = (db.session.query(Searchable)
                       .filter(Searchable.id == getattr(item, 'id'))
                       .filter(Searchable.type == item.searchable_type)
-                      .first()) # todo needs setup script
+                      .first())
         searchable.name = ''.join(
             [getattr(item, name_target_column) for name_target_column in item.name_target_columns])
         db.session.add(searchable)
 
+    deleted_items = [item for item in session.deleted if isinstance(item, IsSearchable)]
+    for item in deleted_items:
+        searchable = (db.session.query(Searchable)
+                      .filter(Searchable.id == getattr(item, 'id'))
+                      .filter(Searchable.type == item.searchable_type)
+                      .first())
+        db.session.delete(searchable)

@@ -5,6 +5,7 @@ from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
 
@@ -16,6 +17,7 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     __tablename__ = 'sectors'
 
     slug_blocklist = ['edit', 'create-sector', 'sectors', 'gallery', 'ascents', 'rules']
+    searchable_type = SearchableItemTypeEnum.SECTOR
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     short_description = db.Column(db.Text, nullable=True)

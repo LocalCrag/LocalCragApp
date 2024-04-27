@@ -6,6 +6,7 @@ from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
 
@@ -17,6 +18,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     __tablename__ = 'users'
     slug_target_columns = 'firstname, lastname'
     search_name_target_columns = ['firstname', 'lastname']
+    searchable_type = SearchableItemTypeEnum.USER
 
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
