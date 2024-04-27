@@ -9,7 +9,6 @@ from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import db, jwt, ma, migrate, cors, scheduler
 from models.revoked_token import RevokedToken
-from schedulers import start_schedulers
 
 
 def register_extensions(application):
@@ -47,8 +46,6 @@ def create_app():
 app = create_app()
 
 setup_webargs_error_handlers()
-
-start_schedulers(app)
 
 
 @jwt.token_in_blocklist_loader

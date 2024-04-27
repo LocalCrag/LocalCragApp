@@ -29,7 +29,6 @@ install = "*"
 pytest-mock = "*"
 boto3 = "*"
 moto = "*"
-flask-apscheduler = "*"
 
 [dev-packages]
 

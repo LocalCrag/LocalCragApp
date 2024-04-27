@@ -16,7 +16,7 @@ from resources.menu_item_resources import GetMenuItems, CreateMenuItem, GetMenuI
     UpdateMenuItemTopOrder, UpdateMenuItemBottomOrder, GetCragMenuStructure
 from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
-from resources.ranking_resources import GetRanking
+from resources.ranking_resources import GetRanking, UpdateRanking
 from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
@@ -103,6 +103,7 @@ def configure_api(app):
     # Ranking API
     ranking_bp = Blueprint('ranking', __name__)
     ranking_bp.add_url_rule('', view_func=GetRanking.as_view('get_ranking'))
+    ranking_bp.add_url_rule('/update', view_func=UpdateRanking.as_view('update_ranking'))
     app.register_blueprint(ranking_bp, url_prefix='/api/ranking')
 
     # Ticks API
