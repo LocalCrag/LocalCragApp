@@ -11,3 +11,7 @@ class Searchable(db.Model):
     type = db.Column(db.Enum(SearchableItemTypeEnum), nullable=False, primary_key=True)
     id = db.Column(UUID(), nullable=False, primary_key=True)
 
+    @classmethod
+    def search(cls, query, limit):
+        query = cls.query.filter(Searchable.name.like('%' + query + '%'))
+        return query.limit(limit).all()
