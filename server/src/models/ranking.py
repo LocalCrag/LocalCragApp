@@ -29,26 +29,6 @@ class Ranking(db.Model):
     total_fa_exponential = db.Column(db.Integer(), default=0)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
 
-    @classmethod
-    def find_for_user(cls, user_id, type, crag_id=None, sector_id=None):
-        query = cls.query.filter_by(user_id=user_id).filter_by(type=type).filter_by(crag_id=crag_id).filter_by(
-            sector_id=sector_id)
-        ranking = query.first()
-        if not ranking:
-            ranking = Ranking()
-            ranking.user_id = user_id
-            ranking.type = type
-            ranking.crag_id = crag_id
-            ranking.sector_id = sector_id
-            ranking.top_values = []
-            ranking.top_fa_values = []
-            ranking.total = 0
-            ranking.total_exponential = 0
-            ranking.total_count = 0
-            ranking.total_fa = 0
-            ranking.total_fa_exponential = 0
-            ranking.total_fa_count = 0
-        return ranking
 
     @classmethod
     def return_all(cls):
