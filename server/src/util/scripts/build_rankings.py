@@ -1,3 +1,4 @@
+from flask import current_app
 from sqlalchemy.orm.attributes import flag_modified
 
 from extensions import db, scheduler
@@ -109,7 +110,3 @@ def build_rankings(app=None):
                         flag_modified(ranking, "top_values")
             db.session.commit()
         print('Rankings successfully calculated.')
-
-
-if __name__ == "__main__":
-    build_rankings()
