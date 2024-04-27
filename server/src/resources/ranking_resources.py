@@ -6,6 +6,7 @@ from extensions import db
 from marshmallow_schemas.ranking_schema import ranking_schema
 from models.enums.line_type_enum import LineTypeEnum
 from models.ranking import Ranking
+from util.scripts.build_rankings import build_rankings
 
 
 class GetRanking(MethodView):
@@ -28,3 +29,10 @@ class GetRanking(MethodView):
         rankings = query.all()
 
         return jsonify(ranking_schema.dump(rankings)), 200
+
+
+class UpdateRanking(MethodView):
+
+    def get(self):
+        build_rankings()
+        return jsonify({'message': 'Rankings updated'}), 200
