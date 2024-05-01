@@ -12,7 +12,7 @@ class Ranking(db.Model):
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=True)
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=True)
     user_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
-    user = db.relationship('User', lazy='joined')
+    user = db.relationship('User', lazy='joined', overlaps="rankings")
     top_10 = db.Column(db.Integer(), default=0)
     top_10_exponential = db.Column(db.Integer(), default=0)
     top_25 = db.Column(db.Integer(), default=0)

@@ -37,7 +37,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     admin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     moderator = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    ascents = db.relationship("Ascent", cascade="all,delete", backref="user", lazy="select")
+    ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
 
 
