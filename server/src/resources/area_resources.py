@@ -9,18 +9,15 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
-from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
 from models.line import Line
 from models.sector import Sector
-from models.topo_image import TopoImage
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
 from webargs_schemas.area_args import area_args
-from webargs_schemas.topo_image_args import topo_image_args
 
 
 class GetAreas(MethodView):
