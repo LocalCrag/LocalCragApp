@@ -99,7 +99,7 @@
                 <p-avatar [image]="ascent.createdBy.avatar ? ascent.createdBy.avatar.thumbnailS : 'assets/user.png'"
                           styleClass="mr-2" size="large" shape="circle" *ngIf="!user"></p-avatar>
                 <div class="name-with-line">
-                  <a class="username"
+                  <a class="username" *ngIf="!user"
                      routerLink="{{ascent.routerLinkCreatedBy}}">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</a>
                   <div class="ascent-table-line-name">
                     <a routerLink="{{ascent.routerLinkLine}}">{{ ascent.line.name }}</a>
@@ -162,7 +162,7 @@
                 <p-avatar [image]="ascent.createdBy.avatar ? ascent.createdBy.avatar.thumbnailS : 'assets/user.png'"
                           styleClass="mr-3" size="large" shape="circle" *ngIf="!user"></p-avatar>
                 <div class="name-with-line">
-                  <a class="username"
+                  <a class="username" *ngIf="!user"
                      routerLink="{{ascent.routerLinkCreatedBy}}">{{ascent.createdBy.firstname}} {{ascent.createdBy.lastname}}</a>
                   <div class="ascent-table-line-name">
                     <a routerLink="{{ascent.routerLinkLine}}">{{ ascent.line.name }}</a>

@@ -113,7 +113,7 @@ lc-ascent-list {
       gap: .5rem;
       flex-direction: row;
       align-items: center;
-      flex-basis: 6rem;
+      flex-basis: 7rem;
     }
 
     .ascent-actions{
@@ -367,7 +367,14 @@ lc-ascent-list {
         flex-basis: 8rem;
 
         p-rating {
+          gap: .25rem;
           margin-top: 3px; // Fixes weird off-center placement
+
+           svg{
+            width: .75rem;
+            height: .75rem;
+          }
+
         }
 
       }
