@@ -42,7 +42,7 @@ export class SearchDialogComponent {
               private router: Router,
               private ref: DynamicDialogRef) {
     this.queryUpdate.pipe(debounceTime(400)).subscribe(() => {
-        if (this.query) {
+      if (this.query) {
           this.searchService.search(this.query).subscribe(searchables => {
             this.searchables = searchables;
             this.loading = false;
