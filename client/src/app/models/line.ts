@@ -67,6 +67,7 @@ export class Line extends AbstractModel {
   // UI specific attributes, not related to data model
   disabled = false;
   blockOrderIndex: number; // Set after ordering for easy efficient reuse of ng prime data view order feature
+  routerLink: string;
 
   constructor() {
     super();
@@ -134,6 +135,7 @@ export class Line extends AbstractModel {
     }) : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
     line.ascentCount = payload.ascentCount;
+    line.routerLink = line.area ? `/topo/${line.area.sector.crag.slug}/${line.area.sector.slug}/${line.area.slug}/${line.slug}` : null;
 
     return line;
   }

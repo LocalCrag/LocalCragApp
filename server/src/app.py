@@ -11,6 +11,7 @@ from extensions import db, jwt, ma, migrate, cors, scheduler
 from models.revoked_token import RevokedToken
 
 
+
 def register_extensions(application):
     db.init_app(application)
     jwt.init_app(application)
@@ -39,6 +40,8 @@ def create_app():
     register_extensions(application)
 
     configure_extensions(application)
+
+
 
     return application
 

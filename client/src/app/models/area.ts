@@ -18,6 +18,7 @@ export class Area extends AbstractModel {
   ascentCount: number;
 
   sector: Sector;
+  routerLink: string;
 
   /**
    * Parses an area.
@@ -37,6 +38,7 @@ export class Area extends AbstractModel {
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
     area.ascentCount = payload.ascentCount;
+    area.routerLink = area.sector ? `/topo/${area.sector.crag.slug}/${area.sector.slug}/${area.slug}` : null;
     return area;
   }
 

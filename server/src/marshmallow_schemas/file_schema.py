@@ -33,3 +33,4 @@ class FileSchemaWithoutUser(ma.SQLAlchemySchema):
 
 
 file_schema = FileSchema()
+file_schema_without_user = FileSchemaWithoutUser()

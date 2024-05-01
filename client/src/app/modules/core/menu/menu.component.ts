@@ -22,12 +22,17 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import {File} from '../../../models/file';
 import {User} from '../../../models/user';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {SearchDialogComponent} from '../search-dialog/search-dialog.component';
 
 @Component({
   selector: 'lc-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    DialogService
+  ]
 })
 export class MenuComponent implements OnInit {
 
@@ -37,9 +42,12 @@ export class MenuComponent implements OnInit {
   logoImage$: Observable<File>;
   instanceName$: Observable<string>;
   currentUser$: Observable<User>;
+  ref: DynamicDialogRef | undefined;
+
 
   constructor(private menuItemsService: MenuItemsService,
               private translocoService: TranslocoService,
+              private dialogService: DialogService,
               private actions: Actions,
               private store: Store) {
   }
@@ -210,6 +218,17 @@ export class MenuComponent implements OnInit {
    */
   logout() {
     this.store.dispatch(logout({isAutoLogout: false, silent: false}));
+  }
+
+  openSearch(){
+    this.ref = this.dialogService.open(SearchDialogComponent, {
+      position: 'top',
+      closeOnEscape: true,
+      dismissableMask: true,
+      modal: true,
+      showHeader: false,
+      styleClass: 'search-dialog'
+    });
   }
 
 }

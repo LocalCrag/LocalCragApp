@@ -36,6 +36,8 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
 
 
 
+
+
     @classmethod
     def find_max_order_index(cls, crag_id) -> int:
         max_order_index = db.session.query(func.max(cls.order_index)).filter(cls.crag_id == crag_id).first()

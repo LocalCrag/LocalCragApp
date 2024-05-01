@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fdf192a81bdd
-Revises: 61162ef36089
-Create Date: 2024-04-26 21:06:22.959669
+Revision ID: 7ea9ba093ff8
+Revises: 9c48b5f52c82
+Create Date: 2024-04-29 11:53:19.812012
 
 """
 from alembic import op
@@ -13,8 +13,8 @@ from sqlalchemy.util.preloaded import orm
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 
 # revision identifiers, used by Alembic.
-revision = 'fdf192a81bdd'
-down_revision = '61162ef36089'
+revision = '7ea9ba093ff8'
+down_revision = '9c48b5f52c82'
 branch_labels = None
 depends_on = None
 

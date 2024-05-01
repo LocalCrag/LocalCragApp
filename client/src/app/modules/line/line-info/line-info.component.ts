@@ -53,10 +53,13 @@ export class LineInfoComponent {
   }
 
   ngOnInit() {
-    this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
-    this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
-    this.refreshData();
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
+      this.line = null;
+      this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
+      this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+      this.refreshData();
+    });
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
       this.refreshData();
     });
   }

@@ -1,16 +1,17 @@
 """empty message
 
-Revision ID: 61162ef36089
+Revision ID: 4021fb139c9b
 Revises: 497c95fffabe
-Create Date: 2024-04-25 12:17:13.095090
+Create Date: 2024-04-27 23:35:54.073999
 
 """
+import sqlalchemy_utils
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '61162ef36089'
+revision = '4021fb139c9b'
 down_revision = '497c95fffabe'
 branch_labels = None
 depends_on = None
@@ -24,6 +25,7 @@ def upgrade():
     sa.Column('id', sa.UUID(), nullable=False),
     sa.PrimaryKeyConstraint('type', 'id')
     )
+
     # ### end Alembic commands ###
 
 

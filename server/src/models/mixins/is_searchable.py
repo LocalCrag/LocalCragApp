@@ -10,7 +10,7 @@ from models.searchable import Searchable
 
 @declarative_mixin
 class IsSearchable:
-    name_target_columns = ['name']
+    search_name_target_columns = ['name']
     searchable_type: SearchableItemTypeEnum = SearchableItemTypeEnum.LINE
 
 
@@ -24,7 +24,7 @@ def update_searchable(session):
         searchable.id = getattr(item, 'id')
         searchable.type = item.searchable_type
         searchable.name = ''.join(
-            [getattr(item, name_target_column) for name_target_column in item.name_target_columns])
+            [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
         db.session.add(searchable)
 
     dirty_items = [item for item in session.dirty if isinstance(item, IsSearchable)]
@@ -34,7 +34,7 @@ def update_searchable(session):
                       .filter(Searchable.type == item.searchable_type)
                       .first())
         searchable.name = ''.join(
-            [getattr(item, name_target_column) for name_target_column in item.name_target_columns])
+            [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
         db.session.add(searchable)
 
     deleted_items = [item for item in session.deleted if isinstance(item, IsSearchable)]

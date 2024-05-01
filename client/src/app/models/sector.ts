@@ -21,6 +21,7 @@ export class Sector extends AbstractModel {
   areas: Area[];
   crag: Crag;
   ascentCount: number;
+  routerLink: string;
 
 
   /**
@@ -43,6 +44,7 @@ export class Sector extends AbstractModel {
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
     sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     sector.ascentCount = payload.ascentCount;
+    sector.routerLink = sector.crag ? `/topo/${sector.crag.slug}/${sector.slug}` : null;
     return sector;
   }
 
