@@ -2,8 +2,8 @@
 
   <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template pTemplate="start">
-      <img [src]="(logoImage$ | async).thumbnailM" height="40" class="mr-2 flex" *ngIf="logoImage$ | async">
-      <strong *ngIf="!(logoImage$ | async)">{{instanceName$ | async}}</strong>
+      <img [src]="(logoImage$ | async).thumbnailM" height="40" class="mr-2 flex cursor-pointer" *ngIf="logoImage$ | async" routerLink="/">
+      <strong *ngIf="!(logoImage$ | async)" routerLink="/" class="cursor-pointer">{{instanceName$ | async}}</strong>
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex justify-content-center flex-wrap gap-2">
