@@ -15,6 +15,7 @@ import {AvatarModule} from 'primeng/avatar';
 import {RouterLink} from '@angular/router';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {FormsModule} from '@angular/forms';
+import {DialogModule} from 'primeng/dialog';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -32,7 +33,8 @@ import {FormsModule} from '@angular/forms';
     InfiniteScrollModule,
     AvatarModule,
     RouterLink,
-    FormsModule
+    FormsModule,
+    DialogModule
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
@@ -50,7 +52,7 @@ export class RankingListComponent implements OnInit {
   public sortOrder = -1;
   public rankingTypes: SelectItem[];
   public rankingType: SelectItem;
-
+  public showInfoPopup = false;
 
   constructor(private rankingService: RankingService,
               private translocoService: TranslocoService) {
@@ -115,10 +117,10 @@ export class RankingListComponent implements OnInit {
   loadRanking() {
     this.loading = LoadingState.LOADING;
     let filters = `?line_type=${LineType.BOULDER}`;
-    if(this.cragId){
+    if (this.cragId) {
       filters += `&crag_id=${this.cragId}`;
     }
-    if(this.sectorId){
+    if (this.sectorId) {
       filters += `&sector_id=${this.sectorId}`;
     }
     this.rankingService.getRanking(filters).subscribe(rankings => {
@@ -127,6 +129,10 @@ export class RankingListComponent implements OnInit {
       this.rankings.sort((a, b) => a[this.sortField] < b[this.sortField] ? 1 : a[this.sortField] > b[this.sortField] ? -1 : 0)
       this.loading = LoadingState.DEFAULT;
     })
+  }
+
+  showDialog() {
+    this.showInfoPopup = true;
   }
 
 }
