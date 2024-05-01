@@ -18,6 +18,7 @@ from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuP
 from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
 from resources.ranking_resources import GetRanking, UpdateRanking
 from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
+from resources.search_resources import Search
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
@@ -54,6 +55,11 @@ def configure_api(app):
     upload_bp = Blueprint('upload', __name__, )
     upload_bp.add_url_rule('', view_func=UploadFile.as_view('upload_file'))
     app.register_blueprint(upload_bp, url_prefix='/api/upload')
+
+    # Search API
+    search_bp = Blueprint('search', __name__, )
+    search_bp.add_url_rule('/<string:query>', view_func=Search.as_view('search'))
+    app.register_blueprint(search_bp, url_prefix='/api/search')
 
     # Auth API
     auth_bp = Blueprint('auth', __name__, )

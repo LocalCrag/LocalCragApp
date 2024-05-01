@@ -98,7 +98,8 @@ def test_successful_update_ranking(client):
     rv = client.post('/api/ascents', headers=access_headers, json=ascent_data)
     assert rv.status_code == 201
 
-    build_rankings(app)
+    rv = client.get('/api/ranking/update', headers=access_headers, json=ascent_data)
+    assert rv.status_code == 200
 
     rv = client.get('/api/ranking?line_type=BOULDER')
     assert rv.status_code == 200

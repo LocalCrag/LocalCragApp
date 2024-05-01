@@ -24,6 +24,10 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public search = {
+    search: (query: string): string => `${this.apiHost}search/${query}`,
+  };
+
   public ticks = {
     getList: (): string => `${this.apiHost}ticks`,
   };

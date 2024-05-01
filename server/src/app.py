@@ -7,8 +7,9 @@ from config.env_var_config import overwrite_config_by_env_vars
 from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
-from extensions import db, jwt, ma, migrate, cors, scheduler
+from extensions import db, jwt, ma, migrate, cors
 from models.revoked_token import RevokedToken
+
 
 
 def register_extensions(application):
@@ -17,9 +18,6 @@ def register_extensions(application):
     ma.init_app(application)
     migrate.init_app(application, db=db)
     cors.init_app(application, origins=[application.config['FRONTEND_HOST']])
-    if not scheduler.running:
-        scheduler.init_app(application)
-
 
 def configure_extensions(application):
     setup_jwt_error_handlers(jwt)
@@ -39,6 +37,8 @@ def create_app():
     register_extensions(application)
 
     configure_extensions(application)
+
+
 
     return application
 

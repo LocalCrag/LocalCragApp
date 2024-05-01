@@ -17,13 +17,40 @@ lc-menu {
 
   }
 
-  p-avatar{
+  p-avatar {
     cursor: pointer;
     display: flex;
   }
 
-  .wide-menu{
+  .wide-menu {
     width: 15rem
+  }
+
+  .search-fake-input {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    display: flex;
+    padding: .5rem;
+    padding-right: 2rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #3B82F6;
+    }
+
+    @media (screen and max-width: 960px) {
+      border: none;
+      background: transparent;
+      padding-right: .5rem;
+      .search-label {
+        display: none;
+      }
+    }
+
   }
 
 }

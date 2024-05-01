@@ -8,17 +8,20 @@ from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class Line(HasSlug, BaseEntity):
+class Line(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """
     __tablename__ = 'lines'
 
     slug_blocklist = ['edit', 'create-line', 'gallery', 'ascents', 'add-topo-image']
+    searchable_type = SearchableItemTypeEnum.LINE
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     videos = db.Column(JSON, nullable=True)
@@ -63,11 +66,8 @@ class Line(HasSlug, BaseEntity):
     arete = db.Column(db.Boolean, nullable=False, default=False)
     mantle = db.Column(db.Boolean, nullable=False, default=False)
 
-    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index_for_line.asc()')
+    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select",
+                                 order_by='LinePath.order_index_for_line.asc()')
 
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select")
-
-
-
-

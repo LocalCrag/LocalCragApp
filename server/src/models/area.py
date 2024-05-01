@@ -4,16 +4,19 @@ from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_searchable import IsSearchable
 
 
-class Area(HasSlug, BaseEntity):
+class Area(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a sector's area. Could be e.g. "Black Gate". Contains one or more lines.
     """
     __tablename__ = 'areas'
 
     slug_blocklist = ['edit', 'create-area', 'areas', 'gallery', 'ascents', 'rules']
+    searchable_type = SearchableItemTypeEnum.AREA
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)

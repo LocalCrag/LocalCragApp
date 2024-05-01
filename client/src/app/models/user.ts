@@ -20,7 +20,7 @@ export class User extends AbstractModel {
   avatar: File;
 
   fullname: string;
-
+  routerLink: string;
 
   /**
    * Parses a user from a JSON representation.
@@ -44,6 +44,7 @@ export class User extends AbstractModel {
     user.activatedAt = new Date(payload.activatedAt + 'Z');
     user.fullname = `${user.firstname} ${user.lastname}`;
     user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;
+    user.routerLink = `/users/${user.slug}`;
     return user;
   }
 

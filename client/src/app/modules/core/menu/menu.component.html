@@ -7,7 +7,9 @@
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex justify-content-center flex-wrap gap-2">
-        <!--        <input type="text" pInputText placeholder="{{t('searchPlaceholder')}}" *ngIf="!(isMobile$ | async)">-->
+        <div class="search-fake-input" (click)="openSearch()">
+          <i class="pi pi-search mr-2"></i> <span class="search-label">{{t('searchPlaceholder')}}</span>
+        </div>
         <p-menu #menu [model]="userMenuItems" [popup]="true" data-cy="auth-menu" styleClass="wide-menu"></p-menu>
         <p-avatar [image]="(currentUser$ | async).avatar ? (currentUser$ | async).avatar.thumbnailS : 'assets/user.png'"
                   (click)="menu.toggle($event)"  *isLoggedIn="true" data-cy="auth-menu-button"

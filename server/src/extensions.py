@@ -1,4 +1,3 @@
-from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
@@ -14,5 +13,3 @@ ma = Marshmallow()
 migrate = Migrate(compare_type=True)
 
 cors = CORS()
-
-scheduler = APScheduler()
