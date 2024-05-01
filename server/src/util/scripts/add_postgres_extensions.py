@@ -8,6 +8,8 @@ def add_postgres_extensions():
     with app.app_context():
         db.session.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'))
         print('Added uuid-ossp extension to database.')
+        db.session.execute(text('CREATE EXTENSION IF NOT EXISTS "fuzzystrmatch";'))
+        print('Added fuzzystrmatch extension to database.')
 
 
 if __name__ == "__main__":
