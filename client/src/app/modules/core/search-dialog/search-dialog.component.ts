@@ -1,7 +1,7 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
 import {SearchService} from '../../../services/crud/search.service';
 import {Searchable} from '../../../models/searchable';
 import {NgForOf, NgIf} from '@angular/common';
@@ -11,6 +11,10 @@ import {NavigationEnd, Router, RouterLink} from '@angular/router';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ButtonModule} from 'primeng/button';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
+import {Message} from 'primeng/api';
+import {marker} from '@ngneat/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-search-dialog',
@@ -23,19 +27,22 @@ import {ButtonModule} from 'primeng/button';
     NgForOf,
     AvatarModule,
     RouterLink,
-    ButtonModule
+    ButtonModule,
+    MessagesModule,
+    MessageModule
   ],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',
   encapsulation: ViewEncapsulation.None
 })
 @UntilDestroy()
-export class SearchDialogComponent {
+export class SearchDialogComponent{
 
   public query: string;
   public searchables: Searchable[];
   public loading = false;
   private queryUpdate = new Subject<any>();
+
 
 
   constructor(private searchService: SearchService,
