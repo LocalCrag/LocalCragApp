@@ -10,6 +10,3 @@ class Searchable(db.Model):
     name = db.Column(db.String(120), nullable=False)
     type = db.Column(db.Enum(SearchableItemTypeEnum), nullable=False, primary_key=True)
     id = db.Column(UUID(), nullable=False, primary_key=True)
-
-
-# todo test for search route
