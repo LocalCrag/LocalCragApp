@@ -14,7 +14,7 @@ from models.mixins.has_slug import HasSlug
 class InstanceSettings(db.Model):
     __tablename__ = 'instance_settings'
 
-    id = db.Column(UUID(), default=lambda u: str(uuid.uuid4()), unique=True, primary_key=True)
+    id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
     time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.utcnow)
     instance_name = db.Column(db.String(120), nullable=False)
     copyright_owner = db.Column(db.String(120), nullable=False)

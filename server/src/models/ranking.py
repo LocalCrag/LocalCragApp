@@ -8,7 +8,7 @@ from models.enums.line_type_enum import LineTypeEnum
 class Ranking(db.Model):
     __tablename__ = 'rankings'
 
-    id = db.Column(UUID(), default=lambda u: str(uuid.uuid4()), unique=True, primary_key=True)
+    id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
     crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=True)
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=True)
     user_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)

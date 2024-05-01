@@ -14,7 +14,7 @@ class BaseEntity(db.Model):
     """
     __abstract__ = True
 
-    id = db.Column(UUID(), default=lambda u: str(uuid.uuid4()), unique=True, primary_key=True)
+    id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
 
     time_created = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
     time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.utcnow)
