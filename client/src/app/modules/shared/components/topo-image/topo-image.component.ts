@@ -13,7 +13,7 @@ import {TopoImage} from '../../../../models/topo-image';
 import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
 import {LinePath} from '../../../../models/line-path';
 import {environment} from '../../../../../environments/environment';
-import {debounceTime, fromEvent, timer} from 'rxjs';
+import {debounceTime, fromEvent, Subject, timer} from 'rxjs';
 import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Store} from '@ngrx/store';
@@ -57,9 +57,17 @@ export class TopoImageComponent implements OnInit {
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
   private isMobile = false;
+  private resizeRenderSubject = new Subject<any>();
+  private windowWidth: number;
+
 
   constructor(private el: ElementRef,
               private store: Store) {
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.resizeRenderSubject.next(null);
   }
 
 
@@ -67,26 +75,32 @@ export class TopoImageComponent implements OnInit {
    * Loads the background image and draws the lines on it.
    */
   ngOnInit() {
-    this.store.select(selectIsMobile).subscribe(isMobile => {
-      this.isMobile = isMobile;
-      // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
-      // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
-      // kind of solved by using a timeout...
-      setTimeout(() => {
+    // I'm not sure why I need setTimeout here. Depending on the previous page, the parent container is not
+    // sized according to the CSS rules which messes up the calculated sizes. Weird race condition which is
+    // kind of solved by using a timeout...
+    setTimeout(() => {
+      this.render();
+    })
+    // Needs to be recalculated on window resize - fast back and forth changes shouldn't trigger anything, thats
+    // Why we check for window.innerWidth changes.
+    this.windowWidth = window.innerWidth;
+    this.resizeRenderSubject.pipe(debounceTime(500), untilDestroyed(this)).subscribe(() => {
+      if (window.innerWidth != this.windowWidth) {
         this.render();
-      })
-      // Needs to be recalculated on window resize
-      fromEvent(window, 'resize').pipe(debounceTime(50), untilDestroyed(this)).subscribe(() => {
-        this.render();
-      })
+        this.windowWidth = window.innerWidth;
+      }
     });
   }
 
   render() {
-    this.calculateSkeletonDimensionsAndSetImageSource();
-    this.backgroundImage.onload = () => {
-      this.drawLinesAndLabels();
-    }
+    this.store.select(selectIsMobile).subscribe(isMobile => {
+      this.isMobile = isMobile;
+      this.calculateSkeletonDimensionsAndSetImageSource();
+      this.backgroundImage.onload = () => {
+        this.drawLinesAndLabels();
+      }
+    });
+
   }
 
   calculateSkeletonDimensionsAndSetImageSource() {
