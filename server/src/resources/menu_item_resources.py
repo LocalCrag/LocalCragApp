@@ -156,5 +156,6 @@ class UpdateMenuItemBottomOrder(MethodView):
 class GetCragMenuStructure(MethodView):
 
     def get(self):
+        # todo filter for secret spots
         crags: Crag = db.session.query(Crag).join(Sector, isouter=True).join(Area, isouter=True).order_by(Crag.order_index.asc()).all()
         return jsonify(crags_menu_schema.dump(crags)), 200

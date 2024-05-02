@@ -15,7 +15,7 @@ from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
-from util.security_util import check_auth_claims
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -37,6 +37,7 @@ class GetCrag(MethodView):
         @param crag_slug: Slug of the crag to return.
         """
         crag: Crag = Crag.find_by_slug(slug=crag_slug)
+        check_secret_spot_permission(crag)
         return crag_schema.dump(crag), 200
 
 

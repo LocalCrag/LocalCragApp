@@ -9,7 +9,7 @@ from marshmallow_schemas.line_schema import lines_schema, line_schema
 from models.area import Area
 from models.line import Line
 from models.user import User
-from util.security_util import check_auth_claims
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
 
 from webargs_schemas.line_args import line_args
@@ -34,6 +34,7 @@ class GetLine(MethodView):
         @param line_slug: Slug of the line to return.
         """
         line: Line = Line.find_by_slug(line_slug)
+        check_secret_spot_permission(line)
         return line_schema.dump(line), 200
 
 

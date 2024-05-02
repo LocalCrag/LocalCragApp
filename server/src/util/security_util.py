@@ -13,6 +13,7 @@ def check_auth_claims(admin=False, moderator=False, member=False):
     Checks if the requesting user is authorized to perform an action. Usually this means checking that he exists
     and is activated.
     """
+
     def outer_wrapper(fn):
         @wraps(fn)
         def inner_wrapper(*args, **kwargs):
@@ -29,4 +30,15 @@ def check_auth_claims(admin=False, moderator=False, member=False):
         return inner_wrapper
 
     return outer_wrapper
+
+
+def check_secret_spot_permission(item):
+    """
+    Checks for a given Line, Area, Sector or Crag if the requesting user has secret spot permissions to view it.
+    """
+    if item.secret:
+        claims = get_jwt()
+        if not claims['admin'] and not claims['moderator'] and not claims['member']:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
 

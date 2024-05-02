@@ -15,7 +15,7 @@ from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_area_secret_property
-from util.security_util import check_auth_claims
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 
 from webargs_schemas.area_args import area_args
@@ -40,6 +40,7 @@ class GetArea(MethodView):
         @param area_slug: Slug of the area to return.
         """
         area: Area = Area.find_by_slug(area_slug)
+        check_secret_spot_permission(area)
         return area_schema.dump(area), 200
 
 

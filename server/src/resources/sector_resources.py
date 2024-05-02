@@ -17,7 +17,7 @@ from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_sector_secret_property
-from util.security_util import check_auth_claims
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
@@ -42,6 +42,7 @@ class GetSector(MethodView):
         @param sector_slug: Slug of the sector to return.
         """
         sector: Sector = Sector.find_by_slug(sector_slug)
+        check_secret_spot_permission(sector)
         return sector_schema.dump(sector), 200
 
 

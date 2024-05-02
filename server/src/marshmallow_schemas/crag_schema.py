@@ -9,8 +9,6 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
-
-
 class CragSchema(BaseEntitySchema):
     name = fields.String()
     orderIndex = fields.Int(attribute='order_index')
@@ -18,6 +16,7 @@ class CragSchema(BaseEntitySchema):
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute='portrait_image')
     ascentCount = fields.Integer(attribute='ascent_count')
+    secret = fields.Boolean()
 
 
 class CragDetailSchema(CragSchema):

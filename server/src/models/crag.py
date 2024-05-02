@@ -30,7 +30,7 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     lng = db.Column(db.Float, nullable=True)
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-    secret = db.Column(db.Boolean, default=False)
+    secret = db.Column(db.Boolean, default=False, server_default='0')
 
     @classmethod
     def find_max_order_index(cls) -> int:

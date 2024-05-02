@@ -71,4 +71,4 @@ class Line(HasSlug, IsSearchable, BaseEntity):
 
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
-    secret = db.Column(db.Boolean, default=False)
+    secret = db.Column(db.Boolean, default=False, server_default='0')
