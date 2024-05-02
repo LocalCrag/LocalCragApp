@@ -23,6 +23,7 @@ line_args = {
     "faYear": fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year),
     "faName": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "startingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
+    "secret": fields.Boolean(required=True, allow_none=False),
 
     "eliminate": fields.Boolean(required=True, allow_none=False),
     "traverse": fields.Boolean(required=True, allow_none=False),

@@ -61,6 +61,7 @@ class CreateLine(MethodView):
         new_line.type = line_data['type']
         new_line.starting_position = line_data['startingPosition']
         new_line.rating = line_data['rating']
+        new_line.secret = line_data['secret']
 
         if new_line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             new_line.fa_year = line_data['faYear']
@@ -132,6 +133,7 @@ class UpdateLine(MethodView):
         line.type = line_data['type']
         line.starting_position = line_data['startingPosition']
         line.rating = line_data['rating']
+        line.secret = line_data['secret']
 
         if line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             line.fa_year = line_data['faYear']

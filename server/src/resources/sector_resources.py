@@ -16,6 +16,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.secret_spots import update_sector_secret_property
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
@@ -66,6 +67,7 @@ class CreateSector(MethodView):
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
+        new_sector.secret = sector_data['secret']
 
         db.session.add(new_sector)
         db.session.commit()
@@ -91,6 +93,7 @@ class UpdateSector(MethodView):
         sector.lat = sector_data['lat']
         sector.lng = sector_data['lng']
         sector.rules = add_bucket_placeholders(sector_data['rules'])
+        update_sector_secret_property(sector, sector_data['secret'])
         db.session.add(sector)
         db.session.commit()
 

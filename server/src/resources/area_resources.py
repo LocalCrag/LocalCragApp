@@ -14,6 +14,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
+from util.secret_spots import update_area_secret_property
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
@@ -63,6 +64,7 @@ class CreateArea(MethodView):
         new_area.sector_id = sector_id
         new_area.created_by_id = created_by.id
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
+        new_area.secret = area_data['secret']
 
         db.session.add(new_area)
         db.session.commit()
@@ -87,6 +89,7 @@ class UpdateArea(MethodView):
         area.description = add_bucket_placeholders(area_data['description'])
         area.short_description = area_data['shortDescription']
         area.portrait_image_id = area_data['portraitImage']
+        update_area_secret_property(area, area_data['secret'])
         db.session.add(area)
         db.session.commit()
 

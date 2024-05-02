@@ -8,5 +8,6 @@ crag_args = {
     "description": fields.Str(required=True, allow_none=True),
     "shortDescription": fields.Str(required=True, allow_none=True),
     "rules": fields.Str(required=True, allow_none=True),
-    "portraitImage": fields.String(required=True, allow_none=True)
+    "portraitImage": fields.String(required=True, allow_none=True),
+    "secret": fields.Boolean(required=True, allow_none=False),
 }

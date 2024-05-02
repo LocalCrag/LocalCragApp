@@ -33,6 +33,7 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
 
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
+    secret = db.Column(db.Boolean, default=False)
 
 
 
