@@ -26,7 +26,7 @@
 
         <div class="card-container block" lcControlGroup>
           <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}"
-                 lcFormControl data-cy="register-form-email" class="email"/>
+                 lcFormControl data-cy="register-form-email"/>
           <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
           <small class="p-error" *lcIfError="'pattern'">{{t('invalidEmailHint')}}</small>
           <small class="p-error" *lcIfError="'emailTaken'">{{t('emailTaken')}}</small>

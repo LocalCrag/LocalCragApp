@@ -208,7 +208,7 @@
   "menuPages.menuPageList.noMenuPagesFoundEmptyMessage": "Keine Menü Seiten gefunden.",
   "menuPages.menuPageList.menuPagesListTitle": "Menü Seiten",
   "ascents.ascentList.aboutRankingsButtonLabel": "Über Rankings",
-  "ascents.ascentList.aboutRankingsText": "Die Rankings werden alle 15 Minuten aktualisiert. Es gibt verschiedene Arten von Rankings. Die Top-X Rankings zählen die schwersten Begehungen. Je schwerer die Linie, desto mehr Punkte. Eine 6A gib 10 Punkte, eine 6A+ 11 usw. Rankings mit exponentieller Gewichtung sind zur Zeit in einem experimentellen Stadium und können sich ändern.",
+  "ascents.ascentList.aboutRankingsText": "Die Rankings werden alle 15 Minuten aktualisiert. Es gibt verschiedene Arten von Rankings. Die Top-X Rankings zählen die schwersten Begehungen. Je schwerer die Linie, desto mehr Punkte. Eine 6A gibt 10 Punkte, eine 6A+ 11 usw. Rankings mit exponentieller Gewichtung sind zur Zeit in einem experimentellen Stadium und können sich ändern.",
   "ascents.ascentList.aboutRankingsHeader": "Über Rankings",
   "ascents.ascentList.noRankingsFoundMessage": "Bisher wurden keine Rankings erstellt.",
   "region.regionForm.regionNameLabel": "Name",
