@@ -59,7 +59,8 @@ export class MenuComponent implements OnInit {
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
     this.buildMenu();
     this.buildUserMenu();
-    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe(() => {
+    // TODO this is not reloading the crag menu structure on logout/-in! Is logout needed if we have newAuthCredentials? Why is cleanupCredentials here?
+    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials, logout)).subscribe(() => {
       this.buildMenu();
       this.buildUserMenu();
     })

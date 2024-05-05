@@ -25,6 +25,8 @@ def update_searchable(session):
         searchable.type = item.searchable_type
         searchable.name = ''.join(
             [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
+        if hasattr(item, 'secret'):
+            searchable.secret = item.secret
         db.session.add(searchable)
 
     dirty_items = [item for item in session.dirty if isinstance(item, IsSearchable)]
@@ -35,6 +37,8 @@ def update_searchable(session):
                       .first())
         searchable.name = ''.join(
             [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
+        if hasattr(item, 'secret'):
+            searchable.secret = item.secret
         db.session.add(searchable)
 
     deleted_items = [item for item in session.deleted if isinstance(item, IsSearchable)]

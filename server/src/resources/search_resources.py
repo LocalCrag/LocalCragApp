@@ -1,5 +1,6 @@
 from flask import jsonify
 from flask.views import MethodView
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from sqlalchemy import func
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -19,7 +20,12 @@ class Search(MethodView):
     def get(self, query):
         if not query:
             raise BadRequest('A search query is required.')
-        searchables = db.session.query(Searchable).order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
+        db_query  = db.session.query(Searchable)
+        has_jwt = bool(verify_jwt_in_request(optional=True))
+        claims = get_jwt()
+        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+            db_query = db_query.filter(Searchable.secret==False)
+        searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
         result = []
         for searchable in searchables:
             item = None
