@@ -48,6 +48,7 @@ def test_successful_create_line(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -92,6 +93,7 @@ def test_successful_create_line(client):
     assert res["compression"] == True
     assert res["arete"] == True
     assert res["mantle"] == True
+    assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -140,6 +142,7 @@ def test_successful_create_line_with_project_status(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -185,6 +188,7 @@ def test_successful_create_line_with_project_status(client):
     assert res["compression"] == True
     assert res["arete"] == True
     assert res["mantle"] == True
+    assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
@@ -234,6 +238,7 @@ def test_create_line_invalid_fa_year(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -285,6 +290,7 @@ def test_create_line_invalid_rating(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -336,6 +342,7 @@ def test_create_line_invalid_video_url(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -387,6 +394,7 @@ def test_create_line_invalid_grade_name(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -438,6 +446,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -489,6 +498,7 @@ def test_create_line_invalid_grade_scale(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -540,6 +550,7 @@ def test_create_line_invalid_line_type(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -590,6 +601,7 @@ def test_create_line_invalid_line_starting_position(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -639,6 +651,7 @@ def test_create_line_invalid_video_payload(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
@@ -654,6 +667,7 @@ def test_successful_get_lines(client):
     assert res[0]['slug'] == "super-spreader"
     assert res[0]['name'] == "Super-Spreader"
     assert res[0]['ascentCount'] == 1
+    assert res[0]['secret'] == False
     assert len(res[0]['linePaths']) == 2
     assert res[0]['linePaths'][0]['orderIndex'] == 0
     assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -661,6 +675,7 @@ def test_successful_get_lines(client):
     assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
     assert res[1]['slug'] == "treppe"
     assert res[1]['name'] == "Treppe"
+    assert res[1]['secret'] == False
     assert res[1]['ascentCount'] == 0
     assert len(res[1]['linePaths']) == 1
     assert res[1]['linePaths'][0]['orderIndex'] == 1
@@ -711,6 +726,7 @@ def test_successful_get_line(client):
     assert res["compression"] == True
     assert res["arete"] == False
     assert res["mantle"] == False
+    assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 2
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -777,6 +793,7 @@ def test_successful_edit_line(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.put('/api/lines/treppe', headers=access_headers, json=line_data)
@@ -821,6 +838,7 @@ def test_successful_edit_line(client):
     assert res["compression"] == True
     assert res["arete"] == True
     assert res["mantle"] == True
+    assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
     assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
@@ -872,6 +890,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
         "compression": True,
         "arete": True,
         "mantle": True,
+        "secret": False,
     }
 
     rv = client.put('/api/lines/super-spreader', headers=access_headers, json=line_data)

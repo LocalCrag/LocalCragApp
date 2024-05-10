@@ -13,6 +13,7 @@ def test_successful_create_crag(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 12.13,
         "lng": 42.42,
+        "secret": False,
     }
 
     rv = client.post('/api/crags', headers=access_headers, json=crag_data)
@@ -29,6 +30,7 @@ def test_successful_create_crag(client):
     assert res['id'] is not None
     assert res['orderIndex'] == 2
     assert res['ascentCount'] == 0
+    assert res['secret'] == False
 
 
 def test_successful_get_crags(client):
@@ -41,6 +43,7 @@ def test_successful_get_crags(client):
     assert res[0]['name'] == "Brione"
     assert res[0]['orderIndex'] == 0
     assert res[0]['ascentCount'] == 1
+    assert res[0]['secret'] == False
     assert res[0]['shortDescription'] == "Kurze Beschreibung zu Brione"
     assert res[0]['portraitImage']['id'] == '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08'
     assert res[1]['id'] == "6b9e873b-e48d-4f0e-9d86-c3b6d7aa9db0"
@@ -48,6 +51,7 @@ def test_successful_get_crags(client):
     assert res[1]['name'] == "Chironico"
     assert res[1]['orderIndex'] == 1
     assert res[1]['ascentCount'] == 0
+    assert res[1]['secret'] == False
     assert res[1]['shortDescription'] == "Kurze Beschreibung zu Chironico"
     assert res[1]['portraitImage']['id'] == 'b668385f-9693-414a-a4c7-4da6f3ba405d'
 
@@ -67,6 +71,7 @@ def test_successful_get_crag(client):
     assert res['rules'] == "<p>Briones Regeln.</p>"
     assert res['lat'] == None
     assert res['lng'] == None
+    assert res['secret'] == False
 
 
 def test_get_deleted_crag(client):
@@ -93,6 +98,7 @@ def test_successful_edit_crag(client):
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
         "lat": 42.1,
         "lng": 42.2,
+        "secret": False,
     }
 
     rv = client.put('/api/crags/brione', headers=access_headers, json=crag_data)
@@ -108,6 +114,7 @@ def test_successful_edit_crag(client):
     assert res['lng'] == 42.2
     assert res['orderIndex'] == 0
     assert res['ascentCount'] == 1
+    assert res['secret'] == False
     assert res['id'] is not None
 
 

@@ -12,6 +12,7 @@ def test_successful_create_area(client):
         "lat": 12.13,
         "lng": 42.42,
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
+        "secret": False,
     }
 
     rv = client.post('/api/sectors/schattental/areas', headers=access_headers, json=area_data)
@@ -23,6 +24,7 @@ def test_successful_create_area(client):
     assert res['shortDescription'] == "Super Bereich Kurz"
     assert res['lat'] == 12.13
     assert res['lng'] == 42.42
+    assert res['secret'] == False
     assert res['ascentCount'] == 0
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
@@ -69,6 +71,7 @@ def test_successful_get_areas(client):
     assert res[0]['shortDescription'] == None
     assert res[0]['orderIndex'] == 0
     assert res[0]['ascentCount'] == 1
+    assert res[0]['secret'] == False
     assert res[0]['portraitImage']['id'] == 'e8be1c78-1912-405c-861c-883967485838'
     assert res[1]['id'] == "8c3c70ca-c66c-4e45-85c0-72d46778bec4"
     assert res[1]['slug'] == "noch-ein-bereich"
@@ -76,6 +79,7 @@ def test_successful_get_areas(client):
     assert res[1]['shortDescription'] == None
     assert res[1]['orderIndex'] == 1
     assert res[1]['ascentCount'] == 0
+    assert res[1]['secret'] == False
     assert res[1]['portraitImage'] == None
 
 
@@ -91,6 +95,7 @@ def test_successful_get_area(client):
     assert res['lat'] == 34.343434
     assert res['lng'] == 29.292929
     assert res['ascentCount'] == 1
+    assert res['secret'] == False
     assert res['portraitImage']['id'] == 'e8be1c78-1912-405c-861c-883967485838'
 
 
@@ -117,6 +122,7 @@ def test_successful_edit_area(client):
         "lat": 42.1,
         "lng": 42.2,
         "portraitImage": None,
+        "secret": False,
     }
 
     rv = client.put('/api/areas/dritter-block-von-links', headers=access_headers, json=area_data)
@@ -130,6 +136,7 @@ def test_successful_edit_area(client):
     assert res['lng'] == 42.2
     assert res['ascentCount'] == 1
     assert res['portraitImage'] == None
+    assert res['secret'] == False
     assert res['id'] is not None
 
 
