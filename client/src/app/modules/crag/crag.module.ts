@@ -30,6 +30,8 @@ import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
+import {CheckboxModule} from 'primeng/checkbox';
+import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 
 
 /**
@@ -42,34 +44,36 @@ import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.componen
     CragComponent,
     CragInfoComponent
   ],
-    imports: [
-        CommonModule,
-        CardModule,
-        TranslocoModule,
-        SharedModule,
-        InputTextModule,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextareaModule,
-        ButtonModule,
-        DataViewModule,
-        TagModule,
-        BadgeModule,
-        RouterLink,
-        DropdownModule,
-        MessagesModule,
-        EditorModule,
-        TabMenuModule,
-        ConfirmPopupModule,
-        SectorModule,
-        SkeletonModule,
-        BreadcrumbModule,
-        GradeDistributionBarChartComponent,
-        GpsComponent,
-        GpsButtonComponent,
-        HasPermissionDirective,
-        AscentCountComponent
-    ],
+  imports: [
+    CommonModule,
+    CardModule,
+    TranslocoModule,
+    SharedModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    ButtonModule,
+    DataViewModule,
+    TagModule,
+    BadgeModule,
+    RouterLink,
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule,
+    SectorModule,
+    SkeletonModule,
+    BreadcrumbModule,
+    GradeDistributionBarChartComponent,
+    GpsComponent,
+    GpsButtonComponent,
+    HasPermissionDirective,
+    AscentCountComponent,
+    CheckboxModule,
+    SecretSpotTagComponent
+  ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
   ],

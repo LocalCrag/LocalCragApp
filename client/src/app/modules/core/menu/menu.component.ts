@@ -24,6 +24,8 @@ import {File} from '../../../models/file';
 import {User} from '../../../models/user';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {SearchDialogComponent} from '../search-dialog/search-dialog.component';
+import {CacheService} from '../../../services/core/cache.service';
+import {ApiService} from '../../../services/core/api.service';
 
 @Component({
   selector: 'lc-menu',
@@ -46,6 +48,8 @@ export class MenuComponent implements OnInit {
 
 
   constructor(private menuItemsService: MenuItemsService,
+              private cache: CacheService,
+              private api: ApiService,
               private translocoService: TranslocoService,
               private dialogService: DialogService,
               private actions: Actions,
@@ -59,8 +63,9 @@ export class MenuComponent implements OnInit {
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
     this.buildMenu();
     this.buildUserMenu();
-    // TODO this is not reloading the crag menu structure on logout/-in! Is logout needed if we have newAuthCredentials? Why is cleanupCredentials here?
     this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials, logout)).subscribe(() => {
+      this.cache.clear(this.api.menuItems.getList());
+      this.cache.clear(this.api.menuItems.getCragMenuStructure());
       this.buildMenu();
       this.buildUserMenu();
     })
@@ -68,60 +73,62 @@ export class MenuComponent implements OnInit {
 
   buildUserMenu(){
     this.store.select(selectAuthState).pipe(take(1)).subscribe(authState => {
-      this.userMenuItems = [
-        {
-          label: this.translocoService.translate(marker('menu.systemCategory')),
-          visible: authState.user?.moderator,
-          items: [
-            {
-              icon: 'pi pi-fw pi-file',
-              label: this.translocoService.translate(marker('menu.menuPages')),
-              routerLink: '/pages'
-            },
-            {
-              icon: 'pi pi-fw pi-bars',
-              label: this.translocoService.translate(marker('menu.menus')),
-              routerLink: '/menu-items'
-            },
-            {
-              icon: 'pi pi-fw pi-users',
-              label: this.translocoService.translate(marker('menu.users')),
-              routerLink: '/users',
-              visible: authState.user?.moderator,
-            },
-            {
-              icon: 'pi pi-fw pi-cog',
-              label: this.translocoService.translate(marker('menu.instanceSettings')),
-              routerLink: '/instance-settings'
-            },
-          ]
-        },
-        {
-          label:this.translocoService.translate(marker('menu.accountCategory')),
-          items: [
-            {
-              icon: 'pi pi-fw pi-user',
-              label: this.translocoService.translate(marker('menu.accountDetail')),
-              routerLink: `/users/${authState.user.slug}`
-            },
-            {
-              icon: 'pi pi-fw pi-user-edit',
-              label: this.translocoService.translate(marker('menu.account')),
-              routerLink: '/account'
-            },
-            {
-              icon: 'pi pi-fw pi-shield',
-              label: this.translocoService.translate(marker('menu.changePassword')),
-              routerLink: '/change-password'
-            },
-            {
-              label: this.translocoService.translate(marker('menu.logout')),
-              icon: 'pi pi-fw pi-sign-out',
-              command: this.logout.bind(this),
-            }
-          ]
-        },
-      ]
+      if(authState.user) {
+        this.userMenuItems = [
+          {
+            label: this.translocoService.translate(marker('menu.systemCategory')),
+            visible: authState.user.moderator,
+            items: [
+              {
+                icon: 'pi pi-fw pi-file',
+                label: this.translocoService.translate(marker('menu.menuPages')),
+                routerLink: '/pages'
+              },
+              {
+                icon: 'pi pi-fw pi-bars',
+                label: this.translocoService.translate(marker('menu.menus')),
+                routerLink: '/menu-items'
+              },
+              {
+                icon: 'pi pi-fw pi-users',
+                label: this.translocoService.translate(marker('menu.users')),
+                routerLink: '/users',
+                visible: authState.user.moderator,
+              },
+              {
+                icon: 'pi pi-fw pi-cog',
+                label: this.translocoService.translate(marker('menu.instanceSettings')),
+                routerLink: '/instance-settings'
+              },
+            ]
+          },
+          {
+            label: this.translocoService.translate(marker('menu.accountCategory')),
+            items: [
+              {
+                icon: 'pi pi-fw pi-user',
+                label: this.translocoService.translate(marker('menu.accountDetail')),
+                routerLink: `/users/${authState.user.slug}`
+              },
+              {
+                icon: 'pi pi-fw pi-user-edit',
+                label: this.translocoService.translate(marker('menu.account')),
+                routerLink: '/account'
+              },
+              {
+                icon: 'pi pi-fw pi-shield',
+                label: this.translocoService.translate(marker('menu.changePassword')),
+                routerLink: '/change-password'
+              },
+              {
+                label: this.translocoService.translate(marker('menu.logout')),
+                icon: 'pi pi-fw pi-sign-out',
+                command: this.logout.bind(this),
+              }
+            ]
+          },
+        ]
+      }
     });
   }
 

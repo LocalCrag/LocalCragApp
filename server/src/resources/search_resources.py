@@ -20,11 +20,11 @@ class Search(MethodView):
     def get(self, query):
         if not query:
             raise BadRequest('A search query is required.')
-        db_query  = db.session.query(Searchable)
+        db_query = db.session.query(Searchable)
         has_jwt = bool(verify_jwt_in_request(optional=True))
         claims = get_jwt()
         if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
-            db_query = db_query.filter(Searchable.secret==False)
+            db_query = db_query.filter(Searchable.secret == False)
         searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
         result = []
         for searchable in searchables:

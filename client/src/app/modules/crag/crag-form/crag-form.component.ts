@@ -95,6 +95,7 @@ export class CragFormComponent implements OnInit {
       rules: [''],
       portraitImage: [null],
       gps: [null],
+      secret: [null],
     });
   }
 
@@ -110,6 +111,7 @@ export class CragFormComponent implements OnInit {
       gps: this.crag.gps,
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
+      secret: this.crag.secret,
     });
   }
 
@@ -137,6 +139,7 @@ export class CragFormComponent implements OnInit {
       crag.gps = this.cragForm.get('gps').value;
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
+      crag.secret = this.cragForm.get('secret').value
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe(crag => {

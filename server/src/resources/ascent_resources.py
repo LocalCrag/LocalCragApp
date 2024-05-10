@@ -3,7 +3,7 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -61,6 +61,12 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.created_by_id == user_id)
         if line_id:
             query = query.filter(Ascent.line_id == line_id)
+
+        # Handle secret spots
+        has_jwt = bool(verify_jwt_in_request(optional=True))
+        claims = get_jwt()
+        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+            query = query.filter(Ascent.line.has(secret=False))
 
         query = query.order_by(text('{} {}'.format(order_by, order_direction)))
 

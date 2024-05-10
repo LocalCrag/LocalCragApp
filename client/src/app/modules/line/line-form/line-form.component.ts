@@ -23,6 +23,7 @@ import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {AreasService} from '../../../services/crud/areas.service';
 
 /**
  * Form component for lines.
@@ -53,6 +54,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.CANDLE
   ]
   public today = new Date();
+  public parentSecret = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -64,6 +66,7 @@ export class LineFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private linesService: LinesService,
+              private areasService: AreasService,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
   }
@@ -72,36 +75,40 @@ export class LineFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.buildForm();
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
-    if (lineSlug) {
-      this.editMode = true;
-      this.lineForm.disable();
-      this.linesService.getLine(lineSlug).pipe(catchError(e => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      })).subscribe(line => {
-        this.line = line;
-        if(this.line.ascentCount > 0){
-          this.grades = this.grades.filter(grade => grade.value >= 0);
-        }
-        this.setFormValue();
+    this.areasService.getArea(this.areaSlug).subscribe(area => {
+      this.parentSecret = area.secret;
+      this.buildForm();
+      if (lineSlug) {
+        this.editMode = true;
+        this.lineForm.disable();
+        this.linesService.getLine(lineSlug).pipe(catchError(e => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        })).subscribe(line => {
+          this.line = line;
+          if (this.line.ascentCount > 0) {
+            this.grades = this.grades.filter(grade => grade.value >= 0);
+          }
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          if (this.editor) {
+            this.editor.getQuill().enable();
+          }
+        });
+      } else {
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`)
+        });
+        this.lineForm.get('secret').setValue(this.parentSecret);
         this.loadingState = LoadingState.DEFAULT;
-        if (this.editor) {
-          this.editor.getQuill().enable();
-        }
-      });
-    } else {
-      this.store.select(selectInstanceName).subscribe(instanceName => {
-        this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`)
-      });
-      this.loadingState = LoadingState.DEFAULT;
-    }
+      }
+    });
   }
 
   /**
@@ -112,7 +119,7 @@ export class LineFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       videos: this.fb.array([]),
-      grade: [null, [Validators.required, ]],
+      grade: [null, [Validators.required,]],
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null, [Validators.maxLength(120)]],
@@ -144,13 +151,14 @@ export class LineFormComponent implements OnInit {
       compression: [false],
       arete: [false],
       mantle: [false],
+      secret: [false],
     });
     this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
       this.setFormDisabledState();
     });
   }
 
-  setFormDisabledState(){
+  setFormDisabledState() {
     if (this.lineForm.get('grade').value?.value < 0) { // Projects can't have ratings or FA info
       this.lineForm.get('faYear').disable();
       this.lineForm.get('faName').disable();
@@ -215,6 +223,7 @@ export class LineFormComponent implements OnInit {
       compression: this.line.compression,
       arete: this.line.arete,
       mantle: this.line.mantle,
+      secret: this.line.secret,
     });
     this.lineForm.enable();
     this.setFormDisabledState();
@@ -273,6 +282,7 @@ export class LineFormComponent implements OnInit {
       line.compression = this.lineForm.get('compression').value;
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
+      line.secret = this.lineForm.get('secret').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(this.areaSlug, line).subscribe(line => {

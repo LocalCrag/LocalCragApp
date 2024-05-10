@@ -22,6 +22,7 @@ export class Sector extends AbstractModel {
   crag: Crag;
   ascentCount: number;
   routerLink: string;
+  secret: boolean;
 
 
   /**
@@ -35,6 +36,7 @@ export class Sector extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(sector, payload);
     sector.name = payload.name;
     sector.description = payload.description;
+    sector.secret = payload.secret;
     sector.shortDescription = payload.shortDescription;
     sector.slug = payload.slug;
     sector.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
@@ -59,7 +61,8 @@ export class Sector extends AbstractModel {
       name: sector.name,
       description: sector.description,
       shortDescription: sector.shortDescription,
-      portraitImage: sector.portraitImage ?  sector.portraitImage.id : null,
+      secret: sector.secret,
+      portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
       lng: sector.gps ? sector.gps.lng : null,
       lat: sector.gps ? sector.gps.lat : null,
       rules: sector.rules,
@@ -67,3 +70,5 @@ export class Sector extends AbstractModel {
   }
 
 }
+
+// todo creating child of secret res: default res secret too

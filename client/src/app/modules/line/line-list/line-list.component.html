@@ -63,6 +63,7 @@
                   <div class="flex-grow-1"></div>
                   <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)" *isLoggedIn="true"></lc-tick-button>
                 </div>
+                <lc-secret-spot-tag *ngIf="line.secret"></lc-secret-spot-tag>
               </div>
             </div>
           </div>

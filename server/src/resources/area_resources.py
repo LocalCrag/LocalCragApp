@@ -14,7 +14,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import update_area_secret_property
+from util.secret_spots import update_area_secret_property, set_area_parents_unsecret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 
@@ -67,6 +67,7 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data['secret']
 
+        set_area_parents_unsecret(new_area)
         db.session.add(new_area)
         db.session.commit()
 

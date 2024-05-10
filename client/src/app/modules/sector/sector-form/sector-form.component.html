@@ -7,103 +7,125 @@
         {{t('createSectorDescription')}}
       </p>
 
-      <form [formGroup]="sectorForm" lcForm>
+      <ng-container *ngIf="sectorForm">
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('sectorNameLabel')}}</label>
-          <input type="text" pInputText formControlName="name" placeholder="{{t('sectorNamePlaceholder')}}"
-                 lcFormControl data-cy="sector-form-name"/>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
-        </div>
+        <form [formGroup]="sectorForm" lcForm>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('sectorShortDescriptionLabel')}}</label>
-          <p-editor formControlName="shortDescription" lcFormControl placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-                    data-cy="sector-form-shortDescription">
-            <ng-template pTemplate="header">
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorNameLabel')}}</label>
+            <input type="text" pInputText formControlName="name" placeholder="{{t('sectorNamePlaceholder')}}"
+                   lcFormControl data-cy="sector-form-name"/>
+            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          </div>
+
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorShortDescriptionLabel')}}</label>
+            <p-editor formControlName="shortDescription" lcFormControl
+                      placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
+                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                      data-cy="sector-form-shortDescription">
+              <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
                   <button type="button" class="ql-italic" aria-label="Italic"></button>
                   <button type="button" class="ql-underline" aria-label="Underline"></button>
               </span>
-              <span class="ql-formats">
+                <span class="ql-formats">
                   <button type="button" class="ql-link" aria-label="Link"></button>
               </span>
-            </ng-template>
-          </p-editor>
-        </div>
+              </ng-template>
+            </p-editor>
+          </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('sectorDescriptionLabel')}}</label>
-          <p-editor formControlName="description" lcFormControl placeholder="{{t('sectorDescriptionPlaceholder')}}"
-                    [modules]="quillModules"  data-cy="sector-form-description"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
-            <ng-template pTemplate="header">
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorDescriptionLabel')}}</label>
+            <p-editor formControlName="description" lcFormControl placeholder="{{t('sectorDescriptionPlaceholder')}}"
+                      [modules]="quillModules" data-cy="sector-form-description"
+                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+              <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
                   <button type="button" class="ql-italic" aria-label="Italic"></button>
                   <button type="button" class="ql-underline" aria-label="Underline"></button>
               </span>
-              <span class="ql-formats">
+                <span class="ql-formats">
                   <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
                   <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
               </span>
-              <span class="ql-formats">
+                <span class="ql-formats">
                   <button type="button" class="ql-link" aria-label="Link"></button>
                   <button type="button" class="ql-image" aria-label="Image"></button>
                   <button type="button" class="ql-video" aria-label="Video"></button>
               </span>
-            </ng-template>
-          </p-editor>
-        </div>
+              </ng-template>
+            </p-editor>
+          </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('sectorRulesLabel')}}</label>
-          <p-editor formControlName="rules" lcFormControl placeholder="{{t('sectorRulesPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-                    data-cy="sector-form-rules">
-            <ng-template pTemplate="header">
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorRulesLabel')}}</label>
+            <p-editor formControlName="rules" lcFormControl placeholder="{{t('sectorRulesPlaceholder')}}"
+                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                      data-cy="sector-form-rules">
+              <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
                   <button type="button" class="ql-italic" aria-label="Italic"></button>
                   <button type="button" class="ql-underline" aria-label="Underline"></button>
               </span>
-              <span class="ql-formats">
+                <span class="ql-formats">
                   <button type="button" class="ql-link" aria-label="Link"></button>
               </span>
+              </ng-template>
+            </p-editor>
+          </div>
+
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorPortraitImageLabel')}}</label>
+            <lc-single-image-upload lcFormControl formControlName="portraitImage" data-cy="sector-form-portraitImage">
+            </lc-single-image-upload>
+          </div>
+
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('gpsLabel')}}</label>
+            <lc-gps formControlName="gps" lcFormControl data-cy="sector-form-gps" #gps></lc-gps>
+          </div>
+
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{t('sectorOptionsLabel')}}</label>
+            <p-checkbox label="{{t('sectorSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
+                        lcFormControl></p-checkbox>
+          </div>
+
+          <p-messages severity="warn" *ngIf="parentSecret && !sectorForm.get('secret').value">
+            <ng-template pTemplate>
+              <i class="pi pi-info-circle"></i>
+              <div class="ml-2">{{t('aPublicSectorWillSetParentsToPublic')}}</div>
             </ng-template>
-          </p-editor>
+          </p-messages>
+
+        </form>
+
+        <div class="form-actions">
+          <p-button label="{{t('createSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save"
+                    class="responsive-button"
+                    [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"
+                    [disabled]="gps.positionLoading"></p-button>
+          <p-button label="{{t('editSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save"
+                    class="responsive-button"
+                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
+                    [disabled]="gps.positionLoading"></p-button>
+          <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
+                    styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+          <p-button label="{{t('deleteSectorButtonLabel')}}" (click)="confirmDeleteSector($event)" icon="pi pi-trash"
+                    styleClass="p-button-danger" class="ml-3 responsive-button"
+                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+          <p-confirmPopup></p-confirmPopup>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('sectorPortraitImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="portraitImage"  data-cy="sector-form-portraitImage">
-          </lc-single-image-upload>
-        </div>
+      </ng-container>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('gpsLabel')}}</label>
-          <lc-gps formControlName="gps" lcFormControl data-cy="sector-form-gps" #gps></lc-gps>
-        </div>
-
-      </form>
-
-      <div class="form-actions">
-        <p-button label="{{t('createSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode"  data-cy="submit"
-                  [disabled]="gps.positionLoading"></p-button>
-        <p-button label="{{t('editSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
-                  [disabled]="gps.positionLoading"></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
-                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
-        <p-button label="{{t('deleteSectorButtonLabel')}}" (click)="confirmDeleteSector($event)" icon="pi pi-trash"
-                  styleClass="p-button-danger" class="ml-3 responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-        <p-confirmPopup></p-confirmPopup>
-      </div>
+      <lc-form-skeleton *ngIf="!sectorForm"></lc-form-skeleton>
 
     </p-card>
 

@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {forkJoin, of} from 'rxjs';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {environment} from '../../../../environments/environment';
@@ -21,6 +21,7 @@ import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {CragsService} from '../../../services/crud/crags.service';
 
 /**
  * Form component for creating and editing sectors.
@@ -42,6 +43,7 @@ export class SectorFormComponent implements OnInit {
   public sector: Sector;
   public editMode = false;
   public quillModules: any;
+  public parentSecret = false;
 
   private cragSlug: string;
 
@@ -51,6 +53,7 @@ export class SectorFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private sectorsService: SectorsService,
+              private cragsService: CragsService,
               private uploadService: UploadService,
               private translocoService: TranslocoService,
               private confirmationService: ConfirmationService) {
@@ -61,31 +64,35 @@ export class SectorFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.buildForm();
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-    if (sectorSlug) {
-      this.editMode = true;
-      this.sectorForm.disable();
-      this.sectorsService.getSector(sectorSlug).pipe(catchError(e => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      })).subscribe(sector => {
-        this.sector = sector;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-        this.editors?.map(editor => {
-          editor.getQuill().enable();
+    this.cragsService.getCrag(this.cragSlug).subscribe(crag => {
+      this.parentSecret = crag.secret;
+      this.buildForm();
+      if (sectorSlug) {
+        this.editMode = true;
+        this.sectorForm.disable();
+        this.sectorsService.getSector(sectorSlug).pipe(catchError(e => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        })).subscribe(sector => {
+          this.sector = sector;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          this.editors?.map(editor => {
+            editor.getQuill().enable();
+          });
         });
-      });
-    } else {
-      this.store.select(selectInstanceName).subscribe(instanceName => {
-        this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`);
-      });
-      this.loadingState = LoadingState.DEFAULT;
-    }
+      } else {
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`);
+        });
+        this.sectorForm.get('secret').setValue(this.parentSecret);
+        this.loadingState = LoadingState.DEFAULT;
+      }
+    });
   }
 
   /**
@@ -99,6 +106,7 @@ export class SectorFormComponent implements OnInit {
       portraitImage: [null],
       rules: [null],
       gps: [null],
+      secret: [null],
     });
   }
 
@@ -114,6 +122,7 @@ export class SectorFormComponent implements OnInit {
       portraitImage: this.sector.portraitImage,
       gps: this.sector.gps,
       rules: this.sector.rules,
+      secret: this.sector.secret,
     });
   }
 
@@ -141,6 +150,7 @@ export class SectorFormComponent implements OnInit {
       sector.rules = this.sectorForm.get('rules').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
       sector.gps = this.sectorForm.get('gps').value;
+      sector.secret = this.sectorForm.get('secret').value;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {

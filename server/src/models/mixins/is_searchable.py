@@ -14,21 +14,8 @@ class IsSearchable:
     searchable_type: SearchableItemTypeEnum = SearchableItemTypeEnum.LINE
 
 
-@event.listens_for(db.session, "before_commit")
-def update_searchable(session):
-    new_items = [item for item in session.new if isinstance(item, IsSearchable)]
-    if new_items:
-        db.session.flush()
-    for item in new_items:
-        searchable = Searchable()
-        searchable.id = getattr(item, 'id')
-        searchable.type = item.searchable_type
-        searchable.name = ''.join(
-            [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
-        if hasattr(item, 'secret'):
-            searchable.secret = item.secret
-        db.session.add(searchable)
-
+@event.listens_for(db.session, "before_flush")
+def update_searchables(session, flush_context, instances):
     dirty_items = [item for item in session.dirty if isinstance(item, IsSearchable)]
     for item in dirty_items:
         searchable = (db.session.query(Searchable)
@@ -48,3 +35,18 @@ def update_searchable(session):
                       .filter(Searchable.type == item.searchable_type)
                       .first())
         db.session.delete(searchable)
+
+
+
+@event.listens_for(db.session, "after_flush")
+def create_searchables(session, flush_context):
+    new_items = [item for item in session.new if isinstance(item, IsSearchable)]
+    for item in new_items:
+        searchable = Searchable()
+        searchable.id = getattr(item, 'id')
+        searchable.type = item.searchable_type
+        searchable.name = ''.join(
+            [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns])
+        if hasattr(item, 'secret'):
+            searchable.secret = item.secret
+        db.session.add(searchable)

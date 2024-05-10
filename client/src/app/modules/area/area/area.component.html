@@ -2,6 +2,8 @@
 
   <p-card header="{{area?.name}}">
 
+    <lc-secret-spot-tag *ngIf="area?.secret"></lc-secret-spot-tag>
+
     <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="area" data-cy="area-tabs-menu"></p-tabMenu>

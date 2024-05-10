@@ -30,6 +30,8 @@ import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
+import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
+import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
 
 
 @NgModule({
@@ -68,6 +70,8 @@ import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.componen
         HasPermissionDirective,
         TickButtonComponent,
         AscentCountComponent,
+        SecretSpotTagComponent,
+        FormSkeletonComponent,
     ],
     exports: [
         LineListComponent,

@@ -21,6 +21,7 @@ export class Crag extends AbstractModel {
   sectors: Sector[];
   ascentCount: number;
   routerLink: string;
+  secret: boolean;
 
   /**
    * Parses a crag.
@@ -36,6 +37,7 @@ export class Crag extends AbstractModel {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.slug = payload.slug;
+    crag.secret = payload.secret;
     crag.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
@@ -57,6 +59,7 @@ export class Crag extends AbstractModel {
       description: crag.description,
       shortDescription: crag.shortDescription,
       rules: crag.rules,
+      secret: crag.secret,
       lng: crag.gps ? crag.gps.lng : null,
       lat: crag.gps ? crag.gps.lat : null,
       portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
