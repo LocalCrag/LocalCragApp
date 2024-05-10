@@ -108,7 +108,7 @@ export class AreaFormComponent implements OnInit {
       shortDescription: [null],
       gps: [null],
       portraitImage: [null],
-      secret: [null],
+      secret: [false],
     });
   }
 

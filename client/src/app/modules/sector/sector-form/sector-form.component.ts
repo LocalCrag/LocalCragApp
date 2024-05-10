@@ -106,7 +106,7 @@ export class SectorFormComponent implements OnInit {
       portraitImage: [null],
       rules: [null],
       gps: [null],
-      secret: [null],
+      secret: [false],
     });
   }
 

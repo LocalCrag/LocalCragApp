@@ -95,7 +95,7 @@ export class CragFormComponent implements OnInit {
       rules: [''],
       portraitImage: [null],
       gps: [null],
-      secret: [null],
+      secret: [false],
     });
   }
 
