@@ -33,6 +33,9 @@ import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
+import {CheckboxModule} from 'primeng/checkbox';
+import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
+import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
 
 
 @NgModule({
@@ -42,36 +45,39 @@ import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.componen
         AreaInfoComponent,
         AreaListComponent
     ],
-    imports: [
-        CommonModule,
-        CardModule,
-        TranslocoModule,
-        SharedModule,
-        InputTextModule,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextareaModule,
-        ButtonModule,
-        DataViewModule,
-        TagModule,
-        BadgeModule,
-        RouterLink,
-        DropdownModule,
-        MessagesModule,
-        EditorModule,
-        TabMenuModule,
-        ConfirmPopupModule,
-        SkeletonModule,
-        BreadcrumbModule,
-        LineModule,
-        TopoImagesModule,
-        LinePathEditorModule,
-        GradeDistributionBarChartComponent,
-        GpsComponent,
-        GpsButtonComponent,
-        HasPermissionDirective,
-        AscentCountComponent
-    ],
+  imports: [
+    CommonModule,
+    CardModule,
+    TranslocoModule,
+    SharedModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    ButtonModule,
+    DataViewModule,
+    TagModule,
+    BadgeModule,
+    RouterLink,
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule,
+    SkeletonModule,
+    BreadcrumbModule,
+    LineModule,
+    TopoImagesModule,
+    LinePathEditorModule,
+    GradeDistributionBarChartComponent,
+    GpsComponent,
+    GpsButtonComponent,
+    HasPermissionDirective,
+    AscentCountComponent,
+    CheckboxModule,
+    SecretSpotTagComponent,
+    FormSkeletonComponent
+  ],
     exports: [
         AreaListComponent
     ],

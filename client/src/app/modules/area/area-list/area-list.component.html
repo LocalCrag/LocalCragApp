@@ -49,6 +49,7 @@
                 <lc-leveled-grade-distribution
                   [fetchingObservable]="areasService.getAreaGrades(area.slug)"></lc-leveled-grade-distribution>
                 <lc-ascent-count [ascentCount]="area.ascentCount"></lc-ascent-count>
+                <lc-secret-spot-tag *ngIf="area.secret"></lc-secret-spot-tag>
               </div>
             </div>
           </div>

@@ -1,6 +1,9 @@
+import time
+
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -156,5 +159,69 @@ class UpdateMenuItemBottomOrder(MethodView):
 class GetCragMenuStructure(MethodView):
 
     def get(self):
-        crags: Crag = db.session.query(Crag).join(Sector, isouter=True).join(Area, isouter=True).order_by(Crag.order_index.asc()).all()
-        return jsonify(crags_menu_schema.dump(crags)), 200
+
+        # If the user is not at least a logged in member, we have to filter out secret spots
+        filter_out_secret_spots_crag_clause = ''
+        filter_out_secret_spots_sector_clause = ''
+        filter_out_secret_spots_area_clause = ''
+        has_jwt = bool(verify_jwt_in_request(optional=True))
+        claims = get_jwt()
+        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+            filter_out_secret_spots_crag_clause = 'WHERE crags.secret = FALSE'
+            filter_out_secret_spots_sector_clause = 'AND sectors.secret = FALSE'
+            filter_out_secret_spots_area_clause = 'AND areas.secret = FALSE'
+
+        # We use custom SQL to optimize the query. This sped up the query by a factor of 10!
+        res = db.session.execute(text('''
+        SELECT crags.name, crags.slug, sectors.name, sectors.slug, areas.name, areas.slug 
+        FROM crags
+        LEFT OUTER JOIN sectors ON crags.id = sectors.crag_id {}
+        LEFT OUTER JOIN areas ON sectors.id = areas.sector_id {}
+        {}
+        ORDER BY crags.order_index ASC, sectors.order_index ASC, areas.order_index ASC;
+        '''.format(filter_out_secret_spots_sector_clause, filter_out_secret_spots_area_clause,
+                   filter_out_secret_spots_crag_clause)))
+
+        # This means we also need custom result row parsing...
+        crags = []
+        crag_index = -1
+        sector_index = -1
+        area_index = -1
+        crag_slug = None
+        sector_slug = None
+        area_slug = None
+        for row in res:
+            if row[1] != crag_slug:
+                crag_slug = row[1]
+                crag_index += 1
+                sector_index = -1
+                area_index = -1
+            if row[3] and row[3] != sector_slug:
+                sector_slug = row[3]
+                sector_index += 1
+                area_index = -1
+            if row[5] and row[5] != area_slug:
+                area_slug = row[5]
+                area_index += 1
+            if len(crags) < crag_index + 1:
+                crags.append({
+                    'name': row[0],
+                    'slug': row[1],
+                    'sectors': []
+                })
+                if not row[3]:
+                    continue
+            if len(crags[crag_index]['sectors']) < sector_index + 1:
+                crags[crag_index]['sectors'].append({
+                    'name': row[2],
+                    'slug': row[3],
+                    'areas': []
+                })
+                if not row[5]:
+                    continue
+            if len(crags[crag_index]['sectors'][sector_index]['areas']) < area_index + 1:
+                crags[crag_index]['sectors'][sector_index]['areas'].append({
+                    'name': row[4],
+                    'slug': row[5],
+                })
+        return jsonify(crags), 200

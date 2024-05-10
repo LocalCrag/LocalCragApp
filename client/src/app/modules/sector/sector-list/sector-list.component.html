@@ -48,6 +48,7 @@
                 <div [innerHTML]="sector.shortDescription | sanitizeHtml"  *ngIf="sector.shortDescription"  class="quill-content"></div>
                 <lc-leveled-grade-distribution #gradeDistribution [fetchingObservable]="sectorsService.getSectorGrades(sector.slug)"></lc-leveled-grade-distribution>
                 <lc-ascent-count [ascentCount]="sector.ascentCount"></lc-ascent-count>
+                <lc-secret-spot-tag *ngIf="sector.secret"></lc-secret-spot-tag>
               </div>
             </div>
           </div>

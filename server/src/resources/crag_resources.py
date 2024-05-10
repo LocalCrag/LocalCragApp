@@ -14,7 +14,8 @@ from models.region import Region
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
-from util.security_util import check_auth_claims
+from util.secret_spots import update_crag_secret_property
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -36,6 +37,7 @@ class GetCrag(MethodView):
         @param crag_slug: Slug of the crag to return.
         """
         crag: Crag = Crag.find_by_slug(slug=crag_slug)
+        check_secret_spot_permission(crag)
         return crag_schema.dump(crag), 200
 
 
@@ -57,6 +59,7 @@ class CreateCrag(MethodView):
         new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = add_bucket_placeholders(crag_data['rules'])
         new_crag.portrait_image_id = crag_data['portraitImage']
+        new_crag.secret = crag_data['secret']
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
 
@@ -84,6 +87,7 @@ class UpdateCrag(MethodView):
         crag.short_description = crag_data['shortDescription']
         crag.rules = add_bucket_placeholders(crag_data['rules'])
         crag.portrait_image_id = crag_data['portraitImage']
+        update_crag_secret_property(crag, crag_data['secret'])
         db.session.add(crag)
         db.session.commit()
 

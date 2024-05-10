@@ -16,6 +16,7 @@ export class Area extends AbstractModel {
   gps: GPS;
   orderIndex: number;
   ascentCount: number;
+  secret: boolean;
 
   sector: Sector;
   routerLink: string;
@@ -38,6 +39,7 @@ export class Area extends AbstractModel {
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
     area.ascentCount = payload.ascentCount;
+    area.secret = payload.secret;
     area.routerLink = area.sector ? `/topo/${area.sector.crag.slug}/${area.sector.slug}/${area.slug}` : null;
     return area;
   }
@@ -53,6 +55,7 @@ export class Area extends AbstractModel {
       name: area.name,
       description: area.description,
       shortDescription: area.shortDescription,
+      secret: area.secret,
       lng: area.gps ? area.gps.lng : null,
       lat: area.gps ? area.gps.lat : null,
       portraitImage: area.portraitImage ? area.portraitImage.id : null,

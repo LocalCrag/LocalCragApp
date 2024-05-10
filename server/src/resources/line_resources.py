@@ -9,7 +9,8 @@ from marshmallow_schemas.line_schema import lines_schema, line_schema
 from models.area import Area
 from models.line import Line
 from models.user import User
-from util.security_util import check_auth_claims
+from util.secret_spots import update_line_secret_property, set_line_parents_unsecret
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
 
 from webargs_schemas.line_args import line_args
@@ -34,6 +35,7 @@ class GetLine(MethodView):
         @param line_slug: Slug of the line to return.
         """
         line: Line = Line.find_by_slug(line_slug)
+        check_secret_spot_permission(line)
         return line_schema.dump(line), 200
 
 
@@ -61,6 +63,7 @@ class CreateLine(MethodView):
         new_line.type = line_data['type']
         new_line.starting_position = line_data['startingPosition']
         new_line.rating = line_data['rating']
+        new_line.secret = line_data['secret']
 
         if new_line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             new_line.fa_year = line_data['faYear']
@@ -104,6 +107,7 @@ class CreateLine(MethodView):
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
 
+        set_line_parents_unsecret(new_line)
         db.session.add(new_line)
         db.session.commit()
 
@@ -132,6 +136,7 @@ class UpdateLine(MethodView):
         line.type = line_data['type']
         line.starting_position = line_data['startingPosition']
         line.rating = line_data['rating']
+        update_line_secret_property(line, line_data['secret'])
 
         if line.grade_name not in ['CLOSED_PROJECT', 'OPEN_PROJECT']:
             line.fa_year = line_data['faYear']

@@ -13,6 +13,7 @@ def test_successful_create_sector(client):
         "lat": 12.13,
         "lng": 42.42,
         "rules": "test rules",
+        "secret": False,
     }
 
     rv = client.post('/api/crags/brione/sectors', headers=access_headers, json=sector_data)
@@ -27,6 +28,7 @@ def test_successful_create_sector(client):
     assert res['lat'] == 12.13
     assert res['lng'] == 42.42
     assert res['ascentCount'] == 0
+    assert res['secret'] == False
     assert res['rules'] == "test rules"
 
 
@@ -42,6 +44,7 @@ def test_successful_get_sectors(client):
     assert res[1]['portraitImage'] == None
     assert res[1]['orderIndex'] == 1
     assert res[1]['ascentCount'] == 0
+    assert res[1]['secret'] == False
     assert res[0]['id'] == "008478de-5e0b-41b3-abe7-571f758c189b"
     assert res[0]['slug'] == "schattental"
     assert res[0]['name'] == "Schattental"
@@ -49,6 +52,7 @@ def test_successful_get_sectors(client):
     assert res[0]['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res[0]['orderIndex'] == 0
     assert res[0]['ascentCount'] == 1
+    assert res[0]['secret'] == False
 
 
 def test_successful_get_sector(client):
@@ -65,6 +69,7 @@ def test_successful_get_sector(client):
     assert res['lat'] == None
     assert res['lng'] == None
     assert res['rules'] == None
+    assert res['secret'] == False
 
 
 def test_get_deleted_sector(client):
@@ -91,6 +96,7 @@ def test_successful_edit_sector(client):
         "lat": 42.1,
         "lng": 42.2,
         "rules": "test rules",
+        "secret": False,
     }
 
     rv = client.put('/api/sectors/schattental', headers=access_headers, json=sector_data)
@@ -105,6 +111,7 @@ def test_successful_edit_sector(client):
     assert res['lat'] == 42.1
     assert res['lng'] == 42.2
     assert res['ascentCount'] == 1
+    assert res['secret'] == False
     assert res['rules'] == "test rules"
 
 

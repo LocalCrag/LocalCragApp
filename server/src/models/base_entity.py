@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declared_attr
 
@@ -38,6 +39,12 @@ class BaseEntity(db.Model):
             query = query.order_by(order_by())
         else:
             query = query.order_by(cls.id)
+        # Check if a model has the secret spot property, if yes add a filter based on view rights
+        if hasattr(cls, 'secret'):
+            has_jwt = bool(verify_jwt_in_request(optional=True))
+            claims = get_jwt()
+            if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+                query = query.filter(cls.secret == False)
         return query.all()
 
     @classmethod

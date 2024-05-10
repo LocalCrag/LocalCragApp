@@ -387,6 +387,7 @@ def test_permission_levels(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 12.13,
         "lng": 42.42,
+        "secret": False,
     }
 
     rv = client.post('/api/crags', headers=access_headers, json=crag_data)
@@ -416,6 +417,7 @@ def test_permission_levels(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 12.13,
         "lng": 42.42,
+        "secret": False,
     }
 
     rv = client.post('/api/crags', headers=access_headers, json=crag_data)
@@ -445,6 +447,7 @@ def test_permission_levels(client):
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "lat": 12.13,
         "lng": 42.42,
+        "secret": False,
     }
 
     rv = client.post('/api/crags', headers=access_headers, json=crag_data)

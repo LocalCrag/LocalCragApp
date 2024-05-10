@@ -29,6 +29,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
+    secret = db.Column(db.Boolean, default=False, server_default='0')
 
     @classmethod
     def find_max_order_index(cls, sector_id) -> int:

@@ -16,7 +16,8 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
-from util.security_util import check_auth_claims
+from util.secret_spots import update_sector_secret_property, set_sector_parents_unsecret
+from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
@@ -41,6 +42,7 @@ class GetSector(MethodView):
         @param sector_slug: Slug of the sector to return.
         """
         sector: Sector = Sector.find_by_slug(sector_slug)
+        check_secret_spot_permission(sector)
         return sector_schema.dump(sector), 200
 
 
@@ -66,9 +68,12 @@ class CreateSector(MethodView):
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
+        new_sector.secret = sector_data['secret']
 
+        set_sector_parents_unsecret(new_sector)
         db.session.add(new_sector)
         db.session.commit()
+
 
         return sector_schema.dump(new_sector), 201
 
@@ -91,6 +96,7 @@ class UpdateSector(MethodView):
         sector.lat = sector_data['lat']
         sector.lng = sector_data['lng']
         sector.rules = add_bucket_placeholders(sector_data['rules'])
+        update_sector_secret_property(sector, sector_data['secret'])
         db.session.add(sector)
         db.session.commit()
 

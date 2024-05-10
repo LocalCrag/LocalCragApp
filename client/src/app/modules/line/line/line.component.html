@@ -6,6 +6,8 @@
       <div class="card-header p-card-title">{{line?.name}} <span class="grade-font">{{line?.grade.name | transloco}}</span></div>
     </ng-template>
 
+    <lc-secret-spot-tag *ngIf="line?.secret"></lc-secret-spot-tag>
+
     <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="line"></p-tabMenu>

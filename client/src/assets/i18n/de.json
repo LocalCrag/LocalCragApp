@@ -234,6 +234,7 @@
   "leveledGradeDistributionLevel5": "Projekte",
   "orderItems.cancelButtonLabel": "Abbrechen",
   "orderItems.saveButtonLabel": "Speichern",
+  "secretSpotTag.secret": "Geheim",
   "latLabel": "Breitengrad",
   "latPlaceholder": "z.B. 50.44438",
   "invalidLat": "Ungültiger Breitengrad",

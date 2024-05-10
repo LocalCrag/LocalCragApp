@@ -44,6 +44,7 @@ export class AreaFormComponent implements OnInit {
   public area: Area;
   public editMode = false;
   public quillModules: any;
+  public parentSecret = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -53,6 +54,7 @@ export class AreaFormComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private areasService: AreasService,
+              private sectorsService: SectorsService,
               private uploadService: UploadService,
               private title: Title,
               private translocoService: TranslocoService,
@@ -64,32 +66,36 @@ export class AreaFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.buildForm();
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
-    if (areaSlug) {
-      this.editMode = true;
-      this.areaForm.disable();
-      this.areasService.getArea(areaSlug).pipe(catchError(e => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      })).subscribe(area => {
-        this.area = area;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-        this.editors?.map(editor => {
-          editor.getQuill().enable();
+    this.sectorsService.getSector(this.sectorSlug).subscribe(sector => {
+      this.parentSecret = sector.secret;
+      this.buildForm();
+      if (areaSlug) {
+        this.editMode = true;
+        this.areaForm.disable();
+        this.areasService.getArea(areaSlug).pipe(catchError(e => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        })).subscribe(area => {
+          this.area = area;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          this.editors?.map(editor => {
+            editor.getQuill().enable();
+          });
         });
-      });
-    } else {
-      this.store.select(selectInstanceName).subscribe(instanceName => {
-        this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${instanceName}`);
-      });
-      this.loadingState = LoadingState.DEFAULT;
-    }
+      } else {
+        this.store.select(selectInstanceName).subscribe(instanceName => {
+          this.title.setTitle(`${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${instanceName}`);
+        });
+        this.areaForm.get('secret').setValue(this.parentSecret);
+        this.loadingState = LoadingState.DEFAULT;
+      }
+    });
   }
 
   /**
@@ -101,7 +107,8 @@ export class AreaFormComponent implements OnInit {
       description: [null],
       shortDescription: [null],
       gps: [null],
-      portraitImage: [null]
+      portraitImage: [null],
+      secret: [false],
     });
   }
 
@@ -116,6 +123,7 @@ export class AreaFormComponent implements OnInit {
       shortDescription: this.area.shortDescription,
       gps: this.area.gps,
       portraitImage: this.area.portraitImage,
+      secret: this.area.secret,
     });
   }
 
@@ -126,7 +134,7 @@ export class AreaFormComponent implements OnInit {
     if (this.area) {
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.area.slug]);
     } else {
-      this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'sectors']);
+      this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
     }
   }
 
@@ -142,6 +150,7 @@ export class AreaFormComponent implements OnInit {
       area.shortDescription = this.areaForm.get('shortDescription').value;
       area.gps = this.areaForm.get('gps').value;
       area.portraitImage = this.areaForm.get('portraitImage').value;
+      area.secret = this.areaForm.get('secret').value;
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea(this.sectorSlug, area).subscribe(area => {

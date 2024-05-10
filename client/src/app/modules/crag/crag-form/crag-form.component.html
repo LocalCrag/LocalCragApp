@@ -94,6 +94,12 @@
           <lc-gps formControlName="gps" lcFormControl data-cy="crag-form-gps" #gps></lc-gps>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('cragOptionsLabel')}}</label>
+          <p-checkbox label="{{t('cragSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
+                      lcFormControl></p-checkbox>
+        </div>
+
       </form>
 
       <div class="form-actions">

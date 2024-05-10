@@ -23,14 +23,14 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     rules = db.Column(db.Text, nullable=True)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
-    sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select", order_by='Sector.order_index.asc()')
+    sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select",
+                              order_by='Sector.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
     ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-
-
+    secret = db.Column(db.Boolean, default=False, server_default='0')
 
     @classmethod
     def find_max_order_index(cls) -> int:
@@ -40,5 +40,3 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
             return -1
 
         return max_order_index[0]
-
-
