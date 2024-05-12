@@ -93,9 +93,9 @@ export class HeaderMenuComponent implements AfterContentInit, OnChanges, OnInit 
     this.isMobile = width <= MOBILE_BREAKPOINT_HEADER_MENU;
   }
 
-  expandMobileMenu(event) {
+  toggleMobileMenu(event) {
     event.stopPropagation();
-    this.mobileExpanded = this.isMobile;
+    this.mobileExpanded = this.isMobile && !this.mobileExpanded;
   }
 
 }

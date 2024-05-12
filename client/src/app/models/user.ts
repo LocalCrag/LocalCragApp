@@ -73,7 +73,7 @@ export class User extends AbstractModel {
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
-      avatar: user.avatar.id,
+      avatar: user.avatar ? user.avatar.id : null,
     };
   }
 
