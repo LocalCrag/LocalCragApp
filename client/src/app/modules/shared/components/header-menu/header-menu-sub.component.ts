@@ -6,6 +6,7 @@ import _default from 'chart.js/dist/plugins/plugin.legend';
 import {Router} from '@angular/router';
 import {ProcessedMenuItem} from './processed-menu-item';
 import {HeaderMenuService} from './header-menu.service';
+import {MOBILE_BREAKPOINT_HEADER_MENU} from '../../../../utility/misc/breakpoints';
 
 @Component({
   selector: 'lc-header-menu-sub',
@@ -34,7 +35,7 @@ export class HeaderMenuSubComponent {
               private headerMenuService: HeaderMenuService) {
   }
 
-  onClick(item: ProcessedMenuItem) {
+  onItemClick(item: ProcessedMenuItem) {
     if (item.item.routerLink) {
       this.router.navigate([item.item.routerLink]);
     }
@@ -45,8 +46,22 @@ export class HeaderMenuSubComponent {
     this.headerMenuService.collapseMobileMenu();
   }
 
+  /**
+   * In non-mobile view, we handle the menu activate / deactivate via hover (mouseenter).
+   */
   onMouseenter(item: ProcessedMenuItem) {
-    this.headerMenuService.setActive(item);
+    if (window.innerWidth > MOBILE_BREAKPOINT_HEADER_MENU) {
+      this.headerMenuService.setActive(item);
+    }
+  }
+
+  /**
+   * In mobile view, we handle the menu activate / deactivate via click on the angle icons.
+   */
+  onAngleClick(item: ProcessedMenuItem) {
+    if (window.innerWidth <= MOBILE_BREAKPOINT_HEADER_MENU) {
+      this.headerMenuService.toggleActive(item);
+    }
   }
 
   @HostListener('document:click', ['$event'])

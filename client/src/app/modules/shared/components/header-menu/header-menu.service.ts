@@ -14,6 +14,17 @@ export class HeaderMenuService {
     this.activeItem = item;
   }
 
+  public toggleActive(item: ProcessedMenuItem) {
+    if (item.isActive) {
+      item = item.parent
+    }
+    if (item) {
+      this.setActive(item);
+    } else {
+      this.deactivateCurrent();
+    }
+  }
+
   public deactivateCurrent() {
     if (this.activeItem) {
       this.deactivateItem(this.activeItem);
@@ -34,11 +45,11 @@ export class HeaderMenuService {
     }
   }
 
-  public registerHeaderMenu(headerMenu: HeaderMenuComponent){
+  public registerHeaderMenu(headerMenu: HeaderMenuComponent) {
     this.headerMenu = headerMenu;
   }
 
-  public collapseMobileMenu(){
+  public collapseMobileMenu() {
     this.headerMenu.mobileExpanded = false;
   }
 
