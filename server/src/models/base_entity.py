@@ -36,7 +36,10 @@ class BaseEntity(db.Model):
         if filter:
             query = query.filter(filter())
         if order_by is not None:
-            query = query.order_by(order_by())
+            if not type(order_by) is list:
+                order_by = [order_by]
+            for ob in order_by:
+                query = query.order_by(ob())
         else:
             query = query.order_by(cls.id)
         # Check if a model has the secret spot property, if yes add a filter based on view rights

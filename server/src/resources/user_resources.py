@@ -67,7 +67,7 @@ class GetUsers(MethodView):
         Returns the list of users.
         """
         return jsonify(user_list_schema.dump(User.return_all(
-            order_by=User.email.asc
+            order_by=[User.firstname.asc, User.lastname.asc]
         ))), 200
 
 

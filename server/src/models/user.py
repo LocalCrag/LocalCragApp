@@ -1,5 +1,6 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
@@ -39,7 +40,6 @@ class User(HasSlug, IsSearchable, BaseEntity):
     member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-
 
     @staticmethod
     def generate_hash(password):
