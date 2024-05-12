@@ -35,10 +35,6 @@ def s3_mock():
         mock = moto.mock_aws()
         try:
             mock.start()
-            # conn = boto3.resource('s3', region_name=app.config['SPACES_REGION'])
-            # conn.create_bucket(Bucket=app.config['SPACES_BUCKET'],
-            #                    CreateBucketConfiguration={"LocationConstraint": app.config['SPACES_REGION']})
-
             session = boto3.session.Session()
             client = session.client('s3',
                                     endpoint_url=current_app.config['SPACES_ENDPOINT'],
@@ -48,9 +44,6 @@ def s3_mock():
                                     aws_secret_access_key=current_app.config['SPACES_SECRET_KEY'])
             client.create_bucket(Bucket=app.config['SPACES_BUCKET'],
                                CreateBucketConfiguration={"LocationConstraint": app.config['SPACES_REGION']})
-
-            # with TargetFileSystem() as target_fs:
-            #     copy_assets(test_fs, target_fs)
             yield client
         finally:
             mock.stop()
