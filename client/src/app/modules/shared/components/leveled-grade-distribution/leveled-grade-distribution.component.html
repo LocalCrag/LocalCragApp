@@ -28,7 +28,7 @@
 
   <div class="grade-distribution-tags flex align-items-center gap-3 sm:hidden" *ngIf="grades">
     <p-tag styleClass="level-total">
-      <p-badge [value]="grades.length" styleClass="neutral-badge"></p-badge>
+      <p-badge [value]="grades.length - level5" styleClass="neutral-badge"></p-badge>
        {{t('lines')}}:
     </p-tag>
     <p-tag styleClass="level-1">
