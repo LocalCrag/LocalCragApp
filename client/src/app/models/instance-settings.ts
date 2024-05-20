@@ -19,6 +19,8 @@ export class InstanceSettings {
   arrowHighlightTextColor: string;
   barChartColor: string;
   superadminEmail: string;
+  matomoTrackerUrl: string;
+  matomoSiteId: string;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -37,6 +39,8 @@ export class InstanceSettings {
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
     instanceSettings.barChartColor = payload.barChartColor;
     instanceSettings.superadminEmail = payload.superadminEmail;
+    instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
+    instanceSettings.matomoSiteId = payload.matomoSiteId;
     return instanceSettings;
   }
 
@@ -55,6 +59,8 @@ export class InstanceSettings {
       arrowHighlightColor: instanceSettings.arrowHighlightColor,
       arrowHighlightTextColor: instanceSettings.arrowHighlightTextColor,
       barChartColor: instanceSettings.barChartColor,
+      matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
+      matomoSiteId: instanceSettings.matomoSiteId,
     };
   }
 

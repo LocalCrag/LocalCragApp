@@ -47,6 +47,8 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.arrow_highlight_color = instance_settings_data['arrowHighlightColor']
         instance_settings.arrow_highlight_text_color = instance_settings_data['arrowHighlightTextColor']
         instance_settings.bar_chart_color = instance_settings_data['barChartColor']
+        instance_settings.matomo_tracker_url = instance_settings_data['matomoTrackerUrl']
+        instance_settings.matomo_site_id = instance_settings_data['matomoSiteId']
         db.session.add(instance_settings)
         db.session.commit()
 

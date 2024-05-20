@@ -93,6 +93,22 @@
           <p-colorPicker formControlName="barChartColor" format="rgb"></p-colorPicker>
         </div>
 
+        <p-divider align="center" type="solid" class="mb-2 block"><b>{{t('matomoSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('matomoTrackerUrlLabel')}}</label>
+          <input type="text" pInputText formControlName="matomoTrackerUrl" placeholder="{{t('matomoTrackerUrlPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('matomoSiteIdLabel')}}</label>
+          <input type="text" pInputText formControlName="matomoSiteId" placeholder="{{t('matomoSiteIdPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+        </div>
+
       </form>
 
       <div class="form-actions">

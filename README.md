@@ -19,16 +19,9 @@ This was all perfetly possible by just using Wordpress or some forum software li
 - **Multi language:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibilits to run your instances in multiple languages.
 - ... more to come! We have a lot of ideas. We are open to your ideas and accept pull requests.
 
-## Runway
-
-1. Currently we a are working on version v1.0.0 which will replace [gleesbouldering.com](https://gleesbouldering.com). This will include all the features you need to create the online topo, a news blog and a few things more.
-2. The next step will be to add the ticklist feature for v1.1.0 because we are all data nerds and like statistics.
-3. v1.2.0 will focus on making it possible to deploy other instances. We already know a few crag developers who are waiting eagerly (Nahetal, Sudelfeld, ...). 
-4. Let's see what the community want's next..
-
 ## Current state
 
-Most of v1.0.0 is done and we are currently optimising UI and UX, especially mobile views.
+Most of v1.0.0 is done and we are currently preparing to relaunch gleesbouldering.com using LocalCrag!
 
 ## Screenshots
 
@@ -43,6 +36,19 @@ Crag, sector and area information with statistics.
 ![Line editor](docs/assets/line-editor.png "Line editor")
 
 Save time while creating your topo by using a simple click-editor for drawing lines.
+
+## Installation
+
+If you want to use LocalCrag for your own crag, follow the steps below:
+
+1. Ask for permission first. LocalCrag is published under a closed license (couldn't find a fitting open source licence), so you will have to ask for permission to deploy an own instance. Write an email at localcrag@fengelmann.de is you are interested.
+2. Either deploy yourself or join our cloud, it's up to you. If you join our cloud you will get automated updates but you will have to pay a hosting fee (we will not make money charging this fee, it's 1:1 what our cloud provider charges us).
+3. Start using LocalCrag!
+
+### Configuration
+
+- You can configure your instance by visiting `/instance-settings`
+- If you choose to use Matomo tracking, be sure to setup your Matomo instance in a way that anonymizes user data. Currently there is no opt-in cookie banner provided, so tracking has to follow your local privacy legislation.
 
 ## License
 
