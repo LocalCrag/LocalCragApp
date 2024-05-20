@@ -21,6 +21,8 @@ def test_successful_get_instance_settings(client):
     assert res['arrowHighlightColor'] == '#FF0000'
     assert res['arrowHighlightTextColor'] == '#FFFFFF'
     assert res['barChartColor'] == 'rgb(213, 30, 38)'
+    assert res['matomoTrackerUrl'] == 'https://matomo-example.localcrag.cloud'
+    assert res['matomoSiteId'] == '1'
 
 
 def test_successful_edit_instance_settings(client):
@@ -39,6 +41,8 @@ def test_successful_edit_instance_settings(client):
         "arrowHighlightColor": '#CCCCCC',
         "arrowHighlightTextColor": '#DDDDDD',
         "barChartColor": 'rgb(213, 30, 39)',
+        "matomoTrackerUrl": 'https://matomo-example-2.localcrag.cloud',
+        "matomoSiteId": '2',
     }
     rv = client.put('/api/instance-settings', headers=access_headers, json=post_data)
     assert rv.status_code == 200
@@ -57,3 +61,5 @@ def test_successful_edit_instance_settings(client):
     assert res['arrowHighlightTextColor'] == '#DDDDDD'
     assert res['barChartColor'] == 'rgb(213, 30, 39)'
     assert res['superadminEmail'] == 'localcrag@fengelmann.de'
+    assert res['matomoTrackerUrl'] == 'https://matomo-example-2.localcrag.cloud'
+    assert res['matomoSiteId'] == '2'

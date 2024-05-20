@@ -14,7 +14,7 @@ import {PasswordModule} from 'primeng/password';
 import {Store, StoreModule} from '@ngrx/store';
 import {metaReducers, reducers} from '../../ngrx/reducers';
 import {environment} from '../../../environments/environment';
-import {EffectsModule} from '@ngrx/effects';
+import {Actions, EffectsModule, ofType} from '@ngrx/effects';
 import {AuthEffects} from '../../ngrx/effects/auth.effects';
 import {AppLevelAlertsEffects} from '../../ngrx/effects/app-level-alerts.effects';
 import {NotificationsEffects} from '../../ngrx/effects/notifications.effects';
@@ -56,6 +56,7 @@ import {updateInstanceSettings} from '../../ngrx/actions/instance-settings.actio
 import {HeaderMenuComponent} from '../shared/components/header-menu/header-menu.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AvatarModule} from 'primeng/avatar';
+import {MatomoInitializationMode, MatomoInitializerService, MatomoModule, MatomoRouterModule} from 'ngx-matomo-client';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -137,7 +138,11 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
     BackgroundImageComponent,
     HeaderMenuComponent,
     HasPermissionDirective,
-    AvatarModule
+    AvatarModule,
+    MatomoModule.forRoot({
+      mode: MatomoInitializationMode.AUTO_DEFERRED,
+    }),
+    MatomoRouterModule
   ],
   providers: [
     {
@@ -187,6 +192,19 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
   bootstrap: [CoreComponent]
 })
 export class CoreModule {
+
+  constructor(private actions: Actions,
+              private matomoInitializer: MatomoInitializerService) {
+    this.actions.pipe(ofType(updateInstanceSettings)).subscribe(action => {
+      if (action.settings.matomoTrackerUrl && action.settings.matomoSiteId) {
+        this.matomoInitializer.initializeTracker({
+          trackerUrl: action.settings.matomoTrackerUrl,
+          siteId: action.settings.matomoSiteId,
+        })
+      }
+    })
+  }
+
 }
 
 

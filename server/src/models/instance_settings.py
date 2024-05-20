@@ -33,6 +33,9 @@ class InstanceSettings(db.Model):
     arrow_highlight_color = db.Column(db.String(7), nullable=False, server_default='#FF0000')
     arrow_highlight_text_color = db.Column(db.String(7), nullable=False, server_default='#FFFFFF')
     bar_chart_color = db.Column(db.String(30), nullable=False, server_default='rgb(213, 30, 38)')
+    matomo_tracker_url = db.Column(db.String(120), nullable=True)
+    matomo_site_id = db.Column(db.String(120), nullable=True)
+
 
     @hybrid_property
     def superadmin_email(self) -> str:
