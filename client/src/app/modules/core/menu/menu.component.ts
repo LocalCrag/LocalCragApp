@@ -4,7 +4,13 @@ import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {forkJoin, Observable} from 'rxjs';
 import {selectAuthState, selectCurrentUser} from '../../../ngrx/selectors/auth.selectors';
-import {cleanupCredentials, logout, newAuthCredentials} from 'src/app/ngrx/actions/auth.actions';
+import {
+  cleanupCredentials,
+  loginSuccess,
+  logout,
+  logoutSuccess,
+  newAuthCredentials
+} from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {take} from 'rxjs/operators';
@@ -63,7 +69,11 @@ export class MenuComponent implements OnInit {
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
     this.buildMenu();
     this.buildUserMenu();
-    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials, logout)).subscribe(() => {
+    this.actions.pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials)).subscribe((action) => {
+      // Prevent loading menus if new credentials come from token refresh
+      if(action.type === newAuthCredentials.type && !action.initialCredentials){
+        return;
+      }
       this.cache.clear(this.api.menuItems.getList());
       this.cache.clear(this.api.menuItems.getCragMenuStructure());
       this.buildMenu();
@@ -71,9 +81,9 @@ export class MenuComponent implements OnInit {
     })
   }
 
-  buildUserMenu(){
+  buildUserMenu() {
     this.store.select(selectAuthState).pipe(take(1)).subscribe(authState => {
-      if(authState.user) {
+      if (authState.user) {
         this.userMenuItems = [
           {
             label: this.translocoService.translate(marker('menu.systemCategory')),
@@ -138,7 +148,7 @@ export class MenuComponent implements OnInit {
       this.menuItemsService.getCragMenuStructure(),
       this.store.select(selectYoutubeUrl).pipe(take(1)),
       this.store.select(selectInstagramUrl).pipe(take(1)),
-    ]).subscribe(([menuItems, crags,youtubeUrl, instagramUrl]) => {
+    ]).subscribe(([menuItems, crags, youtubeUrl, instagramUrl]) => {
       this.items = [];
       const menuItemsTop = menuItems.filter(menuItem => menuItem.position === MenuItemPosition.TOP);
       menuItemsTop.map(menuItem => {
@@ -228,7 +238,7 @@ export class MenuComponent implements OnInit {
     this.store.dispatch(logout({isAutoLogout: false, silent: false}));
   }
 
-  openSearch(){
+  openSearch() {
     this.ref = this.dialogService.open(SearchDialogComponent, {
       position: 'top',
       closeOnEscape: true,
