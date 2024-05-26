@@ -3,7 +3,7 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -24,6 +24,7 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload, cross_validate_grade
@@ -63,9 +64,7 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.line_id == line_id)
 
         # Handle secret spots
-        has_jwt = bool(verify_jwt_in_request(optional=True))
-        claims = get_jwt()
-        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+        if not get_show_secret():
             query = query.filter(Ascent.line.has(secret=False))
 
         query = query.order_by(text('{} {}'.format(order_by, order_direction)))

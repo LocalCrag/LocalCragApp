@@ -1,7 +1,6 @@
 import os
 
-from flask import Flask, g, request
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+from flask import Flask
 
 from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
