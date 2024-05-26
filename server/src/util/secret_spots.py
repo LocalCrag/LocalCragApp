@@ -1,3 +1,5 @@
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+
 from extensions import db
 from models.area import Area
 from models.crag import Crag
@@ -62,3 +64,5 @@ def update_crag_secret_property(crag: Crag, secret: bool, is_recursive_call=Fals
         sectors = crag.sectors
         for sector in sectors:
             update_sector_secret_property(sector, secret, True)
+
+

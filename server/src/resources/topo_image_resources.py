@@ -12,7 +12,7 @@ from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image
 from models.area import Area
 from models.topo_image import TopoImage
 from models.user import User
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 

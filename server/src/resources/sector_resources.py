@@ -17,6 +17,7 @@ from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_sector_secret_property, set_sector_parents_unsecret
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
@@ -151,5 +152,8 @@ class GetSectorGrades(MethodView):
         Returns the grades of all lines of a sector.
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
-        result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).filter(Area.sector_id == sector_id).all()
+        query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).filter(Area.sector_id == sector_id)
+        if not get_show_secret():
+            query = query.filter(Line.secret == False)
+        result = query.all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

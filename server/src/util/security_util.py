@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from messages.messages import ResponseMessage
 from models.user import User
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 
 
 def check_auth_claims(admin=False, moderator=False, member=False):

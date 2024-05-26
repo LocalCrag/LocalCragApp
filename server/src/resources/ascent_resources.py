@@ -24,7 +24,7 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload, cross_validate_grade

@@ -11,7 +11,7 @@ from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 
 
 class Sector(HasSlug, IsSearchable, BaseEntity):

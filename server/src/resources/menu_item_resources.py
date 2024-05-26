@@ -19,7 +19,7 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.sector import Sector
 from models.user import User
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args

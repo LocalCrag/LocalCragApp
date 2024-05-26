@@ -6,7 +6,7 @@ from sqlalchemy.orm import declared_attr
 
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 
 
 class BaseEntity(db.Model):

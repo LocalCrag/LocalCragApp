@@ -13,6 +13,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -141,8 +142,11 @@ class GetCragGrades(MethodView):
         Returns the grades of all lines of a crag.
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
-        result = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
-            Sector.crag_id == crag_id).all()
+        query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
+            Sector.crag_id == crag_id)
+        if not get_show_secret():
+            query = query.filter(Line.secret == False)
+        result = query.all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
 
 

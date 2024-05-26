@@ -6,7 +6,7 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.line import Line
 from models.mixins.has_slug import HasSlug
-from util.auth import get_show_secret
+from util.secret_spots_auth import get_show_secret
 
 
 class Region(BaseEntity):
