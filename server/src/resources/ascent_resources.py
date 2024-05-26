@@ -139,11 +139,8 @@ class CreateAscent(MethodView):
         else:
             ascent.ascent_date = datetime.datetime.strptime(str(ascent.year), '%Y').date()
 
-        line.ascent_count += 1
-
         db.session.add(line)
         db.session.add(ascent)
-        increment_ascent_counts(ascent)
         db.session.commit()
 
         return ascent_schema.dump(ascent), 201
@@ -197,33 +194,6 @@ class DeleteAscent(MethodView):
             raise Unauthorized('Ascents can only be deleted by users themselves.')
 
         db.session.delete(ascent)
-        decrement_ascent_counts(ascent)
         db.session.commit()
 
         return jsonify(None), 204
-
-
-def increment_ascent_counts(ascent: Ascent):
-    query = text("UPDATE lines SET ascent_count=ascent_count + 1 WHERE id  = :line_id")
-    db.session.execute(query, {'line_id': ascent.line_id})
-    query = text("UPDATE areas SET ascent_count=ascent_count + 1 WHERE id  = :area_id")
-    db.session.execute(query, {'area_id': ascent.area_id})
-    query = text("UPDATE sectors SET ascent_count=ascent_count + 1 WHERE id  = :sector_id")
-    db.session.execute(query, {'sector_id': ascent.sector_id})
-    query = text("UPDATE crags SET ascent_count=ascent_count + 1 WHERE id  = :crag_id")
-    db.session.execute(query, {'crag_id': ascent.crag_id})
-    query = text("UPDATE regions SET ascent_count=ascent_count + 1")
-    db.session.execute(query)
-
-
-def decrement_ascent_counts(ascent: Ascent):
-    query = text("UPDATE lines SET ascent_count=ascent_count - 1 WHERE id  = :line_id")
-    db.session.execute(query, {'line_id': ascent.line_id})
-    query = text("UPDATE areas SET ascent_count=ascent_count - 1 WHERE id  = :area_id")
-    db.session.execute(query, {'area_id': ascent.area_id})
-    query = text("UPDATE sectors SET ascent_count=ascent_count - 1 WHERE id  = :sector_id")
-    db.session.execute(query, {'sector_id': ascent.sector_id})
-    query = text("UPDATE crags SET ascent_count=ascent_count - 1 WHERE id  = :crag_id")
-    db.session.execute(query, {'crag_id': ascent.crag_id})
-    query = text("UPDATE regions SET ascent_count=ascent_count - 1")
-    db.session.execute(query)

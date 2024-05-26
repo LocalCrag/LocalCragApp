@@ -1,13 +1,17 @@
 from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
+from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
+from models.line import Line
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
+from util.auth import get_show_secret
 
 
 class Sector(HasSlug, IsSearchable, BaseEntity):
@@ -30,14 +34,16 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
     rules = db.Column(db.Text, nullable=True)
-    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
 
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default='0')
 
-
-
-
+    @hybrid_property
+    def ascent_count(self):
+        query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.sector_id == self.id)
+        if not get_show_secret():
+            query = query.where(Line.secret == False)
+        return query.scalar()
 
     @classmethod
     def find_max_order_index(cls, crag_id) -> int:

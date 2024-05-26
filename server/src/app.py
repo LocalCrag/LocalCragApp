@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask
+from flask import Flask, g, request
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 
 from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
@@ -11,13 +12,13 @@ from extensions import db, jwt, ma, migrate, cors
 from models.revoked_token import RevokedToken
 
 
-
 def register_extensions(application):
     db.init_app(application)
     jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
     cors.init_app(application, origins=[application.config['FRONTEND_HOST']])
+
 
 def configure_extensions(application):
     setup_jwt_error_handlers(jwt)
@@ -37,8 +38,6 @@ def create_app():
     register_extensions(application)
 
     configure_extensions(application)
-
-
 
     return application
 

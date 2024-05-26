@@ -1,12 +1,16 @@
 from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
+from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
 
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
+from models.line import Line
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
+from util.auth import get_show_secret
 
 
 class Area(HasSlug, IsSearchable, BaseEntity):
@@ -28,8 +32,14 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     lines = db.relationship("Line", cascade="all,delete", backref="area", lazy="select")
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     secret = db.Column(db.Boolean, default=False, server_default='0')
+
+    @hybrid_property
+    def ascent_count(self):
+        query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.area_id == self.id)
+        if not get_show_secret():
+            query = query.where(Line.secret == False)
+        return query.scalar()
 
     @classmethod
     def find_max_order_index(cls, sector_id) -> int:
