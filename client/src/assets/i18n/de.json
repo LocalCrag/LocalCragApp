@@ -53,7 +53,7 @@
   "posts.postList.noPostsFoundEmptyMessage": "Keine Posts gefunden",
   "posts.postList.postListTitle": "News",
   "accountForm.accountFormTitle": "Accounteinstellungen",
-  "accountForm.accountFormDescription": "Hier kannst Du Deine Account Einstellungen bearbeiten.",
+  "accountForm.accountFormDescription": "Hier kannst Du Deine Accounteinstellungen bearbeiten.",
   "accountForm.firstnamePlaceholder": "Vorname",
   "accountForm.required": "Pflichtfeld",
   "accountForm.maxlength120": "Maximale Anzahl Zeichen: 120",
