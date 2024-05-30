@@ -1,10 +1,10 @@
 from marshmallow import fields, post_dump
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
-class RegionSchema(BaseEntitySchema):
+class RegionSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()

@@ -2,7 +2,7 @@ import time
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
@@ -19,6 +19,7 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.sector import Sector
 from models.user import User
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
@@ -164,9 +165,7 @@ class GetCragMenuStructure(MethodView):
         filter_out_secret_spots_crag_clause = ''
         filter_out_secret_spots_sector_clause = ''
         filter_out_secret_spots_area_clause = ''
-        has_jwt = bool(verify_jwt_in_request(optional=True))
-        claims = get_jwt()
-        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+        if not get_show_secret():
             filter_out_secret_spots_crag_clause = 'WHERE crags.secret = FALSE'
             filter_out_secret_spots_sector_clause = 'AND sectors.secret = FALSE'
             filter_out_secret_spots_area_clause = 'AND areas.secret = FALSE'

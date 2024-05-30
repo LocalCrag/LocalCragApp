@@ -4,11 +4,11 @@ from extensions import ma
 from marshmallow_schemas.area_schema import AreaMenuSchema
 from marshmallow_schemas.file_schema import file_schema
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
-class SectorSchema(BaseEntitySchema):
+class SectorSchema(BaseEntityMinSchema):
     name = fields.String()
     slug = fields.String()
     shortDescription = fields.String(attribute='short_description')

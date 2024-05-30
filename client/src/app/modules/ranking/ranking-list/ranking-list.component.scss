@@ -1,7 +1,21 @@
 lc-ranking-list {
 
-  .ranking-info-button button{
-    padding-left: 0
+  .ranking-info-button {
+    display: flex;
+    align-items: center;
+    button {
+      padding-left: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .secret-switch-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+    color: #64748b;
   }
 
   a {
@@ -60,7 +74,7 @@ lc-ranking-list {
     }
   }
 
-  p-dropdown{
+  p-dropdown {
     div {
       text-wrap: balance;
     }

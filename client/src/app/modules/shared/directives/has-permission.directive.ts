@@ -4,14 +4,14 @@ import {UserPromotionTargets} from '../../../enums/user-promotion-targets';
 import {
   selectCurrentUser,
   selectIsAdmin,
-  selectIsLoggedIn,
+  selectIsLoggedIn, selectIsMember,
   selectIsModerator
 } from '../../../ngrx/selectors/auth.selectors';
 import {User} from '../../../models/user';
 
 
 @Directive({
-  selector: '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser]',
+  selector: '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
   standalone: true
 })
 export class HasPermissionDirective {
@@ -46,6 +46,15 @@ export class HasPermissionDirective {
     if (value) {
       this.store.select(selectIsModerator).subscribe(isModerator => {
         this.decideView(isModerator);
+      })
+    }
+  }
+
+  @Input()
+  set isMember(value: boolean) {
+    if (value) {
+      this.store.select(selectIsMember).subscribe(isMember => {
+        this.decideView(isMember);
       })
     }
   }

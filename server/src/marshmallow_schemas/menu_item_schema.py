@@ -8,10 +8,10 @@ from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.file import File
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 
 
-class MenuItemSchema(BaseEntitySchema):
+class MenuItemSchema(BaseEntityMinSchema):
     type = EnumField(MenuItemTypeEnum, by_value=True)
     position = EnumField(MenuItemPositionEnum, by_value=True)
     icon = fields.String()

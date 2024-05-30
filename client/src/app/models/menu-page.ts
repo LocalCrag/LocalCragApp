@@ -12,7 +12,6 @@ export class MenuPage extends AbstractModel {
   title: string;
   text: string;
   slug: string;
-  createdBy: User;
 
   /**
    * Parses a menu page.
@@ -26,7 +25,6 @@ export class MenuPage extends AbstractModel {
     menuPage.title = payload.title;
     menuPage.text = payload.text;
     menuPage.slug = payload.slug;
-    menuPage.createdBy =User.deserialize(payload.createdBy);
     return menuPage;
   }
 

@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property
@@ -69,6 +70,9 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select",
                                  order_by='LinePath.order_index_for_line.asc()')
 
-    ascent_count = db.Column(db.Integer, nullable=False, server_default='0')
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
     secret = db.Column(db.Boolean, default=False, server_default='0')
+
+    @hybrid_property
+    def ascent_count(self):
+        return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()

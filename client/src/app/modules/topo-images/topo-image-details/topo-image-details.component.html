@@ -9,7 +9,8 @@
   </div>
 
   <section *ngIf="topoImage.description"
-           class="text-xs flex justify-content-center"
-           [innerHTML]="topoImage.description | sanitizeHtml"></section>
+           class="text-xs flex justify-content-center">
+    <div [innerHTML]="topoImage.description | sanitizeHtml"></div>
+  </section>
 
 </ng-container>

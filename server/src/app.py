@@ -11,13 +11,13 @@ from extensions import db, jwt, ma, migrate, cors
 from models.revoked_token import RevokedToken
 
 
-
 def register_extensions(application):
     db.init_app(application)
     jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
     cors.init_app(application, origins=[application.config['FRONTEND_HOST']])
+
 
 def configure_extensions(application):
     setup_jwt_error_handlers(jwt)
@@ -37,8 +37,6 @@ def create_app():
     register_extensions(application)
 
     configure_extensions(application)
-
-
 
     return application
 

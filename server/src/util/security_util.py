@@ -1,11 +1,12 @@
 from functools import wraps
 
 from flask import g
-from flask_jwt_extended import get_jwt_identity, get_jwt, verify_jwt_in_request
+from flask_jwt_extended import get_jwt
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from messages.messages import ResponseMessage
 from models.user import User
+from util.secret_spots_auth import get_show_secret
 
 
 def check_auth_claims(admin=False, moderator=False, member=False):
@@ -37,9 +38,5 @@ def check_secret_spot_permission(item):
     Checks for a given Line, Area, Sector or Crag if the requesting user has secret spot permissions to view it.
     """
     if item.secret:
-        has_jwt = bool(verify_jwt_in_request(optional=True))
-        claims = get_jwt()
-        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+        if not get_show_secret():
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
-
-

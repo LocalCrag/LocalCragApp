@@ -22,8 +22,6 @@ def test_successful_file_upload(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_pdf.pdf'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert s3_mock.get_object(Bucket=current_app.config['SPACES_BUCKET'], Key=res['filename']) is not None
     assert res['width'] is None
     assert res['height'] is None
@@ -66,8 +64,6 @@ def test_successful_upload_small(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_271_186.jpeg'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is False
@@ -106,8 +102,6 @@ def test_successful_upload_medium(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_512_512.jpg'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is True
@@ -145,8 +139,6 @@ def test_successful_upload_large(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_4000_2667.jpg'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is True
@@ -196,8 +188,6 @@ def test_successful_upload_small_png(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_271_186.png'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is False
@@ -236,8 +226,6 @@ def test_successful_upload_small_gif(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_271_186.gif'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is False
@@ -276,8 +264,6 @@ def test_successful_upload_small_bmp(client, clean_test_uploads, s3_mock):
     assert type(res['filename']) == str
     assert res['originalFilename'] == 'test_image_271_186.bmp'
     assert isinstance(res['id'], str)
-    assert isinstance(res['timeCreated'], str)
-    assert res['timeUpdated'] is None
     assert res['thumbnailXS'] is True
     assert res['thumbnailS'] is True
     assert res['thumbnailM'] is False

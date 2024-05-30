@@ -3,7 +3,7 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -24,6 +24,7 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload, cross_validate_grade
@@ -63,9 +64,7 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.line_id == line_id)
 
         # Handle secret spots
-        has_jwt = bool(verify_jwt_in_request(optional=True))
-        claims = get_jwt()
-        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+        if not get_show_secret():
             query = query.filter(Ascent.line.has(secret=False))
 
         query = query.order_by(text('{} {}'.format(order_by, order_direction)))
@@ -139,11 +138,8 @@ class CreateAscent(MethodView):
         else:
             ascent.ascent_date = datetime.datetime.strptime(str(ascent.year), '%Y').date()
 
-        line.ascent_count += 1
-
         db.session.add(line)
         db.session.add(ascent)
-        increment_ascent_counts(ascent)
         db.session.commit()
 
         return ascent_schema.dump(ascent), 201
@@ -197,33 +193,6 @@ class DeleteAscent(MethodView):
             raise Unauthorized('Ascents can only be deleted by users themselves.')
 
         db.session.delete(ascent)
-        decrement_ascent_counts(ascent)
         db.session.commit()
 
         return jsonify(None), 204
-
-
-def increment_ascent_counts(ascent: Ascent):
-    query = text("UPDATE lines SET ascent_count=ascent_count + 1 WHERE id  = :line_id")
-    db.session.execute(query, {'line_id': ascent.line_id})
-    query = text("UPDATE areas SET ascent_count=ascent_count + 1 WHERE id  = :area_id")
-    db.session.execute(query, {'area_id': ascent.area_id})
-    query = text("UPDATE sectors SET ascent_count=ascent_count + 1 WHERE id  = :sector_id")
-    db.session.execute(query, {'sector_id': ascent.sector_id})
-    query = text("UPDATE crags SET ascent_count=ascent_count + 1 WHERE id  = :crag_id")
-    db.session.execute(query, {'crag_id': ascent.crag_id})
-    query = text("UPDATE regions SET ascent_count=ascent_count + 1")
-    db.session.execute(query)
-
-
-def decrement_ascent_counts(ascent: Ascent):
-    query = text("UPDATE lines SET ascent_count=ascent_count - 1 WHERE id  = :line_id")
-    db.session.execute(query, {'line_id': ascent.line_id})
-    query = text("UPDATE areas SET ascent_count=ascent_count - 1 WHERE id  = :area_id")
-    db.session.execute(query, {'area_id': ascent.area_id})
-    query = text("UPDATE sectors SET ascent_count=ascent_count - 1 WHERE id  = :sector_id")
-    db.session.execute(query, {'sector_id': ascent.sector_id})
-    query = text("UPDATE crags SET ascent_count=ascent_count - 1 WHERE id  = :crag_id")
-    db.session.execute(query, {'crag_id': ascent.crag_id})
-    query = text("UPDATE regions SET ascent_count=ascent_count - 1")
-    db.session.execute(query)

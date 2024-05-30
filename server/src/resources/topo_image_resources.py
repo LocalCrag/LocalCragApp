@@ -2,7 +2,7 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
@@ -10,10 +10,9 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image_schema
 from models.area import Area
-from models.line import Line
-from models.line_path import LinePath
 from models.topo_image import TopoImage
 from models.user import User
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 
@@ -93,9 +92,7 @@ class GetTopoImages(MethodView):
         topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id,
                                                             order_by=lambda: TopoImage.order_index.asc())
         include_secret = True
-        has_jwt = bool(verify_jwt_in_request(optional=True))
-        claims = get_jwt()
-        if not has_jwt or (not claims['admin'] and not claims['moderator'] and not claims['member']):
+        if not get_show_secret():
             include_secret = False
         unfiltered_response = topo_images_schema.dump(topo_images)
         if not include_secret:

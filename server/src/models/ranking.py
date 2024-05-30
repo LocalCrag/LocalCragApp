@@ -28,6 +28,7 @@ class Ranking(db.Model):
     total_fa_count = db.Column(db.Integer(), default=0)
     total_fa_exponential = db.Column(db.Integer(), default=0)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
+    secret = db.Column(db.Boolean(), nullable=False, server_default='0')
 
 
     @classmethod
@@ -39,7 +40,7 @@ class Ranking(db.Model):
         return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
-    def get_new_ranking(cls, user_id, type, crag_id=None, sector_id=None):
+    def get_new_ranking(cls, user_id, type, crag_id=None, sector_id=None, secret=False):
         ranking = Ranking()
         ranking.user_id = user_id
         ranking.type = type
@@ -53,6 +54,7 @@ class Ranking(db.Model):
         ranking.total_fa = 0
         ranking.total_fa_exponential = 0
         ranking.total_fa_count = 0
+        ranking.secret = secret
         return ranking
 
     def reset(self):

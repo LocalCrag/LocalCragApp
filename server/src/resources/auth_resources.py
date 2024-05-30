@@ -32,14 +32,15 @@ class UserLogin(MethodView):
         Logs in a user into the application.
         """
         data = parser.parse(login_args, request)
-        email_canonical =data['email'].lower()
+        email_canonical = data['email'].lower()
         current_user = User.find_by_email(email_canonical)
 
         if not current_user:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
         if User.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=email_canonical, additional_claims=get_access_token_claims(current_user))
+            access_token = create_access_token(identity=email_canonical,
+                                               additional_claims=get_access_token_claims(current_user))
             refresh_token = create_refresh_token(identity=email_canonical)
             auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                          current_user,
@@ -90,8 +91,9 @@ class TokenRefresh(MethodView):
         """
         Refreshes a users access token.
         """
-        current_user  = User.find_by_email(get_jwt_identity())
-        access_token = create_access_token(identity=current_user.email, additional_claims=get_access_token_claims(current_user))
+        current_user = User.find_by_email(get_jwt_identity())
+        access_token = create_access_token(identity=current_user.email,
+                                           additional_claims=get_access_token_claims(current_user))
         auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
                                      current_user,
                                      access_token=access_token)

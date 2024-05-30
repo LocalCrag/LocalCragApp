@@ -3,11 +3,12 @@ from marshmallow_enum import EnumField
 
 from models.enums.line_type_enum import LineTypeEnum
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
-class LineSchema(BaseEntitySchema):
+
+class LineSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
