@@ -19,8 +19,8 @@ export class AbstractModel {
    */
   public static deserializeAbstractAttributes(model: AbstractModel, payload: any): void {
     model.id = payload.id;
-    model.timeCreated = new Date(payload.timeCreated + 'Z')
-    model.timeUpdated = new Date(payload.timeUpdated + 'Z')
+    model.timeCreated = payload.timeCreated? new Date(payload.timeCreated + 'Z') : null;
+    model.timeUpdated = payload.timeUpdated ? new Date(payload.timeUpdated + 'Z') : null;
   }
 
 }
