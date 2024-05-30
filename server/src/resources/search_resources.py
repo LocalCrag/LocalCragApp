@@ -13,10 +13,7 @@ from models.line import Line
 from models.searchable import Searchable
 from models.sector import Sector
 from models.user import User
-
-
-def notget_show_secret():
-    pass
+from util.secret_spots_auth import get_show_secret
 
 
 class Search(MethodView):
@@ -24,7 +21,7 @@ class Search(MethodView):
         if not query:
             raise BadRequest('A search query is required.')
         db_query = db.session.query(Searchable)
-        if notget_show_secret():
+        if not get_show_secret():
             db_query = db_query.filter(Searchable.secret == False)
         searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
         result = []

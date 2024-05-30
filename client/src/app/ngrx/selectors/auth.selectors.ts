@@ -40,6 +40,11 @@ export const selectIsModerator = createSelector(
   authState => authState.user?.moderator
 );
 
+export const selectIsMember = createSelector(
+  selectAuthState,
+  authState => authState.user?.member
+);
+
 export const selectIsLoggedOut = createSelector(
   selectAuthState,
   authState => !authState.isLoggedIn

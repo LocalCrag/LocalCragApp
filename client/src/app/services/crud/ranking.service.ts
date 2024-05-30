@@ -19,8 +19,8 @@ export class RankingService {
               private cache: CacheService) {
   }
 
-  public getRanking(filters: string): Observable<Ranking[]> {
-    return this.cache.get(this.api.ranking.getList(filters), map((rankingListJson: any) => rankingListJson.map(Ranking.deserialize)));
+  public getRanking(query_params: string): Observable<Ranking[]> {
+    return this.cache.get(this.api.ranking.getList(query_params), map((rankingListJson: any) => rankingListJson.map(Ranking.deserialize)));
   }
 
 }

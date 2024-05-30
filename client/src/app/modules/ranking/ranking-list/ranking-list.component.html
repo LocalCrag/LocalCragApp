@@ -4,7 +4,7 @@
               [emptyMessage]="t('noRankingsFoundMessage')"
               [loading]="loading === loadingStates.LOADING">
     <ng-template pTemplate="header">
-      <div class="flex flex-column sm:flex-row gap-2">
+      <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
         <p-dropdown [options]="rankingTypes" [(ngModel)]="rankingType"
                     (ngModelChange)="sortField = rankingType.value"
                     optionLabel="label"
@@ -20,8 +20,14 @@
             </div>
           </ng-template>
         </p-dropdown>
-        <p-button class="ranking-info-button" severity="secondary" text (click)="showDialog()" icon="pi pi-external-link" label="{{t('aboutRankingsButtonLabel')}}"></p-button>
-        <p-dialog header="{{t('aboutRankingsHeader')}}" [(visible)]="showInfoPopup" [style]="{'max-width': '800px'}" [dismissableMask]="true" [closable]="true" [modal]="true">
+        <div class="secret-switch-container" *isMember="true">
+          <p-inputSwitch [(ngModel)]="secretRankings" (ngModelChange)="loadRanking()"/>
+          {{t('includeSecretSpots')}}
+        </div>
+        <p-button class="ranking-info-button" severity="secondary" text (click)="showDialog()"
+                  icon="pi pi-external-link" label="{{t('aboutRankingsButtonLabel')}}"></p-button>
+        <p-dialog header="{{t('aboutRankingsHeader')}}" [(visible)]="showInfoPopup" [style]="{'max-width': '800px'}"
+                  [dismissableMask]="true" [closable]="true" [modal]="true">
           {{t('aboutRankingsText')}}
         </p-dialog>
       </div>

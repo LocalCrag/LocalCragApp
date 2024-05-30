@@ -12,39 +12,51 @@ from models.user import User
 class UserRankingMap:
     user_id = None
     map = {}
+    map_secret = {}
 
     def __init__(self, user_id):
         self.user_id = user_id
         for type in LineTypeEnum:
-            self.map[type] = {
-                'global': None,
-                'crags': {},
-                'sectors': {},
-            }
+            for map in [self.map, self.map_secret]:
+                map[type] = {
+                    'global': None,
+                    'crags': {},
+                    'sectors': {},
+                }
+
+    def get_map(self, secret=False):
+        if not secret:
+            return self.map
+        else:
+            return self.map_secret
 
     def add(self, ranking: Ranking):
         ranking.reset()
+        map = self.get_map(ranking.secret)
         if not ranking.crag_id and not ranking.sector_id:
-            self.map[ranking.type]['global'] = ranking
+            map[ranking.type]['global'] = ranking
         if ranking.crag_id:
-            self.map[ranking.type]['crags'][ranking.crag_id] = ranking
+            map[ranking.type]['crags'][ranking.crag_id] = ranking
         if ranking.sector_id:
-            self.map[ranking.type]['sectors'][ranking.sector_id] = ranking
+            map[ranking.type]['sectors'][ranking.sector_id] = ranking
 
-    def get_global(self, type: LineTypeEnum):
-        if not self.map[type]['global']:
-            self.map[type]['global'] = Ranking.get_new_ranking(self.user_id, type)
-        return self.map[type]['global']
+    def get_global(self, type: LineTypeEnum, secret: bool):
+        map = self.get_map(secret)
+        if not map[type]['global']:
+            map[type]['global'] = Ranking.get_new_ranking(self.user_id, type, secret=secret)
+        return map[type]['global']
 
-    def get_crag(self, type: LineTypeEnum, crag_id):
-        if crag_id not in self.map[type]['crags']:
-            self.map[type]['crags'][crag_id] = Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id)
-        return self.map[type]['crags'][crag_id]
+    def get_crag(self, type: LineTypeEnum, crag_id, secret: bool):
+        map = self.get_map(secret)
+        if crag_id not in map[type]['crags']:
+            map[type]['crags'][crag_id] = Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id, secret=secret)
+        return map[type]['crags'][crag_id]
 
-    def get_sector(self, type: LineTypeEnum, sector_id):
-        if sector_id not in self.map[type]['sectors']:
-            self.map[type]['sectors'][sector_id] = Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id)
-        return self.map[type]['sectors'][sector_id]
+    def get_sector(self, type: LineTypeEnum, sector_id, secret: bool):
+        map = self.get_map(secret)
+        if sector_id not in map[type]['sectors']:
+            map[type]['sectors'][sector_id] = Ranking.get_new_ranking(self.user_id, type, sector_id=sector_id, secret=secret)
+        return map[type]['sectors'][sector_id]
 
 
 def build_rankings():
@@ -62,48 +74,50 @@ def build_rankings():
         page = 1
         has_next_page = True
         while has_next_page:
-            query = db.session.query(Ascent).filter(Ascent.created_by_id == user.id).filter(
-                Ascent.line.has(secret=False))
+            query = db.session.query(Ascent).filter(Ascent.created_by_id == user.id)
             paginated_ascents = db.paginate(query, page=page, per_page=50)
             has_next_page = paginated_ascents.has_next
             if paginated_ascents.has_next:
                 page += 1
             for ascent in paginated_ascents.items:
-                line: Line = ascent.line
-                ascent_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
-                global_ranking = ranking_map.get_global(line.type)
-                crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id)
-                sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id)
-                for ranking in [global_ranking, crag_ranking, sector_ranking]:
-                    ranking.total_count += 1
-                    ranking.total += ascent_value
-                    ranking.total_exponential += exponential_base ** ascent_value
-                    ranking.top_values.sort()
-                    ranking.top_fa_values.sort()
-                    if ascent.fa:
-                        ranking.total_fa_count += 1
-                        ranking.total_fa += ascent_value
-                        ranking.total_fa_exponential += exponential_base ** ascent_value
-                    if len(ranking.top_values) < 25:
-                        ranking.top_values.append(ascent_value)
-                    else:
-                        if ascent_value > ranking.top_values[0]:
-                            ranking.top_values[0] = ascent_value
-                    if ascent.fa:
-                        if len(ranking.top_fa_values) < 10:
-                            ranking.top_fa_values.append(ascent_value)
+                for secret in [False, True]:
+                    line: Line = ascent.line
+                    if not secret and line.secret:
+                        continue
+                    ascent_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+                    global_ranking = ranking_map.get_global(line.type, secret)
+                    crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id, secret)
+                    sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id, secret)
+                    for ranking in [global_ranking, crag_ranking, sector_ranking]:
+                        ranking.total_count += 1
+                        ranking.total += ascent_value
+                        ranking.total_exponential += exponential_base ** ascent_value
+                        ranking.top_values.sort()
+                        ranking.top_fa_values.sort()
+                        if ascent.fa:
+                            ranking.total_fa_count += 1
+                            ranking.total_fa += ascent_value
+                            ranking.total_fa_exponential += exponential_base ** ascent_value
+                        if len(ranking.top_values) < 25:
+                            ranking.top_values.append(ascent_value)
                         else:
-                            if ascent_value > ranking.top_fa_values[0]:
-                                ranking.top_fa_values[0] = ascent_value
-                    ranking.top_25 = sum(ranking.top_values)
-                    ranking.top_25_exponential = sum([exponential_base ** x for x in ranking.top_values])
-                    ranking.top_10_fa = sum(ranking.top_fa_values)
-                    ranking.top_10_fa_exponential = sum([exponential_base ** x for x in ranking.top_fa_values])
-                    ranking.top_10 = sum(sorted(ranking.top_values, reverse=True)[:10])
-                    ranking.top_10_exponential = sum(
-                        [exponential_base ** x for x in sorted(ranking.top_values, reverse=True)[:10]])
-                    db.session.add(ranking)
-                    flag_modified(ranking, "top_fa_values")
-                    flag_modified(ranking, "top_values")
+                            if ascent_value > ranking.top_values[0]:
+                                ranking.top_values[0] = ascent_value
+                        if ascent.fa:
+                            if len(ranking.top_fa_values) < 10:
+                                ranking.top_fa_values.append(ascent_value)
+                            else:
+                                if ascent_value > ranking.top_fa_values[0]:
+                                    ranking.top_fa_values[0] = ascent_value
+                        ranking.top_25 = sum(ranking.top_values)
+                        ranking.top_25_exponential = sum([exponential_base ** x for x in ranking.top_values])
+                        ranking.top_10_fa = sum(ranking.top_fa_values)
+                        ranking.top_10_fa_exponential = sum([exponential_base ** x for x in ranking.top_fa_values])
+                        ranking.top_10 = sum(sorted(ranking.top_values, reverse=True)[:10])
+                        ranking.top_10_exponential = sum(
+                            [exponential_base ** x for x in sorted(ranking.top_values, reverse=True)[:10]])
+                        db.session.add(ranking)
+                        flag_modified(ranking, "top_fa_values")
+                        flag_modified(ranking, "top_values")
         db.session.commit()
     print('Rankings successfully calculated.')

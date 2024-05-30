@@ -16,6 +16,8 @@ import {RouterLink} from '@angular/router';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {FormsModule} from '@angular/forms';
 import {DialogModule} from 'primeng/dialog';
+import {InputSwitchModule} from 'primeng/inputswitch';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -34,7 +36,9 @@ import {DialogModule} from 'primeng/dialog';
     AvatarModule,
     RouterLink,
     FormsModule,
-    DialogModule
+    DialogModule,
+    InputSwitchModule,
+    HasPermissionDirective
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
@@ -52,6 +56,7 @@ export class RankingListComponent implements OnInit {
   public sortOrder = -1;
   public rankingTypes: SelectItem[];
   public rankingType: SelectItem;
+  public secretRankings = false;
   public showInfoPopup = false;
 
   constructor(private rankingService: RankingService,
@@ -116,14 +121,17 @@ export class RankingListComponent implements OnInit {
 
   loadRanking() {
     this.loading = LoadingState.LOADING;
-    let filters = `?line_type=${LineType.BOULDER}`;
+    let query_params = `?line_type=${LineType.BOULDER}`;
     if (this.cragId) {
-      filters += `&crag_id=${this.cragId}`;
+      query_params += `&crag_id=${this.cragId}`;
     }
     if (this.sectorId) {
-      filters += `&sector_id=${this.sectorId}`;
+      query_params += `&sector_id=${this.sectorId}`;
     }
-    this.rankingService.getRanking(filters).subscribe(rankings => {
+    if (this.secretRankings) {
+      query_params += `&secret=1`;
+    }
+    this.rankingService.getRanking(query_params).subscribe(rankings => {
       this.rankings = rankings;
       this.sortField = this.rankingType.value;
       this.rankings.sort((a, b) => a[this.sortField] < b[this.sortField] ? 1 : a[this.sortField] > b[this.sortField] ? -1 : 0)
