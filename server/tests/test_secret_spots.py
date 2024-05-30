@@ -202,3 +202,29 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client):
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res["secret"] == True
+
+
+def test_users_that_are_not_logged_in_cannot_view_secret_items(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    crag_data = {
+        "name": "brione",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
+        "rules": "Parken nur Samstag und Sonntag 2.",
+        "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
+        "lat": 42.1,
+        "lng": 42.2,
+        "secret": True,
+    }
+
+    rv = client.put('/api/crags/brione', headers=access_headers, json=crag_data)
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res['secret'] == True
+
+    rv = client.get('/api/crags/brione', json=crag_data)
+    assert rv.status_code == 401
+
+    rv = client.get('/api/lines/treppe', json=crag_data)
+    assert rv.status_code == 401
