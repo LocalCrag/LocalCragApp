@@ -147,7 +147,7 @@ class GetAreaGrades(MethodView):
         Returns the grades of all lines of an area.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id).all()
+        query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id)
         if not get_show_secret():
             query = query.filter(Line.secret == False)
         result = query.all()
