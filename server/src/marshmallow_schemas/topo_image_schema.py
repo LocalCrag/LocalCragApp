@@ -5,10 +5,10 @@ from marshmallow_schemas.file_schema import FileSchema, file_schema
 from marshmallow_schemas.line_path_schema import line_path_schema
 from models.file import File
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema
+from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 
 
-class TopoImageSchema(BaseEntitySchema):
+class TopoImageSchema(BaseEntityMinSchema):
     image = fields.Nested(file_schema, attribute='file')
     linePaths = fields.List(fields.Nested(line_path_schema), attribute='line_paths')
     orderIndex = fields.Int(attribute='order_index')
@@ -19,7 +19,7 @@ class TopoImageSchema(BaseEntitySchema):
 
 
 
-class TopoImageSchemaForLines(BaseEntitySchema):
+class TopoImageSchemaForLines(BaseEntityMinSchema):
     image = fields.Nested(file_schema, attribute='file')
     orderIndex = fields.Int(attribute='order_index')
     lat = fields.Float()
