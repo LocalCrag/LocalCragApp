@@ -204,7 +204,7 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client):
     assert res["secret"] == True
 
 
-def test_users_that_are_not_logged_in_cannot_view_secret_items(client):
+def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret_items(client):
     access_headers, refresh_headers = get_login_headers(client)
 
     crag_data = {
@@ -228,3 +228,13 @@ def test_users_that_are_not_logged_in_cannot_view_secret_items(client):
 
     rv = client.get('/api/lines/treppe', json=crag_data)
     assert rv.status_code == 401
+
+    # Logged in but not member
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag4@fengelmann.de')
+    rv = client.get('/api/crags/brione', headers=access_headers, json=crag_data)
+    assert rv.status_code == 401
+
+    # Logged in member
+    access_headers, refresh_headers = get_login_headers(client, email='localcrag5@fengelmann.de')
+    rv = client.get('/api/crags/brione', headers=access_headers, json=crag_data)
+    assert rv.status_code == 200

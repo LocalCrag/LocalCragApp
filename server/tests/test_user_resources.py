@@ -34,7 +34,7 @@ def test_successful_get_users(client):
     rv = client.get('/api/users', headers=access_headers)
     assert rv.status_code == 200
     res = json.loads(rv.data)
-    assert len(res) == 3
+    assert len(res) == 5
     for user in res:
         assert type(user['id']) == str
         assert type(user['firstname']) == str
