@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {Post} from '../../models/post';
 import {Observable} from 'rxjs';
@@ -15,7 +14,6 @@ import {map, tap} from 'rxjs/operators';
 export class PostsService {
 
   constructor(private api: ApiService,
-              private cache: CacheService,
               private http: HttpClient) {
   }
 
@@ -27,9 +25,6 @@ export class PostsService {
    */
   public createPost(post: Post): Observable<Post> {
     return this.http.post(this.api.posts.create(), Post.serialize(post)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.posts.getList());
-      }),
       map(Post.deserialize)
     );
   }
@@ -40,7 +35,7 @@ export class PostsService {
    * @return Observable of a list of Posts.
    */
   public getPosts(): Observable<Post[]> {
-    return this.cache.get(this.api.posts.getList(), map((postListJson: any) => postListJson.map(Post.deserialize)));
+    return this.http.get(this.api.posts.getList()).pipe(map((postListJson: any) => postListJson.map(Post.deserialize)));
   }
 
   /**
@@ -50,7 +45,7 @@ export class PostsService {
    * @return Observable of a Post.
    */
   public getPost(slug: string): Observable<Post> {
-    return this.cache.get(this.api.posts.getDetail(slug), map(Post.deserialize));
+    return this.http.get(this.api.posts.getDetail(slug)).pipe(map(Post.deserialize));
   }
 
   /**
@@ -61,9 +56,6 @@ export class PostsService {
    */
   public deletePost(post: Post): Observable<null> {
     return this.http.delete(this.api.posts.delete(post.slug)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.posts.getList());
-      }),
       map(() => null)
     );
   }
@@ -76,10 +68,6 @@ export class PostsService {
    */
   public updatePost(post: Post): Observable<Post> {
     return this.http.put(this.api.posts.update(post.slug), Post.serialize(post)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.posts.getDetail(post.slug));
-        this.cache.clear(this.api.posts.getList());
-      }),
       map(Post.deserialize)
     );
   }

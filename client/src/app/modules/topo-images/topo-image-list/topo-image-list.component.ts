@@ -18,7 +18,6 @@ import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ApiService} from '../../../services/core/api.service';
-import {CacheService} from '../../../services/core/cache.service';
 import {ViewportScroller} from '@angular/common';
 import {filter, take} from 'rxjs/operators';
 import {Line} from '../../../models/line';
@@ -64,7 +63,6 @@ export class TopoImageListComponent {
 
   constructor(private topoImagesService: TopoImagesService,
               private api: ApiService,
-              private cache: CacheService,
               private store: Store,
               private confirmationService: ConfirmationService,
               private ticksService: TicksService,
@@ -98,7 +96,7 @@ export class TopoImageListComponent {
       this.refreshData();
     });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -108,10 +106,10 @@ export class TopoImageListComponent {
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
-    this.areasService.getArea(this.areaSlug).pipe(mergeMap(area =>{
+    this.areasService.getArea(this.areaSlug).pipe(mergeMap(area => {
       return forkJoin([
         this.topoImagesService.getTopoImages(this.areaSlug),
-        this.ticksService.getTicks(null, null,area.id),
+        this.ticksService.getTicks(null, null, area.id),
         this.translocoService.load(`${environment.language}`)
       ])
     })).subscribe(([topoImages, ticks, e]) => {
@@ -235,7 +233,7 @@ export class TopoImageListComponent {
    */
   public deleteLinePath(linePath: LinePath, topoImage: TopoImage) {
     linePath.loadingState = LoadingState.LOADING;
-    this.linePathsService.deleteLinePath(this.areaSlug, linePath, topoImage.id).subscribe(() => {
+    this.linePathsService.deleteLinePath(linePath).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_DELETED));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1)
       linePath.konvaLine.destroy();
@@ -314,8 +312,6 @@ export class TopoImageListComponent {
       }
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
-      this.cache.clear(this.api.topoImages.getList(this.areaSlug));
-      this.cache.clear(this.api.lines.getList(this.areaSlug));
       this.refreshData();
     });
   }

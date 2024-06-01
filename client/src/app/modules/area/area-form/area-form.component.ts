@@ -2,7 +2,6 @@ import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/co
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Sector} from '../../../models/sector';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SectorsService} from '../../../services/crud/sectors.service';
@@ -16,12 +15,9 @@ import {environment} from '../../../../environments/environment';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
-import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
@@ -153,7 +149,7 @@ export class AreaFormComponent implements OnInit {
       area.secret = this.areaForm.get('secret').value;
       if (this.area) {
         area.slug = this.area.slug;
-        this.areasService.updateArea(this.sectorSlug, area).subscribe(area => {
+        this.areasService.updateArea( area).subscribe(area => {
           this.store.dispatch(toastNotification(NotificationIdentifier.AREA_UPDATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, area.slug]);
           this.loadingState = LoadingState.DEFAULT;
@@ -194,11 +190,10 @@ export class AreaFormComponent implements OnInit {
    * Deletes the area and navigates to the area list.
    */
   public deleteArea() {
-    this.areasService.deleteArea(this.sectorSlug, this.area).subscribe(() => {
+    this.areasService.deleteArea( this.area).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.AREA_DELETED));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
       this.loadingState = LoadingState.DEFAULT;
-      this.store.dispatch(clearGradeCache({area: null, crag: this.cragSlug, sector: this.sectorSlug}))
     });
   }
 

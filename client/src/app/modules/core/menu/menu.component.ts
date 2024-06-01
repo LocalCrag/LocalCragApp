@@ -1,14 +1,11 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {forkJoin, Observable} from 'rxjs';
 import {selectAuthState, selectCurrentUser} from '../../../ngrx/selectors/auth.selectors';
 import {
   cleanupCredentials,
-  loginSuccess,
   logout,
-  logoutSuccess,
   newAuthCredentials
 } from 'src/app/ngrx/actions/auth.actions';
 import {TranslocoService} from '@ngneat/transloco';
@@ -30,7 +27,6 @@ import {File} from '../../../models/file';
 import {User} from '../../../models/user';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {SearchDialogComponent} from '../search-dialog/search-dialog.component';
-import {CacheService} from '../../../services/core/cache.service';
 import {ApiService} from '../../../services/core/api.service';
 
 @Component({
@@ -54,7 +50,6 @@ export class MenuComponent implements OnInit {
 
 
   constructor(private menuItemsService: MenuItemsService,
-              private cache: CacheService,
               private api: ApiService,
               private translocoService: TranslocoService,
               private dialogService: DialogService,
@@ -74,8 +69,6 @@ export class MenuComponent implements OnInit {
       if(action.type === newAuthCredentials.type && !action.initialCredentials){
         return;
       }
-      this.cache.clear(this.api.menuItems.getList());
-      this.cache.clear(this.api.menuItems.getCragMenuStructure());
       this.buildMenu();
       this.buildUserMenu();
     })

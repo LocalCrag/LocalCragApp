@@ -4,8 +4,6 @@ import {delay, Observable, timer} from 'rxjs';
 import {map, mapTo, tap} from 'rxjs/operators';
 import {Crag} from '../../models/crag';
 import {HttpClient} from '@angular/common/http';
-import {CacheService} from '../core/cache.service';
-import {environment} from '../../../environments/environment';
 import {ItemOrder} from '../../interfaces/item-order.interface';
 import {Store} from '@ngrx/store';
 import {reloadMenus} from '../../ngrx/actions/core.actions';
@@ -20,7 +18,6 @@ import {deserializeGrade, Grade} from '../../utility/misc/grades';
 export class CragsService {
 
   constructor(private api: ApiService,
-              private cache: CacheService,
               private store: Store,
               private http: HttpClient) {
   }
@@ -34,8 +31,6 @@ export class CragsService {
   public createCrag(crag: Crag): Observable<Crag> {
     return this.http.post(this.api.crags.create(), Crag.serialize(crag)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList());
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -48,7 +43,7 @@ export class CragsService {
    * @return Observable of a list of Crags.
    */
   public getCrags(): Observable<Crag[]> {
-    return this.cache.get(this.api.crags.getList(), map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
+    return this.http.get(this.api.crags.getList()).pipe(map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 
   /**
@@ -58,7 +53,7 @@ export class CragsService {
    * @return Observable of a Crag.
    */
   public getCrag(slug: string): Observable<Crag> {
-    return this.cache.get(this.api.crags.getDetail(slug), map(Crag.deserialize));
+    return this.http.get(this.api.crags.getDetail(slug)).pipe(map(Crag.deserialize));
   }
 
   /**
@@ -70,8 +65,6 @@ export class CragsService {
   public deleteCrag(crag: Crag): Observable<null> {
     return this.http.delete(this.api.crags.delete(crag.slug)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList());
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -87,9 +80,6 @@ export class CragsService {
   public updateCrag(crag: Crag): Observable<Crag> {
     return this.http.put(this.api.crags.update(crag.slug), Crag.serialize(crag)).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getDetail(crag.slug));
-        this.cache.clear(this.api.crags.getList());
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Crag.deserialize)
@@ -105,8 +95,6 @@ export class CragsService {
   public updateCragOrder(newOrder: ItemOrder): Observable<null> {
     return this.http.put(this.api.crags.updateOrder(), newOrder).pipe(
       tap(() => {
-        this.cache.clear(this.api.crags.getList());
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -121,7 +109,7 @@ export class CragsService {
    * @return Observable of a list of Grades.
    */
   public getCragGrades(cragSlug: string): Observable<Grade[]> {
-    return this.cache.get(this.api.crags.getGrades(cragSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http.get(this.api.crags.getGrades(cragSlug)).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 

@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {File} from '../../models/file';
 import {Observable} from 'rxjs';
@@ -13,7 +12,7 @@ import {AlignAction, DeleteAction, ImageSpec, ResizeAction} from 'quill-blot-for
  */
 class CustomImageSpec extends ImageSpec {
   override getActions() {
-    return [DeleteAction, ResizeAction, AlignAction];
+    return [DeleteAction, ResizeAction];
   }
 
   override init() {

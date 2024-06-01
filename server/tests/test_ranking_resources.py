@@ -12,17 +12,8 @@ def test_successful_get_ranking_boulder(client):
     assert len(res) == 1
     assert res[0]['user']['slug'] == "felix-engelmann"
     assert res[0]['top10'] == 22
-    assert res[0]['top10Exponential'] == 7482
-    assert res[0]['top25'] == 22
-    assert res[0]['top25Exponential'] == 7482
-    assert res[0]['top10Fa'] == 22
-    assert res[0]['top10FaExponential'] == 7482
-    assert res[0]['total'] == 22
+    assert res[0]['top50'] == 22
     assert res[0]['totalCount'] == 1
-    assert res[0]['totalExponential'] == 7482
-    assert res[0]['totalFa'] == 22
-    assert res[0]['totalFaCount'] == 1
-    assert res[0]['totalFaExponential'] == 7482
 
     rv = client.get('/api/ranking?line_type=BOULDER&sector_id=008478de-5e0b-41b3-abe7-571f758c189b')
     assert rv.status_code == 200
@@ -30,17 +21,8 @@ def test_successful_get_ranking_boulder(client):
     assert len(res) == 1
     assert res[0]['user']['slug'] == "felix-engelmann"
     assert res[0]['top10'] == 22
-    assert res[0]['top10Exponential'] == 7482
-    assert res[0]['top25'] == 22
-    assert res[0]['top25Exponential'] == 7482
-    assert res[0]['top10Fa'] == 22
-    assert res[0]['top10FaExponential'] == 7482
-    assert res[0]['total'] == 22
+    assert res[0]['top50'] == 22
     assert res[0]['totalCount'] == 1
-    assert res[0]['totalExponential'] == 7482
-    assert res[0]['totalFa'] == 22
-    assert res[0]['totalFaCount'] == 1
-    assert res[0]['totalFaExponential'] == 7482
 
     rv = client.get('/api/ranking?line_type=BOULDER&crag_id=aabc4539-c02f-4a03-8db3-ea0916e59884')
     assert rv.status_code == 200
@@ -48,17 +30,8 @@ def test_successful_get_ranking_boulder(client):
     assert len(res) == 1
     assert res[0]['user']['slug'] == "felix-engelmann"
     assert res[0]['top10'] == 22
-    assert res[0]['top10Exponential'] == 7482
-    assert res[0]['top25'] == 22
-    assert res[0]['top25Exponential'] == 7482
-    assert res[0]['top10Fa'] == 22
-    assert res[0]['top10FaExponential'] == 7482
-    assert res[0]['total'] == 22
+    assert res[0]['top50'] == 22
     assert res[0]['totalCount'] == 1
-    assert res[0]['totalExponential'] == 7482
-    assert res[0]['totalFa'] == 22
-    assert res[0]['totalFaCount'] == 1
-    assert res[0]['totalFaExponential'] == 7482
 
 
 def test_successful_get_ranking_invalid_type(client):
@@ -107,14 +80,5 @@ def test_successful_update_ranking(client):
     assert len(res) == 1
     assert res[0]['user']['slug'] == "felix-engelmann"
     assert res[0]['top10'] == 23
-    assert res[0]['top10Exponential'] == 7483
-    assert res[0]['top25'] == 23
-    assert res[0]['top25Exponential'] == 7483
-    assert res[0]['top10Fa'] == 22
-    assert res[0]['top10FaExponential'] == 7482
-    assert res[0]['total'] == 23
+    assert res[0]['top50'] == 23
     assert res[0]['totalCount'] == 2
-    assert res[0]['totalExponential'] == 7483
-    assert res[0]['totalFa'] == 22
-    assert res[0]['totalFaCount'] == 1
-    assert res[0]['totalFaExponential'] == 7482

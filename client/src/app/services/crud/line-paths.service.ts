@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {LinePath} from '../../models/line-path';
 import {Observable} from 'rxjs';
@@ -17,7 +16,6 @@ import {ItemOrder} from '../../interfaces/item-order.interface';
 export class LinePathsService {
 
   constructor(private api: ApiService,
-              private cache: CacheService,
               private http: HttpClient) {
   }
 
@@ -26,16 +24,10 @@ export class LinePathsService {
    *
    * @param linePath LinePath to persist.
    * @param topoImageId ID of the topo image to which the line path should be added.
-   * @param areaSlug Slug of the area the topo image is in.
    * @return Observable of a LinePath.
    */
-  public addLinePath(linePath: LinePath, topoImageId: string, areaSlug: string): Observable<LinePath> {
+  public addLinePath(linePath: LinePath, topoImageId: string): Observable<LinePath> {
     return this.http.post(this.api.linePaths.addLinePath(topoImageId), LinePath.serialize(linePath)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.lines.getList(areaSlug));
-        this.cache.clear(this.api.topoImages.getList(areaSlug));
-        this.cache.clear(this.api.topoImages.getDetail(topoImageId));
-      }),
       map(LinePath.deserialize)
     );
   }
@@ -43,18 +35,11 @@ export class LinePathsService {
   /**
    * Deletes a LinePath.
    *
-   * @param areaSlug Slug of the area the line path is in.
-   * @param topoImageId ID of the topo image that the line is part of.
    * @param linePath LinePath to delete.
    * @return Observable of null.
    */
-  public deleteLinePath(areaSlug: string, linePath: LinePath, topoImageId: string): Observable<null> {
+  public deleteLinePath( linePath: LinePath): Observable<null> {
     return this.http.delete(this.api.linePaths.delete(linePath.id)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.lines.getList(areaSlug));
-        this.cache.clear(this.api.topoImages.getList(areaSlug));
-        this.cache.clear(this.api.topoImages.getDetail(topoImageId));
-      }),
       map(() => null)
     );
   }
@@ -68,9 +53,6 @@ export class LinePathsService {
    */
   public updateLinePathOrder(newOrder: ItemOrder, topoImageId: string): Observable<null> {
     return this.http.put(this.api.linePaths.updateOrder(topoImageId), newOrder).pipe(
-      tap(() => {
-        this.cache.clear(this.api.topoImages.getDetail(topoImageId));
-      }),
       map(() => null)
     );
   }
@@ -84,9 +66,6 @@ export class LinePathsService {
    */
   public updateLinePathOrderForLines(newOrder: ItemOrder, lineSlug: string, ): Observable<null> {
     return this.http.put(this.api.linePaths.updateOrderForLines(lineSlug), newOrder).pipe(
-      tap(() => {
-        this.cache.clear(this.api.lines.getDetail(lineSlug));
-      }),
       map(() => null)
     );
   }

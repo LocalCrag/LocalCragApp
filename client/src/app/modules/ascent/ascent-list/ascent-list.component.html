@@ -143,7 +143,7 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
-              <div class="ascent-actions" *isOwnUser="ascent.createdBy">
+              <div class="ascent-actions" *isOwnUser="user">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
                           data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
@@ -176,7 +176,7 @@
                     routerLink="{{ascent.routerLinkArea}}">{{ascent.area.name}}</a>
                   </div>
                 </div>
-                <div class="ascent-actions" *isOwnUser="ascent.createdBy">
+                <div class="ascent-actions" *isOwnUser="user">
                   <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
                              data-cy="edit-ascent"
                             (click)="editAscent(ascent)">

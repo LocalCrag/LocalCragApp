@@ -117,7 +117,7 @@ export class LinePathFormComponent {
       const linePath = new LinePath();
       linePath.line = this.linePathForm.get('line').value;
       linePath.path = this.linePathForm.get('path').value;
-      this.linePathsService.addLinePath(linePath, this.topoImageId, this.areaSlug).subscribe(() => {
+      this.linePathsService.addLinePath(linePath, this.topoImageId).subscribe(() => {
         this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_ADDED));
         // this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
         this.loadingState = LoadingState.DEFAULT;

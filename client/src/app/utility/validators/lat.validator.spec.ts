@@ -1,6 +1,4 @@
-import {createCachedSource} from '../../services/core/cache.service';
 import {AbstractControl, FormControl} from '@angular/forms';
-import {httpUrlValidator} from './http-url.validator';
 import {latValidator} from './lat.validator';
 
 describe('latValidator', () => {

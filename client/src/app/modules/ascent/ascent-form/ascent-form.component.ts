@@ -32,11 +32,6 @@ import {DividerModule} from 'primeng/divider';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {catchError, filter} from 'rxjs/operators';
 import {MessageModule} from 'primeng/message';
-import {of} from 'rxjs';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 
 @Component({

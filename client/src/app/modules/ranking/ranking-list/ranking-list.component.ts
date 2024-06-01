@@ -71,49 +71,13 @@ export class RankingListComponent implements OnInit {
         value: 'top10'
       },
       {
-        label: this.translocoService.translate(marker('top25Ranking')),
-        value: 'top25'
-      },
-      {
-        label: this.translocoService.translate(marker('top10FaRanking')),
-        value: 'top10Fa'
+        label: this.translocoService.translate(marker('top50Ranking')),
+        value: 'top50'
       },
       {
         label: this.translocoService.translate(marker('totalCountRanking')),
         value: 'totalCount'
-      },
-      {
-        label: this.translocoService.translate(marker('totalFaCountRanking')),
-        value: 'totalFaCount'
-      },
-      {
-        label: this.translocoService.translate(marker('top10ExponentialRanking')),
-        value: 'top10Exponential'
-      },
-      {
-        label: this.translocoService.translate(marker('top25ExponentialRanking')),
-        value: 'top25Exponential'
-      },
-      {
-        label: this.translocoService.translate(marker('top10FaExponentialRanking')),
-        value: 'top10FaExponential'
-      },
-      {
-        label: this.translocoService.translate(marker('totalRanking')),
-        value: 'total'
-      },
-      {
-        label: this.translocoService.translate(marker('totalFaRanking')),
-        value: 'totalFa'
-      },
-      {
-        label: this.translocoService.translate(marker('totalExponentialRanking')),
-        value: 'totalExponential'
-      },
-      {
-        label: this.translocoService.translate(marker('totalFaExponentialRanking')),
-        value: 'totalFaExponential'
-      },
+      }
     ];
     this.rankingType = this.rankingTypes[0];
     this.loadRanking();

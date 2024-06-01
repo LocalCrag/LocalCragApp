@@ -4,9 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Sector} from '../../models/sector';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import {CacheService} from '../core/cache.service';
 import {ItemOrder} from '../../interfaces/item-order.interface';
-import {environment} from '../../../environments/environment';
 import {deserializeGrade, Grade} from '../../utility/misc/grades';
 import {Store} from '@ngrx/store';
 import {reloadMenus} from '../../ngrx/actions/core.actions';
@@ -20,7 +18,6 @@ import {reloadMenus} from '../../ngrx/actions/core.actions';
 export class SectorsService {
 
   constructor(private api: ApiService,
-              private cache: CacheService,
               private store: Store,
               private http: HttpClient) {
   }
@@ -35,8 +32,6 @@ export class SectorsService {
   public createSector(sector: Sector, cragSlug: string): Observable<Sector> {
     return this.http.post(this.api.sectors.create(cragSlug), Sector.serialize(sector)).pipe(
       tap(() => {
-        this.cache.clear(this.api.sectors.getList(cragSlug))
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Sector.deserialize)
@@ -49,7 +44,7 @@ export class SectorsService {
    * @return Observable of a list of Sectors.
    */
   public getSectors(cragSlug: string): Observable<Sector[]> {
-    return this.cache.get(this.api.sectors.getList(cragSlug), map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)))
+    return this.http.get(this.api.sectors.getList(cragSlug)).pipe(map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)))
   }
 
   /**
@@ -59,22 +54,18 @@ export class SectorsService {
    * @return Observable of a Sector.
    */
   public getSector(sectorSlug: string): Observable<Sector> {
-    return this.cache.get(this.api.sectors.getDetail(sectorSlug), map(Sector.deserialize));
+    return this.http.get(this.api.sectors.getDetail(sectorSlug)).pipe(map(Sector.deserialize));
   }
 
   /**
    * Deletes a Sector.
    *
-   * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to delete.
    * @return Observable of null.
    */
-  public deleteSector(cragSlug: string, sector: Sector): Observable<null> {
+  public deleteSector(sector: Sector): Observable<null> {
     return this.http.delete(this.api.sectors.delete(sector.slug)).pipe(
       tap(() => {
-        this.cache.clear(this.api.sectors.getList(cragSlug))
-        this.cache.clear(this.api.sectors.getDetail(sector.slug))
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -84,16 +75,12 @@ export class SectorsService {
   /**
    * Updates a Sector.
    *
-   * @param cragSlug Slug of the crag the sector is in.
    * @param sector Sector to persist.
    * @return Observable of a Sector.
    */
-  public updateSector(cragSlug: string, sector: Sector): Observable<Sector> {
+  public updateSector( sector: Sector): Observable<Sector> {
     return this.http.put(this.api.sectors.update(sector.slug), Sector.serialize(sector)).pipe(
       tap(() => {
-        this.cache.clear(this.api.sectors.getList(cragSlug));
-        this.cache.clear(this.api.sectors.getDetail(sector.slug));
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(Sector.deserialize)
@@ -110,8 +97,6 @@ export class SectorsService {
   public updateSectorOrder(newOrder: ItemOrder, cragSlug: string): Observable<null> {
     return this.http.put(this.api.sectors.updateOrder(cragSlug), newOrder).pipe(
       tap(() => {
-        this.cache.clear(this.api.sectors.getList(cragSlug));
-        this.cache.clear(this.api.menuItems.getCragMenuStructure());
         this.store.dispatch(reloadMenus());
       }),
       map(() => null)
@@ -125,7 +110,7 @@ export class SectorsService {
    * @return Observable of a list of Grades.
    */
   public getSectorGrades(sectorSlug: string): Observable<Grade[]> {
-    return this.cache.get(this.api.sectors.getGrades(sectorSlug), map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http.get(this.api.sectors.getGrades(sectorSlug)).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
 
 }

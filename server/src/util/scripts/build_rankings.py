@@ -61,7 +61,6 @@ class UserRankingMap:
 
 def build_rankings():
     print('Starting ranking calculation...')
-    exponential_base = 1.5
     users = User.return_all()
     for user in users:
         # Build ranking map
@@ -90,34 +89,15 @@ def build_rankings():
                     sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id, secret)
                     for ranking in [global_ranking, crag_ranking, sector_ranking]:
                         ranking.total_count += 1
-                        ranking.total += ascent_value
-                        ranking.total_exponential += exponential_base ** ascent_value
                         ranking.top_values.sort()
-                        ranking.top_fa_values.sort()
-                        if ascent.fa:
-                            ranking.total_fa_count += 1
-                            ranking.total_fa += ascent_value
-                            ranking.total_fa_exponential += exponential_base ** ascent_value
-                        if len(ranking.top_values) < 25:
+                        if len(ranking.top_values) < 50:
                             ranking.top_values.append(ascent_value)
                         else:
                             if ascent_value > ranking.top_values[0]:
                                 ranking.top_values[0] = ascent_value
-                        if ascent.fa:
-                            if len(ranking.top_fa_values) < 10:
-                                ranking.top_fa_values.append(ascent_value)
-                            else:
-                                if ascent_value > ranking.top_fa_values[0]:
-                                    ranking.top_fa_values[0] = ascent_value
-                        ranking.top_25 = sum(ranking.top_values)
-                        ranking.top_25_exponential = sum([exponential_base ** x for x in ranking.top_values])
-                        ranking.top_10_fa = sum(ranking.top_fa_values)
-                        ranking.top_10_fa_exponential = sum([exponential_base ** x for x in ranking.top_fa_values])
+                        ranking.top_50 = sum(ranking.top_values)
                         ranking.top_10 = sum(sorted(ranking.top_values, reverse=True)[:10])
-                        ranking.top_10_exponential = sum(
-                            [exponential_base ** x for x in sorted(ranking.top_values, reverse=True)[:10]])
                         db.session.add(ranking)
-                        flag_modified(ranking, "top_fa_values")
                         flag_modified(ranking, "top_values")
         db.session.commit()
     print('Rankings successfully calculated.')

@@ -1,15 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {TopoImage} from '../../models/topo-image';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import {LinePath} from '../../models/line-path';
-import {Crag} from '../../models/crag';
 import {ItemOrder} from '../../interfaces/item-order.interface';
-import {environment} from '../../../environments/environment';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for topo images.
@@ -20,7 +15,6 @@ import {reloadMenus} from '../../ngrx/actions/core.actions';
 export class TopoImagesService {
 
     constructor(private api: ApiService,
-                private cache: CacheService,
                 private http: HttpClient) {
     }
 
@@ -33,9 +27,6 @@ export class TopoImagesService {
      */
     public addTopoImage(topoImage: TopoImage, areaSlug: string): Observable<TopoImage> {
         return this.http.post(this.api.topoImages.add(areaSlug), TopoImage.serialize(topoImage)).pipe(
-            tap(() => {
-                this.cache.clear(this.api.topoImages.getList(areaSlug))
-            }),
             map(TopoImage.deserialize)
         );
     }
@@ -49,10 +40,6 @@ export class TopoImagesService {
    */
   public updateTopoImage(topoImage: TopoImage, areaSlug: string): Observable<TopoImage> {
     return this.http.put(this.api.topoImages.update(topoImage.id), TopoImage.serialize(topoImage)).pipe(
-      tap(() => {
-        this.cache.clear(this.api.topoImages.getList(areaSlug))
-        this.cache.clear(this.api.topoImages.getDetail(topoImage.id))
-      }),
       map(TopoImage.deserialize)
     );
   }
@@ -63,7 +50,7 @@ export class TopoImagesService {
      * @return Observable of a list of TopoImages.
      */
     public getTopoImages(areaSlug: string): Observable<TopoImage[]> {
-        return this.cache.get(this.api.topoImages.getList(areaSlug), map((topoImageListJson: any) => topoImageListJson.map(TopoImage.deserialize)))
+        return this.http.get(this.api.topoImages.getList(areaSlug)).pipe(map((topoImageListJson: any) => topoImageListJson.map(TopoImage.deserialize)))
     }
 
     /**
@@ -73,7 +60,7 @@ export class TopoImagesService {
      * @return Observable of a TopoImage.
      */
     public getTopoImage(id: string): Observable<TopoImage> {
-        return this.cache.get(this.api.topoImages.getDetail(id), map(TopoImage.deserialize));
+        return this.http.get(this.api.topoImages.getDetail(id)).pipe(map(TopoImage.deserialize));
     }
 
     /**
@@ -85,9 +72,6 @@ export class TopoImagesService {
      */
     public deleteTopoImage(areaSlug: string, topoImage: TopoImage): Observable<null> {
         return this.http.delete(this.api.topoImages.delete(topoImage.id)).pipe(
-            tap(() => {
-                this.cache.clear(this.api.topoImages.getList(areaSlug))
-            }),
             map(() => null)
         );
     }
@@ -101,10 +85,6 @@ export class TopoImagesService {
    */
   public updateTopoImageOrder(newOrder: ItemOrder, areaSlug: string): Observable<null> {
     return this.http.put(this.api.topoImages.updateOrder(areaSlug), newOrder).pipe(
-      tap(() => {
-        this.cache.clear(this.api.topoImages.getList(areaSlug));
-        this.cache.clear(this.api.lines.getList(areaSlug));
-      }),
       map(() => null)
     );
   }

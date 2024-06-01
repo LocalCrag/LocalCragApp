@@ -14,19 +14,9 @@ class Ranking(db.Model):
     user_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', lazy='joined', overlaps="rankings")
     top_10 = db.Column(db.Integer(), default=0)
-    top_10_exponential = db.Column(db.Integer(), default=0)
-    top_25 = db.Column(db.Integer(), default=0)
-    top_25_exponential = db.Column(db.Integer(), default=0)
+    top_50 = db.Column(db.Integer(), default=0)
     top_values = db.Column(JSON)
-    top_fa_values = db.Column(JSON)
-    top_10_fa = db.Column(db.Integer(), default=0)
-    top_10_fa_exponential = db.Column(db.Integer(), default=0)
-    total = db.Column(db.Integer(), default=0)
     total_count = db.Column(db.Integer(), default=0)
-    total_exponential = db.Column(db.Integer(), default=0)
-    total_fa = db.Column(db.Integer(), default=0)
-    total_fa_count = db.Column(db.Integer(), default=0)
-    total_fa_exponential = db.Column(db.Integer(), default=0)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     secret = db.Column(db.Boolean(), nullable=False, server_default='0')
 
@@ -47,22 +37,11 @@ class Ranking(db.Model):
         ranking.crag_id = crag_id
         ranking.sector_id = sector_id
         ranking.top_values = []
-        ranking.top_fa_values = []
         ranking.total = 0
-        ranking.total_exponential = 0
         ranking.total_count = 0
-        ranking.total_fa = 0
-        ranking.total_fa_exponential = 0
-        ranking.total_fa_count = 0
         ranking.secret = secret
         return ranking
 
     def reset(self):
         self.top_values = []
-        self.top_fa_values = []
-        self.total = 0
-        self.total_exponential = 0
         self.total_count = 0
-        self.total_fa = 0
-        self.total_fa_exponential = 0
-        self.total_fa_count = 0

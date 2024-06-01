@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {mergeMap, Observable, of} from 'rxjs';
-import {Ascent} from '../../models/ascent';
 import {map, take} from 'rxjs/operators';
 import {selectCurrentUser} from '../../ngrx/selectors/auth.selectors';
 
