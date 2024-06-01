@@ -23,7 +23,7 @@ lc-sector, lc-crag, lc-area, lc-line {
 
   // Quill doesn't support <br>, so we need to match up the displayed paragraph styles with quill's to not
   // get confusing behaviour...
-  p {
+  p, h1, h2, h3, h4, h5, h6 {
     margin: 0
   }
 
