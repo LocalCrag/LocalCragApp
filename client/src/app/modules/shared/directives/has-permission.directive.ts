@@ -27,7 +27,7 @@ export class HasPermissionDirective {
   set isOwnUser(testUser: User) {
     if (testUser) {
       this.store.select(selectCurrentUser).subscribe(user => {
-        this.decideView(testUser.id === user.id);
+        this.decideView(user && testUser.id === user.id);
       })
     }
   }
