@@ -21,12 +21,12 @@ lc-sector, lc-crag, lc-area, lc-line {
 
   overflow-wrap: break-word;
 
-  p:first-of-type{
-    margin-top: 0;
+  // Quill doesn't support <br>, so we need to match up the displayed paragraph styles with quill's to not
+  // get confusing behaviour...
+  p {
+    margin: 0
   }
-  p:last-of-type{
-    margin-bottom: 0;
-  }
+
   // Restricts the maximum size of quill editor HTML content's images so the containers don't overflow
   img, iframe{
     max-width: 100%;
