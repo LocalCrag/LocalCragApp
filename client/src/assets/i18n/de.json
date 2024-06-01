@@ -573,7 +573,7 @@
   "totalExponentialRanking": "Alle Begehungen (exponentielle Gewichtung)",
   "totalFaExponentialRanking": "Alle Erstbegehungen (exponentielle Gewichtung)",
   "ascents.ascentList.aboutRankingsButtonLabel": "Über Rankings",
-  "ascents.ascentList.aboutRankingsText": "Die Rankings werden alle 15 Minuten aktualisiert. Es gibt verschiedene Arten von Rankings. Die Top-X Rankings zählen die schwersten Begehungen. Je schwerer die Linie, desto mehr Punkte. Eine 6A gibt 10 Punkte, eine 6A+ 11 usw. Rankings mit exponentieller Gewichtung sind zur Zeit in einem experimentellen Stadium und können sich ändern.",
+  "ascents.ascentList.aboutRankingsText": "Die Rankings werden alle 15 Minuten aktualisiert. Es gibt verschiedene Arten von Rankings. Die Top-X Rankings zählen die schwersten Begehungen. Je schwerer die Linie, desto mehr Punkte. Eine 6A gibt 10 Punkte, eine 6A+ 11 usw.",
   "ascents.ascentList.aboutRankingsHeader": "Über Rankings",
   "ascents.ascentList.noRankingsFoundMessage": "Bisher wurden keine Rankings erstellt.",
   "ascents.ascentList.includeSecretSpots": "Inkl. Secret-Spots",
