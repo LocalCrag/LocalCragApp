@@ -17,7 +17,7 @@ localstack. Here are our notes on how to install and run it:
 6. `aws configure list` Check the configuration
 7. `aws s3 mb s3://lc-test-bucket --endpoint-url http://0.0.0.0:4566`
 8. `localstack status services` should now show s3 as running
-9. Fill the flask config vars with the values you just configured and you are ready to go.
+9. Fill the flask config vars with the values you just configured, and you are ready to go.
 
 **Notes:**
 

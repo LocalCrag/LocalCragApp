@@ -21,9 +21,4 @@ platformBrowserDynamic().bootstrapModule(CoreModule)
 Quill.register("modules/imageUploader", ImageUploader);
 Quill.register('modules/blotFormatter', BlotFormatter);
 
-
-
-
 Chart.register(ChartDataLabels);
-
-

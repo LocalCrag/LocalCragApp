@@ -16,8 +16,6 @@ import {TranslocoService} from '@ngneat/transloco';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 

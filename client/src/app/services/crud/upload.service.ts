@@ -12,7 +12,7 @@ import {AlignAction, DeleteAction, ImageSpec, ResizeAction} from 'quill-blot-for
  */
 class CustomImageSpec extends ImageSpec {
   override getActions() {
-    return [DeleteAction, ResizeAction, AlignAction];
+    return [DeleteAction, ResizeAction];
   }
 
   override init() {
