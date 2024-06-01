@@ -99,5 +99,9 @@ def build_rankings():
                         ranking.top_10 = sum(sorted(ranking.top_values, reverse=True)[:10])
                         db.session.add(ranking)
                         flag_modified(ranking, "top_values")
+        # Delete rankings if they don't contain any ascents anymore - can happen when all ascents become secret
+        for ranking in rankings:
+            if ranking.total_count == 0:
+                db.session.delete(ranking)
         db.session.commit()
     print('Rankings successfully calculated.')
