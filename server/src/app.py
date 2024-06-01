@@ -4,6 +4,7 @@ from flask import Flask
 
 from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
+from config.validate_config import validate_config
 from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
@@ -33,6 +34,7 @@ def create_app():
     if "LOCALCRAG_CONFIG" in os.environ:
         application.config.from_envvar('LOCALCRAG_CONFIG')
     overwrite_config_by_env_vars(application)
+    validate_config(application.config)
 
     register_extensions(application)
 
