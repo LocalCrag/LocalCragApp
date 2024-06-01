@@ -267,6 +267,14 @@ lc-ascent-list {
     gap: 1rem;
     width: 100%;
 
+    .ascent-actions{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 3rem;
+      margin-right: -1rem;
+    }
+
     .ascent-table-user-and-name-info {
       display: flex;
       flex-direction: row;
@@ -307,14 +315,6 @@ lc-ascent-list {
           max-width: 100%;
         }
 
-      }
-
-      .ascent-actions{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-basis: 3rem;
-        margin-right: -1rem;
       }
 
     }
@@ -390,6 +390,7 @@ lc-ascent-list {
       }
 
     }
+
 
     .property-row-very-small {
       display: flex;
