@@ -12,9 +12,7 @@ def add_region():
     Adds the initial region.
     """
     with app.app_context():
-        try:
-            Region.return_it()
-        except NotFound:
+        if not Region.return_it():
             new_region = Region()
             new_region.name = current_app.config['REGION']
             db.session.add(new_region)
