@@ -21,7 +21,6 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {StartingPosition} from '../../../enums/starting-position';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
-import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 import {AreasService} from '../../../services/crud/areas.service';
 
@@ -285,18 +284,16 @@ export class LineFormComponent implements OnInit {
       line.secret = this.lineForm.get('secret').value;
       if (this.line) {
         line.slug = this.line.slug;
-        this.linesService.updateLine(this.areaSlug, line).subscribe(line => {
+        this.linesService.updateLine(line).subscribe(line => {
           this.store.dispatch(toastNotification(NotificationIdentifier.LINE_UPDATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, line.slug]);
           this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
         });
       } else {
         this.linesService.createLine(line, this.areaSlug).subscribe(crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.LINE_CREATED));
           this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
           this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
         });
       }
     } else {
@@ -328,11 +325,10 @@ export class LineFormComponent implements OnInit {
    * Deletes the line and navigates to the line list.
    */
   public deleteLine() {
-    this.linesService.deleteLine(this.areaSlug, this.line).subscribe(() => {
+    this.linesService.deleteLine(this.line).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.LINE_DELETED));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
       this.loadingState = LoadingState.DEFAULT;
-      this.store.dispatch(clearGradeCache({area: this.areaSlug, crag: this.cragSlug, sector: this.sectorSlug}))
     });
   }
 

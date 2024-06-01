@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
-import {Store} from '@ngrx/store';
-import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Paginated} from '../../models/paginated';
-import {Ascent} from '../../models/ascent';
 import {map} from 'rxjs/operators';
-import {Crag} from '../../models/crag';
 import {Ranking} from '../../models/ranking';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +11,11 @@ import {Ranking} from '../../models/ranking';
 export class RankingService {
 
   constructor(private api: ApiService,
-              private cache: CacheService) {
+              private http: HttpClient) {
   }
 
   public getRanking(query_params: string): Observable<Ranking[]> {
-    return this.cache.get(this.api.ranking.getList(query_params), map((rankingListJson: any) => rankingListJson.map(Ranking.deserialize)));
+    return this.http.get(this.api.ranking.getList(query_params)).pipe(map((rankingListJson: any) => rankingListJson.map(Ranking.deserialize)));
   }
 
 }

@@ -15,11 +15,8 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {Title} from '@angular/platform-browser';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
-import {clearGradeCache} from '../../../ngrx/actions/cache.actions';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 import {CragsService} from '../../../services/crud/crags.service';
 
@@ -153,7 +150,7 @@ export class SectorFormComponent implements OnInit {
       sector.secret = this.sectorForm.get('secret').value;
       if (this.sector) {
         sector.slug = this.sector.slug;
-        this.sectorsService.updateSector(this.cragSlug, sector).subscribe(sector => {
+        this.sectorsService.updateSector( sector).subscribe(sector => {
           this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_UPDATED));
           this.router.navigate(['/topo', this.cragSlug, sector.slug]);
           this.loadingState = LoadingState.DEFAULT;
@@ -194,11 +191,10 @@ export class SectorFormComponent implements OnInit {
    * Deletes the sector and navigates to the sector list.
    */
   public deleteSector() {
-    this.sectorsService.deleteSector(this.cragSlug, this.sector).subscribe(() => {
+    this.sectorsService.deleteSector(this.sector).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.SECTOR_DELETED));
       this.router.navigate(['/topo', this.cragSlug, 'sectors']);
       this.loadingState = LoadingState.DEFAULT;
-      this.store.dispatch(clearGradeCache({area: null, crag: this.cragSlug, sector: null}))
     });
   }
 

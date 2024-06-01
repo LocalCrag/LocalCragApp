@@ -48,7 +48,6 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {TranslocoService} from '@ngneat/transloco';
 import {forkJoin} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import {CacheEffects} from '../../ngrx/effects/cache.effects';
 import {BackgroundImageComponent} from './background-image/background-image.component';
 import {MenuItemsService} from '../../services/crud/menu-items.service';
 import {InstanceSettingsService} from '../../services/crud/instance-settings.service';
@@ -124,7 +123,6 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
       DeviceEffects,
       AppLevelAlertsEffects,
       NotificationsEffects,
-      CacheEffects
     ]),
     TranslocoRootModule,
     ReactiveFormsModule,

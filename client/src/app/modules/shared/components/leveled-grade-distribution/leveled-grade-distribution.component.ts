@@ -10,7 +10,7 @@ import {Grade} from '../../../../utility/misc/grades';
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss']
 })
-export class LeveledGradeDistributionComponent implements OnChanges {
+export class LeveledGradeDistributionComponent implements OnInit {
 
   @Input() fetchingObservable: Observable<Grade[]>;
 
@@ -21,13 +21,11 @@ export class LeveledGradeDistributionComponent implements OnChanges {
   public level5: number = 0;
   public grades: Grade[];
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['fetchingObservable']) {
+  ngOnInit() {
       this.fetchingObservable.subscribe(grades => {
         this.grades = grades;
         this.buildGradeDistribution();
       })
-    }
   }
 
   /**

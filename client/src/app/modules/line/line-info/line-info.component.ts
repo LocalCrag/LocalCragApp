@@ -1,20 +1,14 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
-import {Area} from '../../../models/area';
 import {ActivatedRoute} from '@angular/router';
-import {AreasService} from '../../../services/crud/areas.service';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {TopoImage} from '../../../models/topo-image';
 import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {TranslocoService} from '@ngneat/transloco';
 import {LinePathsService} from '../../../services/crud/line-paths.service';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
 import {ApiService} from '../../../services/core/api.service';
-import {CacheService} from '../../../services/core/cache.service';
 import {TicksService} from '../../../services/crud/ticks.service';
 import {Actions, ofType} from '@ngrx/effects';
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
@@ -41,11 +35,9 @@ export class LineInfoComponent {
   private areaSlug: string;
 
   constructor(private route: ActivatedRoute,
-              private store: Store,
               private ticksService: TicksService,
               private api: ApiService,
               private actions$: Actions,
-              private cache: CacheService,
               private translocoService: TranslocoService,
               private dialogService: DialogService,
               private linePathsService: LinePathsService,
@@ -93,7 +85,6 @@ export class LineInfoComponent {
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
-      this.cache.clear(this.api.lines.getList(this.areaSlug));
     });
   }
 

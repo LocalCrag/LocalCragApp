@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../core/api.service';
-import {CacheService} from '../core/cache.service';
 import {HttpClient} from '@angular/common/http';
 import {File} from '../../models/file';
 import {Observable} from 'rxjs';
