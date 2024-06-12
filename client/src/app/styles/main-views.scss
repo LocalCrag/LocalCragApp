@@ -33,4 +33,11 @@ lc-sector, lc-crag, lc-area, lc-line {
     object-fit: contain;
     height: auto;
   }
+
+  // Default iframe size
+  iframe{
+    width:100%;
+    min-height: 500px;
+  }
+
 }
