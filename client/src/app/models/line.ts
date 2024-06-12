@@ -65,6 +65,10 @@ export class Line extends AbstractModel {
   area: Area;
   ascentCount: number;
 
+  areaSlug: string;
+  sectorSlug: string;
+  cragSlug: string;
+
   // UI specific attributes, not related to data model
   disabled = false;
   blockOrderIndex: number; // Set after ordering for easy efficient reuse of ng prime data view order feature
@@ -128,6 +132,10 @@ export class Line extends AbstractModel {
     line.compression = payload.compression;
     line.arete = payload.arete;
     line.mantle = payload.mantle;
+
+    line.areaSlug = payload.areaSlug;
+    line.sectorSlug = payload.sectorSlug;
+    line.cragSlug = payload.cragSlug;
 
     line.topoImages = payload.linePaths ? payload.linePaths.map(linePathJson => {
       const linePath = LinePath.deserialize(linePathJson);

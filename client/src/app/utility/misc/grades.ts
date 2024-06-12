@@ -205,6 +205,19 @@ function buildGradeMap() {
 
 buildGradeMap();
 
+export const gradeNameByValue: { [scaleName: string]: { [value: number]: string } } = {}
+
+function buildGradeNameByValue() {
+  for (const scaleName in GRADES) {
+    gradeNameByValue[scaleName] = {}
+    GRADES[scaleName].map(grade => {
+      gradeNameByValue[scaleName][grade.value] = grade.name;
+    });
+  }
+}
+
+buildGradeNameByValue();
+
 /**
  * Parses a grade.
  * @param payload Payload containing the grade information.

@@ -51,9 +51,6 @@ import {AccountFormComponent} from './account-form/account-form.component';
 import {ChangeEmailComponent} from './change-email/change-email.component';
 import {UserListComponent} from '../user/user-list/user-list.component';
 import {isModerator} from '../../guards/is-moderator';
-import {isAdmin} from '../../guards/is-admin';
-import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
-import {AscentsComponent} from '../ascent/ascents/ascents.component';
 import {UserDetailComponent} from '../user/user-detail/user-detail.component';
 import {UserAscentsComponent} from '../user/user-ascents/user-ascents.component';
 import {CragAscentsComponent} from '../crag/crag-ascents/crag-ascents.component';
@@ -65,6 +62,7 @@ import {UserChartsComponent} from '../user/user-charts/user-charts.component';
 import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
 import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component';
 import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
+import {LineListNewComponent} from '../line/line-list-new/line-list-new.component';
 
 const routes: Routes = [
   {
@@ -307,6 +305,16 @@ const routes: Routes = [
           {
             path: '',
             component: CragListComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListNewComponent,
             outlet: 'regionContent'
           }
         ]

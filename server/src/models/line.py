@@ -1,5 +1,6 @@
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property
 
@@ -11,6 +12,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from models.grades import GRADES, get_grade_value
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
 
@@ -28,6 +30,8 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     videos = db.Column(JSON, nullable=True)
     grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)
+    # grade_value could be inferred from name and scale, but value is needed for ordering at db level
+    grade_value = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     rating = db.Column(db.Integer, nullable=True)
     area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
@@ -73,6 +77,12 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
     secret = db.Column(db.Boolean, default=False, server_default='0')
 
+    area_slug = association_proxy('area', 'slug')
+    sector_slug = association_proxy('area', 'sector_slug')
+    crag_slug = association_proxy('area', 'crag_slug')
+
     @hybrid_property
     def ascent_count(self):
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()
+
+

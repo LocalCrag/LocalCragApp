@@ -25,7 +25,7 @@
       </div>
     </ng-template>
     <ng-template let-ascents pTemplate="list">
-      <div class="grid grid-nogutter" >
+      <div class="grid grid-nogutter">
         <div class="col-12 " *ngFor="let ascent of ascents; let first = first" data-cy="ascent-list-item">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
@@ -82,7 +82,7 @@
               </div>
               <div class="ascent-actions" *isOwnUser="user">
                 <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                           data-cy="edit-ascent"
+                          data-cy="edit-ascent"
                           (click)="editAscent(ascent)">
                 </p-button>
                 <p-button icon="pi pi-trash" severity="danger"
@@ -178,7 +178,7 @@
                 </div>
                 <div class="ascent-actions" *isOwnUser="user">
                   <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                             data-cy="edit-ascent"
+                            data-cy="edit-ascent"
                             (click)="editAscent(ascent)">
                   </p-button>
                   <p-button icon="pi pi-trash" severity="danger"
@@ -236,13 +236,13 @@
   </p-dataView>
 
   <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-  <p-button label="{{t('loadMore')}}"
-            (scrolled)="loadNextPage()"
-            (click)="loadNextPage()"
-            infiniteScroll
-            [infiniteScrollDistance]="2"
-            [infiniteScrollThrottle]="50"
-            [loading]="loadingAdditionalPage === loadingStates.LOADING"></p-button>
+    <p-button label="{{t('loadMore')}}"
+              (scrolled)="loadNextPage()"
+              (click)="loadNextPage()"
+              infiniteScroll
+              [infiniteScrollDistance]="2"
+              [infiniteScrollThrottle]="50"
+              [loading]="loadingAdditionalPage === loadingStates.LOADING"></p-button>
   </div>
 
   <p-confirmPopup></p-confirmPopup>

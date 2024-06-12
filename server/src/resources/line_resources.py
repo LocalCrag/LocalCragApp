@@ -1,15 +1,20 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text, collate, func, nullslast
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.line_schema import lines_schema, line_schema
+from marshmallow_schemas.line_schema import lines_schema, line_schema, paginated_lines_schema
 from models.area import Area
+from models.crag import Crag
+from models.grades import get_grade_value
 from models.line import Line
+from models.sector import Sector
 from models.user import User
 from util.secret_spots import update_line_secret_property, set_line_parents_unsecret
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
 
@@ -18,14 +23,55 @@ from webargs_schemas.line_args import line_args
 
 class GetLines(MethodView):
 
-    def get(self, area_slug):
+    def get(self):
         """
         Returns all lines of an area.
         """
-        area_id = Area.get_id_by_slug(area_slug)
-        lines: Line = Line.return_all(filter=lambda: Line.area_id == area_id,
-                                      order_by=lambda: Line.name.asc())
-        return jsonify(lines_schema.dump(lines)), 200
+        crag_slug = request.args.get('crag')
+        sector_slug = request.args.get('sector')
+        area_slug = request.args.get('area')
+        page = request.args.get('page') or 1
+        order_by = request.args.get('order_by') or None
+        order_direction = request.args.get('order_direction') or 'asc'
+        max_grade_value = request.args.get('max_grade') or None
+        min_grade_value = request.args.get('min_grade') or None
+
+        if sum(x is not None for x in [crag_slug, sector_slug, area_slug]) > 1:
+            raise BadRequest('Either filter for crag, sector _or_ area - not mor then one of those!')
+
+        if order_by not in ['grade_value', 'name', 'rating', None] or order_direction not in ['asc', 'desc']:
+            raise BadRequest('Invalid order by query parameters')
+
+        if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
+            raise BadRequest('When filtering for grades, a min and max grade is required.')
+
+        # Filter for region, crag, sector or area
+        query = Line.query.join(Area).join(Sector).join(Crag)
+        if crag_slug:
+            query = query.filter(Crag.slug == crag_slug)
+        if sector_slug:
+            query = query.filter(Sector.slug == sector_slug)
+        if area_slug:
+            query = query.filter(Area.slug == area_slug)
+
+        # Filter by grades
+        if min_grade_value and max_grade_value:
+            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+
+        # Filter secret spots
+        if not get_show_secret():
+            query = query.filter(Line.secret == False)
+
+        # Handle order
+        if order_by and order_direction:
+            order_attribute = getattr(Line, order_by)
+            if order_by == 'name':
+                order_attribute = func.lower(order_attribute)
+            query = query.order_by(nullslast(getattr(order_attribute, order_direction)()))
+
+        paginated_lines = db.paginate(query, page=int(page), per_page=20)
+
+        return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 
 
 class GetLine(MethodView):
@@ -61,6 +107,7 @@ class CreateLine(MethodView):
         new_line.grade_name = line_data['gradeName']
         new_line.grade_scale = line_data['gradeScale']
         new_line.type = line_data['type']
+        new_line.grade_value = get_grade_value(new_line.grade_name, new_line.grade_scale, new_line.type)
         new_line.starting_position = line_data['startingPosition']
         new_line.rating = line_data['rating']
         new_line.secret = line_data['secret']
@@ -133,6 +180,7 @@ class UpdateLine(MethodView):
         line.videos = line_data['videos']
         line.grade_name = line_data['gradeName']
         line.grade_scale = line_data['gradeScale']
+        line.grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
         line.type = line_data['type']
         line.starting_position = line_data['startingPosition']
         line.rating = line_data['rating']

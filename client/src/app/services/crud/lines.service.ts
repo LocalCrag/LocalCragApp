@@ -4,6 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {Line} from '../../models/line';
+import {Paginated} from '../../models/paginated';
+import {Ascent} from '../../models/ascent';
 
 /**
  * CRUD service for lines.
@@ -41,6 +43,10 @@ export class LinesService {
       const lines = lineListJson.map(Line.deserialize);
       return getSortedLines(lines);
     }));
+  }
+
+  public getLinesNew(filters: string): Observable<Paginated<Line>> {
+    return this.http.get(this.api.lines.getListNew(filters)).pipe(map(payload => Paginated.deserialize(payload, Line.deserialize)));
   }
 
   /**

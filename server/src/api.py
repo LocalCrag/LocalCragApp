@@ -91,6 +91,7 @@ def configure_api(app):
 
     # Line API
     line_bp = Blueprint('lines', __name__)
+    line_bp.add_url_rule('', view_func=GetLines.as_view('get_lines'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=GetLine.as_view('get_line_details'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=UpdateLine.as_view('update_line'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=DeleteLine.as_view('delete_line'))
@@ -123,7 +124,6 @@ def configure_api(app):
     area_bp.add_url_rule('/<string:area_slug>', view_func=UpdateArea.as_view('update_area'))
     area_bp.add_url_rule('/<string:area_slug>', view_func=DeleteArea.as_view('delete_area'))
     area_bp.add_url_rule('/<string:area_slug>/grades', view_func=GetAreaGrades.as_view('get_area_grades'))
-    area_bp.add_url_rule('/<string:area_slug>/lines', view_func=GetLines.as_view('get_lines'))
     area_bp.add_url_rule('/<string:area_slug>/lines', view_func=CreateLine.as_view('create_line'))
     area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=GetTopoImages.as_view('get_topo_images'))
     area_bp.add_url_rule('/<string:area_slug>/topo-images', view_func=AddTopoImage.as_view('add_topo_image'))

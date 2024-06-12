@@ -1,0 +1,54 @@
+lc-line-list-new {
+
+  p-slider{
+    width: 100%
+  }
+
+  .line-info-container {
+    width: 100%;
+  }
+
+  .line-name {
+
+    display: grid;
+    grid-template-columns: auto max-content;
+    width: 100%;
+
+    p-rating {
+      align-self: flex-end;
+    }
+
+  }
+
+  .line-link {
+    color: inherit;
+    text-decoration: inherit;
+
+    &.ticked {
+      background-color: var(--ticked-bg-color);
+    }
+  }
+
+  .bottom-row{
+    display: flex;
+    width: 100%;
+
+    .video-button{
+      button{
+        margin-left: -1.25rem;
+      }
+    }
+
+    lc-tick-button{
+      margin-right: -1.25rem;
+    }
+
+  }
+
+  .slider-container{
+    margin-left: 0.5715rem;
+    margin-right: 0.5715rem;
+  }
+
+
+}
