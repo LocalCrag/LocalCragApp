@@ -67,7 +67,7 @@ class GetLines(MethodView):
                 order_attribute = func.lower(order_attribute)
             query = query.order_by(nullslast(getattr(order_attribute, order_direction)()))
 
-        paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
+        paginated_lines = db.paginate(query, page=int(page), per_page=int(per_page))
 
         return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 
