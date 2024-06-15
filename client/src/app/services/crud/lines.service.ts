@@ -32,20 +32,8 @@ export class LinesService {
     );
   }
 
-  /**
-   * Returns a list of Lines.
-   *
-   * @param areaSlug Slug if the area to return the lines for.
-   * @return Observable of a list of Lines.
-   */
-  public getLines(areaSlug: string): Observable<Line[]> {
-    return this.http.get(this.api.lines.getList(areaSlug)).pipe(map((lineListJson: any) => {
-      const lines = lineListJson.map(Line.deserialize);
-      return getSortedLines(lines);
-    }));
-  }
 
-  public getLinesNew(filters: string): Observable<Paginated<Line>> {
+  public getLines(filters: string): Observable<Paginated<Line>> {
     return this.http.get(this.api.lines.getListNew(filters)).pipe(map(payload => Paginated.deserialize(payload, Line.deserialize)));
   }
 
@@ -85,38 +73,3 @@ export class LinesService {
 
 }
 
-/**
- * Sorts an array of lines by their primary topo image and the topo images order. Lines without topo images come
- * last.
- * @param lines Lines to sort.
- */
-const getSortedLines = (lines: Line[]): Line[] => {
-  const sortedLines = lines.sort((l1, l2) => {
-    if (l1.topoImages.length === 0 && l2.topoImages.length === 0) {
-      return 0;
-    }
-    if (l1.topoImages.length === 0) {
-      return 1;
-    }
-    if (l2.topoImages.length === 0) {
-      return -1;
-    }
-    if (l1.topoImages[0].orderIndex > l2.topoImages[0].orderIndex) {
-      return 1;
-    }
-    if (l1.topoImages[0].orderIndex < l2.topoImages[0].orderIndex) {
-      return -1;
-    }
-    if (l1.topoImages[0].linePaths[0].orderIndex > l2.topoImages[0].linePaths[0].orderIndex) {
-      return 1;
-    }
-    if (l1.topoImages[0].linePaths[0].orderIndex < l2.topoImages[0].linePaths[0].orderIndex) {
-      return -1;
-    }
-    return 0;
-  });
-  sortedLines.map((line, orderIndex) => {
-    line.blockOrderIndex = orderIndex
-  })
-  return sortedLines;
-}

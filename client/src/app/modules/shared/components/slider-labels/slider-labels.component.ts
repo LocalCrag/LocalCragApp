@@ -1,7 +1,14 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  Renderer2,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {TranslocoPipe} from '@ngneat/transloco';
-
-// TODO handle overlapping labels
 
 @Component({
   selector: 'lc-slider-labels',
@@ -21,17 +28,28 @@ export class SliderLabelsComponent implements OnChanges {
   @Input() minLabel: string;
   @Input() maxLabel: string;
 
+  @ViewChild('leftLabel') leftLabel: ElementRef;
+  @ViewChild('rightLabel') rightLabel: ElementRef;
+
   public left = '0%';
   public right = '0%';
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef,
+              private renderer: Renderer2) {
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
+    this.renderer.removeClass(this.rightLabel.nativeElement, 'hidden')
     const total = this.max - this.min
     this.left = ((this.rangeMin - this.min) / total) * 100 + '%';
     this.right = ((this.max - this.rangeMax) / total) * 100 + '%';
+    this.cdr.detectChanges();
+    const leftLabelRightBounding = this.leftLabel.nativeElement.getBoundingClientRect().right;
+    const rightLabelLeftBounding = this.rightLabel.nativeElement.getBoundingClientRect().left;
+    if(leftLabelRightBounding > rightLabelLeftBounding){
+      this.renderer.addClass(this.rightLabel.nativeElement, 'hidden')
+    }
   }
 
 }

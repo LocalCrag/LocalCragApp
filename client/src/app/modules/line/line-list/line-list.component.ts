@@ -150,8 +150,9 @@ export class LineListComponent implements OnInit {
       filters.push(`max_grade=${this.gradeFilterRange[1]}`);
       filters.push(`order_by=${this.orderKey.value}`);
       filters.push(`order_direction=${this.orderDirectionKey.value}`);
+      filters.push(`per_page=10`);
       const filterString = `?${filters.join('&')}`;
-      this.linesService.getLinesNew(filterString).pipe(mergeMap(lines => {
+      this.linesService.getLines(filterString).pipe(mergeMap(lines => {
         const line_ids = lines.items.map(line => line.id);
         const tickRequest = line_ids.length > 0 ? this.ticksService.getTicks(null, null, null, line_ids) : of(new Set<string>())
         return tickRequest.pipe(map(ticks => {

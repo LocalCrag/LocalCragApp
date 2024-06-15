@@ -31,6 +31,7 @@ class GetLines(MethodView):
         sector_slug = request.args.get('sector_slug')
         area_slug = request.args.get('area_slug')
         page = request.args.get('page') or 1
+        per_page = request.args.get('per_page') or None
         order_by = request.args.get('order_by') or None
         order_direction = request.args.get('order_direction') or 'asc'
         max_grade_value = request.args.get('max_grade') or None
@@ -66,7 +67,7 @@ class GetLines(MethodView):
                 order_attribute = func.lower(order_attribute)
             query = query.order_by(nullslast(getattr(order_attribute, order_direction)()))
 
-        paginated_lines = db.paginate(query, page=int(page), per_page=10)
+        paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
 
         return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 
