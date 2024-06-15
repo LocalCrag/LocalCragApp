@@ -21,7 +21,7 @@ This was all perfetly possible by just using Wordpress or some forum software li
 
 ## Current state
 
-Most of v1.0.0 is done and we are currently preparing to relaunch gleesbouldering.com using LocalCrag!
+v1.0.0 is finished and deployed on https://gleesbouldering.com! More features are being added regularly now.
 
 ## Screenshots
 

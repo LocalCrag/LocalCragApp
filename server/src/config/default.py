@@ -16,9 +16,9 @@ class DefaultConfig(object):
     SMTP_PASSWORD = 'YOUR_SMTP_PASSWORD'
     SMTP_PORT = 'YOUR_SMTP_PORT'
     FRONTEND_HOST = 'https://localcrag.de/'
-    SUPERADMIN_FIRSTNAME = 'Felix'
-    SUPERADMIN_LASTNAME = 'Engelmann'
-    SUPERADMIN_EMAIL = 'localcrag@fengelmann.de'
+    SUPERADMIN_FIRSTNAME = ''
+    SUPERADMIN_LASTNAME = ''
+    SUPERADMIN_EMAIL = ''
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
     MAX_IMAGE_SIZE = 20
