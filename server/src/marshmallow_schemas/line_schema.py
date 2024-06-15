@@ -1,17 +1,21 @@
 from marshmallow import fields
 from marshmallow_enum import EnumField
 
+from extensions import ma
+
 from models.enums.line_type_enum import LineTypeEnum
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
-
 class LineSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
+    areaSlug = fields.String(attribute='area_slug')
+    sectorSlug = fields.String(attribute='sector_slug')
+    cragSlug = fields.String(attribute='crag_slug')
     videos = fields.List(fields.Dict)
     type = EnumField(LineTypeEnum, by_value=True)
     rating = fields.Integer()
@@ -59,5 +63,11 @@ class LineSchema(BaseEntityMinSchema):
     ascentCount = fields.Integer(attribute='ascent_count')
 
 
+class PaginatedLinesSchema(ma.SQLAlchemySchema):
+    items = fields.List(fields.Nested(LineSchema()))
+    hasNext = fields.Boolean(attribute='has_next')
+
+
 line_schema = LineSchema()
+paginated_lines_schema = PaginatedLinesSchema()
 lines_schema = LineSchema(many=True)

@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from error_handling.http_exceptions.not_found import NotFound
@@ -37,6 +38,8 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
 
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default='0')
+
+    crag_slug = association_proxy('crag', 'slug')
 
     @hybrid_property
     def ascent_count(self):

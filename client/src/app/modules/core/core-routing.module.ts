@@ -51,9 +51,6 @@ import {AccountFormComponent} from './account-form/account-form.component';
 import {ChangeEmailComponent} from './change-email/change-email.component';
 import {UserListComponent} from '../user/user-list/user-list.component';
 import {isModerator} from '../../guards/is-moderator';
-import {isAdmin} from '../../guards/is-admin';
-import {AscentListComponent} from '../ascent/ascent-list/ascent-list.component';
-import {AscentsComponent} from '../ascent/ascents/ascents.component';
 import {UserDetailComponent} from '../user/user-detail/user-detail.component';
 import {UserAscentsComponent} from '../user/user-ascents/user-ascents.component';
 import {CragAscentsComponent} from '../crag/crag-ascents/crag-ascents.component';
@@ -312,6 +309,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
         path: 'rules',
         children: [
           {
@@ -387,6 +394,16 @@ const routes: Routes = [
           {
             path: '',
             component: SectorListComponent,
+            outlet: 'cragContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
             outlet: 'cragContent'
           }
         ]
@@ -477,6 +494,16 @@ const routes: Routes = [
           {
             path: '',
             component: SectorRulesComponent,
+            outlet: 'sectorContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
             outlet: 'sectorContent'
           }
         ]

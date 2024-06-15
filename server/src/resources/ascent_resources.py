@@ -81,8 +81,8 @@ class GetTicks(MethodView):
         crag_id = request.args.get('crag_id')
         sector_id = request.args.get('sector_id')
         area_id = request.args.get('area_id')
-        line_id = request.args.get('line_id')
-        if not user_id or not (crag_id or sector_id or area_id or line_id):
+        line_ids = request.args.get('line_ids')
+        if not user_id or not (crag_id or sector_id or area_id or line_ids):
             raise BadRequest('Filter query params are not properly defined.')
         query = db.session.query(Ascent.line_id).filter(Ascent.created_by_id == user_id)
         if crag_id:
@@ -91,10 +91,11 @@ class GetTicks(MethodView):
             query = query.filter(Ascent.sector_id == sector_id)
         if area_id:
             query = query.filter(Ascent.area_id == area_id)
-        if line_id:
-            query = query.filter(Ascent.line_id == line_id)
-        line_ids = [row[0] for row in query.all()]
-        return jsonify(line_ids), 200
+        if line_ids:
+            line_ids = line_ids.split(',')
+            query = query.filter(Ascent.line_id.in_(line_ids))
+        ticked_line_ids = [row[0] for row in query.all()]
+        return jsonify(ticked_line_ids), 200
 
 
 class CreateAscent(MethodView):

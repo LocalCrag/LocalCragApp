@@ -62,7 +62,7 @@ export class LineInfoComponent {
   refreshData() {
     this.linesService.getLine(this.lineSlug).subscribe(line => {
       this.line = line;
-      this.ticksService.getTicks(null, null, null, line.id).subscribe(ticks => {
+      this.ticksService.getTicks(null, null, null, [line.id]).subscribe(ticks => {
         this.ticks = ticks;
       })
     });

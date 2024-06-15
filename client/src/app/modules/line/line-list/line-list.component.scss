@@ -1,5 +1,9 @@
 lc-line-list {
 
+  p-slider{
+    width: 100%
+  }
+
   .line-info-container {
     width: 100%;
   }
@@ -40,5 +44,11 @@ lc-line-list {
     }
 
   }
+
+  .slider-container{
+    margin-left: 0.5715rem;
+    margin-right: 0.5715rem;
+  }
+
 
 }

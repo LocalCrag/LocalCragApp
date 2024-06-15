@@ -75,10 +75,10 @@ export class LinePathFormComponent {
     this.buildForm();
     this.loadingState = LoadingState.INITIAL_LOADING;
     forkJoin([
-      this.linesService.getLines(this.areaSlug),
+      this.linesService.getLines(`?area_slug=${this.areaSlug}`),
       this.topoImagesService.getTopoImage(this.topoImageId)
     ]).subscribe(([lines, topoImage]) => {
-      this.lines = lines;
+      this.lines = lines.items;
       this.loadingState = LoadingState.DEFAULT;
       const disabledLineIds: { [lineId: string]: any } = {};
       topoImage.linePaths.map(linePath => {

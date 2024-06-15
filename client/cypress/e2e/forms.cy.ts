@@ -56,7 +56,7 @@ describe('Forms test', () => {
     cy.get('[data-cy="line-form-highball"]').click()
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/lines');
-    cy.get('[data-cy="line-list-item"]').last().contains('Alphane')
+    cy.get('[data-cy="line-list-item"]').first().contains('Alphane')
   })
   it('adds a topo image', () => {
     cy.login();

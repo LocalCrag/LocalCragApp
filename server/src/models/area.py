@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
@@ -33,6 +34,9 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     secret = db.Column(db.Boolean, default=False, server_default='0')
+
+    sector_slug = association_proxy('sector', 'slug')
+    crag_slug = association_proxy('sector', 'crag_slug')
 
     @hybrid_property
     def ascent_count(self):

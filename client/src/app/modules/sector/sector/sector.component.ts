@@ -82,6 +82,11 @@ export class SectorComponent implements OnInit {
             icon: 'pi pi-fw pi-sitemap',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
           },
+          {
+            label: this.translocoService.translate(marker('sector.lines')),
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
+          },
           // {
           //   label: this.translocoService.translate(marker('sector.gallery')),
           //   icon: 'pi pi-fw pi-images',
