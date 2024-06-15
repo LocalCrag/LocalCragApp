@@ -659,9 +659,9 @@ def test_create_line_invalid_video_payload(client):
 
 
 def test_successful_get_lines(client):
-    rv = client.get('/api/areas/dritter-block-von-links/lines')
+    rv = client.get('/api/lines')
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = json.loads(rv.data)['items']
     assert len(res) == 2
     assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
     assert res[0]['slug'] == "super-spreader"

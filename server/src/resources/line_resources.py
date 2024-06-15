@@ -27,17 +27,14 @@ class GetLines(MethodView):
         """
         Returns all lines of an area.
         """
-        crag_slug = request.args.get('crag')
-        sector_slug = request.args.get('sector')
-        area_slug = request.args.get('area')
+        crag_slug = request.args.get('crag_slug')
+        sector_slug = request.args.get('sector_slug')
+        area_slug = request.args.get('area_slug')
         page = request.args.get('page') or 1
         order_by = request.args.get('order_by') or None
         order_direction = request.args.get('order_direction') or 'asc'
         max_grade_value = request.args.get('max_grade') or None
         min_grade_value = request.args.get('min_grade') or None
-
-        if sum(x is not None for x in [crag_slug, sector_slug, area_slug]) > 1:
-            raise BadRequest('Either filter for crag, sector _or_ area - not mor then one of those!')
 
         if order_by not in ['grade_value', 'name', 'rating', None] or order_direction not in ['asc', 'desc']:
             raise BadRequest('Invalid order by query parameters')
@@ -69,7 +66,7 @@ class GetLines(MethodView):
                 order_attribute = func.lower(order_attribute)
             query = query.order_by(nullslast(getattr(order_attribute, order_direction)()))
 
-        paginated_lines = db.paginate(query, page=int(page), per_page=20)
+        paginated_lines = db.paginate(query, page=int(page), per_page=10)
 
         return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 

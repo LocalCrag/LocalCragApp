@@ -20,7 +20,6 @@ import {MessagesModule} from 'primeng/messages';
 import {EditorModule} from 'primeng/editor';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {SectorModule} from '../sector/sector.module';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {LineModule} from '../line/line.module';

@@ -62,7 +62,6 @@ import {UserChartsComponent} from '../user/user-charts/user-charts.component';
 import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
 import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component';
 import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
-import {LineListNewComponent} from '../line/line-list-new/line-list-new.component';
 
 const routes: Routes = [
   {
@@ -314,7 +313,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: LineListNewComponent,
+            component: LineListComponent,
             outlet: 'regionContent'
           }
         ]
@@ -395,6 +394,16 @@ const routes: Routes = [
           {
             path: '',
             component: SectorListComponent,
+            outlet: 'cragContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
             outlet: 'cragContent'
           }
         ]
@@ -485,6 +494,16 @@ const routes: Routes = [
           {
             path: '',
             component: SectorRulesComponent,
+            outlet: 'sectorContent'
+          }
+        ]
+      },
+      {
+        path: 'lines',
+        children: [
+          {
+            path: '',
+            component: LineListComponent,
             outlet: 'sectorContent'
           }
         ]

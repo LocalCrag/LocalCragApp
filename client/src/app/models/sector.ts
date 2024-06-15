@@ -71,4 +71,3 @@ export class Sector extends AbstractModel {
 
 }
 
-// todo creating child of secret res: default res secret too

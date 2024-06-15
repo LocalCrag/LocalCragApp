@@ -90,7 +90,7 @@ export class AreaComponent implements OnInit {
           },
           {
             label: this.translocoService.translate(marker('area.lines')),
-            icon: 'pi pi-fw pi-sitemap',
+            icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
           },
           // {

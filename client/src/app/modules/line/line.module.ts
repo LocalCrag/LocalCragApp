@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LineComponent} from './line/line.component';
 import {LineFormComponent} from './line-form/line-form.component';
-import {LineListComponent} from './line-list/line-list.component';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
 import {CardModule} from 'primeng/card';
 import {DataViewModule} from 'primeng/dataview';
@@ -38,7 +37,6 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
   declarations: [
     LineComponent,
     LineFormComponent,
-    LineListComponent,
     LineBoolPropListComponent,
     LineInfoComponent,
   ],
@@ -74,7 +72,6 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
         FormSkeletonComponent,
     ],
     exports: [
-        LineListComponent,
         LineBoolPropListComponent
     ],
   providers: [

@@ -81,7 +81,7 @@ export class RegionComponent implements OnInit {
         },
         {
           label: this.translocoService.translate(marker('region.lines')),
-          icon: 'pi pi-fw pi-check-square', // TODO better icon for lines and topo images
+          icon: 'pi pi-fw pi-chart-line',
           routerLink: `/topo/lines`,
         },
         // {
