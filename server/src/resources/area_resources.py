@@ -68,7 +68,8 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data['secret']
 
-        set_area_parents_unsecret(new_area)
+        if not new_area.secret:
+            set_area_parents_unsecret(new_area)
         db.session.add(new_area)
         db.session.commit()
 

@@ -154,7 +154,8 @@ class CreateLine(MethodView):
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
 
-        set_line_parents_unsecret(new_line)
+        if not new_line.secret:
+            set_line_parents_unsecret(new_line)
         db.session.add(new_line)
         db.session.commit()
 
