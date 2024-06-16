@@ -71,7 +71,8 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data['secret']
 
-        set_sector_parents_unsecret(new_sector)
+        if not new_sector.secret:
+            set_sector_parents_unsecret(new_sector)
         db.session.add(new_sector)
         db.session.commit()
 
