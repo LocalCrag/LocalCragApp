@@ -15,6 +15,7 @@ import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {User} from '../../../models/user';
 import {UsersService} from '../../../services/crud/users.service';
 import {AvatarModule} from 'primeng/avatar';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-user-detail',
@@ -33,6 +34,7 @@ import {AvatarModule} from 'primeng/avatar';
   styleUrl: './user-detail.component.scss',
   encapsulation: ViewEncapsulation.None
 })
+@UntilDestroy()
 export class UserDetailComponent {
 
   public user: User;
@@ -45,7 +47,8 @@ export class UserDetailComponent {
   }
 
   ngOnInit() {
-    const userSlug = this.route.snapshot.paramMap.get('user-slug');
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
+      const userSlug = params.get('user-slug');
     forkJoin([
       this.usersService.getUser(userSlug).pipe(catchError(e => {
         console.log(e);
@@ -70,6 +73,7 @@ export class UserDetailComponent {
           routerLinkActiveOptions: {exact: true}
         },
       ];
+    })
     })
   }
 
