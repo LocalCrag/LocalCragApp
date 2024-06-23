@@ -87,7 +87,6 @@ export class LineListComponent implements OnInit {
 
   constructor(private linesService: LinesService,
               private store: Store,
-              private actions$: Actions,
               private ticksService: TicksService,
               private route: ActivatedRoute,
               private translocoService: TranslocoService) {
@@ -99,14 +98,14 @@ export class LineListComponent implements OnInit {
     this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.orderOptions = [
-      {label: this.translocoService.translate(marker('orderByName')), value: 'name'},
       {label: this.translocoService.translate(marker('orderByGrade')), value: 'grade_value'},
+      {label: this.translocoService.translate(marker('orderByName')), value: 'name'},
       {label: this.translocoService.translate(marker('orderByRating')), value: 'rating'},
     ];
     this.orderKey = this.orderOptions[0];
     this.orderDirectionOptions = [
-      {label: this.translocoService.translate(marker('orderAscending')), value: 'asc'},
       {label: this.translocoService.translate(marker('orderDescending')), value: 'desc'},
+      {label: this.translocoService.translate(marker('orderAscending')), value: 'asc'},
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.loadFirstPage();

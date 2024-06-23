@@ -100,6 +100,7 @@
   "lineForm.lineVideoPlaceholder": "e.g. Link zu YouTube",
   "lineList.FA": "FA",
   "lineList.orderByLabel": "Sortieren nach:",
+  "lineList.loadMore": "Mehr Linien laden",
   "lineBoolPropList.sitstart": "Sitzstart",
   "lineForm.lineSitstartLabel": "Sitzstart",
   "lineList.lineListTitle": "Linien"

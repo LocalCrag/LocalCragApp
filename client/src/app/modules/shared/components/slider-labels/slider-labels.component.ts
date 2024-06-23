@@ -40,15 +40,17 @@ export class SliderLabelsComponent implements OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    this.renderer.removeClass(this.rightLabel.nativeElement, 'hidden')
-    const total = this.max - this.min
-    this.left = ((this.rangeMin - this.min) / total) * 100 + '%';
-    this.right = ((this.max - this.rangeMax) / total) * 100 + '%';
-    this.cdr.detectChanges();
-    const leftLabelRightBounding = this.leftLabel.nativeElement.getBoundingClientRect().right;
-    const rightLabelLeftBounding = this.rightLabel.nativeElement.getBoundingClientRect().left;
-    if(leftLabelRightBounding > rightLabelLeftBounding){
-      this.renderer.addClass(this.rightLabel.nativeElement, 'hidden')
+    if(this.rightLabel && this.leftLabel) {
+      this.renderer.removeClass(this.rightLabel.nativeElement, 'hidden')
+      const total = this.max - this.min
+      this.left = ((this.rangeMin - this.min) / total) * 100 + '%';
+      this.right = ((this.max - this.rangeMax) / total) * 100 + '%';
+      this.cdr.detectChanges();
+      const leftLabelRightBounding = this.leftLabel.nativeElement.getBoundingClientRect().right;
+      const rightLabelLeftBounding = this.rightLabel.nativeElement.getBoundingClientRect().left;
+      if (leftLabelRightBounding > rightLabelLeftBounding) {
+        this.renderer.addClass(this.rightLabel.nativeElement, 'hidden')
+      }
     }
   }
 
