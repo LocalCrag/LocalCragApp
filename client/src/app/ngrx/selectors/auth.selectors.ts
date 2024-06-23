@@ -32,17 +32,17 @@ export const selectIsLoggedIn = createSelector(
 
 export const selectIsAdmin = createSelector(
   selectAuthState,
-  authState => authState.user?.admin
+  authState => authState.user?.admin || false
 );
 
 export const selectIsModerator = createSelector(
   selectAuthState,
-  authState => authState.user?.moderator
+  authState => authState.user?.moderator || false
 );
 
 export const selectIsMember = createSelector(
   selectAuthState,
-  authState => authState.user?.member
+  authState => authState.user?.member || false
 );
 
 export const selectIsLoggedOut = createSelector(
