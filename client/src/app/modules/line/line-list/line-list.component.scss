@@ -9,15 +9,7 @@ lc-line-list {
   }
 
   .line-name {
-
-    display: grid;
-    grid-template-columns: auto max-content;
     width: 100%;
-
-    p-rating {
-      align-self: flex-end;
-    }
-
   }
 
   .line-link {

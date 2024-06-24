@@ -51,7 +51,6 @@ export class UserDetailComponent {
       const userSlug = params.get('user-slug');
     forkJoin([
       this.usersService.getUser(userSlug).pipe(catchError(e => {
-        console.log(e);
         if (e.status === 404) {
           this.router.navigate(['/not-found']);
         }
