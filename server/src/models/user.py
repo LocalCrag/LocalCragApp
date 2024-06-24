@@ -61,3 +61,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     def find_by_email(cls, email):
         user = cls.query.filter_by(email=email).first()
         return user
+
+    @classmethod
+    def get_admins(cls):
+        return cls.query.filter_by(admin=True)

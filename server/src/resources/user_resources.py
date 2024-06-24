@@ -23,7 +23,7 @@ from models.enums.user_promotion_enum import UserPromotionEnum
 from models.line import Line
 from models.user import User
 from util.auth import get_access_token_claims
-from util.email import send_create_user_email, send_change_email_address_email
+from util.email import send_create_user_email, send_change_email_address_email, send_user_registered_email
 from util.password_util import generate_password
 from util.regexes import email_regex
 from util.security_util import check_auth_claims
@@ -195,6 +195,9 @@ class RegisterUser(MethodView):
             raise BadRequest(ResponseMessage.EMAIL_INVALID.value)
 
         created_user = create_user(user_data)
+        admins = User.get_admins()
+        for admin in admins:
+            send_user_registered_email(created_user, admin)
 
         return user_schema.dump(created_user), 201
 
