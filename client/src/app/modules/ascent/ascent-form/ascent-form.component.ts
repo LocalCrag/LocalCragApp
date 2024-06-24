@@ -159,7 +159,7 @@ export class AscentFormComponent implements OnInit {
         this.ascentsService.createAscent(ascent).subscribe(ascent => {
           this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_ADDED));
           this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(reloadAfterAscent());
+          this.store.dispatch(reloadAfterAscent({ascendedLineId: this.line.id}));
           this.ref.close();
         });
       } else {
@@ -167,7 +167,7 @@ export class AscentFormComponent implements OnInit {
         this.ascentsService.updateAscent(ascent).subscribe(ascent => {
           this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_UPDATED));
           this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(reloadAfterAscent());
+          this.store.dispatch(reloadAfterAscent({ascendedLineId: this.line.id}));
           this.ref.close();
         });
       }

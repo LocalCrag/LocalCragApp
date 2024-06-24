@@ -1,7 +1,7 @@
 import {Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
 import {LinesService} from '../../../services/crud/lines.service';
 import {select, Store} from '@ngrx/store';
-import {Actions} from '@ngrx/effects';
+import {Actions, ofType} from '@ngrx/effects';
 import {TicksService} from '../../../services/crud/ticks.service';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@ngneat/transloco';
@@ -29,6 +29,8 @@ import {PrimeIcons, SelectItem} from 'primeng/api';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {AccordionModule} from 'primeng/accordion';
 import {map, mergeMap} from 'rxjs/operators';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-line-list',
@@ -60,6 +62,7 @@ import {map, mergeMap} from 'rxjs/operators';
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None
 })
+@UntilDestroy()
 export class LineListComponent implements OnInit {
 
   public loadingStates = LoadingState;
@@ -89,6 +92,7 @@ export class LineListComponent implements OnInit {
               private store: Store,
               private ticksService: TicksService,
               private route: ActivatedRoute,
+              private actions$: Actions,
               private translocoService: TranslocoService) {
   }
 
@@ -109,6 +113,9 @@ export class LineListComponent implements OnInit {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.loadFirstPage();
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe((action) => {
+      this.ticks.add(action.ascendedLineId)
+    });
   }
 
   @HostListener('document:touchend')

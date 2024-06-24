@@ -28,6 +28,7 @@ import {TicksService} from '../../../services/crud/ticks.service';
 import {AreasService} from '../../../services/crud/areas.service';
 import {Actions, ofType} from '@ngrx/effects';
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {Area} from '../../../models/area';
 
 /**
  * Component that lists all topo images in an area.
@@ -60,9 +61,9 @@ export class TopoImageListComponent {
   public ticks: Set<string>;
 
   private scrollTarget: Scroll;
+  private area: Area;
 
   constructor(private topoImagesService: TopoImagesService,
-              private api: ApiService,
               private store: Store,
               private confirmationService: ConfirmationService,
               private ticksService: TicksService,
@@ -96,8 +97,8 @@ export class TopoImageListComponent {
       this.refreshData();
     });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
-      this.refreshData();
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe((action) => {
+      this.ticks.add(action.ascendedLineId)
     });
   }
 
@@ -107,6 +108,7 @@ export class TopoImageListComponent {
   refreshData() {
     this.loading = LoadingState.LOADING;
     this.areasService.getArea(this.areaSlug).pipe(mergeMap(area => {
+      this.area = area;
       return forkJoin([
         this.topoImagesService.getTopoImages(this.areaSlug),
         this.ticksService.getTicks(null, null, area.id),
