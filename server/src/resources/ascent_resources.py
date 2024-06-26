@@ -67,7 +67,7 @@ class GetAscents(MethodView):
         if not get_show_secret():
             query = query.filter(Ascent.line.has(secret=False))
 
-        query = query.order_by(text('{} {}'.format(order_by, order_direction)))
+        query = query.order_by(text('{} {}'.format(order_by, order_direction)), Ascent.id)
 
         paginated_ascents = db.paginate(query, page=page, per_page=20)
 
