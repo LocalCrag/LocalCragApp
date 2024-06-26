@@ -59,7 +59,7 @@ class CreateSector(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_sector: Sector = Sector()
-        new_sector.name = sector_data['name']
+        new_sector.name = sector_data['name'].strip()
         new_sector.description = add_bucket_placeholders(sector_data['description'])
         new_sector.short_description = sector_data['shortDescription']
         new_sector.portrait_image_id = sector_data['portraitImage']
@@ -91,7 +91,7 @@ class UpdateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         sector: Sector = Sector.find_by_slug(sector_slug)
 
-        sector.name = sector_data['name']
+        sector.name = sector_data['name'].strip()
         sector.description = add_bucket_placeholders(sector_data['description'])
         sector.short_description = sector_data['shortDescription']
         sector.portrait_image_id = sector_data['portraitImage']

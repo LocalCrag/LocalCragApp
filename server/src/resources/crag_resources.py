@@ -53,7 +53,7 @@ class CreateCrag(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_crag: Crag = Crag()
-        new_crag.name = crag_data['name']
+        new_crag.name = crag_data['name'].strip()
         new_crag.lat = crag_data['lat']
         new_crag.lng = crag_data['lng']
         new_crag.description = add_bucket_placeholders(crag_data['description'])
@@ -81,7 +81,7 @@ class UpdateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         crag: Crag = Crag.find_by_slug(crag_slug)
 
-        crag.name = crag_data['name']
+        crag.name = crag_data['name'].strip()
         crag.lat = crag_data['lat']
         crag.lng = crag_data['lng']
         crag.description = add_bucket_placeholders(crag_data['description'])

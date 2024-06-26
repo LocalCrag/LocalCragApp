@@ -43,7 +43,7 @@ class CreateMenuPage(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_menu_page: MenuPage = MenuPage()
-        new_menu_page.title = menu_page_data['title']
+        new_menu_page.title = menu_page_data['title'].strip()
         new_menu_page.text = add_bucket_placeholders(menu_page_data['text'])
         new_menu_page.created_by_id = created_by.id
 
@@ -64,7 +64,7 @@ class UpdateMenuPage(MethodView):
         menu_page_data = parser.parse(menu_page_args, request)
         menu_page: MenuPage = MenuPage.find_by_slug(menu_page_slug)
 
-        menu_page.title = menu_page_data['title']
+        menu_page.title = menu_page_data['title'].strip()
         menu_page.text = add_bucket_placeholders(menu_page_data['text'])
         db.session.add(menu_page)
         db.session.commit()
