@@ -211,7 +211,7 @@ export class AscentListComponent implements OnInit {
   public deleteAscent(ascent: Ascent) {
     this.ascentsService.deleteAscent(ascent).subscribe(() => {
       this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_DELETED));
-      this.store.dispatch(reloadAfterAscent());
+      this.store.dispatch(reloadAfterAscent({ascendedLineId: ascent.line.id}));
     });
   }
 

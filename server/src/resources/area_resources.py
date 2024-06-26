@@ -57,7 +57,7 @@ class CreateArea(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_area: Area = Area()
-        new_area.name = area_data['name']
+        new_area.name = area_data['name'].strip()
         new_area.lat = area_data['lat']
         new_area.lng = area_data['lng']
         new_area.description = add_bucket_placeholders(area_data['description'])
@@ -87,7 +87,7 @@ class UpdateArea(MethodView):
         area_data = parser.parse(area_args, request)
         area: Area = Area.find_by_slug(area_slug)
 
-        area.name = area_data['name']
+        area.name = area_data['name'].strip()
         area.lat = area_data['lat']
         area.lng = area_data['lng']
         area.description = add_bucket_placeholders(area_data['description'])

@@ -8,6 +8,7 @@ from flask import current_app, render_template
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.create_user_mail import create_user_mail
 from i18n.reset_password_mail import reset_password_mail
+from i18n.user_registered_mail import user_registered_mail
 from models.user import User
 
 
@@ -108,12 +109,12 @@ def send_create_user_email(password: str, created_user: User):
     send_generic_mail(msg)
 
 
-def send_user_registered_email(created_user: User):
-    msg, i18n_keyword_arg_dict = prepare_message(created_user, create_user_mail)
-    msg['To'] = created_user.email
-    action_link = '{}activate-account'.format(current_app.config['FRONTEND_HOST'])
-    template = render_template('create-user-mail.html', firstname=created_user.firstname,
-                               lastname=created_user.lastname, action_link=action_link, email=created_user.email,
+def send_user_registered_email(registered_user: User, receiver: User):
+    msg, i18n_keyword_arg_dict = prepare_message(registered_user, user_registered_mail)
+    msg['To'] = receiver.email
+    action_link = '{}users/{}'.format(current_app.config['FRONTEND_HOST'], registered_user.slug)
+    template = render_template('user-registered-mail.html', firstname=registered_user.firstname,
+                               lastname=registered_user.lastname, action_link=action_link, admin=receiver.firstname,
                                frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))

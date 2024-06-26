@@ -53,7 +53,7 @@ class CreatePost(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_post: Post = Post()
-        new_post.title = post_data['title']
+        new_post.title = post_data['title'].strip()
         new_post.text = add_bucket_placeholders(post_data['text'])
         new_post.created_by_id = created_by.id
 
@@ -74,7 +74,7 @@ class UpdatePost(MethodView):
         post_data = parser.parse(post_args, request)
         post: Post = Post.find_by_slug(post_slug)
 
-        post.title = post_data['title']
+        post.title = post_data['title'].strip()
         post.text = add_bucket_placeholders(post_data['text'])
         db.session.add(post)
         db.session.commit()

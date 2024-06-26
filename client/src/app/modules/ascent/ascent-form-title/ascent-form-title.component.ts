@@ -5,14 +5,16 @@ import {Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AscentsService} from '../../../services/crud/ascents.service';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoPipe, TranslocoService} from '@ngneat/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {Line} from '../../../models/line';
 
 @Component({
   selector: 'lc-ascent-form-title',
   standalone: true,
-  imports: [],
+  imports: [
+    TranslocoPipe
+  ],
   templateUrl: './ascent-form-title.component.html',
   styleUrl: './ascent-form-title.component.scss'
 })

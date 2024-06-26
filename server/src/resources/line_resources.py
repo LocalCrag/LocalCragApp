@@ -67,7 +67,8 @@ class GetLines(MethodView):
             order_attribute = getattr(Line, order_by)
             if order_by == 'name':
                 order_attribute = func.lower(order_attribute)
-            query = query.order_by(nullslast(getattr(order_attribute, order_direction)()))
+            # Order by Line.id as a tie breaker to prevent duplicate entries in paginate
+            query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
 
@@ -101,7 +102,7 @@ class CreateLine(MethodView):
 
         new_line: Line = Line()
 
-        new_line.name = line_data['name']
+        new_line.name = line_data['name'].strip()
         new_line.description = line_data['description']
         new_line.videos = line_data['videos']
         new_line.grade_name = line_data['gradeName']
@@ -176,7 +177,7 @@ class UpdateLine(MethodView):
         if not cross_validate_grade(line_data['gradeName'], line_data['gradeScale'], line_data['type']):
             raise BadRequest('Grade scale, name and line type do not match.')
 
-        line.name = line_data['name']
+        line.name = line_data['name'].strip()
         line.description = line_data['description']
         line.videos = line_data['videos']
         line.grade_name = line_data['gradeName']

@@ -90,9 +90,9 @@ def test_successful_register_user(client, mocker):
     assert not res['activated']
     assert res['language'] == 'de'
     assert res['avatar'] is None
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 4
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 4
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 4
 
 
 def test_unsuccessful_create_user_email_taken(client):
