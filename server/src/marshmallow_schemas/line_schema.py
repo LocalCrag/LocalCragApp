@@ -9,6 +9,14 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityM
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
+class LineSchemaMin(BaseEntityMinSchema):
+    name = fields.String()
+    slug = fields.String()
+    type = EnumField(LineTypeEnum, by_value=True)
+    gradeName = fields.String(attribute='grade_name')
+    gradeScale = fields.String(attribute='grade_scale')
+
+
 class LineSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
@@ -70,4 +78,4 @@ class PaginatedLinesSchema(ma.SQLAlchemySchema):
 
 line_schema = LineSchema()
 paginated_lines_schema = PaginatedLinesSchema()
-lines_schema = LineSchema(many=True)
+lines_schema = LineSchemaMin(many=True)

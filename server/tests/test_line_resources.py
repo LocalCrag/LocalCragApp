@@ -895,3 +895,10 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
 
     rv = client.put('/api/lines/super-spreader', headers=access_headers, json=line_data)
     assert rv.status_code == 400
+
+
+def test_successful_get_lines_for_line_editor(client):
+    rv = client.get('/api/lines/for-line-editor/dritter-block-von-links')
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert len(res) == 2

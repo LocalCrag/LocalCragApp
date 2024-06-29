@@ -21,11 +21,21 @@ from util.validators import cross_validate_grade
 from webargs_schemas.line_args import line_args
 
 
+class GetLinesForLineEditor(MethodView):
+
+    def get(self, area_slug):
+        """
+        Returns all lines of an area which is needed for the line select in the line editor.
+        """
+        lines = Line.query.join(Area).filter(Area.slug == area_slug).order_by(Line.name).all()
+        return jsonify(lines_schema.dump(lines)), 200
+
+
 class GetLines(MethodView):
 
     def get(self):
         """
-        Returns all lines of an area.
+        Returns all lines of an area in a paginated manner.
         """
         crag_slug = request.args.get('crag_slug')
         sector_slug = request.args.get('sector_slug')

@@ -6,6 +6,7 @@ import {map, tap} from 'rxjs/operators';
 import {Line} from '../../models/line';
 import {Paginated} from '../../models/paginated';
 import {Ascent} from '../../models/ascent';
+import {Crag} from '../../models/crag';
 
 /**
  * CRUD service for lines.
@@ -34,7 +35,11 @@ export class LinesService {
 
 
   public getLines(filters: string): Observable<Paginated<Line>> {
-    return this.http.get(this.api.lines.getListNew(filters)).pipe(map(payload => Paginated.deserialize(payload, Line.deserialize)));
+    return this.http.get(this.api.lines.getList(filters)).pipe(map(payload => Paginated.deserialize(payload, Line.deserialize)));
+  }
+
+  public getLinesForLineEditor(areaSlug: string): Observable<Line[]> {
+    return this.http.get(this.api.lines.getListForLineEditor(areaSlug)).pipe(map((lineListJson: any) => lineListJson.map(Line.deserialize)));
   }
 
   /**

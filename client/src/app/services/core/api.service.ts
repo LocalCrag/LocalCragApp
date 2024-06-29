@@ -137,8 +137,8 @@ export class ApiService {
 
   public lines = {
     create: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/lines`,
-    getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/lines`,
-    getListNew: (filters: string): string => `${this.apiHost}lines${filters}`,
+    getList: (filters: string): string => `${this.apiHost}lines${filters}`,
+    getListForLineEditor: (areaSlug: string): string => `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`
