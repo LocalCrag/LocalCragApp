@@ -65,3 +65,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     @classmethod
     def get_admins(cls):
         return cls.query.filter_by(admin=True)
+
+    @classmethod
+    def get_user_count(cls):
+        return cls.query.count()

@@ -196,8 +196,9 @@ class RegisterUser(MethodView):
 
         created_user = create_user(user_data)
         admins = User.get_admins()
+        user_count = User.get_user_count()
         for admin in admins:
-            send_user_registered_email(created_user, admin)
+            send_user_registered_email(created_user, admin, user_count)
 
         return user_schema.dump(created_user), 201
 
