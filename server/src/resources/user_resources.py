@@ -212,7 +212,7 @@ class PromoteUser(MethodView):
         own_user = User.find_by_email(get_jwt_identity())
         user: User = User.find_by_id(user_id)
 
-        if user.admin:
+        if user.superadmin:
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
         if own_user.id == user.id:
@@ -229,6 +229,10 @@ class PromoteUser(MethodView):
             user.member = True
         if promotion_data['promotionTarget'] == UserPromotionEnum.MODERATOR:
             user.admin = False
+            user.moderator = True
+            user.member = True
+        if promotion_data['promotionTarget'] == UserPromotionEnum.ADMIN:
+            user.admin = True
             user.moderator = True
             user.member = True
 

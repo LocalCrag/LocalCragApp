@@ -18,6 +18,7 @@ def add_superadmin():
                 "email": current_app.config['SUPERADMIN_EMAIL'],
             }
             user = create_user(user_data)
+            user.superadmin = True
             user.admin = True
             user.moderator = True
             user.member = True

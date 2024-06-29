@@ -44,9 +44,10 @@
                   <small class="mb-3">{{user.email}}</small>
                   <small class="mb-3" *ngIf="user.activated">{{t('userActivatedAt', {activationTime: user.activatedAt | date : 'dd.MM.yyyy HH:mm'})}}</small>
                   <small class="mb-3" *ngIf="!user.activated">{{t('userNotActivatedYet')}}</small>
-                  <p-tag [value]="t('admin')" severity="success" *ngIf="user.admin"></p-tag>
+                  <p-tag [value]="t('superadmin')" severity="danger" *ngIf="user.superadmin"></p-tag>
+                  <p-tag [value]="t('admin')" severity="success" *ngIf="user.admin && !user.superadmin"></p-tag>
                   <p-tag [value]="t('moderator')"  *ngIf="user.moderator && !user.admin"></p-tag>
-                  <p-tag [value]="t('member')" severity="info" *ngIf="user.member && !user.moderator && !user.admin"></p-tag>
+                  <p-tag [value]="t('member')" severity="info" *ngIf="user.member && !user.moderator"></p-tag>
                 </div>
                 <div>
 

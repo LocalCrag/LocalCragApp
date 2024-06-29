@@ -18,6 +18,7 @@ class UserSchema(BaseEntitySchema):
     lastname = fields.String()
     slug = fields.String()
     language = fields.String()
+    superadmin = fields.Boolean()
     admin = fields.Boolean()
     moderator = fields.Boolean()
     member = fields.Boolean()

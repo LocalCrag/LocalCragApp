@@ -35,6 +35,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     language = db.Column(db.String, nullable=False, server_default='de')
     avatar_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     avatar = db.relationship('File', foreign_keys=avatar_id)
+    superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     admin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     moderator = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
