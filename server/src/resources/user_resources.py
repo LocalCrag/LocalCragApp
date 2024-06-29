@@ -119,6 +119,9 @@ class DeleteUser(MethodView):  # pragma: no cover
         if user.email == get_jwt_identity():
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
+        if user.superadmin:
+            raise BadRequest(ResponseMessage.CANNOT_DELETE_SUPERADMIN.value)
+
         db.session.delete(user)
         db.session.commit()
         return jsonify(None), 204

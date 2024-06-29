@@ -7,12 +7,6 @@ Create Date: 2024-04-10 08:15:43.867514
 """
 from alembic import op
 import sqlalchemy as sa
-from flask import current_app
-from sqlalchemy.orm.attributes import flag_modified
-
-from extensions import db
-from models.user import User
-from util.scripts.add_initial_user_slugs import add_initial_user_slugs
 
 # revision identifiers, used by Alembic.
 revision = '538e17ab1cad'
