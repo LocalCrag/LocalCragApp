@@ -25,7 +25,6 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
-    description2 = db.Column(db.Text, nullable=True)
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
