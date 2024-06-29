@@ -11,7 +11,7 @@ from resources.health_resources import Health
 from resources.instance_settings_resources import GetInstanceSettings, UpdateInstanceSettings
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
-from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine
+from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine, GetLinesForLineEditor
 from resources.menu_item_resources import GetMenuItems, CreateMenuItem, GetMenuItem, DeleteMenuItem, UpdateMenuItem, \
     UpdateMenuItemTopOrder, UpdateMenuItemBottomOrder, GetCragMenuStructure
 from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
@@ -92,6 +92,7 @@ def configure_api(app):
     # Line API
     line_bp = Blueprint('lines', __name__)
     line_bp.add_url_rule('', view_func=GetLines.as_view('get_lines'))
+    line_bp.add_url_rule('/for-line-editor/<string:area_slug>', view_func=GetLinesForLineEditor.as_view('get_lines_for_line_editor'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=GetLine.as_view('get_line_details'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=UpdateLine.as_view('update_line'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=DeleteLine.as_view('delete_line'))
