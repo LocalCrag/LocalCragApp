@@ -5,7 +5,7 @@ on:
       - main
       - next
 jobs:
-  backend-unit-tests:
+  check-migrate-from-empty-db:
     environment: Testing
     runs-on: ubuntu-latest
     services:
