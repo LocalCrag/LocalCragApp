@@ -1,11 +1,11 @@
-name: Check Migrate from empty DB
+name: Check Migrate from prod DB
 on:
   pull_request:
     branches:
       - main
       - next
 jobs:
-  check-migrate-from-empty-db:
+  check-migrate-from-prod-db:
     environment: Testing
     runs-on: ubuntu-latest
     services:
@@ -45,9 +45,15 @@ jobs:
           cd server/src
           pipenv install
 
-      - name: Setup database
+      - name: Pull newest prod dump from backup server
+        run: |
+          echo "${{ secrets.BACKUP_SERVER_SSH_KEY }}" >> backup_key
+          scp -i backup_key ${{ secrets.BACKUP_SERVER_USER }}@${{ secrets.BACKUP_SERVER_IP }}:${{ secrets.BACKUP_SERVER_DUMPPATH }} server/tests/dumps/localcrag_prod_dump.sql
+
+      - name: Setup database with prod dump
         run: |
           export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
+          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_prod_dump.sql
 
       - name: Run Migrations
         run: |

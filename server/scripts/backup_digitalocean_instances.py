@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import yaml
 from datetime import datetime
+import shutil
 
 from pathlib import Path
 
@@ -74,6 +75,9 @@ try:
             dump_path = f"{database_directory}/{instance['database']}_{date}.pgdumpfile"
             dump_cmd = f"{config['database']['pgDumpPath']} --file={dump_path} --dbname={instance['database']} --username={config['database']['username']} --host={config['database']['host']} --port={config['database']['port']} --format=c --inserts --clean --create"
             subprocess.check_output(dump_cmd, shell=True, env=env, timeout=60)
+            # Copy the dump to a fixed name for ci cd pipeline access
+            # Allows "Check Migrate from prod DB" to have a DB for testing
+            shutil.copyfile(dump_path, f"{database_directory}/cicd_test_dump.pgdumpfile")
         except Exception as e:
             logs.append((f"{instance['name']}: pg_dump", str(e)))
 
