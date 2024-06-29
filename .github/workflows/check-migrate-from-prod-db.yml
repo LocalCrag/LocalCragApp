@@ -48,7 +48,7 @@ jobs:
       - name: Pull newest prod dump from backup server
         run: |
           echo "${{ secrets.BACKUP_SERVER_SSH_KEY }}" >> backup_key.pem
-          scp -i backup_key.pem ${{ secrets.BACKUP_SERVER_USER }}@${{ secrets.BACKUP_SERVER_IP }}:${{ secrets.BACKUP_SERVER_DUMPPATH }} server/tests/dumps/localcrag_prod_dump.sql
+          scp -i backup_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null  ${{ secrets.BACKUP_SERVER_USER }}@${{ secrets.BACKUP_SERVER_IP }}:${{ secrets.BACKUP_SERVER_DUMPPATH }} server/tests/dumps/localcrag_prod_dump.sql    
 
       - name: Setup database with prod dump
         run: |
