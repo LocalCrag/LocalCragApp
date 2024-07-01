@@ -119,6 +119,9 @@ class DeleteUser(MethodView):  # pragma: no cover
         if user.email == get_jwt_identity():
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
+        if user.superadmin:
+            raise BadRequest(ResponseMessage.CANNOT_DELETE_SUPERADMIN.value)
+
         db.session.delete(user)
         db.session.commit()
         return jsonify(None), 204
@@ -196,8 +199,9 @@ class RegisterUser(MethodView):
 
         created_user = create_user(user_data)
         admins = User.get_admins()
+        user_count = User.get_user_count()
         for admin in admins:
-            send_user_registered_email(created_user, admin)
+            send_user_registered_email(created_user, admin, user_count)
 
         return user_schema.dump(created_user), 201
 
@@ -211,7 +215,7 @@ class PromoteUser(MethodView):
         own_user = User.find_by_email(get_jwt_identity())
         user: User = User.find_by_id(user_id)
 
-        if user.admin:
+        if user.superadmin:
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
         if own_user.id == user.id:
@@ -228,6 +232,10 @@ class PromoteUser(MethodView):
             user.member = True
         if promotion_data['promotionTarget'] == UserPromotionEnum.MODERATOR:
             user.admin = False
+            user.moderator = True
+            user.member = True
+        if promotion_data['promotionTarget'] == UserPromotionEnum.ADMIN:
+            user.admin = True
             user.moderator = True
             user.member = True
 

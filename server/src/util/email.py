@@ -109,13 +109,13 @@ def send_create_user_email(password: str, created_user: User):
     send_generic_mail(msg)
 
 
-def send_user_registered_email(registered_user: User, receiver: User):
+def send_user_registered_email(registered_user: User, receiver: User, user_count: int):
     msg, i18n_keyword_arg_dict = prepare_message(registered_user, user_registered_mail)
     msg['To'] = receiver.email
     action_link = '{}users/{}'.format(current_app.config['FRONTEND_HOST'], registered_user.slug)
     template = render_template('user-registered-mail.html', firstname=registered_user.firstname,
                                lastname=registered_user.lastname, action_link=action_link, admin=receiver.firstname,
-                               frontend_host=current_app.config['FRONTEND_HOST'],
+                               frontend_host=current_app.config['FRONTEND_HOST'], user_count=user_count,
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
 

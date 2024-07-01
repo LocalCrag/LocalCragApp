@@ -219,6 +219,12 @@ def test_delete_user_deletes_tick_but_not_line(client):
             conn.execute(text(
                 "update ascents set created_by_id = '2543885f-e9ef-48c5-a396-6c898fb42409' where created_by_id = '1543885f-e9ef-48c5-a396-6c898fb42409';"))
 
+    # Make user a non-superadmin as superadmins cannot be deleted
+    with app.app_context():
+        with db.engine.begin() as conn:
+            conn.execute(text(
+                "update users set superadmin = false where id = '2543885f-e9ef-48c5-a396-6c898fb42409';"))
+
     access_headers, refresh_headers = get_login_headers(client)
 
     rv = client.delete('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=None)

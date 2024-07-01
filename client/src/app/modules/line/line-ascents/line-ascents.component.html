@@ -1,4 +1,4 @@
-<lc-ascent-list [lineId]="line.id" *ngIf="line"></lc-ascent-list>
+<lc-ascent-list [lineId]="line.id" *ngIf="line" [disableGradeOrderAndFiltering]="true"></lc-ascent-list>
 
 <ng-container *ngIf="!line">
   <div class="flex mb-2" *ngFor="let _ of [].constructor(10)">

@@ -44,14 +44,23 @@ class GetAscents(MethodView):
         area_id = request.args.get('area_id')
         line_id = request.args.get('line_id')
         page = int(request.args.get('page'))
+        per_page = request.args.get('per_page') or None
+        if per_page is not None:
+            per_page = int(per_page)
         order_by = request.args.get('order_by') or 'time_created'
         order_direction = request.args.get('order_direction') or 'desc'
+        max_grade_value = request.args.get('max_grade') or None
+        min_grade_value = request.args.get('min_grade') or None
 
-        if order_by not in ['time_created', 'ascent_date'] or order_direction not in ['asc', 'desc']:
+        if order_by not in ['time_created', 'ascent_date', 'grade_value'] or order_direction not in ['asc', 'desc']:
             raise BadRequest('Invalid order by query parameters')
 
-        query = db.session.query(Ascent)
+        if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
+            raise BadRequest('When filtering for grades, a min and max grade is required.')
 
+        query = db.session.query(Ascent).join(Line).options(joinedload(Ascent.line))
+
+        # Filter for user, crag, sector, area or line
         if crag_id:
             query = query.filter(Ascent.crag_id == crag_id)
         if sector_id:
@@ -63,14 +72,24 @@ class GetAscents(MethodView):
         if line_id:
             query = query.filter(Ascent.line_id == line_id)
 
-        # Handle secret spots
+        # Filter by grades
+        if min_grade_value and max_grade_value:
+            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+
+        # Filter secret spots
         if not get_show_secret():
             query = query.filter(Ascent.line.has(secret=False))
 
-        # Order by Ascent.id as a tie breaker to prevent duplicate entries in paginate
-        query = query.order_by(text('{} {}'.format(order_by, order_direction)), Ascent.id)
+        # Apply ordering
+        order_function = None
+        if order_by in {'time_created', 'ascent_date'}:
+            order_function = getattr(getattr(Ascent, order_by), order_direction)
+        if order_by in {'grade_value'}:
+            order_function = getattr(getattr(Line, 'grade_value'), order_direction)
+        # Order by Ascent.id as a tie-breaker to prevent duplicate entries in paginate
+        query = query.order_by(order_function(), Ascent.id)
 
-        paginated_ascents = db.paginate(query, page=page, per_page=20)
+        paginated_ascents = db.paginate(query, page=page, per_page=per_page)
 
         return jsonify(paginated_ascents_schema.dump(paginated_ascents)), 200
 

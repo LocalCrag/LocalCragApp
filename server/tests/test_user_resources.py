@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 import pytz
+from sqlalchemy import text
 
 from app import app
 from extensions import db
@@ -132,6 +133,13 @@ def test_delete_own_user(client):
 
 
 def test_delete_other_user(client):
+
+    # Make user a non-superadmin as superadmins cannot be deleted
+    with app.app_context():
+        with db.engine.begin() as conn:
+            conn.execute(text(
+                "update users set superadmin = false where id = '2543885f-e9ef-48c5-a396-6c898fb42409';"))
+
     access_headers, refresh_headers = get_login_headers(client)
 
     rv = client.delete('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409', headers=access_headers, json=None)
@@ -274,9 +282,10 @@ def test_update_user_invalid_email(client):
 
 
 def test_promote_user_to_member(client):
-    # Remove admin prop first...
+    # Remove superadmin prop first...
     with app.app_context():
         user: User = User.find_by_id('2543885f-e9ef-48c5-a396-6c898fb42409')
+        user.superadmin = False
         user.admin = False
         user.moderator = True
         user.member = True
@@ -291,6 +300,7 @@ def test_promote_user_to_member(client):
     rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
+    assert res['superadmin'] == False
     assert res['admin'] == False
     assert res['moderator'] == False
     assert res['member'] == False
@@ -301,6 +311,7 @@ def test_promote_user_to_member(client):
     rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
+    assert res['superadmin'] == False
     assert res['admin'] == False
     assert res['moderator'] == False
     assert res['member'] == True
@@ -311,7 +322,19 @@ def test_promote_user_to_member(client):
     rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
     assert rv.status_code == 200
     res = json.loads(rv.data)
+    assert res['superadmin'] == False
     assert res['admin'] == False
+    assert res['moderator'] == True
+    assert res['member'] == True
+
+    data = {
+        'promotionTarget': 'ADMIN',
+    }
+    rv = client.put('/api/users/2543885f-e9ef-48c5-a396-6c898fb42409/promote', headers=access_headers, json=data)
+    assert rv.status_code == 200
+    res = json.loads(rv.data)
+    assert res['superadmin'] == False
+    assert res['admin'] == True
     assert res['moderator'] == True
     assert res['member'] == True
 

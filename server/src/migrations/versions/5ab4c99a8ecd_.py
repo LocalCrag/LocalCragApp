@@ -6,9 +6,10 @@ Create Date: 2024-04-10 08:38:45.505915
 
 """
 from alembic import op
-import sqlalchemy as sa
 
-from util.scripts.add_initial_user_slugs import add_initial_user_slugs
+from models.mixins.has_slug import str_to_slug
+from sqlalchemy import MetaData, Table, update
+
 
 # revision identifiers, used by Alembic.
 revision = '5ab4c99a8ecd'
@@ -18,7 +19,10 @@ depends_on = None
 
 
 def upgrade():
-    add_initial_user_slugs()
+    # The old migration used the user model directly from the models which wasn't compatible with new changes.
+    # As we can be sure, that no users that are existing on any instance have no slug, we can just skip the
+    # create-initial-slug part and just pass here now.
+    pass
 
 
 def downgrade():

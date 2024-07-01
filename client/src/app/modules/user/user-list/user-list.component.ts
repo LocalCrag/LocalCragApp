@@ -113,49 +113,57 @@ export class UserListComponent {
    * Using a BehaviourSubject as workaround for: https://github.com/primefaces/primeng/issues/13934
    */
   showUserMenu(user: User) {
-    this.store.select(selectIsAdmin).pipe(take(1)).subscribe(isAdmin=>{
-    this.dynamicMenuItems$.next([
-      {
-        icon: 'pi pi-fw pi-user',
-        label: this.translocoService.translate(marker('usersMenu.promoteToUser')),
-        visible: user.moderator || user.member,
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.USER);
-        }
-      },
-      {
-        icon: 'pi pi-fw pi-heart-fill',
-        label: this.translocoService.translate(marker('usersMenu.promoteToMember')),
-        visible: (user.member && user.moderator) || (!user.member && !user.moderator),
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.MEMBER);
-        }
-      },
-      {
-        icon: 'pi pi-fw pi-star-fill',
-        label: this.translocoService.translate(marker('usersMenu.promoteToModerator')),
-        visible: !user.moderator,
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.MODERATOR);
-        }
-      },
-      {
-        icon: 'pi pi-fw pi-send',
-        label: this.translocoService.translate(marker('usersMenu.resendUserCreatedMail')),
-        visible: !user.activated,
-        command: () => {
-          this.resendUserCreatedMail(user);
-        }
-      },
-      {
-        icon: 'pi pi-fw pi-trash',
-        label: this.translocoService.translate(marker('usersMenu.delete')),
-        command: () => {
-          this.confirmDeleteUser(user);
+    this.store.select(selectIsAdmin).pipe(take(1)).subscribe(isAdmin => {
+      this.dynamicMenuItems$.next([
+        {
+          icon: 'pi pi-fw pi-user',
+          label: this.translocoService.translate(marker('usersMenu.promoteToUser')),
+          visible: user.member && !user.superadmin,
+          command: () => {
+            this.promoteUser(user, UserPromotionTargets.USER);
+          }
         },
-        visible: isAdmin
-      },
-    ]);
+        {
+          icon: 'pi pi-fw pi-heart-fill',
+          label: this.translocoService.translate(marker('usersMenu.promoteToMember')),
+          visible: (!user.member || user.moderator || user.admin) && !user.superadmin,
+          command: () => {
+            this.promoteUser(user, UserPromotionTargets.MEMBER);
+          }
+        },
+        {
+          icon: 'pi pi-fw pi-star-fill',
+          label: this.translocoService.translate(marker('usersMenu.promoteToModerator')),
+          visible: (!user.moderator || user.admin) && !user.superadmin,
+          command: () => {
+            this.promoteUser(user, UserPromotionTargets.MODERATOR);
+          }
+        },
+        {
+          icon: 'pi pi-fw pi-key',
+          label: this.translocoService.translate(marker('usersMenu.promoteToAdmin')),
+          visible: (!user.admin) && !user.superadmin,
+          command: () => {
+            this.promoteUser(user, UserPromotionTargets.ADMIN);
+          }
+        },
+        {
+          icon: 'pi pi-fw pi-send',
+          label: this.translocoService.translate(marker('usersMenu.resendUserCreatedMail')),
+          visible: !user.activated,
+          command: () => {
+            this.resendUserCreatedMail(user);
+          }
+        },
+        {
+          icon: 'pi pi-fw pi-trash',
+          label: this.translocoService.translate(marker('usersMenu.delete')),
+          command: () => {
+            this.confirmDeleteUser(user);
+          },
+          visible: isAdmin
+        },
+      ]);
     })
   }
 

@@ -84,7 +84,6 @@ export class LineListComponent implements OnInit {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-
   public listenForSliderStop = false;
 
 
