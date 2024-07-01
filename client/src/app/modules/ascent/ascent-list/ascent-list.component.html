@@ -1,27 +1,54 @@
 <ng-container *transloco="let t, read: 'ascents.ascentList'">
 
-  <p-dataView #dv [value]="ascents" [sortField]="sortField" [sortOrder]="sortOrder"
+  <p-dataView #dv [value]="ascents"
               [emptyMessage]="t('noAscentsFoundMessage')"
               [loading]="loadingFirstPage === loadingStates.LOADING">
     <ng-template pTemplate="header">
-      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey"
-                    (onChange)="loadFirstPage()"
-                    optionLabel="label"
-                    styleClass="md:mb-0">
-          <ng-template pTemplate="selectedItem">
-            <div class="flex align-items-center gap-2" *ngIf="sortKey">
-              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
-              <div>{{ sortKey.label }}</div>
-            </div>
-          </ng-template>
-          <ng-template let-option pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <i [class]="option.icon" *ngIf="option.icon"></i>
-              <div>{{ option.label }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
+      <div class="flex flex-column sm:flex-column justify-content-between gap-2">
+
+        <div class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row">
+          {{t('orderByLabel')}}
+          <div>
+            <p-dropdown [options]="orderOptions" [(ngModel)]="orderKey"
+                        optionLabel="label" (onChange)="loadFirstPage()"
+                        styleClass="md:mb-0">
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="orderKey">
+                  <div>{{ orderKey.label }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="orderDirectionOptions" [(ngModel)]="orderDirectionKey"
+                        optionLabel="label" (onChange)="loadFirstPage()"
+                        styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2">
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="orderDirectionKey">
+                  <div>{{ orderDirectionKey.label }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="slider-container mt-1" *ngIf="!disableGradeOrderAndFiltering">
+          <lc-slider-labels [rangeMin]="gradeFilterRange[0]" [rangeMax]="gradeFilterRange[1]" [min]="minGradeValue"
+                            [max]="maxGradeValue" [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
+                            [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"></lc-slider-labels>
+          <p-slider [(ngModel)]="gradeFilterRange" [min]="minGradeValue" [max]="maxGradeValue" [range]="true" [step]="1"
+                    (touchstart)="listenForSliderStop = true"
+                    (mousedown)="listenForSliderStop = true"/>
+        </div>
+
       </div>
     </ng-template>
     <ng-template let-ascents pTemplate="list">

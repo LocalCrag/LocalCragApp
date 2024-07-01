@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {CardModule} from 'primeng/card';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
@@ -37,6 +37,9 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {filter} from 'rxjs/operators';
 import {User} from '../../../models/user';
+import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
+import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
+import {SliderModule} from 'primeng/slider';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -66,7 +69,9 @@ import {User} from '../../../models/user';
     DowngradePipe,
     ConsensusGradePipe,
     TagModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    SliderLabelsComponent,
+    SliderModule
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -84,18 +89,24 @@ export class AscentListComponent implements OnInit {
   @Input() sectorId: string;
   @Input() areaId: string;
   @Input() lineId: string;
+  @Input() disableGradeOrderAndFiltering = false;
 
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
   public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
-  public sortOptions: SelectItem[];
-  public sortKey: SelectItem;
-  public sortOrder: number;
-  public sortField: string;
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
+
+  public minGradeValue = GRADES['FB'][0].value;
+  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue]
+  public orderOptions: SelectItem[];
+  public orderKey: SelectItem;
+  public orderDirectionOptions: SelectItem[];
+  public orderDirectionKey: SelectItem;
+  public listenForSliderStop = false;
 
 
   constructor(private ascentsService: AscentsService,
@@ -108,52 +119,54 @@ export class AscentListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.sortOptions = [
-      {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN,
-        label: this.translocoService.translate(marker('sortDescendingByDate')),
-        value: ['order_by=time_created', 'order_direction=desc']
-      },
-      {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-        label: this.translocoService.translate(marker('sortAscendingByDate')),
-        value: ['order_by=time_created', 'order_direction=asc']
-      },
-      {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN,
-        label: this.translocoService.translate(marker('sortDescendingByAscentDate')),
-        value: ['order_by=ascent_date', 'order_direction=desc']
-      },
-      {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-        label: this.translocoService.translate(marker('sortAscendingByAscentDate')),
-        value: ['order_by=ascent_date', 'order_direction=asc']
-      },
+    this.orderOptions = [
+      {label: this.translocoService.translate(marker('orderByTimeCreated')), value: 'time_created'},
+      {label: this.translocoService.translate(marker('orderByAscentDate')), value: 'ascent_date'},
     ];
-    this.sortKey = this.sortOptions[0];
+    if (!this.disableGradeOrderAndFiltering) {
+      this.orderOptions.push({label: this.translocoService.translate(marker('orderByGrade')), value: 'grade_value'})
+    }
+    this.orderKey = this.orderOptions[0];
+    this.orderDirectionOptions = [
+      {label: this.translocoService.translate(marker('orderDescending')), value: 'desc'},
+      {label: this.translocoService.translate(marker('orderAscending')), value: 'asc'},
+    ];
+    this.orderDirectionKey = this.orderDirectionOptions[0];
     this.loadFirstPage();
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(()=>{
+    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
       this.loadFirstPage();
     })
   }
 
-  loadFirstPage(){
+  @HostListener('document:touchend')
+  @HostListener('document:mouseup')
+  reloadAfterSliderStop() {
+    if (this.listenForSliderStop) {
+      this.loadFirstPage();
+    }
+  }
+
+  loadFirstPage() {
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
   }
 
-  loadNextPage(){
-    if(this.loadingFirstPage !== LoadingState.LOADING &&this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
+  loadNextPage() {
+    if (this.loadingFirstPage !== LoadingState.LOADING && this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
       this.currentPage += 1;
-      if(this.currentPage === 1){
+      if (this.currentPage === 1) {
         this.loadingFirstPage = LoadingState.LOADING
         this.ascents = [];
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
       let filters = [`page=${this.currentPage}`]
-      filters.push(...this.sortKey.value);
+      filters.push(`min_grade=${this.gradeFilterRange[0]}`);
+      filters.push(`max_grade=${this.gradeFilterRange[1]}`);
+      filters.push(`order_by=${this.orderKey.value}`);
+      filters.push(`order_direction=${this.orderDirectionKey.value}`);
+      filters.push(`per_page=10`);
       if (this.user) {
         filters.push(`user_id=${this.user.id}`);
       }
@@ -215,4 +228,5 @@ export class AscentListComponent implements OnInit {
     });
   }
 
+  protected readonly gradeNameByValue = gradeNameByValue;
 }

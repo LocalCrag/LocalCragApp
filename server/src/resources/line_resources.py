@@ -55,7 +55,7 @@ class GetLines(MethodView):
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest('When filtering for grades, a min and max grade is required.')
 
-        # Filter for region, crag, sector or area
+        # Filter for crag, sector or area
         query = Line.query.join(Area).join(Sector).join(Crag)
         if crag_slug:
             query = query.filter(Crag.slug == crag_slug)
