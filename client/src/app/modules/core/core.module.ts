@@ -1,5 +1,6 @@
-import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import * as Sentry from "@sentry/angular";
 
 import {CoreRoutingModule} from './core-routing.module';
 import {CoreComponent} from './core.component';
@@ -56,6 +57,7 @@ import {HeaderMenuComponent} from '../shared/components/header-menu/header-menu.
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AvatarModule} from 'primeng/avatar';
 import {MatomoInitializationMode, MatomoInitializerService, MatomoModule, MatomoRouterModule} from 'ngx-matomo-client';
+import {Router} from '@angular/router';
 
 export function preloadTranslations(transloco: TranslocoService) {
   return () => {
@@ -143,6 +145,21 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
     MatomoRouterModule
   ],
   providers: [
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: false,
+      }),
+    }, {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true,
+    },
     {
       provide: LOCALE_ID,
       useValue: environment.language

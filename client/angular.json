@@ -58,7 +58,8 @@
             ],
             "scripts": [
               "node_modules/quill/dist/quill.js"
-            ]
+            ],
+            "sourceMap": true
           },
           "configurations": {
             "production": {
