@@ -1,5 +1,6 @@
 import os
 
+import sentry_sdk
 from flask import Flask
 
 from api import configure_api
@@ -26,6 +27,15 @@ def configure_extensions(application):
     setup_http_error_handlers(application)
 
 
+def init_sentry_sdk(application):
+    if application.config['SENTRY_ENABLED']:
+        sentry_sdk.init(
+            dsn=application.config['SENTRY_DSN'],
+            traces_sample_rate=1.0,
+            profiles_sample_rate=1.0,
+        )
+
+
 def create_app():
     application = Flask(__name__,
                         static_url_path='/uploads',
@@ -35,6 +45,8 @@ def create_app():
         application.config.from_envvar('LOCALCRAG_CONFIG')
     overwrite_config_by_env_vars(application)
     validate_config(application.config)
+
+    init_sentry_sdk(application)
 
     register_extensions(application)
 

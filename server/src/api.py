@@ -33,6 +33,7 @@ from models.sector import Sector
 from models.area import Area
 from models.line import Line
 from models.ranking import Ranking
+from resources.util_resources import SentryTest
 
 
 def configure_api(app):
@@ -40,6 +41,11 @@ def configure_api(app):
     Sets up all routes of the app by using flask blueprints.
     :param app: App to attach the routes to.
     """
+    # Utils API
+    health_bp = Blueprint('utils', __name__, )
+    health_bp.add_url_rule('/sentry-test', view_func=SentryTest.as_view('sentry_test'))
+    app.register_blueprint(health_bp, url_prefix='/api/utils')
+
     # Health API
     health_bp = Blueprint('health', __name__, )
     health_bp.add_url_rule('', view_func=Health.as_view('health'))

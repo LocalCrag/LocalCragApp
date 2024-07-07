@@ -30,3 +30,5 @@ class DefaultConfig(object):
     SPACES_REGION = 'eu-central-1'
     SPACES_BUCKET = 'lc-test-bucket'
     SPACES_ACCESS_ENDPOINT = None
+    SENTRY_DSN = ''
+    SENTRY_ENABLED = False

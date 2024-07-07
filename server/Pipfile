@@ -29,6 +29,7 @@ install = "*"
 pytest-mock = "*"
 boto3 = "*"
 moto = "*"
+sentry-sdk = {extras = ["flask"], version = "*"}
 
 [dev-packages]
 
