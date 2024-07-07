@@ -280,6 +280,8 @@
   "area.lines": "Linien",
   "area.ascents": "Begehungen",
   "area.edit": "Bearbeiten",
+  "ascent.editAscent": "Bearbeiten",
+  "ascent.deleteAscent": "Löschen",
   "orderByTimeCreated": "Eintragungsdatum",
   "orderByAscentDate": "Begehugsdatum",
   "orderByGrade": "Grad",
