@@ -5,6 +5,7 @@ import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import yaml
+import traceback
 from datetime import datetime
 import shutil
 
@@ -68,8 +69,8 @@ try:
         # Dump database
         try:
             delete_old_files(database_directory, 30)
-        except Exception as e:
-            logs.append((f"{instance['name']}: Deleting old dumps", str(e)))
+        except Exception:
+            logs.append((f"{instance['name']}: Deleting old dumps", traceback.format_exc()))
         try:
             date = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
             dump_path = f"{database_directory}/{instance['database']}_{date}.pgdumpfile"
@@ -78,15 +79,15 @@ try:
             # Copy the dump to a fixed name for ci cd pipeline access
             # Allows "Check Migrate from prod DB" to have a DB for testing
             shutil.copyfile(dump_path, f"{database_directory}/cicd_test_dump.pgdumpfile")
-        except Exception as e:
-            logs.append((f"{instance['name']}: pg_dump", str(e)))
+        except Exception:
+            logs.append((f"{instance['name']}: pg_dump", traceback.format_exc()))
 
         # Sync bucket
         try:
             sync_cmd = f"{config['s3cmd']['s3cmdPath']} sync s3://{instance['bucket']} {bucket_directory}"
             subprocess.check_output(sync_cmd, shell=True, env=env)
-        except Exception as e:
-            logs.append((f"{instance['name']}: s3cmd", str(e)))
+        except Exception:
+            logs.append((f"{instance['name']}: s3cmd", traceback.format_exc()))
 
 except Exception as e:
     logs.append(("Overall script failure", str(e)))
