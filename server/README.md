@@ -9,6 +9,7 @@
     - `SQLALCHEMY_DATABASE_URI` Connection string to your database
     - `SECRET_KEY` Key used for signing session cookies, value irrelevant for local dev
     - `JWT_SECRET_KEY` Key used for signing JWT tokens, irrelevant for local dev
+    - `PRINT_MAILS_TO_CONSOLE` If set to True, all mails will be printed to the console instead of sending them. Recommended for local dev.
     - `SYSTEM_EMAIL` E-Mail address the system uses to send mails from
     - `SMTP_HOST` SMTP host address
     - `SMTP_USER` SMTP user
