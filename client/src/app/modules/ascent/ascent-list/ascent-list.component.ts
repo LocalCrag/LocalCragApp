@@ -147,6 +147,7 @@ export class AscentListComponent implements OnInit {
   }
 
   loadFirstPage() {
+    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
