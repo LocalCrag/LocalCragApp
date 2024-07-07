@@ -18,4 +18,12 @@ lc-tick-button {
       opacity: 1 !important;
     }
   }
+
+  .ticked-icon{
+    background-color: var(--green-600);
+    border-radius: .25rem;
+    padding: .1rem;
+    color: white
+  }
+
 }

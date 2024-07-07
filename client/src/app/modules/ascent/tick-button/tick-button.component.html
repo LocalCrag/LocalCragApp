@@ -5,8 +5,8 @@
             label="{{ticked ? t('lineClimbed'): t('addAscent')}}"
             (click)="addAscent($event)" [ngClass]="{'hide-label': !showLabel, 'disabled': ticked}" [disabled]="ticked">
     <ng-template pTemplate="icon">
-      <span *ngIf="!ticked" class="material-symbols-rounded">add</span>
-      <span *ngIf="ticked" class="material-symbols-rounded-filled ticked">check_box</span>
+      <i  *ngIf="!ticked" class="pi pi-check"></i>
+      <i  *ngIf="ticked" class="pi pi-check ticked-icon"></i>
     </ng-template>
   </p-button>
 
