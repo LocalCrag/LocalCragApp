@@ -125,7 +125,7 @@ export class LineComponent {
           },
           {
             label: area.name,
-            routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/lines`
+            routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`
           },
           {
             label: `${line.name} ${this.translocoService.translate(line.grade.name)}`,
