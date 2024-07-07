@@ -1,0 +1,22 @@
+name: Frontend production build check
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+jobs:
+  frontend-prod-build-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use latest node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - name: Install dependencies
+        run: npm install
+      - name: Build production bundle
+        run: npm run build
