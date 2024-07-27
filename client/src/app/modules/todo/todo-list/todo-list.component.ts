@@ -159,7 +159,7 @@ export class TodoListComponent {
       })];
       this.sectorFilterKey = this.sectorFilterOptions[0];
     } else {
-      this.sectorFilterOptions = [];
+      this.sectorFilterOptions = null;
       this.sectorFilterKey = null;
     }
   }
@@ -174,7 +174,7 @@ export class TodoListComponent {
       })];
       this.areaFilterKey = this.areaFilterOptions[0];
     } else {
-      this.areaFilterOptions = [];
+      this.areaFilterOptions = null;
       this.areaFilterKey = null;
     }
   }
