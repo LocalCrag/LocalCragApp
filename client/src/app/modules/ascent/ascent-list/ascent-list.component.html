@@ -110,6 +110,7 @@
               <div class="ascent-actions">
                 <p-menu #menu [model]="ascentActionItems" [popup]="true" [appendTo]="'body'"></p-menu>
                 <p-button icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text"
+                          data-cy="ascent-actions-button"
                           *isOwnUser="ascent.createdBy"
                           (click)="clickedAscentForAction = ascent; menu.toggle($event)"></p-button>
               </div>

@@ -145,6 +145,7 @@ export class AscentListComponent implements OnInit {
       {
         label: this.translocoService.translate('ascent.editAscent'),
         icon: 'pi pi-pencil',
+        id: 'edit-ascent', // id is needed for cypress testing
         command: () => {
           this.editAscent(this.clickedAscentForAction);
         }
@@ -152,6 +153,7 @@ export class AscentListComponent implements OnInit {
       {
         label: this.translocoService.translate('ascent.deleteAscent'),
         icon: 'pi pi-trash',
+        id: 'delete-ascent', // id is needed for cypress testing
         command: (e) => {
           this.confirmDeleteAscent(e.originalEvent, this.clickedAscentForAction);
         }

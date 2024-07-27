@@ -23,6 +23,7 @@ import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details
 import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
+import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
         TopoImageDetailsComponent,
         GpsComponent,
         HasPermissionDirective,
-        TickButtonComponent
+        TickButtonComponent,
+        TodoButtonComponent
     ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}

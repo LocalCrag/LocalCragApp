@@ -32,6 +32,10 @@ export class ApiService {
     getList: (): string => `${this.apiHost}ticks`,
   };
 
+  public isTodo = {
+    getList: (): string => `${this.apiHost}is-todo`,
+  };
+
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,
@@ -43,6 +47,13 @@ export class ApiService {
     changeEmail: (): string => `${this.apiHost}users/account/change-email`,
     getEmailTaken: (email: string): string => `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
+  };
+
+  public todos = {
+    create: (): string => `${this.apiHost}todos`,
+    getList: (filters: string): string => `${this.apiHost}todos${filters}`,
+    delete: (id: string): string => `${this.apiHost}todos/${id}`,
+    updatePriority: (id: string): string => `${this.apiHost}todos/${id}/update-priority`,
   };
 
   public posts = {

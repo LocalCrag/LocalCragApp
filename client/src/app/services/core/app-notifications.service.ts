@@ -20,6 +20,26 @@ export class AppNotificationsService {
   private isMobile: boolean;
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> = new Map<NotificationIdentifier, NotificationType>([
+    [NotificationIdentifier.TODO_ADD_ERROR, NotificationType.ERROR],
+    /**
+     * t(notifications.TODO_ADD_ERROR_TITLE)
+     * t(notifications.TODO_ADD_ERROR_MESSAGE)
+     **/
+    [NotificationIdentifier.TODO_DELETED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.TODO_DELETED_TITLE)
+     * t(notifications.TODO_DELETED_MESSAGE)
+     **/
+    [NotificationIdentifier.TODO_PRIORITY_UPDATED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.TODO_PRIORITY_UPDATED_TITLE)
+     * t(notifications.TODO_PRIORITY_UPDATED_MESSAGE)
+     **/
+    [NotificationIdentifier.TODO_ADDED, NotificationType.SUCCESS],
+    /**
+     * t(notifications.TODO_ADDED_TITLE)
+     * t(notifications.TODO_ADDED_MESSAGE)
+     **/
     [NotificationIdentifier.LINE_UPDATED, NotificationType.SUCCESS],
     /**
      * t(notifications.LINE_UPDATED_TITLE)

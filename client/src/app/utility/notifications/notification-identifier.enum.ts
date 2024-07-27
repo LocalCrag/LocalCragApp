@@ -2,6 +2,10 @@
  * Defines identifiers for all notifications in the system.
  */
 export enum NotificationIdentifier {
+  TODO_DELETED = 'TODO_DELETED',
+  TODO_PRIORITY_UPDATED = 'TODO_PRIORITY_UPDATED',
+  TODO_ADD_ERROR = 'TODO_ADD_ERROR',
+  TODO_ADDED = 'TODO_ADDED',
   ASCENT_ADDED = 'ASCENT_ADDED',
   ASCENT_UPDATED = 'ASCENT_UPDATED',
   ASCENT_DELETED = 'ASCENT_DELETED',

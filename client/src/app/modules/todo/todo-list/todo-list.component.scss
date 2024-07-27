@@ -1,0 +1,151 @@
+lc-todo-list {
+
+  .slider-container {
+    margin-left: 0.5715rem;
+    margin-right: 0.5715rem;
+  }
+
+  p-slider {
+    width: 100%
+  }
+
+  a {
+    text-decoration: none;
+    color: #4b5563;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+  }
+
+  .todo-table-container {
+    container-type: inline-size;
+  }
+
+  // NORMAL SCREEN
+
+  .todo-table-row-normal {
+    font-size: .9rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    .todo-table-line-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-basis: 20rem;
+
+
+      .todo-table-line-name {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: .5rem;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+
+        .grade {
+          overflow-wrap: normal;
+          word-break: keep-all;
+        }
+
+      }
+
+      .todo-table-line-location {
+        font-size: .65rem;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        max-width: 100%;
+      }
+
+    }
+
+    .todo-table-grade {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-basis: 5rem;
+
+      .grade-name {
+        display: flex;
+        flex-direction: row;
+      }
+
+    }
+
+    .todo-table-priority {
+      display: flex;
+      gap: .5rem;
+      flex-direction: row;
+      align-items: flex-start;
+      flex: 1;
+    }
+
+    .todo-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 6rem;
+
+      lc-tick-button button {
+        padding: 0 .5rem;
+      }
+
+    }
+
+  }
+
+  @container (max-width: 48rem) {
+    .todo-table-row-normal {
+      display: none;
+    }
+  }
+
+  // SMALL SCREEN
+
+  .todo-table-row-small {
+
+    .todo-table-row-top{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .todo-table-row-bottom{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .todo-table-priority p-button, button{
+        padding-left: 0;
+      }
+
+      .todo-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: -.75rem;
+
+        lc-tick-button button {
+          padding: 0 .5rem;
+        }
+      }
+
+      }
+
+  }
+
+  @container (min-width: 48rem) {
+    .todo-table-row-small {
+      display: none;
+    }
+  }
+
+
+}

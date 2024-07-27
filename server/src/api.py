@@ -21,6 +21,7 @@ from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
 from resources.search_resources import Search
 from resources.sector_resources import GetSectors, GetSector, UpdateSector, DeleteSector, CreateSector, \
     UpdateSectorOrder, GetSectorGrades
+from resources.todo_resources import DeleteTodo, UpdateTodoPriority, GetTodos, CreateTodo, GetIsTodo
 from resources.topo_image_resources import DeleteTopoImage, AddTopoImage, GetTopoImages, \
     GetTopoImage, UpdateTopoImageOrder, UpdateTopoImage
 from resources.upload_resources import UploadFile
@@ -66,6 +67,14 @@ def configure_api(app):
     search_bp = Blueprint('search', __name__, )
     search_bp.add_url_rule('/<string:query>', view_func=Search.as_view('search'))
     app.register_blueprint(search_bp, url_prefix='/api/search')
+
+    # To-do API
+    todo_bp = Blueprint('todos', __name__, )
+    todo_bp.add_url_rule('', view_func=GetTodos.as_view('get_todos'))
+    todo_bp.add_url_rule('', view_func=CreateTodo.as_view('create_todo'))
+    todo_bp.add_url_rule('/<string:todo_id>', view_func=DeleteTodo.as_view('delete_todo'))
+    todo_bp.add_url_rule('/<string:todo_id>/update-priority', view_func=UpdateTodoPriority.as_view('update_todo_priority'))
+    app.register_blueprint(todo_bp, url_prefix='/api/todos')
 
     # Auth API
     auth_bp = Blueprint('auth', __name__, )
@@ -124,6 +133,11 @@ def configure_api(app):
     tick_bp = Blueprint('ticks', __name__)
     tick_bp.add_url_rule('', view_func=GetTicks.as_view('get_ticks'))
     app.register_blueprint(tick_bp, url_prefix='/api/ticks')
+
+    # IsTodo API
+    is_todo_bp = Blueprint('is-todo', __name__)
+    is_todo_bp.add_url_rule('', view_func=GetIsTodo.as_view('get_is_todo'))
+    app.register_blueprint(is_todo_bp, url_prefix='/api/is-todo')
 
     # Area API
     area_bp = Blueprint('areas', __name__)

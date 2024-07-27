@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {ButtonModule} from 'primeng/button';
 import {NgClass, NgIf} from '@angular/common';
 import {SharedModule} from 'primeng/api';

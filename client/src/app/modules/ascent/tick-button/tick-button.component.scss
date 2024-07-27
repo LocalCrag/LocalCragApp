@@ -3,10 +3,6 @@ lc-tick-button {
     display: flex;
   }
 
-  .ticked {
-    color: var(--ticked-color)
-  }
-
   .hide-label .p-button-label {
     display: none;
   }
@@ -20,7 +16,7 @@ lc-tick-button {
   }
 
   .ticked-icon{
-    background-color: var(--green-600);
+    background-color: var(--ticked-color);
     border-radius: .25rem;
     padding: .1rem;
     color: white

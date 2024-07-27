@@ -62,6 +62,7 @@ import {UserChartsComponent} from '../user/user-charts/user-charts.component';
 import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
 import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component';
 import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
+import {TodoListComponent} from '../todo/todo-list/todo-list.component';
 
 const routes: Routes = [
   {
@@ -90,6 +91,14 @@ const routes: Routes = [
     canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'todos',
+    component: TodoListComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
     }
   },
   {

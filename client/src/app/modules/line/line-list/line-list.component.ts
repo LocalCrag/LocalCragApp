@@ -16,7 +16,7 @@ import {RatingModule} from 'primeng/rating';
 import {SecretSpotTagComponent} from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import {TickButtonComponent} from '../../ascent/tick-button/tick-button.component';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {SharedModule} from '../../shared/shared.module';
 import {Line} from '../../../models/line';
 import {LoadingState} from '../../../enums/loading-state';
@@ -31,6 +31,9 @@ import {AccordionModule} from 'primeng/accordion';
 import {map, mergeMap} from 'rxjs/operators';
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {TodoButtonComponent} from '../../todo/todo-button/todo-button.component';
+import {IsTodoService} from '../../../services/crud/is-todo.service';
+import {todoAdded} from '../../../ngrx/actions/todo.actions';
 
 @Component({
   selector: 'lc-line-list',
@@ -56,7 +59,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
     FormsModule,
     SliderModule,
     SliderLabelsComponent,
-    AccordionModule
+    AccordionModule,
+    TodoButtonComponent
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -76,6 +80,7 @@ export class LineListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
   public ticks: Set<string> = new Set();
+  public isTodo: Set<string> = new Set();
 
   public minGradeValue = GRADES['FB'][0].value;
   public maxGradeValue = GRADES['FB'].at(-1).value;
@@ -90,6 +95,7 @@ export class LineListComponent implements OnInit {
   constructor(private linesService: LinesService,
               private store: Store,
               private ticksService: TicksService,
+              private isTodoService: IsTodoService,
               private route: ActivatedRoute,
               private actions$: Actions,
               private translocoService: TranslocoService) {
@@ -114,6 +120,9 @@ export class LineListComponent implements OnInit {
     this.loadFirstPage();
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe((action) => {
       this.ticks.add(action.ascendedLineId)
+    });
+    this.actions$.pipe(ofType(todoAdded), untilDestroyed(this)).subscribe((action) => {
+      this.isTodo.add(action.todoLineId)
     });
   }
 
@@ -160,12 +169,14 @@ export class LineListComponent implements OnInit {
       this.linesService.getLines(filterString).pipe(mergeMap(lines => {
         const line_ids = lines.items.map(line => line.id);
         const tickRequest = line_ids.length > 0 ? this.ticksService.getTicks(null, null, null, line_ids) : of(new Set<string>())
-        return tickRequest.pipe(map(ticks => {
+        const isTodoRequest = line_ids.length > 0 ? this.isTodoService.getIsTodo(null, null, null, line_ids) : of(new Set<string>())
+        return forkJoin([tickRequest, isTodoRequest]).pipe(map(([ticks, isTodo]) => {
             this.lines.push(...lines.items);
             this.hasNextPage = lines.hasNext;
             this.loadingFirstPage = LoadingState.DEFAULT;
             this.loadingAdditionalPage = LoadingState.DEFAULT;
             this.ticks = new Set([...this.ticks, ...ticks])
+            this.isTodo = new Set([...this.isTodo, ...isTodo])
           }))
       })).subscribe();
     }

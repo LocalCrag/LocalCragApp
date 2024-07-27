@@ -81,6 +81,9 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     sector_slug = association_proxy('area', 'sector_slug')
     crag_slug = association_proxy('area', 'crag_slug')
 
+    # Needed for delete cascade
+    todos = db.relationship("Todo", cascade="all,delete", lazy="select", overlaps="line")
+
     @hybrid_property
     def ascent_count(self):
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()
