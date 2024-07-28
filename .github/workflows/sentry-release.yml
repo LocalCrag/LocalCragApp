@@ -34,3 +34,4 @@ jobs:
       with:
         environment: production
         sourcemaps: './dist/client'
+        ignore_missing: true
