@@ -1,4 +1,4 @@
-name: Sentry release
+name: Sentry frontend release
 
 on:
   pull_request:
@@ -15,11 +15,18 @@ jobs:
     #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./client
+
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-
+    - name: Install dependencies
+      run: npm install
+    - name: Build production bundle
+      run: npm run build
     - name: Create Sentry release
       uses: getsentry/action-release@v1
       env:
@@ -28,3 +35,4 @@ jobs:
         SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       with:
         environment: production
+        sourcemaps: './dist/client'
