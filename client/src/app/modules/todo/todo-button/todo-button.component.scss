@@ -1,0 +1,17 @@
+lc-todo-button {
+  button > span {
+    display: flex;
+  }
+
+  .hide-label .p-button-label {
+    display: none;
+  }
+
+  .is-todo-icon{
+    background-color: var(--blue-500);
+    border-radius: .25rem;
+    padding: .1rem;
+    color: white
+  }
+
+}

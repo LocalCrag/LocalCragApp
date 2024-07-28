@@ -1,10 +1,6 @@
-from sqlalchemy import func
-
 from extensions import db
 from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
-
-from models.mixins.has_slug import HasSlug
 
 
 class Ascent(BaseEntity):
@@ -32,4 +28,3 @@ class Ascent(BaseEntity):
     created_by_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
 
     ascent_date = db.Column(db.Date(), nullable=False)
-

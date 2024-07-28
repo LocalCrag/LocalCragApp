@@ -1,34 +1,12 @@
 from marshmallow import fields, post_dump
 
 from extensions import ma
+from marshmallow_schemas.area_schema import AscentAndTodoAreaSchema
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
-
-
-class AscentCragSchema(ma.SQLAlchemySchema):
-    name = fields.String()
-    slug = fields.String()
-    id = fields.String()
-
-
-class AscentSectorSchema(ma.SQLAlchemySchema):
-    name = fields.String()
-    slug = fields.String()
-    id = fields.String()
-
-
-class AscentAreaSchema(ma.SQLAlchemySchema):
-    name = fields.String()
-    slug = fields.String()
-    id = fields.String()
-
-
-class AscentLineSchema(ma.SQLAlchemySchema):
-    name = fields.String()
-    slug = fields.String()
-    id = fields.String()
-    gradeName = fields.String(attribute='grade_name')
-    gradeScale = fields.String(attribute='grade_scale')
+from marshmallow_schemas.crag_schema import AscentAndTodoCragSchema
+from marshmallow_schemas.line_schema import AscentAndTodoLineSchema
+from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
 
 
 class AscentSchema(BaseEntitySchema):
@@ -43,10 +21,11 @@ class AscentSchema(BaseEntitySchema):
     comment = fields.String()
     year = fields.Integer()
     date = fields.Date()
-    line = fields.Nested(AscentLineSchema())
-    crag = fields.Nested(AscentCragSchema())
-    sector = fields.Nested(AscentSectorSchema())
-    area = fields.Nested(AscentAreaSchema())
+    line = fields.Nested(AscentAndTodoLineSchema())
+    crag = fields.Nested(AscentAndTodoCragSchema())
+    sector = fields.Nested(AscentAndTodoSectorSchema())
+    area = fields.Nested(AscentAndTodoAreaSchema())
+
 
 class PaginatedAscentsSchema(ma.SQLAlchemySchema):
     items = fields.List(fields.Nested(AscentSchema()))

@@ -107,16 +107,12 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
-              <div class="ascent-actions" *isOwnUser="user">
-                <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          data-cy="edit-ascent"
-                          (click)="editAscent(ascent)">
-                </p-button>
-                <p-button icon="pi pi-trash" severity="danger"
-                          data-cy="delete-ascent"
-                          (click)="confirmDeleteAscent($event, ascent)"
-                          styleClass="p-button-rounded p-button-text">
-                </p-button>
+              <div class="ascent-actions">
+                <p-menu #menu [model]="ascentActionItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                <p-button icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text"
+                          data-cy="ascent-actions-button"
+                          *isOwnUser="ascent.createdBy"
+                          (click)="clickedAscentForAction = ascent; menu.toggle($event)"></p-button>
               </div>
             </div>
 
@@ -170,16 +166,11 @@
                 <ng-container *ngIf="ascent.year">{{ascent.year}}</ng-container>
                 <ng-container *ngIf="ascent.date">{{ascent.date |  date : 'dd.MM.yyyy'}}</ng-container>
               </div>
-              <div class="ascent-actions" *isOwnUser="user">
-                <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                          data-cy="edit-ascent"
-                          (click)="editAscent(ascent)">
-                </p-button>
-                <p-button icon="pi pi-trash" severity="danger"
-                          data-cy="delete-ascent"
-                          (click)="confirmDeleteAscent($event, ascent)"
-                          styleClass="p-button-rounded p-button-text">
-                </p-button>
+              <div class="ascent-actions">
+                <p-menu #menu [model]="ascentActionItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                <p-button icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text"
+                          *isOwnUser="ascent.createdBy"
+                          (click)="clickedAscentForAction = ascent; menu.toggle($event)"></p-button>
               </div>
             </div>
 
@@ -203,16 +194,11 @@
                     routerLink="{{ascent.routerLinkArea}}">{{ascent.area.name}}</a>
                   </div>
                 </div>
-                <div class="ascent-actions" *isOwnUser="user">
-                  <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text"
-                            data-cy="edit-ascent"
-                            (click)="editAscent(ascent)">
-                  </p-button>
-                  <p-button icon="pi pi-trash" severity="danger"
-                            data-cy="delete-ascent"
-                            (click)="confirmDeleteAscent($event, ascent)"
-                            styleClass="p-button-rounded p-button-text">
-                  </p-button>
+                <div class="ascent-actions">
+                  <p-menu #menu [model]="ascentActionItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                  <p-button icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text"
+                            *isOwnUser="ascent.createdBy"
+                            (click)="clickedAscentForAction = ascent;menu.toggle($event)"></p-button>
                 </div>
               </div>
               <div class="ascent-table-comment">

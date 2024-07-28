@@ -14,7 +14,7 @@ import {HasPermissionDirective} from '../../shared/directives/has-permission.dir
 import {SharedModule} from '../../shared/shared.module';
 import {LoadingState} from '../../../enums/loading-state';
 import {FormsModule} from '@angular/forms';
-import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
+import {ConfirmationService, MenuItem, PrimeIcons, SelectItem} from 'primeng/api';
 import {marker} from '@ngneat/transloco-keys-manager/marker';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {LineModule} from '../../line/line.module';
@@ -40,6 +40,7 @@ import {User} from '../../../models/user';
 import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
 import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
 import {SliderModule} from 'primeng/slider';
+import {MenuModule} from 'primeng/menu';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -71,7 +72,8 @@ import {SliderModule} from 'primeng/slider';
     TagModule,
     InfiniteScrollModule,
     SliderLabelsComponent,
-    SliderModule
+    SliderModule,
+    MenuModule
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -99,7 +101,7 @@ export class AscentListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
 
-  public minGradeValue = GRADES['FB'][0].value;
+  public minGradeValue = GRADES['FB'][2].value; // Skip project grades
   public maxGradeValue = GRADES['FB'].at(-1).value;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue]
   public orderOptions: SelectItem[];
@@ -107,6 +109,9 @@ export class AscentListComponent implements OnInit {
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
   public listenForSliderStop = false;
+  public ascentActionItems: MenuItem[];
+  public clickedAscentForAction: Ascent;
+
 
 
   constructor(private ascentsService: AscentsService,
@@ -136,6 +141,24 @@ export class AscentListComponent implements OnInit {
     this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
       this.loadFirstPage();
     })
+    this.ascentActionItems = [
+      {
+        label: this.translocoService.translate('ascent.editAscent'),
+        icon: 'pi pi-pencil',
+        id: 'edit-ascent', // id is needed for cypress testing
+        command: () => {
+          this.editAscent(this.clickedAscentForAction);
+        }
+      },
+      {
+        label: this.translocoService.translate('ascent.deleteAscent'),
+        icon: 'pi pi-trash',
+        id: 'delete-ascent', // id is needed for cypress testing
+        command: (e) => {
+          this.confirmDeleteAscent(e.originalEvent, this.clickedAscentForAction);
+        }
+      },
+    ]
   }
 
   @HostListener('document:touchend')

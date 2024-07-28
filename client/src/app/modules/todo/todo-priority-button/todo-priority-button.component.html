@@ -1,0 +1,14 @@
+<ng-container *transloco="let t, read: 'todos.priorityButton'">
+
+  <p-menu #menu [model]="items" [popup]="true" appendTo="body"></p-menu>
+  <p-button type="button" styleClass="p-button-secondary p-button-text medium-priority" (click)="menu.toggle($event)"
+            icon="pi pi-circle"
+            [label]="t('mediumPriority')" *ngIf="todo.priority === priorities.MEDIUM"></p-button>
+  <p-button type="button" styleClass="p-button-secondary p-button-text low-priority" (click)="menu.toggle($event)"
+            icon="pi pi-chevron-circle-down"
+            [label]="t('lowPriority')" *ngIf="todo.priority === priorities.LOW"></p-button>
+  <p-button type="button" styleClass="p-button-secondary p-button-text high-priority" (click)="menu.toggle($event)"
+            icon="pi pi-chevron-circle-up"
+            [label]="t('highPriority')" *ngIf="todo.priority === priorities.HIGH"></p-button>
+
+</ng-container>

@@ -172,7 +172,7 @@ class GetCragMenuStructure(MethodView):
 
         # We use custom SQL to optimize the query. This sped up the query by a factor of 10!
         res = db.session.execute(text('''
-        SELECT crags.name, crags.slug, sectors.name, sectors.slug, areas.name, areas.slug 
+        SELECT crags.name, crags.slug, crags.id, sectors.name, sectors.slug, sectors.id, areas.name, areas.slug , areas.id
         FROM crags
         LEFT OUTER JOIN sectors ON crags.id = sectors.crag_id {}
         LEFT OUTER JOIN areas ON sectors.id = areas.sector_id {}
@@ -195,32 +195,35 @@ class GetCragMenuStructure(MethodView):
                 crag_index += 1
                 sector_index = -1
                 area_index = -1
-            if row[3] and row[3] != sector_slug:
-                sector_slug = row[3]
+            if row[4] and row[4] != sector_slug:
+                sector_slug = row[4]
                 sector_index += 1
                 area_index = -1
-            if row[5] and row[5] != area_slug:
-                area_slug = row[5]
+            if row[7] and row[7] != area_slug:
+                area_slug = row[7]
                 area_index += 1
             if len(crags) < crag_index + 1:
                 crags.append({
                     'name': row[0],
                     'slug': row[1],
+                    'id': row[2],
                     'sectors': []
                 })
                 if not row[3]:
                     continue
             if len(crags[crag_index]['sectors']) < sector_index + 1:
                 crags[crag_index]['sectors'].append({
-                    'name': row[2],
-                    'slug': row[3],
+                    'name': row[3],
+                    'slug': row[4],
+                    'id': row[5],
                     'areas': []
                 })
-                if not row[5]:
+                if not row[7]:
                     continue
             if len(crags[crag_index]['sectors'][sector_index]['areas']) < area_index + 1:
                 crags[crag_index]['sectors'][sector_index]['areas'].append({
-                    'name': row[4],
-                    'slug': row[5],
+                    'name': row[6],
+                    'slug': row[7],
+                    'id': row[8],
                 })
         return jsonify(crags), 200

@@ -1,5 +1,6 @@
 import smtplib
 import ssl
+from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -30,6 +31,10 @@ def send_generic_mail(msg):
     Sends the passed mail.
     :param msg: Mail to send.
     """
+
+    if current_app.config['PRINT_MAILS_TO_CONSOLE']:
+        print_decoded_email_parts(msg)
+        return
 
     if current_app.config['SMTP_PORT'] == '587':  # pragma: no cover
         context = ssl.create_default_context()
@@ -120,3 +125,26 @@ def send_user_registered_email(registered_user: User, receiver: User, user_count
     msg.attach(MIMEText(template, 'html'))
 
     send_generic_mail(msg)
+
+
+def print_decoded_email_parts(email_message: Message):
+    """
+    Print all the parts of an email message including any attachments.
+    """
+    if email_message.is_multipart():
+        for part in email_message.walk():
+            content_type = part.get_content_type()
+            content_disposition = part.get("Content-Disposition")
+            if content_disposition is not None:
+                # This is an attachment
+                print(f"Attachment: {part.get_filename()}")
+                continue
+            try:
+                body = part.get_payload(decode=True).decode(part.get_content_charset())
+                print(f"Content Type: {content_type}\nBody:\n{body}\n")
+            except Exception as e:
+                print(f"Could not decode part: {e}")
+    else:
+        # For non-multipart messages
+        body = email_message.get_payload(decode=True).decode(email_message.get_content_charset())
+        print(f"Body:\n{body}\n")

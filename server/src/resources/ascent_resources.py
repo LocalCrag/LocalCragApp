@@ -22,6 +22,7 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.grades import GRADES, get_grade_value
 from models.line import Line
 from models.sector import Sector
+from models.todo import Todo
 from models.topo_image import TopoImage
 from models.user import User
 from util.secret_spots_auth import get_show_secret
@@ -158,6 +159,11 @@ class CreateAscent(MethodView):
             ascent.ascent_date = ascent.date
         else:
             ascent.ascent_date = datetime.datetime.strptime(str(ascent.year), '%Y').date()
+
+        # Delete To-do if it exists
+        todo = Todo.query.filter(Todo.line_id == ascent.line_id).filter(Todo.created_by_id == created_by.id).first()
+        if todo:
+            db.session.delete(todo)
 
         db.session.add(line)
         db.session.add(ascent)

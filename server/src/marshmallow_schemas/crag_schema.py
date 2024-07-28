@@ -9,6 +9,11 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityM
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
+class AscentAndTodoCragSchema(ma.SQLAlchemySchema):
+    name = fields.String()
+    slug = fields.String()
+    id = fields.String()
+
 class CragSchema(BaseEntityMinSchema):
     name = fields.String()
     orderIndex = fields.Int(attribute='order_index')

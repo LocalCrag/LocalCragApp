@@ -1,0 +1,33 @@
+name: Sentry frontend release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: npm install
+    - name: Build production bundle with sourcemaps
+      run: npm run build
+    - name: Create Sentry release
+      uses: getsentry/action-release@v1
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      with:
+        environment: production
+        sourcemaps: './client/dist/client'
+        ignore_missing: true

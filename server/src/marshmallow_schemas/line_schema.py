@@ -8,6 +8,12 @@ from models.enums.line_type_enum import LineTypeEnum
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from models.enums.starting_position_enum import StartingPositionEnum
 
+class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
+    name = fields.String()
+    slug = fields.String()
+    id = fields.String()
+    gradeName = fields.String(attribute='grade_name')
+    gradeScale = fields.String(attribute='grade_scale')
 
 class LineSchemaMin(BaseEntityMinSchema):
     name = fields.String()

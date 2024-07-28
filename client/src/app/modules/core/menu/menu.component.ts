@@ -50,7 +50,6 @@ export class MenuComponent implements OnInit {
 
 
   constructor(private menuItemsService: MenuItemsService,
-              private api: ApiService,
               private translocoService: TranslocoService,
               private dialogService: DialogService,
               private actions: Actions,
@@ -112,6 +111,11 @@ export class MenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-user',
                 label: this.translocoService.translate(marker('menu.accountDetail')),
                 routerLink: `/users/${authState.user.slug}`
+              },
+              {
+                icon: 'pi pi-fw pi-check-circle',
+                label: this.translocoService.translate(marker('menu.todos')),
+                routerLink: `/todos`
               },
               {
                 icon: 'pi pi-fw pi-user-edit',

@@ -31,6 +31,7 @@ import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
+import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
 
 
 @NgModule({
@@ -70,6 +71,7 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
         AscentCountComponent,
         SecretSpotTagComponent,
         FormSkeletonComponent,
+        TodoButtonComponent,
     ],
     exports: [
         LineBoolPropListComponent

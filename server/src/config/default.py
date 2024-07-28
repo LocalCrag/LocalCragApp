@@ -10,6 +10,7 @@ class DefaultConfig(object):
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     ERROR_404_HELP = False
+    PRINT_MAILS_TO_CONSOLE = False
     SYSTEM_EMAIL = 'YOUR_SYSTEM_EMAIL'
     SMTP_HOST = 'YOUR_SMTP_HOST'
     SMTP_USER = 'YOUR_SMTP_USER'
@@ -29,3 +30,5 @@ class DefaultConfig(object):
     SPACES_REGION = 'eu-central-1'
     SPACES_BUCKET = 'lc-test-bucket'
     SPACES_ACCESS_ENDPOINT = None
+    SENTRY_DSN = ''
+    SENTRY_ENABLED = False

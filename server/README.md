@@ -9,6 +9,7 @@
     - `SQLALCHEMY_DATABASE_URI` Connection string to your database
     - `SECRET_KEY` Key used for signing session cookies, value irrelevant for local dev
     - `JWT_SECRET_KEY` Key used for signing JWT tokens, irrelevant for local dev
+    - `PRINT_MAILS_TO_CONSOLE` If set to True, all mails will be printed to the console instead of sending them. Recommended for local dev.
     - `SYSTEM_EMAIL` E-Mail address the system uses to send mails from
     - `SMTP_HOST` SMTP host address
     - `SMTP_USER` SMTP user
@@ -25,6 +26,8 @@
     - `SPACES_REGION` Object storage region
     - `SPACES_BUCKET` Object storage bucket name
     - `SPACES_ACCESS_ENDPOINT` Access endpoint of the object storage
+    - `SENTRY_DSN` DSN for Sentry error tracking
+    - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
 - For configuring a local object storage, read `docs/localstack.md`. This is needed if you are working with fileupload in any way.
 - Now you are ready to setup the database of your local dev instance:
   - Set your config env var `LOCALCRAG_CONFIG=config/dev.cfg`

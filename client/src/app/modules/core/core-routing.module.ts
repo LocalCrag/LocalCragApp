@@ -62,6 +62,8 @@ import {UserChartsComponent} from '../user/user-charts/user-charts.component';
 import {RankingListComponent} from '../ranking/ranking-list/ranking-list.component';
 import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component';
 import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
+import {TodoListComponent} from '../todo/todo-list/todo-list.component';
+import {SentryTestComponent} from './sentry-test/sentry-test.component';
 
 const routes: Routes = [
   {
@@ -72,6 +74,13 @@ const routes: Routes = [
   {
     path: 'news',
     component: PostListComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'sentry-test',
+    component: SentryTestComponent,
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
     }
@@ -90,6 +99,14 @@ const routes: Routes = [
     canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT
+    }
+  },
+  {
+    path: 'todos',
+    component: TodoListComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH
     }
   },
   {

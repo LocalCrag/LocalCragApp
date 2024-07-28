@@ -11,7 +11,8 @@
     "test:ci": "ng test --no-watch --no-progress --code-coverage --browsers=ChromeHeadless",
     "i18n:extract": "transloco-keys-manager extract -d \"\"",
     "i18n:find": "transloco-keys-manager find",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org localcrag --project localcrag-client ./dist/client && sentry-cli sourcemaps upload --org localcrag --project localcrag-client ./dist/client"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +31,8 @@
     "@ngrx/effects": "^17.1.0",
     "@ngrx/store": "^17.1.0",
     "@ngrx/store-devtools": "^17.1.0",
+    "@sentry/angular": "^8.15.0",
+    "@sentry/cli": "^2.32.1",
     "chart.js": "^4.4.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^3.3.1",

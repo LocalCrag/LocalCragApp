@@ -34,6 +34,9 @@
       </div>
       <div *ngIf="line.faName || line.faYear" class="fa">{{t('FA')}} <span
         *ngIf="line.faYear">{{line.faYear}}</span><span *ngIf="line.faName">{{line.faName}}</span></div>
+      <ng-container *ngIf="!ticks.has(line.id)">
+        <lc-todo-button [line]="line" [isTodo]="todos.has(line.id)" [showLabel]="true" *isLoggedIn="true"></lc-todo-button>
+      </ng-container>
       <lc-tick-button [line]="line" [ticked]="ticks.has(line.id)" [showLabel]="true" *isLoggedIn="true"></lc-tick-button>
     </div>
 

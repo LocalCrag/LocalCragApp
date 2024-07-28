@@ -129,7 +129,12 @@ lc-ascent-list {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-basis: 3rem;
+      flex-basis: 1rem;
+
+      p-button, button{
+        width: 1rem
+      }
+
     }
 
   }
@@ -249,7 +254,12 @@ lc-ascent-list {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-basis: 3rem;
+      flex-basis: 1rem;
+
+      p-button, button{
+        width: 1rem
+      }
+
     }
 
   }
@@ -280,8 +290,13 @@ lc-ascent-list {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-basis: 3rem;
+      flex-basis: 1rem;
       margin-right: -1rem;
+
+      p-button, button{
+        width: 1rem
+      }
+
     }
 
     .ascent-table-user-and-name-info {

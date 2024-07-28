@@ -10,6 +10,7 @@ class UserMinSchema(ma.SQLAlchemySchema):
     lastname = fields.String()
     slug = fields.String()
     avatar = ma.Nested(FileSchema)
+    id = fields.String()
 
 
 class UserSchema(BaseEntitySchema):
