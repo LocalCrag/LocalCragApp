@@ -12,6 +12,7 @@ from resources.instance_settings_resources import GetInstanceSettings, UpdateIns
 from resources.line_path_resources import CreateLinePath, DeleteLinePath, UpdateLinePathOrder, \
     UpdateLinePathOrderForLine
 from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine, GetLinesForLineEditor
+from resources.map_resources import GetMarkers
 from resources.menu_item_resources import GetMenuItems, CreateMenuItem, GetMenuItem, DeleteMenuItem, UpdateMenuItem, \
     UpdateMenuItemTopOrder, UpdateMenuItemBottomOrder, GetCragMenuStructure
 from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
@@ -138,6 +139,11 @@ def configure_api(app):
     is_todo_bp = Blueprint('is-todo', __name__)
     is_todo_bp.add_url_rule('', view_func=GetIsTodo.as_view('get_is_todo'))
     app.register_blueprint(is_todo_bp, url_prefix='/api/is-todo')
+
+    # Maps API
+    maps_bp = Blueprint('maps', __name__)
+    maps_bp.add_url_rule('/markers', view_func=GetMarkers.as_view('get_markers'))
+    app.register_blueprint(maps_bp, url_prefix='/api/maps')
 
     # Area API
     area_bp = Blueprint('areas', __name__)

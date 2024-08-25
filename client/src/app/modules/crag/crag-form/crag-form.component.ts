@@ -94,6 +94,7 @@ export class CragFormComponent implements OnInit {
       portraitImage: [null],
       gps: [null],
       secret: [false],
+      mapMarkers: [[]],
     });
   }
 
@@ -110,6 +111,7 @@ export class CragFormComponent implements OnInit {
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
+      mapMarkers: this.crag.mapMarkers,
     });
   }
 
@@ -138,6 +140,7 @@ export class CragFormComponent implements OnInit {
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
       crag.secret = this.cragForm.get('secret').value
+      crag.mapMarkers = this.cragForm.get('mapMarkers').value
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe(crag => {
@@ -146,7 +149,7 @@ export class CragFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag).subscribe(crag => {
+        this.cragsService.createCrag(crag).subscribe(_crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
           this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;

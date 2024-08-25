@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {Grade} from '../utility/misc/grades';
 import {GPS} from '../interfaces/gps.interface';
 import {Sector} from './sector';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing crag.
@@ -22,6 +23,7 @@ export class Crag extends AbstractModel {
   ascentCount: number;
   routerLink: string;
   secret: boolean;
+  mapMarkers: MapMarker[];
 
   /**
    * Parses a crag.
@@ -43,6 +45,7 @@ export class Crag extends AbstractModel {
     crag.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     crag.sectors = payload.sectors ? payload.sectors.map(Sector.deserialize) : null;
     crag.ascentCount = payload.ascentCount;
+    crag.mapMarkers = payload.mapMarkers ? payload.mapMarkers.map(MapMarker.deserialize) : null;
     crag.routerLink =`/topo/${crag.slug}`;
     return crag;
   }
@@ -63,6 +66,7 @@ export class Crag extends AbstractModel {
       lng: crag.gps ? crag.gps.lng : null,
       lat: crag.gps ? crag.gps.lat : null,
       portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
+      mapMarkers: crag.mapMarkers ? crag.mapMarkers.map(MapMarker.serialize) : null,
     };
   }
 

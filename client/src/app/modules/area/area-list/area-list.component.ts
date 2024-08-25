@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
 import {LoadingState} from '../../../enums/loading-state';
 import {PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
 import {TranslocoService} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';

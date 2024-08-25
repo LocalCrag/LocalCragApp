@@ -37,6 +37,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
 
     sector_slug = association_proxy('sector', 'slug')
     crag_slug = association_proxy('sector', 'crag_slug')
+    map_markers = db.relationship('MapMarker', back_populates='area')
 
     @hybrid_property
     def ascent_count(self):

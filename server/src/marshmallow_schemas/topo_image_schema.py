@@ -3,6 +3,7 @@ from marshmallow import fields
 from extensions import ma
 from marshmallow_schemas.file_schema import FileSchema, file_schema
 from marshmallow_schemas.line_path_schema import line_path_schema
+from marshmallow_schemas.map_marker_schema import map_marker_schema
 from models.file import File
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
@@ -16,6 +17,7 @@ class TopoImageSchema(BaseEntityMinSchema):
     lng = fields.Float()
     description = fields.String()
     title = fields.String()
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 
 
 
@@ -26,6 +28,8 @@ class TopoImageSchemaForLines(BaseEntityMinSchema):
     lng = fields.Float()
     description = fields.String()
     title = fields.String()
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers') # TODO here it should be filtered to not contain eventual parkings etc
+
 
 
 topo_image_schema = TopoImageSchema()

@@ -5,10 +5,7 @@ from flask import current_app
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
-from models.base_entity import BaseEntity
 from sqlalchemy.dialects.postgresql import UUID
-
-from models.mixins.has_slug import HasSlug
 
 
 class InstanceSettings(db.Model):
@@ -36,11 +33,9 @@ class InstanceSettings(db.Model):
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
 
-
     @hybrid_property
     def superadmin_email(self) -> str:
         return current_app.config['SUPERADMIN_EMAIL']
-
 
     @classmethod
     def return_it(cls):

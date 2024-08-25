@@ -3,7 +3,7 @@ import uuid
 from flask import g
 from sqlalchemy import func, select, case
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import column_property
+from sqlalchemy.orm import column_property, backref
 
 from extensions import db
 from models.ascent import Ascent
@@ -38,6 +38,7 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     lng = db.Column(db.Float, nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default='0')
+    map_markers = db.relationship('MapMarker', back_populates='crag')
 
     @hybrid_property
     def ascent_count(self):

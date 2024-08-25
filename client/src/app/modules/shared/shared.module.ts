@@ -15,7 +15,7 @@ import {BadgeModule} from 'primeng/badge';
 import {SingleImageUploadComponent} from './forms/controls/single-image-upload/single-image-upload.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {ImageModule} from 'primeng/image';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import { TranslocoModule} from '@ngneat/transloco';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TopoImageComponent} from './components/topo-image/topo-image.component';
 import { OrderItemsComponent } from './components/order-items/order-items.component';

@@ -32,6 +32,7 @@ import {HasPermissionDirective} from '../shared/directives/has-permission.direct
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 import {CheckboxModule} from 'primeng/checkbox';
 import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
+import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 
 
 /**
@@ -44,36 +45,37 @@ import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secre
     CragComponent,
     CragInfoComponent
   ],
-  imports: [
-    CommonModule,
-    CardModule,
-    TranslocoModule,
-    SharedModule,
-    InputTextModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    ButtonModule,
-    DataViewModule,
-    TagModule,
-    BadgeModule,
-    RouterLink,
-    DropdownModule,
-    MessagesModule,
-    EditorModule,
-    TabMenuModule,
-    ConfirmPopupModule,
-    SectorModule,
-    SkeletonModule,
-    BreadcrumbModule,
-    GradeDistributionBarChartComponent,
-    GpsComponent,
-    GpsButtonComponent,
-    HasPermissionDirective,
-    AscentCountComponent,
-    CheckboxModule,
-    SecretSpotTagComponent
-  ],
+    imports: [
+        CommonModule,
+        CardModule,
+        TranslocoModule,
+        SharedModule,
+        InputTextModule,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        ButtonModule,
+        DataViewModule,
+        TagModule,
+        BadgeModule,
+        RouterLink,
+        DropdownModule,
+        MessagesModule,
+        EditorModule,
+        TabMenuModule,
+        ConfirmPopupModule,
+        SectorModule,
+        SkeletonModule,
+        BreadcrumbModule,
+        GradeDistributionBarChartComponent,
+        GpsComponent,
+        GpsButtonComponent,
+        HasPermissionDirective,
+        AscentCountComponent,
+        CheckboxModule,
+        SecretSpotTagComponent,
+        MapMarkerFormArrayComponent
+    ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
   ],

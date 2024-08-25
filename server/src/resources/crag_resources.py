@@ -13,6 +13,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from resources.map_resources import create_or_update_markers
 from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
@@ -89,6 +90,7 @@ class UpdateCrag(MethodView):
         crag.rules = add_bucket_placeholders(crag_data['rules'])
         crag.portrait_image_id = crag_data['portraitImage']
         update_crag_secret_property(crag, crag_data['secret'])
+        crag.map_markers = create_or_update_markers(crag_data['mapMarkers'])
         db.session.add(crag)
         db.session.commit()
 

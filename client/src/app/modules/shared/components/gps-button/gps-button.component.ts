@@ -47,6 +47,4 @@ export class GpsButtonComponent {
     window.open(`https://maps.google.com/?q=${this.gps.lat},${this.gps.lng}`)
   }
 
-
-
 }

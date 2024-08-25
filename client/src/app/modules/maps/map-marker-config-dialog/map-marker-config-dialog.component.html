@@ -1,0 +1,72 @@
+<ng-container *transloco="let t, read: 'maps.mapMarkerForm'">
+
+  <p-dialog [header]="marker.id ? t('editMarker') : t('createMarker')" [modal]="true"
+            [(visible)]="isOpen" *ngIf="marker">
+
+    <form [formGroup]="mapMarkerForm" lcForm>
+
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label">{{ t('typeLabel') }}</label>
+        <p-dropdown formControlName="type" [options]="types" data-cy="type-dropdown"
+                    optionLabel="type" placeholder="{{t('typePlaceholder')}}" lcFormControl>
+          <ng-template let-type pTemplate="item">
+            <div class="flex align-items-center gap-2" data-cy="type-dropdown-item">
+              <div>{{ type | transloco }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-selectedType pTemplate="selectedItem">
+            {{ selectedType | transloco }}
+          </ng-template>
+        </p-dropdown>
+        <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
+      </div>
+
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label">{{ t('gpsLabel') }}</label>
+        <lc-gps formControlName="gps" lcFormControl data-cy="marker-form-gps" #gps></lc-gps>
+      </div>
+
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label">{{ t('markerNameLabel') }}</label>
+        <input type="text" pInputText formControlName="name" placeholder="{{t('markerNamePlaceholder')}}"
+               lcFormControl data-cy="marker-form-name"/>
+        <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
+      </div>
+
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label">{{ t('markerDescriptionLabel') }}</label>
+        <p-editor formControlName="description" lcFormControl placeholder="{{t('markerDescriptionPlaceholder')}}"
+                  [style]="{ height: '200px' }"
+                  data-cy="marker-form-description">
+          <ng-template pTemplate="header">
+              <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+              </span>
+            <span class="ql-formats">
+                  <button type="button" class="ql-link" aria-label="Link"></button>
+              </span>
+          </ng-template>
+        </p-editor>
+      </div>
+
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="t('cancel')"
+        [text]="true"
+        severity="secondary"
+        (onClick)="close()"/>
+      <p-button
+        [label]="t('save')"
+        [outlined]="true"
+        severity="primary"
+        (onClick)="save()"
+      />
+    </ng-template>
+
+  </p-dialog>
+
+</ng-container>

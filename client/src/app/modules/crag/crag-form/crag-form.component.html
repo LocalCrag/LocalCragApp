@@ -95,6 +95,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('mapMarkersLabel')}}</label>
+          <lc-map-marker-form-array formControlName="mapMarkers" lcFormControl></lc-map-marker-form-array>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label">{{t('cragOptionsLabel')}}</label>
           <p-checkbox label="{{t('cragSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
                       lcFormControl></p-checkbox>

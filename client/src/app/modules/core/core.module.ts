@@ -142,7 +142,7 @@ export function preloadInstanceSettings(instanceSettingsService: InstanceSetting
     MatomoModule.forRoot({
       mode: MatomoInitializationMode.AUTO_DEFERRED,
     }),
-    MatomoRouterModule
+    MatomoRouterModule,
   ],
   providers: [
     {

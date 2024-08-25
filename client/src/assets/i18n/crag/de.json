@@ -12,6 +12,7 @@
   "cragForm.cragRulesPlaceholder": "Verhaltensregeln und Ähnliches...",
   "cragForm.cragPortraitImageLabel": "Bild",
   "cragForm.gpsLabel": "GPS",
+  "cragForm.mapMarkersLabel": "GPS-Punkte",
   "cragForm.cragOptionsLabel": "Optionen",
   "cragForm.cragSecretLabel": "Geheim",
   "cragForm.createCragButtonLabel": "Gebiet erstellen",

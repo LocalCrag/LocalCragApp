@@ -64,6 +64,7 @@ import {CragRankingComponent} from '../crag/crag-ranking/crag-ranking.component'
 import {SectorRankingComponent} from '../sector/sector-ranking/sector-ranking.component';
 import {TodoListComponent} from '../todo/todo-list/todo-list.component';
 import {SentryTestComponent} from './sentry-test/sentry-test.component';
+import {MapComponent} from '../maps/map/map.component';
 
 const routes: Routes = [
   {
@@ -331,6 +332,16 @@ const routes: Routes = [
           {
             path: '',
             component: LineListComponent,
+            outlet: 'regionContent'
+          }
+        ]
+      },
+      {
+        path: 'map',
+        children: [
+          {
+            path: '',
+            component: MapComponent,
             outlet: 'regionContent'
           }
         ]

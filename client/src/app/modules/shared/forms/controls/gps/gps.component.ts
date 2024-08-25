@@ -180,7 +180,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
       } else {
         this.finishFetchingGeoLocation();
       }
-    }, (e) => {
+    }, (_e) => {
       if(this.gpsLoadingSuccess){
         // If we already have a position, errors don't matter
         this.finishFetchingGeoLocation();
