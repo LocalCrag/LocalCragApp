@@ -26,8 +26,6 @@ class CragSchema(BaseEntityMinSchema):
 
 
 class CragDetailSchema(CragSchema):
-    lat = fields.Float()
-    lng = fields.Float()
     rules = fields.String()
     description = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')

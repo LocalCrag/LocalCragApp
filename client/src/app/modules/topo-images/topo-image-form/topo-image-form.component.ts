@@ -2,20 +2,14 @@ import {Component, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Area} from '../../../models/area';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AreasService} from '../../../services/crud/areas.service';
-import {TranslocoService} from '@ngneat/transloco';
-import {ConfirmationService} from 'primeng/api';
+import {TranslocoService} from '@jsverse/transloco';
 import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {Title} from '@angular/platform-browser';
@@ -96,7 +90,7 @@ export class TopoImageFormComponent {
   private buildForm() {
     this.topoImageForm = this.fb.group({
       image: [null, [Validators.required]],
-      gps: [null],
+      coordinates: [null],
       title: [null, [Validators.maxLength(120)]],
       description: [null],
     });
@@ -107,7 +101,7 @@ export class TopoImageFormComponent {
     this.topoImageForm.patchValue({
       title: this.topoImage.title,
       description: this.topoImage.description,
-      gps: this.topoImage.gps,
+      coordinates: this.topoImage.coordinates,
       image: this.topoImage.image,
     });
     this.topoImageForm.get('image').disable();
@@ -131,7 +125,7 @@ export class TopoImageFormComponent {
       topoImage.image = this.topoImageForm.get('image').value;
       topoImage.title = this.topoImageForm.get('title').value;
       topoImage.description = this.topoImageForm.get('description').value;
-      topoImage.gps = this.topoImageForm.get('gps').value;
+      topoImage.coordinates = this.topoImageForm.get('coordinates').value;
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
         this.topoImagesService.updateTopoImage(topoImage, this.areaSlug).subscribe(() => {

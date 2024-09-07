@@ -34,8 +34,6 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     sectors = db.relationship("Sector", cascade="all,delete", backref="crag", lazy="select",
                               order_by='Sector.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    lat = db.Column(db.Float, nullable=True)
-    lng = db.Column(db.Float, nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default='0')
     map_markers = db.relationship('MapMarker', back_populates='crag')

@@ -1,7 +1,7 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
-import {GPS} from '../interfaces/gps.interface';
 import {Sector} from './sector';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing sector's area.
@@ -13,10 +13,10 @@ export class Area extends AbstractModel {
   shortDescription: string;
   slug: string;
   portraitImage: File;
-  gps: GPS;
   orderIndex: number;
   ascentCount: number;
   secret: boolean;
+  mapMarkers: MapMarker[];
 
   sector: Sector;
   routerLink: string;
@@ -33,13 +33,13 @@ export class Area extends AbstractModel {
     area.name = payload.name;
     area.description = payload.description;
     area.shortDescription = payload.shortDescription;
-    area.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     area.slug = payload.slug;
     area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
     area.ascentCount = payload.ascentCount;
     area.secret = payload.secret;
+    area.mapMarkers = payload.mapMarkers ? payload.mapMarkers.map(MapMarker.deserialize) : null;
     area.routerLink = area.sector ? `/topo/${area.sector.crag.slug}/${area.sector.slug}/${area.slug}` : null;
     return area;
   }
@@ -56,9 +56,8 @@ export class Area extends AbstractModel {
       description: area.description,
       shortDescription: area.shortDescription,
       secret: area.secret,
-      lng: area.gps ? area.gps.lng : null,
-      lat: area.gps ? area.gps.lat : null,
       portraitImage: area.portraitImage ? area.portraitImage.id : null,
+      mapMarkers: area.mapMarkers ? area.mapMarkers.map(MapMarker.serialize) : null,
     };
   }
 

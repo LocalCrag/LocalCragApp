@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CragFormComponent} from './crag-form/crag-form.component';
 import {CardModule} from 'primeng/card';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {SharedModule} from '../shared/shared.module';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -26,13 +26,14 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
-import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
+import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
+import {CoordinatesButtonComponent} from '../shared/components/coordinates-button/coordinates-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 import {CheckboxModule} from 'primeng/checkbox';
 import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
+import {MapComponent} from '../maps/map/map.component';
 
 
 /**
@@ -68,13 +69,14 @@ import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-mar
         SkeletonModule,
         BreadcrumbModule,
         GradeDistributionBarChartComponent,
-        GpsComponent,
-        GpsButtonComponent,
+        CoordinatesComponent,
+        CoordinatesButtonComponent,
         HasPermissionDirective,
         AscentCountComponent,
         CheckboxModule,
         SecretSpotTagComponent,
-        MapMarkerFormArrayComponent
+        MapMarkerFormArrayComponent,
+        MapComponent
     ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}

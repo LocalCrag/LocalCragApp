@@ -14,8 +14,8 @@ import {TopoImagesService} from '../../../services/crud/topo-images.service';
 import {forkJoin} from 'rxjs';
 import {LinePathEditorComponent} from '../line-path-editor/line-path-editor.component';
 import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 

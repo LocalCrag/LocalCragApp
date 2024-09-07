@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {
   GradeDistributionBarChartComponent
 } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {Area} from '../../../models/area';
 import {Observable} from 'rxjs';
 import {Grade} from '../../../utility/misc/grades';

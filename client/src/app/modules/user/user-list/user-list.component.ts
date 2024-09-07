@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {CardModule} from 'primeng/card';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {LoadingState} from '../../../enums/loading-state';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {ButtonModule} from 'primeng/button';
@@ -13,7 +13,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {ConfirmationService, MenuItem, PrimeIcons, SelectItem} from 'primeng/api';
 import {BehaviorSubject, forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {selectCurrentUser, selectIsAdmin} from '../../../ngrx/selectors/auth.selectors';
 import {User} from '../../../models/user';
 import {UsersService} from '../../../services/crud/users.service';

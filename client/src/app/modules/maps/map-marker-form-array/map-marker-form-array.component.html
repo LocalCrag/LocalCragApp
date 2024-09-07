@@ -3,7 +3,7 @@
   <div  class="flex flex-column gap-2 mb-2">
 
     <div class="flex flex-row gap-1" *ngFor="let marker of markers">
-      <p-tag class="gps-tag" >
+      <p-tag class="coordinates-tag" >
         <i class="pi pi-map-marker mr-2"></i>
         {{ t(marker.type) }} {{ marker.name ? ': ' + marker.name : '' }}
         <p-button  [disabled]="isDisabled"
@@ -17,7 +17,7 @@
                    text
                    icon="pi pi-pencil"
                    (click)="configDialog.open(marker)"
-                   data-cy="remove-marker">
+                   data-cy="edit-marker">
         </p-button>
         <p-button  [disabled]="isDisabled"
                    text
@@ -32,7 +32,7 @@
   </div>
 
   <p-button icon="pi pi-plus" label="{{ t('addMarker') }}" (click)="configDialog.open()" class="w-full" [disabled]="isDisabled"></p-button>
-  <lc-map-marker-config-dialog #configDialog (newMarker)="addMarker($event)"></lc-map-marker-config-dialog>
+  <lc-map-marker-config-dialog #configDialog (newMarker)="addMarker($event)" [existingMarkers]="markers" [disabledMarkerTypes]="disabledMarkerTypes"></lc-map-marker-config-dialog>
   <p-confirmDialog></p-confirmDialog>
 
 </ng-container>

@@ -1,7 +1,7 @@
 import {Component, HostBinding, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {LoadingState} from '../../../enums/loading-state';
 import {Router} from '@angular/router';

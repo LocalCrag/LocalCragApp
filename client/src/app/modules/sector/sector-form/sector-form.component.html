@@ -4,7 +4,7 @@
 
     <p-card header="{{editMode ? t('editSectorTitle') : t('createSectorTitle')}}">
       <p class="mt-0" *ngIf="!editMode">
-        {{t('createSectorDescription')}}
+        {{ t('createSectorDescription') }}
       </p>
 
       <ng-container *ngIf="sectorForm">
@@ -12,15 +12,15 @@
         <form [formGroup]="sectorForm" lcForm>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorNameLabel')}}</label>
+            <label class="form-label">{{ t('sectorNameLabel') }}</label>
             <input type="text" pInputText formControlName="name" placeholder="{{t('sectorNamePlaceholder')}}"
                    lcFormControl data-cy="sector-form-name"/>
-            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+            <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorShortDescriptionLabel')}}</label>
+            <label class="form-label">{{ t('sectorShortDescriptionLabel') }}</label>
             <p-editor formControlName="shortDescription" lcFormControl
                       placeholder="{{t('sectorShortDescriptionPlaceholder')}}"
                       [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
@@ -39,7 +39,7 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorDescriptionLabel')}}</label>
+            <label class="form-label">{{ t('sectorDescriptionLabel') }}</label>
             <p-editor formControlName="description" lcFormControl placeholder="{{t('sectorDescriptionPlaceholder')}}"
                       [modules]="quillModules" data-cy="sector-form-description"
                       [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
@@ -63,7 +63,7 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorRulesLabel')}}</label>
+            <label class="form-label">{{ t('sectorRulesLabel') }}</label>
             <p-editor formControlName="rules" lcFormControl placeholder="{{t('sectorRulesPlaceholder')}}"
                       [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
                       data-cy="sector-form-rules">
@@ -81,18 +81,19 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorPortraitImageLabel')}}</label>
+            <label class="form-label">{{ t('sectorPortraitImageLabel') }}</label>
             <lc-single-image-upload lcFormControl formControlName="portraitImage" data-cy="sector-form-portraitImage">
             </lc-single-image-upload>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('gpsLabel')}}</label>
-            <lc-gps formControlName="gps" lcFormControl data-cy="sector-form-gps" #gps></lc-gps>
+            <label class="form-label">{{ t('mapMarkersLabel') }}</label>
+            <lc-map-marker-form-array formControlName="mapMarkers" [disabledMarkerTypes]="disabledMarkerTypesSector"
+                                      lcFormControl></lc-map-marker-form-array>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('sectorOptionsLabel')}}</label>
+            <label class="form-label">{{ t('sectorOptionsLabel') }}</label>
             <p-checkbox label="{{t('sectorSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
                         lcFormControl></p-checkbox>
           </div>
@@ -100,7 +101,7 @@
           <p-messages severity="warn" *ngIf="parentSecret && !sectorForm.get('secret').value">
             <ng-template pTemplate>
               <i class="pi pi-info-circle"></i>
-              <div class="ml-2">{{t('aPublicSectorWillSetParentsToPublic')}}</div>
+              <div class="ml-2">{{ t('aPublicSectorWillSetParentsToPublic') }}</div>
             </ng-template>
           </p-messages>
 
@@ -110,11 +111,11 @@
           <p-button label="{{t('createSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save"
                     class="responsive-button"
                     [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"
-                    [disabled]="gps.positionLoading"></p-button>
+          ></p-button>
           <p-button label="{{t('editSectorButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save"
                     class="responsive-button"
                     [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
-                    [disabled]="gps.positionLoading"></p-button>
+          ></p-button>
           <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                     styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
           <p-button label="{{t('deleteSectorButtonLabel')}}" (click)="confirmDeleteSector($event)" icon="pi pi-trash"

@@ -13,6 +13,7 @@ from models.area import Area
 from models.line import Line
 from models.sector import Sector
 from models.user import User
+from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_area_secret_property, set_area_parents_unsecret
 from util.secret_spots_auth import get_show_secret
@@ -58,8 +59,6 @@ class CreateArea(MethodView):
 
         new_area: Area = Area()
         new_area.name = area_data['name'].strip()
-        new_area.lat = area_data['lat']
-        new_area.lng = area_data['lng']
         new_area.description = add_bucket_placeholders(area_data['description'])
         new_area.short_description = area_data['shortDescription']
         new_area.portrait_image_id = area_data['portraitImage']
@@ -67,6 +66,7 @@ class CreateArea(MethodView):
         new_area.created_by_id = created_by.id
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data['secret']
+        new_area.map_markers = create_or_update_markers(area_data['mapMarkers'], new_area)
 
         if not new_area.secret:
             set_area_parents_unsecret(new_area)
@@ -88,12 +88,11 @@ class UpdateArea(MethodView):
         area: Area = Area.find_by_slug(area_slug)
 
         area.name = area_data['name'].strip()
-        area.lat = area_data['lat']
-        area.lng = area_data['lng']
         area.description = add_bucket_placeholders(area_data['description'])
         area.short_description = area_data['shortDescription']
         area.portrait_image_id = area_data['portraitImage']
         update_area_secret_property(area, area_data['secret'])
+        area.map_markers = create_or_update_markers(area_data['mapMarkers'], area)
         db.session.add(area)
         db.session.commit()
 

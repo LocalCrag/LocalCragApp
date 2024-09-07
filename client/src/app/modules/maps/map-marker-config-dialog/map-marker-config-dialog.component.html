@@ -11,19 +11,19 @@
                     optionLabel="type" placeholder="{{t('typePlaceholder')}}" lcFormControl>
           <ng-template let-type pTemplate="item">
             <div class="flex align-items-center gap-2" data-cy="type-dropdown-item">
-              <div>{{ type | transloco }}</div>
+              <div>{{ t(type) }}</div>
             </div>
           </ng-template>
           <ng-template let-selectedType pTemplate="selectedItem">
-            {{ selectedType | transloco }}
+            {{ t(selectedType)}}
           </ng-template>
         </p-dropdown>
         <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
       </div>
 
       <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label">{{ t('gpsLabel') }}</label>
-        <lc-gps formControlName="gps" lcFormControl data-cy="marker-form-gps" #gps></lc-gps>
+        <label class="form-label">{{ t('coordinatesLabel') }}</label>
+        <lc-coordinates formControlName="coordinates" lcFormControl data-cy="marker-form-coordinates" #coordinates></lc-coordinates>
       </div>
 
       <div class="flex flex-column gap-2" lcControlGroup>
@@ -56,12 +56,11 @@
     <ng-template pTemplate="footer">
       <p-button
         [label]="t('cancel')"
-        [text]="true"
         severity="secondary"
         (onClick)="close()"/>
       <p-button
         [label]="t('save')"
-        [outlined]="true"
+        [disabled]="coordinates.positionLoading"
         severity="primary"
         (onClick)="save()"
       />

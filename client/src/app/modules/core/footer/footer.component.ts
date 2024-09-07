@@ -2,7 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MenuItemsService} from '../../../services/crud/menu-items.service';
 import {MenuItemPosition} from '../../../enums/menu-item-position';
 import {MenuItemType} from '../../../enums/menu-item-type';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from '@ngrx/effects';
 import {reloadMenus} from '../../../ngrx/actions/core.actions';

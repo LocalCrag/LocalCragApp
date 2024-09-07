@@ -13,8 +13,6 @@ class TopoImageSchema(BaseEntityMinSchema):
     image = fields.Nested(file_schema, attribute='file')
     linePaths = fields.List(fields.Nested(line_path_schema), attribute='line_paths')
     orderIndex = fields.Int(attribute='order_index')
-    lat = fields.Float()
-    lng = fields.Float()
     description = fields.String()
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
@@ -24,11 +22,9 @@ class TopoImageSchema(BaseEntityMinSchema):
 class TopoImageSchemaForLines(BaseEntityMinSchema):
     image = fields.Nested(file_schema, attribute='file')
     orderIndex = fields.Int(attribute='order_index')
-    lat = fields.Float()
-    lng = fields.Float()
     description = fields.String()
     title = fields.String()
-    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers') # TODO here it should be filtered to not contain eventual parkings etc
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 
 
 

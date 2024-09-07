@@ -1,6 +1,6 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
-import {GPS} from '../interfaces/gps.interface';
+import {Coordinates} from '../interfaces/coordinates.interface';
 import {deserializeGrade, Grade} from '../utility/misc/grades';
 import {Line} from './line';
 import {format, formatISO, parseISO} from 'date-fns';

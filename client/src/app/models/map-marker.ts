@@ -1,20 +1,26 @@
 import {AbstractModel} from './abstract-model';
 import {MapMarkerType} from '../enums/map-marker-type';
-import {GPS} from '../interfaces/gps.interface';
+import {Coordinates} from '../interfaces/coordinates.interface';
+import {Crag} from './crag';
+import {Sector} from './sector';
+import {Area} from './area';
+import {TopoImage} from './topo-image';
 
 export type MapMarkerProperties = {
   name: string;
   description: string;
-  customIcon: string;
-  color: string;
   type: MapMarkerType;
+  crag: Partial<Crag>;
+  sector: Partial<Sector>;
+  area: Partial<Area>;
+  topoImage: Partial<TopoImage>;
 }
 
 export class MapMarker extends AbstractModel {
 
   name: string;
   description: string;
-  gps: GPS;
+  coordinates: Coordinates;
   customIcon: string;
   color: string;
   type: MapMarkerType;
@@ -24,7 +30,7 @@ export class MapMarker extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(mapMarker, payload);
     mapMarker.name = payload.name;
     mapMarker.description = payload.description;
-    mapMarker.gps =  {lat: payload.lat, lng: payload.lng};
+    mapMarker.coordinates =  {lat: payload.lat, lng: payload.lng};
     mapMarker.customIcon = payload.customIcon;
     mapMarker.color = payload.color;
     mapMarker.type = payload.type;
@@ -35,8 +41,8 @@ export class MapMarker extends AbstractModel {
     return {
       name: mapMarker.name,
       description: mapMarker.description,
-      lat: mapMarker.gps.lat,
-      lng: mapMarker.gps.lng,
+      lat: mapMarker.coordinates.lat,
+      lng: mapMarker.coordinates.lng,
       customIcon: mapMarker.customIcon,
       color: mapMarker.color,
       type: mapMarker.type

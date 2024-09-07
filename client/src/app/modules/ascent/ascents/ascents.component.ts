@@ -4,7 +4,7 @@ import {CardModule} from 'primeng/card';
 import {NgIf} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {TabMenuModule} from 'primeng/tabmenu';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-ascents',

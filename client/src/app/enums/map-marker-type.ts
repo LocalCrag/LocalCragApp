@@ -38,3 +38,30 @@ export const MAP_MARKER_TYPES = [
    */
   MapMarkerType.OTHER,
 ];
+
+export const disabledMarkerTypesCrag = [
+  MapMarkerType.TOPO_IMAGE,
+  MapMarkerType.AREA,
+  MapMarkerType.SECTOR,
+]
+
+export const disabledMarkerTypesSector = [
+  MapMarkerType.CRAG,
+  MapMarkerType.TOPO_IMAGE,
+  MapMarkerType.AREA,
+]
+
+export const disabledMarkerTypesArea = [
+  MapMarkerType.CRAG,
+  MapMarkerType.SECTOR,
+  MapMarkerType.TOPO_IMAGE,
+]
+
+export const disabledMarkerTypesTopoImage = [
+  MapMarkerType.CRAG,
+  MapMarkerType.SECTOR,
+  MapMarkerType.AREA,
+  MapMarkerType.PARKING,
+  MapMarkerType.ACCESS_POINT,
+  MapMarkerType.OTHER,
+]

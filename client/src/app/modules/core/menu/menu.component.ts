@@ -8,8 +8,8 @@ import {
   logout,
   newAuthCredentials
 } from 'src/app/ngrx/actions/auth.actions';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {take} from 'rxjs/operators';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Actions, ofType} from '@ngrx/effects';

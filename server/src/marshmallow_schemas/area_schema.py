@@ -22,8 +22,6 @@ class AreaSchema(BaseEntityMinSchema):
 
 
 class AreaDetailSchema(AreaSchema):
-    lat = fields.Float()
-    lng = fields.Float()
     description = fields.String(attribute='description')
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 

@@ -7,7 +7,7 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import {Crag} from '../../../models/crag';
 import {MenuItem} from 'primeng/api';
 import {CragsService} from '../../../services/crud/crags.service';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {select, Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
 import {untilDestroyed} from '@ngneat/until-destroy';
@@ -15,7 +15,7 @@ import {forkJoin, of} from 'rxjs';
 import {catchError, take} from 'rxjs/operators';
 import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
 import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {Region} from '../../../models/region';
 import {RegionService} from '../../../services/crud/region.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
@@ -98,11 +98,6 @@ export class RegionComponent implements OnInit {
           label: this.translocoService.translate(marker('region.ranking')),
           icon: 'pi pi-fw pi-trophy',
           routerLink: `/topo/ranking`,
-        },
-        {
-          label: this.translocoService.translate(marker('region.map')),
-          icon: 'pi pi-fw pi-map',
-          routerLink: `/topo/map`,
         },
         {
           label: this.translocoService.translate(marker('region.edit')),

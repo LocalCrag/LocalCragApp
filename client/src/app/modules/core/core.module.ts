@@ -46,7 +46,7 @@ import {ToastModule} from 'primeng/toast';
 import {CragModule} from '../crag/crag.module';
 import {DeviceEffects} from '../../ngrx/effects/device.effects';
 import {NotFoundComponent} from './not-found/not-found.component';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {forkJoin} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {BackgroundImageComponent} from './background-image/background-image.component';
@@ -70,6 +70,7 @@ export function preloadTranslations(transloco: TranslocoService) {
       transloco.load('line/' + environment.language),
       transloco.load('topoImage/' + environment.language),
       transloco.load('linePath/' + environment.language),
+      transloco.load('maps/' + environment.language),
     ]);
   }
 }

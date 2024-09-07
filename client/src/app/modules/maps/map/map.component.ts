@@ -1,55 +1,115 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, ViewChild} from '@angular/core';
 
-import {LngLat, LngLatBounds, Map as MaplibreMap, Marker, NavigationControl} from 'maplibre-gl';
+import {LngLat, LngLatBounds, Map as MaplibreMap, NavigationControl} from 'maplibre-gl';
 import {MapsService} from '../../../services/crud/maps.service';
 import {Feature, FeatureCollection, Geometry, Point} from 'geojson';
 import {MapMarkerProperties} from '../../../models/map-marker';
 import {MapItemInfoDialogComponent} from '../map-item-info-dialog/map-item-info-dialog.component';
-
+import {Area} from '../../../models/area';
+import {Crag} from '../../../models/crag';
+import {Sector} from '../../../models/sector';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {from, mergeMap, Observable, toArray} from 'rxjs';
+import {MapMarkerType} from '../../../enums/map-marker-type';
+import {GeolocateControl} from 'maplibre-gl';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'lc-map',
   standalone: true,
   imports: [
-    MapItemInfoDialogComponent
+    MapItemInfoDialogComponent,
+    TranslocoDirective,
+    NgIf
   ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss'
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
 
-  map: MaplibreMap | undefined;
+  @Input() target: Crag | Sector | Area | undefined;
+
+  public map: MaplibreMap | undefined;
+  public markersSource: FeatureCollection<Point, MapMarkerProperties> | undefined;
+
 
   @ViewChild('map')
   private mapContainer!: ElementRef<HTMLElement>;
   @ViewChild(MapItemInfoDialogComponent)
   private infoDialog: MapItemInfoDialogComponent | undefined;
-  private markersSource: FeatureCollection<Point, MapMarkerProperties> | undefined;
 
-  constructor(private mapsService: MapsService) {
+  constructor(private mapsService: MapsService,
+              private cdr: ChangeDetectorRef,
+              private translocoService: TranslocoService) {
+  }
+
+  addMissingMarkerNames() {
+    this.markersSource.features.map(feature => {
+      if (!feature.properties.name) {
+        if (feature.properties.type === MapMarkerType.ACCESS_POINT) {
+          feature.properties.name = this.translocoService.translate(marker('maps.mapMarkerForm.ACCESS_POINT'));
+        }
+        if (feature.properties.type === MapMarkerType.PARKING) {
+          feature.properties.name = this.translocoService.translate(marker('maps.mapMarkerForm.PARKING'));
+        }
+        // We don't add a default name for OTHER markers, as they are supposed to be custom
+        // Also crags etc. always have a name
+      }
+    });
   }
 
   ngAfterViewInit() {
-    this.mapsService.getMarkersGeoJSON('?type=CRAG').subscribe(markersSource => {
+    let filters = '';
+    if (this.target instanceof Crag) {
+      filters = `?crag-id=${this.target.id}`;
+    }
+    if (this.target instanceof Sector) {
+      filters = `?sector-id=${this.target.id}`;
+    }
+    if (this.target instanceof Area) {
+      filters = `?area-id=${this.target.id}`;
+    }
+    this.mapsService.getMarkersGeoJSON(filters).subscribe(markersSource => {
       this.markersSource = markersSource;
+      if(!(this.markersSource?.features?.length > 0)) {
+        return;
+      }
+      this.cdr.detectChanges()
+      this.addMissingMarkerNames();
       this.map = new MaplibreMap({
         container: this.mapContainer.nativeElement,
         style: `https://api.maptiler.com/maps/topo-v2/style.json?key=7b2w9wLXnvsNVooKP1Je`,
         zoom: 10
       });
       this.map.addControl(new NavigationControl({}), 'top-right');
-      this.map.on('load', async () => {
-        // Add image icon as rasterized SVG
-        let img = new Image(100, 100)
-        img.onload = () => {
-          this.map.addImage('rock', img);
-          this.addSource()
-          this.addLayers()
-          this.setupClickActions()
-          this.setupCursors()
-        }
-        img.src = 'assets/icons/rock.svg'
-      })
+      this.map.on('load', () => {
+        const images = [
+          {name: 'rock', path: 'assets/icons/rock.svg'},
+          {name: 'access', path: 'assets/icons/access.svg'},
+          {name: 'lc-parking', path: 'assets/icons/parking.svg'},
+          {name: 'info', path: 'assets/icons/info.svg'},
+          {name: 'boulder', path: 'assets/icons/boulder.svg'}
+        ];
+        from(images).pipe(
+          mergeMap(image => new Observable(observer => {
+            const img = new Image(100, 100);
+            img.onload = () => {
+              this.map.addImage(image.name, img);
+              observer.next();
+              observer.complete();
+            };
+            img.src = image.path;
+          })),
+          toArray()
+        ).subscribe(() => {
+          this.addSource();
+          this.addLayers();
+          this.addCurrentLocation();
+          this.setupClickActions();
+          this.setupCursors();
+        });
+      });
       this.fitBounds()
     });
   }
@@ -82,6 +142,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  addCurrentLocation() {
+    this.map.addControl(
+      new GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+      })
+    );
+  }
+
   addLayers() {
     this.map.addLayer({
       'id': 'rocks',
@@ -93,7 +164,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
         'text-radial-offset': 1.5,
         'text-justify': 'auto',
-        'icon-image': 'rock',
+        'icon-image': [
+          'match',
+          ['get', 'type'],
+          'TOPO_IMAGE', 'boulder',
+          'AREA', 'rock',
+          'SECTOR', 'rock',
+          'CRAG', 'rock',
+          'PARKING', 'lc-parking',
+          'ACCESS_POINT', 'access',
+          'OTHER', 'info',
+          'info' // Fallback icon
+        ],
         'icon-size': .4,
         "icon-allow-overlap": true,
         "icon-ignore-placement": true,
@@ -102,17 +184,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     this.map.addLayer({
       id: 'clusters',
+      type: 'circle',
+      source: 'mapMarkers',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': '#4B89DC',
+        'circle-radius': 30
+      }
+    });
+    this.map.addLayer({
+      id: 'cluster-count',
       type: 'symbol',
       source: 'mapMarkers',
       filter: ['has', 'point_count'],
-      'layout': {
-        'text-field': ['concat', ['get', 'point_count'], ' Gebiete'],
-        'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-        'text-radial-offset': 2.5,
-        'text-justify': 'auto',
-        'icon-image': 'rock',
-        'icon-size': .8
-      },
+      layout: {
+        'text-field': '{point_count}',
+      }
     });
   }
 
@@ -144,7 +231,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       });
     });
     this.map.on('click', 'rocks', (e) => {
-      this.infoDialog.open(e.features[0] as unknown as Feature<Geometry, MapMarkerProperties>);
+      const feature = e.features[0] as unknown as Feature<Geometry, MapMarkerProperties>
+      for (const key in feature.properties) {
+        if (typeof feature.properties[key] === 'string') {
+          try {
+            feature.properties[key] = JSON.parse(feature.properties[key] as string);
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+      this.infoDialog.open(feature);
     });
   }
 

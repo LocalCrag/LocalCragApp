@@ -7,7 +7,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import {RouterLink, RouterModule} from '@angular/router';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {SharedModule} from '../shared/shared.module';
 import {CardModule} from 'primeng/card';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
@@ -20,10 +20,10 @@ import {TagModule} from 'primeng/tag';
 import {InputTextModule} from 'primeng/inputtext';
 import {EditorModule} from 'primeng/editor';
 import {TopoImageDetailsComponent} from './topo-image-details/topo-image-details.component';
-import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
 import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
+import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
 
 
 @NgModule({
@@ -31,32 +31,33 @@ import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
         TopoImageListComponent,
         TopoImageFormComponent,
     ],
-    imports: [
-        CommonModule,
-        CardModule,
-        DataViewModule,
-        DropdownModule,
-        FormsModule,
-        ButtonModule,
-        RouterLink,
-        SharedModule,
-        TranslocoModule,
-        ReactiveFormsModule,
-        ConfirmPopupModule,
-        TableModule,
-        RatingModule,
-        LineModule,
-        MessagesModule,
-        MessageModule,
-        TagModule,
-        InputTextModule,
-        EditorModule,
-        TopoImageDetailsComponent,
-        GpsComponent,
-        HasPermissionDirective,
-        TickButtonComponent,
-        TodoButtonComponent
-    ],
+  imports: [
+    CommonModule,
+    CardModule,
+    DataViewModule,
+    DropdownModule,
+    FormsModule,
+    ButtonModule,
+    RouterLink,
+    SharedModule,
+    TranslocoModule,
+    ReactiveFormsModule,
+    ConfirmPopupModule,
+    TableModule,
+    RatingModule,
+    LineModule,
+    MessagesModule,
+    MessageModule,
+    TagModule,
+    InputTextModule,
+    EditorModule,
+    TopoImageDetailsComponent,
+    CoordinatesComponent,
+    HasPermissionDirective,
+    TickButtonComponent,
+    TodoButtonComponent,
+    CoordinatesComponent
+  ],
     providers: [
         {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
     ],

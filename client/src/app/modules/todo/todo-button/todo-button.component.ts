@@ -1,6 +1,6 @@
 import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {Line} from '../../../models/line';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {Store} from '@ngrx/store';
 import {TodosService} from '../../../services/crud/todos.service';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';

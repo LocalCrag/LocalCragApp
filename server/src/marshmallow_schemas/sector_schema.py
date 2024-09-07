@@ -25,8 +25,6 @@ class SectorSchema(BaseEntityMinSchema):
 
 class SectorDetailSchema(SectorSchema):
     description = fields.String()
-    lat = fields.Float()
-    lng = fields.Float()
     rules = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 

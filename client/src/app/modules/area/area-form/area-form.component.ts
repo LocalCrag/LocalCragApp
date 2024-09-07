@@ -5,20 +5,21 @@ import {LoadingState} from '../../../enums/loading-state';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SectorsService} from '../../../services/crud/sectors.service';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {disabledMarkerTypesArea, disabledMarkerTypesSector} from '../../../enums/map-marker-type';
 
 /**
  * Form component for creating and editing areas.
@@ -102,9 +103,9 @@ export class AreaFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       shortDescription: [null],
-      gps: [null],
       portraitImage: [null],
       secret: [false],
+      mapMarkers: [[]],
     });
   }
 
@@ -117,9 +118,9 @@ export class AreaFormComponent implements OnInit {
       name: this.area.name,
       description: this.area.description,
       shortDescription: this.area.shortDescription,
-      gps: this.area.gps,
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
+      mapMarkers: this.area.mapMarkers,
     });
   }
 
@@ -144,9 +145,9 @@ export class AreaFormComponent implements OnInit {
       area.name = this.areaForm.get('name').value;
       area.description = this.areaForm.get('description').value;
       area.shortDescription = this.areaForm.get('shortDescription').value;
-      area.gps = this.areaForm.get('gps').value;
       area.portraitImage = this.areaForm.get('portraitImage').value;
       area.secret = this.areaForm.get('secret').value;
+      area.mapMarkers = this.areaForm.get('mapMarkers').value
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea( area).subscribe(area => {
@@ -197,4 +198,5 @@ export class AreaFormComponent implements OnInit {
     });
   }
 
+  protected readonly disabledMarkerTypesArea = disabledMarkerTypesArea;
 }

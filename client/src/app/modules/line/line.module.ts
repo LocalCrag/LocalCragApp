@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LineComponent} from './line/line.component';
 import {LineFormComponent} from './line-form/line-form.component';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {CardModule} from 'primeng/card';
 import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
