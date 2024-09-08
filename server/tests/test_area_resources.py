@@ -1,5 +1,6 @@
 import json
 
+from models.enums.map_marker_type_enum import MapMarkerType
 from tests.utils.user_test_util import get_login_headers
 
 
@@ -9,8 +10,15 @@ def test_successful_create_area(client):
         "name": "Kreuzfels",
         "description": "Super Bereich",
         "shortDescription": "Super Bereich Kurz",
-        "lat": 12.13,
-        "lng": 42.42,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.AREA.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
         "secret": False,
     }
@@ -22,8 +30,9 @@ def test_successful_create_area(client):
     assert res['slug'] == "kreuzfels"
     assert res['description'] == "Super Bereich"
     assert res['shortDescription'] == "Super Bereich Kurz"
-    assert res['lat'] == 12.13
-    assert res['lng'] == 42.42
+    assert res['mapMarkers'][0]['lat'] == 12.13
+    assert res['mapMarkers'][0]['lng'] == 42.42
+    assert res['mapMarkers'][0]['type'] == "AREA"
     assert res['secret'] == False
     assert res['ascentCount'] == 0
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
@@ -36,8 +45,15 @@ def test_create_area_invalid_lat(client):
         "name": "Kreuzfels",
         "description": "Super Bereich",
         "shortDescription": "Super Bereich Kurz",
-        "lat": -95,
-        "lng": 42.42,
+        "mapMarkers": [
+            {
+                "lat": -95,
+                "lng": 42.42,
+                "type": MapMarkerType.AREA.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
@@ -51,8 +67,15 @@ def test_create_area_invalid_lng(client):
         "name": "Kreuzfels",
         "description": "Super Bereich",
         "shortDescription": "Super Bereich Kurz",
-        "lat": 42.42,
-        "lng": 190.9,
+        "mapMarkers": [
+            {
+                "lat": 42.42,
+                "lng": 190.9,
+                "type": MapMarkerType.AREA.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
     }
 
@@ -92,8 +115,8 @@ def test_successful_get_area(client):
     assert res['name'] == "Dritter Block von links"
     assert res['description'] == "<p>Allgemeine Infos zum dritten Block von links.</p>"
     assert res['shortDescription'] == None
-    assert res['lat'] == 34.343434
-    assert res['lng'] == 29.292929
+    assert res['mapMarkers'][0]['lat'] == 34.343434
+    assert res['mapMarkers'][0]['lng'] == 29.292929
     assert res['ascentCount'] == 1
     assert res['secret'] == False
     assert res['portraitImage']['id'] == 'e8be1c78-1912-405c-861c-883967485838'
@@ -119,8 +142,15 @@ def test_successful_edit_area(client):
         "name": "Vierter Block von rechts",
         "description": "Test edit",
         "shortDescription": "Test edit short",
-        "lat": 42.1,
-        "lng": 42.2,
+        "mapMarkers": [
+            {
+                "lat": 42.1,
+                "lng": 42.2,
+                "type": MapMarkerType.AREA.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "portraitImage": None,
         "secret": False,
     }
@@ -132,8 +162,8 @@ def test_successful_edit_area(client):
     assert res['slug'] == "vierter-block-von-rechts"
     assert res['description'] == "Test edit"
     assert res['shortDescription'] == "Test edit short"
-    assert res['lat'] == 42.1
-    assert res['lng'] == 42.2
+    assert res['mapMarkers'][0]['lat'] == 42.1
+    assert res['mapMarkers'][0]['lng'] == 42.2
     assert res['ascentCount'] == 1
     assert res['portraitImage'] == None
     assert res['secret'] == False

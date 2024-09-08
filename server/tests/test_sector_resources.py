@@ -1,5 +1,6 @@
 import json
 
+from models.enums.map_marker_type_enum import MapMarkerType
 from tests.utils.user_test_util import get_login_headers
 
 
@@ -10,8 +11,15 @@ def test_successful_create_sector(client):
         "description": "Der Klassikersektor",
         "shortDescription": "Classic.",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
-        "lat": 12.13,
-        "lng": 42.42,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.SECTOR.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "rules": "test rules",
         "secret": False,
     }
@@ -25,8 +33,8 @@ def test_successful_create_sector(client):
     assert res['shortDescription'] == "Classic."
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
-    assert res['lat'] == 12.13
-    assert res['lng'] == 42.42
+    assert res['mapMarkers'][0]['lat'] == 12.13
+    assert res['mapMarkers'][0]['lng'] == 42.42
     assert res['ascentCount'] == 0
     assert res['secret'] == False
     assert res['rules'] == "test rules"
@@ -66,8 +74,7 @@ def test_successful_get_sector(client):
     assert res['portraitImage']['id'] == 'e90cab29-d471-415f-b949-20eb3f044ad5'
     assert res['description'] == "<p>Lange Beschreibung zum Schattental</p>"
     assert res['shortDescription'] == "Kurze Beschreibung zum Schattental"
-    assert res['lat'] == None
-    assert res['lng'] == None
+    assert len(res['mapMarkers']) == 0
     assert res['rules'] == None
     assert res['secret'] == False
 
@@ -93,8 +100,15 @@ def test_successful_edit_sector(client):
         "description": "Test edit",
         "shortDescription": "Test",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
-        "lat": 42.1,
-        "lng": 42.2,
+        "mapMarkers": [
+            {
+                "lat": 42.1,
+                "lng": 42.2,
+                "type": MapMarkerType.SECTOR.value,
+                "name": None,
+                "description": None,
+            }
+        ],
         "rules": "test rules",
         "secret": False,
     }
@@ -108,8 +122,8 @@ def test_successful_edit_sector(client):
     assert res['shortDescription'] == "Test"
     assert res['portraitImage']['id'] == '6137f55a-6201-45ab-89c5-6e9c29739d61'
     assert res['id'] is not None
-    assert res['lat'] == 42.1
-    assert res['lng'] == 42.2
+    assert res['mapMarkers'][0]['lat'] == 42.1
+    assert res['mapMarkers'][0]['lng'] == 42.2
     assert res['ascentCount'] == 1
     assert res['secret'] == False
     assert res['rules'] == "test rules"

@@ -1,5 +1,6 @@
 import json
 
+from models.enums.map_marker_type_enum import MapMarkerType
 from tests.utils.user_test_util import get_login_headers
 
 
@@ -83,8 +84,15 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client):
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parken nur Samstag und Sonntag 2.",
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
-        "lat": 42.1,
-        "lng": 42.2,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
         "secret": True,
     }
 
@@ -213,8 +221,15 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parken nur Samstag und Sonntag 2.",
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
-        "lat": 42.1,
-        "lng": 42.2,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
         "secret": True,
     }
 
@@ -249,8 +264,15 @@ def test_secret_property_doesnt_change(client):
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parken nur Samstag und Sonntag 2.",
         "portraitImage": '73a5a4cc-4ff4-4b7c-a57d-aa006f49aa08',
-        "lat": 42.1,
-        "lng": 42.2,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
         "secret": True,
     }
 
@@ -321,7 +343,7 @@ def test_secret_property_doesnt_change(client):
     res = json.loads(rv.data)
     assert res["secret"] == True
 
-    rv = client.get('/api/crags/brione', headers=access_headers)
+    rv = client.get('/api/crags/glees-2', headers=access_headers)
     assert rv.status_code == 200
     res = json.loads(rv.data)
     assert res["secret"] == True
