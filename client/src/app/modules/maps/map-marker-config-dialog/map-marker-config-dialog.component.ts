@@ -24,6 +24,7 @@ import {MapMarker} from '../../../models/map-marker';
 import {DialogModule} from 'primeng/dialog';
 import {ButtonModule} from 'primeng/button';
 import {NgIf} from '@angular/common';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
@@ -49,6 +50,7 @@ import {NgIf} from '@angular/common';
     {provide: TRANSLOCO_SCOPE, useValue: 'maps'},
   ]
 })
+@UntilDestroy()
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -58,11 +60,13 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
 
   @Input() disabledMarkerTypes: MapMarkerType[] = [];
   @Input() existingMarkers: MapMarker[] = [];
+  @Input() defaultMarkerType: MapMarkerType = null;
 
   public types: MapMarkerType[] = [];
   public mapMarkerForm: FormGroup;
   public isOpen = false;
   public marker: MapMarker;
+  public nameAndDescriptionHidden = false;
 
   constructor(private fb: FormBuilder) {
   }
@@ -88,11 +92,17 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
       name: ['', [Validators.maxLength(120)]],
       description: [''],
       coordinates: [null],
-      type: [null, [Validators.required]], // todo choose correct default
+      type: [null, [Validators.required]],
+    });
+    const baseTypes = [MapMarkerType.AREA, MapMarkerType.SECTOR, MapMarkerType.CRAG, MapMarkerType.TOPO_IMAGE]
+    this.mapMarkerForm.get('type').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
+      this.nameAndDescriptionHidden = baseTypes.includes(this.mapMarkerForm.get('type').value);
+      if (this.nameAndDescriptionHidden) {
+        this.mapMarkerForm.get('name').reset();
+        this.mapMarkerForm.get('description').reset();
+      }
     });
   }
-
-  // TODO hide name and description for some types
 
   private setFormValue() {
     this.mapMarkerForm.enable();
@@ -107,6 +117,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public open(marker?: MapMarker) {
     if (!marker) {
       marker = new MapMarker();
+      marker.type = this.defaultMarkerType;
     }
     this.marker = marker;
     this.setFormValue();

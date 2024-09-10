@@ -19,7 +19,7 @@ import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 import {CragsService} from '../../../services/crud/crags.service';
-import {disabledMarkerTypesCrag, disabledMarkerTypesSector} from '../../../enums/map-marker-type';
+import {disabledMarkerTypesCrag, disabledMarkerTypesSector, MapMarkerType} from '../../../enums/map-marker-type';
 
 /**
  * Form component for creating and editing sectors.
@@ -201,4 +201,5 @@ export class SectorFormComponent implements OnInit {
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
   protected readonly disabledMarkerTypesSector = disabledMarkerTypesSector;
+  protected readonly MapMarkerType = MapMarkerType;
 }

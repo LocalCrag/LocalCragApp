@@ -70,7 +70,7 @@
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t('mapMarkersLabel') }}</label>
             <lc-map-marker-form-array formControlName="mapMarkers" [disabledMarkerTypes]="disabledMarkerTypesArea"
-                                      lcFormControl></lc-map-marker-form-array>
+                                      lcFormControl [defaultMarkerType]="MapMarkerType.AREA"></lc-map-marker-form-array>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>

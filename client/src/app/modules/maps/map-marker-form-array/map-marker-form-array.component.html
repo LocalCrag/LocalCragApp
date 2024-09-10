@@ -31,8 +31,8 @@
 
   </div>
 
-  <p-button icon="pi pi-plus" label="{{ t('addMarker') }}" (click)="configDialog.open()" class="w-full" [disabled]="isDisabled"></p-button>
-  <lc-map-marker-config-dialog #configDialog (newMarker)="addMarker($event)" [existingMarkers]="markers" [disabledMarkerTypes]="disabledMarkerTypes"></lc-map-marker-config-dialog>
+  <p-button icon="pi pi-plus" data-cy="open-marker-config-modal" label="{{ t('addMarker') }}" (click)="configDialog.open()" class="w-full" [disabled]="isDisabled"></p-button>
+  <lc-map-marker-config-dialog #configDialog [defaultMarkerType]="defaultMarkerType" (newMarker)="addMarker($event)" [existingMarkers]="markers" [disabledMarkerTypes]="disabledMarkerTypes"></lc-map-marker-config-dialog>
   <p-confirmDialog></p-confirmDialog>
 
 </ng-container>

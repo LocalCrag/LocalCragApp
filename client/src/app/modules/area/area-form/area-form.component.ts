@@ -19,7 +19,7 @@ import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {disabledMarkerTypesArea, disabledMarkerTypesSector} from '../../../enums/map-marker-type';
+import {disabledMarkerTypesArea, disabledMarkerTypesSector, MapMarkerType} from '../../../enums/map-marker-type';
 
 /**
  * Form component for creating and editing areas.
@@ -199,4 +199,5 @@ export class AreaFormComponent implements OnInit {
   }
 
   protected readonly disabledMarkerTypesArea = disabledMarkerTypesArea;
+  protected readonly MapMarkerType = MapMarkerType;
 }

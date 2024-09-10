@@ -18,7 +18,7 @@ import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {disabledMarkerTypesCrag} from '../../../enums/map-marker-type';
+import {disabledMarkerTypesCrag, MapMarkerType} from '../../../enums/map-marker-type';
 
 /**
  * A component for creating and editing crags.
@@ -190,4 +190,5 @@ export class CragFormComponent implements OnInit {
   }
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
+    protected readonly MapMarkerType = MapMarkerType;
 }

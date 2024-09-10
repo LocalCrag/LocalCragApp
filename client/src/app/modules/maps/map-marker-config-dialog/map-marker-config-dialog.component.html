@@ -15,7 +15,7 @@
             </div>
           </ng-template>
           <ng-template let-selectedType pTemplate="selectedItem">
-            {{ t(selectedType)}}
+            {{ t(selectedType) }}
           </ng-template>
         </p-dropdown>
         <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
@@ -23,17 +23,18 @@
 
       <div class="flex flex-column gap-2" lcControlGroup>
         <label class="form-label">{{ t('coordinatesLabel') }}</label>
-        <lc-coordinates formControlName="coordinates" lcFormControl data-cy="marker-form-coordinates" #coordinates></lc-coordinates>
+        <lc-coordinates formControlName="coordinates" lcFormControl data-cy="marker-form-coordinates"
+                        #coordinates></lc-coordinates>
       </div>
 
-      <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="flex flex-column gap-2" lcControlGroup *ngIf="!nameAndDescriptionHidden">
         <label class="form-label">{{ t('markerNameLabel') }}</label>
         <input type="text" pInputText formControlName="name" placeholder="{{t('markerNamePlaceholder')}}"
                lcFormControl data-cy="marker-form-name"/>
         <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
       </div>
 
-      <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="flex flex-column gap-2" lcControlGroup *ngIf="!nameAndDescriptionHidden">
         <label class="form-label">{{ t('markerDescriptionLabel') }}</label>
         <p-editor formControlName="description" lcFormControl placeholder="{{t('markerDescriptionPlaceholder')}}"
                   [style]="{ height: '200px' }"
@@ -62,6 +63,7 @@
         [label]="t('save')"
         [disabled]="coordinates.positionLoading"
         severity="primary"
+        data-cy="save-marker"
         (onClick)="save()"
       />
     </ng-template>

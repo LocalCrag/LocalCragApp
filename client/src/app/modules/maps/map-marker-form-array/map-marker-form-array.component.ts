@@ -39,6 +39,7 @@ import {MapMarkerType} from '../../../enums/map-marker-type';
 export class MapMarkerFormArrayComponent implements ControlValueAccessor {
 
   @Input() disabledMarkerTypes: MapMarkerType[] = [];
+  @Input() defaultMarkerType: MapMarkerType = null;
 
   public markers: MapMarker[] = [];
   public isDisabled = false;
