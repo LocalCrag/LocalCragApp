@@ -14,8 +14,8 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
 import {passwordsValidator} from '../../../utility/validators/passwords.validator';
 import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 

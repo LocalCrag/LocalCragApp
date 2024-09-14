@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
-import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {SearchService} from '../../../services/crud/search.service';
 import {Searchable} from '../../../models/searchable';
 import {NgForOf, NgIf} from '@angular/common';
@@ -14,7 +14,7 @@ import {ButtonModule} from 'primeng/button';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {Message} from 'primeng/api';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-search-dialog',

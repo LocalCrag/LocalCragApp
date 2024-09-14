@@ -13,6 +13,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from resources.map_resources import create_or_update_markers
 from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
@@ -54,8 +55,6 @@ class CreateCrag(MethodView):
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data['name'].strip()
-        new_crag.lat = crag_data['lat']
-        new_crag.lng = crag_data['lng']
         new_crag.description = add_bucket_placeholders(crag_data['description'])
         new_crag.short_description = crag_data['shortDescription']
         new_crag.rules = add_bucket_placeholders(crag_data['rules'])
@@ -63,6 +62,7 @@ class CreateCrag(MethodView):
         new_crag.secret = crag_data['secret']
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
+        new_crag.map_markers = create_or_update_markers(crag_data['mapMarkers'], new_crag)
 
         db.session.add(new_crag)
         db.session.commit()
@@ -82,13 +82,12 @@ class UpdateCrag(MethodView):
         crag: Crag = Crag.find_by_slug(crag_slug)
 
         crag.name = crag_data['name'].strip()
-        crag.lat = crag_data['lat']
-        crag.lng = crag_data['lng']
         crag.description = add_bucket_placeholders(crag_data['description'])
         crag.short_description = crag_data['shortDescription']
         crag.rules = add_bucket_placeholders(crag_data['rules'])
         crag.portrait_image_id = crag_data['portraitImage']
         update_crag_secret_property(crag, crag_data['secret'])
+        crag.map_markers = create_or_update_markers(crag_data['mapMarkers'], crag)
         db.session.add(crag)
         db.session.commit()
 

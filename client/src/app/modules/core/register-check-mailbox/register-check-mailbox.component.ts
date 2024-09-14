@@ -1,9 +1,9 @@
 import {Component, HostBinding} from '@angular/core';
-import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {Title} from '@angular/platform-browser';
 import {Store} from '@ngrx/store';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-register-check-mailbox',

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MessageService} from 'primeng/api';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 
 @Injectable({
   providedIn: 'root'

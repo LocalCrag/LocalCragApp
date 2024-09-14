@@ -12,12 +12,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ConfirmationService} from 'primeng/api';
-import {TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {Title} from '@angular/platform-browser';
 import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {disabledMarkerTypesCrag, MapMarkerType} from '../../../enums/map-marker-type';
 
 /**
  * A component for creating and editing crags.
@@ -92,8 +93,8 @@ export class CragFormComponent implements OnInit {
       shortDescription: [''],
       rules: [''],
       portraitImage: [null],
-      gps: [null],
       secret: [false],
+      mapMarkers: [[]],
     });
   }
 
@@ -106,10 +107,10 @@ export class CragFormComponent implements OnInit {
       name: this.crag.name,
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
-      gps: this.crag.gps,
       rules: this.crag.rules,
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
+      mapMarkers: this.crag.mapMarkers,
     });
   }
 
@@ -134,10 +135,10 @@ export class CragFormComponent implements OnInit {
       crag.name = this.cragForm.get('name').value
       crag.description = this.cragForm.get('description').value
       crag.shortDescription = this.cragForm.get('shortDescription').value
-      crag.gps = this.cragForm.get('gps').value;
       crag.rules = this.cragForm.get('rules').value
       crag.portraitImage = this.cragForm.get('portraitImage').value
       crag.secret = this.cragForm.get('secret').value
+      crag.mapMarkers = this.cragForm.get('mapMarkers').value
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe(crag => {
@@ -146,7 +147,7 @@ export class CragFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag).subscribe(crag => {
+        this.cragsService.createCrag(crag).subscribe(_crag => {
           this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
           this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;
@@ -188,4 +189,6 @@ export class CragFormComponent implements OnInit {
     });
   }
 
+  protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
+    protected readonly MapMarkerType = MapMarkerType;
 }

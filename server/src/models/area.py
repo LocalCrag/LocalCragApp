@@ -25,8 +25,6 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
-    lat = db.Column(db.Float, nullable=True)
-    lng = db.Column(db.Float, nullable=True)
     portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
     portrait_image = db.relationship('File', lazy='joined')
     sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
@@ -37,6 +35,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
 
     sector_slug = association_proxy('sector', 'slug')
     crag_slug = association_proxy('sector', 'crag_slug')
+    map_markers = db.relationship('MapMarker', back_populates='area')
 
     @hybrid_property
     def ascent_count(self):

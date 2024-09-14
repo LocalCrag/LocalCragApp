@@ -3,8 +3,8 @@ import {ButtonModule} from 'primeng/button';
 import {TopoImage} from '../../../models/topo-image';
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../shared/shared.module';
-import {TranslocoDirective} from '@ngneat/transloco';
-import {GpsButtonComponent} from '../../shared/components/gps-button/gps-button.component';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {CoordinatesButtonComponent} from '../../shared/components/coordinates-button/coordinates-button.component';
 
 @Component({
   selector: 'lc-topo-image-details',
@@ -14,7 +14,7 @@ import {GpsButtonComponent} from '../../shared/components/gps-button/gps-button.
     NgIf,
     SharedModule,
     TranslocoDirective,
-    GpsButtonComponent
+    CoordinatesButtonComponent
   ],
   templateUrl: './topo-image-details.component.html',
   styleUrl: './topo-image-details.component.scss',

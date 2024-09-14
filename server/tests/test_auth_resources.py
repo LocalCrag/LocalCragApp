@@ -7,6 +7,7 @@ from sqlalchemy import text
 
 from app import db, app
 from messages.messages import ResponseMessage
+from models.enums.map_marker_type_enum import MapMarkerType
 from models.user import User
 from tests.utils.user_test_util import get_login_headers
 
@@ -445,8 +446,15 @@ def test_permission_levels(client):
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parken nur Samstag und Sonntag.",
         "portraitImage": '6137f55a-6201-45ab-89c5-6e9c29739d61',
-        "lat": 12.13,
-        "lng": 42.42,
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
         "secret": False,
     }
 

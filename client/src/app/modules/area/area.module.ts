@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {AreaComponent} from './area/area.component';
 import {AreaFormComponent} from './area-form/area-form.component';
 import {AreaInfoComponent} from './area-info/area-info.component';
@@ -28,13 +28,15 @@ import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module'
 import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
-import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
+import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
+import {CoordinatesButtonComponent} from '../shared/components/coordinates-button/coordinates-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 import {CheckboxModule} from 'primeng/checkbox';
 import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
+import {MapComponent} from '../maps/map/map.component';
+import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 
 
 @NgModule({
@@ -69,13 +71,15 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
     TopoImagesModule,
     LinePathEditorModule,
     GradeDistributionBarChartComponent,
-    GpsComponent,
-    GpsButtonComponent,
+    CoordinatesComponent,
+    CoordinatesButtonComponent,
     HasPermissionDirective,
     AscentCountComponent,
     CheckboxModule,
     SecretSpotTagComponent,
-    FormSkeletonComponent
+    FormSkeletonComponent,
+    MapComponent,
+    MapMarkerFormArrayComponent
   ],
     exports: [
         AreaListComponent

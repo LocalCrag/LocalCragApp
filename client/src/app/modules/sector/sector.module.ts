@@ -8,7 +8,7 @@ import {ButtonModule} from 'primeng/button';
 import {SharedModule} from '../shared/shared.module';
 import {RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {SectorInfoComponent} from './sector-info/sector-info.component';
 import {SectorComponent} from './sector/sector.component';
 import {SectorFormComponent} from './sector-form/sector-form.component';
@@ -25,13 +25,15 @@ import {
     GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {ChipModule} from 'primeng/chip';
-import {GpsComponent} from '../shared/forms/controls/gps/gps.component';
-import {GpsButtonComponent} from '../shared/components/gps-button/gps-button.component';
+import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
+import {CoordinatesButtonComponent} from '../shared/components/coordinates-button/coordinates-button.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {AscentCountComponent} from '../ascent/ascent-count/ascent-count.component';
 import {CheckboxModule} from 'primeng/checkbox';
 import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
+import {MapComponent} from '../maps/map/map.component';
+import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 
 
 @NgModule({
@@ -66,13 +68,15 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
     AreaModule,
     GradeDistributionBarChartComponent,
     ChipModule,
-    GpsComponent,
-    GpsButtonComponent,
+    CoordinatesComponent,
+    CoordinatesButtonComponent,
     HasPermissionDirective,
     AscentCountComponent,
     CheckboxModule,
     SecretSpotTagComponent,
     FormSkeletonComponent,
+    MapComponent,
+    MapMarkerFormArrayComponent,
   ],
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'sector'}

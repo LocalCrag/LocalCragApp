@@ -4,7 +4,7 @@
 
     <p-card header="{{editMode ? t('editAreaTitle') : t('createAreaTitle')}}">
       <p class="mt-0" *ngIf="!editMode">
-        {{t('createAreaDescription')}}
+        {{ t('createAreaDescription') }}
       </p>
 
       <ng-container *ngIf="areaForm">
@@ -12,15 +12,15 @@
         <form [formGroup]="areaForm" lcForm>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('areaNameLabel')}}</label>
+            <label class="form-label">{{ t('areaNameLabel') }}</label>
             <input type="text" pInputText formControlName="name" placeholder="{{t('areaNamePlaceholder')}}"
                    lcFormControl data-cy="area-form-name"/>
-            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+            <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('areaShortDescriptionLabel')}}</label>
+            <label class="form-label">{{ t('areaShortDescriptionLabel') }}</label>
             <p-editor formControlName="shortDescription" lcFormControl data-cy="area-form-shortDescription"
                       placeholder="{{t('areaShortDescriptionPlaceholder')}}"
                       [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
@@ -38,7 +38,7 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('areaDescriptionLabel')}}</label>
+            <label class="form-label">{{ t('areaDescriptionLabel') }}</label>
             <p-editor formControlName="description" lcFormControl placeholder="{{t('areaDescriptionPlaceholder')}}"
                       [modules]="quillModules" data-cy="area-form-description"
                       [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
@@ -62,18 +62,19 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('areaPortraitImageLabel')}}</label>
+            <label class="form-label">{{ t('areaPortraitImageLabel') }}</label>
             <lc-single-image-upload lcFormControl formControlName="portraitImage" data-cy="area-form-portraitImage">
             </lc-single-image-upload>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('gpsLabel')}}</label>
-            <lc-gps formControlName="gps" lcFormControl data-cy="area-form-gps" #gps></lc-gps>
+            <label class="form-label">{{ t('mapMarkersLabel') }}</label>
+            <lc-map-marker-form-array formControlName="mapMarkers" [disabledMarkerTypes]="disabledMarkerTypesArea"
+                                      lcFormControl [defaultMarkerType]="MapMarkerType.AREA"></lc-map-marker-form-array>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('secretOptionsLabel')}}</label>
+            <label class="form-label">{{ t('secretOptionsLabel') }}</label>
             <p-checkbox label="{{t('secretSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
                         lcFormControl></p-checkbox>
           </div>
@@ -81,7 +82,7 @@
           <p-messages severity="warn" *ngIf="parentSecret && !areaForm.get('secret').value">
             <ng-template pTemplate>
               <i class="pi pi-info-circle"></i>
-              <div class="ml-2">{{t('aPublicAreaWillSetParentsToPublic')}}</div>
+              <div class="ml-2">{{ t('aPublicAreaWillSetParentsToPublic') }}</div>
             </ng-template>
           </p-messages>
 
@@ -90,12 +91,10 @@
         <div class="form-actions">
           <p-button label="{{t('createAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save"
                     class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"
-                    [disabled]="gps.positionLoading"></p-button>
+                    [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"></p-button>
           <p-button label="{{t('editAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save"
                     class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
-                    [disabled]="gps.positionLoading"></p-button>
+                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
           <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
                     styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
           <p-button label="{{t('deleteAreaButtonLabel')}}" (click)="confirmDeleteArea($event)" icon="pi pi-trash"

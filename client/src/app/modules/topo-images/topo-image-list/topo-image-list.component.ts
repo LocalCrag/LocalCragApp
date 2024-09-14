@@ -4,9 +4,9 @@ import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, mergeMap, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router, Scroll} from '@angular/router';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {TopoImage} from '../../../models/topo-image';
 import {TopoImagesService} from '../../../services/crud/topo-images.service';
@@ -131,7 +131,11 @@ export class TopoImageListComponent {
         },
       ];
       this.sortKey = this.sortOptions[0];
-      this.restoreScrollPosition();
+      if(this.scrollTarget) {
+        this.restoreScrollPosition();
+      } else {
+        this.scrollToAnchor();
+      }
     });
   }
 
@@ -144,6 +148,19 @@ export class TopoImageListComponent {
         this.scrollTarget = null;
       })
     }
+  }
+
+  scrollToAnchor(){
+    this.route.fragment.subscribe((fragment: string) => {
+      if(fragment) {
+        // CDR not working as expected here because topo image is using setTimeout because of konva bug...
+        // So I have to use setTimeout too
+        setTimeout(() => {
+          const elmnt = document.getElementById(fragment);
+          elmnt.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+        })
+      }
+    });
   }
 
   openVideo(event: MouseEvent, line: Line) {

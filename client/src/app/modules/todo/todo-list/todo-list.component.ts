@@ -7,8 +7,8 @@ import {ConfirmationService, MenuItem, SelectItem, SharedModule} from 'primeng/a
 import {AscentsService} from '../../../services/crud/ascents.service';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from '@ngrx/effects';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@ngneat/transloco';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Todo} from '../../../models/todo';

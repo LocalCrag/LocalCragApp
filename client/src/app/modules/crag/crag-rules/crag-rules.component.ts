@@ -5,7 +5,7 @@ import {
 import {MessagesModule} from 'primeng/messages';
 import {NgIf} from '@angular/common';
 import {SkeletonModule} from 'primeng/skeleton';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {Crag} from '../../../models/crag';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CragsService} from '../../../services/crud/crags.service';

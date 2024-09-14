@@ -13,7 +13,7 @@ import {FileUpload, FileUploadModule} from 'primeng/fileupload';
 import {ImageModule} from 'primeng/image';
 import {NgIf} from '@angular/common';
 import {ProgressBarModule} from 'primeng/progressbar';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
 import {File} from '../../../../../models/file';
 import {ApiService} from '../../../../../services/core/api.service';

@@ -32,14 +32,11 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     areas = db.relationship("Area", cascade="all,delete", backref="sector", lazy="select",
                             order_by='Area.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    lat = db.Column(db.Float, nullable=True)
-    lng = db.Column(db.Float, nullable=True)
     rules = db.Column(db.Text, nullable=True)
-
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default='0')
-
     crag_slug = association_proxy('crag', 'slug')
+    map_markers = db.relationship('MapMarker', back_populates='sector')
 
     @hybrid_property
     def ascent_count(self):

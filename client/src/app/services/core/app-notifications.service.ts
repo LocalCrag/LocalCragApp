@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {NotificationType} from '../../utility/notifications/notification-type.enum';
-import {HashMap, TranslocoService} from '@ngneat/transloco';
+import {HashMap, TranslocoService} from '@jsverse/transloco';
 import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
 import {AppState} from '../../ngrx/reducers';
 import {selectIsMobile} from '../../ngrx/selectors/device.selectors';

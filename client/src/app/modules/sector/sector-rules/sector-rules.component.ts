@@ -5,7 +5,7 @@ import {
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../shared/shared.module';
 import {SkeletonModule} from 'primeng/skeleton';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {Sector} from '../../../models/sector';
 import {Observable} from 'rxjs';
 import {Grade} from '../../../utility/misc/grades';

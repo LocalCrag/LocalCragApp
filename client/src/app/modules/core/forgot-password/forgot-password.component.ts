@@ -10,10 +10,10 @@ import {LoadingState} from '../../../enums/loading-state';
 import {selectForgotPasswordLoadingState} from '../../../ngrx/selectors/auth.selectors';
 import {forgotPassword} from '../../../ngrx/actions/auth.actions';
 import {Router} from '@angular/router';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
 import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**

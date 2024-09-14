@@ -12,6 +12,7 @@ from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image
 from models.area import Area
 from models.topo_image import TopoImage
 from models.user import User
+from resources.map_resources import create_or_update_markers
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
@@ -32,13 +33,12 @@ class AddTopoImage(MethodView):
 
         new_topo_image: TopoImage = TopoImage()
         new_topo_image.file_id = topo_image_data['image']
-        new_topo_image.lat = topo_image_data['lat']
-        new_topo_image.lng = topo_image_data['lng']
         new_topo_image.title = topo_image_data['title']
         new_topo_image.description = topo_image_data['description']
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
+        new_topo_image.map_markers = create_or_update_markers(topo_image_data['mapMarkers'], new_topo_image)
 
         db.session.add(new_topo_image)
         db.session.commit()
@@ -53,10 +53,9 @@ class UpdateTopoImage(MethodView):
         topo_image_data = parser.parse(topo_image_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
 
-        topo_image.lat = topo_image_data['lat']
-        topo_image.lng = topo_image_data['lng']
         topo_image.title = topo_image_data['title']
         topo_image.description = topo_image_data['description']
+        topo_image.map_markers = create_or_update_markers(topo_image_data['mapMarkers'], topo_image)
         db.session.add(topo_image)
         db.session.commit()
 

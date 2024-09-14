@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {ChipModule} from 'primeng/chip';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {TagModule} from 'primeng/tag';
 
 @Component({

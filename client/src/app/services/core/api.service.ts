@@ -28,6 +28,10 @@ export class ApiService {
     search: (query: string): string => `${this.apiHost}search/${query}`,
   };
 
+  public maps = {
+    getMarkers: (filters: string): string => `${this.apiHost}maps/markers${filters}`,
+  };
+
   public ticks = {
     getList: (): string => `${this.apiHost}ticks`,
   };

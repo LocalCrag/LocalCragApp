@@ -4,14 +4,14 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {catchError} from 'rxjs/operators';
 import {forkJoin, of} from 'rxjs';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {Title} from '@angular/platform-browser';
@@ -19,6 +19,7 @@ import {Editor} from 'primeng/editor';
 import {UploadService} from '../../../services/crud/upload.service';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 import {CragsService} from '../../../services/crud/crags.service';
+import {disabledMarkerTypesCrag, disabledMarkerTypesSector, MapMarkerType} from '../../../enums/map-marker-type';
 
 /**
  * Form component for creating and editing sectors.
@@ -102,8 +103,8 @@ export class SectorFormComponent implements OnInit {
       shortDescription: [null],
       portraitImage: [null],
       rules: [null],
-      gps: [null],
       secret: [false],
+      mapMarkers: [[]],
     });
   }
 
@@ -117,9 +118,9 @@ export class SectorFormComponent implements OnInit {
       description: this.sector.description,
       shortDescription: this.sector.shortDescription,
       portraitImage: this.sector.portraitImage,
-      gps: this.sector.gps,
       rules: this.sector.rules,
       secret: this.sector.secret,
+      mapMarkers: this.sector.mapMarkers,
     });
   }
 
@@ -146,8 +147,8 @@ export class SectorFormComponent implements OnInit {
       sector.shortDescription = this.sectorForm.get('shortDescription').value
       sector.rules = this.sectorForm.get('rules').value
       sector.portraitImage = this.sectorForm.get('portraitImage').value
-      sector.gps = this.sectorForm.get('gps').value;
       sector.secret = this.sectorForm.get('secret').value;
+      sector.mapMarkers = this.sectorForm.get('mapMarkers').value
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector( sector).subscribe(sector => {
@@ -198,4 +199,7 @@ export class SectorFormComponent implements OnInit {
     });
   }
 
+  protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
+  protected readonly disabledMarkerTypesSector = disabledMarkerTypesSector;
+  protected readonly MapMarkerType = MapMarkerType;
 }

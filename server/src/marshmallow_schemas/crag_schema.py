@@ -2,6 +2,7 @@ from marshmallow import fields, post_dump
 
 from extensions import ma
 from marshmallow_schemas.file_schema import FileSchema, file_schema
+from marshmallow_schemas.map_marker_schema import MapMarkerSchema, map_marker_schema
 from marshmallow_schemas.sector_schema import SectorMenuSchema
 from models.file import File
 
@@ -25,10 +26,9 @@ class CragSchema(BaseEntityMinSchema):
 
 
 class CragDetailSchema(CragSchema):
-    lat = fields.Float()
-    lng = fields.Float()
     rules = fields.String()
     description = fields.String()
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

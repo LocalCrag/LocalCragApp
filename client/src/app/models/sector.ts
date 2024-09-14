@@ -1,9 +1,10 @@
 import {AbstractModel} from './abstract-model';
 import {File} from './file';
-import {GPS} from '../interfaces/gps.interface';
+import {Coordinates} from '../interfaces/coordinates.interface';
 import {Area} from './area';
 import {A} from '@angular/cdk/keycodes';
 import {Crag} from './crag';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing crag's sector.
@@ -16,13 +17,13 @@ export class Sector extends AbstractModel {
   slug: string;
   portraitImage: File;
   orderIndex: number;
-  gps: GPS;
   rules: string;
   areas: Area[];
   crag: Crag;
   ascentCount: number;
   routerLink: string;
   secret: boolean;
+  mapMarkers: MapMarker[];
 
 
   /**
@@ -39,13 +40,13 @@ export class Sector extends AbstractModel {
     sector.secret = payload.secret;
     sector.shortDescription = payload.shortDescription;
     sector.slug = payload.slug;
-    sector.gps = payload.lng && payload.lat ? {lat: payload.lat, lng: payload.lng} : null;
     sector.orderIndex = payload.orderIndex;
     sector.rules = payload.rules;
     sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
     sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     sector.ascentCount = payload.ascentCount;
+    sector.mapMarkers = payload.mapMarkers ? payload.mapMarkers.map(MapMarker.deserialize) : null;
     sector.routerLink = sector.crag ? `/topo/${sector.crag.slug}/${sector.slug}` : null;
     return sector;
   }
@@ -63,9 +64,8 @@ export class Sector extends AbstractModel {
       shortDescription: sector.shortDescription,
       secret: sector.secret,
       portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
-      lng: sector.gps ? sector.gps.lng : null,
-      lat: sector.gps ? sector.gps.lat : null,
       rules: sector.rules,
+      mapMarkers: sector.mapMarkers ? sector.mapMarkers.map(MapMarker.serialize) : null,
     };
   }
 

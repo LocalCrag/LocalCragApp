@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AscentsService} from '../../../services/crud/ascents.service';
-import {TranslocoPipe, TranslocoService} from '@ngneat/transloco';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {ConfirmationService} from 'primeng/api';
 import {Line} from '../../../models/line';
 

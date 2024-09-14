@@ -33,7 +33,7 @@
     </ng-template>
     <ng-template let-topoImages pTemplate="list">
       <div class="grid grid-nogutter">
-        <div class="col-12" *ngFor="let topoImage of topoImages; let first = first" data-cy="topo-image-list-item">
+        <div class="col-12" *ngFor="let topoImage of topoImages; let first = first" data-cy="topo-image-list-item" [id]="topoImage.id">
           <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
                [ngClass]="{ 'border-top-1 surface-border': !first }">
             <div class="w-12 sm:w-9 xl:w-5 align-self-center">

@@ -11,9 +11,9 @@ import {passwordsValidator} from '../../../utility/validators/passwords.validato
 import {FormDirective} from '../../shared/forms/form.directive';
 import {Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {environment} from '../../../../environments/environment';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**

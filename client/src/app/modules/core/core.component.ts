@@ -7,7 +7,7 @@ import {checkShowCookieAlert} from '../../ngrx/actions/app-level-alerts.actions'
 import {checkIsMobile} from '../../ngrx/actions/device.actions';
 import {environment} from '../../../environments/environment';
 import {Title} from '@angular/platform-browser';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {
     selectFaviconImage,
     selectInstanceName,

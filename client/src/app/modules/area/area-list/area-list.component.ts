@@ -1,13 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
 import {LoadingState} from '../../../enums/loading-state';
 import {PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, Observable} from 'rxjs';
-import {CragsService} from '../../../services/crud/crags.service';
 import {select, Store} from '@ngrx/store';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {environment} from '../../../../environments/environment';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
 import {Area} from '../../../models/area';
 import {AreasService} from '../../../services/crud/areas.service';

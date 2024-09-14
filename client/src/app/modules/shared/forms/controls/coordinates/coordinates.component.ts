@@ -7,8 +7,8 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import {GPS} from '../../../../../interfaces/gps.interface';
-import {TranslocoDirective} from '@ngneat/transloco';
+import {Coordinates} from '../../../../../interfaces/coordinates.interface';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {SharedModule} from '../../../shared.module';
 import {InputTextModule} from 'primeng/inputtext';
 import {latValidator} from '../../../../../utility/validators/lat.validator';
@@ -20,7 +20,7 @@ import {MessageModule} from 'primeng/message';
 import {NgIf} from '@angular/common';
 
 @Component({
-  selector: 'lc-gps',
+  selector: 'lc-coordinates',
   standalone: true,
   imports: [
     TranslocoDirective,
@@ -31,30 +31,30 @@ import {NgIf} from '@angular/common';
     MessageModule,
     NgIf
   ],
-  templateUrl: './gps.component.html',
-  styleUrl: './gps.component.scss',
+  templateUrl: './coordinates.component.html',
+  styleUrl: './coordinates.component.scss',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => GpsComponent),
+      useExisting: forwardRef(() => CoordinatesComponent),
       multi: true,
     }
   ],
 })
 @UntilDestroy()
-export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit {
+export class CoordinatesComponent implements OnInit, ControlValueAccessor, AfterViewInit {
 
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public formControl: NgControl;
   public isDisabled = false;
-  public gpsForm: FormGroup;
+  public coordinatesForm: FormGroup;
   public positionLoading = false;
   public accuracy: number;
-  public gpsLoadingSuccess = false;
-  public gpsLoadingError = false;
+  public coordinatesLoadingSuccess = false;
+  public coordinatesLoadingError = false;
 
-  private gps: GPS;
+  private coordinates: Coordinates;
   private fetchFinishTime: number;
 
   constructor(private fb: FormBuilder,
@@ -62,7 +62,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   }
 
   private buildForm() {
-    this.gpsForm = this.fb.group({
+    this.coordinatesForm = this.fb.group({
       lat: [null, [latValidator()]],
       lng: [null, [lngValidator()]],
     });
@@ -74,7 +74,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   ngOnInit() {
     this.formControl = this.inj.get(NgControl);
     this.buildForm();
-    this.gpsForm.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
+    this.coordinatesForm.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
       this.onChange();
     })
   }
@@ -96,15 +96,15 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   /**
    * Used by the formControl to write a value to the native formControl or any custom value.
    *
-   * @param gps GPS value to write.
+   * @param coordinates Coordinates value to write.
    */
-  writeValue(gps: GPS): void {
-    this.gps = gps;
-    this.gpsForm.patchValue({
-      lat: gps?.lat || null,
-      lng: gps?.lng || null,
+  writeValue(coordinates: Coordinates): void {
+    this.coordinates = coordinates;
+    this.coordinatesForm.patchValue({
+      lat: coordinates?.lat || null,
+      lng: coordinates?.lng || null,
     })
-    if(this.gpsForm.invalid){
+    if(this.coordinatesForm.invalid){
       this.formDirective.markAsTouched();
     }
   }
@@ -122,7 +122,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   };
 
   validate() {
-    return this.gpsForm.invalid ? {
+    return this.coordinatesForm.invalid ? {
       invalid: true
     } : null;
   }
@@ -131,15 +131,15 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
    * Emits internal value when it changes.
    */
   onChange() {
-    if (this.gpsForm.valid && this.gpsForm.get('lat').value && this.gpsForm.get('lng').value) {
-      this.gps = {
-        lat: Number(this.gpsForm.get('lat').value),
-        lng: Number(this.gpsForm.get('lng').value)
+    if (this.coordinatesForm.valid && this.coordinatesForm.get('lat').value && this.coordinatesForm.get('lng').value) {
+      this.coordinates = {
+        lat: Number(this.coordinatesForm.get('lat').value),
+        lng: Number(this.coordinatesForm.get('lng').value)
       }
     } else {
-      this.gps = null;
+      this.coordinates = null;
     }
-    this.propagateChange(this.gps);
+    this.propagateChange(this.coordinates);
   }
 
   /**
@@ -152,40 +152,40 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
   }
 
   getGeoLocation() {
-    this.gpsForm.get('lat').setValue(null);
-    this.gpsForm.get('lng').setValue(null);
-    this.gpsLoadingSuccess = false;
-    this.gpsLoadingError = false;
+    this.coordinatesForm.get('lat').setValue(null);
+    this.coordinatesForm.get('lng').setValue(null);
+    this.coordinatesLoadingSuccess = false;
+    this.coordinatesLoadingError = false;
     this.accuracy = null;
     if (navigator.geolocation) {
       this.positionLoading = true;
-      this.gpsForm.disable();
+      this.coordinatesForm.disable();
       this.fetchFinishTime = Date.now() + 30000;
       this.fetchGeoLocationLoop();
     } else {
-      this.gpsLoadingError = true;
+      this.coordinatesLoadingError = true;
     }
   }
 
   private fetchGeoLocationLoop(){
     navigator.geolocation.getCurrentPosition((position) => {
       if(!this.accuracy || Math.round(position.coords.accuracy) < this.accuracy) {
-        this.gpsForm.get('lat').setValue(position.coords.latitude);
-        this.gpsForm.get('lng').setValue(position.coords.longitude);
+        this.coordinatesForm.get('lat').setValue(position.coords.latitude);
+        this.coordinatesForm.get('lng').setValue(position.coords.longitude);
         this.accuracy = Math.round(position.coords.accuracy);
       }
-      this.gpsLoadingSuccess = true;
+      this.coordinatesLoadingSuccess = true;
       if(Date.now() < this.fetchFinishTime && this.accuracy > 5){
         this.fetchGeoLocationLoop();
       } else {
         this.finishFetchingGeoLocation();
       }
-    }, (e) => {
-      if(this.gpsLoadingSuccess){
+    }, (_e) => {
+      if(this.coordinatesLoadingSuccess){
         // If we already have a position, errors don't matter
         this.finishFetchingGeoLocation();
       } else {
-        this.gpsLoadingError = true;
+        this.coordinatesLoadingError = true;
         this.positionLoading = false;
       }
     }, {
@@ -197,7 +197,7 @@ export class GpsComponent implements OnInit, ControlValueAccessor, AfterViewInit
 
   private finishFetchingGeoLocation(){
     this.positionLoading = false;
-    this.gpsForm.enable();
+    this.coordinatesForm.enable();
     this.onChange();
   }
 

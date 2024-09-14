@@ -6,11 +6,11 @@ import {Line} from '../../../models/line';
 import {AscentFormComponent} from '../ascent-form/ascent-form.component';
 import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {Store} from '@ngrx/store';
 import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
 import {take} from 'rxjs/operators';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-tick-button',

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
 import {UsersService} from '../../../services/crud/users.service';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Title} from '@angular/platform-browser';
@@ -10,7 +10,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {forkJoin, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {marker} from '@ngneat/transloco-keys-manager/marker';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {SkeletonModule} from 'primeng/skeleton';
 
 @Component({

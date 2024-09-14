@@ -3,7 +3,7 @@ import {LineType} from '../enums/line-type';
 import {deserializeGrade, Grade, gradeMap} from '../utility/misc/grades';
 import {LinePath} from './line-path';
 import {TopoImage} from './topo-image';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {StartingPosition} from '../enums/starting-position';
 import {Area} from './area';
 

@@ -2,9 +2,15 @@
 
   <ng-container *ngIf="region">
 
-    <h4>{{t('gradeDistribution')}}:</h4>
+    <h4>{{ t('gradeDistribution') }}:</h4>
     <lc-grade-distribution-bar-chart [fetchingObservable]="fetchRegionGrades"></lc-grade-distribution-bar-chart>
-    <section [innerHTML]="region.description | sanitizeHtml" *ngIf="region.description"  class="quill-content"></section>
+
+    <ng-container *ngIf="region.description">
+      <h4>{{ t('description') }}:</h4>
+      <section [innerHTML]="region.description | sanitizeHtml" class="quill-content"></section>
+    </ng-container>
+
+    <lc-map></lc-map>
 
   </ng-container>
 

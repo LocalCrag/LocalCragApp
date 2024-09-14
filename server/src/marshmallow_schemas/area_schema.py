@@ -4,6 +4,7 @@ from extensions import ma
 from marshmallow_schemas.file_schema import file_schema
 
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
+from marshmallow_schemas.map_marker_schema import map_marker_schema
 from util.bucket_placeholders import replace_bucket_placeholders
 class AscentAndTodoAreaSchema(ma.SQLAlchemySchema):
     name = fields.String()
@@ -21,9 +22,8 @@ class AreaSchema(BaseEntityMinSchema):
 
 
 class AreaDetailSchema(AreaSchema):
-    lat = fields.Float()
-    lng = fields.Float()
     description = fields.String(attribute='description')
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

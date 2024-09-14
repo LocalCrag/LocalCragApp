@@ -15,10 +15,9 @@ class TopoImage(BaseEntity):
     file: Mapped["File"] = relationship()
     line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select", order_by='LinePath.order_index.asc()')
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    lat = db.Column(db.Float, nullable=True)
-    lng = db.Column(db.Float, nullable=True)
     description = db.Column(db.Text, nullable=True)
     title = db.Column(db.String(120), nullable=True)
+    map_markers = db.relationship('MapMarker', back_populates='topo_image')
 
     @classmethod
     def find_max_order_index(cls, area_id) -> int:

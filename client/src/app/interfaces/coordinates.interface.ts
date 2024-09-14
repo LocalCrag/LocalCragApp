@@ -1,4 +1,4 @@
-export interface GPS{
+export interface Coordinates {
   lat: number;
   lng: number;
 }

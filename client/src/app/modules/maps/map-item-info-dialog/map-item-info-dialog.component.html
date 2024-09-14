@@ -1,0 +1,12 @@
+<ng-container *transloco="let t, read: 'maps.mapItemInfoDialog'">
+
+  <p-dialog header="{{feature?.properties.name}}" [modal]="true" [(visible)]="isOpen" [dismissableMask]="true">
+    <div class="flex justify-content-end gap-2 flex-column">
+      <div [innerHTML]="feature?.properties.description"></div>
+      <p-button [label]="t('navigateToItem')" (onClick)="navigateToItem()" icon=" pi pi-directions" class="w-full"/>
+      <p-button [label]="t('openItem')" (onClick)="openItem()" icon=" pi pi-info-circle" class="w-full"
+                *ngIf="getCanOpenFeature()"/>
+    </div>
+  </p-dialog>
+
+</ng-container>

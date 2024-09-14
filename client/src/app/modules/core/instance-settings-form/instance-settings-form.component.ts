@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UploadService} from '../../../services/crud/upload.service';
 import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoService} from '@ngneat/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
@@ -18,7 +18,7 @@ import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
 import {ButtonModule} from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {GpsComponent} from '../../shared/forms/controls/gps/gps.component';
+import {CoordinatesComponent} from '../../shared/forms/controls/coordinates/coordinates.component';
 import {InputTextModule} from 'primeng/inputtext';
 import {NgIf} from '@angular/common';
 import {PaginatorModule} from 'primeng/paginator';
@@ -36,7 +36,7 @@ import {getRgbObject} from '../../../utility/misc/color';
     CardModule,
     ConfirmPopupModule,
     EditorModule,
-    GpsComponent,
+    CoordinatesComponent,
     InputTextModule,
     NgIf,
     PaginatorModule,
