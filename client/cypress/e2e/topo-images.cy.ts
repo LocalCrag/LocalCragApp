@@ -1,4 +1,5 @@
 describe('Topo images test', () => {
+  let topoImageId;
   it('adds a topo image', () => {
     cy.login();
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images');
@@ -13,21 +14,24 @@ describe('Topo images test', () => {
       cy.get('[data-cy="submit"]').click()
       cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images');
       cy.get('[data-cy="topo-image-list-item"]').should('have.length', numBefore + 1)
+      cy.get('[data-cy="topo-image-list-item"]').eq(1).invoke('attr', 'id').then(id => {
+        topoImageId = id;
+      });
     }));
   })
   it('draws a line on a topo image', () => {
     cy.viewport(1920 , 1080)
     cy.login();
-    cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/f4625acb-b0fe-41f6-ab3c-fa258e586f2c/add-line-path');
+    cy.visit(`localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/${topoImageId}/add-line-path`);
     cy.wait(2000);
     cy.get('[data-cy="line-dropdown"] > div').click()
-    cy.get('[data-cy="line-dropdown-item"]').eq(2).click()
+    cy.get('[data-cy="line-dropdown-item"]').eq(0).click()
     cy.get('lc-line-path-editor').click(10,10)
     cy.get('lc-line-path-editor').click(100,100)
     cy.get('lc-line-path-editor').click(100,200)
     cy.get('lc-line-path-editor').click(200,250)
     cy.get('[data-cy="submit"]').click()
     cy.visit('localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images');
-    cy.get('[data-cy="topo-image-list-item"]:nth-child(2) [data-cy="line-row"]').should('have.length', 2)
+    cy.get('[data-cy="topo-image-list-item"]:nth-child(2) [data-cy="line-row"]').should('have.length', 1)
   })
 })
