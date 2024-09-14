@@ -50,7 +50,7 @@ export class TopoImage extends AbstractModel {
   public static serialize(topoImage: TopoImage): any {
     return {
       image: topoImage.image.id,
-      mapMarkers: topoImage.coordinates ? [{lat: topoImage.coordinates.lat, lng: topoImage.coordinates.lng, type: MapMarkerType.TOPO_IMAGE, description: null, name: null}] : null,
+      mapMarkers: topoImage.coordinates ? [{lat: topoImage.coordinates.lat, lng: topoImage.coordinates.lng, type: MapMarkerType.TOPO_IMAGE, description: null, name: null}] : [],
       title: topoImage.title,
       description: topoImage.description,
     };
