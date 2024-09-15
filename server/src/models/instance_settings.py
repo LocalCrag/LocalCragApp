@@ -32,6 +32,7 @@ class InstanceSettings(db.Model):
     bar_chart_color = db.Column(db.String(30), nullable=False, server_default='rgb(213, 30, 38)')
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
+    maptiler_api_key = db.Column(db.String(120), nullable=True)
 
     @hybrid_property
     def superadmin_email(self) -> str:

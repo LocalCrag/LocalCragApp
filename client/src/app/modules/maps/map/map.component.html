@@ -1,4 +1,4 @@
-<ng-container *ngIf="markersSource?.features?.length > 0">
+<ng-container *ngIf="markersSource?.features?.length > 0 && apiKey">
   <ng-container *transloco="let t, read: 'map'">
     <h4>{{ t('map') }}:</h4>
     <div class="map" #map></div>

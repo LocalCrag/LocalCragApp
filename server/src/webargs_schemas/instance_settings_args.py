@@ -18,4 +18,5 @@ instance_settings_args = {
     "barChartColor": fields.Str(required=True),
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True),
     "matomoSiteId": fields.Str(required=True, allow_none=True),
+    "maptilerApiKey": fields.Str(required=True, allow_none=True),
 }

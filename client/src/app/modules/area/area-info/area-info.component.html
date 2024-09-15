@@ -10,7 +10,7 @@
     <section [innerHTML]="area.description | sanitizeHtml"   class="quill-content"></section>
     </ng-container>
 
-    <lc-map [target]="area"></lc-map>
+    <lc-map [target]="area" [mapStyle]="MapStyles.SATELLITE"></lc-map>
 
   </ng-container>
 

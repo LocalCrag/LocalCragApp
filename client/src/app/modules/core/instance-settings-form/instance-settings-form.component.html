@@ -109,6 +109,15 @@
           <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
         </div>
 
+        <p-divider align="center" type="solid" class="mb-2 block"><b>{{t('mapSettings')}}</b></p-divider>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{t('maptilerApiKeyLabel')}}</label>
+          <input type="text" pInputText formControlName="maptilerApiKey" placeholder="{{t('maptilerApiKeyPlaceholder')}}"
+                 lcFormControl/>
+          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+        </div>
+
       </form>
 
       <div class="form-actions">
