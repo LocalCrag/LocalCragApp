@@ -86,7 +86,7 @@ export class TodoListComponent {
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
-  public minGradeValue = GRADES['FB'][2].value; // Skip project grades
+  public minGradeValue = GRADES['FB'][0].value;
   public maxGradeValue = GRADES['FB'].at(-1).value;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue]
   public orderOptions: SelectItem[];
