@@ -14,6 +14,7 @@ import {Crag} from '../../../models/crag';
 import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
 import {NgForOf, NgIf} from '@angular/common';
 import {SkeletonModule} from 'primeng/skeleton';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-crag-ascents',
@@ -22,7 +23,8 @@ import {SkeletonModule} from 'primeng/skeleton';
     AscentListComponent,
     NgIf,
     SkeletonModule,
-    NgForOf
+    NgForOf,
+    AscentListSkeletonComponent
   ],
   templateUrl: './crag-ascents.component.html',
   styleUrl: './crag-ascents.component.scss'

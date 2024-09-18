@@ -1,11 +1,2 @@
 <lc-ascent-list [lineId]="line.id" *ngIf="line" [disableGradeOrderAndFiltering]="true"></lc-ascent-list>
-
-<ng-container *ngIf="!line">
-  <div class="flex mb-2" *ngFor="let _ of [].constructor(10)">
-    <p-skeleton shape="circle" size="4rem" styleClass="mr-2"></p-skeleton>
-    <div style="flex: 1">
-      <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="75%"></p-skeleton>
-    </div>
-  </div>
-</ng-container>
+<lc-ascent-list-skeleton *ngIf="!line"></lc-ascent-list-skeleton>

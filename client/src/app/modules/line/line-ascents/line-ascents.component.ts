@@ -15,6 +15,7 @@ import {marker} from '@jsverse/transloco-keys-manager/marker';
 import Konva from 'konva';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-line-ascents',
@@ -23,7 +24,8 @@ import {LinesService} from '../../../services/crud/lines.service';
         AscentListComponent,
         NgForOf,
         NgIf,
-        SkeletonModule
+        SkeletonModule,
+        AscentListSkeletonComponent
     ],
   templateUrl: './line-ascents.component.html',
   styleUrl: './line-ascents.component.scss'
