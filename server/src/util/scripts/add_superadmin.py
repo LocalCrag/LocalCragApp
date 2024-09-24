@@ -17,6 +17,7 @@ def add_superadmin():
                 "lastname": current_app.config['SUPERADMIN_LASTNAME'],
                 "email": current_app.config['SUPERADMIN_EMAIL'],
                 "slug": current_app.config['SUPERADMIN_SLUG'],
+                "activated": True,
             }
             user = create_user(user_data)
             user.superadmin = True
