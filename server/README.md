@@ -19,6 +19,7 @@
     - `SQLALCHEMY_ECHO` Can be set to True for debugging SQL queries
     - `SUPERADMIN_FIRSTNAME` First name of the initial superadmin user
     - `SUPERADMIN_LASTNAME` Last name of the initial superadmin user
+    - `SUPERADMIN_SLUG` Slug of the initial superadmin user
     - `SUPERADMIN_EMAIL` E-Mail address of the initial superadmin user - invitation mail with password will go here
     - `SPACES_SECRET_KEY` Secret key for the object storage
     - `SPACES_ACCESS_KEY` Access key for the object storage

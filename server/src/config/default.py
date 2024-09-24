@@ -19,6 +19,7 @@ class DefaultConfig(object):
     FRONTEND_HOST = 'https://localcrag.de/'
     SUPERADMIN_FIRSTNAME = ''
     SUPERADMIN_LASTNAME = ''
+    SUPERADMIN_SLUG = ''
     SUPERADMIN_EMAIL = ''
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
