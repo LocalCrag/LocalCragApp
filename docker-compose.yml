@@ -1,0 +1,79 @@
+services:
+  database:
+    image: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: localcrag
+      POSTGRES_DB: localcrag
+      POSTGRES_PASSWORD: password
+
+  storage:
+    image: quay.io/minio/minio
+    environment:
+      MINIO_ROOT_USER: localcrag
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+      - storage:/data
+    ports:
+      - "127.0.0.1:9001:9001"  # Web UI
+    command: ["server", "/data", "--console-address", ":9001"]
+
+  mails:
+    image: mailhog/mailhog
+    ports:
+      - "127.0.0.1:8025:8025"  # Web UI
+
+  database_web:
+    image: michalhosna/adminer
+    ports:
+      - "127.0.0.1:8080:8080"  # Web UI
+    environment:
+      ADMINER_DB: localcrag
+      ADMINER_DRIVER: pgsql
+      ADMINER_USERNAME: localcrag
+      ADMINER_PASSWORD: password
+      ADMINER_SERVER: database
+      ADMINER_AUTOLOGIN: 1
+
+  server:
+    build:
+      target: localcragapp-server
+    depends_on:
+      - database
+      - mails
+      - storage
+    ports:
+      - "127.0.0.1:5000:5000"  # API Server
+    environment:
+      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/localcrag"
+      LOCALCRAG_CONFIG: /localcragapp/src/config/dev.cfg
+      SPACES_ACCESS_KEY: localcrag
+      SPACES_SECRET_KEY: password
+      SPACES_ENDPOINT: http://storage:9000
+      SMTP_HOST: mails
+      SMTP_PORT: 1025
+      SMTP_TYPE: plain
+      FLASK_DEBUG: 1
+    volumes:
+      - ./server/src:/localcragapp/src
+    command: 
+      - sh
+      - "-c"
+      - "pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && pipenv run flask run --host=0.0.0.0"
+      
+  client:
+    build:
+      target: localcragapp-client
+    volumes:
+      - ./client/src:/localcragapp/src
+    ports:
+      - "127.0.0.1:4200:4200"  # Web Frontend
+    command: 
+      - sh
+      - "-c"
+      - "npx ng serve --host 0.0.0.0"
+
+volumes:
+  database:
+  storage:
