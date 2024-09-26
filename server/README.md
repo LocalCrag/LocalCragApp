@@ -15,6 +15,7 @@
     - `SMTP_USER` SMTP user
     - `SMTP_PASSWORD` SMTP password
     - `SMTP_PORT` SMTP port
+    - `SMTP_TYPE` SMTP type: `smtps`, `starttls`, `plain` or `disabled`
     - `FRONTEND_HOST` Address of the client, used for CORS settings and building URLs in mails
     - `SQLALCHEMY_ECHO` Can be set to True for debugging SQL queries
     - `SUPERADMIN_FIRSTNAME` First name of the initial superadmin user

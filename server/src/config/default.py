@@ -16,6 +16,7 @@ class DefaultConfig(object):
     SMTP_USER = 'YOUR_SMTP_USER'
     SMTP_PASSWORD = 'YOUR_SMTP_PASSWORD'
     SMTP_PORT = 'YOUR_SMTP_PORT'
+    SMTP_TYPE = 'smtps_OR_starttls_OR_plain_OR_disabled'
     FRONTEND_HOST = 'https://localcrag.de/'
     SUPERADMIN_FIRSTNAME = ''
     SUPERADMIN_LASTNAME = ''
