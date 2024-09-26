@@ -27,6 +27,7 @@
     - `SPACES_REGION` Object storage region
     - `SPACES_BUCKET` Object storage bucket name
     - `SPACES_ACCESS_ENDPOINT` Access endpoint of the object storage
+    - `SPACES_ADDRESSING` Object storage addressing mode: `virtual` or `path`
     - `SENTRY_DSN` DSN for Sentry error tracking
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
 - For configuring a local object storage, read `docs/localstack.md`. This is needed if you are working with fileupload in any way.

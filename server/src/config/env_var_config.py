@@ -18,6 +18,8 @@ def overwrite_config_by_env_vars(app):
         'SPACES_ENDPOINT',
         'SPACES_REGION',
         'SPACES_BUCKET',
+        'SPACES_ACCESS_ENDPOINT',
+        'SPACES_ADDRESSING',
         'FRONTEND_HOST',
         'SENTRY_DSN',
         'SENTRY_ENABLED'
