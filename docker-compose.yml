@@ -66,7 +66,7 @@ services:
       SPACES_SECRET_KEY: password
       SPACES_ENDPOINT: http://storage:9000
       SPACES_BUCKET: localcrag
-      SPACES_ACCESS_ENDPOINT: http://storage:9000
+      SPACES_ACCESS_ENDPOINT: http://localhost:9000
       SPACES_ADDRESSING: path
       SMTP_HOST: mails
       SMTP_PORT: 1025
