@@ -92,6 +92,9 @@ class TokenRefresh(MethodView):
         Refreshes a users access token.
         """
         current_user = User.find_by_email(get_jwt_identity())
+        if current_user is None:
+            raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
+
         access_token = create_access_token(identity=current_user.email,
                                            additional_claims=get_access_token_claims(current_user))
         auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
