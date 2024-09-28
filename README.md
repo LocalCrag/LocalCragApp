@@ -50,6 +50,18 @@ If you want to use LocalCrag for your own crag, follow the steps below:
 - You can configure your instance by visiting `/instance-settings`
 - If you choose to use Matomo tracking, be sure to setup your Matomo instance in a way that anonymizes user data. Currently there is no opt-in cookie banner provided, so tracking has to follow your local privacy legislation.
 
+## Contributing
+
+LocalCrag is a (soon to be, when we decided on the licence) open-source project and we welcome contributions from the community.
+
+If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcome.
+
+### Our contributors
+
+<a href="https://github.com/LocalCrag/LocalCragApp/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=LocalCrag/LocalCragApp" />
+</a>
+
 ## License
 
 All Rights Reserved.
