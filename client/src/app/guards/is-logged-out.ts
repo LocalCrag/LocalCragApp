@@ -20,11 +20,11 @@ export const isLoggedOut: CanActivateFn = (
   const router = inject(Router);
   return store.pipe(
     select(selectIsLoggedOut),
-    map(isLoggedInValue => {
-      if (isLoggedInValue) {
+    map(isLoggedOutValue => {
+      if (isLoggedOutValue) {
         return true;
       }
-      router.navigate(['login']);
+      router.navigate(['']);
       return false;
     })
   );
