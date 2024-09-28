@@ -36,7 +36,12 @@ def send_generic_mail(msg):
         print_decoded_email_parts(msg)
         return
 
-    if current_app.config['SMTP_PORT'] == '587':  # pragma: no cover
+    smtp_type = current_app.config.get('SMTP_TYPE', '').lower()
+    if smtp_type not in ["smtps", "starttls", "plain", "disabled"]:
+        print(f"WARNING: Invalid SMTP_TYPE set ({smtp_type!r}), defaulting to 'disabled'")
+        smtp_type = "disabled"
+
+    if smtp_type == 'starttls':  # pragma: no cover
         context = ssl.create_default_context()
         with smtplib.SMTP(current_app.config['SMTP_HOST'], current_app.config['SMTP_PORT']) as server:
             server.ehlo()
@@ -44,8 +49,13 @@ def send_generic_mail(msg):
             server.ehlo()
             server.login(current_app.config['SMTP_USER'], current_app.config['SMTP_PASSWORD'])
             server.sendmail(msg['From'], msg['To'], msg.as_string())
-    if current_app.config['SMTP_PORT'] == '465':
+    elif smtp_type == 'smtps':
         with smtplib.SMTP_SSL(current_app.config['SMTP_HOST'], current_app.config['SMTP_PORT']) as server:
+            server.login(current_app.config['SMTP_USER'], current_app.config['SMTP_PASSWORD'])
+            server.sendmail(msg['From'], msg['To'], msg.as_string())
+            server.quit()
+    elif smtp_type == 'plain':
+        with smtplib.SMTP(current_app.config['SMTP_HOST'], current_app.config['SMTP_PORT']) as server:
             server.login(current_app.config['SMTP_USER'], current_app.config['SMTP_PASSWORD'])
             server.sendmail(msg['From'], msg['To'], msg.as_string())
             server.quit()
