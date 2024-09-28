@@ -1,5 +1,5 @@
-<div *ngFor="let item of model" class="item" (mouseenter)="onMouseenter(item)"
-     [ngClass]="{'active-item': item.items && item.isActive, 'root-child': root}">
+<div *ngFor="let item of model" class="item" (mouseenter)="onMouseenter(item, menuItem)"
+     [ngClass]="{'active-item': item.items && item.isActive, 'root-child': root}" #menuItem>
   <div class="item-wrapper">
     <div class="item-content" (click)="onItemClick(item)" [ngClass]="{'no-sub-menu': !item.items}">
    <span class="p-menuitem-icon  menu-icon"

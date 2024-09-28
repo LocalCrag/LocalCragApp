@@ -1,4 +1,13 @@
-import {Component, ElementRef, HostBinding, HostListener, Input, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit, QueryList, ViewChildren,
+  ViewEncapsulation
+} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {AngleDownIcon} from 'primeng/icons/angledown';
 import {AngleRightIcon} from 'primeng/icons/angleright';
@@ -30,6 +39,8 @@ export class HeaderMenuSubComponent {
   @HostBinding('class.first-child')
   @Input() firstChild: boolean = false;
 
+  @ViewChildren('menuItem') menuItems: QueryList<ElementRef>;
+
   constructor(private router: Router,
               private el: ElementRef,
               private headerMenuService: HeaderMenuService) {
@@ -49,9 +60,10 @@ export class HeaderMenuSubComponent {
   /**
    * In non-mobile view, we handle the menu activate / deactivate via hover (mouseenter).
    */
-  onMouseenter(item: ProcessedMenuItem) {
+  onMouseenter(item: ProcessedMenuItem, element: HTMLDivElement) {
     if (window.innerWidth > MOBILE_BREAKPOINT_HEADER_MENU) {
-      this.headerMenuService.setActive(item);
+      const itemElement = element.querySelector('lc-header-menu-sub');
+      this.headerMenuService.setActive(item, itemElement as HTMLElement);
     }
   }
 
