@@ -23,14 +23,14 @@ services:
     entrypoint: |  # Adopted from https://stackoverflow.com/a/78580294
       /bin/sh -c '
         isAlive() { curl -sf http://127.0.0.1:9000/minio/health/live; }
-        minio $0 "$@" --quiet & echo $! > /tmp/minio.pid
+        minio $$0 "$$@" --quiet & echo $$! > /tmp/minio.pid
         while ! isAlive; do sleep 0.1; done
         mc alias set minio http://127.0.0.1:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
         mc mb minio/$$MINIO_INIT_BUCKET || true
         mc anonymous set public minio/$$MINIO_INIT_BUCKET
-        kill -s INT $(cat /tmp/minio.pid) && rm /tmp/minio.pid
+        kill -s INT $$(cat /tmp/minio.pid) && rm /tmp/minio.pid
         while isAlive; do sleep 0.1; done
-        exec minio $0 "$@"
+        exec minio $$0 "$$@"
       '
 
   mails:
