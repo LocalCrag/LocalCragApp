@@ -1,11 +1,6 @@
-from passlib.hash import pbkdf2_sha256 as sha256
+from passlib.hash import pbkdf2_sha256
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import joinedload
-
-from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
-from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.mixins.has_slug import HasSlug
@@ -44,11 +39,11 @@ class User(HasSlug, IsSearchable, BaseEntity):
 
     @staticmethod
     def generate_hash(password):
-        return sha256.hash(password)
+        return pbkdf2_sha256.hash(password)
 
     @staticmethod
     def verify_hash(password, password_hash):
-        return sha256.verify(password, password_hash)
+        return pbkdf2_sha256.verify(password, password_hash)
 
     @classmethod
     def find_by_reset_password_hash(cls, password_hash):
