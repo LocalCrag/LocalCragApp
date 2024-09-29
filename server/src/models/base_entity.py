@@ -31,7 +31,7 @@ class BaseEntity(db.Model):
         return db.relationship("User", foreign_keys="[%s.created_by_id]" % self.__name__)
 
     @classmethod
-    def return_all(cls, order_by=None, options=None, filter=None):
+    def return_all(cls, order_by=None, options=None, filter=None) -> list[Self]:
         query = cls.query
         if options:
             query = query.options(options)
