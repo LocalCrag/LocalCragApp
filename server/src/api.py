@@ -1,5 +1,6 @@
 from flask import Blueprint
 
+from resources.archive_resources import UpdateArchived
 from resources.area_resources import (
     CreateArea,
     DeleteArea,
@@ -231,6 +232,11 @@ def configure_api(app):
     is_todo_bp = Blueprint("is-todo", __name__)
     is_todo_bp.add_url_rule("", view_func=GetIsTodo.as_view("get_is_todo"))
     app.register_blueprint(is_todo_bp, url_prefix="/api/is-todo")
+
+    # Archive API
+    archive_bp = Blueprint('archive', __name__)
+    archive_bp.add_url_rule('', view_func=UpdateArchived.as_view('update_archived'))
+    app.register_blueprint(archive_bp, url_prefix='/api/archive')
 
     # Maps API
     maps_bp = Blueprint("maps", __name__)
