@@ -40,6 +40,10 @@ export class ApiService {
     getList: (): string => `${this.apiHost}is-todo`,
   };
 
+  public archive = {
+    updateArchived: (): string => `${this.apiHost}archive`,
+  };
+
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,

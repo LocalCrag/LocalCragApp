@@ -34,6 +34,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {TodoButtonComponent} from '../../todo/todo-button/todo-button.component';
 import {IsTodoService} from '../../../services/crud/is-todo.service';
 import {todoAdded} from '../../../ngrx/actions/todo.actions';
+import {ArchiveButtonComponent} from "../../archive/archive-button/archive-button.component";
 
 @Component({
   selector: 'lc-line-list',
@@ -61,6 +62,7 @@ import {todoAdded} from '../../../ngrx/actions/todo.actions';
     SliderLabelsComponent,
     AccordionModule,
     TodoButtonComponent,
+    ArchiveButtonComponent,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

@@ -158,6 +158,7 @@
                   >
                   </p-button>
                   <div class="flex-grow-1"></div>
+                  <lc-archive-button [line]="line" [showLabel]="false" *isModerator="true"></lc-archive-button>
                   <ng-container *ngIf="!ticks.has(line.id)">
                     <lc-todo-button
                       [line]="line"

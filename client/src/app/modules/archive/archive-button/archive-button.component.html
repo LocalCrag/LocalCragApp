@@ -1,0 +1,13 @@
+<ng-container *transloco="let t, read: 'archiveButton'">
+
+  <p-button styleClass="p-button-rounded p-button-text p-button-secondary archive-button"
+            data-cy="archive-button"
+            label="{{line.archived ? t('archive'): t('unarchive')}}"
+            (click)="switchArchived($event)" [ngClass]="{'hide-label': !showLabel}">
+    <ng-template pTemplate="icon">
+      <i  *ngIf="!line.archived" class="pi pi-lock"></i>
+      <i  *ngIf="line.archived" class="pi pi-unlock"></i>
+    </ng-template>
+  </p-button>
+
+</ng-container>
