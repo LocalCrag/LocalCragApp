@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from resources.archive_resources import UpdateArchived
+from resources.archive_resources import UpdateArchived, ArchiveArea, ArchiveSector, ArchiveCrag
 from resources.area_resources import (
     CreateArea,
     DeleteArea,
@@ -235,7 +235,9 @@ def configure_api(app):
 
     # Archive API
     archive_bp = Blueprint('archive', __name__)
-    archive_bp.add_url_rule('', view_func=UpdateArchived.as_view('update_archived'))
+    archive_bp.add_url_rule('/area/<string:area_slug>', view_func=ArchiveArea.as_view('archive_area'))
+    archive_bp.add_url_rule('/sector/<string:sector_slug>', view_func=ArchiveSector.as_view('archive_sector'))
+    archive_bp.add_url_rule('/crag/<string:crag_slug>', view_func=ArchiveCrag.as_view('archive_crag'))
     app.register_blueprint(archive_bp, url_prefix='/api/archive')
 
     # Maps API
