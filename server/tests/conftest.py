@@ -61,7 +61,20 @@ def db_session():
 
 @pytest.fixture
 def client():
-    return app.test_client()
+    # Monkey patch test_client to create a nicer API for authenticated requests
+    client = app.test_client()
+    client.open_wrapped = client.open.__get__(client, client.__class__)
+
+    def open_wrapper(self, *args, **kwargs):
+        headers = kwargs.get("headers", {})
+        if "token" in kwargs:
+            headers["Authorization"] = f"Bearer {kwargs['token']}"
+            del kwargs["token"]
+        kwargs["headers"] = headers
+        return client.open_wrapped(*args, **kwargs)
+
+    client.open = open_wrapper.__get__(client, client.__class__)
+    return client
 
 
 @pytest.fixture(scope='session')
