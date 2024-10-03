@@ -16,7 +16,7 @@ def test_successful_edit_region(client, admin_token):
         "name": "Nahetal"
     }
 
-    rv = client.put('/api/region', headers={"Authorization": f"Bearer {admin_token}"}, json=crag_data)
+    rv = client.put('/api/region', token=admin_token, json=crag_data)
     assert rv.status_code == 200
     res = rv.json
     assert res['id'] == "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
