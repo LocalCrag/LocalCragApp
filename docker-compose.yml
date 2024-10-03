@@ -74,6 +74,7 @@ services:
       FLASK_DEBUG: 1
     volumes:
       - ./server/src:/localcragapp/src
+      - ./server/tests:/localcragapp/tests
     command: 
       - sh
       - "-c"
