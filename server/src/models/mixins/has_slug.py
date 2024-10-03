@@ -34,8 +34,8 @@ class HasSlug:
     )
 
 
-@event.listens_for(db.session, "before_commit")
-def update_slugs(session):
+@event.listens_for(db.session, "before_flush")
+def update_slugs(session, _flush_context, _instances):
     """
     Generates a free slug for all dirty slug items.
     Source: https://digitalhedgehog.org/articles/how-to-manage-slugs-for-database-entities-with-flask-and-sqlalchemy
