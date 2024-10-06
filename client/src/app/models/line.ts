@@ -173,6 +173,7 @@ export class Line extends AbstractModel {
       faName: line.faName ? line.faName : null,
       startingPosition: line.startingPosition,
       secret: line.secret,
+      archived: line.archived,
 
       eliminate: line.eliminate,
       traverse: line.traverse,

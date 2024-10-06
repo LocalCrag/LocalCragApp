@@ -3,7 +3,7 @@ import {ApiService} from '../core/api.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {ArchiveObjects, ArchiveStats} from "../../models/archive";
+import {ArchiveStats} from "../../models/archive";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,20 @@ export class ArchiveService {
               private http: HttpClient) {
   }
 
-  public updateArchive(archive: ArchiveObjects): Observable<ArchiveStats> {
-    return this.http.post(this.api.archive.updateArchived(), ArchiveObjects.serialize(archive)).pipe(
+  public archiveArea(slug: string): Observable<ArchiveStats> {
+    return this.http.post(this.api.archive.archiveArea(slug), {}).pipe(
+      map(ArchiveStats.deserialize)
+    );
+  }
+
+  public archiveSector(slug: string): Observable<ArchiveStats> {
+    return this.http.post(this.api.archive.archiveSector(slug), {}).pipe(
+      map(ArchiveStats.deserialize)
+    );
+  }
+
+  public archiveCrag(slug: string): Observable<ArchiveStats> {
+    return this.http.post(this.api.archive.archiveCrag(slug), {}).pipe(
       map(ArchiveStats.deserialize)
     );
   }

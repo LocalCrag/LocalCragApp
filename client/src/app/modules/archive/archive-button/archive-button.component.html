@@ -1,12 +1,14 @@
 <ng-container *transloco="let t, read: 'archiveButton'">
 
-  <p-button styleClass="p-button-rounded p-button-text p-button-secondary archive-button"
+  <p-button [styleClass]="'p-button-secondary archive-button'.concat(
+                          !showLabel ? ' p-button-icon-only' : ' p-button-text').concat(
+                          outline ? ' p-button-outlined p-button-sm' : ' p-button-rounded')"
             data-cy="archive-button"
-            label="{{line.archived ? t('archive'): t('unarchive')}}"
+            label="{{!getCurrentState() ? t('archive'): t('unarchive')}}"
             (click)="switchArchived($event)" [ngClass]="{'hide-label': !showLabel}">
     <ng-template pTemplate="icon">
-      <i  *ngIf="!line.archived" class="pi pi-lock"></i>
-      <i  *ngIf="line.archived" class="pi pi-unlock"></i>
+      <i *ngIf="!getCurrentState()" class="pi pi-lock"></i>
+      <i *ngIf="getCurrentState()" class="pi pi-unlock"></i>
     </ng-template>
   </p-button>
 

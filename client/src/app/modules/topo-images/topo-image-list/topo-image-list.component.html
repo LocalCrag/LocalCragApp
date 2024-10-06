@@ -90,7 +90,7 @@
                   </div>
                   <div
                     *isModerator="true"
-                    class="justify-content-start sm:justify-content-end flex flex-grow-1"
+                    class="justify-content-start sm:justify-content-end flex flex-grow-1 align-items-center"
                   >
                     <p-button
                       label="{{ t('addLineToImageButtonLabel') }}"
@@ -109,7 +109,7 @@
                       icon="pi pi-sort"
                       (click)="reorderLinePaths(topoImage)"
                       [disabled]="topoImage.linePaths?.length < 2"
-                      styleClass=" p-button-sm"
+                      styleClass="p-button-sm"
                       class="ml-2 responsive-button"
                     ></p-button>
                     <p-button
@@ -119,8 +119,10 @@
                       routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
                         areaSlug
                       }}/topo-images/{{ topoImage.id }}/edit"
-                      styleClass=" p-button-sm"
+                      styleClass="p-button-sm"
                     ></p-button>
+                    <lc-archive-button *isModerator="true" [showLabel]="false" [topoImage]="topoImage" [outline]="true"
+                              class="ml-2 responsive-button"></lc-archive-button>
                     <p-button
                       icon="pi pi-trash"
                       class="ml-2"

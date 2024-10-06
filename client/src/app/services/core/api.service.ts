@@ -41,7 +41,9 @@ export class ApiService {
   };
 
   public archive = {
-    updateArchived: (): string => `${this.apiHost}archive`,
+    archiveArea: (slug: string): string => `${this.apiHost}archive/area/${slug}`,
+    archiveSector: (slug: string): string => `${this.apiHost}archive/sector/${slug}`,
+    archiveCrag: (slug: string): string => `${this.apiHost}archive/crag/${slug}`,
   };
 
   public users = {
