@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from resources.archive_resources import UpdateArchived, ArchiveArea, ArchiveSector, ArchiveCrag
+from resources.archive_resources import ArchiveArea, ArchiveSector, ArchiveCrag
 from resources.area_resources import (
     CreateArea,
     DeleteArea,
