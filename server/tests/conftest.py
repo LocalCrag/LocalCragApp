@@ -19,9 +19,14 @@ from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from models.file import File
+from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.line_path import LinePath
+from models.post import Post
 from models.region import Region
 from models.sector import Sector
+from models.topo_image import TopoImage
 from models.user import User
 
 
@@ -206,6 +211,8 @@ def fill_db_with_sample_data():
     user.member = True
     db.session.add(user)
 
+    adminId = User.find_by_email("admin@localcrag.invalid.org").id
+
     region = Region()
     region.id = "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
     region.name = "Tessin"
@@ -287,12 +294,161 @@ def fill_db_with_sample_data():
     ascent.comment = "Yeeha!"
     ascent.date = "2024-04-16"
     ascent.ascent_date = "2024-04-16"
-    ascent.created_by_id = User.find_by_email("admin@localcrag.invalid.org").id
+    ascent.created_by_id = adminId
     ascent.with_kneepad = True
     ascent.line_id = Line.get_id_by_slug("super-spreader")
     ascent.area_id = Area.get_id_by_slug("dritter-block-von-links")
     ascent.sector_id = Sector.get_id_by_slug("schattental")
     ascent.crag_id = Crag.get_id_by_slug("brione")
     db.session.add(ascent)
+
+    post = Post()
+    post.title = "Mein erster Post"
+    post.text = "<p>Juhu, sie haben Post!</p>"
+    post.created_by_id = adminId
+    db.session.add(post)
+
+    post = Post()
+    post.title = "Noch ein Post"
+    post.text = "<p>Was steht hier nur für ein Quatsch?</p>"
+    post.created_by_id = adminId
+    db.session.add(post)
+
+    file = File()
+    file.original_filename = "test.jpg"
+    file.width = 200
+    file.height = 200
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.filename = "ed22745d-ce4a-49f1-b9af-d29918d07923.jpg"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "Hotpot (5).png"
+    file.width = 512
+    file.height = 512
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.filename = "f7b185e048994c178d1bcee8364a0eed.png"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "signal-2023-03-05-020104_003.jpeg"
+    file.width = 1152
+    file.height = 2048
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.thumbnail_l = True
+    file.thumbnail_xl = True
+    file.filename = "556c457bf2984a3d83d34d8fa486fea9.jpeg"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "Hotpot (5).png"
+    file.width = 512
+    file.height = 512
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.filename = "	f4947937541045fdade9cfdf5cdb5afa.png"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "signal-2023-03-05-020104_003.jpeg"
+    file.width = 1152
+    file.height = 2048
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.thumbnail_l = True
+    file.thumbnail_xl = True
+    file.filename = "70ea657f1c744d8da30b0104651129b0.jpeg"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "Love it or leave it.JPG"
+    file.width = 3456
+    file.height = 4608
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.thumbnail_l = True
+    file.thumbnail_xl = True
+    file.filename = "678a49a6ebc94a55afcac1185af80ce6.jpeg"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    file = File()
+    file.original_filename = "Hate it or love it.JPG"
+    file.width = 4608
+    file.height = 3456
+    file.thumbnail_xs = True
+    file.thumbnail_s = True
+    file.thumbnail_m = True
+    file.thumbnail_l = True
+    file.thumbnail_xl = True
+    file.filename = "1847c84526574b0f9a15f258cf9a0de8.jpeg"
+    file.created_by_id = adminId
+    db.session.add(file)
+
+    instance_settings = InstanceSettings()
+    instance_settings.instance_name = "My LocalCrag"
+    instance_settings.copyright_owner = "Your name goes here"
+    instance_settings.arrow_color = "#FFE016"
+    instance_settings.arrow_text_color = "#000000"
+    instance_settings.arrow_highlight_color = "#FF0000"
+    instance_settings.arrow_highlight_text_color = "#FFFFFF"
+    instance_settings.bar_chart_color = "rgb(213, 30, 38)"
+    instance_settings.matomo_tracker_url = "https://matomo-example.localcrag.cloud/"
+    instance_settings.matomo_site_id = 1
+    db.session.add(instance_settings)
+
+    topoImage = TopoImage()
+    topoImage.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topoImage.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
+    topoImage.created_by_id = adminId
+    topoImage.order_index = 0
+    db.session.add(topoImage)
+
+    topoImage = TopoImage()
+    topoImage.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topoImage.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    topoImage.created_by_id = adminId
+    topoImage.order_index = 1
+    db.session.add(topoImage)
+
+    linePath = LinePath()
+    linePath.line_id = Line.get_id_by_slug("super-spreader")
+    linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
+    linePath.path = "[63.0, 65.32448061683445, 45.857142857142854, 43.90661811951168, 39.57142857142858, 26.665238809166848, 39.714285714285715, 16.170486185478687]"
+    linePath.created_by_id = adminId
+    linePath.order_index = 0
+    linePath.order_index_for_line = 0
+    db.session.add(linePath)
+
+    linePath = LinePath()
+    linePath.line_id = Line.get_id_by_slug("treppe")
+    linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
+    linePath.path = "[84.42857142857143, 70.25058899121868, 75.85714285714286, 35.767830370529026, 68.71428571428571, 8.781323623902335]"
+    linePath.created_by_id = adminId
+    linePath.order_index = 1
+    linePath.order_index_for_line = 0
+    db.session.add(linePath)
+
+    linePath = LinePath()
+    linePath.line_id = Line.get_id_by_slug("super-spreader")
+    linePath.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
+    linePath.path = "[57.71428571428571, 59.04761904761905, 57.57142857142858, 39.23809523809524, 45.714285714285715, 27.42857142857143, 38.714285714285715, 15.42857142857143, 41.14285714285714, 2.4761904761904763]"
+    linePath.created_by_id = adminId
+    linePath.order_index = 0
+    linePath.order_index_for_line = 0
+    db.session.add(linePath)
 
     db.session.commit()
