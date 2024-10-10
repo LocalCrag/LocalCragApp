@@ -14,16 +14,18 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
 import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {Sector} from '../../../models/sector';
 import {SectorsService} from '../../../services/crud/sectors.service';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-sector-ascents',
   standalone: true,
-  imports: [
-    AscentListComponent,
-    NgIf,
-    SkeletonModule,
-    NgForOf
-  ],
+    imports: [
+        AscentListComponent,
+        NgIf,
+        SkeletonModule,
+        NgForOf,
+        AscentListSkeletonComponent
+    ],
   templateUrl: './sector-ascents.component.html',
   styleUrl: './sector-ascents.component.scss'
 })

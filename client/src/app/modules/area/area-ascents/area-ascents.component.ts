@@ -14,6 +14,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
 import {marker} from '@jsverse/transloco-keys-manager/marker';
 import {AreasService} from '../../../services/crud/areas.service';
 import {Area} from '../../../models/area';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-area-ascents',
@@ -22,7 +23,8 @@ import {Area} from '../../../models/area';
         AscentListComponent,
         NgForOf,
         NgIf,
-        SkeletonModule
+        SkeletonModule,
+        AscentListSkeletonComponent
     ],
   templateUrl: './area-ascents.component.html',
   styleUrl: './area-ascents.component.scss'

@@ -49,6 +49,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.bar_chart_color = instance_settings_data['barChartColor']
         instance_settings.matomo_tracker_url = instance_settings_data['matomoTrackerUrl']
         instance_settings.matomo_site_id = instance_settings_data['matomoSiteId']
+        instance_settings.maptiler_api_key = instance_settings_data['maptilerApiKey']
         db.session.add(instance_settings)
         db.session.commit()
 

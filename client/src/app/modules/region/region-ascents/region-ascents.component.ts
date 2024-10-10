@@ -14,6 +14,7 @@ import {RegionService} from '../../../services/crud/region.service';
 import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
 import {NgForOf, NgIf} from '@angular/common';
 import {SkeletonModule} from 'primeng/skeleton';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-region-ascents',
@@ -22,7 +23,8 @@ import {SkeletonModule} from 'primeng/skeleton';
     AscentListComponent,
     NgForOf,
     SkeletonModule,
-    NgIf
+    NgIf,
+    AscentListSkeletonComponent
   ],
   templateUrl: './region-ascents.component.html',
   styleUrl: './region-ascents.component.scss'

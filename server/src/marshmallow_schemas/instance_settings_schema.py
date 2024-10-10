@@ -25,6 +25,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     superadminEmail = fields.String(attribute="superadmin_email")
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
+    maptilerApiKey = fields.String(attribute="maptiler_api_key")
 
 
 
