@@ -9,6 +9,7 @@ import pytest
 from flask import current_app
 from flask_jwt_extended import create_access_token
 from sqlalchemy import URL, create_engine, text
+from sqlalchemy.event import listen
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -21,7 +22,6 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
-from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.instance_settings import InstanceSettings
@@ -30,11 +30,12 @@ from models.line_path import LinePath
 from models.map_marker import MapMarker
 from models.menu_item import MenuItem
 from models.menu_page import MenuPage
+from models.mixins.has_slug import update_slugs
+from models.mixins.is_searchable import update_searchables, create_searchables
 from models.post import Post
 from models.ranking import Ranking
 from models.region import Region
 from models.revoked_token import RevokedToken
-from models.searchable import Searchable
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
@@ -65,13 +66,20 @@ def setup_db():
 
 @pytest.fixture(autouse=True)
 def db_session():
-    connection = db.engine.connect()
-    transaction = connection.begin()
-    db.session = scoped_session(sessionmaker(bind=connection, autoflush=False))
-    yield db.session
-    transaction.rollback()
-    connection.close()
-    db.session.remove()
+    with app.app_context():
+        connection = db.engine.connect()
+        transaction = connection.begin()
+        saved_session = db.session
+        db.session = scoped_session(sessionmaker(bind=connection))
+        # We need to re-register all handler, as we change the session
+        listen(db.session, "before_flush", update_slugs)
+        listen(db.session, "before_flush", update_searchables)
+        listen(db.session, "after_flush", create_searchables)
+        yield db.session
+        transaction.rollback()
+        connection.close()
+        db.session.remove()
+        db.session = saved_session
 
 
 @pytest.fixture
@@ -261,12 +269,14 @@ def fill_db_with_sample_data():
     area.name = "Dritter Block von links"
     area.description = "<p>Allgemeine Infos zum dritten Block von links.</p>"
     area.sector_id = Sector.get_id_by_slug("schattental")
+    area.order_index = 0
     db.session.add(area)
 
     area = Area()
     area.name = "Noch ein Bereich"
     area.description = ""
     area.sector_id = Sector.get_id_by_slug("schattental")
+    area.order_index = 1
     db.session.add(area)
 
     line = Line()
