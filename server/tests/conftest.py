@@ -18,13 +18,23 @@ from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.map_marker_type_enum import MapMarkerType
+from models.enums.menu_item_position_enum import MenuItemPositionEnum
+from models.enums.menu_item_type_enum import MenuItemTypeEnum
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.line_path import LinePath
+from models.map_marker import MapMarker
+from models.menu_item import MenuItem
+from models.menu_page import MenuPage
 from models.post import Post
+from models.ranking import Ranking
 from models.region import Region
+from models.revoked_token import RevokedToken
+from models.searchable import Searchable
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
@@ -218,6 +228,13 @@ def fill_db_with_sample_data():
     region.name = "Tessin"
     region.description = "Tolle Region"
     db.session.add(region)
+
+    crag = Crag()
+    crag.name = "Chironico"
+    crag.description = "<p>Lange Beschreibung zu Chironico</p>"
+    crag.rules = "<p>Briones Regeln.</p>"
+    crag.short_description = "Kurze Beschreibung zu Chironico"
+    db.session.add(crag)
 
     crag = Crag()
     crag.name = "Brione"
@@ -427,7 +444,7 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("super-spreader")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = "[63.0, 65.32448061683445, 45.857142857142854, 43.90661811951168, 39.57142857142858, 26.665238809166848, 39.714285714285715, 16.170486185478687]"
+    linePath.path = [63.0, 65.32448061683445, 45.857142857142854, 43.90661811951168, 39.57142857142858, 26.665238809166848, 39.714285714285715, 16.170486185478687]
     linePath.created_by_id = adminId
     linePath.order_index = 0
     linePath.order_index_for_line = 0
@@ -436,7 +453,7 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("treppe")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = "[84.42857142857143, 70.25058899121868, 75.85714285714286, 35.767830370529026, 68.71428571428571, 8.781323623902335]"
+    linePath.path = [84.42857142857143, 70.25058899121868, 75.85714285714286, 35.767830370529026, 68.71428571428571, 8.781323623902335]
     linePath.created_by_id = adminId
     linePath.order_index = 1
     linePath.order_index_for_line = 0
@@ -445,10 +462,118 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("super-spreader")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
-    linePath.path = "[57.71428571428571, 59.04761904761905, 57.57142857142858, 39.23809523809524, 45.714285714285715, 27.42857142857143, 38.714285714285715, 15.42857142857143, 41.14285714285714, 2.4761904761904763]"
+    linePath.path = [57.71428571428571, 59.04761904761905, 57.57142857142858, 39.23809523809524, 45.714285714285715, 27.42857142857143, 38.714285714285715, 15.42857142857143, 41.14285714285714, 2.4761904761904763]
     linePath.created_by_id = adminId
     linePath.order_index = 0
     linePath.order_index_for_line = 0
     db.session.add(linePath)
+
+    mapMarker = MapMarker()
+    mapMarker.lat = 34.343434
+    mapMarker.lng = 29.292929
+    mapMarker.type = MapMarkerType.AREA
+    mapMarker.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    db.session.add(mapMarker)
+
+    menuPage = MenuPage()
+    menuPage.title = "Impressum"
+    menuPage.text = "<p>Hier steht ein Impressums Text.</p>"
+    menuPage.created_by_id = adminId
+    db.session.add(menuPage)
+
+    menuPage = MenuPage()
+    menuPage.title = "Datenschutzerklärung"
+    menuPage.text = "<p>Hier steht die Datenschutzerklärung.</p>"
+    menuPage.created_by_id = adminId
+    db.session.add(menuPage)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.MENU_PAGE
+    menuItem.position = MenuItemPositionEnum.BOTTOM
+    menuItem.order_index = 0
+    menuItem.menu_page_id = menuPage.get_id_by_slug("impressum")
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.MENU_PAGE
+    menuItem.position = MenuItemPositionEnum.BOTTOM
+    menuItem.order_index = 1
+    menuItem.menu_page_id = menuPage.get_id_by_slug("datenschutzerklaerung")
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.TOPO
+    menuItem.position = MenuItemPositionEnum.TOP
+    menuItem.order_index = 1
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.YOUTUBE
+    menuItem.position = MenuItemPositionEnum.TOP
+    menuItem.order_index = 2
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.INSTAGRAM
+    menuItem.position = MenuItemPositionEnum.TOP
+    menuItem.order_index = 3
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    menuItem = MenuItem()
+    menuItem.type = MenuItemTypeEnum.NEWS
+    menuItem.position = MenuItemPositionEnum.TOP
+    menuItem.order_index = 0
+    menuItem.created_by_id = adminId
+    db.session.add(menuItem)
+
+    for secret in [None, False]:
+        ranking = Ranking()
+        ranking.user_id = adminId
+        ranking.top_10 = 22
+        ranking.top_50 = 22
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.top_values = [22]
+        ranking.total_count = 1
+        ranking.secret = secret
+        db.session.add(ranking)
+
+        ranking = Ranking()
+        ranking.user_id = adminId
+        ranking.sector_id = Sector.get_id_by_slug("schattental")
+        ranking.top_10 = 22
+        ranking.top_50 = 22
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.top_values = [22]
+        ranking.total_count = 1
+        ranking.secret = secret
+        db.session.add(ranking)
+
+        ranking = Ranking()
+        ranking.user_id = adminId
+        ranking.crag_id = Crag.get_id_by_slug("brione")
+        ranking.top_10 = 22
+        ranking.top_50 = 22
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.top_values = [22]
+        ranking.total_count = 1
+        ranking.secret = secret
+        db.session.add(ranking)
+
+    for jti in [
+        "00bd7a15-fdb4-4986-b9d5-78f3edd461fc",
+        "a256938c-cf46-4288-a40b-5bb7305cb61e",
+        "5f2edb37-1fb3-4e10-99cb-66a67fd80d71",
+        "cd5c8e72-e115-4195-84eb-fd8b65559662",
+        "7d291e44-016a-4869-91af-3416d2060c9c",
+        "f5bd3862-78ba-471a-b0e5-fa55d419e435"
+    ]:
+        revokedToken = RevokedToken()
+        revokedToken.jti = jti
+        db.session.add(revokedToken)
 
     db.session.commit()
