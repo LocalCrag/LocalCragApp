@@ -2,6 +2,8 @@
 
 Deploy your local alternative to the well known online climbing guide platforms with LocalCrag to keep control over all data in the crags you are developing!
 
+[![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
 ## The idea
 
 As developers of climbing crags you invest hours and hours of work in cleaning lines and managing the politics behind providing public access to the areas you love. A central piece of this work is also to publish information about the areas - usually by providing a paper guidebook or some form of online guide. While developing the Eifel bouldering areas our approach was to use a Wordpress site for publishing information. Like other core developers of areas we know well (e.g. Pfalz) we opted against publishing on well known big platforms as we don't want to give our data out of our hands. Because of brittle access situations we wanted to be in 100% control of all the detailed information that is the fruit of our year long engagement in cleaning all the blocks in the forest. We wanted to be able to act fast if certain events require to restrict information. Corporate interests of big platforms stand in the way of this flexibility. And also, we liked the idea of having our information accessible under our own domain.
@@ -64,6 +66,4 @@ If you'd like to contribute, please fork the repository and make changes as you'
 
 ## License
 
-All Rights Reserved.
-
-I couldn't find a fitting licence that allows only non-commercial use. However I will grant any climbing and bouldering area developer the right to use LocalCrag and deploy an instance, just contact me. In the meantime I keep looking for a good license..
+This project is licensed under the AGPL-3.0 License - see the [LICENSE](./LICENSE) file for details.
