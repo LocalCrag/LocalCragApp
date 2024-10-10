@@ -30,10 +30,18 @@ class File(BaseEntity):
         if current_app.config['SPACES_ACCESS_ENDPOINT']:
             endpoint = current_app.config['SPACES_ACCESS_ENDPOINT']
         protocol, host = endpoint.split('://')
-        result = '{}://{}.{}/{}'.format(
-            protocol,
-            current_app.config['SPACES_BUCKET'],
-            host,
-            self.filename
-        )
+        if current_app.config['SPACES_ADDRESSING'] == 'path':
+            result = '{}://{}/{}/{}'.format(
+                protocol,
+                host,
+                current_app.config['SPACES_BUCKET'],
+                self.filename
+            )
+        else:  # SPACES_ADDRESSING = 'virtual'
+            result = '{}://{}.{}/{}'.format(
+                protocol,
+                current_app.config['SPACES_BUCKET'],
+                host,
+                self.filename
+            )
         return result
