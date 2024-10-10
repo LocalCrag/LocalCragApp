@@ -15,6 +15,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     slug_target_columns = 'firstname, lastname'
     search_name_target_columns = ['firstname', 'lastname']
     searchable_type = SearchableItemTypeEnum.USER
+    test = None
 
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
