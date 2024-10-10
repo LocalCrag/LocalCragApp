@@ -33,7 +33,10 @@ export class CoreComponent implements OnInit {
             document.documentElement.style.setProperty('--arrow-highlight-text-color', instanceSettingsState.arrowHighlightTextColor);
             if (instanceSettingsState.faviconImage) {
                 favIcon.href = instanceSettingsState.faviconImage.thumbnailS;
+            } else {
+                favIcon.href = 'assets/lc_logo.svg';
             }
+          console.log(favIcon.href);
         });
         this.store.select(selectInstanceName).pipe(take(1)).subscribe(instanceName => {
             this.title.setTitle(instanceName);
