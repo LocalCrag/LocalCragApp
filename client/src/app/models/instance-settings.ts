@@ -18,7 +18,6 @@ export class InstanceSettings {
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
-  superadminEmail: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
@@ -39,7 +38,6 @@ export class InstanceSettings {
     instanceSettings.arrowHighlightColor = payload.arrowHighlightColor;
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
     instanceSettings.barChartColor = payload.barChartColor;
-    instanceSettings.superadminEmail = payload.superadminEmail;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;

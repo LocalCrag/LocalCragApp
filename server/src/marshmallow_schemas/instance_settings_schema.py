@@ -22,12 +22,9 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     arrowHighlightColor = fields.String(attribute="arrow_highlight_color")
     arrowHighlightTextColor = fields.String(attribute="arrow_highlight_text_color")
     barChartColor = fields.String(attribute="bar_chart_color")
-    superadminEmail = fields.String(attribute="superadmin_email")
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
     maptilerApiKey = fields.String(attribute="maptiler_api_key")
-
-
 
 
 instance_settings_schema = InstanceSettingsSchema()

@@ -26,6 +26,11 @@ ascent_args = {
                         validate=lambda date: date <= datetime.date.today()),
 }
 
+project_climbed_args = {
+    "line": fields.String(required=True, allow_none=False),
+    "message": fields.String(required=True, allow_none=False),
+}
+
 
 def cross_validate_ascent_args(args):
     if args['soft'] and args['hard']:

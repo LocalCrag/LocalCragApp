@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  width: 100%
+}
+
+.line-name {
+
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 22rem;
+
+  h3 {
+    display: inline-block;
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .grade {
+    margin-left: .5rem;
+    font-size: 1.17em;
+    font-weight: bold;
+    max-width: fit-content;
+  }
+
+}
+
+.close-icon {
+  cursor: pointer;
+  display: flex;
+  margin-left: 1.25rem;
+  align-items: flex-start;
+  flex-grow: 1;
+  justify-content: flex-end;
+}

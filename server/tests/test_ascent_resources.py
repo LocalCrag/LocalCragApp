@@ -239,3 +239,9 @@ def test_delete_user_deletes_tick_but_not_line(client):
     # Line must be still there
     rv = client.get('/api/lines/super-spreader')
     assert rv.status_code == 200
+
+def test_send_project_climbed_message(client):
+    access_headers, refresh_headers = get_login_headers(client)
+
+    # TODO: Implement this test and also some fail cases
+    assert False

@@ -2,7 +2,8 @@ from flask import Blueprint
 
 from resources.area_resources import GetAreas, CreateArea, DeleteArea, UpdateArea, GetArea, UpdateAreaOrder, \
     GetAreaGrades
-from resources.ascent_resources import CreateAscent, GetAscents, GetTicks, DeleteAscent, UpdateAscent
+from resources.ascent_resources import CreateAscent, GetAscents, GetTicks, DeleteAscent, UpdateAscent, \
+    SendProjectClimbedMessage
 from resources.auth_resources import UserLogin, UserLogoutRefresh, UserLogoutAccess, TokenRefresh, \
     ForgotPassword, ResetPassword
 from resources.crag_resources import GetCrags, GetCrag, UpdateCrag, DeleteCrag, CreateCrag, UpdateCragOrder, \
@@ -122,6 +123,7 @@ def configure_api(app):
     ascent_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=DeleteAscent.as_view('delete_ascent'))
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=UpdateAscent.as_view('update_ascent'))
+    ascent_bp.add_url_rule('/send-project-climbed-message', view_func=SendProjectClimbedMessage.as_view('send_project_climbed_message'))
     app.register_blueprint(ascent_bp, url_prefix='/api/ascents')
 
     # Ranking API

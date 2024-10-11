@@ -8,8 +8,10 @@ from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.create_user_mail import create_user_mail
+from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
 from i18n.user_registered_mail import user_registered_mail
+from models.line import Line
 from models.user import User
 
 
@@ -131,6 +133,20 @@ def send_user_registered_email(registered_user: User, receiver: User, user_count
     template = render_template('user-registered-mail.html', firstname=registered_user.firstname,
                                lastname=registered_user.lastname, action_link=action_link, admin=receiver.firstname,
                                frontend_host=current_app.config['FRONTEND_HOST'], user_count=user_count,
+                               **i18n_keyword_arg_dict)
+    msg.attach(MIMEText(template, 'html'))
+
+    send_generic_mail(msg)
+
+
+def send_project_climbed_email(climber: User, receiver: User, message: str, line: Line):
+    msg, i18n_keyword_arg_dict = prepare_message(climber, project_climbed_mail)
+    msg['To'] = receiver.email
+    action_link_project = f"{current_app.config['FRONTEND_HOST']}topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}"
+    action_link_user = f"{current_app.config['FRONTEND_HOST']}users/{climber.slug}"
+    template = render_template('project-climbed-mail.html', message=message, action_link_project=action_link_project,
+                               action_link_user=action_link_user, admin=receiver.firstname, climber_mail=climber.email,
+                               frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
 

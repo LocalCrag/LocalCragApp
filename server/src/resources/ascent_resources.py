@@ -25,13 +25,14 @@ from models.sector import Sector
 from models.todo import Todo
 from models.topo_image import TopoImage
 from models.user import User
+from util.email import send_project_climbed_email
 from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload, cross_validate_grade
 
 from webargs_schemas.area_args import area_args
-from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, ticks_args
+from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, ticks_args, project_climbed_args
 from webargs_schemas.topo_image_args import topo_image_args
 
 
@@ -221,5 +222,27 @@ class DeleteAscent(MethodView):
 
         db.session.delete(ascent)
         db.session.commit()
+
+        return jsonify(None), 204
+
+
+class SendProjectClimbedMessage(MethodView):
+
+    @jwt_required()
+    def post(self):
+        project_climbed_data = parser.parse(project_climbed_args, request)
+
+        user: User = User.find_by_email(get_jwt_identity())
+        line: Line = Line.find_by_id(project_climbed_data["line"])
+
+        if not line:
+            raise BadRequest('Line does not exist.')
+
+        if line.grade_value >= 0:
+            raise BadRequest('Only projects can be first ascended.')
+
+        # Email all admins
+        for admin in User.query.filter(User.admin == True).all():
+            send_project_climbed_email(user, admin, project_climbed_data['message'], line)
 
         return jsonify(None), 204
