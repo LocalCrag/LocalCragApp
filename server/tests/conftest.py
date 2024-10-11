@@ -238,17 +238,19 @@ def fill_db_with_sample_data():
     db.session.add(region)
 
     crag = Crag()
-    crag.name = "Chironico"
-    crag.description = "<p>Lange Beschreibung zu Chironico</p>"
-    crag.rules = "<p>Briones Regeln.</p>"
-    crag.short_description = "Kurze Beschreibung zu Chironico"
-    db.session.add(crag)
-
-    crag = Crag()
     crag.name = "Brione"
     crag.description = "<p>Lange Beschreibung zu Brione.</p>"
     crag.rules = "<p>Briones Regeln.</p>"
     crag.short_description = "Kurze Beschreibung zu Brione"
+    crag.order_index = 0
+    db.session.add(crag)
+
+    crag = Crag()
+    crag.name = "Chironico"
+    crag.description = "<p>Lange Beschreibung zu Chironico</p>"
+    crag.rules = "<p>Briones Regeln.</p>"
+    crag.short_description = "Kurze Beschreibung zu Chironico"
+    crag.order_index = 1
     db.session.add(crag)
 
     sector = Sector()
