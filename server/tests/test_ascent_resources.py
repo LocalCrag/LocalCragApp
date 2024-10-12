@@ -1,5 +1,6 @@
 import json
 
+from pytest_mock import mocker
 from sqlalchemy import text
 
 from app import app
@@ -240,8 +241,89 @@ def test_delete_user_deletes_tick_but_not_line(client):
     rv = client.get('/api/lines/super-spreader')
     assert rv.status_code == 200
 
-def test_send_project_climbed_message(client):
+def test_send_project_climbed_message(client, mocker):
     access_headers, refresh_headers = get_login_headers(client)
 
-    # TODO: Implement this test and also some fail cases
-    assert False
+    # Create a project line first
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "videos": [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Video"
+            }
+        ],
+        "gradeName": "OPEN_PROJECT",
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "rating": 5,
+        "faYear": 2016,
+        "faName": "Dave Graham",
+        "startingPosition": 'FRENCH',
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "morpho": True,
+        "lowball": True,
+        "noTopout": True,
+        "badDropzone": True,
+        "childFriendly": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
+        "secret": False,
+    }
+
+    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    assert rv.status_code == 201
+    res = json.loads(rv.data)
+    line_id = res['id']
+
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
+    project_climbed_data = {
+        "line": line_id,
+        "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts"
+    }
+    rv = client.post('/api/ascents/send-project-climbed-message', headers=access_headers, json=project_climbed_data)
+    assert rv.status_code == 204
+
+    # We have three admins, so the mail must be sent three times
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 3
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 3
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 3
+
+    # Try sending a project climbed message for a line that is not a project
+    project_climbed_data = {
+        "line": "1c39fd1f-6341-4161-a83f-e5de0f861c48",
+        "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts"
+    }
+    rv = client.post('/api/ascents/send-project-climbed-message', headers=access_headers, json=project_climbed_data)
+    assert rv.status_code == 400
+
+    # Try for a non existing line
+    project_climbed_data = {
+        "line": "1c39fd1f-6341-4161-a83f-e5de0f861c49",
+        "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts"
+    }
+
+    rv = client.post('/api/ascents/send-project-climbed-message', headers=access_headers, json=project_climbed_data)
+    assert rv.status_code == 404
+

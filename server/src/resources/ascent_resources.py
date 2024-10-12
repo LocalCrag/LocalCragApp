@@ -9,6 +9,7 @@ from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.area_schema import areas_schema, area_schema
@@ -236,7 +237,7 @@ class SendProjectClimbedMessage(MethodView):
         line: Line = Line.find_by_id(project_climbed_data["line"])
 
         if not line:
-            raise BadRequest('Line does not exist.')
+            raise NotFound('Line does not exist.')
 
         if line.grade_value >= 0:
             raise BadRequest('Only projects can be first ascended.')

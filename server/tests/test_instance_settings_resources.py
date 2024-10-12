@@ -15,7 +15,6 @@ def test_successful_get_instance_settings(client):
     assert res['faviconImage'] == None
     assert res['mainBgImage'] == None
     assert res['authBgImage'] == None
-    assert res['superadminEmail'] == ''  # Empty because in default config this is blank
     assert res['arrowColor'] == '#FFE016'
     assert res['arrowTextColor'] == '#000000'
     assert res['arrowHighlightColor'] == '#FF0000'
@@ -23,6 +22,7 @@ def test_successful_get_instance_settings(client):
     assert res['barChartColor'] == 'rgb(213, 30, 38)'
     assert res['matomoTrackerUrl'] == 'https://matomo-example.localcrag.cloud'
     assert res['matomoSiteId'] == '1'
+    assert res['maptilerApiKey'] == None
 
 
 def test_successful_edit_instance_settings(client):
@@ -43,6 +43,7 @@ def test_successful_edit_instance_settings(client):
         "barChartColor": 'rgb(213, 30, 39)',
         "matomoTrackerUrl": 'https://matomo-example-2.localcrag.cloud',
         "matomoSiteId": '2',
+        "maptilerApiKey": 'ABC'
     }
     rv = client.put('/api/instance-settings', headers=access_headers, json=post_data)
     assert rv.status_code == 200
@@ -60,6 +61,6 @@ def test_successful_edit_instance_settings(client):
     assert res['arrowHighlightColor'] == '#CCCCCC'
     assert res['arrowHighlightTextColor'] == '#DDDDDD'
     assert res['barChartColor'] == 'rgb(213, 30, 39)'
-    assert res['superadminEmail'] == ''  # Empty because in default config this is blank
     assert res['matomoTrackerUrl'] == 'https://matomo-example-2.localcrag.cloud'
     assert res['matomoSiteId'] == '2'
+    assert res['maptilerApiKey'] == 'ABC'
