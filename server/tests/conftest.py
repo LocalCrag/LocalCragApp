@@ -569,7 +569,7 @@ def fill_db_with_sample_data():
     menuItem.created_by_id = adminId
     db.session.add(menuItem)
 
-    for secret in [None, False]:
+    for secret in [None, True]:
         ranking = Ranking()
         ranking.user_id = adminId
         ranking.top_10 = 22
