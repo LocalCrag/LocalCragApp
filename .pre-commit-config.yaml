@@ -1,7 +1,7 @@
 repos:
   # Python server hooks (black, flake8, isort)
   - repo: https://github.com/psf/black
-    rev: 23.9.1
+    rev: 24.10.0
     hooks:
       - id: black
         files: ^server/
