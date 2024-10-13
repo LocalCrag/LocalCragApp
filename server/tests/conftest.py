@@ -412,7 +412,7 @@ def fill_db_with_sample_data():
     file.thumbnail_xs = True
     file.thumbnail_s = True
     file.thumbnail_m = True
-    file.filename = "	f4947937541045fdade9cfdf5cdb5afa.png"
+    file.filename = "f4947937541045fdade9cfdf5cdb5afa.png"
     file.created_by_id = adminId
     db.session.add(file)
 

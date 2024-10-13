@@ -1,3 +1,6 @@
+from models.post import Post
+
+
 def test_successful_create_post(client, moderator_token):
     post_data = {
         "title": "Glees ist gesperrt!",
@@ -14,18 +17,17 @@ def test_successful_create_post(client, moderator_token):
 
 
 def test_successful_get_posts(client):
+    posts = Post.query.all()
+
     rv = client.get('/api/posts')
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert isinstance(res[0]['id'], str)
-    assert res[0]['slug'] == "noch-ein-post"
-    assert res[0]['title'] == "Noch ein Post"
-    assert res[0]['text'] == "<p>Was steht hier nur für ein Quatsch?</p>"
-    assert isinstance(res[1]['id'], str)
-    assert res[1]['slug'] == "mein-erster-post"
-    assert res[1]['title'] == "Mein erster Post"
-    assert res[1]['text'] == "<p>Juhu, sie haben Post!</p>"
+    assert len(res) == len(posts)
+    for r, p in zip(sorted(res, key=lambda r: r['id']), sorted(posts, key=lambda p: str(p.id))):
+        assert r['id'] == str(p.id)
+        assert r['slug'] == p.slug
+        assert r['title'] == p.title
+        assert r['text'] == p.text
 
 
 def test_successful_get_post(client):

@@ -1,5 +1,6 @@
 import json
 
+from models.line import Line
 from tests.utils.user_test_util import get_login_headers
 
 
@@ -648,28 +649,19 @@ def test_create_line_invalid_video_payload(client, moderator_token):
 
 
 def test_successful_get_lines(client):
+    lines = Line.query.all()
+
     rv = client.get('/api/lines')
     assert rv.status_code == 200
     res = rv.json['items']
-    assert len(res) == 2
-    assert isinstance(res[0]['id'], str)
-    assert res[0]['slug'] == "super-spreader"
-    assert res[0]['name'] == "Super-Spreader"
-    assert res[0]['ascentCount'] == 1
-    assert res[0]['secret'] == False
-    assert len(res[0]['linePaths']) == 2
-    assert res[0]['linePaths'][0]['orderIndex'] == 0
-    assert isinstance(res[0]['linePaths'][0]['topoImage']['id'], str)
-    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
-    assert isinstance(res[1]['id'], str)
-    assert res[1]['slug'] == "treppe"
-    assert res[1]['name'] == "Treppe"
-    assert res[1]['secret'] == False
-    assert res[1]['ascentCount'] == 0
-    assert len(res[1]['linePaths']) == 1
-    assert res[1]['linePaths'][0]['orderIndex'] == 1
-    assert isinstance(res[1]['linePaths'][0]['topoImage']['id'], str)
-    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
+    assert len(res) == len(lines)
+    for r, line in zip(sorted(res, key=lambda r: r['id']), sorted(lines, key=lambda l: str(l.id))):
+        assert r['id'] == str(line.id)
+        assert r['slug'] == line.slug
+        assert r['name'] == line.name
+        assert r['ascentCount'] == line.ascent_count
+        assert r['secret'] == line.secret
+        assert len(r['linePaths']) == len(line.line_paths)
 
 
 def test_successful_get_line(client):

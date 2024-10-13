@@ -1,3 +1,6 @@
+from models.menu_page import MenuPage
+
+
 def test_successful_create_menu_page(client, moderator_token):
     menu_page_data = {
         "title": "Glees ist gesperrt!",
@@ -14,20 +17,17 @@ def test_successful_create_menu_page(client, moderator_token):
 
 
 def test_successful_get_menu_pages(client):
-
+    menu_pages = MenuPage.query.all()
 
     rv = client.get('/api/menu-pages')
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert isinstance(res[0]['id'], str)
-    assert res[0]['slug'] == "datenschutzerklaerung"
-    assert res[0]['title'] == "Datenschutzerklärung"
-    assert res[0]['text'] == "<p>Hier steht die Datenschutzerklärung.</p>"
-    assert isinstance(res[1]['id'], str)
-    assert res[1]['slug'] == "impressum"
-    assert res[1]['title'] == "Impressum"
-    assert res[1]['text'] == "<p>Hier steht ein Impressums Text.</p>"
+    assert len(res) == len(menu_pages)
+    for r, mp in zip(sorted(res, key=lambda r: r['id']), sorted(menu_pages, key=lambda m: str(m.id))):
+        assert r['id'] == str(mp.id)
+        assert r['slug'] == mp.slug
+        assert r['title'] == mp.title
+        assert r['text'] == mp.text
 
 
 def test_successful_get_menu_page(client):

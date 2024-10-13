@@ -67,7 +67,6 @@ def test_successful_get_crag(client):
     assert res['name'] == crag.name
     assert res['slug'] == crag.slug
     assert res['orderIndex'] == crag.order_index
-    # assert res['ascentCount'] == crag.ascent_count
     assert res['portraitImage'] is crag.portrait_image_id or res['portraitImage']['id'] == crag.portrait_image_id
     assert res['description'] == crag.description
     assert res['shortDescription'] == crag.short_description

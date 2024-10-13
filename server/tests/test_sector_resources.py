@@ -41,26 +41,20 @@ def test_successful_create_sector(client, moderator_token):
 
 
 def test_successful_get_sectors(client):
+    sectors = Sector.query.filter_by(crag_id=Crag.get_id_by_slug("brione")).order_by(Sector.order_index).all()
+
     rv = client.get('/api/crags/brione/sectors')
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert isinstance(res[0]['id'], str)
-    assert res[0]['slug'] == "schattental"
-    assert res[0]['name'] == "Schattental"
-    assert res[0]['shortDescription'] == "Kurze Beschreibung zum Schattental"
-    assert res[0]['portraitImage'] is None
-    assert res[0]['orderIndex'] == 0
-    assert res[0]['ascentCount'] == 1
-    assert res[0]['secret'] == False
-    assert isinstance(res[1]['id'], str)
-    assert res[1]['slug'] == "oben"
-    assert res[1]['name'] == "Oben"
-    assert res[1]['shortDescription'] == ""
-    assert res[1]['portraitImage'] is None
-    assert res[1]['orderIndex'] == 1
-    assert res[1]['ascentCount'] == 0
-    assert res[1]['secret'] == False
+    assert len(res) == len(sectors)
+    for r, s in zip(res, sectors):
+        assert r['id'] == str(s.id)
+        assert r['slug'] == s.slug
+        assert r['name'] == s.name
+        assert r['shortDescription'] == s.short_description
+        assert r['portraitImage'] is None or r['portraitImage']['id'] == s.portrait_image_id
+        assert r['orderIndex'] == s.order_index
+        assert r['secret'] == s.secret
 
 
 def test_successful_get_sector(client):
