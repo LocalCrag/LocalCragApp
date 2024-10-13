@@ -37,4 +37,10 @@ export class AscentsService {
     );
   }
 
+  public sendProjectClimbedMessage(message: string, lineId: string): Observable<null> {
+    return this.http.post(this.api.ascents.sendProjectClimbedMessage(), {message, line: lineId}).pipe(
+      map(() => null),
+    );
+  }
+
 }

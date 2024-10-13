@@ -9,7 +9,7 @@ def cross_validate_grade(grade_name, grade_scale, line_type):
         return False
     if grade_scale not in GRADES[line_type]:
         return False
-    if grade_name not in [g['name'] for g in GRADES[line_type][grade_scale]]:
+    if grade_name not in [g["name"] for g in GRADES[line_type][grade_scale]]:
         return False
     return True
 

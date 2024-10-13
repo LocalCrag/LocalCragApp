@@ -2,12 +2,18 @@ from flask import current_app
 
 
 def get_bucket_placeholders():
-    bucket_placeholder = '{{BUCKET_PLACEHOLDER}}'
-    if current_app.config['SPACES_ACCESS_ENDPOINT'] and current_app.config['SPACES_BUCKET']:
-        bucket_placeholder_target = current_app.config['SPACES_ACCESS_ENDPOINT'].replace('://', '://{}.'.format(
-            current_app.config['SPACES_BUCKET']))
+    bucket_placeholder = "{{BUCKET_PLACEHOLDER}}"
+    if current_app.config["SPACES_ACCESS_ENDPOINT"] and current_app.config["SPACES_BUCKET"]:
+        if current_app.config["SPACES_ADDRESSING"] == "path":
+            bucket_placeholder_target = (
+                current_app.config["SPACES_ACCESS_ENDPOINT"].rstrip("/") + f"/{current_app.config['SPACES_BUCKET']}"
+            )
+        else:  # SPACES_ADDRESSING = 'virtual'
+            bucket_placeholder_target = current_app.config["SPACES_ACCESS_ENDPOINT"].replace(
+                "://", "://{}.".format(current_app.config["SPACES_BUCKET"])
+            )
     else:
-        bucket_placeholder_target = '{{BUCKET_PLACEHOLDER}}'  # Path only used in tests
+        bucket_placeholder_target = "{{BUCKET_PLACEHOLDER}}"  # Path only used in tests
     return bucket_placeholder, bucket_placeholder_target
 
 
@@ -25,4 +31,3 @@ def replace_bucket_placeholders(text):
         return text.replace(bucket_placeholder, bucket_placeholder_target)
     else:
         return text
-

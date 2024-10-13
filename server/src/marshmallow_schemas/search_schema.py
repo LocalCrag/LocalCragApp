@@ -9,7 +9,7 @@ from models.enums.line_type_enum import LineTypeEnum
 class CragSearchSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
-    portraitImage = fields.Nested(file_schema, attribute='portrait_image')
+    portraitImage = fields.Nested(file_schema, attribute="portrait_image")
 
 
 crag_search_schema = CragSearchSchema()
@@ -18,7 +18,7 @@ crag_search_schema = CragSearchSchema()
 class SectorSearchSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
-    portraitImage = fields.Nested(file_schema, attribute='portrait_image')
+    portraitImage = fields.Nested(file_schema, attribute="portrait_image")
     crag = fields.Nested(crag_search_schema)
 
 
@@ -28,7 +28,7 @@ sector_search_schema = SectorSearchSchema()
 class AreaSearchSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
-    portraitImage = fields.Nested(file_schema, attribute='portrait_image')
+    portraitImage = fields.Nested(file_schema, attribute="portrait_image")
     sector = fields.Nested(sector_search_schema)
 
 
@@ -39,8 +39,8 @@ class LineSearchSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
-    gradeName = fields.String(attribute='grade_name')
-    gradeScale = fields.String(attribute='grade_scale')
+    gradeName = fields.String(attribute="grade_name")
+    gradeScale = fields.String(attribute="grade_scale")
     area = fields.Nested(area_search_schema)
 
 

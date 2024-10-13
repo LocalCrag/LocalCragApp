@@ -128,6 +128,7 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}ascents/${id}`,
     delete: (id: string): string => `${this.apiHost}ascents/${id}`,
     getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
+    sendProjectClimbedMessage: (): string => `${this.apiHost}ascents/send-project-climbed-message`,
   };
 
   public ranking = {

@@ -8,9 +8,8 @@ import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.c
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {Store} from '@ngrx/store';
-import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
-import {take} from 'rxjs/operators';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {ProjectClimbedFormComponent} from '../project-climbed-form/project-climbed-form.component';
+import {ProjectClimbedFormTitleComponent} from '../project-climbed-form-title/project-climbed-form-title.component';
 
 @Component({
   selector: 'lc-tick-button',
@@ -57,19 +56,15 @@ export class TickButtonComponent {
         },
       });
     } else {
-      this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-        const subject = this.translocoService.translate(marker('iClimbedAProject'));
-        let message = this.translocoService.translate(marker('mailHeaderText')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('whichProjectDidYouClimb')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('whenDidYouClimbIt')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('howDidYouNameIt')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('howDidYouGradeIt')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('howWouldYouRateIt')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('doYouHaveAVideo')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('isTheLineDrawnCorrectly')) + `%0D%0A%0D%0A`;
-        message += this.translocoService.translate(marker('mailFooterText')) + `%0D%0A%0D%0A`;
-        window.location.href = `mailto:${instanceSettingsState.superadminEmail}?subject=${subject}&body=${message}`;
-      })
+      this.ref = this.dialogService.open(ProjectClimbedFormComponent, {
+        focusOnShow: false,
+        templates: {
+          header: ProjectClimbedFormTitleComponent,
+        },
+        data: {
+          line: this.line
+        },
+      });
     }
   }
 

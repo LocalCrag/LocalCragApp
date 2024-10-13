@@ -97,6 +97,7 @@ export class InstanceSettingsFormComponent {
       barChartColor: [null],
       matomoTrackerUrl: [null],
       matomoSiteId: [null],
+      maptilerApiKey: [null],
     });
   }
 
@@ -118,6 +119,7 @@ export class InstanceSettingsFormComponent {
       barChartColor: getRgbObject(this.instanceSettings.barChartColor),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
+      maptilerApiKey: this.instanceSettings.maptilerApiKey,
     });
   }
 
@@ -140,6 +142,7 @@ export class InstanceSettingsFormComponent {
       instanceSettings.barChartColor = this.getCSSRgbValue(this.instanceSettingsForm.get('barChartColor').value);
       instanceSettings.matomoSiteId = this.instanceSettingsForm.get('matomoSiteId').value;
       instanceSettings.matomoTrackerUrl = this.instanceSettingsForm.get('matomoTrackerUrl').value;
+      instanceSettings.maptilerApiKey = this.instanceSettingsForm.get('maptilerApiKey').value;
       this.instanceSettingsService.updateInstanceSettings(instanceSettings).subscribe(instanceSettings => {
         this.store.dispatch(toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED));
         this.loadingState = LoadingState.DEFAULT;

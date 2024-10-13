@@ -1,11 +1,7 @@
-from passlib.hash import pbkdf2_sha256 as sha256
+from passlib.hash import pbkdf2_sha256
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import joinedload
 
-from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
-from messages.messages import ResponseMessage
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.mixins.has_slug import HasSlug
@@ -16,9 +12,10 @@ class User(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a user.
     """
-    __tablename__ = 'users'
-    slug_target_columns = 'firstname, lastname'
-    search_name_target_columns = ['firstname', 'lastname']
+
+    __tablename__ = "users"
+    slug_target_columns = "firstname, lastname"
+    search_name_target_columns = ["firstname", "lastname"]
     searchable_type = SearchableItemTypeEnum.USER
 
     password = db.Column(db.String(120), nullable=False)
@@ -32,23 +29,23 @@ class User(HasSlug, IsSearchable, BaseEntity):
     activated_at = db.Column(db.DateTime(), nullable=True)
     reset_password_hash = db.Column(db.String(120), nullable=True, default=None)
     reset_password_hash_created = db.Column(db.DateTime(timezone=True), default=None, nullable=True)
-    language = db.Column(db.String, nullable=False, server_default='de')
-    avatar_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
-    avatar = db.relationship('File', foreign_keys=avatar_id)
-    superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    admin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    moderator = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
+    language = db.Column(db.String, nullable=False, server_default="de")
+    avatar_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
+    avatar = db.relationship("File", foreign_keys=avatar_id)
+    superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    admin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    moderator = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    member = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
 
     @staticmethod
     def generate_hash(password):
-        return sha256.hash(password)
+        return pbkdf2_sha256.hash(password)
 
     @staticmethod
     def verify_hash(password, password_hash):
-        return sha256.verify(password, password_hash)
+        return pbkdf2_sha256.verify(password, password_hash)
 
     @classmethod
     def find_by_reset_password_hash(cls, password_hash):

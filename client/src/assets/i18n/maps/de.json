@@ -15,6 +15,7 @@
   "mapMarkerForm.createMarker": "GPS-Punkt erstellen",
   "mapItemInfoDialog.navigateToItem": "Navigation starten",
   "mapItemInfoDialog.openItem": "Öffnen",
+  "mapItemInfoDialog.block": "Block",
   "markerList.TOPO_IMAGE": "Topo Bild Kooridnaten",
   "markerList.AREA": "Bereichs Koordianten",
   "markerList.SECTOR": "Sektor Koordinaten",

@@ -112,8 +112,6 @@ export class AscentListComponent implements OnInit {
   public ascentActionItems: MenuItem[];
   public clickedAscentForAction: Ascent;
 
-
-
   constructor(private ascentsService: AscentsService,
               private dialogService: DialogService,
               private store: Store,

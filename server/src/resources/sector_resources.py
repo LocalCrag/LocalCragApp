@@ -2,14 +2,13 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.crag_schema import crag_schema, crags_schema
-from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
+from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
@@ -17,11 +16,10 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import update_sector_secret_property, set_sector_parents_unsecret
+from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
-from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
 
 
@@ -32,8 +30,9 @@ class GetSectors(MethodView):
         Returns all sectors of a crag.
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
-        sectors: Sector = Sector.return_all(filter=lambda: Sector.crag_id == crag_id,
-                                            order_by=lambda: Sector.order_index.asc())
+        sectors: Sector = Sector.return_all(
+            filter=lambda: Sector.crag_id == crag_id, order_by=lambda: Sector.order_index.asc()
+        )
         return jsonify(sectors_schema.dump(sectors)), 200
 
 
@@ -60,22 +59,21 @@ class CreateSector(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_sector: Sector = Sector()
-        new_sector.name = sector_data['name'].strip()
-        new_sector.description = add_bucket_placeholders(sector_data['description'])
-        new_sector.short_description = sector_data['shortDescription']
-        new_sector.portrait_image_id = sector_data['portraitImage']
-        new_sector.rules = add_bucket_placeholders(sector_data['rules'])
+        new_sector.name = sector_data["name"].strip()
+        new_sector.description = add_bucket_placeholders(sector_data["description"])
+        new_sector.short_description = sector_data["shortDescription"]
+        new_sector.portrait_image_id = sector_data["portraitImage"]
+        new_sector.rules = add_bucket_placeholders(sector_data["rules"])
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
-        new_sector.secret = sector_data['secret']
-        new_sector.map_markers = create_or_update_markers(sector_data['mapMarkers'], new_sector)
+        new_sector.secret = sector_data["secret"]
+        new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
 
         if not new_sector.secret:
             set_sector_parents_unsecret(new_sector)
         db.session.add(new_sector)
         db.session.commit()
-
 
         return sector_schema.dump(new_sector), 201
 
@@ -91,13 +89,13 @@ class UpdateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         sector: Sector = Sector.find_by_slug(sector_slug)
 
-        sector.name = sector_data['name'].strip()
-        sector.description = add_bucket_placeholders(sector_data['description'])
-        sector.short_description = sector_data['shortDescription']
-        sector.portrait_image_id = sector_data['portraitImage']
-        sector.rules = add_bucket_placeholders(sector_data['rules'])
-        update_sector_secret_property(sector, sector_data['secret'])
-        sector.map_markers = create_or_update_markers(sector_data['mapMarkers'], sector)
+        sector.name = sector_data["name"].strip()
+        sector.description = add_bucket_placeholders(sector_data["description"])
+        sector.short_description = sector_data["shortDescription"]
+        sector.portrait_image_id = sector_data["portraitImage"]
+        sector.rules = add_bucket_placeholders(sector_data["rules"])
+        update_sector_secret_property(sector, sector_data["secret"])
+        sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()
 
@@ -115,8 +113,10 @@ class DeleteSector(MethodView):
         sector: Sector = Sector.find_by_slug(sector_slug)
 
         db.session.delete(sector)
-        query = text("UPDATE sectors SET order_index=order_index - 1 WHERE order_index > :order_index AND crag_id = :crag_id")
-        db.session.execute(query, {'order_index': sector.order_index, 'crag_id': sector.crag_id})
+        query = text(
+            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > :order_index AND crag_id = :crag_id"
+        )
+        db.session.execute(query, {"order_index": sector.order_index, "crag_id": sector.crag_id})
         db.session.commit()
 
         return jsonify(None), 204
@@ -134,7 +134,7 @@ class UpdateSectorOrder(MethodView):
         sectors: List[Sector] = Sector.return_all(filter=lambda: Sector.crag_id == crag_id)
 
         if not validate_order_payload(new_order, sectors):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for sector in sectors:
             sector.order_index = new_order[str(sector.id)]
@@ -154,6 +154,6 @@ class GetSectorGrades(MethodView):
         sector_id = Sector.get_id_by_slug(sector_slug)
         query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).filter(Area.sector_id == sector_id)
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
+        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
