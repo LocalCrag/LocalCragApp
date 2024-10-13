@@ -29,11 +29,12 @@ pytest-mock = "*"
 boto3 = "*"
 moto = "*"
 sentry-sdk = {extras = ["flask"], version = "*"}
+
+[dev-packages]
+
 flake8 = "*"
 black = "*"
 isort = "*"
-
-[dev-packages]
 
 [requires]
 python_version = "3.11"
