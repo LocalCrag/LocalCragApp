@@ -11,7 +11,7 @@ class PostSchema(BaseEntitySchema):
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
-        data['text'] = replace_bucket_placeholders(data['text'])
+        data["text"] = replace_bucket_placeholders(data["text"])
         return data
 
 

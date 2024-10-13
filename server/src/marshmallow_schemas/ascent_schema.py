@@ -13,9 +13,9 @@ class AscentSchema(BaseEntitySchema):
     fa = fields.Boolean()
     soft = fields.Boolean()
     hard = fields.Boolean()
-    withKneepad = fields.Boolean(attribute='with_kneepad')
-    gradeName = fields.String(attribute='grade_name')
-    gradeScale = fields.String(attribute='grade_scale')
+    withKneepad = fields.Boolean(attribute="with_kneepad")
+    gradeName = fields.String(attribute="grade_name")
+    gradeScale = fields.String(attribute="grade_scale")
     rating = fields.Integer()
     comment = fields.String()
     year = fields.Integer()
@@ -28,7 +28,7 @@ class AscentSchema(BaseEntitySchema):
 
 class PaginatedAscentsSchema(ma.SQLAlchemySchema):
     items = fields.List(fields.Nested(AscentSchema()))
-    hasNext = fields.Boolean(attribute='has_next')
+    hasNext = fields.Boolean(attribute="has_next")
 
 
 ascent_schema = AscentSchema()

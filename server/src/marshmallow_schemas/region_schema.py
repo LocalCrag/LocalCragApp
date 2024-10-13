@@ -9,12 +9,12 @@ class RegionSchema(BaseEntityMinSchema):
     description = fields.String()
     slug = fields.String()
     rules = fields.String()
-    ascentCount = fields.Integer(attribute='ascent_count')
+    ascentCount = fields.Integer(attribute="ascent_count")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
-        data['rules'] = replace_bucket_placeholders(data['rules'])
-        data['description'] = replace_bucket_placeholders(data['description'])
+        data["rules"] = replace_bucket_placeholders(data["rules"])
+        data["description"] = replace_bucket_placeholders(data["description"])
         return data
 
 

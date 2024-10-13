@@ -17,24 +17,26 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a climbing crag's sector. Could be e.g. "Mordor". Contains one or more areas.
     """
-    __tablename__ = 'sectors'
 
-    slug_blocklist = ['edit', 'create-sector', 'sectors', 'gallery', 'ascents', 'rules']
+    __tablename__ = "sectors"
+
+    slug_blocklist = ["edit", "create-sector", "sectors", "gallery", "ascents", "rules"]
     searchable_type = SearchableItemTypeEnum.SECTOR
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     short_description = db.Column(db.Text, nullable=True)
-    crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=False)
-    portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
-    portrait_image = db.relationship('File', lazy='joined')
-    areas = db.relationship("Area", cascade="all,delete", backref="sector", lazy="select",
-                            order_by='Area.order_index.asc()')
-    order_index = db.Column(db.Integer, nullable=False, server_default='0')
+    crag_id = db.Column(UUID(), db.ForeignKey("crags.id"), nullable=False)
+    portrait_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
+    portrait_image = db.relationship("File", lazy="joined")
+    areas = db.relationship(
+        "Area", cascade="all,delete", backref="sector", lazy="select", order_by="Area.order_index.asc()"
+    )
+    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     rules = db.Column(db.Text, nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-    secret = db.Column(db.Boolean, default=False, server_default='0')
-    crag_slug = association_proxy('crag', 'slug')
-    map_markers = db.relationship('MapMarker', back_populates='sector')
+    secret = db.Column(db.Boolean, default=False, server_default="0")
+    crag_slug = association_proxy("crag", "slug")
+    map_markers = db.relationship("MapMarker", back_populates="sector")
 
     @hybrid_property
     def ascent_count(self):

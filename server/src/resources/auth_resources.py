@@ -4,8 +4,7 @@ from uuid import uuid4
 import pytz
 from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
-                                get_jwt_identity, get_jwt)
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -31,20 +30,23 @@ class UserLogin(MethodView):
         Logs in a user into the application.
         """
         data = parser.parse(login_args, request)
-        email_canonical = data['email'].lower()
+        email_canonical = data["email"].lower()
         current_user = User.find_by_email(email_canonical)
 
         if not current_user:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
-        if User.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=email_canonical,
-                                               additional_claims=get_access_token_claims(current_user))
+        if User.verify_hash(data["password"], current_user.password):
+            access_token = create_access_token(
+                identity=email_canonical, additional_claims=get_access_token_claims(current_user)
+            )
             refresh_token = create_refresh_token(identity=email_canonical)
-            auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
-                                         current_user,
-                                         access_token=access_token,
-                                         refresh_token=refresh_token)
+            auth_response = AuthResponse(
+                ResponseMessage.LOGIN_SUCCESS.value,
+                current_user,
+                access_token=access_token,
+                refresh_token=refresh_token,
+            )
 
             # A user becomes activated after first login
             if not current_user.activated:
@@ -64,7 +66,7 @@ class UserLogoutAccess(MethodView):
         """
         Invalidates a users access token.
         """
-        jti = get_jwt()['jti']
+        jti = get_jwt()["jti"]
         revoked_token = RevokedToken(jti=jti)
         revoked_token.persist()
         simple_message = SimpleMessage(ResponseMessage.ACCESS_TOKEN_REVOKED.value)
@@ -77,7 +79,7 @@ class UserLogoutRefresh(MethodView):
         """
         Invalidates a users refresh token.
         """
-        jti = get_jwt()['jti']
+        jti = get_jwt()["jti"]
         revoked_token = RevokedToken(jti=jti)
         revoked_token.persist()
         simple_message = SimpleMessage(ResponseMessage.REFRESH_TOKEN_REVOKED.value)
@@ -94,11 +96,10 @@ class TokenRefresh(MethodView):
         if current_user is None:
             raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
 
-        access_token = create_access_token(identity=current_user.email,
-                                           additional_claims=get_access_token_claims(current_user))
-        auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value,
-                                     current_user,
-                                     access_token=access_token)
+        access_token = create_access_token(
+            identity=current_user.email, additional_claims=get_access_token_claims(current_user)
+        )
+        auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value, current_user, access_token=access_token)
         return auth_response_schema.dump(auth_response), 200
 
 
@@ -108,7 +109,7 @@ class ForgotPassword(MethodView):
         Sends a mail to the user that lets him reset his password.
         """
         data = parser.parse(forgot_password_args, request)
-        email_canonical = data['email'].lower()
+        email_canonical = data["email"].lower()
         user = User.find_by_email(email_canonical)
         if not user:
             raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
@@ -130,7 +131,7 @@ class ResetPassword(MethodView):
         Resets a user's password.
         """
         data = parser.parse(reset_password_args, request)
-        user = User.find_by_reset_password_hash(data['resetPasswordHash'])
+        user = User.find_by_reset_password_hash(data["resetPasswordHash"])
         if not user:
             raise Unauthorized(ResponseMessage.RESET_PASSWORD_HASH_INVALID.value)
         if not user.activated:
@@ -140,17 +141,16 @@ class ResetPassword(MethodView):
         # Hash must be younger than 24 hours
         if divmod(hash_age.total_seconds(), 60 * 60 * 24)[0] > 0.0:
             raise Unauthorized(ResponseMessage.RESET_PASSWORD_HASH_INVALID.value)
-        if len(data['newPassword']) < 8:
+        if len(data["newPassword"]) < 8:
             raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
-        user.password = User.generate_hash(data['newPassword'])
+        user.password = User.generate_hash(data["newPassword"])
         user.reset_password_hash = None
         user.reset_password_hash_created = None
         db.session.add(user)
         db.session.commit()
         access_token = create_access_token(identity=user.email, additional_claims=get_access_token_claims(user))
         refresh_token = create_refresh_token(identity=user.email)
-        auth_response = AuthResponse(ResponseMessage.PASSWORD_RESET.value,
-                                     user,
-                                     access_token=access_token,
-                                     refresh_token=refresh_token)
+        auth_response = AuthResponse(
+            ResponseMessage.PASSWORD_RESET.value, user, access_token=access_token, refresh_token=refresh_token
+        )
         return auth_response_schema.dump(auth_response), 202

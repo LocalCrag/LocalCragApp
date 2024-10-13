@@ -7,20 +7,20 @@ from marshmallow_schemas.map_marker_schema import map_marker_schema
 
 
 class TopoImageSchema(BaseEntityMinSchema):
-    image = fields.Nested(file_schema, attribute='file')
-    linePaths = fields.List(fields.Nested(line_path_schema), attribute='line_paths')
-    orderIndex = fields.Int(attribute='order_index')
+    image = fields.Nested(file_schema, attribute="file")
+    linePaths = fields.List(fields.Nested(line_path_schema), attribute="line_paths")
+    orderIndex = fields.Int(attribute="order_index")
     description = fields.String()
     title = fields.String()
-    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
 
 
 class TopoImageSchemaForLines(BaseEntityMinSchema):
-    image = fields.Nested(file_schema, attribute='file')
-    orderIndex = fields.Int(attribute='order_index')
+    image = fields.Nested(file_schema, attribute="file")
+    orderIndex = fields.Int(attribute="order_index")
     description = fields.String()
     title = fields.String()
-    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
 
 
 topo_image_schema = TopoImageSchema()

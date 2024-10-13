@@ -16,20 +16,20 @@ class AscentAndTodoAreaSchema(ma.SQLAlchemySchema):
 class AreaSchema(BaseEntityMinSchema):
     name = fields.String()
     slug = fields.String()
-    shortDescription = fields.String(attribute='short_description')
-    portraitImage = fields.Nested(file_schema, attribute='portrait_image')
-    orderIndex = fields.Int(attribute='order_index')
-    ascentCount = fields.Integer(attribute='ascent_count')
+    shortDescription = fields.String(attribute="short_description")
+    portraitImage = fields.Nested(file_schema, attribute="portrait_image")
+    orderIndex = fields.Int(attribute="order_index")
+    ascentCount = fields.Integer(attribute="ascent_count")
     secret = fields.Boolean()
 
 
 class AreaDetailSchema(AreaSchema):
-    description = fields.String(attribute='description')
-    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
+    description = fields.String(attribute="description")
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
-        data['description'] = replace_bucket_placeholders(data['description'])
+        data["description"] = replace_bucket_placeholders(data["description"])
         return data
 
 

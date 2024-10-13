@@ -5,14 +5,14 @@ from marshmallow_schemas.line_schema import line_schema
 
 
 class LinePathSchema(BaseEntityMinSchema):
-    line = fields.Nested(line_schema, attribute='line', exclude=['linePaths'])
+    line = fields.Nested(line_schema, attribute="line", exclude=["linePaths"])
     path = fields.List(fields.Float)
 
 
 class LinePathSchemaForLines(BaseEntityMinSchema):
     path = fields.List(fields.Float)
-    topoImage = fields.Nested("TopoImageSchemaForLines", attribute='topo_image')
-    orderIndex = fields.Int(attribute='order_index')
+    topoImage = fields.Nested("TopoImageSchemaForLines", attribute="topo_image")
+    orderIndex = fields.Int(attribute="order_index")
 
 
 line_path_schema = LinePathSchema()

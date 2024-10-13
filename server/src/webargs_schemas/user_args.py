@@ -7,7 +7,7 @@ user_args = {
     "firstname": fields.String(required=True, validate=validate.Length(max=120)),
     "lastname": fields.String(required=True, validate=validate.Length(max=120)),
     "email": fields.String(required=True, validate=validate.Length(max=120)),
-    "avatar": fields.String(required=True, allow_none=True)
+    "avatar": fields.String(required=True, allow_none=True),
 }
 
 user_registration_args = {

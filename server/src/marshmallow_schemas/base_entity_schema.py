@@ -10,4 +10,4 @@ class BaseEntityMinSchema(ma.SQLAlchemySchema):
 class BaseEntitySchema(BaseEntityMinSchema):
     timeCreated = fields.DateTime(attribute="time_created")
     timeUpdated = fields.DateTime(attribute="time_updated")
-    createdBy = ma.Nested('UserMinSchema', attribute='created_by')
+    createdBy = ma.Nested("UserMinSchema", attribute="created_by")

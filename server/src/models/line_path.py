@@ -16,8 +16,8 @@ class LinePath(BaseEntity):
     line: Mapped[Line] = relationship(overlaps="line_paths")
     topo_image: Mapped[TopoImage] = relationship(overlaps="line_paths")
     path = db.Column(JSON, nullable=False)
-    order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    order_index_for_line = db.Column(db.Integer, nullable=False, server_default='0')
+    order_index = db.Column(db.Integer, nullable=False, server_default="0")
+    order_index_for_line = db.Column(db.Integer, nullable=False, server_default="0")
 
     @classmethod
     def exists_for_topo_image(cls, topo_image_id, line_id):

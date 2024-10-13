@@ -36,9 +36,9 @@ class UpdateRegion(MethodView):
         region_data = parser.parse(region_args, request)
         region: Region = Region.return_it()
 
-        region.name = region_data['name'].strip()
-        region.description = add_bucket_placeholders(region_data['description'])
-        region.rules = add_bucket_placeholders(region_data['rules'])
+        region.name = region_data["name"].strip()
+        region.description = add_bucket_placeholders(region_data["description"])
+        region.rules = add_bucket_placeholders(region_data["rules"])
         db.session.add(region)
         db.session.commit()
 
@@ -55,4 +55,4 @@ class GetRegionGrades(MethodView):
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
+        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200

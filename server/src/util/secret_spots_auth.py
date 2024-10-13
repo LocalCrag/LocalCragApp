@@ -7,4 +7,4 @@ def get_show_secret():
     """
     has_jwt = bool(verify_jwt_in_request(optional=True))
     claims = get_jwt()
-    return has_jwt and (claims['admin'] or claims['moderator'] or claims['member'])
+    return has_jwt and (claims["admin"] or claims["moderator"] or claims["member"])

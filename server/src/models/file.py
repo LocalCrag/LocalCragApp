@@ -10,7 +10,8 @@ class File(BaseEntity):
     Model of a file. Video and image files will have thumbnails and height + width. All other will have those fields
     just set to null.
     """
-    __tablename__ = 'files'
+
+    __tablename__ = "files"
 
     original_filename = db.Column(db.String(120), nullable=False)
     filename = db.Column(db.String(120), nullable=False)
@@ -24,24 +25,14 @@ class File(BaseEntity):
 
     @hybrid_property
     def filename_with_host(self):
-        if not current_app.config['SPACES_ENDPOINT'] and not current_app.config['SPACES_ACCESS_ENDPOINT']:
+        if not current_app.config["SPACES_ENDPOINT"] and not current_app.config["SPACES_ACCESS_ENDPOINT"]:
             return self.filename
-        endpoint = current_app.config['SPACES_ENDPOINT']
-        if current_app.config['SPACES_ACCESS_ENDPOINT']:
-            endpoint = current_app.config['SPACES_ACCESS_ENDPOINT']
-        protocol, host = endpoint.split('://')
-        if current_app.config['SPACES_ADDRESSING'] == 'path':
-            result = '{}://{}/{}/{}'.format(
-                protocol,
-                host,
-                current_app.config['SPACES_BUCKET'],
-                self.filename
-            )
+        endpoint = current_app.config["SPACES_ENDPOINT"]
+        if current_app.config["SPACES_ACCESS_ENDPOINT"]:
+            endpoint = current_app.config["SPACES_ACCESS_ENDPOINT"]
+        protocol, host = endpoint.split("://")
+        if current_app.config["SPACES_ADDRESSING"] == "path":
+            result = "{}://{}/{}/{}".format(protocol, host, current_app.config["SPACES_BUCKET"], self.filename)
         else:  # SPACES_ADDRESSING = 'virtual'
-            result = '{}://{}.{}/{}'.format(
-                protocol,
-                current_app.config['SPACES_BUCKET'],
-                host,
-                self.filename
-            )
+            result = "{}://{}.{}/{}".format(protocol, current_app.config["SPACES_BUCKET"], host, self.filename)
         return result

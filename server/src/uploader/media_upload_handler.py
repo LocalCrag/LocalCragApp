@@ -6,22 +6,22 @@ from werkzeug.datastructures import FileStorage
 
 from models.file import File
 from uploader.do_spaces import get_spaces_client, upload_file
-from uploader.upload_handler_utils import store_tmp_file, post_upload, check_filesize_limit, get_max_image_size, \
-    get_image_bytes
+from uploader.upload_handler_utils import (
+    store_tmp_file,
+    post_upload,
+    check_filesize_limit,
+    get_max_image_size,
+    get_image_bytes,
+)
 
-allowed_image_mime_types = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/bmp'
-]
+allowed_image_mime_types = ["image/jpeg", "image/png", "image/gif", "image/bmp"]
 
 image_sizes = {
-    'xl': 2000,
-    'l': 1000,
-    'm': 500,
-    's': 100,
-    'xs': 20,
+    "xl": 2000,
+    "l": 1000,
+    "m": 500,
+    "s": 100,
+    "xs": 20,
 }
 
 
@@ -68,7 +68,7 @@ def handle_image_upload(path: str, file, qquuid):
 
     extension = img.format.lower()
 
-    filename = '{}.{}'.format(qquuid, extension)
+    filename = "{}.{}".format(qquuid, extension)
     upload_file(spaces_client, get_image_bytes(img), filename)
 
     file_object = File()
@@ -91,8 +91,8 @@ def handle_image_upload(path: str, file, qquuid):
             img.format = old_format
         else:
             continue
-        setattr(file_object, 'thumbnail_{}'.format(size_key), True)
-        filename = '{}_{}.{}'.format(qquuid, size_key, extension)
+        setattr(file_object, "thumbnail_{}".format(size_key), True)
+        filename = "{}_{}.{}".format(qquuid, size_key, extension)
         upload_file(spaces_client, get_image_bytes(img), filename)
 
     return file_object
@@ -108,14 +108,14 @@ def handle_arbitrary_file_upload(file, qquuid) -> File:
     spaces_client = get_spaces_client()
     # Create file object
     file_entity = File()
-    filename_parts = file.filename.split('.')
-    extension = ''
+    filename_parts = file.filename.split(".")
+    extension = ""
     if len(filename_parts) > 1:
-        extension = file.filename.split('.')[-1]
-    file_entity.filename = '{}.{}'.format(qquuid, extension)
+        extension = file.filename.split(".")[-1]
+    file_entity.filename = "{}.{}".format(qquuid, extension)
     file_entity.original_filename = file.filename
 
     # Move file to uploads folder destination
     file.stream.seek(0)
-    upload_file(spaces_client, file.stream, '{}.{}'.format(qquuid, extension))
+    upload_file(spaces_client, file.stream, "{}.{}".format(qquuid, extension))
     return file_entity

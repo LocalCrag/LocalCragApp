@@ -25,7 +25,7 @@ def delete_old_files(folder_path, age_threshold):
                 os.remove(file_path)
 
 
-config = yaml.safe_load(Path(os.path.dirname(os.path.realpath(__file__)) + '/backup_config.yml').read_text())
+config = yaml.safe_load(Path(os.path.dirname(os.path.realpath(__file__)) + "/backup_config.yml").read_text())
 
 
 def send_failure_message(message):
@@ -33,37 +33,35 @@ def send_failure_message(message):
     Mails the captured logs to the configured email receiver.
     """
 
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = "LocalCrag backup failed"
-    msg['From'] = config['smtp']['sender']
-    msg['To'] = config['smtp']['receiver']
-    msg.attach(MIMEText(message, 'html'))
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "LocalCrag backup failed"
+    msg["From"] = config["smtp"]["sender"]
+    msg["To"] = config["smtp"]["receiver"]
+    msg.attach(MIMEText(message, "html"))
 
-    with smtplib.SMTP_SSL(config['smtp']['host'], config['smtp']['port']) as server:
-        server.login(config['smtp']['user'], config['smtp']['password'])
-        server.sendmail(config['smtp']['sender'], config['smtp']['receiver'], msg.as_string())
+    with smtplib.SMTP_SSL(config["smtp"]["host"], config["smtp"]["port"]) as server:
+        server.login(config["smtp"]["user"], config["smtp"]["password"])
+        server.sendmail(config["smtp"]["sender"], config["smtp"]["receiver"], msg.as_string())
         server.quit()
 
 
-env = {
-    'PGPASSWORD': config['database']['password']
-}
+env = {"PGPASSWORD": config["database"]["password"]}
 
 logs = []
 
 try:
 
-    backup_directory = Path(config['backupDirectory'])
-    backup_directory = backup_directory.joinpath('localcrag_backups')
+    backup_directory = Path(config["backupDirectory"])
+    backup_directory = backup_directory.joinpath("localcrag_backups")
     backup_directory.mkdir(parents=True, exist_ok=True)
 
-    for instance in config['instances']:
+    for instance in config["instances"]:
         # Create directories
-        instance_directory = backup_directory.joinpath(instance['name'])
+        instance_directory = backup_directory.joinpath(instance["name"])
         instance_directory.mkdir(parents=True, exist_ok=True)
-        database_directory = instance_directory.joinpath('database')
+        database_directory = instance_directory.joinpath("database")
         database_directory.mkdir(parents=True, exist_ok=True)
-        bucket_directory = instance_directory.joinpath('bucket')
+        bucket_directory = instance_directory.joinpath("bucket")
         bucket_directory.mkdir(parents=True, exist_ok=True)
 
         # Dump database
@@ -72,7 +70,7 @@ try:
         except Exception:
             logs.append((f"{instance['name']}: Deleting old dumps", traceback.format_exc()))
         try:
-            date = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
+            date = datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
             dump_path = f"{database_directory}/{instance['database']}_{date}.pgdumpfile"
             dump_cmd = f"{config['database']['pgDumpPath']} --file={dump_path} --dbname={instance['database']} --username={config['database']['username']} --host={config['database']['host']} --port={config['database']['port']} --format=c --inserts --clean --create"
             subprocess.check_output(dump_cmd, shell=True, env=env, timeout=60)
@@ -94,7 +92,7 @@ except Exception as e:
 
 # Send out a message if any errors happened
 if len(logs) > 0:
-    formatted_logs = ''
+    formatted_logs = ""
     for log in logs:
-        formatted_logs += f'<h2>{log[0]}</h2><code>{log[1]}</code>'
+        formatted_logs += f"<h2>{log[0]}</h2><code>{log[1]}</code>"
     send_failure_message(formatted_logs)

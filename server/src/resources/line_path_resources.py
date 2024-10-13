@@ -28,12 +28,12 @@ class CreateLinePath(MethodView):
         line_path_data = parser.parse(line_path_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        if LinePath.exists_for_topo_image(image_id, line_path_data['line']):
-            raise BadRequest('The same line can only be added once for a single topo image.')
+        if LinePath.exists_for_topo_image(image_id, line_path_data["line"]):
+            raise BadRequest("The same line can only be added once for a single topo image.")
 
         new_line_path: LinePath = LinePath()
-        new_line_path.line_id = line_path_data['line']
-        new_line_path.path = line_path_data['path']
+        new_line_path.line_id = line_path_data["line"]
+        new_line_path.path = line_path_data["path"]
         new_line_path.topo_image_id = image_id
         new_line_path.created_by_id = created_by.id
         new_line_path.order_index = LinePath.find_max_order_index(image_id) + 1
@@ -57,8 +57,9 @@ class DeleteLinePath(MethodView):
         db.session.delete(line_path)
         query = text(
             "UPDATE line_paths SET order_index=order_index - 1 WHERE "
-            "order_index > :order_index AND topo_image_id = :topo_image_id")
-        db.session.execute(query, {'order_index': line_path.order_index, 'topo_image_id': line_path.topo_image_id})
+            "order_index > :order_index AND topo_image_id = :topo_image_id"
+        )
+        db.session.execute(query, {"order_index": line_path.order_index, "topo_image_id": line_path.topo_image_id})
         db.session.commit()
 
         return jsonify(None), 204
@@ -75,7 +76,7 @@ class UpdateLinePathOrder(MethodView):
         line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.topo_image_id == image_id)
 
         if not validate_order_payload(new_order, line_paths):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for line_path in line_paths:
             line_path.order_index = new_order[str(line_path.id)]
@@ -98,7 +99,7 @@ class UpdateLinePathOrderForLine(MethodView):
         line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.line_id == line.id)
 
         if not validate_order_payload(new_order, line_paths):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for line_path in line_paths:
             line_path.order_index_for_line = new_order[str(line_path.id)]

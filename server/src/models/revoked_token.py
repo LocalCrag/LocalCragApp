@@ -5,7 +5,8 @@ class RevokedToken(db.Model):
     """
     A token that has been revoked by logout.
     """
-    __tablename__ = 'revoked_tokens'
+
+    __tablename__ = "revoked_tokens"
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
 

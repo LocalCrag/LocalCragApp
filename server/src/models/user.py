@@ -12,9 +12,10 @@ class User(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a user.
     """
-    __tablename__ = 'users'
-    slug_target_columns = 'firstname, lastname'
-    search_name_target_columns = ['firstname', 'lastname']
+
+    __tablename__ = "users"
+    slug_target_columns = "firstname, lastname"
+    search_name_target_columns = ["firstname", "lastname"]
     searchable_type = SearchableItemTypeEnum.USER
 
     password = db.Column(db.String(120), nullable=False)
@@ -28,13 +29,13 @@ class User(HasSlug, IsSearchable, BaseEntity):
     activated_at = db.Column(db.DateTime(), nullable=True)
     reset_password_hash = db.Column(db.String(120), nullable=True, default=None)
     reset_password_hash_created = db.Column(db.DateTime(timezone=True), default=None, nullable=True)
-    language = db.Column(db.String, nullable=False, server_default='de')
-    avatar_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
-    avatar = db.relationship('File', foreign_keys=avatar_id)
-    superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    admin = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    moderator = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
-    member = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
+    language = db.Column(db.String, nullable=False, server_default="de")
+    avatar_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
+    avatar = db.relationship("File", foreign_keys=avatar_id)
+    superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    admin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    moderator = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    member = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
 

@@ -17,24 +17,25 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a sector's area. Could be e.g. "Black Gate". Contains one or more lines.
     """
-    __tablename__ = 'areas'
 
-    slug_blocklist = ['edit', 'create-area', 'areas', 'gallery', 'ascents', 'rules']
+    __tablename__ = "areas"
+
+    slug_blocklist = ["edit", "create-area", "areas", "gallery", "ascents", "rules"]
     searchable_type = SearchableItemTypeEnum.AREA
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
-    portrait_image_id = db.Column(UUID(), db.ForeignKey('files.id'), nullable=True)
-    portrait_image = db.relationship('File', lazy='joined')
-    sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=False)
+    portrait_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
+    portrait_image = db.relationship("File", lazy="joined")
+    sector_id = db.Column(UUID(), db.ForeignKey("sectors.id"), nullable=False)
     lines = db.relationship("Line", cascade="all,delete", backref="area", lazy="select")
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
-    order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    secret = db.Column(db.Boolean, default=False, server_default='0')
+    order_index = db.Column(db.Integer, nullable=False, server_default="0")
+    secret = db.Column(db.Boolean, default=False, server_default="0")
 
-    sector_slug = association_proxy('sector', 'slug')
-    crag_slug = association_proxy('sector', 'crag_slug')
-    map_markers = db.relationship('MapMarker', back_populates='area')
+    sector_slug = association_proxy("sector", "slug")
+    crag_slug = association_proxy("sector", "crag_slug")
+    map_markers = db.relationship("MapMarker", back_populates="area")
 
     @hybrid_property
     def ascent_count(self):

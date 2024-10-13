@@ -31,13 +31,13 @@ class AddTopoImage(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_topo_image: TopoImage = TopoImage()
-        new_topo_image.file_id = topo_image_data['image']
-        new_topo_image.title = topo_image_data['title']
-        new_topo_image.description = topo_image_data['description']
+        new_topo_image.file_id = topo_image_data["image"]
+        new_topo_image.title = topo_image_data["title"]
+        new_topo_image.description = topo_image_data["description"]
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
-        new_topo_image.map_markers = create_or_update_markers(topo_image_data['mapMarkers'], new_topo_image)
+        new_topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], new_topo_image)
 
         db.session.add(new_topo_image)
         db.session.commit()
@@ -52,9 +52,9 @@ class UpdateTopoImage(MethodView):
         topo_image_data = parser.parse(topo_image_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
 
-        topo_image.title = topo_image_data['title']
-        topo_image.description = topo_image_data['description']
-        topo_image.map_markers = create_or_update_markers(topo_image_data['mapMarkers'], topo_image)
+        topo_image.title = topo_image_data["title"]
+        topo_image.description = topo_image_data["description"]
+        topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], topo_image)
         db.session.add(topo_image)
         db.session.commit()
 
@@ -74,8 +74,9 @@ class DeleteTopoImage(MethodView):
         db.session.delete(image)
         query = text(
             "UPDATE topo_images SET order_index=order_index - 1 WHERE "
-            "order_index > :order_index AND area_id = :area_id")
-        db.session.execute(query, {'order_index': image.order_index, 'area_id': image.area_id})
+            "order_index > :order_index AND area_id = :area_id"
+        )
+        db.session.execute(query, {"order_index": image.order_index, "area_id": image.area_id})
         db.session.commit()
 
         return jsonify(None), 204
@@ -88,15 +89,16 @@ class GetTopoImages(MethodView):
         Returns all topo images of an area.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id,
-                                                            order_by=lambda: TopoImage.order_index.asc())
+        topo_images: List[TopoImage] = TopoImage.return_all(
+            filter=lambda: TopoImage.area_id == area_id, order_by=lambda: TopoImage.order_index.asc()
+        )
         include_secret = True
         if not get_show_secret():
             include_secret = False
         unfiltered_response = topo_images_schema.dump(topo_images)
         if not include_secret:
             for ti in unfiltered_response:
-                ti['linePaths'] = [lp for lp in ti['linePaths'] if not lp['line']['secret']]
+                ti["linePaths"] = [lp for lp in ti["linePaths"] if not lp["line"]["secret"]]
         return jsonify(unfiltered_response), 200
 
 
@@ -122,7 +124,7 @@ class UpdateTopoImageOrder(MethodView):
         topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id)
 
         if not validate_order_payload(new_order, topo_images):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for topo_image in topo_images:
             topo_image.order_index = new_order[str(topo_image.id)]

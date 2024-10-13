@@ -18,7 +18,7 @@ def register_extensions(application):
     jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
-    cors.init_app(application, origins=[application.config['FRONTEND_HOST'][0:-1]])
+    cors.init_app(application, origins=[application.config["FRONTEND_HOST"][0:-1]])
 
 
 def configure_extensions(application):
@@ -28,21 +28,19 @@ def configure_extensions(application):
 
 
 def init_sentry_sdk(application):
-    if application.config['SENTRY_ENABLED']:
+    if application.config["SENTRY_ENABLED"]:
         sentry_sdk.init(
-            dsn=application.config['SENTRY_DSN'],
+            dsn=application.config["SENTRY_DSN"],
             traces_sample_rate=1.0,
             profiles_sample_rate=1.0,
         )
 
 
 def create_app():
-    application = Flask(__name__,
-                        static_url_path='/uploads',
-                        static_folder='uploads')
-    application.config.from_object('config.default.DefaultConfig')
+    application = Flask(__name__, static_url_path="/uploads", static_folder="uploads")
+    application.config.from_object("config.default.DefaultConfig")
     if "LOCALCRAG_CONFIG" in os.environ:
-        application.config.from_envvar('LOCALCRAG_CONFIG')
+        application.config.from_envvar("LOCALCRAG_CONFIG")
     overwrite_config_by_env_vars(application)
     validate_config(application.config)
 
@@ -62,5 +60,5 @@ setup_webargs_error_handlers()
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(_jwt_header, jwt_payload):
-    jti = jwt_payload['jti']
+    jti = jwt_payload["jti"]
     return RevokedToken.is_jti_blocklisted(jti)

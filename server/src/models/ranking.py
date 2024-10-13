@@ -7,19 +7,19 @@ from models.enums.line_type_enum import LineTypeEnum
 
 
 class Ranking(db.Model):
-    __tablename__ = 'rankings'
+    __tablename__ = "rankings"
 
     id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
-    crag_id = db.Column(UUID(), db.ForeignKey('crags.id'), nullable=True)
-    sector_id = db.Column(UUID(), db.ForeignKey('sectors.id'), nullable=True)
-    user_id = db.Column(UUID(), db.ForeignKey('users.id'), nullable=False)
-    user = db.relationship('User', lazy='joined', overlaps="rankings")
+    crag_id = db.Column(UUID(), db.ForeignKey("crags.id"), nullable=True)
+    sector_id = db.Column(UUID(), db.ForeignKey("sectors.id"), nullable=True)
+    user_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=False)
+    user = db.relationship("User", lazy="joined", overlaps="rankings")
     top_10 = db.Column(db.Integer(), default=0)
     top_50 = db.Column(db.Integer(), default=0)
     top_values = db.Column(JSON)
     total_count = db.Column(db.Integer(), default=0)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
-    secret = db.Column(db.Boolean(), nullable=False, server_default='0')
+    secret = db.Column(db.Boolean(), nullable=False, server_default="0")
 
     @classmethod
     def return_all(cls):

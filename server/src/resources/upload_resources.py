@@ -19,7 +19,7 @@ class UploadFile(MethodView):
         Uploads a file and creates a file model object for it.
         """
         try:
-            file = handle_file_upload(request.files.get('upload'))
+            file = handle_file_upload(request.files.get("upload"))
             file.created_by = User.find_by_email(get_jwt_identity())
             db.session.add(file)
             db.session.commit()

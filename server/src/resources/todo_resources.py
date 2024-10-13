@@ -23,16 +23,24 @@ class CreateTodo(MethodView):
         todo_data = parser.parse(todo_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        line: Line = Line.find_by_id(todo_data['line'])
-        if db.session.query(Todo.line_id).filter(Todo.created_by_id == created_by.id).filter(
-                Todo.line_id == todo_data['line']).first():
-            raise BadRequest('Cannot add a line as todo twice.')
-        if db.session.query(Ascent.line_id).filter(Ascent.created_by_id == created_by.id).filter(
-                Ascent.line_id == todo_data['line']).first():
-            raise BadRequest('Cannot add a line as todo if already climbed.')
+        line: Line = Line.find_by_id(todo_data["line"])
+        if (
+            db.session.query(Todo.line_id)
+            .filter(Todo.created_by_id == created_by.id)
+            .filter(Todo.line_id == todo_data["line"])
+            .first()
+        ):
+            raise BadRequest("Cannot add a line as todo twice.")
+        if (
+            db.session.query(Ascent.line_id)
+            .filter(Ascent.created_by_id == created_by.id)
+            .filter(Ascent.line_id == todo_data["line"])
+            .first()
+        ):
+            raise BadRequest("Cannot add a line as todo if already climbed.")
 
         todo: Todo = Todo()
-        todo.line_id = todo_data['line']
+        todo.line_id = todo_data["line"]
         todo.created_by_id = created_by.id
         todo.area_id = line.area_id
         todo.sector_id = Area.find_by_id(line.area_id).sector_id
@@ -49,24 +57,24 @@ class GetTodos(MethodView):
     @jwt_required()
     def get(self):
         user = User.find_by_email(get_jwt_identity())
-        crag_id = request.args.get('crag_id')
-        sector_id = request.args.get('sector_id')
-        area_id = request.args.get('area_id')
-        page = int(request.args.get('page'))
-        per_page = request.args.get('per_page') or None
+        crag_id = request.args.get("crag_id")
+        sector_id = request.args.get("sector_id")
+        area_id = request.args.get("area_id")
+        page = int(request.args.get("page"))
+        per_page = request.args.get("per_page") or None
         if per_page is not None:
             per_page = int(per_page)
-        order_by = request.args.get('order_by') or 'time_created'
-        order_direction = request.args.get('order_direction') or 'desc'
-        max_grade_value = request.args.get('max_grade') or None
-        min_grade_value = request.args.get('min_grade') or None
-        priority = request.args.get('priority') or None
+        order_by = request.args.get("order_by") or "time_created"
+        order_direction = request.args.get("order_direction") or "desc"
+        max_grade_value = request.args.get("max_grade") or None
+        min_grade_value = request.args.get("min_grade") or None
+        priority = request.args.get("priority") or None
 
-        if order_by not in ['grade_value', 'time_created'] or order_direction not in ['asc', 'desc']:
-            raise BadRequest('Invalid order by query parameters')
+        if order_by not in ["grade_value", "time_created"] or order_direction not in ["asc", "desc"]:
+            raise BadRequest("Invalid order by query parameters")
 
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
-            raise BadRequest('When filtering for grades, a min and max grade is required.')
+            raise BadRequest("When filtering for grades, a min and max grade is required.")
 
         query = db.session.query(Todo).join(Line).options(joinedload(Todo.line))
 
@@ -93,10 +101,10 @@ class GetTodos(MethodView):
 
         # Apply ordering
         order_function = None
-        if order_by in {'grade_value'}:
-            order_function = getattr(getattr(Line, 'grade_value'), order_direction)
-        if order_by in {'time_created'}:
-            order_function = getattr(getattr(Todo, 'time_created'), order_direction)
+        if order_by in {"grade_value"}:
+            order_function = getattr(getattr(Line, "grade_value"), order_direction)
+        if order_by in {"time_created"}:
+            order_function = getattr(getattr(Todo, "time_created"), order_direction)
         # Order by To-do.id as a tie-breaker to prevent duplicate entries in paginate
         query = query.order_by(order_function(), Todo.id)
 
@@ -111,7 +119,7 @@ class DeleteTodo(MethodView):
         user = User.find_by_email(get_jwt_identity())
         todo = Todo.query.filter(Todo.id == todo_id).filter(Todo.created_by_id == user.id).first()
         if not todo:
-            raise BadRequest('Todo not found.')
+            raise BadRequest("Todo not found.")
         db.session.delete(todo)
         db.session.commit()
         return jsonify(None), 204
@@ -123,9 +131,9 @@ class UpdateTodoPriority(MethodView):
         user = User.find_by_email(get_jwt_identity())
         todo = Todo.query.filter(Todo.id == todo_id).filter(Todo.created_by_id == user.id).first()
         if not todo:
-            raise BadRequest('Todo not found.')
+            raise BadRequest("Todo not found.")
         todo_data = parser.parse(todo_priority_args, request)
-        todo.priority = todo_data['priority']
+        todo.priority = todo_data["priority"]
         db.session.commit()
         return todo_schema.dump(todo), 200
 
@@ -133,13 +141,13 @@ class UpdateTodoPriority(MethodView):
 class GetIsTodo(MethodView):
 
     def get(self):
-        user_id = request.args.get('user_id')
-        crag_id = request.args.get('crag_id')
-        sector_id = request.args.get('sector_id')
-        area_id = request.args.get('area_id')
-        line_ids = request.args.get('line_ids')
+        user_id = request.args.get("user_id")
+        crag_id = request.args.get("crag_id")
+        sector_id = request.args.get("sector_id")
+        area_id = request.args.get("area_id")
+        line_ids = request.args.get("line_ids")
         if not user_id or not (crag_id or sector_id or area_id or line_ids):
-            raise BadRequest('Filter query params are not properly defined.')
+            raise BadRequest("Filter query params are not properly defined.")
         query = db.session.query(Todo.line_id).filter(Todo.created_by_id == user_id)
         if crag_id:
             query = query.filter(Todo.crag_id == crag_id)
@@ -148,7 +156,7 @@ class GetIsTodo(MethodView):
         if area_id:
             query = query.filter(Todo.area_id == area_id)
         if line_ids:
-            line_ids = line_ids.split(',')
+            line_ids = line_ids.split(",")
             query = query.filter(Todo.line_id.in_(line_ids))
         todo_line_ids = [row[0] for row in query.all()]
         return jsonify(todo_line_ids), 200

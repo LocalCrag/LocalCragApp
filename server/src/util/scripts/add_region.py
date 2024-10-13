@@ -12,10 +12,10 @@ def add_region():
     with app.app_context():
         if not Region.return_it():
             new_region = Region()
-            new_region.name = current_app.config['REGION']
+            new_region.name = current_app.config["REGION"]
             db.session.add(new_region)
             db.session.commit()
-            print('Added region {}.'.format(current_app.config['REGION']))
+            print("Added region {}.".format(current_app.config["REGION"]))
 
 
 if __name__ == "__main__":

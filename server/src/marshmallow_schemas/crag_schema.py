@@ -16,23 +16,23 @@ class AscentAndTodoCragSchema(ma.SQLAlchemySchema):
 
 class CragSchema(BaseEntityMinSchema):
     name = fields.String()
-    orderIndex = fields.Int(attribute='order_index')
-    shortDescription = fields.String(attribute='short_description')
+    orderIndex = fields.Int(attribute="order_index")
+    shortDescription = fields.String(attribute="short_description")
     slug = fields.String()
-    portraitImage = fields.Nested(file_schema, attribute='portrait_image')
-    ascentCount = fields.Integer(attribute='ascent_count')
+    portraitImage = fields.Nested(file_schema, attribute="portrait_image")
+    ascentCount = fields.Integer(attribute="ascent_count")
     secret = fields.Boolean()
 
 
 class CragDetailSchema(CragSchema):
     rules = fields.String()
     description = fields.String()
-    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute='map_markers')
+    mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
-        data['description'] = replace_bucket_placeholders(data['description'])
-        data['rules'] = replace_bucket_placeholders(data['rules'])
+        data["description"] = replace_bucket_placeholders(data["description"])
+        data["rules"] = replace_bucket_placeholders(data["rules"])
         return data
 
 

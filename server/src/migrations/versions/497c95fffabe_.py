@@ -5,11 +5,12 @@ Revises: 081433dc06d6
 Create Date: 2024-04-23 10:28:13.624718
 
 """
+
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '497c95fffabe'
-down_revision = '081433dc06d6'
+revision = "497c95fffabe"
+down_revision = "081433dc06d6"
 branch_labels = None
 depends_on = None
 

@@ -13,12 +13,13 @@ class MenuItem(BaseEntity):
     """
     Model of a menu item. Can
     """
-    __tablename__ = 'menu_items'
+
+    __tablename__ = "menu_items"
 
     type = db.Column(db.Enum(MenuItemTypeEnum), nullable=False)
     position = db.Column(db.Enum(MenuItemPositionEnum), nullable=False)
     icon = db.Column(db.String(120), nullable=True)
-    order_index = db.Column(db.Integer, nullable=False, server_default='0')
+    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
     menu_page: Mapped[MenuPage] = relationship()
 

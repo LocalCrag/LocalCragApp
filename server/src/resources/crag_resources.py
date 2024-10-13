@@ -53,15 +53,15 @@ class CreateCrag(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_crag: Crag = Crag()
-        new_crag.name = crag_data['name'].strip()
-        new_crag.description = add_bucket_placeholders(crag_data['description'])
-        new_crag.short_description = crag_data['shortDescription']
-        new_crag.rules = add_bucket_placeholders(crag_data['rules'])
-        new_crag.portrait_image_id = crag_data['portraitImage']
-        new_crag.secret = crag_data['secret']
+        new_crag.name = crag_data["name"].strip()
+        new_crag.description = add_bucket_placeholders(crag_data["description"])
+        new_crag.short_description = crag_data["shortDescription"]
+        new_crag.rules = add_bucket_placeholders(crag_data["rules"])
+        new_crag.portrait_image_id = crag_data["portraitImage"]
+        new_crag.secret = crag_data["secret"]
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
-        new_crag.map_markers = create_or_update_markers(crag_data['mapMarkers'], new_crag)
+        new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
 
         db.session.add(new_crag)
         db.session.commit()
@@ -80,13 +80,13 @@ class UpdateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         crag: Crag = Crag.find_by_slug(crag_slug)
 
-        crag.name = crag_data['name'].strip()
-        crag.description = add_bucket_placeholders(crag_data['description'])
-        crag.short_description = crag_data['shortDescription']
-        crag.rules = add_bucket_placeholders(crag_data['rules'])
-        crag.portrait_image_id = crag_data['portraitImage']
-        update_crag_secret_property(crag, crag_data['secret'])
-        crag.map_markers = create_or_update_markers(crag_data['mapMarkers'], crag)
+        crag.name = crag_data["name"].strip()
+        crag.description = add_bucket_placeholders(crag_data["description"])
+        crag.short_description = crag_data["shortDescription"]
+        crag.rules = add_bucket_placeholders(crag_data["rules"])
+        crag.portrait_image_id = crag_data["portraitImage"]
+        update_crag_secret_property(crag, crag_data["secret"])
+        crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()
 
@@ -105,7 +105,7 @@ class DeleteCrag(MethodView):
 
         db.session.delete(crag)
         query = text("UPDATE crags SET order_index=order_index - 1 WHERE order_index > :order_index")
-        db.session.execute(query, {'order_index': crag.order_index})
+        db.session.execute(query, {"order_index": crag.order_index})
         db.session.commit()
 
         return jsonify(None), 204
@@ -122,7 +122,7 @@ class UpdateCragOrder(MethodView):
         crags = Crag.return_all()
 
         if not validate_order_payload(new_order, crags):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for crag in crags:
             crag.order_index = new_order[str(crag.id)]
@@ -140,9 +140,13 @@ class GetCragGrades(MethodView):
         Returns the grades of all lines of a crag.
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
-        query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
-            Sector.crag_id == crag_id)
+        query = (
+            db.session.query(Line.grade_name, Line.grade_scale)
+            .join(Area)
+            .join(Sector)
+            .filter(Sector.crag_id == crag_id)
+        )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
+        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
