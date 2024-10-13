@@ -2,7 +2,6 @@ name: Linting Pipeline
 
 on:
   pull_request:
-  push:
     branches:
       - main
       - 'v[0-9]+.[0-9]+.[0-9]+'
@@ -19,10 +18,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
+          cd server/src
           pipenv install --dev
       - name: Run Flake8
-        run: flake8 .
+        run: pipenv run flake8 .
       - name: Run Black
-        run: black --check .
+        run: pipenv run black --check .
       - name: Run Isort
-        run: isort --check-only .
+        run: pipenv run isort --check-only .
