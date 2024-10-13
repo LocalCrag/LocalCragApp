@@ -284,6 +284,7 @@ def fill_db_with_sample_data():
     sector.description = "<p>Lange Beschreibung zum Schattental</p>"
     sector.short_description = "Kurze Beschreibung zum Schattental"
     sector.crag_id = Crag.get_id_by_slug("brione")
+    sector.order_index = 0
     db.session.add(sector)
 
     sector = Sector()
@@ -291,6 +292,7 @@ def fill_db_with_sample_data():
     sector.description = ""
     sector.short_description = ""
     sector.crag_id = Crag.get_id_by_slug("brione")
+    sector.order_index = 1
     db.session.add(sector)
 
     area = Area()
