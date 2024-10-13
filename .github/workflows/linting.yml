@@ -18,14 +18,14 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          cd server/src
+          cd server
           pipenv install --dev
 
       - name: Run Flake8
-        run: pipenv run flake8 .
+        run: cd server && pipenv run flake8 .
 
       - name: Run Black
-        run: pipenv run black --check .
+        run: cd server && pipenv run black --check .
 
       - name: Run Isort
-        run: pipenv run isort --check-only .
+        run: cd server && pipenv run isort --check-only .
