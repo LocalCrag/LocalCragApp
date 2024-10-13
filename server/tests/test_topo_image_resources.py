@@ -6,7 +6,7 @@ from models.topo_image import TopoImage
 def test_successful_edit_topo_image(client, moderator_token):
     topo_image = TopoImage.query.first()
     any_file_id = str(File.query.filter(File.id != topo_image.file_id).first().id)
-    
+
     topo_image_data = {
         "image": any_file_id,
         "mapMarkers": [
@@ -25,7 +25,7 @@ def test_successful_edit_topo_image(client, moderator_token):
     rv = client.put(f'/api/topo-images/{topo_image.id}', token=moderator_token, json=topo_image_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res['image']['id'] != str(topo_image.file_id)  # Image ID on update must be ignored!
+    assert res['image']['id'] != any_file_id  # Image ID on update must be ignored!
     assert res['mapMarkers'][0]['lat'] == 12.13
     assert res['mapMarkers'][0]['lng'] == 42.42
     assert res['mapMarkers'][0]['type'] == MapMarkerType.TOPO_IMAGE.value
