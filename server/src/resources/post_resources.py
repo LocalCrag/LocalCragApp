@@ -1,10 +1,10 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
-from marshmallow_schemas.post_schema import posts_schema, post_schema
+from marshmallow_schemas.post_schema import post_schema, posts_schema
 from models.post import Post
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders

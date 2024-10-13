@@ -5,11 +5,11 @@ from sqlalchemy import func
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.search_schema import (
-    user_search_schema,
-    line_search_schema,
     area_search_schema,
-    sector_search_schema,
     crag_search_schema,
+    line_search_schema,
+    sector_search_schema,
+    user_search_schema,
 )
 from models.area import Area
 from models.crag import Crag

@@ -1,6 +1,5 @@
 from extensions import db
 from models.base_entity import BaseEntity
-
 from models.mixins.has_slug import HasSlug
 
 

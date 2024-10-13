@@ -1,12 +1,12 @@
-from flask import request, jsonify
+from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.todo_schema import todo_schema, paginated_todos_schema
+from marshmallow_schemas.todo_schema import paginated_todos_schema, todo_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.line import Line

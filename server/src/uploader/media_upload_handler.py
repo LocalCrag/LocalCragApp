@@ -7,11 +7,11 @@ from werkzeug.datastructures import FileStorage
 from models.file import File
 from uploader.do_spaces import get_spaces_client, upload_file
 from uploader.upload_handler_utils import (
-    store_tmp_file,
-    post_upload,
     check_filesize_limit,
-    get_max_image_size,
     get_image_bytes,
+    get_max_image_size,
+    post_upload,
+    store_tmp_file,
 )
 
 allowed_image_mime_types = ["image/jpeg", "image/png", "image/gif", "image/bmp"]

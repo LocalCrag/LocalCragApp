@@ -1,95 +1,123 @@
 from flask import Blueprint
 
 from resources.area_resources import (
-    GetAreas,
     CreateArea,
     DeleteArea,
-    UpdateArea,
     GetArea,
-    UpdateAreaOrder,
     GetAreaGrades,
+    GetAreas,
+    UpdateArea,
+    UpdateAreaOrder,
 )
 from resources.ascent_resources import (
     CreateAscent,
+    DeleteAscent,
     GetAscents,
     GetTicks,
-    DeleteAscent,
-    UpdateAscent,
     SendProjectClimbedMessage,
+    UpdateAscent,
 )
 from resources.auth_resources import (
-    UserLogin,
-    UserLogoutRefresh,
-    UserLogoutAccess,
-    TokenRefresh,
     ForgotPassword,
     ResetPassword,
+    TokenRefresh,
+    UserLogin,
+    UserLogoutAccess,
+    UserLogoutRefresh,
 )
 from resources.crag_resources import (
-    GetCrags,
-    GetCrag,
-    UpdateCrag,
-    DeleteCrag,
     CreateCrag,
-    UpdateCragOrder,
+    DeleteCrag,
+    GetCrag,
     GetCragGrades,
+    GetCrags,
+    UpdateCrag,
+    UpdateCragOrder,
 )
 from resources.health_resources import Health
-from resources.instance_settings_resources import GetInstanceSettings, UpdateInstanceSettings
+from resources.instance_settings_resources import (
+    GetInstanceSettings,
+    UpdateInstanceSettings,
+)
 from resources.line_path_resources import (
     CreateLinePath,
     DeleteLinePath,
     UpdateLinePathOrder,
     UpdateLinePathOrderForLine,
 )
-from resources.line_resources import GetLine, UpdateLine, DeleteLine, GetLines, CreateLine, GetLinesForLineEditor
+from resources.line_resources import (
+    CreateLine,
+    DeleteLine,
+    GetLine,
+    GetLines,
+    GetLinesForLineEditor,
+    UpdateLine,
+)
 from resources.map_resources import GetMarkers
 from resources.menu_item_resources import (
-    GetMenuItems,
     CreateMenuItem,
-    GetMenuItem,
     DeleteMenuItem,
-    UpdateMenuItem,
-    UpdateMenuItemTopOrder,
-    UpdateMenuItemBottomOrder,
     GetCragMenuStructure,
+    GetMenuItem,
+    GetMenuItems,
+    UpdateMenuItem,
+    UpdateMenuItemBottomOrder,
+    UpdateMenuItemTopOrder,
 )
-from resources.menu_page_resources import GetMenuPages, CreateMenuPage, GetMenuPage, DeleteMenuPage, UpdateMenuPage
-from resources.post_resources import GetPosts, GetPost, DeletePost, UpdatePost, CreatePost
+from resources.menu_page_resources import (
+    CreateMenuPage,
+    DeleteMenuPage,
+    GetMenuPage,
+    GetMenuPages,
+    UpdateMenuPage,
+)
+from resources.post_resources import (
+    CreatePost,
+    DeletePost,
+    GetPost,
+    GetPosts,
+    UpdatePost,
+)
 from resources.ranking_resources import GetRanking, UpdateRanking
-from resources.region_resources import GetRegion, UpdateRegion, GetRegionGrades
+from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.search_resources import Search
 from resources.sector_resources import (
-    GetSectors,
-    GetSector,
-    UpdateSector,
-    DeleteSector,
     CreateSector,
-    UpdateSectorOrder,
+    DeleteSector,
+    GetSector,
     GetSectorGrades,
+    GetSectors,
+    UpdateSector,
+    UpdateSectorOrder,
 )
-from resources.todo_resources import DeleteTodo, UpdateTodoPriority, GetTodos, CreateTodo, GetIsTodo
+from resources.todo_resources import (
+    CreateTodo,
+    DeleteTodo,
+    GetIsTodo,
+    GetTodos,
+    UpdateTodoPriority,
+)
 from resources.topo_image_resources import (
-    DeleteTopoImage,
     AddTopoImage,
-    GetTopoImages,
+    DeleteTopoImage,
     GetTopoImage,
-    UpdateTopoImageOrder,
+    GetTopoImages,
     UpdateTopoImage,
+    UpdateTopoImageOrder,
 )
 from resources.upload_resources import UploadFile
 from resources.user_resources import (
-    ChangePassword,
-    GetUsers,
-    GetEmailTaken,
-    ResendUserCreateMail,
-    UpdateAccountSettings,
-    DeleteUser,
-    RegisterUser,
     ChangeEmail,
-    PromoteUser,
+    ChangePassword,
+    DeleteUser,
+    GetEmailTaken,
     GetUser,
     GetUserGrades,
+    GetUsers,
+    PromoteUser,
+    RegisterUser,
+    ResendUserCreateMail,
+    UpdateAccountSettings,
 )
 from resources.util_resources import SentryTest
 

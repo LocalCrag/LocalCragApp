@@ -1,4 +1,4 @@
-from flask import jsonify, current_app
+from flask import current_app, jsonify
 from flask.views import MethodView
 from sqlalchemy import text
 

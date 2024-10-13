@@ -1,4 +1,4 @@
-from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 
 
 def get_show_secret():

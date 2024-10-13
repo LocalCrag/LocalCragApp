@@ -4,7 +4,13 @@ from uuid import uuid4
 import pytz
 from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -12,7 +18,7 @@ from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.auth_response_schema import auth_response_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
-from messages.marshalling_objects import SimpleMessage, AuthResponse
+from messages.marshalling_objects import AuthResponse, SimpleMessage
 from messages.messages import ResponseMessage
 from models.revoked_token import RevokedToken
 from models.user import User

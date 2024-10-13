@@ -2,7 +2,7 @@ import datetime
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
@@ -21,7 +21,11 @@ from models.user import User
 from util.email import send_project_climbed_email
 from util.secret_spots_auth import get_show_secret
 from util.validators import cross_validate_grade
-from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, project_climbed_args
+from webargs_schemas.ascent_args import (
+    ascent_args,
+    cross_validate_ascent_args,
+    project_climbed_args,
+)
 
 
 class GetAscents(MethodView):

@@ -3,9 +3,14 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytz
-from flask import request, jsonify
+from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -15,21 +20,29 @@ from extensions import db
 from helpers.user_helpers import create_user
 from marshmallow_schemas.auth_response_schema import auth_response_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
-from marshmallow_schemas.user_schema import user_schema, user_list_schema
-from messages.marshalling_objects import SimpleMessage, AuthResponse
+from marshmallow_schemas.user_schema import user_list_schema, user_schema
+from messages.marshalling_objects import AuthResponse, SimpleMessage
 from messages.messages import ResponseMessage
 from models.ascent import Ascent
 from models.enums.user_promotion_enum import UserPromotionEnum
 from models.line import Line
 from models.user import User
 from util.auth import get_access_token_claims
-from util.email import send_create_user_email, send_change_email_address_email, send_user_registered_email
+from util.email import (
+    send_change_email_address_email,
+    send_create_user_email,
+    send_user_registered_email,
+)
 from util.password_util import generate_password
 from util.regexes import email_regex
 from util.security_util import check_auth_claims
 from webargs_schemas.change_password_args import change_password_args
 from webargs_schemas.new_email_args import new_email_args
-from webargs_schemas.user_args import user_args, user_registration_args, user_promotion_args
+from webargs_schemas.user_args import (
+    user_args,
+    user_promotion_args,
+    user_registration_args,
+)
 
 
 class GetUser(MethodView):

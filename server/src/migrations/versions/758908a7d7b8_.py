@@ -2,7 +2,7 @@ import uuid
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.sql import table, column
+from sqlalchemy.sql import column, table
 
 # revision identifiers, used by Alembic.
 revision = "758908a7d7b8"

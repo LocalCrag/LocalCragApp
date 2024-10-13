@@ -1,6 +1,5 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 

@@ -9,7 +9,7 @@ from config.validate_config import validate_config
 from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
-from extensions import db, jwt, ma, migrate, cors
+from extensions import cors, db, jwt, ma, migrate
 from models.revoked_token import RevokedToken
 
 

@@ -2,18 +2,18 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from sqlalchemy import or_, and_
+from sqlalchemy import and_, or_
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from models.area import Area
 from models.crag import Crag
 from models.enums.map_marker_type_enum import (
+    MapMarkerType,
+    disabled_marker_types_area,
     disabled_marker_types_crag,
     disabled_marker_types_sector,
-    disabled_marker_types_area,
     disabled_marker_types_topo_image,
-    MapMarkerType,
 )
 from models.map_marker import MapMarker
 from models.sector import Sector

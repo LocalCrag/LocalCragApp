@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify, request
 from flask.views import MethodView
 
 from error_handling.http_exceptions.bad_request import BadRequest

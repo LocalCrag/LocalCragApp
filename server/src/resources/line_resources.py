@@ -1,19 +1,23 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func, nullslast
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.line_schema import lines_schema, line_schema, paginated_lines_schema
+from marshmallow_schemas.line_schema import (
+    line_schema,
+    lines_schema,
+    paginated_lines_schema,
+)
 from models.area import Area
 from models.crag import Crag
 from models.grades import get_grade_value
 from models.line import Line
 from models.sector import Sector
 from models.user import User
-from util.secret_spots import update_line_secret_property, set_line_parents_unsecret
+from util.secret_spots import set_line_parents_unsecret, update_line_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade

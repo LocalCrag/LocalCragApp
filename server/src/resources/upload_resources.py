@@ -1,13 +1,13 @@
 from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.file_schema import file_schema
 from messages.messages import ResponseMessage
 from models.user import User
-from uploader.errors import InvalidFiletypeUploaded, FilesizeLimitExceeded
+from uploader.errors import FilesizeLimitExceeded, InvalidFiletypeUploaded
 from uploader.media_upload_handler import handle_file_upload
 
 

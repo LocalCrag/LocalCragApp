@@ -2,13 +2,13 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.topo_image_schema import topo_images_schema, topo_image_schema
+from marshmallow_schemas.topo_image_schema import topo_image_schema, topo_images_schema
 from models.area import Area
 from models.topo_image import TopoImage
 from models.user import User

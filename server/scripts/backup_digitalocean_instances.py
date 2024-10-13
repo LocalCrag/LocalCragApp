@@ -1,15 +1,15 @@
 import os
+import shutil
 import smtplib
 import subprocess
 import time
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import yaml
 import traceback
 from datetime import datetime
-import shutil
-
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pathlib import Path
+
+import yaml
 
 
 def delete_old_files(folder_path, age_threshold):

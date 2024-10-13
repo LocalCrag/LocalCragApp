@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy.dialects.postgresql import UUID, JSON
+from sqlalchemy.dialects.postgresql import JSON, UUID
 
 from extensions import db
 from models.enums.line_type_enum import LineTypeEnum
