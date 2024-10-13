@@ -1,7 +1,4 @@
-import json
-
 from models.line import Line
-from tests.utils.user_test_util import get_login_headers
 
 
 def test_successful_create_line(client, moderator_token):

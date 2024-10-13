@@ -1,7 +1,5 @@
-import json
 import re
 
-from tests.utils.user_test_util import get_login_headers
 from util.regexes import email_regex
 
 
