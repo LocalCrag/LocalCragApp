@@ -5,8 +5,8 @@ Revises: 3619ac5c946b
 Create Date: 2024-02-09 22:54:09.183498
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy import orm
 from sqlalchemy.orm import declarative_base
 
@@ -17,6 +17,7 @@ branch_labels = None
 depends_on = None
 
 Base = declarative_base()
+
 
 class Line(Base):
     __tablename__ = 'lines'
@@ -30,7 +31,6 @@ class LinePath(Base):
     id = sa.Column(sa.String, primary_key=True)
     order_index_for_line = sa.Column(sa.Integer)
     line_id = sa.Column(sa.String)
-
 
 
 def upgrade():
@@ -50,7 +50,6 @@ def upgrade():
         for line_path in line_paths:
             line_path.order_index_for_line = line_order_index
             line_order_index += 1
-
 
     # ### end Alembic commands ###
 

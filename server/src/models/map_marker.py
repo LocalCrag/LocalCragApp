@@ -1,9 +1,8 @@
-from extensions import db
-from models.base_entity import BaseEntity
-
-from models.enums.map_marker_type_enum import MapMarkerType
 from sqlalchemy.dialects.postgresql import UUID
 
+from extensions import db
+from models.base_entity import BaseEntity
+from models.enums.map_marker_type_enum import MapMarkerType
 
 
 class MapMarker(BaseEntity):
@@ -27,4 +26,3 @@ class MapMarker(BaseEntity):
     sector = db.relationship('Sector', back_populates='map_markers')
     area = db.relationship('Area', back_populates='map_markers')
     topo_image = db.relationship('TopoImage', back_populates='map_markers')
-

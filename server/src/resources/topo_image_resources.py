@@ -16,7 +16,6 @@ from resources.map_resources import create_or_update_markers
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
-
 from webargs_schemas.topo_image_args import topo_image_args
 
 
@@ -74,7 +73,8 @@ class DeleteTopoImage(MethodView):
 
         db.session.delete(image)
         query = text(
-            "UPDATE topo_images SET order_index=order_index - 1 WHERE order_index > :order_index AND area_id = :area_id")
+            "UPDATE topo_images SET order_index=order_index - 1 WHERE "
+            "order_index > :order_index AND area_id = :area_id")
         db.session.execute(query, {'order_index': image.order_index, 'area_id': image.area_id})
         db.session.commit()
 

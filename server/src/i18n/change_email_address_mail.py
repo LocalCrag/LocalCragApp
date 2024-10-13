@@ -5,7 +5,8 @@ change_email_address_mail = {
         'LOCALCRAG': 'LocalCrag',
         'hello': 'Hallo',
         'text_1': 'Du hast vor kurzem die Änderung Deiner E-Mail Adresse für Deinen LocalCrag Account beantragt. '
-                  'Die neue Adresse ist die Empfängeradresse dieser Mail. Nutze diesen Button um den Vorgang abzuschließen.',
+                  'Die neue Adresse ist die Empfängeradresse dieser Mail. Nutze diesen Button um den '
+                  'Vorgang abzuschließen.',
         'text_2': 'Dieser Link ist nur innerhalb der nächsten 24 Stunden gültig.',
         'change_email': 'E-Mail Adresse ändern',
         'copyright': '© LocalCrag. Alle Rechte vorbehalten.',

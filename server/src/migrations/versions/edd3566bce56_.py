@@ -5,8 +5,8 @@ Revises: ccc1744ecb5f
 Create Date: 2024-06-08 09:23:12.691370
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy import orm
 from sqlalchemy.orm import declarative_base
 

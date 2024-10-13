@@ -86,4 +86,3 @@ class DeleteMenuPage(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
-

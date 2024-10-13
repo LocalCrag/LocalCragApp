@@ -8,7 +8,6 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
 from models.area import Area
 from models.crag import Crag
@@ -21,7 +20,6 @@ from util.secret_spots import update_sector_secret_property, set_sector_parents_
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
-from webargs_schemas.crag_args import crag_args
 from webargs_schemas.sector_args import sector_args
 
 
@@ -76,7 +74,6 @@ class CreateSector(MethodView):
         db.session.add(new_sector)
         db.session.commit()
 
-
         return sector_schema.dump(new_sector), 201
 
 
@@ -115,7 +112,8 @@ class DeleteSector(MethodView):
         sector: Sector = Sector.find_by_slug(sector_slug)
 
         db.session.delete(sector)
-        query = text("UPDATE sectors SET order_index=order_index - 1 WHERE order_index > :order_index AND crag_id = :crag_id")
+        query = text(
+            "UPDATE sectors SET order_index=order_index - 1 WHERE order_index > :order_index AND crag_id = :crag_id")
         db.session.execute(query, {'order_index': sector.order_index, 'crag_id': sector.crag_id})
         db.session.commit()
 
@@ -154,6 +152,6 @@ class GetSectorGrades(MethodView):
         sector_id = Sector.get_id_by_slug(sector_slug)
         query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).filter(Area.sector_id == sector_id)
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
         result = query.all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

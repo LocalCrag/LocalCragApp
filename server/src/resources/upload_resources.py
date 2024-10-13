@@ -1,10 +1,6 @@
-import os
-
-from flask import request, g
+from flask import request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from webargs.flaskparser import parser
-from werkzeug.datastructures import FileStorage
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
@@ -13,7 +9,6 @@ from messages.messages import ResponseMessage
 from models.user import User
 from uploader.errors import InvalidFiletypeUploaded, FilesizeLimitExceeded
 from uploader.media_upload_handler import handle_file_upload
-from util.security_util import check_auth_claims
 
 
 class UploadFile(MethodView):
@@ -25,7 +20,7 @@ class UploadFile(MethodView):
         """
         try:
             file = handle_file_upload(request.files.get('upload'))
-            file.created_by  = User.find_by_email(get_jwt_identity())
+            file.created_by = User.find_by_email(get_jwt_identity())
             db.session.add(file)
             db.session.commit()
             return file_schema.dump(file), 201

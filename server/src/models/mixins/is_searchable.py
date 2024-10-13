@@ -1,5 +1,3 @@
-import re
-
 from sqlalchemy import event
 from sqlalchemy.orm import declarative_mixin
 
@@ -35,7 +33,6 @@ def update_searchables(session, flush_context, instances):
                       .filter(Searchable.type == item.searchable_type)
                       .first())
         db.session.delete(searchable)
-
 
 
 @event.listens_for(db.session, "after_flush")

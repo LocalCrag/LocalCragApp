@@ -5,11 +5,6 @@ Revises: 538e17ab1cad
 Create Date: 2024-04-10 08:38:45.505915
 
 """
-from alembic import op
-
-from models.mixins.has_slug import str_to_slug
-from sqlalchemy import MetaData, Table, update
-
 
 # revision identifiers, used by Alembic.
 revision = '5ab4c99a8ecd'

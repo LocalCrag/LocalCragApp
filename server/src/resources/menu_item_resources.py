@@ -1,5 +1,3 @@
-import time
-
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -8,22 +6,15 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.crag_schema import crags_schema, crags_menu_schema
 from marshmallow_schemas.menu_item_schema import menu_items_schema, menu_item_schema
-from marshmallow_schemas.menu_page_schema import menu_pages_schema, menu_page_schema
-from models.area import Area
-from models.crag import Crag
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
-from models.menu_page import MenuPage
-from models.sector import Sector
 from models.user import User
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
-from webargs_schemas.menu_page_args import menu_page_args
 
 
 class GetMenuItems(MethodView):
@@ -172,7 +163,8 @@ class GetCragMenuStructure(MethodView):
 
         # We use custom SQL to optimize the query. This sped up the query by a factor of 10!
         res = db.session.execute(text('''
-        SELECT crags.name, crags.slug, crags.id, sectors.name, sectors.slug, sectors.id, areas.name, areas.slug , areas.id
+        SELECT crags.name, crags.slug, crags.id, sectors.name, sectors.slug,
+        sectors.id, areas.name, areas.slug , areas.id
         FROM crags
         LEFT OUTER JOIN sectors ON crags.id = sectors.crag_id {}
         LEFT OUTER JOIN areas ON sectors.id = areas.sector_id {}

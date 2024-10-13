@@ -1,11 +1,9 @@
 from functools import wraps
 
-from flask import g
 from flask_jwt_extended import get_jwt
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from messages.messages import ResponseMessage
-from models.user import User
 from util.secret_spots_auth import get_show_secret
 
 

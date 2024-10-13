@@ -1,8 +1,6 @@
 from marshmallow import validate
 from webargs import fields
 
-from error_handling.http_exceptions.bad_request import BadRequest
-from messages.messages import ResponseMessage
 from models.enums.user_promotion_enum import UserPromotionEnum
 
 user_args = {

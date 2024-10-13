@@ -1,4 +1,5 @@
 import uuid
+
 from sqlalchemy.dialects.postgresql import UUID, JSON
 
 from extensions import db
@@ -19,7 +20,6 @@ class Ranking(db.Model):
     total_count = db.Column(db.Integer(), default=0)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     secret = db.Column(db.Boolean(), nullable=False, server_default='0')
-
 
     @classmethod
     def return_all(cls):

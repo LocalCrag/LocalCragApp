@@ -1,6 +1,6 @@
 from marshmallow import fields, post_dump
 
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
+from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 

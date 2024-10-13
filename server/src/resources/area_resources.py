@@ -19,7 +19,6 @@ from util.secret_spots import update_area_secret_property, set_area_parents_unse
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
-
 from webargs_schemas.area_args import area_args
 
 
@@ -110,7 +109,8 @@ class DeleteArea(MethodView):
         area: Area = Area.find_by_slug(area_slug)
 
         db.session.delete(area)
-        query = text("UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id")
+        query = text(
+            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id")
         db.session.execute(query, {'order_index': area.order_index, 'sector_id': area.sector_id})
         db.session.commit()
 
@@ -149,6 +149,6 @@ class GetAreaGrades(MethodView):
         area_id = Area.get_id_by_slug(area_slug)
         query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id)
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
         result = query.all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

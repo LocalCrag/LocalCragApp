@@ -30,12 +30,6 @@ from resources.upload_resources import UploadFile
 from resources.user_resources import ChangePassword, GetUsers, GetEmailTaken, \
     ResendUserCreateMail, UpdateAccountSettings, DeleteUser, RegisterUser, ChangeEmail, PromoteUser, GetUser, \
     GetUserGrades
-from models.region import Region
-from models.crag import Crag
-from models.sector import Sector
-from models.area import Area
-from models.line import Line
-from models.ranking import Ranking
 from resources.util_resources import SentryTest
 
 
@@ -75,7 +69,8 @@ def configure_api(app):
     todo_bp.add_url_rule('', view_func=GetTodos.as_view('get_todos'))
     todo_bp.add_url_rule('', view_func=CreateTodo.as_view('create_todo'))
     todo_bp.add_url_rule('/<string:todo_id>', view_func=DeleteTodo.as_view('delete_todo'))
-    todo_bp.add_url_rule('/<string:todo_id>/update-priority', view_func=UpdateTodoPriority.as_view('update_todo_priority'))
+    todo_bp.add_url_rule('/<string:todo_id>/update-priority',
+                         view_func=UpdateTodoPriority.as_view('update_todo_priority'))
     app.register_blueprint(todo_bp, url_prefix='/api/todos')
 
     # Auth API
@@ -109,7 +104,8 @@ def configure_api(app):
     # Line API
     line_bp = Blueprint('lines', __name__)
     line_bp.add_url_rule('', view_func=GetLines.as_view('get_lines'))
-    line_bp.add_url_rule('/for-line-editor/<string:area_slug>', view_func=GetLinesForLineEditor.as_view('get_lines_for_line_editor'))
+    line_bp.add_url_rule('/for-line-editor/<string:area_slug>',
+                         view_func=GetLinesForLineEditor.as_view('get_lines_for_line_editor'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=GetLine.as_view('get_line_details'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=UpdateLine.as_view('update_line'))
     line_bp.add_url_rule('/<string:line_slug>', view_func=DeleteLine.as_view('delete_line'))
@@ -123,7 +119,8 @@ def configure_api(app):
     ascent_bp.add_url_rule('', view_func=GetAscents.as_view('get_ascents'))
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=DeleteAscent.as_view('delete_ascent'))
     ascent_bp.add_url_rule('/<string:ascent_id>', view_func=UpdateAscent.as_view('update_ascent'))
-    ascent_bp.add_url_rule('/send-project-climbed-message', view_func=SendProjectClimbedMessage.as_view('send_project_climbed_message'))
+    ascent_bp.add_url_rule('/send-project-climbed-message',
+                           view_func=SendProjectClimbedMessage.as_view('send_project_climbed_message'))
     app.register_blueprint(ascent_bp, url_prefix='/api/ascents')
 
     # Ranking API

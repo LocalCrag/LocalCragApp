@@ -85,7 +85,8 @@ def send_forgot_password_email(user: User):
     msg, i18n_keyword_arg_dict = prepare_message(user, reset_password_mail)
     msg['To'] = user.email
     action_link = '{}reset-password/{}'.format(current_app.config['FRONTEND_HOST'], user.reset_password_hash)
-    template = render_template('reset-password-mail.html', name='{} {}'.format(user.firstname, user.lastname),
+    template = render_template('reset-password-mail.html',
+                               name='{} {}'.format(user.firstname, user.lastname),
                                action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
@@ -101,7 +102,8 @@ def send_change_email_address_email(user: User):
     msg, i18n_keyword_arg_dict = prepare_message(user, change_email_address_mail)
     msg['To'] = user.email
     action_link = '{}change-email/{}'.format(current_app.config['FRONTEND_HOST'], user.new_email_hash)
-    template = render_template('change-email-address-mail.html', name='{} {}'.format(user.firstname, user.lastname),
+    template = render_template('change-email-address-mail.html',
+                               name='{} {}'.format(user.firstname, user.lastname),
                                action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))
@@ -142,10 +144,15 @@ def send_user_registered_email(registered_user: User, receiver: User, user_count
 def send_project_climbed_email(climber: User, receiver: User, message: str, line: Line):
     msg, i18n_keyword_arg_dict = prepare_message(climber, project_climbed_mail)
     msg['To'] = receiver.email
-    action_link_project = f"{current_app.config['FRONTEND_HOST']}topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}"
+    action_link_project = (f"{current_app.config['FRONTEND_HOST']}topo/{line.area.sector.crag.slug}/"
+                           f"{line.area.sector.slug}/{line.area.slug}/{line.slug}")
     action_link_user = f"{current_app.config['FRONTEND_HOST']}users/{climber.slug}"
-    template = render_template('project-climbed-mail.html', message=message, action_link_project=action_link_project,
-                               action_link_user=action_link_user, admin=receiver.firstname, climber_mail=climber.email,
+    template = render_template('project-climbed-mail.html',
+                               message=message,
+                               action_link_project=action_link_project,
+                               action_link_user=action_link_user,
+                               admin=receiver.firstname,
+                               climber_mail=climber.email,
                                frontend_host=current_app.config['FRONTEND_HOST'],
                                **i18n_keyword_arg_dict)
     msg.attach(MIMEText(template, 'html'))

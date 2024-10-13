@@ -2,10 +2,10 @@ import datetime
 import uuid
 
 from flask import current_app
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
-from sqlalchemy.dialects.postgresql import UUID
 
 
 class InstanceSettings(db.Model):

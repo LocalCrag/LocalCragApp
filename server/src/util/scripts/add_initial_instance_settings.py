@@ -1,10 +1,6 @@
-from flask import current_app
-
 from app import app
 from extensions import db
-from helpers.user_helpers import create_user
 from models.instance_settings import InstanceSettings
-from models.user import User
 
 
 def add_initial_instance_settings():

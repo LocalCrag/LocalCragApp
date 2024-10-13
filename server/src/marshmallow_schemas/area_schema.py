@@ -1,15 +1,17 @@
 from marshmallow import fields, post_dump
 
 from extensions import ma
+from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
-
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
 from util.bucket_placeholders import replace_bucket_placeholders
+
+
 class AscentAndTodoAreaSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
+
 
 class AreaSchema(BaseEntityMinSchema):
     name = fields.String()

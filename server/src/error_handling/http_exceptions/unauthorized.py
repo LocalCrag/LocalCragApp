@@ -1,4 +1,3 @@
-
 class Unauthorized(Exception):
     status_code = 401
 
@@ -10,5 +9,3 @@ class Unauthorized(Exception):
         return {
             'message': self.message
         }
-
-

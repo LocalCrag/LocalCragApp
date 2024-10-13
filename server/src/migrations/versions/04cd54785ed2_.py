@@ -6,7 +6,6 @@ Create Date: 2024-09-28 22:43:44.112752
 
 """
 from alembic import op
-import sqlalchemy as sa
 from sqlalchemy import text
 
 # revision identifiers, used by Alembic.
@@ -25,13 +24,15 @@ def upgrade():
     ascents = conn.execute(text('SELECT line_id, id FROM ascents')).fetchall()
     for ascent in ascents:
         line_id = ascent[0]
-        line = conn.execute(text(f'SELECT area_id FROM lines WHERE id = :line_id'), {'line_id': line_id}).fetchone()
+        line = conn.execute(text('SELECT area_id FROM lines WHERE id = :line_id'), {'line_id': line_id}).fetchone()
         area_id = line[0]
-        area = conn.execute(text(f'SELECT sector_id FROM areas WHERE id = :area_id'), {'area_id': area_id}).fetchone()
+        area = conn.execute(text('SELECT sector_id FROM areas WHERE id = :area_id'), {'area_id': area_id}).fetchone()
         sector_id = area[0]
-        sector = conn.execute(text(f'SELECT crag_id FROM sectors WHERE id = :sector_id'), {'sector_id': sector_id}).fetchone()
+        sector = conn.execute(text('SELECT crag_id FROM sectors WHERE id = :sector_id'),
+                              {'sector_id': sector_id}).fetchone()
         crag_id = sector[0]
-        conn.execute(text(f'UPDATE ascents SET area_id = :area_id, sector_id = :sector_id, crag_id = :crag_id WHERE id = :ascent_id'),
+        conn.execute(text(
+            'UPDATE ascents SET area_id = :area_id, sector_id = :sector_id, crag_id = :crag_id WHERE id = :ascent_id'),
                      {'area_id': area_id, 'sector_id': sector_id, 'crag_id': crag_id, 'ascent_id': ascent[1]})
 
 

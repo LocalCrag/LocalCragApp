@@ -1,8 +1,7 @@
-from marshmallow import fields, post_dump
+from marshmallow import fields
 
 from extensions import ma
 from marshmallow_schemas.area_schema import AscentAndTodoAreaSchema
-
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.crag_schema import AscentAndTodoCragSchema
 from marshmallow_schemas.line_schema import AscentAndTodoLineSchema

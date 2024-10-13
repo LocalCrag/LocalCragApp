@@ -1,12 +1,11 @@
 from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
-
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
 from models.mixins.has_slug import HasSlug
@@ -41,7 +40,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     def ascent_count(self):
         query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.area_id == self.id)
         if not get_show_secret():
-            query = query.where(Line.secret == False)
+            query = query.where(Line.secret.is_(False))
         return query.scalar()
 
     @classmethod
@@ -52,7 +51,3 @@ class Area(HasSlug, IsSearchable, BaseEntity):
             return -1
 
         return max_order_index[0]
-
-
-
-

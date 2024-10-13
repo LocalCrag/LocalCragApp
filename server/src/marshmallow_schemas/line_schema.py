@@ -2,11 +2,10 @@ from marshmallow import fields
 from marshmallow_enum import EnumField
 
 from extensions import ma
-
+from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from models.enums.line_type_enum import LineTypeEnum
-
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from models.enums.starting_position_enum import StartingPositionEnum
+
 
 class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     name = fields.String()
@@ -14,6 +13,7 @@ class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     id = fields.String()
     gradeName = fields.String(attribute='grade_name')
     gradeScale = fields.String(attribute='grade_scale')
+
 
 class LineSchemaMin(BaseEntityMinSchema):
     name = fields.String()

@@ -1,23 +1,12 @@
-from flask import jsonify, request, current_app
+from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import text
+from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
-from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from marshmallow_schemas.instance_settings_schema import instance_settings_schema
-from models.area import Area
-from models.crag import Crag
 from models.instance_settings import InstanceSettings
-from models.line import Line
-from models.region import Region
-from models.sector import Sector
-from models.user import User
 from util.security_util import check_auth_claims
-from util.validators import validate_order_payload
-from webargs_schemas.crag_args import crag_args
 from webargs_schemas.instance_settings_args import instance_settings_args
 
 

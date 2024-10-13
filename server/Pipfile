@@ -29,6 +29,9 @@ pytest-mock = "*"
 boto3 = "*"
 moto = "*"
 sentry-sdk = {extras = ["flask"], version = "*"}
+flake8 = "*"
+black = "*"
+isort = "*"
 
 [dev-packages]
 

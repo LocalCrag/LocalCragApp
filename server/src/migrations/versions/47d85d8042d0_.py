@@ -5,8 +5,8 @@ Revises: ab2fd18fb216
 Create Date: 2024-02-06 10:09:10.238994
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -33,6 +33,7 @@ class Sector(Base):
     order_index = sa.Column(sa.Integer)
     crag_id = sa.Column(sa.String)
 
+
 class Area(Base):
     __tablename__ = 'areas'
 
@@ -40,12 +41,14 @@ class Area(Base):
     order_index = sa.Column(sa.Integer)
     sector_id = sa.Column(sa.String)
 
+
 class TopoImage(Base):
     __tablename__ = 'topo_images'
 
     id = sa.Column(sa.String, primary_key=True)
     order_index = sa.Column(sa.Integer)
     area_id = sa.Column(sa.String)
+
 
 class LinePath(Base):
     __tablename__ = 'line_paths'

@@ -23,7 +23,7 @@ class Health(MethodView):
         try:
             db.session.execute(text('SELECT 1'))
             response['database'] = 'healthy'
-        except Exception as e:
+        except Exception:
             response['database'] = 'Connection failed'
             status = 503
 
@@ -32,7 +32,7 @@ class Health(MethodView):
             spaces_client = get_spaces_client()
             spaces_client.head_bucket(Bucket=current_app.config['SPACES_BUCKET'])
             response['spaces'] = 'healthy'
-        except Exception as e:
+        except Exception:
             response['spaces'] = 'Connection failed'
             status = 503
 

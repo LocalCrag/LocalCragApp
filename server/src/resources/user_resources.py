@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytz
-from flask import request, jsonify, g
+from flask import request, jsonify
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 from webargs.flaskparser import parser
@@ -248,6 +248,7 @@ class GetUserGrades(MethodView):
 
     def get(self, user_slug):
         user_id = User.get_id_by_slug(user_slug)
-        result = db.session.query(Line.grade_name, Line.grade_scale, Ascent.line_id, Ascent.created_by_id).filter(Line.id == Ascent.line_id,
-                                                                                    Ascent.created_by_id == user_id).all()
+        result = db.session.query(Line.grade_name, Line.grade_scale, Ascent.line_id, Ascent.created_by_id).filter(
+            Line.id == Ascent.line_id,
+            Ascent.created_by_id == user_id).all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200

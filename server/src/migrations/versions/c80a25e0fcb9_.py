@@ -7,9 +7,9 @@ Create Date: 2024-04-19 08:55:17.871786
 """
 import datetime
 
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy import text, orm
+from alembic import op
+from sqlalchemy import orm
 from sqlalchemy.orm import declarative_base
 
 # revision identifiers, used by Alembic.

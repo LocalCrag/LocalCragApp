@@ -5,8 +5,8 @@ Revises: 17271423167a
 Create Date: 2024-04-10 08:15:43.867514
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '538e17ab1cad'
@@ -20,7 +20,6 @@ def upgrade():
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.add_column(sa.Column('slug', sa.String()))
         batch_op.create_unique_constraint(None, ['slug'])
-
 
     # ### end Alembic commands ###
 

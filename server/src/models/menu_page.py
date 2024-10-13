@@ -1,8 +1,5 @@
-from sqlalchemy import func
-
 from extensions import db
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
 
 from models.mixins.has_slug import HasSlug
 
@@ -18,4 +15,3 @@ class MenuPage(HasSlug, BaseEntity):
     title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=True)
     menu_items = db.relationship("MenuItem", cascade="all,delete", lazy="select", overlaps="menu_page")
-

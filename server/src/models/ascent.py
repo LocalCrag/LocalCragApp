@@ -1,6 +1,7 @@
+from sqlalchemy.dialects.postgresql import UUID
+
 from extensions import db
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
 
 
 class Ascent(BaseEntity):

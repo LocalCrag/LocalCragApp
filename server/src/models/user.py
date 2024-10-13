@@ -1,5 +1,6 @@
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy.dialects.postgresql import UUID
+
 from extensions import db
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum

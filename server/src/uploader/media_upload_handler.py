@@ -1,9 +1,7 @@
-import io
 import uuid
 
 import magic
-from PIL import Image, ExifTags, ImageOps
-from flask import current_app
+from PIL import Image, ImageOps
 from werkzeug.datastructures import FileStorage
 
 from models.file import File

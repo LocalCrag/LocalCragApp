@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import text, collate, func, nullslast
+from sqlalchemy import func, nullslast
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -17,7 +17,6 @@ from util.secret_spots import update_line_secret_property, set_line_parents_unse
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
-
 from webargs_schemas.line_args import line_args
 
 
@@ -70,7 +69,7 @@ class GetLines(MethodView):
 
         # Filter secret spots
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
 
         # Handle order
         if order_by and order_direction:

@@ -22,7 +22,7 @@ class Search(MethodView):
             raise BadRequest('A search query is required.')
         db_query = db.session.query(Searchable)
         if not get_show_secret():
-            db_query = db_query.filter(Searchable.secret == False)
+            db_query = db_query.filter(Searchable.secret.is_(False))
         searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
         result = []
         for searchable in searchables:

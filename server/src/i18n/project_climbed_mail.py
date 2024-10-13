@@ -8,7 +8,8 @@ project_climbed_mail = {
         'view_user': 'Benutzer ansehen',
         'view_project': 'Projekt ansehen',
         'copyright': '© LocalCrag. Alle Rechte vorbehalten.',
-        'hint': 'Wenn die oben angezeigten Buttons nicht funktioniert, kopiere die unten stehenden URLs direkt in die Adresszeile Deines Browsers.',
+        'hint': 'Wenn die oben angezeigten Buttons nicht funktioniert, kopiere die unten stehenden URLs direkt in die'
+                ' Adresszeile Deines Browsers.',
         'thanks': 'Gleesikische Grüße,',
         'greetings': 'Dein LocalCrag Team',
         'subject': 'Ein Projekt wurde geklettert!',

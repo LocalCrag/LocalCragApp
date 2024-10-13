@@ -1,10 +1,8 @@
 import datetime
-from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
@@ -12,29 +10,18 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
-from marshmallow_schemas.area_schema import areas_schema, area_schema
-from marshmallow_schemas.ascent_schema import ascent_schema, ascents_schema, \
-    paginated_ascents_schema
-from marshmallow_schemas.sector_schema import sectors_schema, sector_schema
+from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
-from models.crag import Crag
-from models.enums.line_type_enum import LineTypeEnum
-from models.grades import GRADES, get_grade_value
+from models.grades import get_grade_value
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
-from models.topo_image import TopoImage
 from models.user import User
 from util.email import send_project_climbed_email
 from util.secret_spots_auth import get_show_secret
-from util.bucket_placeholders import add_bucket_placeholders
-from util.security_util import check_auth_claims
-from util.validators import validate_order_payload, cross_validate_grade
-
-from webargs_schemas.area_args import area_args
-from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, ticks_args, project_climbed_args
-from webargs_schemas.topo_image_args import topo_image_args
+from util.validators import cross_validate_grade
+from webargs_schemas.ascent_args import ascent_args, cross_validate_ascent_args, project_climbed_args
 
 
 class GetAscents(MethodView):
@@ -243,7 +230,7 @@ class SendProjectClimbedMessage(MethodView):
             raise BadRequest('Only projects can be first ascended.')
 
         # Email all admins
-        for admin in User.query.filter(User.admin == True).all():
+        for admin in User.query.filter(User.admin.is_(True)).all():
             send_project_climbed_email(user, admin, project_climbed_data['message'], line)
 
         return jsonify(None), 204

@@ -1,4 +1,3 @@
-
 class Conflict(Exception):
     status_code = 409
 
@@ -10,5 +9,3 @@ class Conflict(Exception):
         return {
             'message': self.message
         }
-
-

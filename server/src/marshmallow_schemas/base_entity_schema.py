@@ -1,4 +1,3 @@
-from flask_marshmallow import Schema
 from marshmallow import fields
 
 from extensions import ma

@@ -10,13 +10,12 @@ from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
-from models.region import Region
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
-from util.secret_spots_auth import get_show_secret
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
@@ -144,8 +143,6 @@ class GetCragGrades(MethodView):
         query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).join(Sector).filter(
             Sector.crag_id == crag_id)
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
         result = query.all()
         return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
-
-

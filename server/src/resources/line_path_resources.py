@@ -14,7 +14,6 @@ from models.line_path import LinePath
 from models.user import User
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
-
 from webargs_schemas.line_path_args import line_path_args
 
 
@@ -56,7 +55,9 @@ class DeleteLinePath(MethodView):
         line_path: LinePath = LinePath.find_by_id(line_path_id)
 
         db.session.delete(line_path)
-        query = text("UPDATE line_paths SET order_index=order_index - 1 WHERE order_index > :order_index AND topo_image_id = :topo_image_id")
+        query = text(
+            "UPDATE line_paths SET order_index=order_index - 1 WHERE "
+            "order_index > :order_index AND topo_image_id = :topo_image_id")
         db.session.execute(query, {'order_index': line_path.order_index, 'topo_image_id': line_path.topo_image_id})
         db.session.commit()
 

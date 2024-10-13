@@ -1,12 +1,10 @@
 from marshmallow import fields, post_dump
 
 from extensions import ma
-from marshmallow_schemas.file_schema import FileSchema, file_schema
-from marshmallow_schemas.map_marker_schema import MapMarkerSchema, map_marker_schema
+from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
+from marshmallow_schemas.file_schema import file_schema
+from marshmallow_schemas.map_marker_schema import map_marker_schema
 from marshmallow_schemas.sector_schema import SectorMenuSchema
-from models.file import File
-
-from marshmallow_schemas.base_entity_schema import BaseEntitySchema, BaseEntityMinSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
@@ -14,6 +12,7 @@ class AscentAndTodoCragSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
+
 
 class CragSchema(BaseEntityMinSchema):
     name = fields.String()

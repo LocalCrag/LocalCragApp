@@ -2,7 +2,6 @@ import io
 import os
 import pathlib
 import shutil
-import uuid
 from typing import Tuple
 
 from flask import current_app

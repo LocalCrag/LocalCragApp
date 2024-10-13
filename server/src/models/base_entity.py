@@ -45,7 +45,7 @@ class BaseEntity(db.Model):
         # Check if a model has the secret spot property, if yes add a filter based on view rights
         if hasattr(cls, 'secret'):
             if not get_show_secret():
-                query = query.filter(cls.secret == False)
+                query = query.filter(cls.secret.is_(False))
         return query.all()
 
     @classmethod

@@ -1,24 +1,14 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import text
 from webargs.flaskparser import parser
 
-from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from marshmallow_schemas.post_schema import posts_schema, post_schema
-from models.area import Area
-from models.crag import Crag
-from models.line import Line
 from models.post import Post
-from models.region import Region
-from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
-from util.validators import validate_order_payload
-from webargs_schemas.crag_args import crag_args
 from webargs_schemas.post_args import post_args
 
 
@@ -96,4 +86,3 @@ class DeletePost(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
-

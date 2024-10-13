@@ -1,18 +1,15 @@
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import column_property
 
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
-
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
-from models.grades import GRADES, get_grade_value
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
 
@@ -87,5 +84,3 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     @hybrid_property
     def ascent_count(self):
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()
-
-

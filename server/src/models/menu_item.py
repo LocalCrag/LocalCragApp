@@ -1,13 +1,12 @@
-from sqlalchemy import func, desc
+from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
-
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
-from models.mixins.has_slug import HasSlug
+from models.menu_page import MenuPage
 
 
 class MenuItem(BaseEntity):
@@ -21,7 +20,7 @@ class MenuItem(BaseEntity):
     icon = db.Column(db.String(120), nullable=True)
     order_index = db.Column(db.Integer, nullable=False, server_default='0')
     menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
-    menu_page: Mapped["MenuPage"] = relationship()
+    menu_page: Mapped[MenuPage] = relationship()
 
     @classmethod
     def find_max_order_index_at_position(cls, position) -> int:
@@ -31,5 +30,3 @@ class MenuItem(BaseEntity):
             return -1
 
         return max_order_index[0]
-
-

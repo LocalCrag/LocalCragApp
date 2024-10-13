@@ -1,6 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
 
-from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from models.base_entity import BaseEntity
 from models.enums.todo_priority_enum import TodoPriorityEnum

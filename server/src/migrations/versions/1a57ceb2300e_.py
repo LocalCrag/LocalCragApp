@@ -5,10 +5,9 @@ Revises: cda23343448f
 Create Date: 2024-02-08 22:45:32.372862
 
 """
-import json
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy import orm
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import JSON
@@ -20,7 +19,6 @@ down_revision = 'cda23343448f'
 branch_labels = None
 depends_on = None
 
-
 Base = declarative_base()
 
 
@@ -30,8 +28,6 @@ class Line(Base):
     id = sa.Column(sa.String, primary_key=True)
     video = sa.Column(sa.String)
     videos = sa.Column(JSON)
-
-
 
 
 def upgrade():
