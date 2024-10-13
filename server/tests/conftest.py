@@ -7,7 +7,7 @@ import botocore
 import moto
 import pytest
 from flask import current_app
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from sqlalchemy import URL, create_engine, text
 from sqlalchemy.event import listen
 from sqlalchemy.exc import ProgrammingError
@@ -108,6 +108,13 @@ def admin_token():
 
 
 @pytest.fixture(scope='session')
+def admin_refresh_token():
+    return create_refresh_token(identity="admin@localcrag.invalid.org",
+                               additional_claims={"admin": True, "moderator": True, "member": True},
+                               expires_delta=timedelta(days=1))
+
+
+@pytest.fixture(scope='session')
 def moderator_token():
     return create_access_token(identity="moderator@localcrag.invalid.org",
                                additional_claims={"admin": False, "moderator": True, "member": True},
@@ -118,6 +125,13 @@ def moderator_token():
 def member_token():
     return create_access_token(identity="member@localcrag.invalid.org",
                                additional_claims={"admin": False, "moderator": False, "member": True},
+                               expires_delta=timedelta(days=1))
+
+
+@pytest.fixture(scope='session')
+def user_token():
+    return create_access_token(identity="user@localcrag.invalid.org",
+                               additional_claims={"admin": False, "moderator": False, "member": False},
                                expires_delta=timedelta(days=1))
 
 
@@ -227,6 +241,18 @@ def fill_db_with_sample_data():
     user.admin = False
     user.moderator = False
     user.member = True
+    db.session.add(user)
+
+    user = User()
+    user.email = "user@localcrag.invalid.org"
+    user.password = User.generate_hash("user")
+    user.firstname = "user"
+    user.lastname = "user"
+    user.activated = True
+    user.superadmin = False
+    user.admin = False
+    user.moderator = False
+    user.member = False
     db.session.add(user)
 
     adminId = User.find_by_email("admin@localcrag.invalid.org").id
