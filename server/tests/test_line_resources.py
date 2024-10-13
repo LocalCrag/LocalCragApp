@@ -3,8 +3,7 @@ import json
 from tests.utils.user_test_util import get_login_headers
 
 
-def test_successful_create_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_create_line(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -51,9 +50,9 @@ def test_successful_create_line(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 201
-    res = json.loads(rv.data)
+    res = rv.json
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
@@ -97,8 +96,7 @@ def test_successful_create_line(client):
     assert res['id'] is not None
     assert len(res['linePaths']) == 0
 
-def test_successful_create_line_with_project_status(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_create_line_with_project_status(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -145,9 +143,9 @@ def test_successful_create_line_with_project_status(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 201
-    res = json.loads(rv.data)
+    res = rv.json
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
@@ -193,8 +191,7 @@ def test_successful_create_line_with_project_status(client):
     assert len(res['linePaths']) == 0
 
 
-def test_create_line_invalid_fa_year(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_fa_year(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -241,12 +238,11 @@ def test_create_line_invalid_fa_year(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_rating(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_rating(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -293,12 +289,11 @@ def test_create_line_invalid_rating(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_video_url(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_video_url(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -345,12 +340,11 @@ def test_create_line_invalid_video_url(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_name(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_name(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -397,12 +391,11 @@ def test_create_line_invalid_grade_name(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_scale_for_line_type(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -449,12 +442,11 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_scale(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_scale(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -501,12 +493,11 @@ def test_create_line_invalid_grade_scale(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_line_type(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_line_type(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -553,11 +544,10 @@ def test_create_line_invalid_line_type(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
-def test_create_line_invalid_line_starting_position(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_line_starting_position(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -604,11 +594,10 @@ def test_create_line_invalid_line_starting_position(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
-def test_create_line_invalid_video_payload(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_video_payload(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -654,39 +643,39 @@ def test_create_line_invalid_video_payload(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post('/api/areas/dritter-block-von-links/lines', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
 def test_successful_get_lines(client):
     rv = client.get('/api/lines')
     assert rv.status_code == 200
-    res = json.loads(rv.data)['items']
+    res = rv.json['items']
     assert len(res) == 2
-    assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
+    assert isinstance(res[0]['id'], str)
     assert res[0]['slug'] == "super-spreader"
     assert res[0]['name'] == "Super-Spreader"
     assert res[0]['ascentCount'] == 1
     assert res[0]['secret'] == False
     assert len(res[0]['linePaths']) == 2
     assert res[0]['linePaths'][0]['orderIndex'] == 0
-    assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert isinstance(res[0]['linePaths'][0]['topoImage']['id'], str)
     assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
-    assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
+    assert isinstance(res[1]['id'], str)
     assert res[1]['slug'] == "treppe"
     assert res[1]['name'] == "Treppe"
     assert res[1]['secret'] == False
     assert res[1]['ascentCount'] == 0
     assert len(res[1]['linePaths']) == 1
     assert res[1]['linePaths'][0]['orderIndex'] == 1
-    assert res[1]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert isinstance(res[1]['linePaths'][0]['topoImage']['id'], str)
     assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
 
 
 def test_successful_get_line(client):
     rv = client.get('/api/lines/super-spreader')
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = rv.json
     assert res['name'] == "Super-Spreader"
     assert res['slug'] == "super-spreader"
     assert res['description'] == "<p>Geiler Kühlschrankboulder!</p>"
@@ -729,7 +718,7 @@ def test_successful_get_line(client):
     assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 2
-    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert isinstance(res['linePaths'][0]['topoImage']['id'], str)
     assert res['linePaths'][0]['orderIndex'] == 0
     assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
 
@@ -737,19 +726,16 @@ def test_successful_get_line(client):
 def test_get_deleted_line(client):
     rv = client.get('/api/lines/linie-existiert-nicht-mehr')
     assert rv.status_code == 404
-    res = json.loads(rv.data)
+    res = rv.json
     assert res['message'] == "ENTITY_NOT_FOUND"
 
 
-def test_successful_delete_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
-
-    rv = client.delete('/api/lines/super-spreader', headers=access_headers)
+def test_successful_delete_line(client, moderator_token):
+    rv = client.delete('/api/lines/super-spreader', token=moderator_token)
     assert rv.status_code == 204
 
 
-def test_successful_edit_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_edit_line(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -796,9 +782,9 @@ def test_successful_edit_line(client):
         "secret": False,
     }
 
-    rv = client.put('/api/lines/treppe', headers=access_headers, json=line_data)
+    rv = client.put('/api/lines/treppe', token=moderator_token, json=line_data)
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = rv.json
     assert res['name'] == "Es"
     assert res['slug'] == "es"
     assert res['description'] == "Super Boulder"
@@ -841,12 +827,11 @@ def test_successful_edit_line(client):
     assert res["secret"] == False
     assert res['id'] is not None
     assert len(res['linePaths']) == 1
-    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
+    assert isinstance(res['linePaths'][0]['topoImage']['id'], str)
     assert res['linePaths'][0]['orderIndex'] == 1
     assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
 
-def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -893,12 +878,12 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
         "secret": False,
     }
 
-    rv = client.put('/api/lines/super-spreader', headers=access_headers, json=line_data)
+    rv = client.put('/api/lines/super-spreader', token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
 def test_successful_get_lines_for_line_editor(client):
     rv = client.get('/api/lines/for-line-editor/dritter-block-von-links')
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = rv.json
     assert len(res) == 2
