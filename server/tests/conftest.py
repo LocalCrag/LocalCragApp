@@ -502,8 +502,8 @@ def fill_db_with_sample_data():
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
     linePath.path = [57.71428571428571, 59.04761904761905, 57.57142857142858, 39.23809523809524, 45.714285714285715, 27.42857142857143, 38.714285714285715, 15.42857142857143, 41.14285714285714, 2.4761904761904763]
     linePath.created_by_id = adminId
-    linePath.order_index = 0
-    linePath.order_index_for_line = 0
+    linePath.order_index = 1
+    linePath.order_index_for_line = 1
     db.session.add(linePath)
 
     mapMarker = MapMarker()
