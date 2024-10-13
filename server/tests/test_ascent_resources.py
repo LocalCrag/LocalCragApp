@@ -288,10 +288,9 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
     rv = client.post('/api/ascents/send-project-climbed-message', token=user_token, json=project_climbed_data)
     assert rv.status_code == 204
 
-    # We have three admins, so the mail must be sent three times
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 3
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 3
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 3
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
 
     treppe = str(Line.get_id_by_slug("treppe"))
 

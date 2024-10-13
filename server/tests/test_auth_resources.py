@@ -257,9 +257,9 @@ def test_forgot_password_with_non_activated_user(client, mocker, admin_token):
     assert rv.status_code == 401
     res = rv.json
     assert res['message'] == ResponseMessage.USER_NOT_ACTIVATED.value
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 4
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 4
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 4
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 2
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 2
 
 
 def test_reset_password_with_non_activated_user(client, mocker, admin_token):
@@ -288,9 +288,9 @@ def test_reset_password_with_non_activated_user(client, mocker, admin_token):
     assert rv.status_code == 401
     res = rv.json
     assert res['message'] == ResponseMessage.USER_NOT_ACTIVATED.value
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 4
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 4
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 4
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 2
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 2
 
 
 def test_successful_change_password(client, member_token):
