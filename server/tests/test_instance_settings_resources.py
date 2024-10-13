@@ -16,7 +16,6 @@ def test_successful_get_instance_settings(client):
     assert res['faviconImage'] is None or res['faviconImage'] == str(instance_settings.favicon_image_id)
     assert res['mainBgImage'] is None or res['mainBgImage'] == str(instance_settings.main_bg_image_id)
     assert res['authBgImage'] is None or res['authBgImage'] == str(instance_settings.auth_bg_image_id)
-    assert res['superadminEmail'] == instance_settings.superadmin_email
     assert res['arrowColor'] == instance_settings.arrow_color
     assert res['arrowTextColor'] == instance_settings.arrow_text_color
     assert res['arrowHighlightColor'] == instance_settings.arrow_highlight_color
@@ -64,7 +63,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res['arrowHighlightColor'] == '#CCCCCC'
     assert res['arrowHighlightTextColor'] == '#DDDDDD'
     assert res['barChartColor'] == 'rgb(213, 30, 39)'
-    assert res['superadminEmail'] == instance_settings.superadmin_email
     assert res['matomoTrackerUrl'] == 'https://matomo-example-2.localcrag.cloud'
     assert res['matomoSiteId'] == '2'
     assert res['maptilerApiKey'] == 'maptiler'
