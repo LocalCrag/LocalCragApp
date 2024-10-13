@@ -1,0 +1,24 @@
+repos:
+  # Python server hooks (black, flake8, isort)
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+        files: ^server/
+        entry: bash -c 'cd server && pipenv run black .'
+        args: [--config=server/pyproject.toml]
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        files: ^server/
+        entry: bash -c 'cd server && pipenv run flake8 .'
+        args: [--config=server/.flake8]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        files: ^server/
+        entry: bash -c 'cd server && pipenv run isort .'
+        args: [--settings-path=server/pyproject.toml]
