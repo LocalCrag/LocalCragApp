@@ -35,7 +35,8 @@ def upgrade():
         crag_id = sector[0]
         conn.execute(
             text(
-                "UPDATE ascents SET area_id = :area_id, sector_id = :sector_id, crag_id = :crag_id WHERE id = :ascent_id"
+                "UPDATE ascents SET area_id = :area_id, sector_id = :sector_id, "
+                "crag_id = :crag_id WHERE id = :ascent_id"
             ),
             {"area_id": area_id, "sector_id": sector_id, "crag_id": crag_id, "ascent_id": ascent[1]},
         )
