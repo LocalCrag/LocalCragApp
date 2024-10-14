@@ -31,7 +31,7 @@ from models.map_marker import MapMarker
 from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.mixins.has_slug import update_slugs
-from models.mixins.is_searchable import update_searchables, create_searchables
+from models.mixins.is_searchable import create_searchables, update_searchables
 from models.post import Post
 from models.ranking import Ranking
 from models.region import Region
@@ -41,14 +41,23 @@ from models.topo_image import TopoImage
 from models.user import User
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def setup_db():
     with app.app_context():
         try:
             # To create the database if not exists, we need to remove it from the URL
             main_url = db.engine.url
             engine = create_engine(
-                URL.create(main_url.drivername, main_url.username, main_url.password, main_url.host, main_url.port, "postgres", main_url.query))
+                URL.create(
+                    main_url.drivername,
+                    main_url.username,
+                    main_url.password,
+                    main_url.host,
+                    main_url.port,
+                    "postgres",
+                    main_url.query,
+                )
+            )
             with engine.connect() as conn:
                 conn.execute(text("commit"))
                 conn.execute(text(f"CREATE DATABASE {main_url.database}"))
@@ -100,39 +109,49 @@ def client():
     return client
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def admin_token():
-    return create_access_token(identity="admin@localcrag.invalid.org",
-                               additional_claims={"admin": True, "moderator": True, "member": True},
-                               expires_delta=timedelta(days=1))
+    return create_access_token(
+        identity="admin@localcrag.invalid.org",
+        additional_claims={"admin": True, "moderator": True, "member": True},
+        expires_delta=timedelta(days=1),
+    )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def admin_refresh_token():
-    return create_refresh_token(identity="admin@localcrag.invalid.org",
-                               additional_claims={"admin": True, "moderator": True, "member": True},
-                               expires_delta=timedelta(days=1))
+    return create_refresh_token(
+        identity="admin@localcrag.invalid.org",
+        additional_claims={"admin": True, "moderator": True, "member": True},
+        expires_delta=timedelta(days=1),
+    )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def moderator_token():
-    return create_access_token(identity="moderator@localcrag.invalid.org",
-                               additional_claims={"admin": False, "moderator": True, "member": True},
-                               expires_delta=timedelta(days=1))
+    return create_access_token(
+        identity="moderator@localcrag.invalid.org",
+        additional_claims={"admin": False, "moderator": True, "member": True},
+        expires_delta=timedelta(days=1),
+    )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def member_token():
-    return create_access_token(identity="member@localcrag.invalid.org",
-                               additional_claims={"admin": False, "moderator": False, "member": True},
-                               expires_delta=timedelta(days=1))
+    return create_access_token(
+        identity="member@localcrag.invalid.org",
+        additional_claims={"admin": False, "moderator": False, "member": True},
+        expires_delta=timedelta(days=1),
+    )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def user_token():
-    return create_access_token(identity="user@localcrag.invalid.org",
-                               additional_claims={"admin": False, "moderator": False, "member": False},
-                               expires_delta=timedelta(days=1))
+    return create_access_token(
+        identity="user@localcrag.invalid.org",
+        additional_claims={"admin": False, "moderator": False, "member": False},
+        expires_delta=timedelta(days=1),
+    )
 
 
 @pytest.fixture
@@ -142,57 +161,52 @@ def s3_mock():
         try:
             mock.start()
             session = boto3.session.Session()
-            client = session.client('s3',
-                                    endpoint_url=current_app.config['SPACES_ENDPOINT'],
-                                    config=botocore.config.Config(s3={'addressing_style': current_app.config['SPACES_ADDRESSING']}),
-                                    region_name=current_app.config['SPACES_REGION'],
-                                    aws_access_key_id=current_app.config['SPACES_ACCESS_KEY'],
-                                    aws_secret_access_key=current_app.config['SPACES_SECRET_KEY'])
-            client.create_bucket(Bucket=app.config['SPACES_BUCKET'],
-                                 CreateBucketConfiguration={"LocationConstraint": app.config['SPACES_REGION']})
+            client = session.client(
+                "s3",
+                endpoint_url=current_app.config["SPACES_ENDPOINT"],
+                config=botocore.config.Config(s3={"addressing_style": current_app.config["SPACES_ADDRESSING"]}),
+                region_name=current_app.config["SPACES_REGION"],
+                aws_access_key_id=current_app.config["SPACES_ACCESS_KEY"],
+                aws_secret_access_key=current_app.config["SPACES_SECRET_KEY"],
+            )
+            client.create_bucket(
+                Bucket=app.config["SPACES_BUCKET"],
+                CreateBucketConfiguration={"LocationConstraint": app.config["SPACES_REGION"]},
+            )
             yield client
         finally:
             mock.stop()
 
 
 def remove_upload_test_files():
-    extensions = ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf']
+    extensions = ["jpg", "jpeg", "png", "bmp", "gif", "pdf"]
     for extension in extensions:
-        if os.path.exists('uploads/test-uuid.{}'.format(extension)):
-            os.remove('uploads/test-uuid.{}'.format(extension))
-        if os.path.exists('uploads/test-uuid_xs.{}'.format(extension)):
-            os.remove('uploads/test-uuid_xs.{}'.format(extension))
-        if os.path.exists('uploads/test-uuid_s.{}'.format(extension)):
-            os.remove('uploads/test-uuid_s.{}'.format(extension))
-        if os.path.exists('uploads/test-uuid_m.{}'.format(extension)):
-            os.remove('uploads/test-uuid_m.{}'.format(extension))
-        if os.path.exists('uploads/test-uuid_l.{}'.format(extension)):
-            os.remove('uploads/test-uuid_l.{}'.format(extension))
-        if os.path.exists('uploads/test-uuid_xl.{}'.format(extension)):
-            os.remove('uploads/test-uuid_xl.{}'.format(extension))
+        if os.path.exists("uploads/test-uuid.{}".format(extension)):
+            os.remove("uploads/test-uuid.{}".format(extension))
+        if os.path.exists("uploads/test-uuid_xs.{}".format(extension)):
+            os.remove("uploads/test-uuid_xs.{}".format(extension))
+        if os.path.exists("uploads/test-uuid_s.{}".format(extension)):
+            os.remove("uploads/test-uuid_s.{}".format(extension))
+        if os.path.exists("uploads/test-uuid_m.{}".format(extension)):
+            os.remove("uploads/test-uuid_m.{}".format(extension))
+        if os.path.exists("uploads/test-uuid_l.{}".format(extension)):
+            os.remove("uploads/test-uuid_l.{}".format(extension))
+        if os.path.exists("uploads/test-uuid_xl.{}".format(extension)):
+            os.remove("uploads/test-uuid_xl.{}".format(extension))
 
 
 def copy_required_upload_files():
     """
     Copies all images that need to physically exist for the tests (not just in the DB but as file).
     """
-    if not os.path.isdir('uploads'):
-        os.makedirs('uploads')
+    if not os.path.isdir("uploads"):
+        os.makedirs("uploads")
 
     # Reaction formular image for PDF generator test
-    shutil.copyfile(
-        '../tests/assets/test_image_271_186.png',
-        'uploads/6bbf1ddf-81d0-4229-825c-efb7633eb837.png'
-    )
+    shutil.copyfile("../tests/assets/test_image_271_186.png", "uploads/6bbf1ddf-81d0-4229-825c-efb7633eb837.png")
     # Files used as analysis PDF
-    shutil.copyfile(
-        '../tests/assets/test_pdf.pdf',
-        'uploads/vx-200-manual.pdf'
-    )
-    shutil.copyfile(
-        '../tests/assets/test_pdf.pdf',
-        'uploads/vx-200-manual-2.pdf'
-    )
+    shutil.copyfile("../tests/assets/test_pdf.pdf", "uploads/vx-200-manual.pdf")
+    shutil.copyfile("../tests/assets/test_pdf.pdf", "uploads/vx-200-manual-2.pdf")
 
 
 @pytest.fixture
@@ -200,7 +214,7 @@ def clean_test_uploads():
     remove_upload_test_files()
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def clean_uploads_after_all_tests():
     remove_upload_test_files()
     copy_required_upload_files()
@@ -484,7 +498,16 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("super-spreader")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = [63.0, 65.32448061683445, 45.857142857142854, 43.90661811951168, 39.57142857142858, 26.665238809166848, 39.714285714285715, 16.170486185478687]
+    linePath.path = [
+        63.0,
+        65.32448061683445,
+        45.857142857142854,
+        43.90661811951168,
+        39.57142857142858,
+        26.665238809166848,
+        39.714285714285715,
+        16.170486185478687,
+    ]
     linePath.created_by_id = adminId
     linePath.order_index = 0
     linePath.order_index_for_line = 0
@@ -493,7 +516,14 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("treppe")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = [84.42857142857143, 70.25058899121868, 75.85714285714286, 35.767830370529026, 68.71428571428571, 8.781323623902335]
+    linePath.path = [
+        84.42857142857143,
+        70.25058899121868,
+        75.85714285714286,
+        35.767830370529026,
+        68.71428571428571,
+        8.781323623902335,
+    ]
     linePath.created_by_id = adminId
     linePath.order_index = 1
     linePath.order_index_for_line = 0
@@ -502,7 +532,18 @@ def fill_db_with_sample_data():
     linePath = LinePath()
     linePath.line_id = Line.get_id_by_slug("super-spreader")
     linePath.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
-    linePath.path = [57.71428571428571, 59.04761904761905, 57.57142857142858, 39.23809523809524, 45.714285714285715, 27.42857142857143, 38.714285714285715, 15.42857142857143, 41.14285714285714, 2.4761904761904763]
+    linePath.path = [
+        57.71428571428571,
+        59.04761904761905,
+        57.57142857142858,
+        39.23809523809524,
+        45.714285714285715,
+        27.42857142857143,
+        38.714285714285715,
+        15.42857142857143,
+        41.14285714285714,
+        2.4761904761904763,
+    ]
     linePath.created_by_id = adminId
     linePath.order_index = 1
     linePath.order_index_for_line = 1
@@ -610,7 +651,7 @@ def fill_db_with_sample_data():
         "5f2edb37-1fb3-4e10-99cb-66a67fd80d71",
         "cd5c8e72-e115-4195-84eb-fd8b65559662",
         "7d291e44-016a-4869-91af-3416d2060c9c",
-        "f5bd3862-78ba-471a-b0e5-fa55d419e435"
+        "f5bd3862-78ba-471a-b0e5-fa55d419e435",
     ]:
         revokedToken = RevokedToken()
         revokedToken.jti = jti
