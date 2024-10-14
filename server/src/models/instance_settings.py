@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from typing import Self
 
 from flask import current_app
 from sqlalchemy.dialects.postgresql import UUID
@@ -39,5 +40,5 @@ class InstanceSettings(db.Model):
         return current_app.config["SUPERADMIN_EMAIL"]
 
     @classmethod
-    def return_it(cls):
+    def return_it(cls) -> Self:
         return cls.query.first()
