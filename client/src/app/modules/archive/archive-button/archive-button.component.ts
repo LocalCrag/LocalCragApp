@@ -6,13 +6,15 @@ import {Store} from '@ngrx/store';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {toastNotification} from "../../../ngrx/actions/notifications.actions";
 import {NotificationIdentifier} from "../../../utility/notifications/notification-identifier.enum";
-import {ArchiveService} from "../../../services/crud/archive.service";
 import {Line} from '../../../models/line';
 import {Crag} from "../../../models/crag";
 import {Sector} from "../../../models/sector";
 import {Area} from "../../../models/area";
 import {TopoImage} from '../../../models/topo-image';
 import {LinesService} from '../../../services/crud/lines.service';
+import {CragsService} from '../../../services/crud/crags.service';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {AreasService} from '../../../services/crud/areas.service';
 
 @Component({
   selector: 'lc-archive-button',
@@ -26,9 +28,6 @@ import {LinesService} from '../../../services/crud/lines.service';
   ],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
-  providers: [
-    ArchiveService,
-  ],
   encapsulation: ViewEncapsulation.None
 })
 export class ArchiveButtonComponent {
@@ -41,8 +40,10 @@ export class ArchiveButtonComponent {
   @Input() showLabel: boolean;
   @Input() outline = false;
 
-  constructor(private archiveService: ArchiveService,
-              private linesService: LinesService,
+  constructor(private linesService: LinesService,
+              private cragsService: CragsService,
+              private sectorsService: SectorsService,
+              private areasService: AreasService,
               private translocoService: TranslocoService,
               private store: Store) {
   }
@@ -77,15 +78,18 @@ export class ArchiveButtonComponent {
     }
 
     if (this.area) {
-      this.archiveService.archiveArea(this.area.slug).subscribe(resultHandler);
+      this.area.archived = true;
+      this.areasService.updateArea(this.area).subscribe(resultHandler);
     }
 
     if (this.sector) {
-      this.archiveService.archiveSector(this.sector.slug).subscribe(resultHandler);
+      this.sector.archived = true;
+      this.sectorsService.updateSector(this.sector).subscribe(resultHandler);
     }
 
     if (this.crag) {
-      this.archiveService.archiveCrag(this.crag.slug).subscribe(resultHandler);
+      this.crag.archived = true;
+      this.cragsService.updateCrag(this.crag).subscribe(resultHandler);
     }
   }
 

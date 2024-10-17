@@ -18,6 +18,7 @@ export class Crag extends AbstractModel {
   ascentCount: number;
   routerLink: string;
   secret: boolean;
+  archived?: boolean;
   mapMarkers: MapMarker[];
 
   /**
@@ -63,6 +64,7 @@ export class Crag extends AbstractModel {
       shortDescription: crag.shortDescription,
       rules: crag.rules,
       secret: crag.secret,
+      archived: crag.archived,
       portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
       mapMarkers: crag.mapMarkers
         ? crag.mapMarkers.map(MapMarker.serialize)
