@@ -9,5 +9,6 @@ area_args = {
     "shortDescription": fields.Str(required=True, allow_none=True),
     "portraitImage": fields.String(required=True, allow_none=True),
     "secret": fields.Boolean(required=True, allow_none=False),
+    "archived": fields.Boolean(required=False, allow_none=True),
     "mapMarkers": fields.List(fields.Nested(map_marker_args), required=True, allow_none=False),
 }
