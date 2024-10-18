@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { SkeletonModule } from 'primeng/skeleton';
-import { NgForOf } from '@angular/common';
+import {Component} from '@angular/core';
+import {SkeletonModule} from 'primeng/skeleton';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'lc-ascent-list-skeleton',

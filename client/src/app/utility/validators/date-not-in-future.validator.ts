@@ -1,4 +1,4 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
 
 export const dateNotInFutureValidator =
   (): ValidatorFn =>

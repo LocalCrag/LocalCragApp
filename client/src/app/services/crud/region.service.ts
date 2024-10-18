@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { Region } from '../../models/region';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {Region} from '../../models/region';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 /**
  * CRUD service for regions.

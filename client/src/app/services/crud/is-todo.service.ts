@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { Store } from '@ngrx/store';
-import { HttpClient } from '@angular/common/http';
-import { mergeMap, Observable, of } from 'rxjs';
-import { selectCurrentUser } from '../../ngrx/selectors/auth.selectors';
-import { map, take } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {Store} from '@ngrx/store';
+import {HttpClient} from '@angular/common/http';
+import {mergeMap, Observable, of} from 'rxjs';
+import {selectCurrentUser} from '../../ngrx/selectors/auth.selectors';
+import {map, take} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',

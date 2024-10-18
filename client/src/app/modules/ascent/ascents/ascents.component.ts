@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
-import { NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { TabMenuModule } from 'primeng/tabmenu';
-import { TranslocoDirective } from '@jsverse/transloco';
+import {Component} from '@angular/core';
+import {BreadcrumbModule} from 'primeng/breadcrumb';
+import {CardModule} from 'primeng/card';
+import {NgIf} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
+import {TabMenuModule} from 'primeng/tabmenu';
+import {TranslocoDirective} from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-ascents',

@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
-import { Crag } from '../../../models/crag';
-import { ActivatedRoute } from '@angular/router';
-import { CragsService } from '../../../services/crud/crags.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Sector } from '../../../models/sector';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { NgIf } from '@angular/common';
-import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
+import {Component} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Sector} from '../../../models/sector';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {NgIf} from '@angular/common';
+import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.component';
 
 @Component({
   selector: 'lc-sector-ranking',

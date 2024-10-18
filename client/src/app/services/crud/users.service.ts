@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { User } from '../../models/user';
-import { LoginResponse } from '../../models/login-response';
-import { UserPromotionTargets } from '../../enums/user-promotion-targets';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {User} from '../../models/user';
+import {LoginResponse} from '../../models/login-response';
+import {UserPromotionTargets} from '../../enums/user-promotion-targets';
+import {deserializeGrade, Grade} from '../../utility/misc/grades';
 
 @Injectable({
   providedIn: 'root',

@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { format } from 'date-fns';
+import {Pipe, PipeTransform} from '@angular/core';
+import {format} from 'date-fns';
 
 /**
  * Formats a date with the given formatting string.

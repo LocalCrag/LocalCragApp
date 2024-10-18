@@ -1,5 +1,5 @@
-import { concat, Observable, timer } from 'rxjs';
-import { take, takeLast } from 'rxjs/operators';
+import {concat, Observable, timer} from 'rxjs';
+import {take, takeLast} from 'rxjs/operators';
 
 /**
  * A timer observable that works with arbitrarily large numbers.

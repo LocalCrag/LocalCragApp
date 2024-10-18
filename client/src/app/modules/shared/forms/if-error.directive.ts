@@ -1,14 +1,7 @@
-import {
-  Directive,
-  Input,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
-import { ControlGroupService } from './control-group.service';
-import { Subscription } from 'rxjs';
-import { NgControl } from '@angular/forms';
+import {Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef,} from '@angular/core';
+import {ControlGroupService} from './control-group.service';
+import {Subscription} from 'rxjs';
+import {NgControl} from '@angular/forms';
 
 /**
  * Directive for rendering lc control messages depending on the error state of the control. If the specified error

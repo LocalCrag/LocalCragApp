@@ -1,5 +1,5 @@
-import { AbstractControl, FormControl } from '@angular/forms';
-import { httpUrlValidator } from './http-url.validator';
+import {FormControl} from '@angular/forms';
+import {httpUrlValidator} from './http-url.validator';
 
 describe('httpUrlValidator', () => {
   it('should accept correct URLs', () => {

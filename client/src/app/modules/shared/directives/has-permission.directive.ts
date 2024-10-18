@@ -1,12 +1,5 @@
-import {
-  Directive,
-  Input,
-  Renderer2,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
-import { Store } from '@ngrx/store';
-import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
+import {Directive, Input, TemplateRef, ViewContainerRef,} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {
   selectCurrentUser,
   selectIsAdmin,
@@ -14,7 +7,7 @@ import {
   selectIsMember,
   selectIsModerator,
 } from '../../../ngrx/selectors/auth.selectors';
-import { User } from '../../../models/user';
+import {User} from '../../../models/user';
 
 @Directive({
   selector:

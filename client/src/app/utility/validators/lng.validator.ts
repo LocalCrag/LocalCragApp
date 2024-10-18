@@ -1,4 +1,4 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
 
 /**
  * Validator for longitude.

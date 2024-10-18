@@ -1,12 +1,8 @@
-import { Injectable } from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  ValidationErrors,
-} from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UsersService } from '../crud/users.service';
+import {Injectable} from '@angular/core';
+import {AbstractControl, AsyncValidatorFn, ValidationErrors,} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {UsersService} from '../crud/users.service';
 
 @Injectable({
   providedIn: 'root',

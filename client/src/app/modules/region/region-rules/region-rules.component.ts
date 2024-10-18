@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
-import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { Region } from '../../../models/region';
-import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
-import { RegionService } from '../../../services/crud/region.service';
-import { environment } from '../../../../environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component} from '@angular/core';
+import {
+  GradeDistributionBarChartComponent
+} from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import {NgIf} from '@angular/common';
+import {SharedModule} from '../../shared/shared.module';
+import {SkeletonModule} from 'primeng/skeleton';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {Region} from '../../../models/region';
+import {RegionService} from '../../../services/crud/region.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 /**
  * Component that displays region rules.

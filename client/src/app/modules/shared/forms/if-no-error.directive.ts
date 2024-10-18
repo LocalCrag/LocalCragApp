@@ -1,12 +1,6 @@
-import {
-  Directive,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
-import { ControlGroupService } from './control-group.service';
-import { Subscription } from 'rxjs';
+import {Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef,} from '@angular/core';
+import {ControlGroupService} from './control-group.service';
+import {Subscription} from 'rxjs';
 
 /**
  * Directive for rendering cds control messages depending on the error state of the control group.

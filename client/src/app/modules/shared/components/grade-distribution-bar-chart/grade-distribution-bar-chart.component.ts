@@ -1,22 +1,15 @@
-import {
-  Component,
-  HostListener,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewEncapsulation,
-} from '@angular/core';
-import { debounceTime, fromEvent, Observable } from 'rxjs';
-import { Grade, GRADES } from '../../../../utility/misc/grades';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ChartModule } from 'primeng/chart';
-import { NgIf } from '@angular/common';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
-import { Store } from '@ngrx/store';
-import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
-import { getRgbObject } from '../../../../utility/misc/color';
+import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation,} from '@angular/core';
+import {debounceTime, fromEvent, Observable} from 'rxjs';
+import {Grade, GRADES} from '../../../../utility/misc/grades';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {ChartModule} from 'primeng/chart';
+import {NgIf} from '@angular/common';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {MOBILE_BREAKPOINT} from '../../../../utility/misc/breakpoints';
+import {Store} from '@ngrx/store';
+import {selectBarChartColor} from '../../../../ngrx/selectors/instance-settings.selectors';
+import {take} from 'rxjs/operators';
+import {getRgbObject} from '../../../../utility/misc/color';
 
 /**
  * Component that shows grades in a bar chart.

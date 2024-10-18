@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+import {Component, Input} from '@angular/core';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'lc-ascent-count',

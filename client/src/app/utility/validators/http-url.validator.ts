@@ -1,4 +1,4 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
 
 /**
  * Validator for checking if a string is a valid HTTP URL.

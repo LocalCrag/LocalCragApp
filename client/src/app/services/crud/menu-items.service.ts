@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { MenuItem } from '../../models/menu-item';
-import { ItemOrder } from '../../interfaces/item-order.interface';
-import { Crag } from '../../models/crag';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {MenuItem} from '../../models/menu-item';
+import {ItemOrder} from '../../interfaces/item-order.interface';
+import {Crag} from '../../models/crag';
 
 /**
  * CRUD service for menu items.

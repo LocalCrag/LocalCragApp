@@ -1,48 +1,35 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { LoadingState } from '../../../enums/loading-state';
-import { DropdownModule } from 'primeng/dropdown';
-import { EditorModule } from 'primeng/editor';
-import { InputTextModule } from 'primeng/inputtext';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { NgIf } from '@angular/common';
-import { RatingModule } from 'primeng/rating';
-import { Grade, GRADES } from '../../../utility/misc/grades';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { Line } from '../../../models/line';
-import { Store } from '@ngrx/store';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
-import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { Ascent } from '../../../models/ascent';
-import { AscentsService } from '../../../services/crud/ascents.service';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
-import { DividerModule } from 'primeng/divider';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { catchError, filter } from 'rxjs/operators';
-import { MessageModule } from 'primeng/message';
-import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {LoadingState} from '../../../enums/loading-state';
+import {DropdownModule} from 'primeng/dropdown';
+import {EditorModule} from 'primeng/editor';
+import {InputTextModule} from 'primeng/inputtext';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
+import {TranslocoDirective, TranslocoPipe,} from '@jsverse/transloco';
+import {CheckboxModule} from 'primeng/checkbox';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {NgIf} from '@angular/common';
+import {RatingModule} from 'primeng/rating';
+import {Grade, GRADES} from '../../../utility/misc/grades';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {Line} from '../../../models/line';
+import {Store} from '@ngrx/store';
+import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {Ascent} from '../../../models/ascent';
+import {AscentsService} from '../../../services/crud/ascents.service';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {CalendarModule} from 'primeng/calendar';
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import {dateNotInFutureValidator} from '../../../utility/validators/date-not-in-future.validator';
+import {DividerModule} from 'primeng/divider';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {filter} from 'rxjs/operators';
+import {MessageModule} from 'primeng/message';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
 
 @Component({
   selector: 'lc-ascent-form',

@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Ascent } from '../../models/ascent';
-import { Paginated } from '../../models/paginated';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Ascent} from '../../models/ascent';
+import {Paginated} from '../../models/paginated';
 
 @Injectable({
   providedIn: 'root',

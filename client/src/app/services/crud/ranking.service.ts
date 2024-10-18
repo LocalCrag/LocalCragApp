@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Ranking } from '../../models/ranking';
-import { HttpClient } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Ranking} from '../../models/ranking';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',

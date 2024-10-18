@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { ChipModule } from 'primeng/chip';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { TagModule } from 'primeng/tag';
+import {Component} from '@angular/core';
+import {ChipModule} from 'primeng/chip';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {TagModule} from 'primeng/tag';
 
 @Component({
   selector: 'lc-secret-spot-tag',

@@ -1,15 +1,10 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { switchMap, take } from 'rxjs/operators';
-import { AppState } from '../../ngrx/reducers';
-import { selectAuthState } from '../../ngrx/selectors/auth.selectors';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {switchMap, take} from 'rxjs/operators';
+import {AppState} from '../../ngrx/reducers';
+import {selectAuthState} from '../../ngrx/selectors/auth.selectors';
 
 /**
  * Http interceptor that adds access tokens to requests.

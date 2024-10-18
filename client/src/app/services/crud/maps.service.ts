@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { MapMarkerProperties } from '../../models/map-marker';
-import { FeatureCollection, Point } from 'geojson';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {MapMarkerProperties} from '../../models/map-marker';
+import {FeatureCollection, Point} from 'geojson';
 
 @Injectable({
   providedIn: 'root',

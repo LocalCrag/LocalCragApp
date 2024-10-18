@@ -1,13 +1,8 @@
-import {
-  ChangeDetectorRef,
-  OnDestroy,
-  Pipe,
-  PipeTransform,
-} from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { Observable, timer } from 'rxjs';
-import { map, startWith, takeWhile } from 'rxjs/operators';
-import { differenceInMilliseconds } from 'date-fns';
+import {ChangeDetectorRef, OnDestroy, Pipe, PipeTransform,} from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {Observable, timer} from 'rxjs';
+import {map, startWith, takeWhile} from 'rxjs/operators';
+import {differenceInMilliseconds} from 'date-fns';
 
 /**
  * Converts a date object to a string that's showing the amount of minutes between the current date and the passed date.

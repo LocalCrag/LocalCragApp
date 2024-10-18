@@ -1,15 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
-import { File } from '../../models/file';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import {
-  AlignAction,
-  DeleteAction,
-  ImageSpec,
-  ResizeAction,
-} from 'quill-blot-formatter';
+import {Injectable} from '@angular/core';
+import {ApiService} from '../core/api.service';
+import {HttpClient} from '@angular/common/http';
+import {File} from '../../models/file';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {DeleteAction, ImageSpec, ResizeAction,} from 'quill-blot-formatter';
 
 /**
  * Adds event listeners for Blot Formatters ImageSpec to fix scrolling issues.

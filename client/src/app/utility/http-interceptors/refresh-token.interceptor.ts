@@ -1,24 +1,14 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { mergeMap, take } from 'rxjs/operators';
-import { unixToDate } from '../operators/unix-to-date';
-import { Actions, ofType } from '@ngrx/effects';
-import { AppState } from '../../ngrx/reducers';
-import { selectAccessTokenExpires } from '../../ngrx/selectors/auth.selectors';
-import {
-  newAuthCredentials,
-  refreshAccessToken,
-  refreshAccessTokenFailed,
-} from '../../ngrx/actions/auth.actions';
-import { isAfter } from 'date-fns';
+import {Injectable} from '@angular/core';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {mergeMap, take} from 'rxjs/operators';
+import {unixToDate} from '../operators/unix-to-date';
+import {Actions, ofType} from '@ngrx/effects';
+import {AppState} from '../../ngrx/reducers';
+import {selectAccessTokenExpires} from '../../ngrx/selectors/auth.selectors';
+import {newAuthCredentials, refreshAccessToken, refreshAccessTokenFailed,} from '../../ngrx/actions/auth.actions';
+import {isAfter} from 'date-fns';
 
 /**
  * Http interceptor that checks if the token is still valid and prepends a refresh token request if it is not.

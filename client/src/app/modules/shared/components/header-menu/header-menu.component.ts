@@ -1,10 +1,8 @@
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ContentChildren,
-  HostBinding,
   HostListener,
   Input,
   OnChanges,
@@ -13,13 +11,13 @@ import {
   SimpleChanges,
   TemplateRef,
 } from '@angular/core';
-import { MenuItem, PrimeTemplate } from 'primeng/api';
-import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
-import { HeaderMenuSubComponent } from './header-menu-sub.component';
-import { ProcessedMenuItem } from './processed-menu-item';
-import { HeaderMenuService } from './header-menu.service';
-import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
-import { BarsIcon } from 'primeng/icons/bars';
+import {MenuItem, PrimeTemplate} from 'primeng/api';
+import {NgClass, NgIf, NgTemplateOutlet} from '@angular/common';
+import {HeaderMenuSubComponent} from './header-menu-sub.component';
+import {ProcessedMenuItem} from './processed-menu-item';
+import {HeaderMenuService} from './header-menu.service';
+import {MOBILE_BREAKPOINT_HEADER_MENU} from '../../../../utility/misc/breakpoints';
+import {BarsIcon} from 'primeng/icons/bars';
 
 @Component({
   selector: 'lc-header-menu',

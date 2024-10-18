@@ -1,12 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import {
-  provideTransloco,
-  Translation,
-  TranslocoLoader,
-  TranslocoModule,
-} from '@jsverse/transloco';
-import { Injectable, NgModule } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {provideTransloco, Translation, TranslocoLoader, TranslocoModule,} from '@jsverse/transloco';
+import {Injectable, NgModule} from '@angular/core';
+import {environment} from '../../../environments/environment';
 
 /**
  * Transloco HTTP loader.

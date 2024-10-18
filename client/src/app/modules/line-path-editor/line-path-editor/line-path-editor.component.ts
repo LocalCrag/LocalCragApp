@@ -1,17 +1,10 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  forwardRef,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { TopoImagesService } from '../../../services/crud/topo-images.service';
-import { ActivatedRoute } from '@angular/router';
-import { TopoImage } from '../../../models/topo-image';
-import { LinePath } from '../../../models/line-path';
-import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import {ChangeDetectorRef, Component, forwardRef, OnInit, ViewChild, ViewEncapsulation,} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {TopoImagesService} from '../../../services/crud/topo-images.service';
+import {ActivatedRoute} from '@angular/router';
+import {TopoImage} from '../../../models/topo-image';
+import {LinePath} from '../../../models/line-path';
+import {TopoImageComponent} from '../../shared/components/topo-image/topo-image.component';
 
 /**
  * Form component for drawing a line path.

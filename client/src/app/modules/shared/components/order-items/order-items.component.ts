@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AbstractModel } from '../../../../models/abstract-model';
-import { LoadingState } from '../../../../enums/loading-state';
-import { Observable } from 'rxjs';
-import { MenuItemType } from '../../../../enums/menu-item-type';
-import { Store } from '@ngrx/store';
-import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
+import {Component} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {AbstractModel} from '../../../../models/abstract-model';
+import {LoadingState} from '../../../../enums/loading-state';
+import {Observable} from 'rxjs';
+import {MenuItemType} from '../../../../enums/menu-item-type';
+import {Store} from '@ngrx/store';
+import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
 
 /**
  * A component that shows an order list to order items by orderIndex.

@@ -1,17 +1,7 @@
-import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
-import { Store } from '@ngrx/store';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AscentsService } from '../../../services/crud/ascents.service';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
-import { Line } from '../../../models/line';
+import {Component} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef,} from 'primeng/dynamicdialog';
+import {TranslocoPipe} from '@jsverse/transloco';
+import {Line} from '../../../models/line';
 
 @Component({
   selector: 'lc-ascent-form-title',

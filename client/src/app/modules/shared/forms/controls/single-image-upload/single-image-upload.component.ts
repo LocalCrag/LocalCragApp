@@ -1,20 +1,8 @@
-import {
-  Component,
-  forwardRef,
-  Injector,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
-import { ApiService } from '../../../../../services/core/api.service';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NgControl,
-} from '@angular/forms';
-import { File } from '../../../../../models/file';
-import { FileUpload } from 'primeng/fileupload';
+import {Component, forwardRef, Injector, OnDestroy, OnInit, ViewChild, ViewEncapsulation,} from '@angular/core';
+import {ApiService} from '../../../../../services/core/api.service';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl,} from '@angular/forms';
+import {File} from '../../../../../models/file';
+import {FileUpload} from 'primeng/fileupload';
 
 /**
  * A media upload component.

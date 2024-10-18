@@ -1,6 +1,4 @@
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,21 +9,17 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { TopoImage } from '../../../../models/topo-image';
-import { ThumbnailWidths } from '../../../../enums/thumbnail-widths';
-import { LinePath } from '../../../../models/line-path';
-import { environment } from '../../../../../environments/environment';
-import { debounceTime, fromEvent, Subject, timer } from 'rxjs';
-import {
-  Label,
-  PointFeatureLabelPlacement,
-} from './point-feature-label-placement';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Store } from '@ngrx/store';
-import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
+import {TopoImage} from '../../../../models/topo-image';
+import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
+import {LinePath} from '../../../../models/line-path';
+import {debounceTime, Subject} from 'rxjs';
+import {Label, PointFeatureLabelPlacement,} from './point-feature-label-placement';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Store} from '@ngrx/store';
+import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
-import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
+import {selectInstanceSettingsState} from '../../../../ngrx/selectors/instance-settings.selectors';
+import {take} from 'rxjs/operators';
 
 /**
  * Component that shows a topo image with line paths on it.

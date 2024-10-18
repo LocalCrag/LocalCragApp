@@ -1,25 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { DividerModule } from 'primeng/divider';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-import { NgIf } from '@angular/common';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { LoadingState } from '../../../enums/loading-state';
-import { Line } from '../../../models/line';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Store } from '@ngrx/store';
-import { AscentsService } from '../../../services/crud/ascents.service';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { TranslocoDirective } from '@jsverse/transloco';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {SharedModule} from '../../shared/shared.module';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {DividerModule} from 'primeng/divider';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {ButtonModule} from 'primeng/button';
+import {MessageModule} from 'primeng/message';
+import {NgIf} from '@angular/common';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {LoadingState} from '../../../enums/loading-state';
+import {Line} from '../../../models/line';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {Store} from '@ngrx/store';
+import {AscentsService} from '../../../services/crud/ascents.service';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {TranslocoDirective} from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-project-climbed-form',

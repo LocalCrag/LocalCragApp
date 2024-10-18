@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AppNotificationsService } from './app-notifications.service';
-import { Store } from '@ngrx/store';
-import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
-import { AppState } from '../../ngrx/reducers';
-import { toastNotification } from '../../ngrx/actions/notifications.actions';
+import {Injectable} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Store} from '@ngrx/store';
+import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
+import {AppState} from '../../ngrx/reducers';
+import {toastNotification} from '../../ngrx/actions/notifications.actions';
 
 /**
  * A simple error handling service for logging and messaging.

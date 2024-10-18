@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { AbstractControl, FormArray } from '@angular/forms';
+import {Pipe, PipeTransform} from '@angular/core';
+import {AbstractControl, FormArray} from '@angular/forms';
 
 /**
  * Pipe for in template type annotations (or the like..).

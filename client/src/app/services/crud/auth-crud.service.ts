@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ApiService } from '../core/api.service';
-import { HttpBackendClientService } from '../core/http-backend-client.service';
-import { LoginResponse } from '../../models/login-response';
-import { map } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ApiService} from '../core/api.service';
+import {HttpBackendClientService} from '../core/http-backend-client.service';
+import {LoginResponse} from '../../models/login-response';
+import {map} from 'rxjs/operators';
 
 /**
  * A simple response that only contains a message.

@@ -1,61 +1,45 @@
-import {
-  Component,
-  HostListener,
-  Input,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { TabMenuModule } from 'primeng/tabmenu';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
-import { AscentsService } from '../../../services/crud/ascents.service';
-import { Ascent } from '../../../models/ascent';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { SharedModule } from '../../shared/shared.module';
-import { LoadingState } from '../../../enums/loading-state';
-import { FormsModule } from '@angular/forms';
-import {
-  ConfirmationService,
-  MenuItem,
-  PrimeIcons,
-  SelectItem,
-} from 'primeng/api';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { LineModule } from '../../line/line.module';
-import { RatingModule } from 'primeng/rating';
-import { AvatarModule } from 'primeng/avatar';
-import { UpgradePipe } from '../pipes/upgrade.pipe';
-import { DowngradePipe } from '../pipes/downgrade.pipe';
-import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
-import { TagModule } from 'primeng/tag';
-import { Store } from '@ngrx/store';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AscentFormComponent } from '../ascent-form/ascent-form.component';
-import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
-import { environment } from '../../../../environments/environment';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { Actions, ofType } from '@ngrx/effects';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { filter } from 'rxjs/operators';
-import { User } from '../../../models/user';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
-import { MenuModule } from 'primeng/menu';
+import {Component, HostListener, Input, OnInit, ViewEncapsulation,} from '@angular/core';
+import {BreadcrumbModule} from 'primeng/breadcrumb';
+import {CardModule} from 'primeng/card';
+import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
+import {TabMenuModule} from 'primeng/tabmenu';
+import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
+import {AscentsService} from '../../../services/crud/ascents.service';
+import {Ascent} from '../../../models/ascent';
+import {ButtonModule} from 'primeng/button';
+import {DataViewModule} from 'primeng/dataview';
+import {DropdownModule} from 'primeng/dropdown';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import {SharedModule} from '../../shared/shared.module';
+import {LoadingState} from '../../../enums/loading-state';
+import {FormsModule} from '@angular/forms';
+import {ConfirmationService, MenuItem, SelectItem,} from 'primeng/api';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {LineModule} from '../../line/line.module';
+import {RatingModule} from 'primeng/rating';
+import {AvatarModule} from 'primeng/avatar';
+import {UpgradePipe} from '../pipes/upgrade.pipe';
+import {DowngradePipe} from '../pipes/downgrade.pipe';
+import {ConsensusGradePipe} from '../pipes/consensus-grade.pipe';
+import {TagModule} from 'primeng/tag';
+import {Store} from '@ngrx/store';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {AscentFormComponent} from '../ascent-form/ascent-form.component';
+import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
+import {environment} from '../../../../environments/environment';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {Actions, ofType} from '@ngrx/effects';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {User} from '../../../models/user';
+import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
+import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
+import {SliderModule} from 'primeng/slider';
+import {MenuModule} from 'primeng/menu';
 
 @Component({
   selector: 'lc-ascent-list',
