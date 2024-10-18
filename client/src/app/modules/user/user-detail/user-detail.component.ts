@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {CardModule} from 'primeng/card';
 import {NgIf} from '@angular/common';
@@ -32,7 +32,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class UserDetailComponent {
+export class UserDetailComponent implements OnInit{
   public user: User;
   public items: MenuItem[];
 

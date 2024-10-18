@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CardModule} from 'primeng/card';
 import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
 import {LoadingState} from '../../../enums/loading-state';
@@ -60,7 +60,7 @@ import {UserPromotionTargets} from '../../../enums/user-promotion-targets';
   styleUrl: './user-list.component.scss',
   providers: [ConfirmationService],
 })
-export class UserListComponent {
+export class UserListComponent implements OnInit{
   public users: User[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
