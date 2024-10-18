@@ -12,10 +12,10 @@ jobs:
         working-directory: ./client
     steps:
       - uses: actions/checkout@v4
-      - name: Use latest node.js
+      - name: Use node.js v22
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22
       - name: Install dependencies
         run: npm install
       - name: Build production bundle
