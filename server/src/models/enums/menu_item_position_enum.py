@@ -5,5 +5,6 @@ class MenuItemPositionEnum(Enum):
     """
     All possible positions of menu items.
     """
-    BOTTOM = 'BOTTOM'
-    TOP = 'TOP'
+
+    BOTTOM = "BOTTOM"
+    TOP = "TOP"

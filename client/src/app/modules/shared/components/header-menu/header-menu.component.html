@@ -2,8 +2,16 @@
   <div class="menubar-start" *ngIf="startTemplate">
     <ng-container *ngTemplateOutlet="startTemplate"></ng-container>
   </div>
-  <BarsIcon *ngIf="isMobile" (click)="toggleMobileMenu($event)" class="ml-2 mr-2"/>
-  <lc-header-menu-sub [model]="processedModel" [root]="true" [ngClass]="{'is-mobile': isMobile, 'is-expanded': mobileExpanded}"></lc-header-menu-sub>
+  <BarsIcon
+    *ngIf="isMobile"
+    (click)="toggleMobileMenu($event)"
+    class="ml-2 mr-2"
+  />
+  <lc-header-menu-sub
+    [model]="processedModel"
+    [root]="true"
+    [ngClass]="{ 'is-mobile': isMobile, 'is-expanded': mobileExpanded }"
+  ></lc-header-menu-sub>
   <div class="menubar-end" *ngIf="endTemplate">
     <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
   </div>

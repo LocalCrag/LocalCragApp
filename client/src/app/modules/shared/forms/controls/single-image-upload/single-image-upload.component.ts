@@ -1,6 +1,6 @@
-import {Component, forwardRef, Injector, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, forwardRef, Injector, OnDestroy, OnInit, ViewChild, ViewEncapsulation,} from '@angular/core';
 import {ApiService} from '../../../../../services/core/api.service';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl,} from '@angular/forms';
 import {File} from '../../../../../models/file';
 import {FileUpload} from 'primeng/fileupload';
 
@@ -16,12 +16,13 @@ import {FileUpload} from 'primeng/fileupload';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => SingleImageUploadComponent),
       multi: true,
-    }
+    },
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class SingleImageUploadComponent implements OnInit, ControlValueAccessor, OnDestroy {
-
+export class SingleImageUploadComponent
+  implements OnInit, ControlValueAccessor, OnDestroy
+{
   @ViewChild(FileUpload) uploader: FileUpload;
 
   public uploadUrl: string;
@@ -35,9 +36,10 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
   public progressMode = 'determinate';
   public showProgressBar = false;
 
-  constructor(private api: ApiService,
-              private inj: Injector) {
-  }
+  constructor(
+    private api: ApiService,
+    private inj: Injector,
+  ) {}
 
   /**
    * Initializes the uploader component.
@@ -68,14 +70,12 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
   /**
    * Not implemented but needed for the interface.
    */
-  registerOnTouched(_fn: any): void {
-  }
+  registerOnTouched(_fn: any): void {}
 
   /**
    * Function is replaced in registerOnChange.
    */
-  propagateChange = (_: any) => {
-  };
+  propagateChange = (_: any) => {};
 
   /**
    * Emits internal value when it changes.
@@ -148,5 +148,4 @@ export class SingleImageUploadComponent implements OnInit, ControlValueAccessor,
       this.progress = null;
     }
   }
-
 }

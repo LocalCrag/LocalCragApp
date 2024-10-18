@@ -1,19 +1,15 @@
 @use "../../../styles/media-queries" as m;
 
-
-lc-topo-image-details{
-
-  button{
+lc-topo-image-details {
+  button {
     padding: 0;
   }
 
-  .block-title{
-   justify-content: center;
+  .block-title {
+    justify-content: center;
 
-    @include m.on-mobile{
+    @include m.on-mobile {
       justify-content: start;
     }
-
   }
-
 }

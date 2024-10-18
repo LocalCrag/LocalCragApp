@@ -20,7 +20,7 @@ class TodoSchema(BaseEntitySchema):
 
 class PaginatedTodosSchema(ma.SQLAlchemySchema):
     items = fields.List(fields.Nested(TodoSchema()))
-    hasNext = fields.Boolean(attribute='has_next')
+    hasNext = fields.Boolean(attribute="has_next")
 
 
 todo_schema = TodoSchema()

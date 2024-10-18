@@ -5,7 +5,6 @@ import * as fromAuth from '../reducers/auth.reducers';
 import * as fromAppLevelAlerts from '../reducers/app-level-alerts.reducers';
 import * as fromDevice from '../reducers/device.reducers';
 
-
 /**
  * Declares the app state.
  */
@@ -23,4 +22,6 @@ export const reducers: ActionReducerMap<AppState> = {
   appLevelAlerts: fromAppLevelAlerts.reducer,
 };
 
-export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];
+export const metaReducers: MetaReducer<AppState>[] = !environment.production
+  ? []
+  : [];

@@ -9,8 +9,14 @@
  * @param matchOn Property to match the items on.
  * @return Found entity.
  */
-export const getInstanceEquivalentFromList = <T>(entity: T, instances: T[], matchOn: string = 'id'): T | null => {
-  const results = instances.filter(instance => entity && instance[matchOn] === entity[matchOn]);
+export const getInstanceEquivalentFromList = <T>(
+  entity: T,
+  instances: T[],
+  matchOn: string = 'id',
+): T | null => {
+  const results = instances.filter(
+    (instance) => entity && instance[matchOn] === entity[matchOn],
+  );
   if (results.length === 0) {
     return null;
   }

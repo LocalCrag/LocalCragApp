@@ -1,8 +1,4 @@
 import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Observable} from 'rxjs';
-import {Grade} from '../utility/misc/grades';
-import {User} from './user';
 import {MenuItemType} from '../enums/menu-item-type';
 import {MenuItemPosition} from '../enums/menu-item-position';
 import {MenuPage} from './menu-page';
@@ -11,7 +7,6 @@ import {MenuPage} from './menu-page';
  * Model of a menu item.
  */
 export class MenuItem extends AbstractModel {
-
   type: MenuItemType;
   position: MenuItemPosition;
   menuPage: MenuPage;
@@ -29,7 +24,9 @@ export class MenuItem extends AbstractModel {
     menuItem.type = payload.type;
     menuItem.position = payload.position;
     menuItem.icon = payload.icon;
-    menuItem.menuPage = payload.menuPage ? MenuPage.deserialize(payload.menuPage) : null;
+    menuItem.menuPage = payload.menuPage
+      ? MenuPage.deserialize(payload.menuPage)
+      : null;
     return menuItem;
   }
 
@@ -44,8 +41,7 @@ export class MenuItem extends AbstractModel {
       type: menuItem.type,
       position: menuItem.position,
       icon: menuItem.icon,
-      menuPage:  menuItem.menuPage?  menuItem.menuPage.id : null,
+      menuPage: menuItem.menuPage ? menuItem.menuPage.id : null,
     };
   }
-
 }

@@ -4,9 +4,13 @@ import {HashMap} from '@jsverse/transloco';
 
 export const toastNotification = createAction(
   '[Notifications] Toast Notification',
-  (identifier: NotificationIdentifier, titleParams: HashMap = {}, messageParams: HashMap = {}) => ({
+  (
+    identifier: NotificationIdentifier,
+    titleParams: HashMap = {},
+    messageParams: HashMap = {},
+  ) => ({
     identifier,
     titleParams,
-    messageParams
-  })
+    messageParams,
+  }),
 );

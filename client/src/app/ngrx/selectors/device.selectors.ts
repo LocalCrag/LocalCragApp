@@ -5,5 +5,5 @@ export const selectDeviceState = createFeatureSelector<DeviceState>('device');
 
 export const selectIsMobile = createSelector(
   selectDeviceState,
-  deviceState => deviceState.isMobile
+  (deviceState) => deviceState.isMobile,
 );

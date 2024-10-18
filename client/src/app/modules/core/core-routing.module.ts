@@ -70,207 +70,207 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'news'
+    redirectTo: 'news',
   },
   {
     path: 'news',
     component: PostListComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'sentry-test',
     component: SentryTestComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'news/create-post',
     component: PostFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'news/:post-slug/edit',
     component: PostFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'todos',
     component: TodoListComponent,
     canActivate: [isLoggedIn],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'pages',
     component: MenuPagesListComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'pages/create-menu-page',
     component: MenuPagesFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'pages/:menu-page-slug',
     component: MenuPageDetailComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'pages/:menu-page-slug/edit',
     component: MenuPagesFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'menu-items',
     component: MenuItemsListComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'menu-items/create-menu-item/:position',
     component: MenuItemsFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'menu-items/:menu-item-id/edit',
     component: MenuItemsFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'login',
     component: LoginComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'change-password',
     component: ChangePasswordComponent,
     canActivate: [isLoggedIn],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'register',
     component: RegisterComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'register-check-mailbox',
     component: RegisterCheckMailboxComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'account',
     component: AccountFormComponent,
     canActivate: [isLoggedIn],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'activate-account',
     component: ActivateAccountComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'forgot-password-check-mailbox',
     component: ForgotPasswordCheckMailboxComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'reset-password/:hash',
     component: ResetPasswordComponent,
     canActivate: [isLoggedOut],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'change-email/:hash',
     component: ChangeEmailComponent,
     canActivate: [isLoggedIn],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'instance-settings',
     component: InstanceSettingsFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'users',
     component: UserListComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
-    }
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
   },
   {
     path: 'users/:user-slug',
     component: UserDetailComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.AUTH
+      backgroundImagePath: StaticBackgroundImages.AUTH,
     },
     children: [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'ascents'
+        redirectTo: 'ascents',
       },
       {
         path: 'ascents',
@@ -278,9 +278,9 @@ const routes: Routes = [
           {
             path: '',
             component: UserAscentsComponent,
-            outlet: 'userContent'
-          }
-        ]
+            outlet: 'userContent',
+          },
+        ],
       },
       {
         path: 'charts',
@@ -288,21 +288,21 @@ const routes: Routes = [
           {
             path: '',
             component: UserChartsComponent,
-            outlet: 'userContent'
-          }
-        ]
+            outlet: 'userContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'ascents',
-    redirectTo: 'topo/ascents'
+    redirectTo: 'topo/ascents',
   },
   {
     path: 'topo',
     component: RegionComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
     children: [
       {
@@ -312,9 +312,9 @@ const routes: Routes = [
           {
             path: '',
             component: RegionInfoComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'crags',
@@ -322,9 +322,9 @@ const routes: Routes = [
           {
             path: '',
             component: CragListComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'lines',
@@ -332,9 +332,9 @@ const routes: Routes = [
           {
             path: '',
             component: LineListComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'map',
@@ -342,9 +342,9 @@ const routes: Routes = [
           {
             path: '',
             component: MapComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'rules',
@@ -352,13 +352,13 @@ const routes: Routes = [
           {
             path: '',
             component: RegionRulesComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'gallery',
-        redirectTo: ''
+        redirectTo: '',
       },
       {
         path: 'ascents',
@@ -366,9 +366,9 @@ const routes: Routes = [
           {
             path: '',
             component: RegionAscentsComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'ranking',
@@ -376,33 +376,33 @@ const routes: Routes = [
           {
             path: '',
             component: RankingListComponent,
-            outlet: 'regionContent'
-          }
-        ]
+            outlet: 'regionContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'topo/edit-region',
     component: RegionFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug',
     component: CragComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
     children: [
       {
@@ -412,9 +412,9 @@ const routes: Routes = [
           {
             path: '',
             component: CragInfoComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
       {
         path: 'sectors',
@@ -422,9 +422,9 @@ const routes: Routes = [
           {
             path: '',
             component: SectorListComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
       {
         path: 'lines',
@@ -432,9 +432,9 @@ const routes: Routes = [
           {
             path: '',
             component: LineListComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
       {
         path: 'rules',
@@ -442,13 +442,13 @@ const routes: Routes = [
           {
             path: '',
             component: CragRulesComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
       {
         path: 'gallery',
-        redirectTo: ''
+        redirectTo: '',
       },
       {
         path: 'ascents',
@@ -456,9 +456,9 @@ const routes: Routes = [
           {
             path: '',
             component: CragAscentsComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
       {
         path: 'ranking',
@@ -466,33 +466,33 @@ const routes: Routes = [
           {
             path: '',
             component: CragRankingComponent,
-            outlet: 'cragContent'
-          }
-        ]
+            outlet: 'cragContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug',
     component: SectorComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
     children: [
       {
@@ -502,9 +502,9 @@ const routes: Routes = [
           {
             path: '',
             component: SectorInfoComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
       {
         path: 'areas',
@@ -512,9 +512,9 @@ const routes: Routes = [
           {
             path: '',
             component: AreaListComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
       {
         path: 'rules',
@@ -522,9 +522,9 @@ const routes: Routes = [
           {
             path: '',
             component: SectorRulesComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
       {
         path: 'lines',
@@ -532,13 +532,13 @@ const routes: Routes = [
           {
             path: '',
             component: LineListComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
       {
         path: 'gallery',
-        redirectTo: ''
+        redirectTo: '',
       },
       {
         path: 'ascents',
@@ -546,9 +546,9 @@ const routes: Routes = [
           {
             path: '',
             component: SectorAscentsComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
       {
         path: 'ranking',
@@ -556,57 +556,57 @@ const routes: Routes = [
           {
             path: '',
             component: SectorRankingComponent,
-            outlet: 'sectorContent'
-          }
-        ]
+            outlet: 'sectorContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
     component: SectorFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/create-area',
     component: AreaFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/create-line',
     component: LineFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/add-topo-image',
     component: TopoImageFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:image-id/edit',
     component: TopoImageFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug',
     component: AreaComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
     children: [
       {
@@ -616,9 +616,9 @@ const routes: Routes = [
           {
             path: '',
             component: AreaInfoComponent,
-            outlet: 'areaContent'
-          }
-        ]
+            outlet: 'areaContent',
+          },
+        ],
       },
       {
         path: 'lines',
@@ -627,9 +627,9 @@ const routes: Routes = [
             path: '',
             pathMatch: 'full',
             component: LineListComponent,
-            outlet: 'areaContent'
-          }
-        ]
+            outlet: 'areaContent',
+          },
+        ],
       },
       {
         path: 'topo-images',
@@ -638,13 +638,13 @@ const routes: Routes = [
             path: '',
             pathMatch: 'full',
             component: TopoImageListComponent,
-            outlet: 'areaContent'
-          }
-        ]
+            outlet: 'areaContent',
+          },
+        ],
       },
       {
         path: 'gallery',
-        redirectTo: ''
+        redirectTo: '',
       },
       {
         path: 'ascents',
@@ -652,32 +652,32 @@ const routes: Routes = [
           {
             path: '',
             component: AreaAscentsComponent,
-            outlet: 'areaContent'
-          }
-        ]
+            outlet: 'areaContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
     component: AreaFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug',
     component: LineComponent,
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
     children: [
       {
         path: '',
         pathMatch: 'full',
         component: LineInfoComponent,
-        outlet: 'lineContent'
+        outlet: 'lineContent',
       },
       {
         path: 'ascents',
@@ -685,44 +685,43 @@ const routes: Routes = [
           {
             path: '',
             component: LineAscentsComponent,
-            outlet: 'lineContent'
-          }
-        ]
+            outlet: 'lineContent',
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',
     component: LineFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
     component: LinePathFormComponent,
     canActivate: [isModerator],
     data: {
-      backgroundImagePath: StaticBackgroundImages.DEFAULT
-    }
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'ranking',
-    redirectTo: 'topo/ranking'
+    redirectTo: 'topo/ranking',
   },
   {
     component: NotFoundComponent,
     path: '**',
     data: {
-      backgroundImagePath: StaticBackgroundImages.NOT_FOUND
-    }
-  }
+      backgroundImagePath: StaticBackgroundImages.NOT_FOUND,
+    },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CoreRoutingModule {
-}
+export class CoreRoutingModule {}

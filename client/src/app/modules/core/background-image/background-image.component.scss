@@ -1,29 +1,25 @@
 @use "../../../styles/media-queries" as m;
 
-:host{
+:host {
   background-size: cover;
   background-repeat: no-repeat;
   height: 100vh;
   width: 100vw;
-  position:  fixed;
+  position: fixed;
   top: 0;
   left: 0;
   display: block;
   z-index: -1;
-  transition: background-image .2s linear;
+  transition: background-image 0.2s linear;
   background-position: center;
 
-  .blur-layer{
+  .blur-layer {
     width: 100%;
     height: 100%;
     backdrop-filter: blur(2px);
 
-    @include m.on-mobile{
+    @include m.on-mobile {
       backdrop-filter: blur(10px);
     }
-
   }
-
-
-
 }

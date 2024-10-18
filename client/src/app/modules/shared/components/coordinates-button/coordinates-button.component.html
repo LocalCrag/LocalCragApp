@@ -1,10 +1,10 @@
-<ng-container *transloco="let t, read: 'coordinatesButton'">
-
-  <p-splitButton label="{{t('coordinates')}}"
-                 icon="pi pi-map-marker"
-                 text
-                 (onClick)="openCoordinates()"
-                 [model]="items">
+<ng-container *transloco="let t; read: 'coordinatesButton'">
+  <p-splitButton
+    label="{{ t('coordinates') }}"
+    icon="pi pi-map-marker"
+    text
+    (onClick)="openCoordinates()"
+    [model]="items"
+  >
   </p-splitButton>
-
 </ng-container>

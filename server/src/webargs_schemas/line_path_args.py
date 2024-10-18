@@ -19,5 +19,5 @@ def validate_path(path: List[float]) -> bool:
 
 line_path_args = {
     "line": fields.String(required=True, allow_none=False),
-    "path": fields.List(fields.Float, required=True, allow_none=False, validate=validate_path)
+    "path": fields.List(fields.Float, required=True, allow_none=False, validate=validate_path),
 }

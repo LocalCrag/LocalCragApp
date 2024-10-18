@@ -38,14 +38,13 @@ import {HasPermissionDirective} from '../../shared/directives/has-permission.dir
     FormsModule,
     DialogModule,
     InputSwitchModule,
-    HasPermissionDirective
+    HasPermissionDirective,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class RankingListComponent implements OnInit {
-
   @Input() cragId: string;
   @Input() sectorId: string;
 
@@ -59,25 +58,25 @@ export class RankingListComponent implements OnInit {
   public secretRankings = false;
   public showInfoPopup = false;
 
-  constructor(private rankingService: RankingService,
-              private translocoService: TranslocoService) {
-  }
-
+  constructor(
+    private rankingService: RankingService,
+    private translocoService: TranslocoService,
+  ) {}
 
   ngOnInit() {
     this.rankingTypes = [
       {
         label: this.translocoService.translate(marker('top10Ranking')),
-        value: 'top10'
+        value: 'top10',
       },
       {
         label: this.translocoService.translate(marker('top50Ranking')),
-        value: 'top50'
+        value: 'top50',
       },
       {
         label: this.translocoService.translate(marker('totalCountRanking')),
-        value: 'totalCount'
-      }
+        value: 'totalCount',
+      },
     ];
     this.rankingType = this.rankingTypes[0];
     this.loadRanking();
@@ -95,16 +94,21 @@ export class RankingListComponent implements OnInit {
     if (this.secretRankings) {
       query_params += `&secret=1`;
     }
-    this.rankingService.getRanking(query_params).subscribe(rankings => {
+    this.rankingService.getRanking(query_params).subscribe((rankings) => {
       this.rankings = rankings;
       this.sortField = this.rankingType.value;
-      this.rankings.sort((a, b) => a[this.sortField] < b[this.sortField] ? 1 : a[this.sortField] > b[this.sortField] ? -1 : 0)
+      this.rankings.sort((a, b) =>
+        a[this.sortField] < b[this.sortField]
+          ? 1
+          : a[this.sortField] > b[this.sortField]
+            ? -1
+            : 0,
+      );
       this.loading = LoadingState.DEFAULT;
-    })
+    });
   }
 
   showDialog() {
     this.showInfoPopup = true;
   }
-
 }

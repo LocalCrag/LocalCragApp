@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify, request
 from flask.views import MethodView
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -14,20 +14,20 @@ from util.secret_spots_auth import get_show_secret
 class GetRanking(MethodView):
 
     def get(self):
-        secret_ranking = request.args.get('secret') == '1'
+        secret_ranking = request.args.get("secret") == "1"
 
         if secret_ranking and not get_show_secret():
-            raise Unauthorized('No permission to view secret rankings.')
+            raise Unauthorized("No permission to view secret rankings.")
 
-        line_type = request.args.get('line_type')
-        crag_id = request.args.get('crag_id')
-        sector_id = request.args.get('sector_id')
+        line_type = request.args.get("line_type")
+        crag_id = request.args.get("crag_id")
+        sector_id = request.args.get("sector_id")
 
         if line_type not in set(item.value for item in LineTypeEnum):
-            raise BadRequest('Invalid line type')
+            raise BadRequest("Invalid line type")
 
         if crag_id and sector_id:
-            raise BadRequest('Can either fetch crag OR sector OR global ranking.')
+            raise BadRequest("Can either fetch crag OR sector OR global ranking.")
 
         query = db.session.query(Ranking)
         query = query.filter(Ranking.type == line_type)
@@ -43,4 +43,4 @@ class UpdateRanking(MethodView):
 
     def get(self):
         build_rankings()
-        return jsonify({'message': 'Rankings updated'}), 200
+        return jsonify({"message": "Rankings updated"}), 200

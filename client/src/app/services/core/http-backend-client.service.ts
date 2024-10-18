@@ -6,12 +6,10 @@ import {HttpBackend, HttpClient} from '@angular/common/http';
  * See: https://github.com/angular/angular/issues/20203
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpBackendClientService extends HttpClient {
-
   constructor(handler: HttpBackend) {
     super(handler);
   }
-
 }

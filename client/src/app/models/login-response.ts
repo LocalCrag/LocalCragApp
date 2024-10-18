@@ -23,5 +23,4 @@ export class LoginResponse {
     loginResponse.refreshToken = payload.refreshToken;
     return loginResponse;
   }
-
 }

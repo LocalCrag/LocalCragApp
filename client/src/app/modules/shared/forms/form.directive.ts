@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import {Directive} from '@angular/core';
 import {FormService} from './form.service';
 
 /**
@@ -6,14 +6,10 @@ import {FormService} from './form.service';
  */
 @Directive({
   selector: '[lcForm]',
-  providers: [
-    FormService
-  ]
+  providers: [FormService],
 })
 export class FormDirective {
-
-  constructor(private formService: FormService) {
-  }
+  constructor(private formService: FormService) {}
 
   /**
    * Marks all registered controls as touched.
@@ -21,5 +17,4 @@ export class FormDirective {
   markAsTouched() {
     this.formService.markAsTouched();
   }
-
 }

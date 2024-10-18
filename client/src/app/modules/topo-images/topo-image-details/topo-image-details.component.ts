@@ -14,14 +14,12 @@ import {CoordinatesButtonComponent} from '../../shared/components/coordinates-bu
     NgIf,
     SharedModule,
     TranslocoDirective,
-    CoordinatesButtonComponent
+    CoordinatesButtonComponent,
   ],
   templateUrl: './topo-image-details.component.html',
   styleUrl: './topo-image-details.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TopoImageDetailsComponent {
-
   @Input() topoImage: TopoImage;
-
 }

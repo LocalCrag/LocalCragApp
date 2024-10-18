@@ -1,16 +1,28 @@
-<ng-container *transloco="let t, read: 'linePathEditor'">
-
-  <lc-topo-image [topoImage]="topoImage"
-                 [linePathInProgress]="linePath"
-                 [editorMode]="true"
-                 (anchorClick)="handleClick($event)"
-                 (imageClick)="handleClick($event)"
-                 *ngIf="topoImage">
+<ng-container *transloco="let t; read: 'linePathEditor'">
+  <lc-topo-image
+    [topoImage]="topoImage"
+    [linePathInProgress]="linePath"
+    [editorMode]="true"
+    (anchorClick)="handleClick($event)"
+    (imageClick)="handleClick($event)"
+    *ngIf="topoImage"
+  >
   </lc-topo-image>
 
-  <p-button class="mr-1" styleClass="rotate-icon" severity="secondary" size="small" icon="pi pi-refresh" label="{{t('undo')}}"
-            (click)="undo()"></p-button>
-  <p-button severity="secondary" size="small" icon="pi pi-trash" label="{{t('restart')}}"
-            (click)="restart()"></p-button>
-
+  <p-button
+    class="mr-1"
+    styleClass="rotate-icon"
+    severity="secondary"
+    size="small"
+    icon="pi pi-refresh"
+    label="{{ t('undo') }}"
+    (click)="undo()"
+  ></p-button>
+  <p-button
+    severity="secondary"
+    size="small"
+    icon="pi pi-trash"
+    label="{{ t('restart') }}"
+    (click)="restart()"
+  ></p-button>
 </ng-container>

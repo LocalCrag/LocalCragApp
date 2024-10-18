@@ -15,13 +15,14 @@ p-breadcrumb {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      max-width: 100px
+      max-width: 100px;
     }
   }
 }
 
 // Hide button labels on small screens
-p-button.responsive-button, button.responsive-button {
+p-button.responsive-button,
+button.responsive-button {
   .p-button-label {
     @include m.on-mobile {
       display: none;

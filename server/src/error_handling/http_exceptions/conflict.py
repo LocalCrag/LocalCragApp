@@ -1,4 +1,3 @@
-
 class Conflict(Exception):
     status_code = 409
 
@@ -7,8 +6,4 @@ class Conflict(Exception):
         self.message = message
 
     def to_dict(self):
-        return {
-            'message': self.message
-        }
-
-
+        return {"message": self.message}

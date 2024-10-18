@@ -1,10 +1,12 @@
-lc-sector, lc-crag, lc-area, lc-line {
-
+lc-sector,
+lc-crag,
+lc-area,
+lc-line {
   .p-card-content {
     padding-top: 0 !important;
   }
 
-  p-breadcrumb .p-breadcrumb{
+  p-breadcrumb .p-breadcrumb {
     padding: 0;
     border: none;
     margin-top: 18px;
@@ -14,30 +16,34 @@ lc-sector, lc-crag, lc-area, lc-line {
   .p-tabmenu-nav :first-child a {
     padding-left: 0 !important;
   }
-
 }
 
-.quill-content{
-
+.quill-content {
   overflow-wrap: break-word;
 
   // Quill doesn't support <br>, so we need to match up the displayed paragraph styles with quill's to not
   // get confusing behaviour...
-  p, h1, h2, h3, h4, h5, h6 {
-    margin: 0
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
   }
 
   // Restricts the maximum size of quill editor HTML content's images so the containers don't overflow
-  img, iframe{
+  img,
+  iframe {
     max-width: 100%;
     object-fit: contain;
     height: auto;
   }
 
   // Default iframe size
-  iframe{
-    width:100%;
+  iframe {
+    width: 100%;
     min-height: 500px;
   }
-
 }

@@ -26,7 +26,7 @@ import {LineModule} from '../line/line.module';
 import {TopoImagesModule} from '../topo-images/topo-images.module';
 import {LinePathEditorModule} from '../line-path-editor/line-path-editor.module';
 import {
-    GradeDistributionBarChartComponent
+  GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
 import {CoordinatesButtonComponent} from '../shared/components/coordinates-button/coordinates-button.component';
@@ -38,14 +38,13 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
 import {MapComponent} from '../maps/map/map.component';
 import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 
-
 @NgModule({
-    declarations: [
-        AreaComponent,
-        AreaFormComponent,
-        AreaInfoComponent,
-        AreaListComponent
-    ],
+  declarations: [
+    AreaComponent,
+    AreaFormComponent,
+    AreaInfoComponent,
+    AreaListComponent,
+  ],
   imports: [
     CommonModule,
     CardModule,
@@ -79,14 +78,9 @@ import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-mar
     SecretSpotTagComponent,
     FormSkeletonComponent,
     MapComponent,
-    MapMarkerFormArrayComponent
+    MapMarkerFormArrayComponent,
   ],
-    exports: [
-        AreaListComponent
-    ],
-    providers: [
-        {provide: TRANSLOCO_SCOPE, useValue: 'area'}
-    ],
+  exports: [AreaListComponent],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
-export class AreaModule {
-}
+export class AreaModule {}

@@ -22,7 +22,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AreaModule} from '../area/area.module';
 import {
-    GradeDistributionBarChartComponent
+  GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {ChipModule} from 'primeng/chip';
 import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
@@ -35,17 +35,14 @@ import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-ske
 import {MapComponent} from '../maps/map/map.component';
 import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 
-
 @NgModule({
   declarations: [
     SectorListComponent,
     SectorInfoComponent,
     SectorComponent,
-    SectorFormComponent
+    SectorFormComponent,
   ],
-  exports: [
-    SectorListComponent
-  ],
+  exports: [SectorListComponent],
   imports: [
     RouterLink,
     CommonModule,
@@ -78,9 +75,6 @@ import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-mar
     MapComponent,
     MapMarkerFormArrayComponent,
   ],
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'sector'}
-  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
-export class SectorModule {
-}
+export class SectorModule {}

@@ -11,20 +11,26 @@ import {toastNotification} from '../actions/notifications.actions';
  */
 @Injectable()
 export class NotificationsEffects {
-
   /**
    * Pushes a toast notification via the notification service when the according action is triggered.
    */
-  onToastNotification = createEffect(() => this.actions$.pipe(
-    ofType(toastNotification),
-    tap(action => {
-      this.notificationsService.toast(action.identifier, action.titleParams, action.messageParams);
-    })
-  ), {dispatch: false});
+  onToastNotification = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(toastNotification),
+        tap((action) => {
+          this.notificationsService.toast(
+            action.identifier,
+            action.titleParams,
+            action.messageParams,
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
 
   constructor(
     private notificationsService: AppNotificationsService,
-    private actions$: Actions) {
-  }
-
+    private actions$: Actions,
+  ) {}
 }

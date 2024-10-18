@@ -1,26 +1,18 @@
-import json
-
-from tests.utils.user_test_util import get_login_headers
+from models.line import Line
 
 
-def test_successful_create_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_create_line(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -51,21 +43,21 @@ def test_successful_create_line(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
-    res = json.loads(rv.data)
-    assert res['name'] == "Es"
-    assert res['slug'] == "es"
-    assert res['description'] == "Super Boulder"
-    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    assert res['gradeName'] == "7B+"
-    assert res['gradeScale'] == "FB"
-    assert res['type'] == "BOULDER"
+    res = rv.json
+    assert res["name"] == "Es"
+    assert res["slug"] == "es"
+    assert res["description"] == "Super Boulder"
+    assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res["gradeName"] == "7B+"
+    assert res["gradeScale"] == "FB"
+    assert res["type"] == "BOULDER"
     assert res["rating"] == 5
     assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
-    assert res["startingPosition"] == 'FRENCH'
+    assert res["startingPosition"] == "FRENCH"
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
@@ -94,27 +86,22 @@ def test_successful_create_line(client):
     assert res["arete"] == True
     assert res["mantle"] == True
     assert res["secret"] == False
-    assert res['id'] is not None
-    assert len(res['linePaths']) == 0
+    assert res["id"] is not None
+    assert len(res["linePaths"]) == 0
 
-def test_successful_create_line_with_project_status(client):
-    access_headers, refresh_headers = get_login_headers(client)
+
+def test_successful_create_line_with_project_status(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "OPEN_PROJECT",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -145,22 +132,22 @@ def test_successful_create_line_with_project_status(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
-    res = json.loads(rv.data)
-    assert res['name'] == "Es"
-    assert res['slug'] == "es"
-    assert res['description'] == "Super Boulder"
-    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    assert res['videos'][0]['title'] == "Video"
-    assert res['gradeName'] == "OPEN_PROJECT"
-    assert res['gradeScale'] == "FB"
-    assert res['type'] == "BOULDER"
+    res = rv.json
+    assert res["name"] == "Es"
+    assert res["slug"] == "es"
+    assert res["description"] == "Super Boulder"
+    assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res["videos"][0]["title"] == "Video"
+    assert res["gradeName"] == "OPEN_PROJECT"
+    assert res["gradeScale"] == "FB"
+    assert res["type"] == "BOULDER"
     assert res["rating"] == 5
     assert res["ascentCount"] == 0
-    assert res["faYear"] == None # Should be set to None automatically for projects!
-    assert res["faName"] == None # Should be set to None automatically for projects!
-    assert res["startingPosition"] == 'FRENCH'
+    assert res["faYear"] == None  # Should be set to None automatically for projects!
+    assert res["faName"] == None  # Should be set to None automatically for projects!
+    assert res["startingPosition"] == "FRENCH"
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
@@ -189,28 +176,22 @@ def test_successful_create_line_with_project_status(client):
     assert res["arete"] == True
     assert res["mantle"] == True
     assert res["secret"] == False
-    assert res['id'] is not None
-    assert len(res['linePaths']) == 0
+    assert res["id"] is not None
+    assert len(res["linePaths"]) == 0
 
 
-def test_create_line_invalid_fa_year(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_fa_year(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 9000,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -241,28 +222,22 @@ def test_create_line_invalid_fa_year(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_rating(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_rating(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 6,
         "faYear": 2014,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -293,28 +268,22 @@ def test_create_line_invalid_rating(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_video_url(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_video_url(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "sdfsdfsdf",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "sdfsdfsdf", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2014,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -345,28 +314,22 @@ def test_create_line_invalid_video_url(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_name(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_name(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "dfgdf",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -397,28 +360,22 @@ def test_create_line_invalid_grade_name(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_scale_for_line_type(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "TRAD",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -449,28 +406,22 @@ def test_create_line_invalid_grade_scale_for_line_type(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_scale(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_grade_scale(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "TRESGDFGD",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -501,28 +452,22 @@ def test_create_line_invalid_grade_scale(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_line_type(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_create_line_invalid_line_type(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "WEIRD",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'FRENCH',
+        "startingPosition": "FRENCH",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -553,27 +498,22 @@ def test_create_line_invalid_line_type(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
-def test_create_line_invalid_line_starting_position(client):
-    access_headers, refresh_headers = get_login_headers(client)
+
+def test_create_line_invalid_line_starting_position(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "WEIRD",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'PRE_CLIPPED',
+        "startingPosition": "PRE_CLIPPED",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -604,11 +544,11 @@ def test_create_line_invalid_line_starting_position(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
-def test_create_line_invalid_video_payload(client):
-    access_headers, refresh_headers = get_login_headers(client)
+
+def test_create_line_invalid_video_payload(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
@@ -623,7 +563,7 @@ def test_create_line_invalid_video_payload(client):
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
-        "startingPosition": 'SIT',
+        "startingPosition": "SIT",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -654,51 +594,42 @@ def test_create_line_invalid_video_payload(client):
         "secret": False,
     }
 
-    rv = client.post('/api/areas/dritter-block-von-links/lines', headers=access_headers, json=line_data)
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
 def test_successful_get_lines(client):
-    rv = client.get('/api/lines')
+    lines = Line.query.all()
+
+    rv = client.get("/api/lines")
     assert rv.status_code == 200
-    res = json.loads(rv.data)['items']
-    assert len(res) == 2
-    assert res[0]['id'] == "1c39fd1f-6341-4161-a83f-e5de0f861c48"
-    assert res[0]['slug'] == "super-spreader"
-    assert res[0]['name'] == "Super-Spreader"
-    assert res[0]['ascentCount'] == 1
-    assert res[0]['secret'] == False
-    assert len(res[0]['linePaths']) == 2
-    assert res[0]['linePaths'][0]['orderIndex'] == 0
-    assert res[0]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
-    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
-    assert res[1]['id'] == "9d64b102-95cd-4123-a2d1-4bb1f7c77ba0"
-    assert res[1]['slug'] == "treppe"
-    assert res[1]['name'] == "Treppe"
-    assert res[1]['secret'] == False
-    assert res[1]['ascentCount'] == 0
-    assert len(res[1]['linePaths']) == 1
-    assert res[1]['linePaths'][0]['orderIndex'] == 1
-    assert res[1]['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
-    assert res[1]['linePaths'][0]['topoImage']['orderIndex'] == 0
+    res = rv.json["items"]
+    assert len(res) == len(lines)
+    for r, line in zip(sorted(res, key=lambda r: r["id"]), sorted(lines, key=lambda l: str(l.id))):
+        assert r["id"] == str(line.id)
+        assert r["slug"] == line.slug
+        assert r["name"] == line.name
+        assert r["ascentCount"] == line.ascent_count
+        assert r["secret"] == line.secret
+        assert len(r["linePaths"]) == len(line.line_paths)
 
 
 def test_successful_get_line(client):
-    rv = client.get('/api/lines/super-spreader')
+    rv = client.get("/api/lines/super-spreader")
     assert rv.status_code == 200
-    res = json.loads(rv.data)
-    assert res['name'] == "Super-Spreader"
-    assert res['slug'] == "super-spreader"
-    assert res['description'] == "<p>Geiler Kühlschrankboulder!</p>"
-    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
-    assert res['gradeName'] == "8A"
-    assert res['gradeScale'] == "FB"
-    assert res['type'] == "BOULDER"
+    res = rv.json
+    assert res["name"] == "Super-Spreader"
+    assert res["slug"] == "super-spreader"
+    assert res["description"] == "<p>Geiler Kühlschrankboulder!</p>"
+    assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
+    assert res["gradeName"] == "8A"
+    assert res["gradeScale"] == "FB"
+    assert res["type"] == "BOULDER"
     assert res["rating"] == 5
     assert res["ascentCount"] == 1
     assert res["faYear"] == 2024
     assert res["faName"] == "Felix Engelmann"
-    assert res["startingPosition"] == 'SIT'
+    assert res["startingPosition"] == "SIT"
     assert res["eliminate"] == False
     assert res["traverse"] == False
     assert res["highball"] == False
@@ -727,45 +658,37 @@ def test_successful_get_line(client):
     assert res["arete"] == False
     assert res["mantle"] == False
     assert res["secret"] == False
-    assert res['id'] is not None
-    assert len(res['linePaths']) == 2
-    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
-    assert res['linePaths'][0]['orderIndex'] == 0
-    assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
+    assert res["id"] is not None
+    assert len(res["linePaths"]) == 2
+    assert isinstance(res["linePaths"][0]["topoImage"]["id"], str)
+    assert res["linePaths"][0]["orderIndex"] == 0
+    assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
 
 
 def test_get_deleted_line(client):
-    rv = client.get('/api/lines/linie-existiert-nicht-mehr')
+    rv = client.get("/api/lines/linie-existiert-nicht-mehr")
     assert rv.status_code == 404
-    res = json.loads(rv.data)
-    assert res['message'] == "ENTITY_NOT_FOUND"
+    res = rv.json
+    assert res["message"] == "ENTITY_NOT_FOUND"
 
 
-def test_successful_delete_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
-
-    rv = client.delete('/api/lines/super-spreader', headers=access_headers)
+def test_successful_delete_line(client, moderator_token):
+    rv = client.delete("/api/lines/super-spreader", token=moderator_token)
     assert rv.status_code == 204
 
 
-def test_successful_edit_line(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_edit_line(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "startingPosition": 'STAND',
+        "startingPosition": "STAND",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -796,21 +719,21 @@ def test_successful_edit_line(client):
         "secret": False,
     }
 
-    rv = client.put('/api/lines/treppe', headers=access_headers, json=line_data)
+    rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
     assert rv.status_code == 200
-    res = json.loads(rv.data)
-    assert res['name'] == "Es"
-    assert res['slug'] == "es"
-    assert res['description'] == "Super Boulder"
-    assert res['videos'][0]['url'] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    assert res['gradeName'] == "7B+"
-    assert res['gradeScale'] == "FB"
-    assert res['type'] == "BOULDER"
+    res = rv.json
+    assert res["name"] == "Es"
+    assert res["slug"] == "es"
+    assert res["description"] == "Super Boulder"
+    assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res["gradeName"] == "7B+"
+    assert res["gradeScale"] == "FB"
+    assert res["type"] == "BOULDER"
     assert res["rating"] == 5
     assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
-    assert res["startingPosition"] == 'STAND'
+    assert res["startingPosition"] == "STAND"
     assert res["eliminate"] == True
     assert res["traverse"] == True
     assert res["highball"] == True
@@ -839,30 +762,25 @@ def test_successful_edit_line(client):
     assert res["arete"] == True
     assert res["mantle"] == True
     assert res["secret"] == False
-    assert res['id'] is not None
-    assert len(res['linePaths']) == 1
-    assert res['linePaths'][0]['topoImage']['id'] == '4e8f0a85-b971-409b-a972-7805173b4a19'
-    assert res['linePaths'][0]['orderIndex'] == 1
-    assert res['linePaths'][0]['topoImage']['orderIndex'] == 0
+    assert res["id"] is not None
+    assert len(res["linePaths"]) == 1
+    assert isinstance(res["linePaths"][0]["topoImage"]["id"], str)
+    assert res["linePaths"][0]["orderIndex"] == 1
+    assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
 
-def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
-    access_headers, refresh_headers = get_login_headers(client)
+
+def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
-        "videos": [
-            {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Video"
-            }
-        ],
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "gradeName": "OPEN_PROJECT",
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
-        "startingPosition": 'STAND',
+        "startingPosition": "STAND",
         "eliminate": True,
         "traverse": True,
         "highball": True,
@@ -893,12 +811,12 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client):
         "secret": False,
     }
 
-    rv = client.put('/api/lines/super-spreader', headers=access_headers, json=line_data)
+    rv = client.put("/api/lines/super-spreader", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
 def test_successful_get_lines_for_line_editor(client):
-    rv = client.get('/api/lines/for-line-editor/dritter-block-von-links')
+    rv = client.get("/api/lines/for-line-editor/dritter-block-von-links")
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = rv.json
     assert len(res) == 2

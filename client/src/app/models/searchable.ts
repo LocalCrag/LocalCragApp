@@ -5,7 +5,6 @@ import {Crag} from './crag';
 import {User} from './user';
 
 export class Searchable {
-
   line: Line;
   area: Area;
   sector: Sector;
@@ -33,5 +32,4 @@ export class Searchable {
     }
     return searchable;
   }
-
 }

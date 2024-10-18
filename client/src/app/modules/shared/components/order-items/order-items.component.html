@@ -1,27 +1,51 @@
-<ng-container *transloco="let t, read: 'orderItems'">
-
-  <p-orderList [value]="items" [listStyle]="{ height: '25rem' }" [header]="itemsName" [dragdrop]="!(isMobile$ | async)">
+<ng-container *transloco="let t; read: 'orderItems'">
+  <p-orderList
+    [value]="items"
+    [listStyle]="{ height: '25rem' }"
+    [header]="itemsName"
+    [dragdrop]="!(isMobile$ | async)"
+  >
     <ng-template let-item pTemplate="item">
-      <div class="flex flex-wrap p-2 align-items-center gap-3" *ngIf="!showImage && !showLinePathLineName && item.name">
-        {{item.name}}
+      <div
+        class="flex flex-wrap p-2 align-items-center gap-3"
+        *ngIf="!showImage && !showLinePathLineName && item.name"
+      >
+        {{ item.name }}
       </div>
-      <div class="flex flex-wrap p-2 align-items-center gap-3" *ngIf="showLinePathLineName">
-        {{item.line.name}} {{item.line.grade.name | transloco}}
+      <div
+        class="flex flex-wrap p-2 align-items-center gap-3"
+        *ngIf="showLinePathLineName"
+      >
+        {{ item.line.name }} {{ item.line.grade.name | transloco }}
       </div>
-      <div class="flex flex-wrap p-2 align-items-center gap-3" *ngIf="showMenuItemTitle">
-        {{item.type | transloco}}
-        <span *ngIf="item.type === menuItemTypes.MENU_PAGE">({{item.menuPage.title}})</span>
+      <div
+        class="flex flex-wrap p-2 align-items-center gap-3"
+        *ngIf="showMenuItemTitle"
+      >
+        {{ item.type | transloco }}
+        <span *ngIf="item.type === menuItemTypes.MENU_PAGE"
+          >({{ item.menuPage.title }})</span
+        >
       </div>
-      <img class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
-           *ngIf="showImage" [src]="item.image.thumbnailM"/>
+      <img
+        class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
+        *ngIf="showImage"
+        [src]="item.image.thumbnailM"
+      />
     </ng-template>
   </p-orderList>
 
   <div class="flex gap-3 mt-4 justify-content-end">
-    <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" styleClass="p-button-secondary"
-              [disabled]="loadingState === loadingStates.LOADING"></p-button>
-    <p-button label="{{t('saveButtonLabel')}}" (click)="saveItems()"
-              [loading]="loadingState === loadingStates.LOADING"></p-button>
+    <p-button
+      label="{{ t('cancelButtonLabel') }}"
+      (click)="cancel()"
+      styleClass="p-button-secondary"
+      [disabled]="loadingState === loadingStates.LOADING"
+    ></p-button>
+    <p-button
+      label="{{ t('saveButtonLabel') }}"
+      (click)="saveItems()"
+      [loading]="loadingState === loadingStates.LOADING"
+    ></p-button>
   </div>
-
 </ng-container>

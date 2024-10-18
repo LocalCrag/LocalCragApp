@@ -15,6 +15,7 @@
     - `SMTP_USER` SMTP user
     - `SMTP_PASSWORD` SMTP password
     - `SMTP_PORT` SMTP port
+    - `SMTP_TYPE` SMTP type: `smtps`, `starttls`, `plain` or `disabled`
     - `FRONTEND_HOST` Address of the client, used for CORS settings and building URLs in mails
     - `SQLALCHEMY_ECHO` Can be set to True for debugging SQL queries
     - `SUPERADMIN_FIRSTNAME` First name of the initial superadmin user
@@ -26,6 +27,7 @@
     - `SPACES_REGION` Object storage region
     - `SPACES_BUCKET` Object storage bucket name
     - `SPACES_ACCESS_ENDPOINT` Access endpoint of the object storage
+    - `SPACES_ADDRESSING` Object storage addressing mode: `virtual` or `path`
     - `SENTRY_DSN` DSN for Sentry error tracking
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
 - For configuring a local object storage, read `docs/localstack.md`. This is needed if you are working with fileupload in any way.

@@ -1,5 +1,4 @@
 lc-single-image-upload {
-
   .image-wrapper {
     overflow: hidden;
     display: inline-block;
@@ -20,12 +19,10 @@ lc-single-image-upload {
       top: 6px;
       right: 6px;
     }
-
   }
 
   // Fix bad spacing below upload button
   p-fileupload:not([hidden]) {
     display: inline-block;
   }
-
 }

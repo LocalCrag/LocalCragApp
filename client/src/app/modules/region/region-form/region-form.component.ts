@@ -1,22 +1,14 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren,} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {Editor, EditorModule} from 'primeng/editor';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
-import {Crag} from '../../../models/crag';
 import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Title} from '@angular/platform-browser';
+import {Router} from '@angular/router';
 import {UploadService} from '../../../services/crud/upload.service';
-import {CragsService} from '../../../services/crud/crags.service';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
+import {TranslocoDirective} from '@jsverse/transloco';
 import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {latValidator} from '../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../utility/validators/lng.validator';
 import {toastNotification} from '../../../ngrx/actions/notifications.actions';
 import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 import {RegionService} from '../../../services/crud/region.service';
@@ -41,13 +33,12 @@ import {InputTextModule} from 'primeng/inputtext';
     ButtonModule,
     NgIf,
     TranslocoDirective,
-    InputTextModule
+    InputTextModule,
   ],
   templateUrl: './region-form.component.html',
-  styleUrl: './region-form.component.scss'
+  styleUrl: './region-form.component.scss',
 })
 export class RegionFormComponent implements OnInit {
-
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
@@ -58,11 +49,13 @@ export class RegionFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(private fb: FormBuilder,
-              private store: Store,
-              private router: Router,
-              private uploadService: UploadService,
-              private regionsService: RegionService) {
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private router: Router,
+    private uploadService: UploadService,
+    private regionsService: RegionService,
+  ) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -73,19 +66,24 @@ export class RegionFormComponent implements OnInit {
     this.buildForm();
     this.editMode = true;
     this.regionForm.disable();
-    this.regionsService.getRegion().pipe(catchError(e => {
-      if (e.status === 404) {
-        this.router.navigate(['/not-found']);
-      }
-      return of(e);
-    })).subscribe(crag => {
-      this.region = crag;
-      this.setFormValue();
-      this.loadingState = LoadingState.DEFAULT;
-      this.editors?.map(editor => {
-        editor.getQuill().enable();
+    this.regionsService
+      .getRegion()
+      .pipe(
+        catchError((e) => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        }),
+      )
+      .subscribe((crag) => {
+        this.region = crag;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+        this.editors?.map((editor) => {
+          editor.getQuill().enable();
+        });
       });
-    });
   }
 
   /**
@@ -125,11 +123,13 @@ export class RegionFormComponent implements OnInit {
     if (this.regionForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const region = new Region();
-      region.name = this.regionForm.get('name').value
-      region.description = this.regionForm.get('description').value
-      region.rules = this.regionForm.get('rules').value
-      this.regionsService.updateRegion(region).subscribe(region => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.REGION_UPDATED));
+      region.name = this.regionForm.get('name').value;
+      region.description = this.regionForm.get('description').value;
+      region.rules = this.regionForm.get('rules').value;
+      this.regionsService.updateRegion(region).subscribe(() => {
+        this.store.dispatch(
+          toastNotification(NotificationIdentifier.REGION_UPDATED),
+        );
         this.router.navigate(['/topo']);
         this.loadingState = LoadingState.DEFAULT;
       });
@@ -137,6 +137,4 @@ export class RegionFormComponent implements OnInit {
       this.formDirective.markAsTouched();
     }
   }
-
-
 }

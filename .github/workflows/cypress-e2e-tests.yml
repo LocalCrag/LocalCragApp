@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - main
-      - next
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
       - name: Setup database
         run: |
           export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
-          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
+          cd server && PYTHONPATH=.:src LOCALCRAG_CONFIG=config/test-ci-e2e.cfg pipenv run python3 scripts/setup_cypress_db.py
 
       - name: Copy assets
         run: |
