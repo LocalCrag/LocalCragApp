@@ -10,7 +10,7 @@ describe('Ascent lifespan workflow', () => {
     cy.get('[data-cy="withKneepad"]').click()
     cy.get('[data-cy="submit"]').click()
 
-    cy.visit('localhost:4200/users/felix-engelmann')
+    cy.visit('localhost:4200/users/admin-admin')
     cy.get('[data-cy="kneepadtag"]').should('have.length', 2)
     cy.get('[data-cy="ascent-actions-button"]').eq(0).click()
     cy.get('#edit-ascent').eq(0).click()
