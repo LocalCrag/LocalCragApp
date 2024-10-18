@@ -1,17 +1,16 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Coordinates} from '../interfaces/coordinates.interface';
-import {deserializeGrade, Grade} from '../utility/misc/grades';
-import {Line} from './line';
-import {format, formatISO, parseISO} from 'date-fns';
-import {User} from './user';
-import {Area} from './area';
-import {Sector} from './sector';
-import {Crag} from './crag';
-import {A} from '@angular/cdk/keycodes';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { Coordinates } from '../interfaces/coordinates.interface';
+import { deserializeGrade, Grade } from '../utility/misc/grades';
+import { Line } from './line';
+import { format, formatISO, parseISO } from 'date-fns';
+import { User } from './user';
+import { Area } from './area';
+import { Sector } from './sector';
+import { Crag } from './crag';
+import { A } from '@angular/cdk/keycodes';
 
 export class Ascent extends AbstractModel {
-
   flash: boolean;
   fa: boolean;
   soft: boolean;
@@ -76,8 +75,9 @@ export class Ascent extends AbstractModel {
       gradeScale: 'FB',
       gradeName: ascent.grade.name,
       line: ascent.line.id,
-      date: ascent.date ? formatISO(ascent.date, {representation: 'date'}) : null,
+      date: ascent.date
+        ? formatISO(ascent.date, { representation: 'date' })
+        : null,
     };
   }
-
 }

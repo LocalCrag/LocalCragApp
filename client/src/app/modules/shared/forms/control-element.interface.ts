@@ -1,5 +1,5 @@
-import {NgControl} from '@angular/forms';
-import {Observable, Subject} from 'rxjs';
+import { NgControl } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
 
 /**
  * Properties of a control element for registering it on the ControlGroupService.

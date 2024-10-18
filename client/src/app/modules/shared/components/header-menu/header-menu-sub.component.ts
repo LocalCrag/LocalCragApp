@@ -5,46 +5,44 @@ import {
   HostBinding,
   HostListener,
   Input,
-  OnInit, QueryList, ViewChildren,
-  ViewEncapsulation
+  OnInit,
+  QueryList,
+  ViewChildren,
+  ViewEncapsulation,
 } from '@angular/core';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {AngleDownIcon} from 'primeng/icons/angledown';
-import {AngleRightIcon} from 'primeng/icons/angleright';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AngleDownIcon } from 'primeng/icons/angledown';
+import { AngleRightIcon } from 'primeng/icons/angleright';
 import _default from 'chart.js/dist/plugins/plugin.legend';
-import {Router} from '@angular/router';
-import {ProcessedMenuItem} from './processed-menu-item';
-import {HeaderMenuService} from './header-menu.service';
-import {MOBILE_BREAKPOINT_HEADER_MENU} from '../../../../utility/misc/breakpoints';
+import { Router } from '@angular/router';
+import { ProcessedMenuItem } from './processed-menu-item';
+import { HeaderMenuService } from './header-menu.service';
+import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
 
 @Component({
   selector: 'lc-header-menu-sub',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    NgClass,
-    AngleDownIcon,
-    AngleRightIcon
-  ],
+  imports: [NgForOf, NgIf, NgClass, AngleDownIcon, AngleRightIcon],
   templateUrl: './header-menu-sub.component.html',
   styleUrl: './header-menu-sub.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class HeaderMenuSubComponent {
-
   @Input() model: ProcessedMenuItem[];
   @HostBinding('class.root')
-  @Input() root: boolean = false;
+  @Input()
+  root: boolean = false;
   @HostBinding('class.first-child')
-  @Input() firstChild: boolean = false;
+  @Input()
+  firstChild: boolean = false;
 
   @ViewChildren('menuItem') menuItems: QueryList<ElementRef>;
 
-  constructor(private router: Router,
-              private el: ElementRef,
-              private headerMenuService: HeaderMenuService) {
-  }
+  constructor(
+    private router: Router,
+    private el: ElementRef,
+    private headerMenuService: HeaderMenuService,
+  ) {}
 
   onItemClick(item: ProcessedMenuItem) {
     if (item.item.routerLink) {
@@ -83,5 +81,4 @@ export class HeaderMenuSubComponent {
       this.headerMenuService.collapseMobileMenu();
     }
   }
-
 }

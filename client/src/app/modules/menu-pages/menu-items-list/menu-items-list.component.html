@@ -1,73 +1,60 @@
-<ng-container *transloco="let t, read: 'menuPages.menuPageList'">
-
+<ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
-    <p-card header="{{t('menuItemsListTitle')}}">
-
-      <p-dataView #dv [value]="menuItemsTop"
-                  [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-                  [loading]="loading === loadingStates.LOADING">
+    <p-card header="{{ t('menuItemsListTitle') }}">
+      <p-dataView
+        #dv
+        [value]="menuItemsTop"
+        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
+        [loading]="loading === loadingStates.LOADING"
+      >
         <ng-template pTemplate="header">
           <div class="flex flex-row justify-content-between">
-            <div class="flex align-items-center"><h3>{{t('topMenu')}}</h3></div>
+            <div class="flex align-items-center">
+              <h3>{{ t("topMenu") }}</h3>
+            </div>
             <div class="flex justify-content-end gap-3">
-              <p-button label="{{t('newMenuItemButtonLabel')}}" icon="pi pi-plus" routerLink="/menu-items/create-menu-item/top"
-                        class="responsive-button"></p-button>
-              <p-button label="{{t('reorderMenuItemsButtonLabel')}}" icon="pi pi-sort" (click)="reorderMenuItems(positions.TOP)"
-                        [disabled]="menuItemsTop?.length < 2" class="responsive-button"></p-button>
+              <p-button
+                label="{{ t('newMenuItemButtonLabel') }}"
+                icon="pi pi-plus"
+                routerLink="/menu-items/create-menu-item/top"
+                class="responsive-button"
+              ></p-button>
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.TOP)"
+                [disabled]="menuItemsTop?.length < 2"
+                class="responsive-button"
+              ></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-menuItems pTemplate="list">
           <div class="grid grid-nogutter">
-            <div class="col-12"
-                 *ngFor="let menuItem of menuItems; let first = first">
-              <div class="flex flex-column  xl:align-items-start p-4 gap-2"
-                   [ngClass]="{ 'border-top-1 surface-border': !first }">
+            <div
+              class="col-12"
+              *ngFor="let menuItem of menuItems; let first = first"
+            >
+              <div
+                class="flex flex-column xl:align-items-start p-4 gap-2"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
                 <div class="text-md font-bold text-900 flex w-full">
                   <div class="flex-grow-1 flex align-items-center">
                     {{ menuItem.type | transloco }}
-                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE">&nbsp;({{menuItem.menuPage.title}})</span>
-                  </div>                  <div class="flex flex-grow-0 gap-3">
-                    <p-button label="{{t('editMenuItemButtonLabel')}}" icon="pi pi-file-edit" routerLink="/menu-items/{{menuItem.id}}/edit"
-                              styleClass="pr-0" class="responsive-button" [text]="true"></p-button>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ng-template>
-      </p-dataView>
-
-      <p-dataView #dv [value]="menuItemsBottom"
-                  [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-                  [loading]="loading === loadingStates.LOADING">
-        <ng-template pTemplate="header">
-          <div class="flex flex-row justify-content-between">
-            <div class="flex align-items-center"><h3>{{t('bottomMenu')}}</h3></div>
-            <div class="flex justify-content-end gap-3">
-              <p-button label="{{t('newMenuItemButtonLabel')}}" icon="pi pi-plus" routerLink="/menu-items/create-menu-item/bottom"
-                        class="responsive-button"></p-button>
-              <p-button label="{{t('reorderMenuItemsButtonLabel')}}" icon="pi pi-sort" (click)="reorderMenuItems(positions.BOTTOM)"
-                        [disabled]="menuItemsTop?.length < 2" class="responsive-button"></p-button>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template let-menuItems pTemplate="list">
-          <div class="grid grid-nogutter">
-            <div class="col-12"
-                 *ngFor="let menuItem of menuItems; let first = first">
-              <div class="flex flex-column  xl:align-items-start p-4 gap-2"
-                   [ngClass]="{ 'border-top-1 surface-border': !first }">
-                <div class="text-md font-bold text-900 flex w-full">
-                  <div class="flex-grow-1 flex align-items-center">
-                    {{ menuItem.type | transloco }}
-                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE">&nbsp;({{menuItem.menuPage.title}})</span>
+                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE"
+                      >&nbsp;({{ menuItem.menuPage.title }})</span
+                    >
                   </div>
                   <div class="flex flex-grow-0 gap-3">
-                    <p-button label="{{t('editMenuItemButtonLabel')}}" icon="pi pi-file-edit" routerLink="/menu-items/{{menuItem.id}}/edit"
-                              styleClass="pr-0" class="responsive-button" [text]="true"></p-button>
-
+                    <p-button
+                      label="{{ t('editMenuItemButtonLabel') }}"
+                      icon="pi pi-file-edit"
+                      routerLink="/menu-items/{{ menuItem.id }}/edit"
+                      styleClass="pr-0"
+                      class="responsive-button"
+                      [text]="true"
+                    ></p-button>
                   </div>
                 </div>
               </div>
@@ -76,7 +63,67 @@
         </ng-template>
       </p-dataView>
 
+      <p-dataView
+        #dv
+        [value]="menuItemsBottom"
+        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
+        [loading]="loading === loadingStates.LOADING"
+      >
+        <ng-template pTemplate="header">
+          <div class="flex flex-row justify-content-between">
+            <div class="flex align-items-center">
+              <h3>{{ t("bottomMenu") }}</h3>
+            </div>
+            <div class="flex justify-content-end gap-3">
+              <p-button
+                label="{{ t('newMenuItemButtonLabel') }}"
+                icon="pi pi-plus"
+                routerLink="/menu-items/create-menu-item/bottom"
+                class="responsive-button"
+              ></p-button>
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.BOTTOM)"
+                [disabled]="menuItemsTop?.length < 2"
+                class="responsive-button"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-menuItems pTemplate="list">
+          <div class="grid grid-nogutter">
+            <div
+              class="col-12"
+              *ngFor="let menuItem of menuItems; let first = first"
+            >
+              <div
+                class="flex flex-column xl:align-items-start p-4 gap-2"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
+                <div class="text-md font-bold text-900 flex w-full">
+                  <div class="flex-grow-1 flex align-items-center">
+                    {{ menuItem.type | transloco }}
+                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE"
+                      >&nbsp;({{ menuItem.menuPage.title }})</span
+                    >
+                  </div>
+                  <div class="flex flex-grow-0 gap-3">
+                    <p-button
+                      label="{{ t('editMenuItemButtonLabel') }}"
+                      icon="pi pi-file-edit"
+                      routerLink="/menu-items/{{ menuItem.id }}/edit"
+                      styleClass="pr-0"
+                      class="responsive-button"
+                      [text]="true"
+                    ></p-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
     </p-card>
   </div>
-
 </ng-container>

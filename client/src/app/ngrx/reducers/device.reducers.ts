@@ -1,5 +1,5 @@
 import * as DeviceActions from './../actions/device.actions';
-import {Action, createReducer, on} from '@ngrx/store';
+import { Action, createReducer, on } from '@ngrx/store';
 
 /**
  * The state for device detection properties.
@@ -14,7 +14,10 @@ export const initialDeviceState: DeviceState = {
 
 const deviceStateReducer = createReducer(
   initialDeviceState,
-  on(DeviceActions.setIsMobile, (state, action) => ({...state, isMobile: action.isMobile})),
+  on(DeviceActions.setIsMobile, (state, action) => ({
+    ...state,
+    isMobile: action.isMobile,
+  })),
 );
 
 /**
@@ -23,4 +26,5 @@ const deviceStateReducer = createReducer(
  * @param state Input state.
  * @param action Input action.
  */
-export const reducer = (state: DeviceState | undefined, action: Action) => deviceStateReducer(state, action);
+export const reducer = (state: DeviceState | undefined, action: Action) =>
+  deviceStateReducer(state, action);

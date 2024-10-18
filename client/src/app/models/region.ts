@@ -1,19 +1,17 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Observable} from 'rxjs';
-import {Grade} from '../utility/misc/grades';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { Observable } from 'rxjs';
+import { Grade } from '../utility/misc/grades';
 
 /**
  * Model of a climbing region.
  */
 export class Region extends AbstractModel {
-
   name: string;
   description: string;
   slug: string;
   rules: string;
   ascentCount: number;
-
 
   /**
    * Parses a region.
@@ -45,5 +43,4 @@ export class Region extends AbstractModel {
       rules: region.rules,
     };
   }
-
 }

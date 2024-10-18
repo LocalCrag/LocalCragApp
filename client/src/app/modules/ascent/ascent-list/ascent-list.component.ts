@@ -1,46 +1,61 @@
-import {Component, HostListener, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {BreadcrumbModule} from 'primeng/breadcrumb';
-import {CardModule} from 'primeng/card';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {RouterOutlet} from '@angular/router';
-import {TabMenuModule} from 'primeng/tabmenu';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AscentsService} from '../../../services/crud/ascents.service';
-import {Ascent} from '../../../models/ascent';
-import {ButtonModule} from 'primeng/button';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
-import {SharedModule} from '../../shared/shared.module';
-import {LoadingState} from '../../../enums/loading-state';
-import {FormsModule} from '@angular/forms';
-import {ConfirmationService, MenuItem, PrimeIcons, SelectItem} from 'primeng/api';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {LineModule} from '../../line/line.module';
-import {RatingModule} from 'primeng/rating';
-import {AvatarModule} from 'primeng/avatar';
-import {UpgradePipe} from '../pipes/upgrade.pipe';
-import {DowngradePipe} from '../pipes/downgrade.pipe';
-import {ConsensusGradePipe} from '../pipes/consensus-grade.pipe';
-import {TagModule} from 'primeng/tag';
-import {Store} from '@ngrx/store';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {AscentFormComponent} from '../ascent-form/ascent-form.component';
-import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
-import {environment} from '../../../../environments/environment';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
-import {Actions, ofType} from '@ngrx/effects';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import {filter} from 'rxjs/operators';
-import {User} from '../../../models/user';
-import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
-import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
-import {SliderModule} from 'primeng/slider';
-import {MenuModule} from 'primeng/menu';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { CardModule } from 'primeng/card';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { TabMenuModule } from 'primeng/tabmenu';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { AscentsService } from '../../../services/crud/ascents.service';
+import { Ascent } from '../../../models/ascent';
+import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { SharedModule } from '../../shared/shared.module';
+import { LoadingState } from '../../../enums/loading-state';
+import { FormsModule } from '@angular/forms';
+import {
+  ConfirmationService,
+  MenuItem,
+  PrimeIcons,
+  SelectItem,
+} from 'primeng/api';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { LineModule } from '../../line/line.module';
+import { RatingModule } from 'primeng/rating';
+import { AvatarModule } from 'primeng/avatar';
+import { UpgradePipe } from '../pipes/upgrade.pipe';
+import { DowngradePipe } from '../pipes/downgrade.pipe';
+import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
+import { TagModule } from 'primeng/tag';
+import { Store } from '@ngrx/store';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AscentFormComponent } from '../ascent-form/ascent-form.component';
+import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
+import { environment } from '../../../../environments/environment';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { Actions, ofType } from '@ngrx/effects';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { filter } from 'rxjs/operators';
+import { User } from '../../../models/user';
+import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
+import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
+import { SliderModule } from 'primeng/slider';
+import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -73,19 +88,15 @@ import {MenuModule} from 'primeng/menu';
     InfiniteScrollModule,
     SliderLabelsComponent,
     SliderModule,
-    MenuModule
+    MenuModule,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [
-    DialogService,
-    ConfirmationService
-  ],
+  providers: [DialogService, ConfirmationService],
 })
 @UntilDestroy()
 export class AscentListComponent implements OnInit {
-
   @Input() user: User;
   @Input() cragId: string;
   @Input() sectorId: string;
@@ -103,7 +114,7 @@ export class AscentListComponent implements OnInit {
 
   public minGradeValue = GRADES['FB'][2].value; // Skip project grades
   public maxGradeValue = GRADES['FB'].at(-1).value;
-  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue]
+  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
@@ -112,33 +123,50 @@ export class AscentListComponent implements OnInit {
   public ascentActionItems: MenuItem[];
   public clickedAscentForAction: Ascent;
 
-  constructor(private ascentsService: AscentsService,
-              private dialogService: DialogService,
-              private store: Store,
-              private actions$: Actions,
-              private confirmationService: ConfirmationService,
-              private translocoService: TranslocoService) {
-
-  }
+  constructor(
+    private ascentsService: AscentsService,
+    private dialogService: DialogService,
+    private store: Store,
+    private actions$: Actions,
+    private confirmationService: ConfirmationService,
+    private translocoService: TranslocoService,
+  ) {}
 
   ngOnInit() {
     this.orderOptions = [
-      {label: this.translocoService.translate(marker('orderByTimeCreated')), value: 'time_created'},
-      {label: this.translocoService.translate(marker('orderByAscentDate')), value: 'ascent_date'},
+      {
+        label: this.translocoService.translate(marker('orderByTimeCreated')),
+        value: 'time_created',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByAscentDate')),
+        value: 'ascent_date',
+      },
     ];
     if (!this.disableGradeOrderAndFiltering) {
-      this.orderOptions.push({label: this.translocoService.translate(marker('orderByGrade')), value: 'grade_value'})
+      this.orderOptions.push({
+        label: this.translocoService.translate(marker('orderByGrade')),
+        value: 'grade_value',
+      });
     }
     this.orderKey = this.orderOptions[0];
     this.orderDirectionOptions = [
-      {label: this.translocoService.translate(marker('orderDescending')), value: 'desc'},
-      {label: this.translocoService.translate(marker('orderAscending')), value: 'asc'},
+      {
+        label: this.translocoService.translate(marker('orderDescending')),
+        value: 'desc',
+      },
+      {
+        label: this.translocoService.translate(marker('orderAscending')),
+        value: 'asc',
+      },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.loadFirstPage();
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
-      this.loadFirstPage();
-    })
+    this.actions$
+      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .subscribe(() => {
+        this.loadFirstPage();
+      });
     this.ascentActionItems = [
       {
         label: this.translocoService.translate('ascent.editAscent'),
@@ -146,17 +174,20 @@ export class AscentListComponent implements OnInit {
         id: 'edit-ascent', // id is needed for cypress testing
         command: () => {
           this.editAscent(this.clickedAscentForAction);
-        }
+        },
       },
       {
         label: this.translocoService.translate('ascent.deleteAscent'),
         icon: 'pi pi-trash',
         id: 'delete-ascent', // id is needed for cypress testing
         command: (e) => {
-          this.confirmDeleteAscent(e.originalEvent, this.clickedAscentForAction);
-        }
+          this.confirmDeleteAscent(
+            e.originalEvent,
+            this.clickedAscentForAction,
+          );
+        },
       },
-    ]
+    ];
   }
 
   @HostListener('document:touchend')
@@ -175,15 +206,19 @@ export class AscentListComponent implements OnInit {
   }
 
   loadNextPage() {
-    if (this.loadingFirstPage !== LoadingState.LOADING && this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
+    if (
+      this.loadingFirstPage !== LoadingState.LOADING &&
+      this.loadingAdditionalPage !== LoadingState.LOADING &&
+      this.hasNextPage
+    ) {
       this.currentPage += 1;
       if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING
+        this.loadingFirstPage = LoadingState.LOADING;
         this.ascents = [];
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      let filters = [`page=${this.currentPage}`]
+      let filters = [`page=${this.currentPage}`];
       filters.push(`min_grade=${this.gradeFilterRange[0]}`);
       filters.push(`max_grade=${this.gradeFilterRange[1]}`);
       filters.push(`order_by=${this.orderKey.value}`);
@@ -205,7 +240,7 @@ export class AscentListComponent implements OnInit {
         filters.push(`line_id=${this.lineId}`);
       }
       const filterString = `?${filters.join('&')}`;
-      this.ascentsService.getAscents(filterString).subscribe(ascents => {
+      this.ascentsService.getAscents(filterString).subscribe((ascents) => {
         this.ascents.push(...ascents.items);
         this.hasNextPage = ascents.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
@@ -214,7 +249,6 @@ export class AscentListComponent implements OnInit {
     }
   }
 
-
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
       templates: {
@@ -222,7 +256,7 @@ export class AscentListComponent implements OnInit {
       },
       focusOnShow: false,
       data: {
-        ascent
+        ascent,
       },
     });
   }
@@ -231,10 +265,16 @@ export class AscentListComponent implements OnInit {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('ascent.askReallyWantToDeleteAscent')),
-        acceptLabel: this.translocoService.translate(marker('ascent.yesDelete')),
+        message: this.translocoService.translate(
+          marker('ascent.askReallyWantToDeleteAscent'),
+        ),
+        acceptLabel: this.translocoService.translate(
+          marker('ascent.yesDelete'),
+        ),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('ascent.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('ascent.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteAscent(ascent);
@@ -245,8 +285,12 @@ export class AscentListComponent implements OnInit {
 
   public deleteAscent(ascent: Ascent) {
     this.ascentsService.deleteAscent(ascent).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.ASCENT_DELETED));
-      this.store.dispatch(reloadAfterAscent({ascendedLineId: ascent.line.id}));
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.ASCENT_DELETED),
+      );
+      this.store.dispatch(
+        reloadAfterAscent({ ascendedLineId: ascent.line.id }),
+      );
     });
   }
 

@@ -1,8 +1,8 @@
 import * as AuthActions from './../actions/auth.actions';
-import {Action, createReducer, on} from '@ngrx/store';
-import {User} from '../../models/user';
-import {jwtDecode, JwtPayload} from 'jwt-decode';
-import {LoadingState} from '../../enums/loading-state';
+import { Action, createReducer, on } from '@ngrx/store';
+import { User } from '../../models/user';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { LoadingState } from '../../enums/loading-state';
 
 /**
  * The state of the apps auth properties.
@@ -41,34 +41,40 @@ export const initialAuthState: AuthState = {
 
 const authReducer = createReducer(
   initialAuthState,
-  on(AuthActions.login, state => ({
+  on(AuthActions.login, (state) => ({
     ...state,
     loginLoadingState: LoadingState.LOADING,
-    refreshLoginLoadingState: LoadingState.LOADING
+    refreshLoginLoadingState: LoadingState.LOADING,
   })),
-  on(AuthActions.loginSuccess, state => ({
+  on(AuthActions.loginSuccess, (state) => ({
     ...state,
     loginLoadingState: LoadingState.DEFAULT,
     refreshLoginLoadingState: LoadingState.DEFAULT,
-    refreshLoginModalOpen: false
+    refreshLoginModalOpen: false,
   })),
-  on(AuthActions.cleanupCredentials, state => ({
+  on(AuthActions.cleanupCredentials, (state) => ({
     ...state,
     isLoggedIn: false,
     refreshToken: null,
     accessToken: null,
     accessTokenExpires: null,
     refreshTokenExpires: null,
-    user: null
+    user: null,
   })),
-  on(AuthActions.loginError, state => ({
+  on(AuthActions.loginError, (state) => ({
     ...state,
     loginLoadingState: LoadingState.DEFAULT,
-    refreshLoginLoadingState: LoadingState.DEFAULT
+    refreshLoginLoadingState: LoadingState.DEFAULT,
   })),
   on(AuthActions.newAuthCredentials, (state, action) => {
-    const refreshToken = action.loginResponse.refreshToken !== null ? action.loginResponse.refreshToken : state.refreshToken;
-    const accessToken = action.loginResponse.accessToken !== null ? action.loginResponse.accessToken : state.accessToken;
+    const refreshToken =
+      action.loginResponse.refreshToken !== null
+        ? action.loginResponse.refreshToken
+        : state.refreshToken;
+    const accessToken =
+      action.loginResponse.accessToken !== null
+        ? action.loginResponse.accessToken
+        : state.accessToken;
     return {
       ...state,
       isLoggedIn: true,
@@ -79,20 +85,49 @@ const authReducer = createReducer(
       accessTokenExpires: jwtDecode<JwtPayload>(accessToken).exp,
     };
   }),
-  on(AuthActions.updateAccountSettings, (state, action) => ({...state, user: action.user})),
-  on(AuthActions.resetPassword, state => ({...state, resetPasswordLoadingState: LoadingState.LOADING})),
-  on(AuthActions.resetPasswordError, state => ({...state, resetPasswordLoadingState: LoadingState.DEFAULT})),
-  on(AuthActions.resetPasswordSuccess, state => ({...state, resetPasswordLoadingState: LoadingState.DEFAULT})),
-  on(AuthActions.forgotPassword, state => ({...state, forgotPasswordLoadingState: LoadingState.LOADING})),
-  on(AuthActions.forgotPasswordError, state => ({...state, forgotPasswordLoadingState: LoadingState.DEFAULT})),
-  on(AuthActions.forgotPasswordSuccess, state => ({...state, forgotPasswordLoadingState: LoadingState.DEFAULT})),
-  on(AuthActions.openRefreshLoginModal, state => ({
+  on(AuthActions.updateAccountSettings, (state, action) => ({
+    ...state,
+    user: action.user,
+  })),
+  on(AuthActions.resetPassword, (state) => ({
+    ...state,
+    resetPasswordLoadingState: LoadingState.LOADING,
+  })),
+  on(AuthActions.resetPasswordError, (state) => ({
+    ...state,
+    resetPasswordLoadingState: LoadingState.DEFAULT,
+  })),
+  on(AuthActions.resetPasswordSuccess, (state) => ({
+    ...state,
+    resetPasswordLoadingState: LoadingState.DEFAULT,
+  })),
+  on(AuthActions.forgotPassword, (state) => ({
+    ...state,
+    forgotPasswordLoadingState: LoadingState.LOADING,
+  })),
+  on(AuthActions.forgotPasswordError, (state) => ({
+    ...state,
+    forgotPasswordLoadingState: LoadingState.DEFAULT,
+  })),
+  on(AuthActions.forgotPasswordSuccess, (state) => ({
+    ...state,
+    forgotPasswordLoadingState: LoadingState.DEFAULT,
+  })),
+  on(AuthActions.openRefreshLoginModal, (state) => ({
     ...state,
     refreshLoginLoadingState: LoadingState.DEFAULT,
     refreshLoginModalOpen: true,
   })),
-  on(AuthActions.logoutSuccess, state => ({...state, refreshLoginLoadingState: LoadingState.DEFAULT, refreshLoginModalOpen: false})),
-  on(AuthActions.logoutSuccess, state => ({...state, refreshLoginLoadingState: LoadingState.DEFAULT, refreshLoginModalOpen: false})),
+  on(AuthActions.logoutSuccess, (state) => ({
+    ...state,
+    refreshLoginLoadingState: LoadingState.DEFAULT,
+    refreshLoginModalOpen: false,
+  })),
+  on(AuthActions.logoutSuccess, (state) => ({
+    ...state,
+    refreshLoginLoadingState: LoadingState.DEFAULT,
+    refreshLoginModalOpen: false,
+  })),
 );
 
 /**
@@ -101,4 +136,5 @@ const authReducer = createReducer(
  * @param state Input state.
  * @param action Input action.
  */
-export const reducer = (state: AuthState | undefined, action: Action) => authReducer(state, action);
+export const reducer = (state: AuthState | undefined, action: Action) =>
+  authReducer(state, action);

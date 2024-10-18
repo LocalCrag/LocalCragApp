@@ -1,11 +1,18 @@
-import {inject, Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {select, Store} from '@ngrx/store';
-import {AppState} from '../ngrx/reducers';
-import {selectIsLoggedIn, selectIsLoggedOut} from '../ngrx/selectors/auth.selectors';
-
+import { inject, Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '../ngrx/reducers';
+import {
+  selectIsLoggedIn,
+  selectIsLoggedOut,
+} from '../ngrx/selectors/auth.selectors';
 
 /**
  * CanActivateFn for checking if a user is logged out.
@@ -14,18 +21,18 @@ import {selectIsLoggedIn, selectIsLoggedOut} from '../ngrx/selectors/auth.select
  */
 export const isLoggedOut: CanActivateFn = (
   route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
+  state: RouterStateSnapshot,
 ): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
   return store.pipe(
     select(selectIsLoggedOut),
-    map(isLoggedOutValue => {
+    map((isLoggedOutValue) => {
       if (isLoggedOutValue) {
         return true;
       }
       router.navigate(['']);
       return false;
-    })
+    }),
   );
 };

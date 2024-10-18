@@ -1,17 +1,12 @@
 import { Component } from '@angular/core';
-import {SkeletonModule} from 'primeng/skeleton';
-import {NgForOf} from '@angular/common';
+import { SkeletonModule } from 'primeng/skeleton';
+import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'lc-ascent-list-skeleton',
   standalone: true,
-  imports: [
-    SkeletonModule,
-    NgForOf
-  ],
+  imports: [SkeletonModule, NgForOf],
   templateUrl: './ascent-list-skeleton.component.html',
-  styleUrl: './ascent-list-skeleton.component.scss'
+  styleUrl: './ascent-list-skeleton.component.scss',
 })
-export class AscentListSkeletonComponent {
-
-}
+export class AscentListSkeletonComponent {}

@@ -1,6 +1,12 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../../utility/misc/grades';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../../utility/misc/grades';
 
 /**
  * Component that displays a leveled grade distribution.
@@ -8,10 +14,9 @@ import {Grade} from '../../../../utility/misc/grades';
 @Component({
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
-  styleUrls: ['./leveled-grade-distribution.component.scss']
+  styleUrls: ['./leveled-grade-distribution.component.scss'],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
-
   @Input() fetchingObservable: Observable<Grade[]>;
 
   public level1: number = 0;
@@ -22,17 +27,17 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public grades: Grade[];
 
   ngOnInit() {
-      this.fetchingObservable.subscribe(grades => {
-        this.grades = grades;
-        this.buildGradeDistribution();
-      })
+    this.fetchingObservable.subscribe((grades) => {
+      this.grades = grades;
+      this.buildGradeDistribution();
+    });
   }
 
   /**
    * Sorts the grades in buckets and calculates the total count for each bucket.
    */
   buildGradeDistribution() {
-    this.grades.map(grade => {
+    this.grades.map((grade) => {
       if (grade.value <= 0) {
         this.level5++;
       }
@@ -48,7 +53,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
       if (grade.value >= 22) {
         this.level4++;
       }
-    })
+    });
   }
-
 }

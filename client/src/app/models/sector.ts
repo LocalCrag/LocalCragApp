@@ -1,16 +1,15 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Coordinates} from '../interfaces/coordinates.interface';
-import {Area} from './area';
-import {A} from '@angular/cdk/keycodes';
-import {Crag} from './crag';
-import {MapMarker} from './map-marker';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { Coordinates } from '../interfaces/coordinates.interface';
+import { Area } from './area';
+import { A } from '@angular/cdk/keycodes';
+import { Crag } from './crag';
+import { MapMarker } from './map-marker';
 
 /**
  * Model of a climbing crag's sector.
  */
 export class Sector extends AbstractModel {
-
   name: string;
   description: string;
   shortDescription: string;
@@ -24,7 +23,6 @@ export class Sector extends AbstractModel {
   routerLink: string;
   secret: boolean;
   mapMarkers: MapMarker[];
-
 
   /**
    * Parses a sector.
@@ -42,12 +40,18 @@ export class Sector extends AbstractModel {
     sector.slug = payload.slug;
     sector.orderIndex = payload.orderIndex;
     sector.rules = payload.rules;
-    sector.portraitImage = payload.portraitImage ? File.deserialize(payload.portraitImage) : null;
+    sector.portraitImage = payload.portraitImage
+      ? File.deserialize(payload.portraitImage)
+      : null;
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
     sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     sector.ascentCount = payload.ascentCount;
-    sector.mapMarkers = payload.mapMarkers ? payload.mapMarkers.map(MapMarker.deserialize) : null;
-    sector.routerLink = sector.crag ? `/topo/${sector.crag.slug}/${sector.slug}` : null;
+    sector.mapMarkers = payload.mapMarkers
+      ? payload.mapMarkers.map(MapMarker.deserialize)
+      : null;
+    sector.routerLink = sector.crag
+      ? `/topo/${sector.crag.slug}/${sector.slug}`
+      : null;
     return sector;
   }
 
@@ -65,9 +69,9 @@ export class Sector extends AbstractModel {
       secret: sector.secret,
       portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
       rules: sector.rules,
-      mapMarkers: sector.mapMarkers ? sector.mapMarkers.map(MapMarker.serialize) : null,
+      mapMarkers: sector.mapMarkers
+        ? sector.mapMarkers.map(MapMarker.serialize)
+        : null,
     };
   }
-
 }
-

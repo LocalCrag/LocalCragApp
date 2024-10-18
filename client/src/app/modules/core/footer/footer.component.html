@@ -1,24 +1,31 @@
-<ng-container *transloco="let t, read: 'footer'">
-
+<ng-container *transloco="let t; read: 'footer'">
   <div class="footer-menu" *ngIf="menuItems.length > 0">
     <ng-container *ngFor="let menuItem of menuItems">
-      <p-button *ngIf="menuItem.routerLink"
-                label="{{menuItem.title}}"
-                styleClass="p-button-secondary p-button-text"
-                routerLink="{{menuItem.routerLink}}">
+      <p-button
+        *ngIf="menuItem.routerLink"
+        label="{{ menuItem.title }}"
+        styleClass="p-button-secondary p-button-text"
+        routerLink="{{ menuItem.routerLink }}"
+      >
       </p-button>
-      <p-button *ngIf="menuItem.link"
-                label="{{menuItem.title}}"
-                styleClass="p-button-secondary p-button-text"
-                (click)="openLink(menuItem.link)">
+      <p-button
+        *ngIf="menuItem.link"
+        label="{{ menuItem.title }}"
+        styleClass="p-button-secondary p-button-text"
+        (click)="openLink(menuItem.link)"
+      >
       </p-button>
     </ng-container>
-
   </div>
   <div class="footer-notes">
-    <div class="footer-note-item">{{t('copyright')}} © {{currentYear}} {{copyrightOwner$ | async}}</div>
-    <div class="footer-note-item">Powered with 🦾 by
-      <a href="https://github.com/LocalCrag/LocalCragApp" target="_blank">LocalCrag</a></div>
+    <div class="footer-note-item">
+      {{ t("copyright") }} © {{ currentYear }} {{ copyrightOwner$ | async }}
+    </div>
+    <div class="footer-note-item">
+      Powered with 🦾 by
+      <a href="https://github.com/LocalCrag/LocalCragApp" target="_blank"
+        >LocalCrag</a
+      >
+    </div>
   </div>
-
 </ng-container>

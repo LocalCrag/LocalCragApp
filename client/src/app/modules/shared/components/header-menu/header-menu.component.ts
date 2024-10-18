@@ -1,44 +1,43 @@
 import {
   AfterContentInit,
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  ContentChildren, HostBinding, HostListener,
+  ContentChildren,
+  HostBinding,
+  HostListener,
   Input,
-  OnChanges, OnInit,
+  OnChanges,
+  OnInit,
   QueryList,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core';
-import {MenuItem, PrimeTemplate} from 'primeng/api';
-import {NgClass, NgIf, NgTemplateOutlet} from '@angular/common';
-import {HeaderMenuSubComponent} from './header-menu-sub.component';
-import {ProcessedMenuItem} from './processed-menu-item';
-import {HeaderMenuService} from './header-menu.service';
-import {MOBILE_BREAKPOINT_HEADER_MENU} from '../../../../utility/misc/breakpoints';
-import {BarsIcon} from 'primeng/icons/bars';
+import { MenuItem, PrimeTemplate } from 'primeng/api';
+import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import { HeaderMenuSubComponent } from './header-menu-sub.component';
+import { ProcessedMenuItem } from './processed-menu-item';
+import { HeaderMenuService } from './header-menu.service';
+import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
+import { BarsIcon } from 'primeng/icons/bars';
 
 @Component({
   selector: 'lc-header-menu',
   standalone: true,
-  imports: [
-    NgIf,
-    NgTemplateOutlet,
-    HeaderMenuSubComponent,
-    BarsIcon,
-    NgClass
-  ],
+  imports: [NgIf, NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    HeaderMenuService
-  ]
+  providers: [HeaderMenuService],
 })
-export class HeaderMenuComponent implements AfterContentInit, OnChanges, OnInit {
-
+export class HeaderMenuComponent
+  implements AfterContentInit, OnChanges, OnInit
+{
   @Input() model: MenuItem[];
 
-  @ContentChildren(PrimeTemplate) templates: QueryList<PrimeTemplate> | undefined;
+  @ContentChildren(PrimeTemplate) templates:
+    | QueryList<PrimeTemplate>
+    | undefined;
 
   processedModel: ProcessedMenuItem[];
   startTemplate: TemplateRef<any> | undefined;
@@ -46,8 +45,7 @@ export class HeaderMenuComponent implements AfterContentInit, OnChanges, OnInit 
   isMobile = false;
   mobileExpanded = false;
 
-  constructor(private headerMenuService: HeaderMenuService) {
-  }
+  constructor(private headerMenuService: HeaderMenuService) {}
 
   ngAfterContentInit() {
     this.templates?.forEach((item) => {
@@ -73,19 +71,22 @@ export class HeaderMenuComponent implements AfterContentInit, OnChanges, OnInit 
     }
   }
 
-  processItems(items: MenuItem[], parent: ProcessedMenuItem): ProcessedMenuItem[] {
-    return items.map(item => {
+  processItems(
+    items: MenuItem[],
+    parent: ProcessedMenuItem,
+  ): ProcessedMenuItem[] {
+    return items.map((item) => {
       const processedItem = {
         item: item,
         parent,
         isActive: false,
-        items: null
-      }
+        items: null,
+      };
       if (item.items) {
-        processedItem.items = this.processItems(item.items, processedItem)
+        processedItem.items = this.processItems(item.items, processedItem);
       }
       return processedItem;
-    })
+    });
   }
 
   @HostListener('window:resize', ['$event.target.innerWidth'])
@@ -97,5 +98,4 @@ export class HeaderMenuComponent implements AfterContentInit, OnChanges, OnInit 
     event.stopPropagation();
     this.mobileExpanded = this.isMobile && !this.mobileExpanded;
   }
-
 }

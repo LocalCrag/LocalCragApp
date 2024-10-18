@@ -1,15 +1,15 @@
 <div class="content">
-
-  <p-card header="{{sector?.name}}">
-
+  <p-card header="{{ sector?.name }}">
     <lc-secret-spot-tag *ngIf="sector?.secret"></lc-secret-spot-tag>
 
-    <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
+    <p-breadcrumb
+      class="max-w-full"
+      [model]="breadcrumbs"
+      [home]="breadcrumbHome"
+    ></p-breadcrumb>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="sector"></p-tabMenu>
 
     <router-outlet name="sectorContent"></router-outlet>
-
   </p-card>
-
 </div>

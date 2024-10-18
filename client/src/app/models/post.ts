@@ -1,14 +1,13 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Observable} from 'rxjs';
-import {Grade} from '../utility/misc/grades';
-import {User} from './user';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { Observable } from 'rxjs';
+import { Grade } from '../utility/misc/grades';
+import { User } from './user';
 
 /**
  * Model of a blog post.
  */
 export class Post extends AbstractModel {
-
   title: string;
   text: string;
   slug: string;
@@ -26,7 +25,9 @@ export class Post extends AbstractModel {
     post.title = payload.title;
     post.text = payload.text;
     post.slug = payload.slug;
-    post.createdBy = payload.createdBy ? User.deserialize(payload.createdBy) : null;
+    post.createdBy = payload.createdBy
+      ? User.deserialize(payload.createdBy)
+      : null;
     return post;
   }
 
@@ -42,5 +43,4 @@ export class Post extends AbstractModel {
       text: post.text,
     };
   }
-
 }

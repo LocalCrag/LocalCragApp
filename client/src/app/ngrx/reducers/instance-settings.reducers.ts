@@ -1,6 +1,6 @@
-import {Action, createReducer, on} from '@ngrx/store';
-import {File} from '../../models/file';
-import {updateInstanceSettings} from '../actions/instance-settings.actions';
+import { Action, createReducer, on } from '@ngrx/store';
+import { File } from '../../models/file';
+import { updateInstanceSettings } from '../actions/instance-settings.actions';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -57,4 +57,7 @@ const instanceSettingsReducer = createReducer(
   })),
 );
 
-export const reducer = (state: InstanceSettingsState | undefined, action: Action) => instanceSettingsReducer(state, action);
+export const reducer = (
+  state: InstanceSettingsState | undefined,
+  action: Action,
+) => instanceSettingsReducer(state, action);

@@ -1,13 +1,14 @@
-<ng-container *transloco="let t, read: 'todoButton'">
-
-  <p-button styleClass="p-button-rounded p-button-text p-button-secondary todo-button"
-            data-cy="todo-button"
-            label="{{isTodo ? t('onTodoList'): t('addTodo')}}"
-            (click)="addTodo($event)" [ngClass]="{'hide-label': !showLabel}">
+<ng-container *transloco="let t; read: 'todoButton'">
+  <p-button
+    styleClass="p-button-rounded p-button-text p-button-secondary todo-button"
+    data-cy="todo-button"
+    label="{{ isTodo ? t('onTodoList') : t('addTodo') }}"
+    (click)="addTodo($event)"
+    [ngClass]="{ 'hide-label': !showLabel }"
+  >
     <ng-template pTemplate="icon">
-      <i  *ngIf="!isTodo" class="pi pi-plus"></i>
-      <i  *ngIf="isTodo" class="pi pi-plus is-todo-icon"></i>
+      <i *ngIf="!isTodo" class="pi pi-plus"></i>
+      <i *ngIf="isTodo" class="pi pi-plus is-todo-icon"></i>
     </ng-template>
   </p-button>
-
 </ng-container>

@@ -1,13 +1,12 @@
-import {AbstractModel} from './abstract-model';
-import {Line} from './line';
+import { AbstractModel } from './abstract-model';
+import { Line } from './line';
 import Konva from 'konva';
-import {LoadingState} from '../enums/loading-state';
+import { LoadingState } from '../enums/loading-state';
 
 /**
  * Model of a line path.
  */
 export class LinePath extends AbstractModel {
-
   path: number[];
   line: Line;
   orderIndex: number;
@@ -32,8 +31,8 @@ export class LinePath extends AbstractModel {
   public static deserialize(payload: any): LinePath {
     const linePath = new LinePath();
     AbstractModel.deserializeAbstractAttributes(linePath, payload);
-    linePath.path =  payload.path;
-    linePath.orderIndex =  payload.orderIndex;
+    linePath.path = payload.path;
+    linePath.orderIndex = payload.orderIndex;
     linePath.line = payload.line ? Line.deserialize(payload.line) : null;
     return linePath;
   }
@@ -47,8 +46,7 @@ export class LinePath extends AbstractModel {
   public static serialize(linePath: LinePath): any {
     return {
       path: linePath.path,
-      line: linePath.line.id
+      line: linePath.line.id,
     };
   }
-
 }

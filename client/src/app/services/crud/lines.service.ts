@@ -1,24 +1,24 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {Line} from '../../models/line';
-import {Paginated} from '../../models/paginated';
-import {Ascent} from '../../models/ascent';
-import {Crag} from '../../models/crag';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Line } from '../../models/line';
+import { Paginated } from '../../models/paginated';
+import { Ascent } from '../../models/ascent';
+import { Crag } from '../../models/crag';
 
 /**
  * CRUD service for lines.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LinesService {
-
-  constructor(private api: ApiService,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Creates a Line.
@@ -28,18 +28,21 @@ export class LinesService {
    * @return Observable of a Line.
    */
   public createLine(line: Line, areaSlug: string): Observable<Line> {
-    return this.http.post(this.api.lines.create(areaSlug), Line.serialize(line)).pipe(
-      map(Line.deserialize)
-    );
+    return this.http
+      .post(this.api.lines.create(areaSlug), Line.serialize(line))
+      .pipe(map(Line.deserialize));
   }
 
-
   public getLines(filters: string): Observable<Paginated<Line>> {
-    return this.http.get(this.api.lines.getList(filters)).pipe(map(payload => Paginated.deserialize(payload, Line.deserialize)));
+    return this.http
+      .get(this.api.lines.getList(filters))
+      .pipe(map((payload) => Paginated.deserialize(payload, Line.deserialize)));
   }
 
   public getLinesForLineEditor(areaSlug: string): Observable<Line[]> {
-    return this.http.get(this.api.lines.getListForLineEditor(areaSlug)).pipe(map((lineListJson: any) => lineListJson.map(Line.deserialize)));
+    return this.http
+      .get(this.api.lines.getListForLineEditor(areaSlug))
+      .pipe(map((lineListJson: any) => lineListJson.map(Line.deserialize)));
   }
 
   /**
@@ -49,7 +52,9 @@ export class LinesService {
    * @return Observable of a Line.
    */
   public getLine(slug: string): Observable<Line> {
-    return this.http.get(this.api.lines.getDetail(slug)).pipe(map(Line.deserialize));
+    return this.http
+      .get(this.api.lines.getDetail(slug))
+      .pipe(map(Line.deserialize));
   }
 
   /**
@@ -59,9 +64,9 @@ export class LinesService {
    * @return Observable of a Line.
    */
   public deleteLine(line: Line): Observable<null> {
-    return this.http.delete(this.api.lines.delete(line.slug)).pipe(
-      map(() => null)
-    );
+    return this.http
+      .delete(this.api.lines.delete(line.slug))
+      .pipe(map(() => null));
   }
 
   /**
@@ -71,10 +76,8 @@ export class LinesService {
    * @return Observable of null.
    */
   public updateLine(line: Line): Observable<Line> {
-    return this.http.put(this.api.lines.update(line.slug), Line.serialize(line)).pipe(
-      map(Line.deserialize)
-    );
+    return this.http
+      .put(this.api.lines.update(line.slug), Line.serialize(line))
+      .pipe(map(Line.deserialize));
   }
-
 }
-

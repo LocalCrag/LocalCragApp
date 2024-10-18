@@ -1,23 +1,21 @@
-lc-grade-distribution-bar-chart{
+lc-grade-distribution-bar-chart {
   height: 300px;
   display: block;
   margin-bottom: 3rem;
 
-  p-chart{
+  p-chart {
     height: 100%;
     display: block;
 
-    div{
+    div {
       height: 100%;
       display: block;
     }
-
   }
 
-  .total{
+  .total {
     font-size: 12px;
     padding-left: 14px;
     padding-top: 14px;
   }
-
 }

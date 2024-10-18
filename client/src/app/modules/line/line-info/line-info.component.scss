@@ -1,7 +1,6 @@
 @use "../../../styles/media-queries" as m;
 
 .fa {
-
   font-size: 11px;
 
   span:nth-of-type(n + 2) {
@@ -9,7 +8,6 @@
       content: ", ";
     }
   }
-
 }
 
 .link-list {
@@ -18,7 +16,8 @@
   }
 }
 
-lc-tick-button, lc-todo-button {
+lc-tick-button,
+lc-todo-button {
   margin-left: -1.45rem;
 }
 

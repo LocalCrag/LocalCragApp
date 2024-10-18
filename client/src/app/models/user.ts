@@ -1,11 +1,10 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
 
 /**
  * Model of a user.
  */
 export class User extends AbstractModel {
-
   email: string;
   newEmail: string;
   firstname: string;
@@ -78,5 +77,4 @@ export class User extends AbstractModel {
       avatar: user.avatar ? user.avatar.id : null,
     };
   }
-
 }

@@ -1,10 +1,9 @@
 <div class="line-name">
-  <h3>{{line.name}}</h3>
+  <h3>{{ line.name }}</h3>
   <div class="grade">
-    {{line.grade.name | transloco}}
+    {{ line.grade.name | transloco }}
   </div>
 </div>
-
 
 <div class="close-icon" (click)="ref.close()">
   <i class="pi pi-times"></i>

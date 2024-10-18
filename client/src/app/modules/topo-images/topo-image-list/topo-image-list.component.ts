@@ -1,34 +1,34 @@
-import {ChangeDetectorRef, Component, ViewEncapsulation} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
-import {forkJoin, mergeMap, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {ActivatedRoute, Router, Scroll} from '@angular/router';
-import {TranslocoService} from '@jsverse/transloco';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {TopoImage} from '../../../models/topo-image';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {LinePath} from '../../../models/line-path';
-import {LinePathsService} from '../../../services/crud/line-paths.service';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {ApiService} from '../../../services/core/api.service';
-import {ViewportScroller} from '@angular/common';
-import {filter, take} from 'rxjs/operators';
-import {Line} from '../../../models/line';
-import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
-import {AscentFormComponent} from '../../ascent/ascent-form/ascent-form.component';
-import {AscentFormTitleComponent} from '../../ascent/ascent-form-title/ascent-form-title.component';
-import {TicksService} from '../../../services/crud/ticks.service';
-import {AreasService} from '../../../services/crud/areas.service';
-import {Actions, ofType} from '@ngrx/effects';
-import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
-import {Area} from '../../../models/area';
+import { ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
+import { forkJoin, mergeMap, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { ActivatedRoute, Router, Scroll } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { TopoImage } from '../../../models/topo-image';
+import { TopoImagesService } from '../../../services/crud/topo-images.service';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { LinePath } from '../../../models/line-path';
+import { LinePathsService } from '../../../services/crud/line-paths.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ApiService } from '../../../services/core/api.service';
+import { ViewportScroller } from '@angular/common';
+import { filter, take } from 'rxjs/operators';
+import { Line } from '../../../models/line';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { AscentFormComponent } from '../../ascent/ascent-form/ascent-form.component';
+import { AscentFormTitleComponent } from '../../ascent/ascent-form-title/ascent-form-title.component';
+import { TicksService } from '../../../services/crud/ticks.service';
+import { AreasService } from '../../../services/crud/areas.service';
+import { Actions, ofType } from '@ngrx/effects';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { Area } from '../../../models/area';
 
 /**
  * Component that lists all topo images in an area.
@@ -37,15 +37,11 @@ import {Area} from '../../../models/area';
   selector: 'lc-topo-image-list',
   templateUrl: './topo-image-list.component.html',
   styleUrls: ['./topo-image-list.component.scss'],
-  providers: [
-    ConfirmationService,
-    DialogService
-  ],
-  encapsulation: ViewEncapsulation.None
+  providers: [ConfirmationService, DialogService],
+  encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
 export class TopoImageListComponent {
-
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -63,43 +59,53 @@ export class TopoImageListComponent {
   private scrollTarget: Scroll;
   private area: Area;
 
-  constructor(private topoImagesService: TopoImagesService,
-              private store: Store,
-              private confirmationService: ConfirmationService,
-              private ticksService: TicksService,
-              private areasService: AreasService,
-              private actions$: Actions,
-              private dialogService: DialogService,
-              private linePathsService: LinePathsService,
-              private route: ActivatedRoute,
-              private translocoService: TranslocoService,
-              private router: Router,
-              private viewportScroller: ViewportScroller) {
-    this.router.events.pipe(filter((event): event is Scroll => event instanceof Scroll)
-    ).subscribe((e) => {
-      if (e.position) {
-        this.scrollTarget = e;
-        this.restoreScrollPosition();
-      } else {
-        this.scrollTarget = null;
-      }
-    });
+  constructor(
+    private topoImagesService: TopoImagesService,
+    private store: Store,
+    private confirmationService: ConfirmationService,
+    private ticksService: TicksService,
+    private areasService: AreasService,
+    private actions$: Actions,
+    private dialogService: DialogService,
+    private linePathsService: LinePathsService,
+    private route: ActivatedRoute,
+    private translocoService: TranslocoService,
+    private router: Router,
+    private viewportScroller: ViewportScroller,
+  ) {
+    this.router.events
+      .pipe(filter((event): event is Scroll => event instanceof Scroll))
+      .subscribe((e) => {
+        if (e.position) {
+          this.scrollTarget = e;
+          this.restoreScrollPosition();
+        } else {
+          this.scrollTarget = null;
+        }
+      });
   }
 
   /**
    * Loads the lines on initialization.
    */
   ngOnInit() {
-    this.route.parent.parent.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
-      this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
-      this.sectorSlug = this.route.parent.parent.snapshot.paramMap.get('sector-slug');
-      this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
-      this.refreshData();
-    });
+    this.route.parent.parent.paramMap
+      .pipe(untilDestroyed(this))
+      .subscribe((params) => {
+        this.cragSlug =
+          this.route.parent.parent.snapshot.paramMap.get('crag-slug');
+        this.sectorSlug =
+          this.route.parent.parent.snapshot.paramMap.get('sector-slug');
+        this.areaSlug =
+          this.route.parent.parent.snapshot.paramMap.get('area-slug');
+        this.refreshData();
+      });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.actions$.pipe(ofType(reloadAfterAscent), untilDestroyed(this)).subscribe((action) => {
-      this.ticks.add(action.ascendedLineId)
-    });
+    this.actions$
+      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .subscribe((action) => {
+        this.ticks.add(action.ascendedLineId);
+      });
   }
 
   /**
@@ -107,36 +113,41 @@ export class TopoImageListComponent {
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
-    this.areasService.getArea(this.areaSlug).pipe(mergeMap(area => {
-      this.area = area;
-      return forkJoin([
-        this.topoImagesService.getTopoImages(this.areaSlug),
-        this.ticksService.getTicks(null, null, area.id),
-        this.translocoService.load(`${environment.language}`)
-      ])
-    })).subscribe(([topoImages, ticks, e]) => {
-      this.ticks = ticks;
-      this.topoImages = topoImages;
-      this.loading = LoadingState.DEFAULT;
-      this.sortOptions = [
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscending')),
-          value: '!orderIndex'
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescending')),
-          value: 'orderIndex'
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
-      if(this.scrollTarget) {
-        this.restoreScrollPosition();
-      } else {
-        this.scrollToAnchor();
-      }
-    });
+    this.areasService
+      .getArea(this.areaSlug)
+      .pipe(
+        mergeMap((area) => {
+          this.area = area;
+          return forkJoin([
+            this.topoImagesService.getTopoImages(this.areaSlug),
+            this.ticksService.getTicks(null, null, area.id),
+            this.translocoService.load(`${environment.language}`),
+          ]);
+        }),
+      )
+      .subscribe(([topoImages, ticks, e]) => {
+        this.ticks = ticks;
+        this.topoImages = topoImages;
+        this.loading = LoadingState.DEFAULT;
+        this.sortOptions = [
+          {
+            icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+            label: this.translocoService.translate(marker('sortAscending')),
+            value: '!orderIndex',
+          },
+          {
+            icon: PrimeIcons.SORT_AMOUNT_DOWN,
+            label: this.translocoService.translate(marker('sortDescending')),
+            value: 'orderIndex',
+          },
+        ];
+        this.sortKey = this.sortOptions[0];
+        if (this.scrollTarget) {
+          this.restoreScrollPosition();
+        } else {
+          this.scrollToAnchor();
+        }
+      });
   }
 
   restoreScrollPosition() {
@@ -146,19 +157,23 @@ export class TopoImageListComponent {
       setTimeout(() => {
         this.viewportScroller.scrollToPosition(this.scrollTarget.position);
         this.scrollTarget = null;
-      })
+      });
     }
   }
 
-  scrollToAnchor(){
+  scrollToAnchor() {
     this.route.fragment.subscribe((fragment: string) => {
-      if(fragment) {
+      if (fragment) {
         // CDR not working as expected here because topo image is using setTimeout because of konva bug...
         // So I have to use setTimeout too
         setTimeout(() => {
           const elmnt = document.getElementById(fragment);
-          elmnt.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-        })
+          elmnt.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest',
+          });
+        });
       }
     });
   }
@@ -195,10 +210,16 @@ export class TopoImageListComponent {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('topoImage.askReallyWantToDeleteTopoImage')),
-        acceptLabel: this.translocoService.translate(marker('topoImage.yesDelete')),
+        message: this.translocoService.translate(
+          marker('topoImage.askReallyWantToDeleteTopoImage'),
+        ),
+        acceptLabel: this.translocoService.translate(
+          marker('topoImage.yesDelete'),
+        ),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('topoImage.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('topoImage.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteTopoImage(topoImage);
@@ -213,12 +234,16 @@ export class TopoImageListComponent {
    */
   public deleteTopoImage(topoImage: TopoImage) {
     topoImage.loadingState = LoadingState.LOADING;
-    this.topoImagesService.deleteTopoImage(this.areaSlug, topoImage).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.TOPO_IMAGE_DELETED));
-      this.topoImages.splice(this.topoImages.indexOf(topoImage), 1)
-      this.topoImages = [...this.topoImages];
-      topoImage.loadingState = LoadingState.DEFAULT;
-    });
+    this.topoImagesService
+      .deleteTopoImage(this.areaSlug, topoImage)
+      .subscribe(() => {
+        this.store.dispatch(
+          toastNotification(NotificationIdentifier.TOPO_IMAGE_DELETED),
+        );
+        this.topoImages.splice(this.topoImages.indexOf(topoImage), 1);
+        this.topoImages = [...this.topoImages];
+        topoImage.loadingState = LoadingState.DEFAULT;
+      });
   }
 
   /**
@@ -227,16 +252,26 @@ export class TopoImageListComponent {
    * @param linePath Line path to delete.
    * @param topoImage that the line path was assigned to.
    */
-  confirmDeleteLinePath(event: Event, linePath: LinePath, topoImage: TopoImage) {
+  confirmDeleteLinePath(
+    event: Event,
+    linePath: LinePath,
+    topoImage: TopoImage,
+  ) {
     event.stopPropagation();
     event.preventDefault();
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('topoImage.askReallyWantToDeleteLinePath')),
-        acceptLabel: this.translocoService.translate(marker('topoImage.yesDelete')),
+        message: this.translocoService.translate(
+          marker('topoImage.askReallyWantToDeleteLinePath'),
+        ),
+        acceptLabel: this.translocoService.translate(
+          marker('topoImage.yesDelete'),
+        ),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('topoImage.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('topoImage.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteLinePath(linePath, topoImage);
@@ -253,8 +288,10 @@ export class TopoImageListComponent {
   public deleteLinePath(linePath: LinePath, topoImage: TopoImage) {
     linePath.loadingState = LoadingState.LOADING;
     this.linePathsService.deleteLinePath(linePath).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.LINE_PATH_DELETED));
-      topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1)
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.LINE_PATH_DELETED),
+      );
+      topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1);
       linePath.konvaLine.destroy();
       linePath.konvaRect.destroy();
       linePath.konvaText.destroy();
@@ -269,13 +306,18 @@ export class TopoImageListComponent {
    */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
-      this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-        linePath.konvaLine.fill(instanceSettingsState.arrowHighlightColor);
-        linePath.konvaLine.stroke(instanceSettingsState.arrowHighlightColor);
-        linePath.konvaLine.zIndex(topoImage.linePaths.length);
-        linePath.konvaRect.fill(instanceSettingsState.arrowHighlightColor);
-        linePath.konvaText.fill(instanceSettingsState.arrowHighlightTextColor)
-      })
+      this.store
+        .select(selectInstanceSettingsState)
+        .pipe(take(1))
+        .subscribe((instanceSettingsState) => {
+          linePath.konvaLine.fill(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.stroke(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.zIndex(topoImage.linePaths.length);
+          linePath.konvaRect.fill(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaText.fill(
+            instanceSettingsState.arrowHighlightTextColor,
+          );
+        });
     }
   }
 
@@ -285,13 +327,16 @@ export class TopoImageListComponent {
    */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
-      this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-        linePath.konvaLine.fill(instanceSettingsState.arrowColor);
-        linePath.konvaLine.stroke(instanceSettingsState.arrowColor);
-        linePath.konvaLine.zIndex(1); // 0 is the BG image
-        linePath.konvaRect.fill(instanceSettingsState.arrowColor);
-        linePath.konvaText.fill(instanceSettingsState.arrowTextColor)
-      })
+      this.store
+        .select(selectInstanceSettingsState)
+        .pipe(take(1))
+        .subscribe((instanceSettingsState) => {
+          linePath.konvaLine.fill(instanceSettingsState.arrowColor);
+          linePath.konvaLine.stroke(instanceSettingsState.arrowColor);
+          linePath.konvaLine.zIndex(1); // 0 is the BG image
+          linePath.konvaRect.fill(instanceSettingsState.arrowColor);
+          linePath.konvaText.fill(instanceSettingsState.arrowTextColor);
+        });
     }
   }
 
@@ -300,14 +345,20 @@ export class TopoImageListComponent {
    */
   reorderTopoImages() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      header: this.translocoService.translate(marker('reorderTopoImagesDialogTitle')),
+      header: this.translocoService.translate(
+        marker('reorderTopoImagesDialogTitle'),
+      ),
       data: {
         items: this.topoImages,
-        itemsName: this.translocoService.translate(marker('reorderTopoImagesDialogItemsName')),
-        callback: this.topoImagesService.updateTopoImageOrder.bind(this.topoImagesService),
+        itemsName: this.translocoService.translate(
+          marker('reorderTopoImagesDialogItemsName'),
+        ),
+        callback: this.topoImagesService.updateTopoImageOrder.bind(
+          this.topoImagesService,
+        ),
         slugParameter: this.areaSlug,
-        showImage: true
-      }
+        showImage: true,
+      },
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
@@ -321,18 +372,23 @@ export class TopoImageListComponent {
    */
   reorderLinePaths(topoImage: TopoImage) {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      header: this.translocoService.translate(marker('reorderLinePathsDialogTitle')),
+      header: this.translocoService.translate(
+        marker('reorderLinePathsDialogTitle'),
+      ),
       data: {
         items: topoImage.linePaths,
-        itemsName: this.translocoService.translate(marker('reorderLinePathsDialogItemsName')),
-        callback: this.linePathsService.updateLinePathOrder.bind(this.linePathsService),
+        itemsName: this.translocoService.translate(
+          marker('reorderLinePathsDialogItemsName'),
+        ),
+        callback: this.linePathsService.updateLinePathOrder.bind(
+          this.linePathsService,
+        ),
         slugParameter: topoImage.id,
-        showLinePathLineName: true
-      }
+        showLinePathLineName: true,
+      },
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
     });
   }
-
 }

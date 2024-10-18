@@ -11,7 +11,7 @@ lc-app-level-alerts {
     height: fit-content;
     color: #ffffff;
 
-    a{
+    a {
       color: #ffffff;
     }
 
@@ -33,17 +33,15 @@ lc-app-level-alerts {
 
     .alert-text {
       display: inline-block;
-      padding: .5rem;
+      padding: 0.5rem;
     }
 
     .p-button-label {
-      color: #fff
+      color: #fff;
     }
 
-    .p-button{
-      padding: .75rem .25rem;
+    .p-button {
+      padding: 0.75rem 0.25rem;
     }
-
   }
-
 }

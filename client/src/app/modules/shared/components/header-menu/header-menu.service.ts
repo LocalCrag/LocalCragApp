@@ -1,15 +1,13 @@
-import {ChangeDetectorRef, Injectable} from '@angular/core';
-import {ProcessedMenuItem} from './processed-menu-item';
-import {HeaderMenuComponent} from './header-menu.component';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { ProcessedMenuItem } from './processed-menu-item';
+import { HeaderMenuComponent } from './header-menu.component';
 
 @Injectable()
 export class HeaderMenuService {
-
   private activeItem: ProcessedMenuItem;
   private headerMenu: HeaderMenuComponent;
 
-  constructor(private cdr: ChangeDetectorRef) {
-  }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   public setActive(item: ProcessedMenuItem, itemElement: HTMLElement = null) {
     this.deactivateCurrent();
@@ -18,13 +16,13 @@ export class HeaderMenuService {
     // Leaf menu items won't have a sub menu element. They will just be set active.
     if (itemElement) {
       this.cdr.detectChanges(); // This is necessary to make sure the menu is rendered before we try to position it.
-      this.fixItemOverflow(itemElement)
+      this.fixItemOverflow(itemElement);
     }
   }
 
   public toggleActive(item: ProcessedMenuItem) {
     if (item.isActive) {
-      item = item.parent
+      item = item.parent;
     }
     if (item) {
       this.setActive(item);
@@ -75,21 +73,35 @@ export class HeaderMenuService {
 
     // Case 1
     if (overflowBottomAmount > 0 && !(itemElementHeight > window.innerHeight)) {
-      itemElement.style.setProperty('top', `-${overflowBottomAmount}px`, 'important');
+      itemElement.style.setProperty(
+        'top',
+        `-${overflowBottomAmount}px`,
+        'important',
+      );
     }
 
     // Case 2
     if (itemElementHeight > window.innerHeight) {
-      itemElement.style.setProperty('top', `-${itemElementRect.top}px`, 'important');
-      itemElement.style.setProperty('height', `${window.innerHeight}px`, 'important');
+      itemElement.style.setProperty(
+        'top',
+        `-${itemElementRect.top}px`,
+        'important',
+      );
+      itemElement.style.setProperty(
+        'height',
+        `${window.innerHeight}px`,
+        'important',
+      );
       itemElement.style.setProperty('overflow-y', 'auto', 'important');
     }
 
     // Case 3
     if (overflowRightAmount > 0) {
-      itemElement.style.setProperty('left', `-${itemElementRect.width }px`, 'important');
+      itemElement.style.setProperty(
+        'left',
+        `-${itemElementRect.width}px`,
+        'important',
+      );
     }
-
   }
-
 }

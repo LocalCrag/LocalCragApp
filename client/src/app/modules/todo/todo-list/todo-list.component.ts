@@ -1,44 +1,53 @@
-import {Component, HostListener, ViewEncapsulation} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {Ascent} from '../../../models/ascent';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {GRADES, gradeNameByValue} from '../../../utility/misc/grades';
-import {ConfirmationService, MenuItem, SelectItem, SharedModule} from 'primeng/api';
-import {AscentsService} from '../../../services/crud/ascents.service';
-import {Store} from '@ngrx/store';
-import {Actions, ofType} from '@ngrx/effects';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {Todo} from '../../../models/todo';
-import {TodosService} from '../../../services/crud/todos.service';
-import {todoAdded} from '../../../ngrx/actions/todo.actions';
-import {AvatarModule} from 'primeng/avatar';
-import {ButtonModule} from 'primeng/button';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {ConsensusGradePipe} from '../../ascent/pipes/consensus-grade.pipe';
-import {DataViewModule} from 'primeng/dataview';
-import {DowngradePipe} from '../../ascent/pipes/downgrade.pipe';
-import {DropdownModule} from 'primeng/dropdown';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
-import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import {MenuModule} from 'primeng/menu';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {RatingModule} from 'primeng/rating';
-import {RouterLink} from '@angular/router';
-import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
-import {SliderModule} from 'primeng/slider';
-import {TagModule} from 'primeng/tag';
-import {UpgradePipe} from '../../ascent/pipes/upgrade.pipe';
-import {FormsModule} from '@angular/forms';
-import {CardModule} from 'primeng/card';
-import {TodoPriorityButtonComponent} from '../todo-priority-button/todo-priority-button.component';
-import {TickButtonComponent} from '../../ascent/tick-button/tick-button.component';
-import {MenuItemsService} from '../../../services/crud/menu-items.service';
-import {Crag} from '../../../models/crag';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import { Component, HostListener, ViewEncapsulation } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { Ascent } from '../../../models/ascent';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { GRADES, gradeNameByValue } from '../../../utility/misc/grades';
+import {
+  ConfirmationService,
+  MenuItem,
+  SelectItem,
+  SharedModule,
+} from 'primeng/api';
+import { AscentsService } from '../../../services/crud/ascents.service';
+import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Todo } from '../../../models/todo';
+import { TodosService } from '../../../services/crud/todos.service';
+import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConsensusGradePipe } from '../../ascent/pipes/consensus-grade.pipe';
+import { DataViewModule } from 'primeng/dataview';
+import { DowngradePipe } from '../../ascent/pipes/downgrade.pipe';
+import { DropdownModule } from 'primeng/dropdown';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MenuModule } from 'primeng/menu';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
+import { RouterLink } from '@angular/router';
+import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
+import { SliderModule } from 'primeng/slider';
+import { TagModule } from 'primeng/tag';
+import { UpgradePipe } from '../../ascent/pipes/upgrade.pipe';
+import { FormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
+import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
+import { MenuItemsService } from '../../../services/crud/menu-items.service';
+import { Crag } from '../../../models/crag';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-todo-list',
@@ -70,15 +79,14 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
     NgClass,
     CardModule,
     TodoPriorityButtonComponent,
-    TickButtonComponent
+    TickButtonComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
 export class TodoListComponent {
-
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
   public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
@@ -88,7 +96,7 @@ export class TodoListComponent {
   public currentPage = 0;
   public minGradeValue = GRADES['FB'][0].value;
   public maxGradeValue = GRADES['FB'].at(-1).value;
-  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue]
+  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
@@ -104,59 +112,94 @@ export class TodoListComponent {
   public listenForSliderStop = false;
   public crags: Crag[] = [];
 
-  constructor(private todosService: TodosService,
-              private store: Store,
-              private menuItemsService: MenuItemsService,
-              private actions$: Actions,
-              private translocoService: TranslocoService) {
-  }
+  constructor(
+    private todosService: TodosService,
+    private store: Store,
+    private menuItemsService: MenuItemsService,
+    private actions$: Actions,
+    private translocoService: TranslocoService,
+  ) {}
 
   ngOnInit() {
     this.orderOptions = [
-      {label: this.translocoService.translate(marker('orderByGrade')), value: 'grade_value'},
-      {label: this.translocoService.translate(marker('orderByTimeCreated')), value: 'time_created'},
+      {
+        label: this.translocoService.translate(marker('orderByGrade')),
+        value: 'grade_value',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByTimeCreated')),
+        value: 'time_created',
+      },
     ];
     this.orderKey = this.orderOptions[0];
     this.orderDirectionOptions = [
-      {label: this.translocoService.translate(marker('orderDescending')), value: 'desc'},
-      {label: this.translocoService.translate(marker('orderAscending')), value: 'asc'},
+      {
+        label: this.translocoService.translate(marker('orderDescending')),
+        value: 'desc',
+      },
+      {
+        label: this.translocoService.translate(marker('orderAscending')),
+        value: 'asc',
+      },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.priorityFilterOptions = [
-      {label: this.translocoService.translate(marker('allPriorities')), value: null},
-      {label: this.translocoService.translate(marker('highPriority')), value: 'HIGH'},
-      {label: this.translocoService.translate(marker('mediumPriority')), value: 'MEDIUM'},
-      {label: this.translocoService.translate(marker('lowPriority')), value: 'LOW'},
+      {
+        label: this.translocoService.translate(marker('allPriorities')),
+        value: null,
+      },
+      {
+        label: this.translocoService.translate(marker('highPriority')),
+        value: 'HIGH',
+      },
+      {
+        label: this.translocoService.translate(marker('mediumPriority')),
+        value: 'MEDIUM',
+      },
+      {
+        label: this.translocoService.translate(marker('lowPriority')),
+        value: 'LOW',
+      },
     ];
     this.priorityFilterKey = this.priorityFilterOptions[0];
     this.loadFirstPage();
-    this.actions$.pipe(ofType(todoAdded, reloadAfterAscent), untilDestroyed(this)).subscribe(() => {
-      this.loadFirstPage();
-    })
-    this.menuItemsService.getCragMenuStructure().subscribe(crags => {
+    this.actions$
+      .pipe(ofType(todoAdded, reloadAfterAscent), untilDestroyed(this))
+      .subscribe(() => {
+        this.loadFirstPage();
+      });
+    this.menuItemsService.getCragMenuStructure().subscribe((crags) => {
       this.crags = crags;
       this.buildCragFilterOptions();
     });
   }
 
   buildCragFilterOptions() {
-    this.cragFilterOptions = [{
-      label: this.translocoService.translate(marker('allCrags')),
-      value: null
-    }, ...this.crags.map(crag => {
-      return {label: crag.name, value: crag.id};
-    })];
+    this.cragFilterOptions = [
+      {
+        label: this.translocoService.translate(marker('allCrags')),
+        value: null,
+      },
+      ...this.crags.map((crag) => {
+        return { label: crag.name, value: crag.id };
+      }),
+    ];
     this.cragFilterKey = this.cragFilterOptions[0];
   }
 
   buildSectorFilterOptions() {
     if (this.cragFilterKey.value) {
-      this.sectorFilterOptions = [{
-        label: this.translocoService.translate(marker('allSectors')),
-        value: null
-      }, ...this.crags.find(crag => crag.id === this.cragFilterKey.value).sectors.map(sector => {
-        return {label: sector.name, value: sector.id};
-      })];
+      this.sectorFilterOptions = [
+        {
+          label: this.translocoService.translate(marker('allSectors')),
+          value: null,
+        },
+        ...this.crags
+          .find((crag) => crag.id === this.cragFilterKey.value)
+          .sectors.map((sector) => {
+            return { label: sector.name, value: sector.id };
+          }),
+      ];
       this.sectorFilterKey = this.sectorFilterOptions[0];
     } else {
       this.sectorFilterOptions = null;
@@ -166,12 +209,18 @@ export class TodoListComponent {
 
   buildAreaFilterOptions() {
     if (this.sectorFilterKey.value) {
-      this.areaFilterOptions = [{
-        label: this.translocoService.translate(marker('allAreas')),
-        value: null
-      }, ...this.crags.find(crag => crag.id === this.cragFilterKey.value).sectors.find(sector => sector.id === this.sectorFilterKey.value).areas.map(area => {
-        return {label: area.name, value: area.id};
-      })];
+      this.areaFilterOptions = [
+        {
+          label: this.translocoService.translate(marker('allAreas')),
+          value: null,
+        },
+        ...this.crags
+          .find((crag) => crag.id === this.cragFilterKey.value)
+          .sectors.find((sector) => sector.id === this.sectorFilterKey.value)
+          .areas.map((area) => {
+            return { label: area.name, value: area.id };
+          }),
+      ];
       this.areaFilterKey = this.areaFilterOptions[0];
     } else {
       this.areaFilterOptions = null;
@@ -187,10 +236,12 @@ export class TodoListComponent {
     }
   }
 
-  deleteTodo(todo: Todo){
+  deleteTodo(todo: Todo) {
     this.todosService.deleteTodo(todo).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.TODO_DELETED));
-      this.todos = this.todos.filter(t => t.id !== todo.id);
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.TODO_DELETED),
+      );
+      this.todos = this.todos.filter((t) => t.id !== todo.id);
     });
   }
 
@@ -202,15 +253,19 @@ export class TodoListComponent {
   }
 
   loadNextPage() {
-    if (this.loadingFirstPage !== LoadingState.LOADING && this.loadingAdditionalPage !== LoadingState.LOADING && this.hasNextPage) {
+    if (
+      this.loadingFirstPage !== LoadingState.LOADING &&
+      this.loadingAdditionalPage !== LoadingState.LOADING &&
+      this.hasNextPage
+    ) {
       this.currentPage += 1;
       if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING
+        this.loadingFirstPage = LoadingState.LOADING;
         this.todos = [];
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      let filters = [`page=${this.currentPage}`]
+      let filters = [`page=${this.currentPage}`];
       filters.push(`min_grade=${this.gradeFilterRange[0]}`);
       filters.push(`max_grade=${this.gradeFilterRange[1]}`);
       filters.push(`order_by=${this.orderKey.value}`);
@@ -229,7 +284,7 @@ export class TodoListComponent {
         filters.push(`priority=${this.priorityFilterKey.value}`);
       }
       const filterString = `?${filters.join('&')}`;
-      this.todosService.getTodos(filterString).subscribe(todos => {
+      this.todosService.getTodos(filterString).subscribe((todos) => {
         this.todos.push(...todos.items);
         this.hasNextPage = todos.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
@@ -238,7 +293,6 @@ export class TodoListComponent {
     }
   }
 
-  protected readonly
+  protected readonly;
   gradeNameByValue = gradeNameByValue;
-
 }

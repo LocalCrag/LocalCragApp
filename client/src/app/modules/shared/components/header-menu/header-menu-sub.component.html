@@ -1,22 +1,43 @@
-<div *ngFor="let item of model" class="item" (mouseenter)="onMouseenter(item, menuItem)"
-     [ngClass]="{'active-item': item.items && item.isActive, 'root-child': root}" #menuItem>
+<div
+  *ngFor="let item of model"
+  class="item"
+  (mouseenter)="onMouseenter(item, menuItem)"
+  [ngClass]="{ 'active-item': item.items && item.isActive, 'root-child': root }"
+  #menuItem
+>
   <div class="item-wrapper">
-    <div class="item-content" (click)="onItemClick(item)" [ngClass]="{'no-sub-menu': !item.items}">
-   <span class="p-menuitem-icon  menu-icon"
-         [ngClass]="item.item.icon"
-         *ngIf="item.item.icon">
-   </span>
-      <span>{{item.item.label}}</span>
+    <div
+      class="item-content"
+      (click)="onItemClick(item)"
+      [ngClass]="{ 'no-sub-menu': !item.items }"
+    >
+      <span
+        class="p-menuitem-icon menu-icon"
+        [ngClass]="item.item.icon"
+        *ngIf="item.item.icon"
+      >
+      </span>
+      <span>{{ item.item.label }}</span>
     </div>
-    <div class="item-angle" *ngIf="item.items?.length > 0" (click)="onAngleClick(item)">
-      <AngleDownIcon *ngIf="root" class="ml-2"/>
-      <AngleRightIcon *ngIf="!root" class="ml-2"/>
+    <div
+      class="item-angle"
+      *ngIf="item.items?.length > 0"
+      (click)="onAngleClick(item)"
+    >
+      <AngleDownIcon *ngIf="root" class="ml-2" />
+      <AngleRightIcon *ngIf="!root" class="ml-2" />
     </div>
-    <div class="item-angle-placeholder" *ngIf="!item.items" (click)="onItemClick(item)"></div>
+    <div
+      class="item-angle-placeholder"
+      *ngIf="!item.items"
+      (click)="onItemClick(item)"
+    ></div>
   </div>
-  <lc-header-menu-sub *ngIf="item.items?.length > 0"
-                      [model]="item.items"
-                      [class.is-active]="item.isActive"
-                      [firstChild]="root">
+  <lc-header-menu-sub
+    *ngIf="item.items?.length > 0"
+    [model]="item.items"
+    [class.is-active]="item.isActive"
+    [firstChild]="root"
+  >
   </lc-header-menu-sub>
 </div>

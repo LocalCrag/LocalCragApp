@@ -1,18 +1,22 @@
-import {ChangeDetectorRef, OnDestroy, Pipe, PipeTransform} from '@angular/core';
-import {AsyncPipe} from '@angular/common';
-import {Observable, timer} from 'rxjs';
-import {map, startWith, takeWhile} from 'rxjs/operators';
-import {differenceInMilliseconds} from 'date-fns';
+import {
+  ChangeDetectorRef,
+  OnDestroy,
+  Pipe,
+  PipeTransform,
+} from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Observable, timer } from 'rxjs';
+import { map, startWith, takeWhile } from 'rxjs/operators';
+import { differenceInMilliseconds } from 'date-fns';
 
 /**
  * Converts a date object to a string that's showing the amount of minutes between the current date and the passed date.
  */
 @Pipe({
   name: 'minutesRemaining',
-  pure: false
+  pure: false,
 })
 export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
-
   private async: AsyncPipe;
 
   private isDestroyed = false;
@@ -61,11 +65,12 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * @returns TimerObservable.
    */
   private getObservable() {
-    const initialDelay = differenceInMilliseconds(this.value, new Date()) % 60000;
+    const initialDelay =
+      differenceInMilliseconds(this.value, new Date()) % 60000;
     return timer(initialDelay, 60000).pipe(
       startWith(0),
-      takeWhile(_ => !this.isDestroyed),
-      map((_x, _i) => this.remaining())
+      takeWhile((_) => !this.isDestroyed),
+      map((_x, _i) => this.remaining()),
     );
   }
 
@@ -76,7 +81,9 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    */
   private remaining(): string {
     const now = new Date();
-    const remaining = Math.ceil(differenceInMilliseconds(this.value, new Date()) / 1000 / 60);
+    const remaining = Math.ceil(
+      differenceInMilliseconds(this.value, new Date()) / 1000 / 60,
+    );
     if (remaining === 1) {
       return '1 Minute';
     } else {

@@ -1,12 +1,11 @@
 @use "../../../styles/media-queries" as m;
 
-
 .grade-difference-warning {
   max-width: 25rem;
 }
 
 .shrink-padding-on-mobile {
   @include m.on-mobile {
-    padding: .5rem .75rem
+    padding: 0.5rem 0.75rem;
   }
 }

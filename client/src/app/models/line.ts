@@ -1,11 +1,11 @@
-import {AbstractModel} from './abstract-model';
-import {LineType} from '../enums/line-type';
-import {deserializeGrade, Grade, gradeMap} from '../utility/misc/grades';
-import {LinePath} from './line-path';
-import {TopoImage} from './topo-image';
-import {TranslocoService} from '@jsverse/transloco';
-import {StartingPosition} from '../enums/starting-position';
-import {Area} from './area';
+import { AbstractModel } from './abstract-model';
+import { LineType } from '../enums/line-type';
+import { deserializeGrade, Grade, gradeMap } from '../utility/misc/grades';
+import { LinePath } from './line-path';
+import { TopoImage } from './topo-image';
+import { TranslocoService } from '@jsverse/transloco';
+import { StartingPosition } from '../enums/starting-position';
+import { Area } from './area';
 
 export interface LineVideo {
   url: string;
@@ -16,7 +16,6 @@ export interface LineVideo {
  * Model of a climbing area's line.
  */
 export class Line extends AbstractModel {
-
   name: string;
   description: string;
   slug: string;
@@ -137,15 +136,19 @@ export class Line extends AbstractModel {
     line.sectorSlug = payload.sectorSlug;
     line.cragSlug = payload.cragSlug;
 
-    line.topoImages = payload.linePaths ? payload.linePaths.map(linePathJson => {
-      const linePath = LinePath.deserialize(linePathJson);
-      const topoImage = TopoImage.deserialize(linePathJson.topoImage);
-      topoImage.linePaths = [linePath];
-      return topoImage;
-    }) : null;
+    line.topoImages = payload.linePaths
+      ? payload.linePaths.map((linePathJson) => {
+          const linePath = LinePath.deserialize(linePathJson);
+          const topoImage = TopoImage.deserialize(linePathJson.topoImage);
+          topoImage.linePaths = [linePath];
+          return topoImage;
+        })
+      : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
     line.ascentCount = payload.ascentCount;
-    line.routerLink = line.area ? `/topo/${line.area.sector.crag.slug}/${line.area.sector.slug}/${line.area.slug}/${line.slug}` : null;
+    line.routerLink = line.area
+      ? `/topo/${line.area.sector.crag.slug}/${line.area.sector.slug}/${line.area.slug}/${line.slug}`
+      : null;
 
     return line;
   }
@@ -203,5 +206,4 @@ export class Line extends AbstractModel {
       mantle: line.mantle,
     };
   }
-
 }

@@ -1,19 +1,20 @@
 <div class="content">
-
   <p-card>
-
     <ng-template pTemplate="header">
       <div class="card-header p-card-title">
-        <p-avatar [image]="user.avatar ? user.avatar.thumbnailS : 'assets/user.png'"
-                  styleClass="mr-3" size="xlarge" shape="circle" *ngIf="user"></p-avatar>
-        {{user?.firstname}} {{user?.lastname}}
+        <p-avatar
+          [image]="user.avatar ? user.avatar.thumbnailS : 'assets/user.png'"
+          styleClass="mr-3"
+          size="xlarge"
+          shape="circle"
+          *ngIf="user"
+        ></p-avatar>
+        {{ user?.firstname }} {{ user?.lastname }}
       </div>
     </ng-template>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="user"></p-tabMenu>
 
     <router-outlet name="userContent"></router-outlet>
-
   </p-card>
-
 </div>

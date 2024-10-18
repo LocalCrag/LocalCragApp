@@ -1,26 +1,26 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {delay, Observable, timer} from 'rxjs';
-import {map, mapTo, tap} from 'rxjs/operators';
-import {Crag} from '../../models/crag';
-import {HttpClient} from '@angular/common/http';
-import {ItemOrder} from '../../interfaces/item-order.interface';
-import {Store} from '@ngrx/store';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { delay, Observable, timer } from 'rxjs';
+import { map, mapTo, tap } from 'rxjs/operators';
+import { Crag } from '../../models/crag';
+import { HttpClient } from '@angular/common/http';
+import { ItemOrder } from '../../interfaces/item-order.interface';
+import { Store } from '@ngrx/store';
+import { reloadMenus } from '../../ngrx/actions/core.actions';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
 
 /**
  * CRUD service for crags.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CragsService {
-
-  constructor(private api: ApiService,
-              private store: Store,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private store: Store,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Creates a Crag.
@@ -33,7 +33,7 @@ export class CragsService {
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(Crag.deserialize)
+      map(Crag.deserialize),
     );
   }
 
@@ -43,7 +43,9 @@ export class CragsService {
    * @return Observable of a list of Crags.
    */
   public getCrags(): Observable<Crag[]> {
-    return this.http.get(this.api.crags.getList()).pipe(map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
+    return this.http
+      .get(this.api.crags.getList())
+      .pipe(map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 
   /**
@@ -53,7 +55,9 @@ export class CragsService {
    * @return Observable of a Crag.
    */
   public getCrag(slug: string): Observable<Crag> {
-    return this.http.get(this.api.crags.getDetail(slug)).pipe(map(Crag.deserialize));
+    return this.http
+      .get(this.api.crags.getDetail(slug))
+      .pipe(map(Crag.deserialize));
   }
 
   /**
@@ -67,7 +71,7 @@ export class CragsService {
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
 
@@ -78,12 +82,14 @@ export class CragsService {
    * @return Observable of null.
    */
   public updateCrag(crag: Crag): Observable<Crag> {
-    return this.http.put(this.api.crags.update(crag.slug), Crag.serialize(crag)).pipe(
-      tap(() => {
-        this.store.dispatch(reloadMenus());
-      }),
-      map(Crag.deserialize)
-    );
+    return this.http
+      .put(this.api.crags.update(crag.slug), Crag.serialize(crag))
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+        }),
+        map(Crag.deserialize),
+      );
   }
 
   /**
@@ -97,10 +103,9 @@ export class CragsService {
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
-
 
   /**
    * Returns a list of Grades.
@@ -109,8 +114,8 @@ export class CragsService {
    * @return Observable of a list of Grades.
    */
   public getCragGrades(cragSlug: string): Observable<Grade[]> {
-    return this.http.get(this.api.crags.getGrades(cragSlug)).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http
+      .get(this.api.crags.getGrades(cragSlug))
+      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
-
-
 }
