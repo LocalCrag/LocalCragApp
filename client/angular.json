@@ -42,7 +42,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": ["quill", "konva", "quill-blot-formatter", "@ngneat/transloco-keys-manager/marker"],
+            "allowedCommonJsDependencies": [
+              "quill",
+              "konva",
+              "quill-blot-formatter",
+              "@ngneat/transloco-keys-manager/marker"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/.htaccess",
@@ -130,11 +135,23 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "d49022b2-ceea-4069-b998-adc907489fe8"
+    "analytics": "d49022b2-ceea-4069-b998-adc907489fe8",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
