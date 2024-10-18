@@ -1,19 +1,15 @@
-import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MapMarker } from '../../../models/map-marker';
-import { NgForOf, NgIf } from '@angular/common';
-import {
-  TRANSLOCO_SCOPE,
-  TranslocoDirective,
-  TranslocoService,
-} from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
-import { MapMarkerConfigDialogComponent } from '../map-marker-config-dialog/map-marker-config-dialog.component';
-import { TagModule } from 'primeng/tag';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { marker as translocoMarker } from '@jsverse/transloco-keys-manager/marker';
-import { MapMarkerType } from '../../../enums/map-marker-type';
+import {Component, forwardRef, Input, ViewEncapsulation} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {MapMarker} from '../../../models/map-marker';
+import {NgForOf, NgIf} from '@angular/common';
+import {TRANSLOCO_SCOPE, TranslocoDirective, TranslocoService,} from '@jsverse/transloco';
+import {ButtonModule} from 'primeng/button';
+import {MapMarkerConfigDialogComponent} from '../map-marker-config-dialog/map-marker-config-dialog.component';
+import {TagModule} from 'primeng/tag';
+import {ConfirmationService} from 'primeng/api';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {marker as translocoMarker} from '@jsverse/transloco-keys-manager/marker';
+import {MapMarkerType} from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-marker-form-array',

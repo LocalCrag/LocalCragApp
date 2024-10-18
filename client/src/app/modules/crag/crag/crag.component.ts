@@ -1,19 +1,18 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CragsService } from '../../../services/crud/crags.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Crag } from '../../../models/crag';
-import { MenuItem } from 'primeng/api';
-import { TranslocoService } from '@jsverse/transloco';
-import { environment } from '../../../../environments/environment';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { forkJoin, of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
-import { select, Store } from '@ngrx/store';
-import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
-import { Title } from '@angular/platform-browser';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {Component, OnInit} from '@angular/core';
+import {CragsService} from '../../../services/crud/crags.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Crag} from '../../../models/crag';
+import {MenuItem} from 'primeng/api';
+import {TranslocoService} from '@jsverse/transloco';
+import {environment} from '../../../../environments/environment';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {forkJoin, of} from 'rxjs';
+import {catchError, take} from 'rxjs/operators';
+import {select, Store} from '@ngrx/store';
+import {selectIsModerator} from '../../../ngrx/selectors/auth.selectors';
+import {Title} from '@angular/platform-browser';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-crag',

@@ -1,14 +1,14 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Router, RouterLink } from '@angular/router';
-import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
-import { take } from 'rxjs/operators';
-import { logout } from 'src/app/ngrx/actions/auth.actions';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
-import { TranslocoDirective } from '@jsverse/transloco';
+import {Component, HostBinding, OnInit} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {Router, RouterLink} from '@angular/router';
+import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import {take} from 'rxjs/operators';
+import {logout} from 'src/app/ngrx/actions/auth.actions';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {ReactiveFormsModule} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
+import {TranslocoDirective} from '@jsverse/transloco';
 
 /**
  * A component that acts differently depending on if the user is currently logged in or not:

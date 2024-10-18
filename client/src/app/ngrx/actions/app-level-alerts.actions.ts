@@ -1,4 +1,4 @@
-import { createAction } from '@ngrx/store';
+import {createAction} from '@ngrx/store';
 
 export const showRefreshTokenAboutToExpireAlert = createAction(
   '[Alerts] Show refresh token about to expire alert',

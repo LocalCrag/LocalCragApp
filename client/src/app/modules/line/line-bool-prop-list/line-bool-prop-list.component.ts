@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Line } from '../../../models/line';
+import {Component, Input} from '@angular/core';
+import {Line} from '../../../models/line';
 
 /**
  * Component that lists boolean properties of lines in text form.

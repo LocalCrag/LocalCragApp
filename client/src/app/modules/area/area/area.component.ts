@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { Crag } from '../../../models/crag';
-import { Sector } from '../../../models/sector';
-import { MenuItem } from 'primeng/api';
-import { CragsService } from '../../../services/crud/crags.service';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Title } from '@angular/platform-browser';
-import { forkJoin, of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
-import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
-import { environment } from '../../../../environments/environment';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Area } from '../../../models/area';
-import { AreasService } from '../../../services/crud/areas.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import {Component, OnInit} from '@angular/core';
+import {Crag} from '../../../models/crag';
+import {Sector} from '../../../models/sector';
+import {MenuItem} from 'primeng/api';
+import {CragsService} from '../../../services/crud/crags.service';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {TranslocoService} from '@jsverse/transloco';
+import {ActivatedRoute, Router} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {Title} from '@angular/platform-browser';
+import {forkJoin, of} from 'rxjs';
+import {catchError, take} from 'rxjs/operators';
+import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
+import {environment} from '../../../../environments/environment';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Area} from '../../../models/area';
+import {AreasService} from '../../../services/crud/areas.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-area',

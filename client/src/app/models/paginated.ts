@@ -1,5 +1,3 @@
-import { Ascent } from './ascent';
-
 export class Paginated<T> {
   items: T[];
   hasNext: boolean;

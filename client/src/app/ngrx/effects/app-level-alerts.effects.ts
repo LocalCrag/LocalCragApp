@@ -1,17 +1,13 @@
 // noinspection JSUnusedGlobalSymbols
 
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
-import { tap } from 'rxjs/operators';
-import {
-  checkShowCookieAlert,
-  cookiesAccepted,
-  showCookieAlert,
-} from '../actions/app-level-alerts.actions';
-import { toastNotification } from '../actions/notifications.actions';
-import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Store} from '@ngrx/store';
+import {AppState} from '../reducers';
+import {tap} from 'rxjs/operators';
+import {checkShowCookieAlert, cookiesAccepted, showCookieAlert,} from '../actions/app-level-alerts.actions';
+import {toastNotification} from '../actions/notifications.actions';
+import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
 
 /**
  * Declares effects for the app level alerts.

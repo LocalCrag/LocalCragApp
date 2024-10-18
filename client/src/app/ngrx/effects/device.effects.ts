@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map } from 'rxjs/operators';
-import { checkIsMobile, setIsMobile } from '../actions/device.actions';
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {map} from 'rxjs/operators';
+import {checkIsMobile, setIsMobile} from '../actions/device.actions';
 
 /**
  * Effects for device actions.

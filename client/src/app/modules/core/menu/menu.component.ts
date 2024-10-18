@@ -1,37 +1,29 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable } from 'rxjs';
-import {
-  selectAuthState,
-  selectCurrentUser,
-} from '../../../ngrx/selectors/auth.selectors';
-import {
-  cleanupCredentials,
-  logout,
-  newAuthCredentials,
-} from 'src/app/ngrx/actions/auth.actions';
-import { TranslocoService } from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { take } from 'rxjs/operators';
-import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
-import { Actions, ofType } from '@ngrx/effects';
-import { reloadMenus } from '../../../ngrx/actions/core.actions';
-import { MenuItemsService } from '../../../services/crud/menu-items.service';
-import { MenuItemPosition } from '../../../enums/menu-item-position';
-import { MenuItemType } from '../../../enums/menu-item-type';
-import { Crag } from '../../../models/crag';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {MenuItem} from 'primeng/api';
+import {select, Store} from '@ngrx/store';
+import {forkJoin, Observable} from 'rxjs';
+import {selectAuthState, selectCurrentUser,} from '../../../ngrx/selectors/auth.selectors';
+import {cleanupCredentials, logout, newAuthCredentials,} from 'src/app/ngrx/actions/auth.actions';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {take} from 'rxjs/operators';
+import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {MenuItemsService} from '../../../services/crud/menu-items.service';
+import {MenuItemPosition} from '../../../enums/menu-item-position';
+import {MenuItemType} from '../../../enums/menu-item-type';
+import {Crag} from '../../../models/crag';
 import {
   selectInstagramUrl,
   selectInstanceName,
   selectLogoImage,
   selectYoutubeUrl,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { File } from '../../../models/file';
-import { User } from '../../../models/user';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
-import { ApiService } from '../../../services/core/api.service';
+import {File} from '../../../models/file';
+import {User} from '../../../models/user';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {SearchDialogComponent} from '../search-dialog/search-dialog.component';
 
 @Component({
   selector: 'lc-menu',

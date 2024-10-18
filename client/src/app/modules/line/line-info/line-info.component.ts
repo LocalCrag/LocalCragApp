@@ -1,21 +1,20 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Line } from '../../../models/line';
-import { LinesService } from '../../../services/crud/lines.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslocoService } from '@jsverse/transloco';
-import { LinePathsService } from '../../../services/crud/line-paths.service';
-import { ApiService } from '../../../services/core/api.service';
-import { TicksService } from '../../../services/crud/ticks.service';
-import { Actions, ofType } from '@ngrx/effects';
-import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { IsTodoService } from '../../../services/crud/is-todo.service';
-import { switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
-import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import {Component} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Line} from '../../../models/line';
+import {LinesService} from '../../../services/crud/lines.service';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {TranslocoService} from '@jsverse/transloco';
+import {LinePathsService} from '../../../services/crud/line-paths.service';
+import {TicksService} from '../../../services/crud/ticks.service';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {IsTodoService} from '../../../services/crud/is-todo.service';
+import {switchMap} from 'rxjs/operators';
+import {forkJoin} from 'rxjs';
+import {todoAdded} from '../../../ngrx/actions/todo.actions';
 
 /**
  * Component that shows detailed information about a line.

@@ -1,10 +1,8 @@
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { Coordinates } from '../interfaces/coordinates.interface';
-import { Area } from './area';
-import { A } from '@angular/cdk/keycodes';
-import { Crag } from './crag';
-import { MapMarker } from './map-marker';
+import {AbstractModel} from './abstract-model';
+import {File} from './file';
+import {Area} from './area';
+import {Crag} from './crag';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing crag's sector.

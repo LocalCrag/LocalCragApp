@@ -1,26 +1,17 @@
-import {
-  Component,
-  HostBinding,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingState } from '../../../enums/loading-state';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../ngrx/reducers';
-import { AppNotificationsService } from '../../../services/core/app-notifications.service';
-import { AuthCrudService } from '../../../services/crud/auth-crud.service';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { passwordsValidator } from '../../../utility/validators/passwords.validator';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
-import { TranslocoService } from '@jsverse/transloco';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {Component, HostBinding, OnInit, ViewChild, ViewEncapsulation,} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../ngrx/reducers';
+import {AuthCrudService} from '../../../services/crud/auth-crud.service';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {passwordsValidator} from '../../../utility/validators/passwords.validator';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {TranslocoService} from '@jsverse/transloco';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component that shows a form for changing the user's password.

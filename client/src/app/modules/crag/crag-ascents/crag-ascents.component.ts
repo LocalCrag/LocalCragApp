@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from '../../../models/user';
-import { UsersService } from '../../../services/crud/users.service';
-import { TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Title } from '@angular/platform-browser';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { CragsService } from '../../../services/crud/crags.service';
-import { Crag } from '../../../models/crag';
-import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
-import { SkeletonModule } from 'primeng/skeleton';
-import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
+import {Component, OnInit} from '@angular/core';
+import {TranslocoService} from '@jsverse/transloco';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Title} from '@angular/platform-browser';
+import {catchError} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {CragsService} from '../../../services/crud/crags.service';
+import {Crag} from '../../../models/crag';
+import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
+import {NgForOf, NgIf} from '@angular/common';
+import {SkeletonModule} from 'primeng/skeleton';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-crag-ascents',

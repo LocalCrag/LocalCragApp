@@ -1,53 +1,42 @@
-import { Component, HostListener, ViewEncapsulation } from '@angular/core';
-import { LoadingState } from '../../../enums/loading-state';
-import { Ascent } from '../../../models/ascent';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { GRADES, gradeNameByValue } from '../../../utility/misc/grades';
-import {
-  ConfirmationService,
-  MenuItem,
-  SelectItem,
-  SharedModule,
-} from 'primeng/api';
-import { AscentsService } from '../../../services/crud/ascents.service';
-import { Store } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Todo } from '../../../models/todo';
-import { TodosService } from '../../../services/crud/todos.service';
-import { todoAdded } from '../../../ngrx/actions/todo.actions';
-import { AvatarModule } from 'primeng/avatar';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { ConsensusGradePipe } from '../../ascent/pipes/consensus-grade.pipe';
-import { DataViewModule } from 'primeng/dataview';
-import { DowngradePipe } from '../../ascent/pipes/downgrade.pipe';
-import { DropdownModule } from 'primeng/dropdown';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MenuModule } from 'primeng/menu';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
-import { RatingModule } from 'primeng/rating';
-import { RouterLink } from '@angular/router';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
-import { TagModule } from 'primeng/tag';
-import { UpgradePipe } from '../../ascent/pipes/upgrade.pipe';
-import { FormsModule } from '@angular/forms';
-import { CardModule } from 'primeng/card';
-import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
-import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
-import { MenuItemsService } from '../../../services/crud/menu-items.service';
-import { Crag } from '../../../models/crag';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import {Component, HostListener, ViewEncapsulation} from '@angular/core';
+import {LoadingState} from '../../../enums/loading-state';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
+import {SelectItem, SharedModule,} from 'primeng/api';
+import {Store} from '@ngrx/store';
+import {Actions, ofType} from '@ngrx/effects';
+import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Todo} from '../../../models/todo';
+import {TodosService} from '../../../services/crud/todos.service';
+import {todoAdded} from '../../../ngrx/actions/todo.actions';
+import {AvatarModule} from 'primeng/avatar';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {ConsensusGradePipe} from '../../ascent/pipes/consensus-grade.pipe';
+import {DataViewModule} from 'primeng/dataview';
+import {DowngradePipe} from '../../ascent/pipes/downgrade.pipe';
+import {DropdownModule} from 'primeng/dropdown';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {MenuModule} from 'primeng/menu';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {RatingModule} from 'primeng/rating';
+import {RouterLink} from '@angular/router';
+import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
+import {SliderModule} from 'primeng/slider';
+import {TagModule} from 'primeng/tag';
+import {UpgradePipe} from '../../ascent/pipes/upgrade.pipe';
+import {FormsModule} from '@angular/forms';
+import {CardModule} from 'primeng/card';
+import {TodoPriorityButtonComponent} from '../todo-priority-button/todo-priority-button.component';
+import {TickButtonComponent} from '../../ascent/tick-button/tick-button.component';
+import {MenuItemsService} from '../../../services/crud/menu-items.service';
+import {Crag} from '../../../models/crag';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-todo-list',

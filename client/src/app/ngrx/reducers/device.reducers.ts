@@ -1,5 +1,5 @@
 import * as DeviceActions from './../actions/device.actions';
-import { Action, createReducer, on } from '@ngrx/store';
+import {Action, createReducer, on} from '@ngrx/store';
 
 /**
  * The state for device detection properties.

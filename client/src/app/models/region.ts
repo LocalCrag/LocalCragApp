@@ -1,7 +1,4 @@
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { Observable } from 'rxjs';
-import { Grade } from '../utility/misc/grades';
+import {AbstractModel} from './abstract-model';
 
 /**
  * Model of a climbing region.

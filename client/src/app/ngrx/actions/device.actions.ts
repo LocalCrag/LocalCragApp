@@ -1,4 +1,4 @@
-import { createAction, props } from '@ngrx/store';
+import {createAction, props} from '@ngrx/store';
 
 export const checkIsMobile = createAction('[Device] Check is mobile state');
 

@@ -1,16 +1,16 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { Todo } from '../../../models/todo';
-import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
-import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
-import { TodoPriority } from '../../../enums/todo-priority';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TodosService } from '../../../services/crud/todos.service';
-import { Store } from '@ngrx/store';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Todo} from '../../../models/todo';
+import {MenuItem} from 'primeng/api';
+import {MenuModule} from 'primeng/menu';
+import {ButtonModule} from 'primeng/button';
+import {NgIf} from '@angular/common';
+import {TodoPriority} from '../../../enums/todo-priority';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {TodosService} from '../../../services/crud/todos.service';
+import {Store} from '@ngrx/store';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-todo-priority-button',

@@ -1,12 +1,12 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { MapMarkerProperties } from '../../../models/map-marker';
-import { NgIf } from '@angular/common';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { Feature, Geometry } from 'geojson';
-import { Router } from '@angular/router';
-import { MapMarkerType } from '../../../enums/map-marker-type';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {DialogModule} from 'primeng/dialog';
+import {ButtonModule} from 'primeng/button';
+import {MapMarkerProperties} from '../../../models/map-marker';
+import {NgIf} from '@angular/common';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {Feature, Geometry} from 'geojson';
+import {Router} from '@angular/router';
+import {MapMarkerType} from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-item-info-dialog',

@@ -1,6 +1,6 @@
 import * as AppLevelAlertsActions from './../actions/app-level-alerts.actions';
 import * as AuthActions from './../actions/auth.actions';
-import { Action, createReducer, on } from '@ngrx/store';
+import {Action, createReducer, on} from '@ngrx/store';
 
 /**
  * Specifies the state of the app level alerts system.

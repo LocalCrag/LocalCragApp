@@ -1,10 +1,10 @@
 // noinspection JSUnusedGlobalSymbols
 
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { tap } from 'rxjs/operators';
-import { AppNotificationsService } from '../../services/core/app-notifications.service';
-import { toastNotification } from '../actions/notifications.actions';
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {tap} from 'rxjs/operators';
+import {AppNotificationsService} from '../../services/core/app-notifications.service';
+import {toastNotification} from '../actions/notifications.actions';
 
 /**
  * Effects for notification actions.

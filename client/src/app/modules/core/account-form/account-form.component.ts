@@ -1,34 +1,28 @@
-import { Component, HostBinding, ViewChild } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { LoadingState } from '../../../enums/loading-state';
-import { Router } from '@angular/router';
-import { UsersService } from '../../../services/crud/users.service';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../ngrx/reducers';
-import { Title } from '@angular/platform-browser';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { User } from '../../../models/user';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
-import { take } from 'rxjs/operators';
-import { AvatarUploadComponent } from '../../shared/forms/controls/avatar-upload/avatar-upload.component';
-import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
-import { emailRegex } from '../../../utility/regex/email-regex';
-import { UserValidatorsService } from '../../../services/core/user-validators.service';
-import { MessagesModule } from 'primeng/messages';
-import { NgIf } from '@angular/common';
+import {Component, HostBinding, ViewChild} from '@angular/core';
+import {SharedModule} from '../../shared/shared.module';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {ButtonModule} from 'primeng/button';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {InputTextModule} from 'primeng/inputtext';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {LoadingState} from '../../../enums/loading-state';
+import {UsersService} from '../../../services/crud/users.service';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../ngrx/reducers';
+import {Title} from '@angular/platform-browser';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {User} from '../../../models/user';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {selectCurrentUser} from '../../../ngrx/selectors/auth.selectors';
+import {take} from 'rxjs/operators';
+import {AvatarUploadComponent} from '../../shared/forms/controls/avatar-upload/avatar-upload.component';
+import {updateAccountSettings} from '../../../ngrx/actions/auth.actions';
+import {emailRegex} from '../../../utility/regex/email-regex';
+import {UserValidatorsService} from '../../../services/core/user-validators.service';
+import {MessagesModule} from 'primeng/messages';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'lc-account-form',

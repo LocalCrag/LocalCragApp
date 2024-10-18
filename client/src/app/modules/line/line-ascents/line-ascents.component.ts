@@ -1,21 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
-import { SkeletonModule } from 'primeng/skeleton';
-import { Area } from '../../../models/area';
-import { AreasService } from '../../../services/crud/areas.service';
-import { TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Title } from '@angular/platform-browser';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import Konva from 'konva';
-import { Line } from '../../../models/line';
-import { LinesService } from '../../../services/crud/lines.service';
-import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
+import {Component, OnInit} from '@angular/core';
+import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
+import {NgForOf, NgIf} from '@angular/common';
+import {SkeletonModule} from 'primeng/skeleton';
+import {TranslocoService} from '@jsverse/transloco';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Title} from '@angular/platform-browser';
+import {catchError} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Line} from '../../../models/line';
+import {LinesService} from '../../../services/crud/lines.service';
+import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-line-ascents',

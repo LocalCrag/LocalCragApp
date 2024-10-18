@@ -1,34 +1,28 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingState } from '../../../enums/loading-state';
-import { Store } from '@ngrx/store';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { environment } from '../../../../environments/environment';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Line } from '../../../models/line';
-import { LinesService } from '../../../services/crud/lines.service';
-import { Grade, GRADES } from '../../../utility/misc/grades';
-import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
-import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { StartingPosition } from '../../../enums/starting-position';
-import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { AreasService } from '../../../services/crud/areas.service';
+import {Component, OnInit, ViewChild,} from '@angular/core';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {LoadingState} from '../../../enums/loading-state';
+import {Store} from '@ngrx/store';
+import {ActivatedRoute, Router} from '@angular/router';
+import {TranslocoService} from '@jsverse/transloco';
+import {ConfirmationService} from 'primeng/api';
+import {catchError} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {environment} from '../../../../environments/environment';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Line} from '../../../models/line';
+import {LinesService} from '../../../services/crud/lines.service';
+import {GRADES} from '../../../utility/misc/grades';
+import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
+import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {StartingPosition} from '../../../enums/starting-position';
+import {Title} from '@angular/platform-browser';
+import {Editor} from 'primeng/editor';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {AreasService} from '../../../services/crud/areas.service';
 
 /**
  * Form component for lines.

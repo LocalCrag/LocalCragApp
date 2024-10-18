@@ -1,20 +1,18 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { SearchService } from '../../../services/crud/search.service';
-import { Searchable } from '../../../models/searchable';
-import { NgForOf, NgIf } from '@angular/common';
-import { debounceTime, Subject } from 'rxjs';
-import { AvatarModule } from 'primeng/avatar';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from 'primeng/message';
-import { Message } from 'primeng/api';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {InputTextModule} from 'primeng/inputtext';
+import {FormsModule} from '@angular/forms';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {SearchService} from '../../../services/crud/search.service';
+import {Searchable} from '../../../models/searchable';
+import {NgForOf, NgIf} from '@angular/common';
+import {debounceTime, Subject} from 'rxjs';
+import {AvatarModule} from 'primeng/avatar';
+import {NavigationEnd, Router, RouterLink} from '@angular/router';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {ButtonModule} from 'primeng/button';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 @Component({
   selector: 'lc-search-dialog',

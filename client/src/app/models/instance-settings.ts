@@ -1,6 +1,4 @@
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { Coordinates } from '../interfaces/coordinates.interface';
+import {File} from './file';
 
 export class InstanceSettings {
   timeUpdated: Date;

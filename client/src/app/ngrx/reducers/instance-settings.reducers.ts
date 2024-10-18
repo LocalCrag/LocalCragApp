@@ -1,6 +1,6 @@
-import { Action, createReducer, on } from '@ngrx/store';
-import { File } from '../../models/file';
-import { updateInstanceSettings } from '../actions/instance-settings.actions';
+import {Action, createReducer, on} from '@ngrx/store';
+import {File} from '../../models/file';
+import {updateInstanceSettings} from '../actions/instance-settings.actions';
 
 export interface InstanceSettingsState {
   instanceName: string;

@@ -1,6 +1,6 @@
-import { createAction, props } from '@ngrx/store';
-import { LoginResponse } from '../../models/login-response';
-import { User } from '../../models/user';
+import {createAction, props} from '@ngrx/store';
+import {LoginResponse} from '../../models/login-response';
+import {User} from '../../models/user';
 
 export const forgotPassword = createAction(
   '[Forgot Password Page] Forgot password',

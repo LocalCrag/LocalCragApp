@@ -1,8 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AuthState } from '../reducers/auth.reducers';
-import { InstanceSettingsState } from '../reducers/instance-settings.reducers';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {InstanceSettingsState} from '../reducers/instance-settings.reducers';
 
 export const selectInstanceSettingsState =
   createFeatureSelector<InstanceSettingsState>('instanceSettings');

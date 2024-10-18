@@ -1,4 +1,3 @@
-import { createAction, props } from '@ngrx/store';
-import { File } from '../../models/file';
+import {createAction} from '@ngrx/store';
 
 export const reloadMenus = createAction('[Core] Reload menus');

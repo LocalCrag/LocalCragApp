@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MenuItemsService } from '../../../services/crud/menu-items.service';
-import { MenuItemPosition } from '../../../enums/menu-item-position';
-import { MenuItemType } from '../../../enums/menu-item-type';
-import { TranslocoService } from '@jsverse/transloco';
-import { Store } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
-import { reloadMenus } from '../../../ngrx/actions/core.actions';
-import { forkJoin, Observable } from 'rxjs';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {MenuItemsService} from '../../../services/crud/menu-items.service';
+import {MenuItemPosition} from '../../../enums/menu-item-position';
+import {MenuItemType} from '../../../enums/menu-item-type';
+import {TranslocoService} from '@jsverse/transloco';
+import {Store} from '@ngrx/store';
+import {Actions, ofType} from '@ngrx/effects';
+import {reloadMenus} from '../../../ngrx/actions/core.actions';
+import {forkJoin, Observable} from 'rxjs';
 import {
   selectCopyrightOwner,
   selectInstagramUrl,
   selectYoutubeUrl,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-footer',

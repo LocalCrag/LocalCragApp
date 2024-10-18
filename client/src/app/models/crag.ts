@@ -1,10 +1,7 @@
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { Observable } from 'rxjs';
-import { Grade } from '../utility/misc/grades';
-import { Coordinates } from '../interfaces/coordinates.interface';
-import { Sector } from './sector';
-import { MapMarker } from './map-marker';
+import {AbstractModel} from './abstract-model';
+import {File} from './file';
+import {Sector} from './sector';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing crag.

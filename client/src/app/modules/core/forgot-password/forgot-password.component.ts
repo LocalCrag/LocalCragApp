@@ -1,20 +1,16 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { AuthCrudService } from '../../../services/crud/auth-crud.service';
-import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../ngrx/reducers';
-import { AppNotificationsService } from '../../../services/core/app-notifications.service';
-import { LoadingState } from '../../../enums/loading-state';
-import { selectForgotPasswordLoadingState } from '../../../ngrx/selectors/auth.selectors';
-import { forgotPassword } from '../../../ngrx/actions/auth.actions';
-import { Router } from '@angular/router';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
-import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {AppState} from '../../../ngrx/reducers';
+import {LoadingState} from '../../../enums/loading-state';
+import {selectForgotPasswordLoadingState} from '../../../ngrx/selectors/auth.selectors';
+import {forgotPassword} from '../../../ngrx/actions/auth.actions';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Title} from '@angular/platform-browser';
+import {TranslocoService} from '@jsverse/transloco';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A component that shows a form for requesting a reset password link per mail.

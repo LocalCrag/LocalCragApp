@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
-import { Crag } from '../../../models/crag';
-import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
-import { ActivatedRoute } from '@angular/router';
-import { CragsService } from '../../../services/crud/crags.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
-import { NgIf } from '@angular/common';
+import {Component} from '@angular/core';
+import {Crag} from '../../../models/crag';
+import {ActivatedRoute} from '@angular/router';
+import {CragsService} from '../../../services/crud/crags.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'lc-crag-ranking',

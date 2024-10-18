@@ -1,7 +1,7 @@
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { Sector } from './sector';
-import { MapMarker } from './map-marker';
+import {AbstractModel} from './abstract-model';
+import {File} from './file';
+import {Sector} from './sector';
+import {MapMarker} from './map-marker';
 
 /**
  * Model of a climbing sector's area.

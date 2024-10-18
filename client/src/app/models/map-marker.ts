@@ -1,10 +1,10 @@
-import { AbstractModel } from './abstract-model';
-import { MapMarkerType } from '../enums/map-marker-type';
-import { Coordinates } from '../interfaces/coordinates.interface';
-import { Crag } from './crag';
-import { Sector } from './sector';
-import { Area } from './area';
-import { TopoImage } from './topo-image';
+import {AbstractModel} from './abstract-model';
+import {MapMarkerType} from '../enums/map-marker-type';
+import {Coordinates} from '../interfaces/coordinates.interface';
+import {Crag} from './crag';
+import {Sector} from './sector';
+import {Area} from './area';
+import {TopoImage} from './topo-image';
 
 export type MapMarkerProperties = {
   name: string;

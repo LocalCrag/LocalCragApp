@@ -1,25 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingState } from '../../../enums/loading-state';
-import { SelectItem } from 'primeng/api';
-import { forkJoin, Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
-import { environment } from '../../../../environments/environment';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Post } from '../../../models/post';
-import { PostsService } from '../../../services/crud/posts.service';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
-import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
-import { Title } from '@angular/platform-browser';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import {Component, OnInit} from '@angular/core';
+import {LoadingState} from '../../../enums/loading-state';
+import {SelectItem} from 'primeng/api';
+import {forkJoin, Observable} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
+import {environment} from '../../../../environments/environment';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Post} from '../../../models/post';
+import {PostsService} from '../../../services/crud/posts.service';
+import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {DataViewModule} from 'primeng/dataview';
+import {DropdownModule} from 'primeng/dropdown';
+import {RouterLink} from '@angular/router';
+import {FormsModule} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
+import {Title} from '@angular/platform-browser';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
 
 /**
  * A component that shows a list of blog posts.

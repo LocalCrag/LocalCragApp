@@ -1,12 +1,9 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
-import { LoadingState } from '../../../enums/loading-state';
-import { Router } from '@angular/router';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Store } from '@ngrx/store';
+import {Component, HostBinding, OnInit} from '@angular/core';
+import {Title} from '@angular/platform-browser';
+import {TranslocoService} from '@jsverse/transloco';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {Store} from '@ngrx/store';
 
 /**
  * A 404 error page.

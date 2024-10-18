@@ -1,5 +1,5 @@
-import { ActionReducerMap, MetaReducer } from '@ngrx/store';
-import { environment } from '../../../environments/environment';
+import {ActionReducerMap, MetaReducer} from '@ngrx/store';
+import {environment} from '../../../environments/environment';
 import * as fromInstanceSettings from '../reducers/instance-settings.reducers';
 import * as fromAuth from '../reducers/auth.reducers';
 import * as fromAppLevelAlerts from '../reducers/app-level-alerts.reducers';

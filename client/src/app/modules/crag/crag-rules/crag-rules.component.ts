@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { MessagesModule } from 'primeng/messages';
-import { NgIf } from '@angular/common';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { Crag } from '../../../models/crag';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CragsService } from '../../../services/crud/crags.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SharedModule } from '../../shared/shared.module';
+import {Component, OnInit} from '@angular/core';
+import {
+  GradeDistributionBarChartComponent
+} from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import {MessagesModule} from 'primeng/messages';
+import {NgIf} from '@angular/common';
+import {SkeletonModule} from 'primeng/skeleton';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {Crag} from '../../../models/crag';
+import {ActivatedRoute, Router} from '@angular/router';
+import {CragsService} from '../../../services/crud/crags.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {SharedModule} from '../../shared/shared.module';
 
 /**
  * Component that shows the rules of a crag.

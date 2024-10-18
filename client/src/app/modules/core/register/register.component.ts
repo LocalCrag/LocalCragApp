@@ -1,31 +1,25 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { Router, RouterLink } from '@angular/router';
-import { FormDirective } from '../../shared/forms/form.directive';
-import { LoadingState } from '../../../enums/loading-state';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../ngrx/reducers';
-import { Crag } from '../../../models/crag';
-import { User } from '../../../models/user';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { UsersService } from '../../../services/crud/users.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Title } from '@angular/platform-browser';
-import { emailRegex } from '../../../utility/regex/email-regex';
-import { UserValidatorsService } from '../../../services/core/user-validators.service';
+import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {PasswordModule} from 'primeng/password';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {Router, RouterLink} from '@angular/router';
+import {FormDirective} from '../../shared/forms/form.directive';
+import {LoadingState} from '../../../enums/loading-state';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../ngrx/reducers';
+import {User} from '../../../models/user';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {UsersService} from '../../../services/crud/users.service';
+import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {marker} from '@jsverse/transloco-keys-manager/marker';
+import {Title} from '@angular/platform-browser';
+import {emailRegex} from '../../../utility/regex/email-regex';
+import {UserValidatorsService} from '../../../services/core/user-validators.service';
 
 @Component({
   selector: 'lc-register',
