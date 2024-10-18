@@ -152,7 +152,7 @@ export class MenuPagesFormComponent implements OnInit {
       menuPage.text = this.menuPageForm.get('text').value;
       if (this.menuPage) {
         menuPage.slug = this.menuPage.slug;
-        this.menuPagesService.updateMenuPage(menuPage).subscribe((post) => {
+        this.menuPagesService.updateMenuPage(menuPage).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.MENU_PAGE_UPDATED),
           );
@@ -161,7 +161,7 @@ export class MenuPagesFormComponent implements OnInit {
           this.store.dispatch(reloadMenus());
         });
       } else {
-        this.menuPagesService.createMenuPage(menuPage).subscribe((post) => {
+        this.menuPagesService.createMenuPage(menuPage).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.MENU_PAGE_CREATED),
           );

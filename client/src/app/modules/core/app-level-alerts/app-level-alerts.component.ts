@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../../ngrx/reducers';
@@ -22,7 +22,7 @@ import {differenceInMilliseconds, subMinutes} from 'date-fns';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class AppLevelAlertsComponent {
+export class AppLevelAlertsComponent implements OnInit{
   public showCookieAlert$: Observable<boolean>;
   public refreshLoginAlertType = 'warning';
   public refreshTokenExpires$: Observable<Date>;

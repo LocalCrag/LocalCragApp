@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   GradeDistributionBarChartComponent
 } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
@@ -26,7 +26,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })
-export class RegionRulesComponent {
+export class RegionRulesComponent implements OnInit{
   public region: Region;
 
   constructor(

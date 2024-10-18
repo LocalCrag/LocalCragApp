@@ -126,7 +126,7 @@ export class RegionFormComponent implements OnInit {
       region.name = this.regionForm.get('name').value;
       region.description = this.regionForm.get('description').value;
       region.rules = this.regionForm.get('rules').value;
-      this.regionsService.updateRegion(region).subscribe((region) => {
+      this.regionsService.updateRegion(region).subscribe(() => {
         this.store.dispatch(
           toastNotification(NotificationIdentifier.REGION_UPDATED),
         );

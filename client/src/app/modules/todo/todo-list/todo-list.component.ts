@@ -1,4 +1,4 @@
-import {Component, HostListener, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
@@ -75,7 +75,7 @@ import {NotificationIdentifier} from '../../../utility/notifications/notificatio
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class TodoListComponent {
+export class TodoListComponent implements OnInit{
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
   public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
@@ -254,7 +254,7 @@ export class TodoListComponent {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      let filters = [`page=${this.currentPage}`];
+      const filters = [`page=${this.currentPage}`];
       filters.push(`min_grade=${this.gradeFilterRange[0]}`);
       filters.push(`max_grade=${this.gradeFilterRange[1]}`);
       filters.push(`order_by=${this.orderKey.value}`);

@@ -99,13 +99,13 @@ export class PointFeatureLabelPlacement {
     let hasImproved = true;
     while (hasImproved) {
       const moves: Move[] = [];
-      for (let label of this.labels) {
+      for (const label of this.labels) {
         const currentValue = this.calculateObjectiveFunctionValue(
           label,
           label.position,
           this.searchSpacePenalties[label.searchSpace.indexOf(label.position)],
         );
-        for (let possiblePosition of label.searchSpace) {
+        for (const possiblePosition of label.searchSpace) {
           moves.push({
             label,
             position: possiblePosition,
@@ -158,7 +158,7 @@ export class PointFeatureLabelPlacement {
         position,
       );
     // Penalize label overlap
-    for (let labelToCheck of this.labels) {
+    for (const labelToCheck of this.labels) {
       if (labelToCheck === label) {
         continue;
       }

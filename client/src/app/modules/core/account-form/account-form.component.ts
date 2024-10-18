@@ -1,4 +1,4 @@
-import {Component, HostBinding, ViewChild} from '@angular/core';
+import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
 import {SharedModule} from '../../shared/shared.module';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
@@ -40,7 +40,7 @@ import {NgIf} from '@angular/common';
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',
 })
-export class AccountFormComponent {
+export class AccountFormComponent implements OnInit{
   @HostBinding('class.auth-view') authView: boolean = true;
 
   @ViewChild(FormDirective) formDirective: FormDirective;

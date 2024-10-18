@@ -161,7 +161,7 @@ export class GradeDistributionBarChartComponent implements OnChanges {
         const condensedSortingMap = {};
         const gradesInFullScale = GRADES[this.scaleName];
         gradesInFullScale.map((grade) => {
-          for (let usedGrade of gradesInUsedScale) {
+          for (const usedGrade of gradesInUsedScale) {
             if (usedGrade.value >= grade.value) {
               condensedSortingMap[grade.value] = usedGrade.value;
               break;

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {forkJoin, Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
@@ -24,7 +24,7 @@ import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
   providers: [DialogService],
 })
 @UntilDestroy()
-export class SectorListComponent {
+export class SectorListComponent implements OnInit{
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -50,7 +50,7 @@ export class SectorListComponent {
   ngOnInit() {
     this.route.parent.parent.paramMap
       .pipe(untilDestroyed(this))
-      .subscribe((params) => {
+      .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
         this.refreshData();
@@ -65,7 +65,7 @@ export class SectorListComponent {
     forkJoin([
       this.sectorsService.getSectors(this.cragSlug),
       this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([sectors, e]) => {
+    ]).subscribe(([sectors]) => {
       this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
@@ -99,7 +99,7 @@ export class SectorListComponent {
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);

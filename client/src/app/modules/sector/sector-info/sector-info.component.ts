@@ -22,7 +22,7 @@ export class SectorInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       this.sectorsService.getSector(sectorSlug).subscribe((sector) => {
         this.sector = sector;

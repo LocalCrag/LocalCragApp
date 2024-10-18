@@ -35,7 +35,7 @@ export class TodoButtonComponent {
     event.stopPropagation();
     if (!this.isTodo) {
       this.todosService.createTodo(this.line).subscribe(
-        (todo) => {
+        () => {
           this.store.dispatch(todoAdded({ todoLineId: this.line.id }));
           this.store.dispatch(
             toastNotification(NotificationIdentifier.TODO_ADDED),

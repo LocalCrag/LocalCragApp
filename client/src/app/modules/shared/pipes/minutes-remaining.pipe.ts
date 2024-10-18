@@ -26,10 +26,9 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * Transforms the given date to the wanted string.
    *
    * @param obj The Date object to convert.
-   * @param args Optional arguments.
    * @returns Transformed string.
    */
-  public transform(obj: Date, ...args: any[]): any {
+  public transform(obj: Date): any {
     if (obj === null) {
       return '';
     }
@@ -64,8 +63,8 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
       differenceInMilliseconds(this.value, new Date()) % 60000;
     return timer(initialDelay, 60000).pipe(
       startWith(0),
-      takeWhile((_) => !this.isDestroyed),
-      map((_x, _i) => this.remaining()),
+      takeWhile(() => !this.isDestroyed),
+      map(() => this.remaining()),
     );
   }
 
@@ -75,7 +74,6 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * @returns Minutes remaining string.
    */
   private remaining(): string {
-    const now = new Date();
     const remaining = Math.ceil(
       differenceInMilliseconds(this.value, new Date()) / 1000 / 60,
     );

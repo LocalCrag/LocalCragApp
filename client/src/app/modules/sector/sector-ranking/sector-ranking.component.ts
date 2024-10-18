@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Sector} from '../../../models/sector';
@@ -14,7 +14,7 @@ import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.comp
   styleUrl: './sector-ranking.component.scss',
 })
 @UntilDestroy()
-export class SectorRankingComponent {
+export class SectorRankingComponent implements OnInit{
   public sector: Sector;
 
   constructor(

@@ -169,7 +169,7 @@ export class SectorFormComponent implements OnInit {
       } else {
         this.sectorsService
           .createSector(sector, this.cragSlug)
-          .subscribe((sector) => {
+          .subscribe(() => {
             this.store.dispatch(
               toastNotification(NotificationIdentifier.SECTOR_CREATED),
             );

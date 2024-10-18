@@ -36,7 +36,7 @@ export class SliderLabelsComponent implements OnChanges {
     private renderer: Renderer2,
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     if (this.rightLabel && this.leftLabel) {
       this.renderer.removeClass(this.rightLabel.nativeElement, 'hidden');
       const total = this.max - this.min;
