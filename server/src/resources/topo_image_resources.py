@@ -88,9 +88,11 @@ class GetTopoImages(MethodView):
         """
         Returns all topo images of an area.
         """
+        archived = request.args.get("archived", False, type=bool)  # default: hide archived topo images
+
         area_id = Area.get_id_by_slug(area_slug)
         topo_images: List[TopoImage] = TopoImage.return_all(
-            filter=lambda: TopoImage.area_id == area_id, order_by=lambda: TopoImage.order_index.asc()
+            filter=lambda: [TopoImage.archived == archived, TopoImage.area_id == area_id], order_by=lambda: TopoImage.order_index.asc()
         )
         include_secret = True
         if not get_show_secret():
