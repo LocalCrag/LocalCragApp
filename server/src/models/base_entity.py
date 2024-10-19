@@ -36,7 +36,11 @@ class BaseEntity(db.Model):
         if options:
             query = query.options(options)
         if filter:
-            query = query.filter(filter())
+            f = filter()
+            if isinstance(f, list):
+                query = query.filter(*f)
+            else:
+                query = query.filter(f)
         if order_by is not None:
             if not type(order_by) is list:
                 order_by = [order_by]
