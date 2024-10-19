@@ -30,7 +30,7 @@ export class TicksService {
           if (!user) {
             return of(new Set<string>());
           }
-          let query_string_parts = [`user_id=${user.id}`];
+          const query_string_parts = [`user_id=${user.id}`];
           if (crag_id) {
             query_string_parts.push(`crag_id=${crag_id}`);
           }
@@ -43,7 +43,7 @@ export class TicksService {
           if (line_ids) {
             query_string_parts.push(`line_ids=${line_ids.join(',')}`);
           }
-          let query_string = `?${query_string_parts.join('&')}`;
+          const query_string = `?${query_string_parts.join('&')}`;
           return this.http.get(this.api.ticks.getList() + query_string).pipe(
             map((ticks) => {
               const resultSet = new Set<string>();

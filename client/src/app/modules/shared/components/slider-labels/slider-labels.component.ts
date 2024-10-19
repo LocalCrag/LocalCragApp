@@ -5,7 +5,6 @@ import {
   Input,
   OnChanges,
   Renderer2,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {TranslocoPipe} from '@jsverse/transloco';

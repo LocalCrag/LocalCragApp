@@ -66,7 +66,7 @@ export class UploadService {
     return {
       imageUploader: {
         upload: (file: any) => {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             this.uploadFile(file).subscribe((uploadedFile) => {
               resolve(uploadedFile.thumbnailXL);
             });

@@ -157,7 +157,7 @@ export class CragFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag).subscribe((_crag) => {
+        this.cragsService.createCrag(crag).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.CRAG_CREATED),
           );

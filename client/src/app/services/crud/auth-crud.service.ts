@@ -55,10 +55,9 @@ export class AuthCrudService {
   /**
    * Performs an access token logout. This will blacklist the access token.
    *
-   * @param  accessToken Current access token.
    * @return Observable that resolves to a message response.
    */
-  public logoutAccess(accessToken: string): Observable<MessageResponse> {
+  public logoutAccess(): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(this.api.auth.logoutAccess(), null);
   }
 

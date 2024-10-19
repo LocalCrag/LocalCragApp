@@ -199,7 +199,7 @@ export class LineFormComponent implements OnInit {
    * Sets the form value based on an input crag and enables the form afterward.
    */
   private setFormValue() {
-    this.line.videos.map((video) => {
+    this.line.videos.map(() => {
       this.addLineVideoFormControl();
     });
     this.lineForm.patchValue({
@@ -328,7 +328,7 @@ export class LineFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.linesService.createLine(line, this.areaSlug).subscribe((crag) => {
+        this.linesService.createLine(line, this.areaSlug).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.LINE_CREATED),
           );

@@ -51,7 +51,7 @@ export class AreaListComponent implements OnInit {
   ngOnInit() {
     this.route.parent.parent.paramMap
       .pipe(untilDestroyed(this))
-      .subscribe((params) => {
+      .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
         this.sectorSlug =
@@ -68,7 +68,7 @@ export class AreaListComponent implements OnInit {
     forkJoin([
       this.areasService.getAreas(this.sectorSlug),
       this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([areas, e]) => {
+    ]).subscribe(([areas]) => {
       this.areas = areas;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
@@ -102,7 +102,7 @@ export class AreaListComponent implements OnInit {
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);

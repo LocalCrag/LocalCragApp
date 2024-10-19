@@ -29,7 +29,7 @@ export class MenuPageDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
       this.menuPagesService.getMenuPage(menuPageSlug).subscribe(
         (menuPage) => {

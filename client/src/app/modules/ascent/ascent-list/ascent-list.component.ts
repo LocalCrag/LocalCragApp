@@ -202,7 +202,7 @@ export class AscentListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      let filters = [`page=${this.currentPage}`];
+      const filters = [`page=${this.currentPage}`];
       filters.push(`min_grade=${this.gradeFilterRange[0]}`);
       filters.push(`max_grade=${this.gradeFilterRange[1]}`);
       filters.push(`order_by=${this.orderKey.value}`);

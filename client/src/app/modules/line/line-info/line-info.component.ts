@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Line} from '../../../models/line';
 import {LinesService} from '../../../services/crud/lines.service';
@@ -26,7 +26,7 @@ import {todoAdded} from '../../../ngrx/actions/todo.actions';
   providers: [DialogService],
 })
 @UntilDestroy()
-export class LineInfoComponent {
+export class LineInfoComponent implements OnInit{
   public line: Line;
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
@@ -46,7 +46,7 @@ export class LineInfoComponent {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       this.line = null;
       this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
       this.refreshData();

@@ -178,7 +178,7 @@ export class AreaFormComponent implements OnInit {
       } else {
         this.areasService
           .createArea(area, this.sectorSlug)
-          .subscribe((area) => {
+          .subscribe(() => {
             this.store.dispatch(
               toastNotification(NotificationIdentifier.AREA_CREATED),
             );

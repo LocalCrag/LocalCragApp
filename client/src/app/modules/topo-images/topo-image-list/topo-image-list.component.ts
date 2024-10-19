@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {LoadingState} from '../../../enums/loading-state';
 import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
 import {forkJoin, mergeMap, Observable} from 'rxjs';
@@ -38,7 +38,7 @@ import {Area} from '../../../models/area';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class TopoImageListComponent {
+export class TopoImageListComponent implements OnInit{
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -88,7 +88,7 @@ export class TopoImageListComponent {
   ngOnInit() {
     this.route.parent.parent.paramMap
       .pipe(untilDestroyed(this))
-      .subscribe((params) => {
+      .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
         this.sectorSlug =
@@ -122,7 +122,7 @@ export class TopoImageListComponent {
           ]);
         }),
       )
-      .subscribe(([topoImages, ticks, e]) => {
+      .subscribe(([topoImages, ticks]) => {
         this.ticks = ticks;
         this.topoImages = topoImages;
         this.loading = LoadingState.DEFAULT;
@@ -188,7 +188,7 @@ export class TopoImageListComponent {
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);

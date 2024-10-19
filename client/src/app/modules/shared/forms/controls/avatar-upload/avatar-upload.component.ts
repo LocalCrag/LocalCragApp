@@ -83,7 +83,7 @@ export class AvatarUploadComponent
   /**
    * Used by the formControl to write a value to the native formControl or any custom value.
    *
-   * @param obj: Value to write.
+   * @param obj Value to write.
    */
   writeValue(obj: any): void {
     this.file = obj;

@@ -173,7 +173,7 @@ export class LineListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      let filters = [`page=${this.currentPage}`];
+      const filters = [`page=${this.currentPage}`];
       if (this.cragSlug) {
         filters.push(`crag_slug=${this.cragSlug}`);
       }

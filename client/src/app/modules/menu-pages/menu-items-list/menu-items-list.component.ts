@@ -82,7 +82,7 @@ export class MenuItemsListComponent implements OnInit {
     forkJoin([
       this.menuItemsService.getMenuItems(),
       this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([menuItems, e]) => {
+    ]).subscribe(([menuItems]) => {
       this.menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
       );
