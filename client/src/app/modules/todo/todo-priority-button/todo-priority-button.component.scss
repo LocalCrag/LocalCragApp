@@ -1,19 +1,17 @@
-lc-todo-priority-button{
-
-  p-button .p-button-label{
+lc-todo-priority-button {
+  p-button .p-button-label {
     white-space: nowrap;
   }
 
-  .high-priority .pi{
-    color: red
+  .high-priority .pi {
+    color: red;
   }
 
-  .medium-priority .pi{
-    color: blue
+  .medium-priority .pi {
+    color: blue;
   }
 
-  .low-priority .pi{
-    color: grey
+  .low-priority .pi {
+    color: grey;
   }
-
 }

@@ -6,7 +6,7 @@ import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
-import {RouterLink, RouterModule} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {SharedModule} from '../shared/shared.module';
 import {CardModule} from 'primeng/card';
@@ -25,12 +25,8 @@ import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
 import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
 import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
 
-
 @NgModule({
-    declarations: [
-        TopoImageListComponent,
-        TopoImageFormComponent,
-    ],
+  declarations: [TopoImageListComponent, TopoImageFormComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -56,14 +52,9 @@ import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordin
     HasPermissionDirective,
     TickButtonComponent,
     TodoButtonComponent,
-    CoordinatesComponent
+    CoordinatesComponent,
   ],
-    providers: [
-        {provide: TRANSLOCO_SCOPE, useValue: 'topoImage'}
-    ],
-    exports: [
-        TopoImageListComponent,
-    ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
+  exports: [TopoImageListComponent],
 })
-export class TopoImagesModule {
-}
+export class TopoImagesModule {}

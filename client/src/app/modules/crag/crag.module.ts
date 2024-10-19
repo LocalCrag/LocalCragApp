@@ -24,7 +24,7 @@ import {CragInfoComponent} from './crag-info/crag-info.component';
 import {SkeletonModule} from 'primeng/skeleton';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {
-    GradeDistributionBarChartComponent
+  GradeDistributionBarChartComponent
 } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import {CoordinatesComponent} from '../shared/forms/controls/coordinates/coordinates.component';
 import {CoordinatesButtonComponent} from '../shared/components/coordinates-button/coordinates-button.component';
@@ -35,7 +35,6 @@ import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secre
 import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
 import {MapComponent} from '../maps/map/map.component';
 
-
 /**
  * Module for crags.
  */
@@ -44,46 +43,41 @@ import {MapComponent} from '../maps/map/map.component';
     CragFormComponent,
     CragListComponent,
     CragComponent,
-    CragInfoComponent
+    CragInfoComponent,
   ],
-    imports: [
-        CommonModule,
-        CardModule,
-        TranslocoModule,
-        SharedModule,
-        InputTextModule,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextareaModule,
-        ButtonModule,
-        DataViewModule,
-        TagModule,
-        BadgeModule,
-        RouterLink,
-        DropdownModule,
-        MessagesModule,
-        EditorModule,
-        TabMenuModule,
-        ConfirmPopupModule,
-        SectorModule,
-        SkeletonModule,
-        BreadcrumbModule,
-        GradeDistributionBarChartComponent,
-        CoordinatesComponent,
-        CoordinatesButtonComponent,
-        HasPermissionDirective,
-        AscentCountComponent,
-        CheckboxModule,
-        SecretSpotTagComponent,
-        MapMarkerFormArrayComponent,
-        MapComponent
-    ],
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
+  imports: [
+    CommonModule,
+    CardModule,
+    TranslocoModule,
+    SharedModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    ButtonModule,
+    DataViewModule,
+    TagModule,
+    BadgeModule,
+    RouterLink,
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule,
+    SectorModule,
+    SkeletonModule,
+    BreadcrumbModule,
+    GradeDistributionBarChartComponent,
+    CoordinatesComponent,
+    CoordinatesButtonComponent,
+    HasPermissionDirective,
+    AscentCountComponent,
+    CheckboxModule,
+    SecretSpotTagComponent,
+    MapMarkerFormArrayComponent,
+    MapComponent,
   ],
-  exports: [
-    CragFormComponent
-  ]
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
+  exports: [CragFormComponent],
 })
-export class CragModule {
-}
+export class CragModule {}

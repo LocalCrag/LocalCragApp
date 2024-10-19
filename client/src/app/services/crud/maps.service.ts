@@ -6,16 +6,19 @@ import {MapMarkerProperties} from '../../models/map-marker';
 import {FeatureCollection, Point} from 'geojson';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapsService {
+  constructor(
+    private api: ApiService,
+    private http: HttpClient,
+  ) {}
 
-  constructor(private api: ApiService,
-              private http: HttpClient) {
+  public getMarkersGeoJSON(
+    filters: string = '',
+  ): Observable<FeatureCollection<Point, MapMarkerProperties>> {
+    return this.http.get(this.api.maps.getMarkers(filters)) as Observable<
+      FeatureCollection<Point, MapMarkerProperties>
+    >;
   }
-
-  public getMarkersGeoJSON(filters: string = ''): Observable<FeatureCollection<Point, MapMarkerProperties>> {
-    return this.http.get(this.api.maps.getMarkers(filters)) as Observable<FeatureCollection<Point, MapMarkerProperties>>;
-  }
-
 }

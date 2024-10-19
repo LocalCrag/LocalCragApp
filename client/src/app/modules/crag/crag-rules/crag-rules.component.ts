@@ -24,32 +24,33 @@ import {SharedModule} from '../../shared/shared.module';
     NgIf,
     SharedModule,
     SkeletonModule,
-    TranslocoDirective
+    TranslocoDirective,
   ],
   templateUrl: './crag-rules.component.html',
-  styleUrl: './crag-rules.component.scss'
+  styleUrl: './crag-rules.component.scss',
 })
 @UntilDestroy()
-export class CragRulesComponent implements OnInit{
-
+export class CragRulesComponent implements OnInit {
   public crag: Crag;
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private cragsService: CragsService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private cragsService: CragsService,
+  ) {}
 
   ngOnInit() {
-    this.route.parent.parent.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
-      this.crag = null;
-      const cragSlug = params.get('crag-slug');
-      this.cragsService.getCrag(cragSlug).subscribe(crag => {
-        this.crag = crag;
-        if (!this.crag.rules) {
-          this.router.navigate(['../'], {relativeTo: this.route});
-        }
+    this.route.parent.parent.paramMap
+      .pipe(untilDestroyed(this))
+      .subscribe((params) => {
+        this.crag = null;
+        const cragSlug = params.get('crag-slug');
+        this.cragsService.getCrag(cragSlug).subscribe((crag) => {
+          this.crag = crag;
+          if (!this.crag.rules) {
+            this.router.navigate(['../'], { relativeTo: this.route });
+          }
+        });
       });
-    });
   }
-
 }

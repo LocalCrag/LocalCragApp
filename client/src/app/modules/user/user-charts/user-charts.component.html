@@ -1,6 +1,7 @@
-<ng-container *transloco="let t, read: 'user.charts'">
-
-  <h4>{{t('gradeDistribution')}}:</h4>
-  <lc-grade-distribution-bar-chart [fetchingObservable]="fetchUserGrades" [excludeProjects]="true"></lc-grade-distribution-bar-chart>
-
+<ng-container *transloco="let t; read: 'user.charts'">
+  <h4>{{ t("gradeDistribution") }}:</h4>
+  <lc-grade-distribution-bar-chart
+    [fetchingObservable]="fetchUserGrades"
+    [excludeProjects]="true"
+  ></lc-grade-distribution-bar-chart>
 </ng-container>

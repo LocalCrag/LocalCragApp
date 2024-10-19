@@ -5,16 +5,17 @@ Revises: 9c48b5f52c82
 Create Date: 2024-04-29 11:53:19.812012
 
 """
-from alembic import op
+
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.util.preloaded import orm
 
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 
 # revision identifiers, used by Alembic.
-revision = '7ea9ba093ff8'
-down_revision = '9c48b5f52c82'
+revision = "7ea9ba093ff8"
+down_revision = "9c48b5f52c82"
 branch_labels = None
 depends_on = None
 
@@ -22,35 +23,35 @@ Base = declarative_base()
 
 
 class Line(Base):
-    __tablename__ = 'lines'
+    __tablename__ = "lines"
 
     id = sa.Column(sa.String, primary_key=True)
     name = sa.Column(sa.String)
 
 
 class Area(Base):
-    __tablename__ = 'areas'
+    __tablename__ = "areas"
 
     id = sa.Column(sa.String, primary_key=True)
     name = sa.Column(sa.String)
 
 
 class Sector(Base):
-    __tablename__ = 'sectors'
+    __tablename__ = "sectors"
 
     id = sa.Column(sa.String, primary_key=True)
     name = sa.Column(sa.String)
 
 
 class Crag(Base):
-    __tablename__ = 'crags'
+    __tablename__ = "crags"
 
     id = sa.Column(sa.String, primary_key=True)
     name = sa.Column(sa.String)
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = sa.Column(sa.String, primary_key=True)
     firstname = sa.Column(sa.String)
@@ -58,7 +59,7 @@ class User(Base):
 
 
 class Searchable(Base):
-    __tablename__ = 'searchables'
+    __tablename__ = "searchables"
 
     name = sa.Column(sa.String(120))
     type = sa.Column(sa.Enum(SearchableItemTypeEnum), nullable=False, primary_key=True)
@@ -104,7 +105,7 @@ def upgrade():
     users = session.query(User).all()
     for user in users:
         searchable = Searchable()
-        searchable.name = user.firstname + ' ' + user.lastname
+        searchable.name = user.firstname + " " + user.lastname
         searchable.type = SearchableItemTypeEnum.USER
         searchable.id = user.id
         session.add(searchable)

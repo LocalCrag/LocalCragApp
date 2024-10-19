@@ -1,14 +1,21 @@
-<ng-container *transloco="let t, read: 'ascents.ascentList'">
-
-  <p-dataView #dv [value]="rankings" [sortField]="sortField" [sortOrder]="sortOrder"
-              [emptyMessage]="t('noRankingsFoundMessage')"
-              [loading]="loading === loadingStates.LOADING">
+<ng-container *transloco="let t; read: 'ascents.ascentList'">
+  <p-dataView
+    #dv
+    [value]="rankings"
+    [sortField]="sortField"
+    [sortOrder]="sortOrder"
+    [emptyMessage]="t('noRankingsFoundMessage')"
+    [loading]="loading === loadingStates.LOADING"
+  >
     <ng-template pTemplate="header">
       <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
-        <p-dropdown [options]="rankingTypes" [(ngModel)]="rankingType"
-                    (ngModelChange)="sortField = rankingType.value"
-                    optionLabel="label"
-                    styleClass="md:mb-0 md:mr-2">
+        <p-dropdown
+          [options]="rankingTypes"
+          [(ngModel)]="rankingType"
+          (ngModelChange)="sortField = rankingType.value"
+          optionLabel="label"
+          styleClass="md:mb-0 md:mr-2"
+        >
           <ng-template pTemplate="selectedItem">
             <div class="flex align-items-center gap-2" *ngIf="rankingType">
               <div>{{ rankingType.label }}</div>
@@ -21,42 +28,66 @@
           </ng-template>
         </p-dropdown>
         <div class="secret-switch-container" *isMember="true">
-          <p-inputSwitch [(ngModel)]="secretRankings" (ngModelChange)="loadRanking()"/>
-          {{t('includeSecretSpots')}}
+          <p-inputSwitch
+            [(ngModel)]="secretRankings"
+            (ngModelChange)="loadRanking()"
+          />
+          {{ t("includeSecretSpots") }}
         </div>
-        <p-button class="ranking-info-button" severity="secondary" text (click)="showDialog()"
-                  icon="pi pi-external-link" label="{{t('aboutRankingsButtonLabel')}}"></p-button>
-        <p-dialog header="{{t('aboutRankingsHeader')}}" [(visible)]="showInfoPopup" [style]="{'max-width': '800px'}"
-                  [dismissableMask]="true" [closable]="true" [modal]="true">
-          {{t('aboutRankingsText')}}
+        <p-button
+          class="ranking-info-button"
+          severity="secondary"
+          text
+          (click)="showDialog()"
+          icon="pi pi-external-link"
+          label="{{ t('aboutRankingsButtonLabel') }}"
+        ></p-button>
+        <p-dialog
+          header="{{ t('aboutRankingsHeader') }}"
+          [(visible)]="showInfoPopup"
+          [style]="{ 'max-width': '800px' }"
+          [dismissableMask]="true"
+          [closable]="true"
+          [modal]="true"
+        >
+          {{ t("aboutRankingsText") }}
         </p-dialog>
       </div>
     </ng-template>
     <ng-template let-ascents pTemplate="list">
       <div class="grid grid-nogutter">
-        <div class="col-12 " *ngFor="let ranking of rankings; let first = first; let index = index">
-          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
-               [ngClass]="{ 'border-top-1 surface-border': !first }">
-
+        <div
+          class="col-12"
+          *ngFor="let ranking of rankings; let first = first; let index = index"
+        >
+          <div
+            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
+            [ngClass]="{ 'border-top-1 surface-border': !first }"
+          >
             <div class="ranking-table-row">
-              <div class="ranking-table-rank">
-                {{index + 1}}.
-              </div>
+              <div class="ranking-table-rank">{{ index + 1 }}.</div>
               <div class="ranking-table-user-info">
-                <p-avatar [image]="ranking.user.avatar ? ranking.user.avatar.thumbnailS : 'assets/user.png'"
-                          styleClass="mr-2" size="large" shape="circle"></p-avatar>
-                <a class="username"
-                   routerLink="{{ranking.routerLinkUser}}">{{ranking.user.firstname}} {{ranking.user.lastname}}</a>
+                <p-avatar
+                  [image]="
+                    ranking.user.avatar
+                      ? ranking.user.avatar.thumbnailS
+                      : 'assets/user.png'
+                  "
+                  styleClass="mr-2"
+                  size="large"
+                  shape="circle"
+                ></p-avatar>
+                <a class="username" routerLink="{{ ranking.routerLinkUser }}"
+                  >{{ ranking.user.firstname }} {{ ranking.user.lastname }}</a
+                >
               </div>
               <div class="ranking-table-score">
-                {{ranking[sortField]}}
+                {{ ranking[sortField] }}
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </ng-template>
   </p-dataView>
-
 </ng-container>

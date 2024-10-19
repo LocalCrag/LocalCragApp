@@ -1,23 +1,37 @@
-<ng-container *transloco="let t, read: 'refreshLoginModal'">
-
-  <p-dialog header="{{t('title')}}" [(visible)]="isOpen" [modal]="true" *ngIf="isOpen" [closable]="false">
-
+<ng-container *transloco="let t; read: 'refreshLoginModal'">
+  <p-dialog
+    header="{{ t('title') }}"
+    [(visible)]="isOpen"
+    [modal]="true"
+    *ngIf="isOpen"
+    [closable]="false"
+  >
     <form [formGroup]="refreshLoginForm" lcForm>
-
       <div class="card-container block" lcControlGroup>
-        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
-                    placeholder="{{t('passwordPlaceholder')}}"></p-password>
-        <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+        <p-password
+          formControlName="password"
+          [toggleMask]="true"
+          [feedback]="false"
+          lcFormControl
+          placeholder="{{ t('passwordPlaceholder') }}"
+        ></p-password>
+        <small class="p-error" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
       </div>
-
     </form>
 
-    <p-button label="{{t('logoutButtonLabel')}}" (click)="logout()" styleClass="p-button-outlined p-button-secondary"
-              class="mr-3"
-              [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"></p-button>
-    <p-button label="{{t('refreshLoginButtonLabel')}}" (click)="refreshLogin()"
-              [loading]="(isLoading$ | async) === loadingStates.LOADING"></p-button>
-
+    <p-button
+      label="{{ t('logoutButtonLabel') }}"
+      (click)="logout()"
+      styleClass="p-button-outlined p-button-secondary"
+      class="mr-3"
+      [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
+    ></p-button>
+    <p-button
+      label="{{ t('refreshLoginButtonLabel') }}"
+      (click)="refreshLogin()"
+      [loading]="(isLoading$ | async) === loadingStates.LOADING"
+    ></p-button>
   </p-dialog>
-
 </ng-container>

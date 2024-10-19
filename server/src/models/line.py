@@ -1,18 +1,14 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import column_property
 
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
-from sqlalchemy.dialects.postgresql import UUID
-
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
-from models.grades import GRADES, get_grade_value
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_searchable import IsSearchable
 
@@ -21,9 +17,10 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """
-    __tablename__ = 'lines'
 
-    slug_blocklist = ['edit', 'create-line', 'gallery', 'ascents', 'add-topo-image']
+    __tablename__ = "lines"
+
+    slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image"]
     searchable_type = SearchableItemTypeEnum.LINE
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
@@ -34,7 +31,7 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     grade_value = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     rating = db.Column(db.Integer, nullable=True)
-    area_id = db.Column(UUID(), db.ForeignKey('areas.id'), nullable=False)
+    area_id = db.Column(UUID(), db.ForeignKey("areas.id"), nullable=False)
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
@@ -71,15 +68,16 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     arete = db.Column(db.Boolean, nullable=False, default=False)
     mantle = db.Column(db.Boolean, nullable=False, default=False)
 
-    line_paths = db.relationship("LinePath", cascade="all,delete", lazy="select",
-                                 order_by='LinePath.order_index_for_line.asc()')
+    line_paths = db.relationship(
+        "LinePath", cascade="all,delete", lazy="select", order_by="LinePath.order_index_for_line.asc()"
+    )
 
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
-    secret = db.Column(db.Boolean, default=False, server_default='0')
+    secret = db.Column(db.Boolean, default=False, server_default="0")
 
-    area_slug = association_proxy('area', 'slug')
-    sector_slug = association_proxy('area', 'sector_slug')
-    crag_slug = association_proxy('area', 'crag_slug')
+    area_slug = association_proxy("area", "slug")
+    sector_slug = association_proxy("area", "sector_slug")
+    crag_slug = association_proxy("area", "crag_slug")
 
     # Needed for delete cascade
     todos = db.relationship("Todo", cascade="all,delete", lazy="select", overlaps="line")
@@ -87,5 +85,3 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     @hybrid_property
     def ascent_count(self):
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()
-
-

@@ -1,6 +1,5 @@
 @use "../../../../styles/media-queries" as m;
 
-
 lc-coordinates-button {
   .p-splitbutton-defaultbutton {
     padding-left: 0;
@@ -9,7 +8,7 @@ lc-coordinates-button {
 
   .p-button-icon-only {
     width: 1.5rem;
-    padding-left: .5rem;
+    padding-left: 0.5rem;
   }
 
   .p-tieredmenu {
@@ -19,6 +18,4 @@ lc-coordinates-button {
       margin-left: auto;
     }
   }
-
-
 }

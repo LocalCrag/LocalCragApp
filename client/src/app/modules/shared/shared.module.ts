@@ -15,15 +15,15 @@ import {BadgeModule} from 'primeng/badge';
 import {SingleImageUploadComponent} from './forms/controls/single-image-upload/single-image-upload.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {ImageModule} from 'primeng/image';
-import { TranslocoModule} from '@jsverse/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TopoImageComponent} from './components/topo-image/topo-image.component';
-import { OrderItemsComponent } from './components/order-items/order-items.component';
+import {OrderItemsComponent} from './components/order-items/order-items.component';
 import {OrderListModule} from 'primeng/orderlist';
-import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
-import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
-import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
-import { ToStringPipe } from './pipes/to-string.pipe';
+import {AsFormArrayPipe} from './pipes/as-form-array.pipe';
+import {AsFormGroupPipe} from './pipes/as-form-group.pipe';
+import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
+import {ToStringPipe} from './pipes/to-string.pipe';
 import {SkeletonModule} from 'primeng/skeleton';
 import {ChartModule} from 'primeng/chart';
 import {ChipModule} from 'primeng/chip';
@@ -49,19 +49,19 @@ import {ChipModule} from 'primeng/chip';
     SanitizeHtmlPipe,
     ToStringPipe,
   ],
-    imports: [
-        CommonModule,
-        TagModule,
-        BadgeModule,
-        FileUploadModule,
-        ImageModule,
-        TranslocoModule,
-        ProgressSpinnerModule,
-        OrderListModule,
-        SkeletonModule,
-        ChartModule,
-        ChipModule
-    ],
+  imports: [
+    CommonModule,
+    TagModule,
+    BadgeModule,
+    FileUploadModule,
+    ImageModule,
+    TranslocoModule,
+    ProgressSpinnerModule,
+    OrderListModule,
+    SkeletonModule,
+    ChartModule,
+    ChipModule,
+  ],
   exports: [
     DatePipe,
     FormDirective,
@@ -76,7 +76,6 @@ import {ChipModule} from 'primeng/chip';
     AsFormArrayPipe,
     AsFormGroupPipe,
     SanitizeHtmlPipe,
-  ]
+  ],
 })
-export class SharedModule {
-}
+export class SharedModule {}

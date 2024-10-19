@@ -23,8 +23,8 @@ import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {RatingModule} from 'primeng/rating';
 import {CalendarModule} from 'primeng/calendar';
 import {CheckboxModule} from 'primeng/checkbox';
-import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
-import { LineInfoComponent } from './line-info/line-info.component';
+import {LineBoolPropListComponent} from './line-bool-prop-list/line-bool-prop-list.component';
+import {LineInfoComponent} from './line-info/line-info.component';
 import {TopoImageDetailsComponent} from '../topo-images/topo-image-details/topo-image-details.component';
 import {HasPermissionDirective} from '../shared/directives/has-permission.directive';
 import {TickButtonComponent} from '../ascent/tick-button/tick-button.component';
@@ -33,7 +33,6 @@ import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secre
 import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
 import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
 
-
 @NgModule({
   declarations: [
     LineComponent,
@@ -41,44 +40,39 @@ import {TodoButtonComponent} from '../todo/todo-button/todo-button.component';
     LineBoolPropListComponent,
     LineInfoComponent,
   ],
-    imports: [
-        CommonModule,
-        CardModule,
-        TranslocoModule,
-        SharedModule,
-        InputTextModule,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextareaModule,
-        ButtonModule,
-        DataViewModule,
-        TagModule,
-        BadgeModule,
-        RouterLink,
-        DropdownModule,
-        MessagesModule,
-        EditorModule,
-        TabMenuModule,
-        ConfirmPopupModule,
-        SkeletonModule,
-        BreadcrumbModule,
-        RatingModule,
-        CalendarModule,
-        CheckboxModule,
-        TopoImageDetailsComponent,
-        HasPermissionDirective,
-        TickButtonComponent,
-        AscentCountComponent,
-        SecretSpotTagComponent,
-        FormSkeletonComponent,
-        TodoButtonComponent,
-    ],
-    exports: [
-        LineBoolPropListComponent
-    ],
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'line'}
-  ]
+  imports: [
+    CommonModule,
+    CardModule,
+    TranslocoModule,
+    SharedModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    ButtonModule,
+    DataViewModule,
+    TagModule,
+    BadgeModule,
+    RouterLink,
+    DropdownModule,
+    MessagesModule,
+    EditorModule,
+    TabMenuModule,
+    ConfirmPopupModule,
+    SkeletonModule,
+    BreadcrumbModule,
+    RatingModule,
+    CalendarModule,
+    CheckboxModule,
+    TopoImageDetailsComponent,
+    HasPermissionDirective,
+    TickButtonComponent,
+    AscentCountComponent,
+    SecretSpotTagComponent,
+    FormSkeletonComponent,
+    TodoButtonComponent,
+  ],
+  exports: [LineBoolPropListComponent],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
-export class LineModule {
-}
+export class LineModule {}

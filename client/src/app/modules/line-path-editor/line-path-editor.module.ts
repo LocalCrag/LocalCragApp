@@ -10,27 +10,20 @@ import {TRANSLOCO_SCOPE, TranslocoModule} from '@jsverse/transloco';
 import {DropdownModule} from 'primeng/dropdown';
 import {TopoImagesModule} from '../topo-images/topo-images.module';
 
-
 @NgModule({
-    declarations: [
-        LinePathEditorComponent,
-        LinePathFormComponent
-    ],
-    imports: [
-        CommonModule,
-        ButtonModule,
-        CardModule,
-        ReactiveFormsModule,
-        SharedModule,
-        TranslocoModule,
-        FormsModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        TopoImagesModule
-    ],
-    providers: [
-        {provide: TRANSLOCO_SCOPE, useValue: 'linePath'}
-    ],
+  declarations: [LinePathEditorComponent, LinePathFormComponent],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    CardModule,
+    ReactiveFormsModule,
+    SharedModule,
+    TranslocoModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    TopoImagesModule,
+  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
-export class LinePathEditorModule {
-}
+export class LinePathEditorModule {}

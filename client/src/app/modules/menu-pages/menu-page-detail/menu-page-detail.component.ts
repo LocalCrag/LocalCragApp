@@ -13,37 +13,33 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 @Component({
   selector: 'lc-menu-page-detail',
   standalone: true,
-  imports: [
-    CardModule,
-    TranslocoDirective,
-    SharedModule,
-    NgIf,
-    SkeletonModule
-  ],
+  imports: [CardModule, TranslocoDirective, SharedModule, NgIf, SkeletonModule],
   templateUrl: './menu-page-detail.component.html',
-  styleUrl: './menu-page-detail.component.scss'
+  styleUrl: './menu-page-detail.component.scss',
 })
 @UntilDestroy()
-export class MenuPageDetailComponent implements OnInit{
-
+export class MenuPageDetailComponent implements OnInit {
   public menuPage: MenuPage;
   public loadingState = LoadingState.LOADING;
 
-  constructor(private menuPagesService: MenuPagesService,
-              private router: Router,
-              private route: ActivatedRoute) {
-  }
+  constructor(
+    private menuPagesService: MenuPagesService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
-      this.menuPagesService.getMenuPage(menuPageSlug).subscribe(menuPage => {
-        this.menuPage = menuPage;
-        this.loadingState = LoadingState.DEFAULT;
-      }, () => {
-        this.router.navigate(['not-found']);
-      });
+      this.menuPagesService.getMenuPage(menuPageSlug).subscribe(
+        (menuPage) => {
+          this.menuPage = menuPage;
+          this.loadingState = LoadingState.DEFAULT;
+        },
+        () => {
+          this.router.navigate(['not-found']);
+        },
+      );
     });
   }
-
 }

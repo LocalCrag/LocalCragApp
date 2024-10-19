@@ -22,21 +22,21 @@
   background-color: var(--gray-500) !important;
 }
 
-.neutral-badge{
+.neutral-badge {
   background-color: var(--gray-50) !important;
   color: #000 !important;
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 .grade {
   background-color: var(--surface-200);
   color: var(--surface-900);
-  border-radius: .25rem;
-  font-size: .9rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
   justify-content: center;
   align-items: center;
   min-height: 1.5rem;
-  padding: .125rem .375rem .125rem .375rem;
+  padding: 0.125rem 0.375rem 0.125rem 0.375rem;
   display: flex;
   text-align: center;
 }

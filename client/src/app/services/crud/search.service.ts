@@ -6,16 +6,21 @@ import {HttpClient} from '@angular/common/http';
 import {Searchable} from '../../models/searchable';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SearchService {
-
-  constructor(private api: ApiService,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private http: HttpClient,
+  ) {}
 
   public search(query: string): Observable<Searchable[]> {
-    return this.http.get(this.api.search.search(query)).pipe(map((searchListJson: any) => searchListJson.map(Searchable.deserialize)));
+    return this.http
+      .get(this.api.search.search(query))
+      .pipe(
+        map((searchListJson: any) =>
+          searchListJson.map(Searchable.deserialize),
+        ),
+      );
   }
-
 }

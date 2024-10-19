@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {mergeMap, take} from 'rxjs/operators';
@@ -7,7 +7,7 @@ import {unixToDate} from '../operators/unix-to-date';
 import {Actions, ofType} from '@ngrx/effects';
 import {AppState} from '../../ngrx/reducers';
 import {selectAccessTokenExpires} from '../../ngrx/selectors/auth.selectors';
-import {newAuthCredentials, refreshAccessToken, refreshAccessTokenFailed} from '../../ngrx/actions/auth.actions';
+import {newAuthCredentials, refreshAccessToken, refreshAccessTokenFailed,} from '../../ngrx/actions/auth.actions';
 import {isAfter} from 'date-fns';
 
 /**
@@ -16,10 +16,10 @@ import {isAfter} from 'date-fns';
  */
 @Injectable()
 export class RefreshTokenInterceptor implements HttpInterceptor {
-
-  constructor(private store: Store<AppState>,
-              private actions$: Actions) {
-  }
+  constructor(
+    private store: Store<AppState>,
+    private actions$: Actions,
+  ) {}
 
   /**
    * Intercepts http requests and eventually prepends additional refresh token requests if token is not valid anymore.
@@ -28,31 +28,34 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
    * @param next Http handler for the request.
    * @return Returns an Observable that resolves to an http event.
    */
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     return this.store.pipe(
       select(selectAccessTokenExpires),
       unixToDate,
       take(1),
-      mergeMap(accessTokenExpires => {
-        if (accessTokenExpires === null || isAfter(accessTokenExpires, new Date())) {
+      mergeMap((accessTokenExpires) => {
+        if (
+          accessTokenExpires === null ||
+          isAfter(accessTokenExpires, new Date())
+        ) {
           return next.handle(request);
         } else {
           this.store.dispatch(refreshAccessToken());
           return this.actions$.pipe(
             ofType(newAuthCredentials, refreshAccessTokenFailed),
             take(1),
-            mergeMap(action => {
+            mergeMap((action) => {
               if (action.type === newAuthCredentials.type) {
                 return next.handle(request);
               }
-              return throwError(new HttpErrorResponse({error: {}}));
-            })
+              return throwError(new HttpErrorResponse({ error: {} }));
+            }),
           );
         }
-      }
-      )
+      }),
     );
   }
-
-
 }

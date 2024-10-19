@@ -1,15 +1,15 @@
 <div class="content">
-
-  <p-card header="{{crag?.name}}">
-
+  <p-card header="{{ crag?.name }}">
     <lc-secret-spot-tag *ngIf="crag?.secret"></lc-secret-spot-tag>
 
-    <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="breadcrumbHome"></p-breadcrumb>
+    <p-breadcrumb
+      class="max-w-full"
+      [model]="breadcrumbs"
+      [home]="breadcrumbHome"
+    ></p-breadcrumb>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="crag"></p-tabMenu>
 
     <router-outlet name="cragContent"></router-outlet>
-
   </p-card>
-
 </div>

@@ -1,5 +1,4 @@
 .auth-view {
-
   width: 100%;
 
   .auth-container {
@@ -25,7 +24,9 @@
     margin-top: 1.5rem;
   }
 
-  input, .card-container, form {
+  input,
+  .card-container,
+  form {
     width: 100%;
   }
 
@@ -33,10 +34,10 @@
     width: 100%;
     display: block;
 
-    input, .p-password {
+    input,
+    .p-password {
       width: 100%;
     }
-
   }
 
   p-button {
@@ -46,7 +47,6 @@
     button {
       width: 100%;
     }
-
   }
 
   h3 {
@@ -56,5 +56,4 @@
   .link-button button {
     padding: 0;
   }
-
 }

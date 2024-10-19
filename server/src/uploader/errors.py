@@ -2,6 +2,7 @@ class InvalidFiletypeUploaded(Exception):
     """
     Raised when a file with an invalid type was uploaded.
     """
+
     pass
 
 

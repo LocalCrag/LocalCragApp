@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {ButtonModule} from 'primeng/button';
 import {FileUpload, FileUploadModule} from 'primeng/fileupload';
@@ -14,7 +14,7 @@ import {ImageModule} from 'primeng/image';
 import {NgIf} from '@angular/common';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {TranslocoDirective} from '@jsverse/transloco';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl,} from '@angular/forms';
 import {File} from '../../../../../models/file';
 import {ApiService} from '../../../../../services/core/api.service';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
@@ -29,7 +29,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     NgIf,
     ProgressBarModule,
     TranslocoDirective,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
   ],
   templateUrl: './avatar-upload.component.html',
   styleUrl: './avatar-upload.component.scss',
@@ -38,12 +38,13 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => AvatarUploadComponent),
       multi: true,
-    }
+    },
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDestroy {
-
+export class AvatarUploadComponent
+  implements OnInit, ControlValueAccessor, OnDestroy
+{
   @ViewChild(FileUpload) uploader: FileUpload;
   @ViewChild('uploader') uploaderElementRef: ElementRef<HTMLElement>;
 
@@ -57,9 +58,10 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDe
   public progressMode = 'determinate';
   public showProgressBar = false;
 
-  constructor(private api: ApiService,
-              private inj: Injector) {
-  }
+  constructor(
+    private api: ApiService,
+    private inj: Injector,
+  ) {}
 
   /**
    * Initializes the uploader component.
@@ -81,7 +83,7 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDe
   /**
    * Used by the formControl to write a value to the native formControl or any custom value.
    *
-   * @param obj: Value to write.
+   * @param obj Value to write.
    */
   writeValue(obj: any): void {
     this.file = obj;
@@ -90,14 +92,12 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDe
   /**
    * Not implemented but needed for the interface.
    */
-  registerOnTouched(_fn: any): void {
-  }
+  registerOnTouched(_fn: any): void {}
 
   /**
    * Function is replaced in registerOnChange.
    */
-  propagateChange = (_: any) => {
-  };
+  propagateChange = (_: any) => {};
 
   /**
    * Emits internal value when it changes.
@@ -163,9 +163,9 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDe
     }
   }
 
-  getAvatarStyle(){
+  getAvatarStyle() {
     let path = 'assets/user.png';
-    if(this.file){
+    if (this.file) {
       path = this.file.thumbnailM;
     }
     return `url(${path})`;
@@ -174,8 +174,9 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor, OnDe
   /**
    * Clicks the hidden prime nbg upload button component.
    */
-  clickFileUpload(){
-    this.uploaderElementRef['el'].nativeElement.querySelector('.p-fileupload-choose').click()
+  clickFileUpload() {
+    this.uploaderElementRef['el'].nativeElement
+      .querySelector('.p-fileupload-choose')
+      .click();
   }
-
 }

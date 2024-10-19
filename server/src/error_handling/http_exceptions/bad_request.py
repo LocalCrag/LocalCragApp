@@ -8,8 +8,4 @@ class BadRequest(Exception):
         self.extras = extras
 
     def to_dict(self):
-        return {
-            'message': self.message,
-            'localCragErrCode': self.localcrag_err_code,
-            'extras': self.extras
-        }
+        return {"message": self.message, "localCragErrCode": self.localcrag_err_code, "extras": self.extras}

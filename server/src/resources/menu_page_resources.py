@@ -1,10 +1,10 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
-from marshmallow_schemas.menu_page_schema import menu_pages_schema, menu_page_schema
+from marshmallow_schemas.menu_page_schema import menu_page_schema, menu_pages_schema
 from models.menu_page import MenuPage
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
@@ -43,8 +43,8 @@ class CreateMenuPage(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_menu_page: MenuPage = MenuPage()
-        new_menu_page.title = menu_page_data['title'].strip()
-        new_menu_page.text = add_bucket_placeholders(menu_page_data['text'])
+        new_menu_page.title = menu_page_data["title"].strip()
+        new_menu_page.text = add_bucket_placeholders(menu_page_data["text"])
         new_menu_page.created_by_id = created_by.id
 
         db.session.add(new_menu_page)
@@ -64,8 +64,8 @@ class UpdateMenuPage(MethodView):
         menu_page_data = parser.parse(menu_page_args, request)
         menu_page: MenuPage = MenuPage.find_by_slug(menu_page_slug)
 
-        menu_page.title = menu_page_data['title'].strip()
-        menu_page.text = add_bucket_placeholders(menu_page_data['text'])
+        menu_page.title = menu_page_data["title"].strip()
+        menu_page.text = add_bucket_placeholders(menu_page_data["text"])
         db.session.add(menu_page)
         db.session.commit()
 
@@ -86,4 +86,3 @@ class DeleteMenuPage(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
-

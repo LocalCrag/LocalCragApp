@@ -7,10 +7,8 @@ import {Line} from '../../../models/line';
 @Component({
   selector: 'lc-line-bool-prop-list',
   templateUrl: './line-bool-prop-list.component.html',
-  styleUrls: ['./line-bool-prop-list.component.scss']
+  styleUrls: ['./line-bool-prop-list.component.scss'],
 })
 export class LineBoolPropListComponent {
-
   @Input() line: Line;
-
 }
