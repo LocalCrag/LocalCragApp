@@ -82,7 +82,6 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
   providers: [
     {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
   ],
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
   exports: [CragFormComponent],
 })
 export class CragModule {}
