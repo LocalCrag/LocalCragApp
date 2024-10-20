@@ -22,7 +22,7 @@ def test_archive_line(client, moderator_token):
     assert rv.status_code == 200
 
     line = Line.find_by_slug("treppe")
-    assert line.archived == True
+    assert line.archived
 
     rv = client.get("/api/lines")
     assert rv.status_code == 200
@@ -48,7 +48,7 @@ def test_archive_topo_image(client, moderator_token):
     assert rv.status_code == 200, (print(rv.json), topo_image_data["image"])
 
     topo_image = TopoImage.query.filter_by(order_index=0).first()
-    assert topo_image.archived == True
+    assert topo_image.archived
 
     rv = client.get("/api/areas/dritter-block-von-links/topo-images")
     assert rv.status_code == 200
@@ -97,9 +97,9 @@ def test_archive_sector(client, moderator_token):
     assert Line.query.filter_by(sector_slug="schattental", archived=True).count() > 0
 
     assert (
-        TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", TopoImage.archived == False).count() == 0
+        TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", not TopoImage.archived).count() == 0
     )
-    assert TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", TopoImage.archived == True).count() > 0
+    assert TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", TopoImage.archived).count() > 0
 
 
 def test_archive_crag(client, moderator_token):
@@ -122,11 +122,11 @@ def test_archive_crag(client, moderator_token):
     assert (
         TopoImage.query.join(Area)
         .join(Sector)
-        .filter(Sector.crag_slug == "brione", TopoImage.archived == False)
+        .filter(Sector.crag_slug == "brione", not TopoImage.archived)
         .count()
         == 0
     )
     assert (
-        TopoImage.query.join(Area).join(Sector).filter(Sector.crag_slug == "brione", TopoImage.archived == True).count()
+        TopoImage.query.join(Area).join(Sector).filter(Sector.crag_slug == "brione", TopoImage.archived).count()
         > 0
     )
