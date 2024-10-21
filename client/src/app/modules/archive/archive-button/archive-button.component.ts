@@ -15,6 +15,7 @@ import {LinesService} from '../../../services/crud/lines.service';
 import {CragsService} from '../../../services/crud/crags.service';
 import {SectorsService} from '../../../services/crud/sectors.service';
 import {AreasService} from '../../../services/crud/areas.service';
+import {TopoImagesService} from '../../../services/crud/topo-images.service';
 
 @Component({
   selector: 'lc-archive-button',
@@ -38,9 +39,10 @@ export class ArchiveButtonComponent {
   @Input() sector?: Sector;
   @Input() crag?: Crag;
   @Input() showLabel: boolean;
-  @Input() outline = false;
+  @Input() style = "plain";
 
   constructor(private linesService: LinesService,
+              private topoImagesService: TopoImagesService,
               private cragsService: CragsService,
               private sectorsService: SectorsService,
               private areasService: AreasService,
@@ -74,7 +76,7 @@ export class ArchiveButtonComponent {
 
     if (this.topoImage) {
       this.topoImage.archived = !this.topoImage.archived;
-      this.linesService.updateLine(this.line).subscribe(resultHandler);
+      this.topoImagesService.updateTopoImage(this.topoImage, "").subscribe(resultHandler);
     }
 
     if (this.area) {

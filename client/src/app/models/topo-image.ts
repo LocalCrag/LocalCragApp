@@ -69,6 +69,7 @@ export class TopoImage extends AbstractModel {
         : [],
       title: topoImage.title,
       description: topoImage.description,
+      archived: topoImage.archived,
     };
   }
 }

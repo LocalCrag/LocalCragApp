@@ -69,6 +69,15 @@
               </ng-template>
             </p-dropdown>
           </div>
+          <div>
+            <p-button
+              label="{{ t('showArchive') }}"
+              icon="pi pi-plus"
+              *isModerator="true"
+              class="responsive-button"
+              (click)="toggleArchive()"
+            ></p-button>
+          </div>
         </div>
 
         <div class="slider-container mt-1">
@@ -105,7 +114,7 @@
         >
           <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
+            [ngClass]="{ 'border-top-1 surface-border': !first, 'archived': line.archived }"
           >
             <lc-topo-image
               class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
@@ -158,7 +167,7 @@
                   >
                   </p-button>
                   <div class="flex-grow-1"></div>
-                  <lc-archive-button [line]="line" [showLabel]="false" *isModerator="true"></lc-archive-button>
+                  <lc-archive-button [line]="line" [showLabel]="false" [style]="'plain'" *isModerator="true"></lc-archive-button>
                   <ng-container *ngIf="!ticks.has(line.id)">
                     <lc-todo-button
                       [line]="line"

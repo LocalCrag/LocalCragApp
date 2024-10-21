@@ -2,7 +2,9 @@
 
   <p-button [styleClass]="'p-button-secondary archive-button'.concat(
                           !showLabel ? ' p-button-icon-only' : ' p-button-text').concat(
-                          outline ? ' p-button-outlined p-button-sm' : ' p-button-rounded')"
+                          style == 'outline' ? ' p-button-outlined p-button-sm' : '').concat(
+                          style == 'rounded' ? ' p-button-rounded' : '').concat(
+                          style == 'plain' ? ' p-button-text p-button-rounded' : '')"
             data-cy="archive-button"
             label="{{!getCurrentState() ? t('archive'): t('unarchive')}}"
             (click)="switchArchived($event)" [ngClass]="{'hide-label': !showLabel}">
