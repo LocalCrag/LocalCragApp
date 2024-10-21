@@ -16,7 +16,6 @@ class TopoImageSchema(BaseEntityMinSchema):
     archived = fields.Boolean()
 
 
-
 class TopoImageSchemaForLines(BaseEntityMinSchema):
     image = fields.Nested(file_schema, attribute="file")
     orderIndex = fields.Int(attribute="order_index")
@@ -24,7 +23,6 @@ class TopoImageSchemaForLines(BaseEntityMinSchema):
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     archived = fields.Boolean()
-
 
 
 topo_image_schema = TopoImageSchema()
