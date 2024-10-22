@@ -71,8 +71,8 @@
           </div>
           <div>
             <p-button
-              label="{{ t('showArchive') }}"
-              icon="pi pi-plus"
+              label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
+              [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
               *isModerator="true"
               class="responsive-button"
               (click)="toggleArchive()"

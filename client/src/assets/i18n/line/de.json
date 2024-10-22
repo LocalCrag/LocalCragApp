@@ -104,5 +104,6 @@
   "lineBoolPropList.sitstart": "Sitzstart",
   "lineForm.lineSitstartLabel": "Sitzstart",
   "lineList.lineListTitle": "Linien",
-  "lineList.showArchive": "Archiv anzeigen"
+  "lineList.showArchive": "Archiv anzeigen",
+  "lineList.hideArchive": "Archiv verstecken"
 }

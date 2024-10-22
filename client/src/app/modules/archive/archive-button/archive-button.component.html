@@ -9,8 +9,8 @@
             label="{{!getCurrentState() ? t('archive'): t('unarchive')}}"
             (click)="switchArchived($event)" [ngClass]="{'hide-label': !showLabel}">
     <ng-template pTemplate="icon">
-      <i *ngIf="!getCurrentState()" class="pi pi-lock"></i>
-      <i *ngIf="getCurrentState()" class="pi pi-unlock"></i>
+      <i *ngIf="!getCurrentState()" class="pi pi-hammer"></i>
+      <i *ngIf="getCurrentState()" class="pi pi-undo"></i>
     </ng-template>
   </p-button>
 

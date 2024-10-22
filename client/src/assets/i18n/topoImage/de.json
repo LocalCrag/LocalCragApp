@@ -8,6 +8,7 @@
   "topoImageList.editTopoImageButtonLabel": "Bild bearbeiten",
   "topoImageList.noTopoImagesFoundEmptyMessage": "Keine Topo Bilder gefunden",
   "topoImageList.showArchive": "Archiv anzeigen",
+  "topoImageList.hideArchive": "Archiv verstecken",
   "topoImageForm.addTopoImageDescription": "Lade ein neues Topo-Bild hoch. Im Anschluss können angelegte Linien im Bild verzeichnet werden. Der Fels sollte den größten Teil des Bildes einnehmen und die ganze Linie sollte gut zu sehen sein. In manchen Fällen ergibt es Sinn, die gleiche Linie auf mehreren Bildern einzuzeichnen. Dies ist z.B. bei Traversen oder Linien die um eine Kante herum verlaufen der Fall.",
   "topoImageForm.editTopoImageDescription": "Metaangaben des Bilds können bearbeitet werden. Das Bild an sich kann leider nicht mehr verändert werden, da eingezeichnete Linienverläufe sonst nicht mehr stimmen.",
   "topoImageForm.required": "Pflichtfeld",
