@@ -22,6 +22,8 @@
   "todos.todoList.todos": "Todos",
   "todoButton.onTodoList": "Auf der Todo-Liste",
   "todoButton.addTodo": "Als Todo hinzufügen",
+  "archiveButton.archive": "Archivieren",
+  "archiveButton.unarchive": "Wiederherstellen",
   "singleImageUploader.browseFilesButtonLabel": "Durchsuchen",
   "latLabel": "Breitengrad",
   "latPlaceholder": "z.B. 50.44438",

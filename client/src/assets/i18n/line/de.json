@@ -103,5 +103,6 @@
   "lineList.FA": "FA",
   "lineBoolPropList.sitstart": "Sitzstart",
   "lineForm.lineSitstartLabel": "Sitzstart",
-  "lineList.lineListTitle": "Linien"
+  "lineList.lineListTitle": "Linien",
+  "lineList.showArchive": "Archiv anzeigen"
 }
