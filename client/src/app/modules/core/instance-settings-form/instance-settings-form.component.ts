@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {EditorModule} from 'primeng/editor';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
@@ -48,7 +48,7 @@ import {getRgbObject} from '../../../utility/misc/color';
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
 })
-export class InstanceSettingsFormComponent {
+export class InstanceSettingsFormComponent implements OnInit{
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public instanceSettingsForm: FormGroup;

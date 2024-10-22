@@ -340,7 +340,7 @@ export class AuthEffects {
       ofType(AuthActions.logout),
       withLatestFrom(this.store.pipe(select(selectAuthState))),
       mergeMap(([action, authState]) => {
-        const logoutAccess = this.authCrud.logoutAccess(authState.accessToken);
+        const logoutAccess = this.authCrud.logoutAccess();
         const logoutRefresh = this.authCrud.logoutRefresh(
           authState.refreshToken,
         );

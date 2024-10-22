@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -26,7 +26,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
   templateUrl: './line-path-form.component.html',
   styleUrls: ['./line-path-form.component.scss'],
 })
-export class LinePathFormComponent {
+export class LinePathFormComponent implements OnInit{
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(LinePathEditorComponent) linePathEditor: LinePathEditorComponent;
 

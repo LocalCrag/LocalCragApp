@@ -8,13 +8,8 @@ import {selectAuthState,} from '../ngrx/selectors/auth.selectors';
 
 /**
  * CanActivateFn for checking if a user is an admin.
- * @param route Route to navigate to.
- * @param state Router state.
  */
-export const isAdmin: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-): Observable<boolean> => {
+export const isAdmin: CanActivateFn = (): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
   return store.pipe(

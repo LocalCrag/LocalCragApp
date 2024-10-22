@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation,} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation,} from '@angular/core';
 import {debounceTime, fromEvent, Observable} from 'rxjs';
 import {Grade, GRADES} from '../../../../utility/misc/grades';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
@@ -22,7 +22,7 @@ import {getRgbObject} from '../../../../utility/misc/color';
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class GradeDistributionBarChartComponent implements OnChanges {
+export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   @Input() fetchingObservable: Observable<Grade[]>;
   @Input() scaleName: string = 'FB';
   @Input() excludeProjects: boolean = false;

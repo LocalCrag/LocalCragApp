@@ -1,4 +1,4 @@
-import {Component, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormDirective} from '../../shared/forms/form.directive';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../enums/loading-state';
@@ -24,7 +24,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
   templateUrl: './topo-image-form.component.html',
   styleUrls: ['./topo-image-form.component.scss'],
 })
-export class TopoImageFormComponent {
+export class TopoImageFormComponent implements OnInit{
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
@@ -143,7 +143,7 @@ export class TopoImageFormComponent {
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
         this.topoImagesService
-          .updateTopoImage(topoImage, this.areaSlug)
+          .updateTopoImage(topoImage)
           .subscribe(() => {
             this.store.dispatch(
               toastNotification(NotificationIdentifier.TOPO_IMAGE_UPDATED),

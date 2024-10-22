@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Crag} from '../../../models/crag';
 import {Sector} from '../../../models/sector';
 import {Area} from '../../../models/area';
@@ -27,7 +27,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class LineComponent {
+export class LineComponent implements OnInit{
   public crag: Crag;
   public sector: Sector;
   public area: Area;
@@ -49,7 +49,7 @@ export class LineComponent {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       const areaSlug = this.route.snapshot.paramMap.get('area-slug');

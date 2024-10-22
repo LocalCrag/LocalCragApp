@@ -193,7 +193,7 @@ export class CoordinatesComponent
           this.finishFetchingGeoLocation();
         }
       },
-      (_e) => {
+      () => {
         if (this.coordinatesLoadingSuccess) {
           // If we already have a position, errors don't matter
           this.finishFetchingGeoLocation();

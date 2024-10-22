@@ -8,13 +8,8 @@ import {selectAuthState,} from '../ngrx/selectors/auth.selectors';
 
 /**
  * CanActivateFn for checking if a user is a moderator.
- * @param route Route to navigate to.
- * @param state Router state.
  */
-export const isModerator: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-): Observable<boolean> => {
+export const isModerator: CanActivateFn = (): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
   return store.pipe(

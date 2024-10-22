@@ -152,7 +152,7 @@ export class PostFormComponent implements OnInit {
       post.text = this.postForm.get('text').value;
       if (this.post) {
         post.slug = this.post.slug;
-        this.postsService.updatePost(post).subscribe((post) => {
+        this.postsService.updatePost(post).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.POST_UPDATED),
           );
@@ -160,7 +160,7 @@ export class PostFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.postsService.createPost(post).subscribe((post) => {
+        this.postsService.createPost(post).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.POST_CREATED),
           );

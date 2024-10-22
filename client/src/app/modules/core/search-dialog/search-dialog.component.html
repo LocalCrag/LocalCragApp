@@ -29,7 +29,7 @@
         <ng-container *ngIf="searchable.line.grade.value > 0">{{
           searchable.line.grade.name
         }}</ng-container>
-        <ng-container *ngIf="searchable.line.grade.value == 0">{{
+        <ng-container *ngIf="searchable.line.grade.value === 0">{{
           t("gradeCircleNotGraded")
         }}</ng-container>
         <ng-container *ngIf="searchable.line.grade.value < 0">{{

@@ -183,7 +183,7 @@ export class AscentFormComponent implements OnInit {
       ascent.comment = this.ascentForm.get('comment').value;
       ascent.line = this.line;
       if (!this.editMode) {
-        this.ascentsService.createAscent(ascent).subscribe((ascent) => {
+        this.ascentsService.createAscent(ascent).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.ASCENT_ADDED),
           );
@@ -195,7 +195,7 @@ export class AscentFormComponent implements OnInit {
         });
       } else {
         ascent.id = this.ascent.id;
-        this.ascentsService.updateAscent(ascent).subscribe((ascent) => {
+        this.ascentsService.updateAscent(ascent).subscribe(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.ASCENT_UPDATED),
           );

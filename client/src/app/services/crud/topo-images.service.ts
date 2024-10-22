@@ -38,12 +38,10 @@ export class TopoImagesService {
    * Updates a TopoImage.
    *
    * @param topoImage TopoImage to persist.
-   * @param areaSlug Slug of the area the topo image is in.
    * @return Observable of null.
    */
   public updateTopoImage(
     topoImage: TopoImage,
-    areaSlug: string,
   ): Observable<TopoImage> {
     return this.http
       .put(

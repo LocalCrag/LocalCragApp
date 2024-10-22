@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   GradeDistributionBarChartComponent
 } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
@@ -16,7 +16,7 @@ import {User} from '../../../models/user';
   templateUrl: './user-charts.component.html',
   styleUrl: './user-charts.component.scss',
 })
-export class UserChartsComponent {
+export class UserChartsComponent implements OnInit{
   public user: User;
   public fetchUserGrades: Observable<Grade[]>;
 
