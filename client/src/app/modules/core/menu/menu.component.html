@@ -10,7 +10,7 @@
         routerLink="/"
       />
       <strong
-        *ngIf="(logoImage$ | async) == null"
+        *ngIf="(logoImage$ | async) === null || (logoImage$ | async) === undefined"
         routerLink="/"
         class="cursor-pointer"
         >{{ instanceName$ | async }}</strong
