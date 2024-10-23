@@ -15,6 +15,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.archive import set_sector_archived
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
 from util.secret_spots_auth import get_show_secret
@@ -70,6 +71,9 @@ class CreateSector(MethodView):
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
 
+        if sector_data.get("archived"):
+            set_sector_archived(new_sector)
+
         if not new_sector.secret:
             set_sector_parents_unsecret(new_sector)
         db.session.add(new_sector)
@@ -95,6 +99,10 @@ class UpdateSector(MethodView):
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
         update_sector_secret_property(sector, sector_data["secret"])
+
+        if sector_data.get("archived"):
+            set_sector_archived(sector)
+
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()

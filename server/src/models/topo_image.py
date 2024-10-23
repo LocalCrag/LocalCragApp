@@ -18,6 +18,7 @@ class TopoImage(BaseEntity):
     description = db.Column(db.Text, nullable=True)
     title = db.Column(db.String(120), nullable=True)
     map_markers = db.relationship("MapMarker", back_populates="topo_image")
+    archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     @classmethod
     def find_max_order_index(cls, area_id) -> int:

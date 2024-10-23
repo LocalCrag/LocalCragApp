@@ -1,0 +1,18 @@
+lc-archive-button {
+  button > span {
+    display: flex;
+  }
+
+  .hide-label .p-button-label {
+    display: none;
+  }
+
+  p-button.disabled {
+    opacity: 1 !important;
+
+    button:disabled {
+      opacity: 1 !important;
+    }
+  }
+
+}

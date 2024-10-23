@@ -37,6 +37,7 @@ import {SecretSpotTagComponent} from '../shared/components/secret-spot-tag/secre
 import {FormSkeletonComponent} from '../shared/components/form-skeleton/form-skeleton.component';
 import {MapComponent} from '../maps/map/map.component';
 import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-marker-form-array.component';
+import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import {MapMarkerFormArrayComponent} from '../maps/map-marker-form-array/map-mar
     FormSkeletonComponent,
     MapComponent,
     MapMarkerFormArrayComponent,
+    ArchiveButtonComponent,
   ],
   exports: [AreaListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],

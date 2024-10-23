@@ -13,6 +13,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.archive import set_crag_archived
 from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
 from util.secret_spots_auth import get_show_secret
@@ -63,6 +64,9 @@ class CreateCrag(MethodView):
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
 
+        if crag_data.get("archived"):
+            set_crag_archived(new_crag)
+
         db.session.add(new_crag)
         db.session.commit()
 
@@ -86,6 +90,10 @@ class UpdateCrag(MethodView):
         crag.rules = add_bucket_placeholders(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_secret_property(crag, crag_data["secret"])
+
+        if crag_data.get("archived"):
+            set_crag_archived(crag)
+
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()

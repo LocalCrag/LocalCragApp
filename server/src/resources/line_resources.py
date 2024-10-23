@@ -30,7 +30,7 @@ class GetLinesForLineEditor(MethodView):
         """
         Returns all lines of an area which is needed for the line select in the line editor.
         """
-        lines = Line.query.join(Area).filter(Area.slug == area_slug).order_by(Line.name).all()
+        lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
 
 
@@ -51,6 +51,7 @@ class GetLines(MethodView):
         order_direction = request.args.get("order_direction") or "asc"
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
+        archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
 
         if order_by not in ["grade_value", "name", "rating", None] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -59,7 +60,7 @@ class GetLines(MethodView):
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
         # Filter for crag, sector or area
-        query = Line.query.join(Area).join(Sector).join(Crag)
+        query = Line.query.filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
         if crag_slug:
             query = query.filter(Crag.slug == crag_slug)
         if sector_slug:
@@ -125,6 +126,7 @@ class CreateLine(MethodView):
         new_line.starting_position = line_data["startingPosition"]
         new_line.rating = line_data["rating"]
         new_line.secret = line_data["secret"]
+        new_line.archived = line_data["archived"]
 
         if new_line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
             new_line.fa_year = line_data["faYear"]
@@ -200,6 +202,7 @@ class UpdateLine(MethodView):
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]
         update_line_secret_property(line, line_data["secret"])
+        line.archived = line_data["archived"]
 
         if line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
             line.fa_year = line_data["faYear"]

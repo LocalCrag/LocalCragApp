@@ -17,6 +17,7 @@ export class TopoImage extends AbstractModel {
   title: string;
   description: string;
   area: Area;
+  archived: boolean;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
@@ -42,6 +43,7 @@ export class TopoImage extends AbstractModel {
     topoImage.linePaths = payload.linePaths
       ? payload.linePaths.map(LinePath.deserialize)
       : null;
+    topoImage.archived = payload.archived;
     return topoImage;
   }
 
@@ -67,6 +69,7 @@ export class TopoImage extends AbstractModel {
         : [],
       title: topoImage.title,
       description: topoImage.description,
+      archived: topoImage.archived,
     };
   }
 }

@@ -1,8 +1,10 @@
 services:
   database:
-    image: postgres
+    build:
+      target: localcragapp-database
     volumes:
       - database:/var/lib/postgresql/data
+      - ./server/tests/dumps/localcrag_test_dump.sql:/dump.sql
     environment:
       POSTGRES_USER: localcrag
       POSTGRES_DB: localcrag
@@ -72,6 +74,7 @@ services:
       SMTP_PORT: 1025
       SMTP_TYPE: plain
       FLASK_DEBUG: 1
+      DOCKER: 1
     volumes:
       - ./server/src:/localcragapp/src
       - ./server/tests:/localcragapp/tests

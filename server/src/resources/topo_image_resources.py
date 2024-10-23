@@ -38,6 +38,7 @@ class AddTopoImage(MethodView):
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
         new_topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], new_topo_image)
+        new_topo_image.archived = topo_image_data["archived"]
 
         db.session.add(new_topo_image)
         db.session.commit()
@@ -55,6 +56,7 @@ class UpdateTopoImage(MethodView):
         topo_image.title = topo_image_data["title"]
         topo_image.description = topo_image_data["description"]
         topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], topo_image)
+        topo_image.archived = topo_image_data["archived"]
         db.session.add(topo_image)
         db.session.commit()
 
@@ -88,9 +90,12 @@ class GetTopoImages(MethodView):
         """
         Returns all topo images of an area.
         """
+        archived = request.args.get("archived", False, type=bool)  # default: hide archived topo images
+
         area_id = Area.get_id_by_slug(area_slug)
         topo_images: List[TopoImage] = TopoImage.return_all(
-            filter=lambda: TopoImage.area_id == area_id, order_by=lambda: TopoImage.order_index.asc()
+            filter=lambda: [TopoImage.archived == archived, TopoImage.area_id == area_id],
+            order_by=lambda: TopoImage.order_index.asc(),
         )
         include_secret = True
         if not get_show_secret():
@@ -99,6 +104,8 @@ class GetTopoImages(MethodView):
         if not include_secret:
             for ti in unfiltered_response:
                 ti["linePaths"] = [lp for lp in ti["linePaths"] if not lp["line"]["secret"]]
+        for ti in unfiltered_response:
+            ti["linePaths"] = [lp for lp in ti["linePaths"] if ti["archived"] or not lp["line"]["archived"]]
         return jsonify(unfiltered_response), 200
 
 
