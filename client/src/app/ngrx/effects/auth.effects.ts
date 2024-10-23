@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {select, Store} from '@ngrx/store';
-import {AppState} from '../reducers';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '../reducers';
 import * as AuthActions from '../actions/auth.actions';
 import {
   autoLoginFailed,
@@ -11,26 +11,34 @@ import {
   refreshAccessToken,
   startAccessTokenRefreshTimer,
   startRefreshTokenAboutToExpireTimer,
-  tryAutoLogin
+  tryAutoLogin,
 } from '../actions/auth.actions';
-import {catchError, filter, map, mergeMap, takeUntil, tap, withLatestFrom,} from 'rxjs/operators';
-import {AuthCrudService} from '../../services/crud/auth-crud.service';
-import {Router} from '@angular/router';
-import {forkJoin, of, timer} from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  mergeMap,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
+import { AuthCrudService } from '../../services/crud/auth-crud.service';
+import { Router } from '@angular/router';
+import { forkJoin, of, timer } from 'rxjs';
 import {
   selectAccessTokenExpires,
   selectAuthState,
   selectIsLoggedOut,
   selectRefreshTokenExpires,
 } from '../selectors/auth.selectors';
-import {HttpErrorResponse} from '@angular/common/http';
-import {bigIntTimer} from '../../utility/observables/bigint-timer';
-import {showRefreshTokenAboutToExpireAlert} from '../actions/app-level-alerts.actions';
-import {unixToDate} from '../../utility/operators/unix-to-date';
-import {toastNotification} from '../actions/notifications.actions';
-import {NotificationIdentifier} from '../../utility/notifications/notification-identifier.enum';
-import {LoginResponse} from '../../models/login-response';
-import {differenceInMilliseconds, isAfter, subMilliseconds} from 'date-fns';
+import { HttpErrorResponse } from '@angular/common/http';
+import { bigIntTimer } from '../../utility/observables/bigint-timer';
+import { showRefreshTokenAboutToExpireAlert } from '../actions/app-level-alerts.actions';
+import { unixToDate } from '../../utility/operators/unix-to-date';
+import { toastNotification } from '../actions/notifications.actions';
+import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
+import { LoginResponse } from '../../models/login-response';
+import { differenceInMilliseconds, isAfter, subMilliseconds } from 'date-fns';
 
 /**
  * Time before expiry before an access token gets refreshed. Accounts for an approximate server response delay of the refresh request

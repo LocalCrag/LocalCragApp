@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {TranslocoPipe} from '@jsverse/transloco';
-import {Line} from '../../../models/line';
+import { Component } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { Line } from '../../../models/line';
 
 @Component({
   selector: 'lc-project-climbed-form-title',

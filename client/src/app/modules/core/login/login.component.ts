@@ -1,12 +1,12 @@
-import {Component, HostBinding, OnInit, ViewChild,} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {select, Store} from '@ngrx/store';
-import {login} from 'src/app/ngrx/actions/auth.actions';
-import {AppState} from '../../../ngrx/reducers';
-import {LoadingState} from '../../../enums/loading-state';
-import {Observable} from 'rxjs';
-import {selectLoginLoadingState} from '../../../ngrx/selectors/auth.selectors';
-import {FormDirective} from '../../shared/forms/form.directive';
+import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { login } from 'src/app/ngrx/actions/auth.actions';
+import { AppState } from '../../../ngrx/reducers';
+import { LoadingState } from '../../../enums/loading-state';
+import { Observable } from 'rxjs';
+import { selectLoginLoadingState } from '../../../ngrx/selectors/auth.selectors';
+import { FormDirective } from '../../shared/forms/form.directive';
 
 /**
  * Component that shows a login form.

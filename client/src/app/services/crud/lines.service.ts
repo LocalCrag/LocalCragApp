@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Line} from '../../models/line';
-import {Paginated} from '../../models/paginated';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Line } from '../../models/line';
+import { Paginated } from '../../models/paginated';
 
 /**
  * CRUD service for lines.

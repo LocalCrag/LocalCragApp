@@ -1,24 +1,24 @@
-import {Component, OnInit} from '@angular/core';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {RouterLink} from '@angular/router';
-import {SelectItem} from 'primeng/api';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {LoadingState} from '../../../enums/loading-state';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {MenuPage} from '../../../models/menu-page';
-import {MenuPagesService} from '../../../services/crud/menu-pages.service';
-import {SharedModule} from '../../shared/shared.module';
-import {FormsModule} from '@angular/forms';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit } from '@angular/core';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { RouterLink } from '@angular/router';
+import { SelectItem } from 'primeng/api';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { LoadingState } from '../../../enums/loading-state';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { environment } from '../../../../environments/environment';
+import { MenuPage } from '../../../models/menu-page';
+import { MenuPagesService } from '../../../services/crud/menu-pages.service';
+import { SharedModule } from '../../shared/shared.module';
+import { FormsModule } from '@angular/forms';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-pages-list',

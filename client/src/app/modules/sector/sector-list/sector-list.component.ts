@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {TranslocoService} from '@jsverse/transloco';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {Sector} from '../../../models/sector';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {ActivatedRoute} from '@angular/router';
-import {PrimeIcons, SelectItem} from 'primeng/api';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import { Component, OnInit } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { TranslocoService } from '@jsverse/transloco';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { Sector } from '../../../models/sector';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { ActivatedRoute } from '@angular/router';
+import { PrimeIcons, SelectItem } from 'primeng/api';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 /**
  * Component that displays a list of sectors.
@@ -24,7 +24,7 @@ import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
   providers: [DialogService],
 })
 @UntilDestroy()
-export class SectorListComponent implements OnInit{
+export class SectorListComponent implements OnInit {
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;

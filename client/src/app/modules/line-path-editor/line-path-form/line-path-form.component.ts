@@ -1,22 +1,22 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {LinePath} from '../../../models/line-path';
-import {LinePathsService} from '../../../services/crud/line-paths.service';
-import {LinesService} from '../../../services/crud/lines.service';
-import {Line} from '../../../models/line';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
-import {forkJoin} from 'rxjs';
-import {LinePathEditorComponent} from '../line-path-editor/line-path-editor.component';
-import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { LinePath } from '../../../models/line-path';
+import { LinePathsService } from '../../../services/crud/line-paths.service';
+import { LinesService } from '../../../services/crud/lines.service';
+import { Line } from '../../../models/line';
+import { TopoImagesService } from '../../../services/crud/topo-images.service';
+import { forkJoin } from 'rxjs';
+import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
+import { Title } from '@angular/platform-browser';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form for line paths.
@@ -26,7 +26,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
   templateUrl: './line-path-form.component.html',
   styleUrls: ['./line-path-form.component.scss'],
 })
-export class LinePathFormComponent implements OnInit{
+export class LinePathFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(LinePathEditorComponent) linePathEditor: LinePathEditorComponent;
 

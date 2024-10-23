@@ -1,21 +1,30 @@
-import {Component, HostBinding, OnDestroy, OnInit, ViewChild,} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
-import {LoadingState} from '../../../enums/loading-state';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {AppState} from '../../../ngrx/reducers';
-import {selectIsLoggedIn, selectResetPasswordLoadingState,} from '../../../ngrx/selectors/auth.selectors';
-import {take} from 'rxjs/operators';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {resetPassword} from 'src/app/ngrx/actions/auth.actions';
-import {passwordsValidator} from '../../../utility/validators/passwords.validator';
-import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  Component,
+  HostBinding,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { LoadingState } from '../../../enums/loading-state';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '../../../ngrx/reducers';
+import {
+  selectIsLoggedIn,
+  selectResetPasswordLoadingState,
+} from '../../../ngrx/selectors/auth.selectors';
+import { take } from 'rxjs/operators';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
+import { passwordsValidator } from '../../../utility/validators/passwords.validator';
+import { Title } from '@angular/platform-browser';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-reset-password',

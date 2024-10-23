@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Area} from '../../../models/area';
-import {AreasService} from '../../../services/crud/areas.service';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../utility/misc/grades';
-import {MapStyles} from '../../../enums/map-styles';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Area } from '../../../models/area';
+import { AreasService } from '../../../services/crud/areas.service';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../utility/misc/grades';
+import { MapStyles } from '../../../enums/map-styles';
 
 @Component({
   selector: 'lc-area-info',

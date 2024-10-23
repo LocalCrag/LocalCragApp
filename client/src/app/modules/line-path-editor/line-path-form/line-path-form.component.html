@@ -35,8 +35,14 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="path-editor">{{ t("linePathLabel") }}</label>
-          <lc-line-path-editor formControlName="path" lcFormControl id="path-editor">
+          <label class="form-label" for="path-editor">{{
+            t("linePathLabel")
+          }}</label>
+          <lc-line-path-editor
+            formControlName="path"
+            lcFormControl
+            id="path-editor"
+          >
           </lc-line-path-editor>
           <small class="p-error" *lcIfError="'required'">{{
             t("drawALineWithAtLeastTwoAnchorPoints")

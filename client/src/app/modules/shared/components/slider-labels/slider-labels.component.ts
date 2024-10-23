@@ -7,7 +7,7 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import {TranslocoPipe} from '@jsverse/transloco';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-slider-labels',

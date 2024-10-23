@@ -10,7 +10,9 @@
       <ng-container *ngIf="sectorForm">
         <form [formGroup]="sectorForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="name">{{ t("sectorNameLabel") }}</label>
+            <label class="form-label" for="name">{{
+              t("sectorNameLabel")
+            }}</label>
             <input
               id="name"
               type="text"
@@ -71,7 +73,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="description">{{ t("sectorDescriptionLabel") }}</label>
+            <label class="form-label" for="description">{{
+              t("sectorDescriptionLabel")
+            }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -136,7 +140,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="rules">{{ t("sectorRulesLabel") }}</label>
+            <label class="form-label" for="rules">{{
+              t("sectorRulesLabel")
+            }}</label>
             <p-editor
               id="rules"
               formControlName="rules"
@@ -189,7 +195,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="map-markers">{{ t("mapMarkersLabel") }}</label>
+            <label class="form-label" for="map-markers">{{
+              t("mapMarkersLabel")
+            }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -200,7 +208,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="secret">{{ t("sectorOptionsLabel") }}</label>
+            <label class="form-label" for="secret">{{
+              t("sectorOptionsLabel")
+            }}</label>
             <p-checkbox
               label="{{ t('sectorSecretLabel') }}"
               name="secret"

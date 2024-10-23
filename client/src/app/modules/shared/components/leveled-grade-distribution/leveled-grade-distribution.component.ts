@@ -1,6 +1,6 @@
-import {Component, Input, OnInit,} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../../utility/misc/grades';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../../utility/misc/grades';
 
 /**
  * Component that displays a leveled grade distribution.

@@ -1,5 +1,5 @@
-import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {AppLevelAlertsState} from '../reducers/app-level-alerts.reducers';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { AppLevelAlertsState } from '../reducers/app-level-alerts.reducers';
 
 export const selectAppLevelAlertsState =
   createFeatureSelector<AppLevelAlertsState>('appLevelAlerts');

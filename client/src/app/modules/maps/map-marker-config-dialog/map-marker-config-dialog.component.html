@@ -35,7 +35,9 @@
       </div>
 
       <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label" for="coordinates">{{ t("coordinatesLabel") }}</label>
+        <label class="form-label" for="coordinates">{{
+          t("coordinatesLabel")
+        }}</label>
         <lc-coordinates
           id="coordinates"
           formControlName="coordinates"
@@ -70,7 +72,9 @@
         lcControlGroup
         *ngIf="!nameAndDescriptionHidden"
       >
-        <label class="form-label" for="description">{{ t("markerDescriptionLabel") }}</label>
+        <label class="form-label" for="description">{{
+          t("markerDescriptionLabel")
+        }}</label>
         <p-editor
           id="description"
           formControlName="description"

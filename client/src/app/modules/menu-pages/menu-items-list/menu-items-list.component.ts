@@ -1,27 +1,31 @@
-import {Component, OnInit} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {MenuItem} from '../../../models/menu-item';
-import {MenuItemsService} from '../../../services/crud/menu-items.service';
-import {MenuItemPosition} from '../../../enums/menu-item-position';
-import {CardModule} from 'primeng/card';
-import {DataViewModule} from 'primeng/dataview';
-import {ButtonModule} from 'primeng/button';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {RouterLink} from '@angular/router';
-import {MenuItemType} from '../../../enums/menu-item-type';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {reloadMenus} from '../../../ngrx/actions/core.actions';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import { Component, OnInit } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { environment } from '../../../../environments/environment';
+import { MenuItem } from '../../../models/menu-item';
+import { MenuItemsService } from '../../../services/crud/menu-items.service';
+import { MenuItemPosition } from '../../../enums/menu-item-position';
+import { CardModule } from 'primeng/card';
+import { DataViewModule } from 'primeng/dataview';
+import { ButtonModule } from 'primeng/button';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { MenuItemType } from '../../../enums/menu-item-type';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { reloadMenus } from '../../../ngrx/actions/core.actions';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-menu-items-list',

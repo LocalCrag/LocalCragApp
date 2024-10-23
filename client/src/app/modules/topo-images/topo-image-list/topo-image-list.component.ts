@@ -1,31 +1,31 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {ConfirmationService, PrimeIcons, SelectItem} from 'primeng/api';
-import {forkJoin, mergeMap, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {ActivatedRoute, Router, Scroll} from '@angular/router';
-import {TranslocoService} from '@jsverse/transloco';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {TopoImage} from '../../../models/topo-image';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {LinePath} from '../../../models/line-path';
-import {LinePathsService} from '../../../services/crud/line-paths.service';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {ViewportScroller} from '@angular/common';
-import {filter, take} from 'rxjs/operators';
-import {Line} from '../../../models/line';
-import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
-import {TicksService} from '../../../services/crud/ticks.service';
-import {AreasService} from '../../../services/crud/areas.service';
-import {Actions, ofType} from '@ngrx/effects';
-import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
-import {Area} from '../../../models/area';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
+import { forkJoin, mergeMap, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { ActivatedRoute, Router, Scroll } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { TopoImage } from '../../../models/topo-image';
+import { TopoImagesService } from '../../../services/crud/topo-images.service';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { LinePath } from '../../../models/line-path';
+import { LinePathsService } from '../../../services/crud/line-paths.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ViewportScroller } from '@angular/common';
+import { filter, take } from 'rxjs/operators';
+import { Line } from '../../../models/line';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { TicksService } from '../../../services/crud/ticks.service';
+import { AreasService } from '../../../services/crud/areas.service';
+import { Actions, ofType } from '@ngrx/effects';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { Area } from '../../../models/area';
 
 /**
  * Component that lists all topo images in an area.
@@ -38,7 +38,7 @@ import {Area} from '../../../models/area';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class TopoImageListComponent implements OnInit{
+export class TopoImageListComponent implements OnInit {
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;

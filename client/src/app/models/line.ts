@@ -1,10 +1,10 @@
-import {AbstractModel} from './abstract-model';
-import {LineType} from '../enums/line-type';
-import {deserializeGrade, Grade} from '../utility/misc/grades';
-import {LinePath} from './line-path';
-import {TopoImage} from './topo-image';
-import {StartingPosition} from '../enums/starting-position';
-import {Area} from './area';
+import { AbstractModel } from './abstract-model';
+import { LineType } from '../enums/line-type';
+import { deserializeGrade, Grade } from '../utility/misc/grades';
+import { LinePath } from './line-path';
+import { TopoImage } from './topo-image';
+import { StartingPosition } from '../enums/starting-position';
+import { Area } from './area';
 
 export interface LineVideo {
   url: string;

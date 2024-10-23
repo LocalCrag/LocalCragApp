@@ -1,4 +1,4 @@
-import {AbstractModel} from './abstract-model';
+import { AbstractModel } from './abstract-model';
 
 /**
  * Model of a menu page.

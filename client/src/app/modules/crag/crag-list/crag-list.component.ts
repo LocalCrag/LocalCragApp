@@ -1,17 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
-import {CragsService} from '../../../services/crud/crags.service';
-import {LoadingState} from '../../../enums/loading-state';
-import {PrimeIcons, SelectItem} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {environment} from '../../../../environments/environment';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { Component, OnInit } from '@angular/core';
+import { Crag } from '../../../models/crag';
+import { CragsService } from '../../../services/crud/crags.service';
+import { LoadingState } from '../../../enums/loading-state';
+import { PrimeIcons, SelectItem } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { environment } from '../../../../environments/environment';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Component that lists all crags in an area.

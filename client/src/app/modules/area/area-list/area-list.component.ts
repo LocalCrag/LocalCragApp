@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {PrimeIcons, SelectItem} from 'primeng/api';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {TranslocoService} from '@jsverse/transloco';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {Area} from '../../../models/area';
-import {AreasService} from '../../../services/crud/areas.service';
-import {ActivatedRoute} from '@angular/router';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { Component, OnInit } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { PrimeIcons, SelectItem } from 'primeng/api';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { TranslocoService } from '@jsverse/transloco';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { Area } from '../../../models/area';
+import { AreasService } from '../../../services/crud/areas.service';
+import { ActivatedRoute } from '@angular/router';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Component that lists all areas in a sector.

@@ -1,17 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {
-  GradeDistributionBarChartComponent
-} from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {SharedModule} from '../../shared/shared.module';
-import {SkeletonModule} from 'primeng/skeleton';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../utility/misc/grades';
-import {Region} from '../../../models/region';
-import {RegionService} from '../../../services/crud/region.service';
-import {NgIf} from '@angular/common';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {AscentCountComponent} from '../../ascent/ascent-count/ascent-count.component';
-import {MapComponent} from '../../maps/map/map.component';
+import { Component, OnInit } from '@angular/core';
+import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import { SharedModule } from '../../shared/shared.module';
+import { SkeletonModule } from 'primeng/skeleton';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../utility/misc/grades';
+import { Region } from '../../../models/region';
+import { RegionService } from '../../../services/crud/region.service';
+import { NgIf } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { MapComponent } from '../../maps/map/map.component';
 
 /**
  * Component that shows information about a region.

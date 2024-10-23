@@ -1,7 +1,7 @@
-import {AbstractModel} from './abstract-model';
-import {MenuItemType} from '../enums/menu-item-type';
-import {MenuItemPosition} from '../enums/menu-item-position';
-import {MenuPage} from './menu-page';
+import { AbstractModel } from './abstract-model';
+import { MenuItemType } from '../enums/menu-item-type';
+import { MenuItemPosition } from '../enums/menu-item-position';
+import { MenuPage } from './menu-page';
 
 /**
  * Model of a menu item.

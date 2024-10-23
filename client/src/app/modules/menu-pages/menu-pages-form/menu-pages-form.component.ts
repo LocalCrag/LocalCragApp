@@ -1,31 +1,36 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {Editor, EditorModule} from 'primeng/editor';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UploadService} from '../../../services/crud/upload.service';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {MenuPage} from '../../../models/menu-page';
-import {MenuPagesService} from '../../../services/crud/menu-pages.service';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {InputTextModule} from 'primeng/inputtext';
-import {NgIf} from '@angular/common';
-import {PaginatorModule} from 'primeng/paginator';
-import {SharedModule} from '../../shared/shared.module';
-import {reloadMenus} from '../../../ngrx/actions/core.actions';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { Editor, EditorModule } from 'primeng/editor';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UploadService } from '../../../services/crud/upload.service';
+import { Title } from '@angular/platform-browser';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { ConfirmationService } from 'primeng/api';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { environment } from '../../../../environments/environment';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { MenuPage } from '../../../models/menu-page';
+import { MenuPagesService } from '../../../services/crud/menu-pages.service';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgIf } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { SharedModule } from '../../shared/shared.module';
+import { reloadMenus } from '../../../ngrx/actions/core.actions';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-pages-form',

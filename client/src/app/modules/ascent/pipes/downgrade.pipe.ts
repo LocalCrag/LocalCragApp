@@ -1,5 +1,5 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {Ascent} from '../../../models/ascent';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Ascent } from '../../../models/ascent';
 
 @Pipe({
   name: 'downgrade',

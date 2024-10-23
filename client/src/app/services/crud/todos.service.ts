@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Paginated} from '../../models/paginated';
-import {map} from 'rxjs/operators';
-import {Todo} from '../../models/todo';
-import {Line} from '../../models/line';
-import {TodoPriority} from '../../enums/todo-priority';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Paginated } from '../../models/paginated';
+import { map } from 'rxjs/operators';
+import { Todo } from '../../models/todo';
+import { Line } from '../../models/line';
+import { TodoPriority } from '../../enums/todo-priority';
 
 @Injectable({
   providedIn: 'root',

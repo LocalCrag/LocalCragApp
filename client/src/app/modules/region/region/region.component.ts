@@ -1,21 +1,21 @@
-import {Component, OnInit} from '@angular/core';
-import {BreadcrumbModule} from 'primeng/breadcrumb';
-import {CardModule} from 'primeng/card';
-import {NgIf} from '@angular/common';
-import {Router, RouterOutlet} from '@angular/router';
-import {TabMenuModule} from 'primeng/tabmenu';
-import {MenuItem} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {select, Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {forkJoin, of} from 'rxjs';
-import {catchError, take} from 'rxjs/operators';
-import {selectIsLoggedIn} from '../../../ngrx/selectors/auth.selectors';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Region} from '../../../models/region';
-import {RegionService} from '../../../services/crud/region.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit } from '@angular/core';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { CardModule } from 'primeng/card';
+import { NgIf } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { MenuItem } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { select, Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import { forkJoin, of } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
+import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Region } from '../../../models/region';
+import { RegionService } from '../../../services/crud/region.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-region',

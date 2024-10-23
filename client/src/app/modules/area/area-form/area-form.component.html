@@ -8,7 +8,9 @@
       <ng-container *ngIf="areaForm">
         <form [formGroup]="areaForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="name">{{ t("areaNameLabel") }}</label>
+            <label class="form-label" for="name">{{
+              t("areaNameLabel")
+            }}</label>
             <input
               id="name"
               type="text"
@@ -69,7 +71,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="description">{{ t("areaDescriptionLabel") }}</label>
+            <label class="form-label" for="description">{{
+              t("areaDescriptionLabel")
+            }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -134,7 +138,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="portrait-image">{{ t("areaPortraitImageLabel") }}</label>
+            <label class="form-label" for="portrait-image">{{
+              t("areaPortraitImageLabel")
+            }}</label>
             <lc-single-image-upload
               id="portrait-image"
               lcFormControl
@@ -145,7 +151,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="map-markers">{{ t("mapMarkersLabel") }}</label>
+            <label class="form-label" for="map-markers">{{
+              t("mapMarkersLabel")
+            }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -156,7 +164,9 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="secret">{{ t("secretOptionsLabel") }}</label>
+            <label class="form-label" for="secret">{{
+              t("secretOptionsLabel")
+            }}</label>
             <p-checkbox
               label="{{ t('secretSecretLabel') }}"
               name="secret"

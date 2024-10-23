@@ -1,5 +1,5 @@
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * Maps a unix timestamp to a date. If the unix timestamp is invalid, it is mapped to null instead.

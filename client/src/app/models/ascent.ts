@@ -1,11 +1,11 @@
-import {AbstractModel} from './abstract-model';
-import {deserializeGrade, Grade} from '../utility/misc/grades';
-import {Line} from './line';
-import {formatISO, parseISO} from 'date-fns';
-import {User} from './user';
-import {Area} from './area';
-import {Sector} from './sector';
-import {Crag} from './crag';
+import { AbstractModel } from './abstract-model';
+import { deserializeGrade, Grade } from '../utility/misc/grades';
+import { Line } from './line';
+import { formatISO, parseISO } from 'date-fns';
+import { User } from './user';
+import { Area } from './area';
+import { Sector } from './sector';
+import { Crag } from './crag';
 
 export class Ascent extends AbstractModel {
   flash: boolean;

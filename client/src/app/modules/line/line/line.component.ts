@@ -1,24 +1,24 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Crag} from '../../../models/crag';
-import {Sector} from '../../../models/sector';
-import {Area} from '../../../models/area';
-import {MenuItem} from 'primeng/api';
-import {CragsService} from '../../../services/crud/crags.service';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {AreasService} from '../../../services/crud/areas.service';
-import {TranslocoService} from '@jsverse/transloco';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {forkJoin, of} from 'rxjs';
-import {catchError, take} from 'rxjs/operators';
-import {selectIsModerator} from '../../../ngrx/selectors/auth.selectors';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Line} from '../../../models/line';
-import {LinesService} from '../../../services/crud/lines.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Crag } from '../../../models/crag';
+import { Sector } from '../../../models/sector';
+import { Area } from '../../../models/area';
+import { MenuItem } from 'primeng/api';
+import { CragsService } from '../../../services/crud/crags.service';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { AreasService } from '../../../services/crud/areas.service';
+import { TranslocoService } from '@jsverse/transloco';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import { forkJoin, of } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
+import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Line } from '../../../models/line';
+import { LinesService } from '../../../services/crud/lines.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-line',
@@ -27,7 +27,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class LineComponent implements OnInit{
+export class LineComponent implements OnInit {
   public crag: Crag;
   public sector: Sector;
   public area: Area;

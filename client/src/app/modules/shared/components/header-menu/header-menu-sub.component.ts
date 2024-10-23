@@ -8,13 +8,13 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {AngleDownIcon} from 'primeng/icons/angledown';
-import {AngleRightIcon} from 'primeng/icons/angleright';
-import {Router} from '@angular/router';
-import {ProcessedMenuItem} from './processed-menu-item';
-import {HeaderMenuService} from './header-menu.service';
-import {MOBILE_BREAKPOINT_HEADER_MENU} from '../../../../utility/misc/breakpoints';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AngleDownIcon } from 'primeng/icons/angledown';
+import { AngleRightIcon } from 'primeng/icons/angleright';
+import { Router } from '@angular/router';
+import { ProcessedMenuItem } from './processed-menu-item';
+import { HeaderMenuService } from './header-menu.service';
+import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
 
 @Component({
   selector: 'lc-header-menu-sub',

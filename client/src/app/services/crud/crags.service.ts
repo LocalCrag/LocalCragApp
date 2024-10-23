@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {Crag} from '../../models/crag';
-import {HttpClient} from '@angular/common/http';
-import {ItemOrder} from '../../interfaces/item-order.interface';
-import {Store} from '@ngrx/store';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Crag } from '../../models/crag';
+import { HttpClient } from '@angular/common/http';
+import { ItemOrder } from '../../interfaces/item-order.interface';
+import { Store } from '@ngrx/store';
+import { reloadMenus } from '../../ngrx/actions/core.actions';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
 
 /**
  * CRUD service for crags.

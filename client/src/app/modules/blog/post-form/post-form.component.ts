@@ -1,29 +1,34 @@
-import {Component, OnInit, ViewChild,} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {Post} from '../../../models/post';
-import {PostsService} from '../../../services/crud/posts.service';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {Editor, EditorModule} from 'primeng/editor';
-import {InputTextModule} from 'primeng/inputtext';
-import {NgIf} from '@angular/common';
-import {SharedModule} from '../../shared/shared.module';
-import {UploadService} from '../../../services/crud/upload.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { ConfirmationService } from 'primeng/api';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { environment } from '../../../../environments/environment';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { Post } from '../../../models/post';
+import { PostsService } from '../../../services/crud/posts.service';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { Editor, EditorModule } from 'primeng/editor';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgIf } from '@angular/common';
+import { SharedModule } from '../../shared/shared.module';
+import { UploadService } from '../../../services/crud/upload.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Form component for creating, editing and deleting blog posts.

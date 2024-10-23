@@ -1,5 +1,5 @@
-import {AbstractModel} from './abstract-model';
-import {ThumbnailWidths} from '../enums/thumbnail-widths';
+import { AbstractModel } from './abstract-model';
+import { ThumbnailWidths } from '../enums/thumbnail-widths';
 
 /**
  * Model of a file object.

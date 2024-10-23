@@ -1,9 +1,9 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Store} from '@ngrx/store';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, HostBinding, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Store } from '@ngrx/store';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Displays a message, requesting the user to check his mailbox for a password reset link.

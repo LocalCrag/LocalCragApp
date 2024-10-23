@@ -1,14 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {
-  GradeDistributionBarChartComponent
-} from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {NgIf} from '@angular/common';
-import {SharedModule} from '../../shared/shared.module';
-import {SkeletonModule} from 'primeng/skeleton';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {Region} from '../../../models/region';
-import {RegionService} from '../../../services/crud/region.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import { NgIf } from '@angular/common';
+import { SharedModule } from '../../shared/shared.module';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { Region } from '../../../models/region';
+import { RegionService } from '../../../services/crud/region.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * Component that displays region rules.
@@ -26,7 +24,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })
-export class RegionRulesComponent implements OnInit{
+export class RegionRulesComponent implements OnInit {
   public region: Region;
 
   constructor(

@@ -1,4 +1,4 @@
-import {User} from './user';
+import { User } from './user';
 
 export class Ranking {
   top10: number;

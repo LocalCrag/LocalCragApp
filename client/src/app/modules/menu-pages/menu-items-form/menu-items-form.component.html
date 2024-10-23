@@ -12,7 +12,12 @@
       <form [formGroup]="menuItemForm" lcForm *ngIf="menuPages">
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-          <p-dropdown formControlName="type" [options]="types" lcFormControl id="type">
+          <p-dropdown
+            formControlName="type"
+            [options]="types"
+            lcFormControl
+            id="type"
+          >
             <ng-template let-type pTemplate="item">
               <div class="flex align-items-center gap-2">
                 <div>{{ type | transloco }}</div>
@@ -28,7 +33,9 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="position">{{ t("positionLabel") }}</label>
+          <label class="form-label" for="position">{{
+            t("positionLabel")
+          }}</label>
           <p-dropdown
             id="position"
             formControlName="position"
@@ -50,7 +57,9 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="menu-page">{{ t("menuPageLabel") }}</label>
+          <label class="form-label" for="menu-page">{{
+            t("menuPageLabel")
+          }}</label>
           <p-dropdown
             id="menu-page"
             formControlName="menuPage"
@@ -73,7 +82,12 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="icon">{{ t("iconLabel") }}</label>
-          <p-dropdown formControlName="icon" id="icon" [options]="icons" lcFormControl>
+          <p-dropdown
+            formControlName="icon"
+            id="icon"
+            [options]="icons"
+            lcFormControl
+          >
             <ng-template let-icon pTemplate="item">
               <div class="flex align-items-center gap-2">
                 <i class="pi" [ngClass]="icon"></i>
