@@ -58,4 +58,4 @@ jobs:
       - name: Run Prettier
         run: |
           cd client
-          npm run prettier-check
+          npx prettier --check .
