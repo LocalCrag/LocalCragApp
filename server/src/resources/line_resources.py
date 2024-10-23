@@ -30,7 +30,7 @@ class GetLinesForLineEditor(MethodView):
         """
         Returns all lines of an area which is needed for the line select in the line editor.
         """
-        lines = Line.query.join(Area).filter(Line.archived == False, Area.slug == area_slug).order_by(Line.name).all()
+        lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
 
 
