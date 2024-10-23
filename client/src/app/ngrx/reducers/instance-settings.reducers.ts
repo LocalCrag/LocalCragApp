@@ -1,6 +1,6 @@
-import {Action, createReducer, on} from '@ngrx/store';
-import {File} from '../../models/file';
-import {updateInstanceSettings} from '../actions/instance-settings.actions';
+import { Action, createReducer, on } from '@ngrx/store';
+import { File } from '../../models/file';
+import { updateInstanceSettings } from '../actions/instance-settings.actions';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -16,7 +16,7 @@ export interface InstanceSettingsState {
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
-  superadminEmail: string;
+  maptilerApiKey: string;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -33,7 +33,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowHighlightColor: null,
   arrowHighlightTextColor: null,
   barChartColor: null,
-  superadminEmail: null,
+  maptilerApiKey: null,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -53,8 +53,11 @@ const instanceSettingsReducer = createReducer(
     arrowHighlightColor: action.settings.arrowHighlightColor,
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
-    superadminEmail: action.settings.superadminEmail,
+    maptilerApiKey: action.settings.maptilerApiKey,
   })),
 );
 
-export const reducer = (state: InstanceSettingsState | undefined, action: Action) => instanceSettingsReducer(state, action);
+export const reducer = (
+  state: InstanceSettingsState | undefined,
+  action: Action,
+) => instanceSettingsReducer(state, action);

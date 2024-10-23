@@ -1,24 +1,20 @@
-.clickable-data-item{
+.clickable-data-item {
   cursor: pointer;
   transition: background-color 0.25s ease;
 
-  &:hover{
+  &:hover {
     background-color: var(--surface-100);
   }
-
 }
 
-.p-card-content{
-
-  p-dataview{
+.p-card-content {
+  p-dataview {
     margin-left: -20px;
     margin-right: -20px;
     display: block;
 
-    .p-dataview-header{
-      padding:  1rem 1.5rem;
+    .p-dataview-header {
+      padding: 1rem 1.5rem;
     }
-
   }
-
 }

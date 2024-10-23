@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - main
-      - next
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
   check-migrate-from-prod-db:
     environment: Testing
@@ -49,6 +49,7 @@ jobs:
         run: |
           echo "${{ secrets.BACKUP_SERVER_SSH_KEY }}" >> backup_key.pem
           chmod 600 backup_key.pem
+          mkdir -p server/tests/dumps
           scp -i backup_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null  ${{ secrets.BACKUP_SERVER_USER }}@${{ secrets.BACKUP_SERVER_IP }}:${{ secrets.BACKUP_SERVER_DUMPPATH }} server/tests/dumps/localcrag_prod_dump.sql    
 
       - name: Setup database with prod dump

@@ -1,0 +1,61 @@
+name: Linting Pipeline
+on:
+  pull_request:
+    branches:
+      - main
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+jobs:
+  lint-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          cd server
+          pipenv install --dev
+
+      - name: Run Flake8
+        run: |
+          cd server
+          pipenv run flake8 .
+
+      - name: Run Black
+        run: |
+          cd server
+          pipenv run black --check .
+
+      - name: Run Isort
+        run: |
+          cd server
+          pipenv run isort --check-only .
+  lint-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd client
+          npm run lint
+
+      - name: Run Prettier
+        run: |
+          cd client
+          npx prettier --check .

@@ -1,124 +1,271 @@
-<ng-container *transloco="let t, read: 'instanceSettings.instanceSettingsForm'">
-
+<ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
   <div class="content">
-
-    <p-card header="{{t('editInstanceSettings')}}">
-
+    <p-card header="{{ t('editInstanceSettings') }}">
       <form [formGroup]="instanceSettingsForm" lcForm>
-
-        <p-divider align="center" type="solid" class="mb-2 block"><b>{{t('commonSettings')}}</b></p-divider>
+        <p-divider align="center" type="solid" class="mb-2 block"
+          ><b>{{ t("commonSettings") }}</b></p-divider
+        >
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('instanceNameLabel')}}</label>
-          <input type="text" pInputText formControlName="instanceName" placeholder="{{t('instanceNamePlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          <label class="form-label" for="instance-name">{{
+            t("instanceNameLabel")
+          }}</label>
+          <input
+            type="text"
+            pInputText
+            id="instance-name"
+            formControlName="instanceName"
+            placeholder="{{ t('instanceNamePlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('copyrightOwnerLabel')}}</label>
-          <input type="text" pInputText formControlName="copyrightOwner" placeholder="{{t('copyrightOwnerPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          <label class="form-label" for="copyright-owner">{{
+            t("copyrightOwnerLabel")
+          }}</label>
+          <input
+            id="copyright-owner"
+            type="text"
+            pInputText
+            formControlName="copyrightOwner"
+            placeholder="{{ t('copyrightOwnerPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('menuSettings')}}</b></p-divider>
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+          ><b>{{ t("menuSettings") }}</b></p-divider
+        >
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('youtubeUrlLabel')}}</label>
-          <input type="text" pInputText formControlName="youtubeUrl" placeholder="{{t('youtubeUrlPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('instagramUrlLabel')}}</label>
-          <input type="text" pInputText formControlName="instagramUrl" placeholder="{{t('instagramUrlPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrl')}}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
-        </div>
-
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('imagesSettings')}}</b></p-divider>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('logoImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="logoImage"></lc-single-image-upload>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('faviconImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="faviconImage"></lc-single-image-upload>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('mainBgImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="mainBgImage"></lc-single-image-upload>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('authBgImageLabel')}}</label>
-          <lc-single-image-upload lcFormControl formControlName="authBgImage"></lc-single-image-upload>
-        </div>
-
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('arrowsSettings')}}</b></p-divider>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('arrowColorLabel')}}</label>
-          <p-colorPicker formControlName="arrowColor"></p-colorPicker>
+          <label class="form-label" for="youtube-url">{{
+            t("youtubeUrlLabel")
+          }}</label>
+          <input
+            type="text"
+            pInputText
+            id="youtube-url"
+            formControlName="youtubeUrl"
+            placeholder="{{ t('youtubeUrlPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
+            t("invalidHttpUrl")
+          }}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('arrowTextColorLabel')}}</label>
-          <p-colorPicker formControlName="arrowTextColor"></p-colorPicker>
+          <label class="form-label" for="instagram-url">{{
+            t("instagramUrlLabel")
+          }}</label>
+          <input
+            type="text"
+            pInputText
+            id="instagram-url"
+            formControlName="instagramUrl"
+            placeholder="{{ t('instagramUrlPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
+            t("invalidHttpUrl")
+          }}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+          ><b>{{ t("imagesSettings") }}</b></p-divider
+        >
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="logo-upload">{{
+            t("logoImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            lcFormControl
+            id="logo-upload"
+            formControlName="logoImage"
+          ></lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('arrowHighlightColorLabel')}}</label>
-          <p-colorPicker formControlName="arrowHighlightColor"></p-colorPicker>
+          <label class="form-label" for="favicon-image-upload">{{
+            t("faviconImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            id="favicon-image-upload"
+            lcFormControl
+            formControlName="faviconImage"
+          ></lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('arrowHighlightTextColorLabel')}}</label>
-          <p-colorPicker formControlName="arrowHighlightTextColor"></p-colorPicker>
-        </div>
-
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"><b>{{t('chartSettings')}}</b></p-divider>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('barChartColorLabel')}}</label>
-          <p-colorPicker formControlName="barChartColor" format="rgb"></p-colorPicker>
-        </div>
-
-        <p-divider align="center" type="solid" class="mb-2 block"><b>{{t('matomoSettings')}}</b></p-divider>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('matomoTrackerUrlLabel')}}</label>
-          <input type="text" pInputText formControlName="matomoTrackerUrl" placeholder="{{t('matomoTrackerUrlPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          <label class="form-label" for="main-bg-image">{{
+            t("mainBgImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            id="main-bg-image"
+            lcFormControl
+            formControlName="mainBgImage"
+          ></lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('matomoSiteIdLabel')}}</label>
-          <input type="text" pInputText formControlName="matomoSiteId" placeholder="{{t('matomoSiteIdPlaceholder')}}"
-                 lcFormControl/>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          <label class="form-label" for="auth-bg-image">{{
+            t("authBgImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            id="auth-bg-image"
+            lcFormControl
+            formControlName="authBgImage"
+          ></lc-single-image-upload>
         </div>
 
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+          ><b>{{ t("arrowsSettings") }}</b></p-divider
+        >
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="arrow-color">{{
+            t("arrowColorLabel")
+          }}</label>
+          <p-colorPicker
+            formControlName="arrowColor"
+            id="arrow-color"
+          ></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="arrowTextColor">{{
+            t("arrowTextColorLabel")
+          }}</label>
+          <p-colorPicker
+            formControlName="arrowTextColor"
+            id="arrowTextColor"
+          ></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="arrow-highlight-color">{{
+            t("arrowHighlightColorLabel")
+          }}</label>
+          <p-colorPicker
+            formControlName="arrowHighlightColor"
+            id="arrow-highlight-color"
+          ></p-colorPicker>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="arrow-highlight-text-color">{{
+            t("arrowHighlightTextColorLabel")
+          }}</label>
+          <p-colorPicker
+            id="arrow-highlight-text-color"
+            formControlName="arrowHighlightTextColor"
+          ></p-colorPicker>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+          ><b>{{ t("chartSettings") }}</b></p-divider
+        >
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="bar-chart-color">{{
+            t("barChartColorLabel")
+          }}</label>
+          <p-colorPicker
+            id="bar-chart-color"
+            formControlName="barChartColor"
+            format="rgb"
+          ></p-colorPicker>
+        </div>
+
+        <p-divider align="center" type="solid" class="mb-2 block"
+          ><b>{{ t("matomoSettings") }}</b></p-divider
+        >
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="matomo-tracker-url">{{
+            t("matomoTrackerUrlLabel")
+          }}</label>
+          <input
+            type="text"
+            pInputText
+            id="matomo-tracker-url"
+            formControlName="matomoTrackerUrl"
+            placeholder="{{ t('matomoTrackerUrlPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="matomo-site-id">{{
+            t("matomoSiteIdLabel")
+          }}</label>
+          <input
+            type="text"
+            pInputText
+            id="matomo-site-id"
+            formControlName="matomoSiteId"
+            placeholder="{{ t('matomoSiteIdPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
+
+        <p-divider align="center" type="solid" class="mb-2 block"
+          ><b>{{ t("mapSettings") }}</b></p-divider
+        >
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="maptiler-api-key">{{
+            t("maptilerApiKeyLabel")
+          }}</label>
+          <input
+            id="maptiler-api-key"
+            type="text"
+            pInputText
+            formControlName="maptilerApiKey"
+            placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('editInstanceSettingsButtonLabel')}}" (click)="saveInstanceSettings()"
-                  icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING"></p-button>
+        <p-button
+          label="{{ t('editInstanceSettingsButtonLabel') }}"
+          (click)="saveInstanceSettings()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
       </div>
-
     </p-card>
-
   </div>
-
 </ng-container>

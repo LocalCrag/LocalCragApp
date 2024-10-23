@@ -1,42 +1,60 @@
-<ng-container *transloco="let t, read: 'login'">
-
-<div class="auth-container">
-
+<ng-container *transloco="let t; read: 'login'">
+  <div class="auth-container">
     <div class="card login-card">
+      <h3>{{ t("title") }}</h3>
 
-      <h3>{{t('title')}}</h3>
-
-      {{t('description')}}
+      {{ t("description") }}
 
       <form [formGroup]="loginForm" lcForm>
-
         <div class="card-container block" lcControlGroup>
-          <input type="text" pInputText formControlName="email" placeholder="{{t('emailPlaceholder')}}"
-                 lcFormControl data-cy="login-form-email"/>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <input
+            type="text"
+            pInputText
+            formControlName="email"
+            placeholder="{{ t('emailPlaceholder') }}"
+            lcFormControl
+            data-cy="login-form-email"
+          />
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
-          <p-password formControlName="password" [toggleMask]="true" [feedback]="false" lcFormControl
-                      placeholder="{{t('passwordPlaceholder')}}"
-                      data-cy="login-form-password"></p-password>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <p-password
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            lcFormControl
+            placeholder="{{ t('passwordPlaceholder') }}"
+            data-cy="login-form-password"
+          ></p-password>
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
         </div>
-
       </form>
 
-      <p-button label="{{t('loginButtonLabel')}}" (click)="login()"
-                data-cy="login-form-submit"
-                [loading]="(loadingState$ | async) === loadingStates.LOADING"></p-button>
+      <p-button
+        label="{{ t('loginButtonLabel') }}"
+        (click)="login()"
+        data-cy="login-form-submit"
+        [loading]="(loadingState$ | async) === loadingStates.LOADING"
+      ></p-button>
 
-      <p-button label="{{t('forgotPasswordButtonLabel')}}" styleClass="p-button-link" class="link-button"
-                [routerLink]="'/forgot-password'"></p-button>
+      <p-button
+        label="{{ t('forgotPasswordButtonLabel') }}"
+        styleClass="p-button-link"
+        class="link-button"
+        [routerLink]="'/forgot-password'"
+      ></p-button>
 
-      <p-button label="{{t('registerButtonLabel')}}" styleClass="p-button-link" class="link-button"
-                [routerLink]="'/register'"></p-button>
-
+      <p-button
+        label="{{ t('registerButtonLabel') }}"
+        styleClass="p-button-link"
+        class="link-button"
+        [routerLink]="'/register'"
+      ></p-button>
     </div>
-
   </div>
-
 </ng-container>

@@ -1,11 +1,11 @@
 from sqlalchemy import func
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
-from sqlalchemy.dialects.postgresql import UUID, JSON
-
 from models.base_entity import BaseEntity
+from models.line import Line
+from models.topo_image import TopoImage
 
 
 class LinePath(BaseEntity):
@@ -13,13 +13,11 @@ class LinePath(BaseEntity):
 
     line_id: Mapped[UUID] = mapped_column(db.ForeignKey("lines.id"), primary_key=True)
     topo_image_id: Mapped[UUID] = mapped_column(db.ForeignKey("topo_images.id"), primary_key=True)
-    line: Mapped["Line"] = relationship(overlaps="line_paths")
-    topo_image: Mapped["TopoImage"] = relationship(overlaps="line_paths")
+    line: Mapped[Line] = relationship(overlaps="line_paths")
+    topo_image: Mapped[TopoImage] = relationship(overlaps="line_paths")
     path = db.Column(JSON, nullable=False)
-    order_index = db.Column(db.Integer, nullable=False, server_default='0')
-    order_index_for_line = db.Column(db.Integer, nullable=False, server_default='0')
-
-
+    order_index = db.Column(db.Integer, nullable=False, server_default="0")
+    order_index_for_line = db.Column(db.Integer, nullable=False, server_default="0")
 
     @classmethod
     def exists_for_topo_image(cls, topo_image_id, line_id):

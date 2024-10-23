@@ -1,26 +1,28 @@
 import {
-  AfterViewInit, ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter, HostListener,
+  EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
-import {TopoImage} from '../../../../models/topo-image';
-import {ThumbnailWidths} from '../../../../enums/thumbnail-widths';
-import {LinePath} from '../../../../models/line-path';
-import {environment} from '../../../../../environments/environment';
-import {debounceTime, fromEvent, Subject, timer} from 'rxjs';
-import {Label, PointFeatureLabelPlacement} from './point-feature-label-placement';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {Store} from '@ngrx/store';
-import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
+import { TopoImage } from '../../../../models/topo-image';
+import { ThumbnailWidths } from '../../../../enums/thumbnail-widths';
+import { LinePath } from '../../../../models/line-path';
+import { debounceTime, Subject } from 'rxjs';
+import {
+  Label,
+  PointFeatureLabelPlacement,
+} from './point-feature-label-placement';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Store } from '@ngrx/store';
+import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
-import {selectInstanceSettingsState} from '../../../../ngrx/selectors/instance-settings.selectors';
-import {take} from 'rxjs/operators';
+import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
+import { take } from 'rxjs/operators';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -29,11 +31,10 @@ import {take} from 'rxjs/operators';
   selector: 'lc-topo-image',
   templateUrl: './topo-image.component.html',
   styleUrls: ['./topo-image.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
 export class TopoImageComponent implements OnInit {
-
   @ViewChild('konvaContainer') konvaContainer: ElementRef;
 
   @Input() topoImage: TopoImage;
@@ -60,16 +61,15 @@ export class TopoImageComponent implements OnInit {
   private resizeRenderSubject = new Subject<any>();
   private windowWidth: number;
 
-
-  constructor(private el: ElementRef,
-              private store: Store) {
-  }
+  constructor(
+    private el: ElementRef,
+    private store: Store,
+  ) {}
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.resizeRenderSubject.next(null);
   }
-
 
   /**
    * Loads the background image and draws the lines on it.
@@ -80,27 +80,28 @@ export class TopoImageComponent implements OnInit {
     // kind of solved by using a timeout...
     setTimeout(() => {
       this.render();
-    })
+    });
     // Needs to be recalculated on window resize - fast back and forth changes shouldn't trigger anything, thats
     // Why we check for window.innerWidth changes.
     this.windowWidth = window.innerWidth;
-    this.resizeRenderSubject.pipe(debounceTime(500), untilDestroyed(this)).subscribe(() => {
-      if (window.innerWidth != this.windowWidth) {
-        this.render();
-        this.windowWidth = window.innerWidth;
-      }
-    });
+    this.resizeRenderSubject
+      .pipe(debounceTime(500), untilDestroyed(this))
+      .subscribe(() => {
+        if (window.innerWidth != this.windowWidth) {
+          this.render();
+          this.windowWidth = window.innerWidth;
+        }
+      });
   }
 
   render() {
-    this.store.select(selectIsMobile).subscribe(isMobile => {
+    this.store.select(selectIsMobile).subscribe((isMobile) => {
       this.isMobile = isMobile;
       this.calculateSkeletonDimensionsAndSetImageSource();
       this.backgroundImage.onload = () => {
         this.drawLinesAndLabels();
-      }
+      };
     });
-
   }
 
   calculateSkeletonDimensionsAndSetImageSource() {
@@ -113,15 +114,24 @@ export class TopoImageComponent implements OnInit {
       this.skeletonWidth = ThumbnailWidths.XS;
       this.backgroundImage.src = this.topoImage.image.thumbnailXS;
     }
-    if (containerWidth > ThumbnailWidths.XS && containerWidth <= ThumbnailWidths.S) {
+    if (
+      containerWidth > ThumbnailWidths.XS &&
+      containerWidth <= ThumbnailWidths.S
+    ) {
       this.skeletonWidth = ThumbnailWidths.S;
       this.backgroundImage.src = this.topoImage.image.thumbnailS;
     }
-    if (containerWidth > ThumbnailWidths.S && containerWidth <= ThumbnailWidths.M) {
+    if (
+      containerWidth > ThumbnailWidths.S &&
+      containerWidth <= ThumbnailWidths.M
+    ) {
       this.skeletonWidth = ThumbnailWidths.M;
       this.backgroundImage.src = this.topoImage.image.thumbnailM;
     }
-    if (containerWidth > ThumbnailWidths.M && containerWidth <= ThumbnailWidths.XL) {
+    if (
+      containerWidth > ThumbnailWidths.M &&
+      containerWidth <= ThumbnailWidths.XL
+    ) {
       this.skeletonWidth = ThumbnailWidths.L;
       this.backgroundImage.src = this.topoImage.image.thumbnailL;
     }
@@ -134,7 +144,9 @@ export class TopoImageComponent implements OnInit {
     if (this.skeletonWidth > containerWidth) {
       this.skeletonWidth = containerWidth;
     }
-    this.skeletonHeight = this.skeletonWidth * (this.topoImage.image.height / this.topoImage.image.width)
+    this.skeletonHeight =
+      this.skeletonWidth *
+      (this.topoImage.image.height / this.topoImage.image.width);
   }
 
   drawLinesAndLabels() {
@@ -145,23 +157,27 @@ export class TopoImageComponent implements OnInit {
     this.createKonvaStageAndLayer();
     const labels: Label[] = [];
     this.topoImage.linePaths.map((linePath, index) => {
-      this.drawLine(linePath, this.linePathInProgress ? .3 : 1);
+      this.drawLine(linePath, this.linePathInProgress ? 0.3 : 1);
       if (this.showLineNumbers) {
         labels.push(this.getLineLabel(linePath, String(index + 1)));
       }
     });
     if (this.showLineNumbers && labels.length > 0) {
-      const PFLP = new PointFeatureLabelPlacement(this.width, this.height, labels);
+      const PFLP = new PointFeatureLabelPlacement(
+        this.width,
+        this.height,
+        labels,
+      );
       PFLP.discreteGradientDescent();
       this.topoImage.linePaths.map((linePath, index) => {
         this.placeLineLabel(linePath, labels[index]);
       });
     }
     if (this.linePathInProgress) {
-      this.drawLine(this.linePathInProgress, 1)
+      this.drawLine(this.linePathInProgress, 1);
     }
     if (this.editorMode) {
-      this.topoImage.linePaths.map(linePath => {
+      this.topoImage.linePaths.map((linePath) => {
         this.drawAnchors(linePath);
       });
     }
@@ -177,37 +193,43 @@ export class TopoImageComponent implements OnInit {
       height: this.height,
       preventDefault: this.editorMode,
     });
-    this.lineLayer = new Konva.Layer({preventDefault: this.editorMode,});
+    this.lineLayer = new Konva.Layer({ preventDefault: this.editorMode });
     this.stage.add(this.lineLayer);
-    this.numberLayer = new Konva.Layer({preventDefault: this.editorMode,});
+    this.numberLayer = new Konva.Layer({ preventDefault: this.editorMode });
     this.stage.add(this.numberLayer);
     const background = new Konva.Rect({
       width: this.width,
       height: this.height,
       preventDefault: this.editorMode,
-    })
+    });
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
       background.on('click', (event) => {
         event.cancelBubble = true;
-        this.imageClick.emit([event.evt.offsetX * (1 / this.scale), event.evt.offsetY * (1 / this.scale)]);
+        this.imageClick.emit([
+          event.evt.offsetX * (1 / this.scale),
+          event.evt.offsetY * (1 / this.scale),
+        ]);
       });
       background.on('touchstart', (event) => {
         event.cancelBubble = true;
         const rect = (event.evt.target as HTMLElement).getBoundingClientRect();
         const offsetX = event.evt.targetTouches[0].clientX - rect.left;
         const offsetY = event.evt.targetTouches[0].clientY - rect.top;
-        this.imageClick.emit([offsetX * (1 / this.scale), offsetY * (1 / this.scale)]);
+        this.imageClick.emit([
+          offsetX * (1 / this.scale),
+          offsetY * (1 / this.scale),
+        ]);
       });
       background.on('mouseenter', () => {
         this.stage.container().style.cursor = 'pointer';
-      })
+      });
       background.on('mouseleave', () => {
         this.stage.container().style.cursor = 'default';
-      })
+      });
     }
     this.fitStageIntoParentContainer();
-    this.lineLayer.add(background)
+    this.lineLayer.add(background);
   }
 
   /**
@@ -216,22 +238,25 @@ export class TopoImageComponent implements OnInit {
    * @param opacity Opacity of the line.
    */
   drawLine(linePath: LinePath, opacity: number) {
-    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-      const line = new Konva.Arrow({
-        points: this.getAbsoluteCoordinates(linePath.path),
-        stroke: instanceSettingsState.arrowColor,
-        fill: instanceSettingsState.arrowColor,
-        strokeWidth: 2 * this.lineSizeMultiplicator,
-        lineCap: 'square',
-        tension: 0,
-        pointerLength: 6 * this.lineSizeMultiplicator,
-        pointerWidth: 6 * this.lineSizeMultiplicator,
-        opacity,
-        preventDefault: this.editorMode,
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(take(1))
+      .subscribe((instanceSettingsState) => {
+        const line = new Konva.Arrow({
+          points: this.getAbsoluteCoordinates(linePath.path),
+          stroke: instanceSettingsState.arrowColor,
+          fill: instanceSettingsState.arrowColor,
+          strokeWidth: 2 * this.lineSizeMultiplicator,
+          lineCap: 'square',
+          tension: 0,
+          pointerLength: 6 * this.lineSizeMultiplicator,
+          pointerWidth: 6 * this.lineSizeMultiplicator,
+          opacity,
+          preventDefault: this.editorMode,
+        });
+        this.lineLayer.add(line);
+        linePath.konvaLine = line;
       });
-      this.lineLayer.add(line);
-      linePath.konvaLine = line;
-    });
   }
 
   /**
@@ -240,38 +265,42 @@ export class TopoImageComponent implements OnInit {
    * @param label Label to place.
    */
   placeLineLabel(linePath: LinePath, label: Label) {
-    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-      const rectangleGroup = new Konva.Group({
-        x: label.position.x - (label.width / 2),
-        y: label.position.y - (label.height / 2),
-        width: label.width,
-        height: label.height,
-        preventDefault: this.editorMode,
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(take(1))
+      .subscribe((instanceSettingsState) => {
+        const rectangleGroup = new Konva.Group({
+          x: label.position.x - label.width / 2,
+          y: label.position.y - label.height / 2,
+          width: label.width,
+          height: label.height,
+          preventDefault: this.editorMode,
+        });
+        // Scale rect horizontally by its text content's length, but exclude padding
+        const rectangle = new Konva.Rect({
+          width: label.width,
+          height: label.height,
+          fill: instanceSettingsState.arrowColor,
+          cornerRadius: label.height / 6,
+          preventDefault: this.editorMode,
+        });
+        rectangleGroup.add(rectangle);
+        const konvaText = new Konva.Text({
+          text: label.text,
+          fontSize: label.height / 1.2,
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+          fill: instanceSettingsState.arrowTextColor,
+          width: label.width,
+          padding: label.height / 8,
+          align: 'center',
+          preventDefault: this.editorMode,
+        });
+        rectangleGroup.add(konvaText);
+        this.numberLayer.add(rectangleGroup);
+        linePath.konvaRect = rectangle;
+        linePath.konvaText = konvaText;
       });
-      // Scale rect horizontally by its text content's length, but exclude padding
-      const rectangle = new Konva.Rect({
-        width: label.width,
-        height: label.height,
-        fill: instanceSettingsState.arrowColor,
-        cornerRadius: label.height / 6,
-        preventDefault: this.editorMode,
-      });
-      rectangleGroup.add(rectangle);
-      const konvaText = new Konva.Text({
-        text: label.text,
-        fontSize: label.height / 1.2,
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        fill: instanceSettingsState.arrowTextColor,
-        width: label.width,
-        padding: label.height / 8,
-        align: 'center',
-        preventDefault: this.editorMode,
-      });
-      rectangleGroup.add(konvaText);
-      this.numberLayer.add(rectangleGroup);
-      linePath.konvaRect = rectangle;
-      linePath.konvaText = konvaText;
-    })
   }
 
   /**
@@ -280,9 +309,13 @@ export class TopoImageComponent implements OnInit {
    * @param text Label text.
    */
   getLineLabel(linePath: LinePath, text: string): Label {
-    const absoluteCoordinates = this.getAbsoluteCoordinates([linePath.path[0], linePath.path[1]]);
+    const absoluteCoordinates = this.getAbsoluteCoordinates([
+      linePath.path[0],
+      linePath.path[1],
+    ]);
     const rectSize = 11 * this.lineSizeMultiplicator;
-    const rectWidth = rectSize * text.length - (text.length - 1) * 2 * rectSize / 8;
+    const rectWidth =
+      rectSize * text.length - ((text.length - 1) * 2 * rectSize) / 8;
     return {
       position: {
         x: absoluteCoordinates[0],
@@ -294,8 +327,8 @@ export class TopoImageComponent implements OnInit {
         x: absoluteCoordinates[0],
         y: absoluteCoordinates[1],
       },
-      text
-    }
+      text,
+    };
   }
 
   /**
@@ -304,38 +337,47 @@ export class TopoImageComponent implements OnInit {
    * @param linePath
    */
   drawAnchors(linePath: LinePath) {
-    this.store.select(selectInstanceSettingsState).pipe(take(1)).subscribe(instanceSettingsState => {
-      const anchorFactor = this.isMobile ? 1.5 : 1;
-      const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
-      for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
-        const anchor = new Konva.Circle({
-          x: absoluteCoordinates[i * 2],
-          y: absoluteCoordinates[i * 2 + 1],
-          radius: 10 * anchorFactor,
-          fill: instanceSettingsState.arrowColor,
-          stroke: instanceSettingsState.arrowTextColor,
-          strokeWidth: 1,
-          preventDefault: this.editorMode,
-        });
-        anchor.on('click', (event) => {
-          event.cancelBubble = true;
-          this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
-        });
-        anchor.on('tap', (event) => {
-          event.cancelBubble = true;
-          this.anchorClick.emit([absoluteCoordinates[i * 2], absoluteCoordinates[i * 2 + 1]])
-        });
-        anchor.on('mouseenter', () => {
-          anchor.fill(instanceSettingsState.arrowHighlightColor);
-          this.stage.container().style.cursor = 'pointer';
-        })
-        anchor.on('mouseleave', () => {
-          anchor.fill(instanceSettingsState.arrowColor);
-          this.stage.container().style.cursor = 'default';
-        })
-        this.lineLayer.add(anchor);
-      }
-    })
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(take(1))
+      .subscribe((instanceSettingsState) => {
+        const anchorFactor = this.isMobile ? 1.5 : 1;
+        const absoluteCoordinates = this.getAbsoluteCoordinates(linePath.path);
+        for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
+          const anchor = new Konva.Circle({
+            x: absoluteCoordinates[i * 2],
+            y: absoluteCoordinates[i * 2 + 1],
+            radius: 10 * anchorFactor,
+            fill: instanceSettingsState.arrowColor,
+            stroke: instanceSettingsState.arrowTextColor,
+            strokeWidth: 1,
+            preventDefault: this.editorMode,
+          });
+          anchor.on('click', (event) => {
+            event.cancelBubble = true;
+            this.anchorClick.emit([
+              absoluteCoordinates[i * 2],
+              absoluteCoordinates[i * 2 + 1],
+            ]);
+          });
+          anchor.on('tap', (event) => {
+            event.cancelBubble = true;
+            this.anchorClick.emit([
+              absoluteCoordinates[i * 2],
+              absoluteCoordinates[i * 2 + 1],
+            ]);
+          });
+          anchor.on('mouseenter', () => {
+            anchor.fill(instanceSettingsState.arrowHighlightColor);
+            this.stage.container().style.cursor = 'pointer';
+          });
+          anchor.on('mouseleave', () => {
+            anchor.fill(instanceSettingsState.arrowColor);
+            this.stage.container().style.cursor = 'default';
+          });
+          this.lineLayer.add(anchor);
+        }
+      });
   }
 
   /**
@@ -360,19 +402,18 @@ export class TopoImageComponent implements OnInit {
    */
   redrawLinePathInProgress() {
     this.linePathInProgress.konvaLine.destroy();
-    this.drawLine(this.linePathInProgress, 1)
+    this.drawLine(this.linePathInProgress, 1);
   }
 
   /**
    * Scales the stage, so it fits in the parent container.
    */
   fitStageIntoParentContainer() {
-    const container = this.el.nativeElement
+    const container = this.el.nativeElement;
     const containerWidth = container.offsetWidth;
     this.scale = containerWidth / this.width;
     this.stage.width(this.width * this.scale);
     this.stage.height(this.height * this.scale);
-    this.stage.scale({x: this.scale, y: this.scale});
+    this.stage.scale({ x: this.scale, y: this.scale });
   }
-
 }

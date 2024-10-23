@@ -1,5 +1,5 @@
-import {Directive, HostBinding} from '@angular/core';
-import {ControlGroupService} from './control-group.service';
+import { Directive, HostBinding } from '@angular/core';
+import { ControlGroupService } from './control-group.service';
 
 /**
  * Directive that provides the ControlGroupService for a control group.
@@ -10,23 +10,19 @@ import {ControlGroupService} from './control-group.service';
  */
 @Directive({
   selector: '[lcControlGroup]',
-  providers: [
-    ControlGroupService
-  ]
+  providers: [ControlGroupService],
 })
 export class ControlGroupDirective {
-
   @HostBinding('class.error') hasError = false;
   @HostBinding('class.disabled') isDisabled = false;
   @HostBinding('class.lc-control-group') lcControlGroup = true;
 
   constructor(private controlGroupService: ControlGroupService) {
-    this.controlGroupService.hasErrorAndIsTouched().subscribe(hasError => {
+    this.controlGroupService.hasErrorAndIsTouched().subscribe((hasError) => {
       this.hasError = hasError;
     });
-    this.controlGroupService.isDisabled().subscribe(isDisabled => {
+    this.controlGroupService.isDisabled().subscribe((isDisabled) => {
       this.isDisabled = isDisabled;
     });
   }
-
 }

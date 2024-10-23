@@ -5,26 +5,39 @@ import {
   OnChanges,
   OnInit,
   Output,
-  QueryList, SimpleChanges,
+  QueryList,
+  SimpleChanges,
   ViewChild,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {SharedModule} from '../../shared/shared.module';
-import {InputTextModule} from 'primeng/inputtext';
-import {TRANSLOCO_SCOPE, TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {Editor, EditorModule} from 'primeng/editor';
-import {CoordinatesComponent} from '../../shared/forms/controls/coordinates/coordinates.component';
-import {ColorPickerModule} from 'primeng/colorpicker';
-import {DropdownModule} from 'primeng/dropdown';
-import {ToggleButtonModule} from 'primeng/togglebutton';
-import {MAP_MARKER_TYPES, MapMarkerType} from '../../../enums/map-marker-type';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {MapMarker} from '../../../models/map-marker';
-import {DialogModule} from 'primeng/dialog';
-import {ButtonModule} from 'primeng/button';
-import {NgIf} from '@angular/common';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
+import { InputTextModule } from 'primeng/inputtext';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoPipe,
+} from '@jsverse/transloco';
+import { Editor, EditorModule } from 'primeng/editor';
+import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import {
+  MAP_MARKER_TYPES,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { MapMarker } from '../../../models/map-marker';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
@@ -46,13 +59,10 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   ],
   templateUrl: './map-marker-config-dialog.component.html',
   styleUrl: './map-marker-config-dialog.component.scss',
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'maps'},
-  ]
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'maps' }],
 })
 @UntilDestroy()
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
-
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
@@ -68,8 +78,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public marker: MapMarker;
   public nameAndDescriptionHidden = false;
 
-  constructor(private fb: FormBuilder) {
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.buildForm();
@@ -83,8 +92,12 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   }
 
   private setTypes() {
-    this.types = MAP_MARKER_TYPES.filter(type => !this.disabledMarkerTypes.includes(type));
-    this.types = this.types.filter(type => !this.disabledToPreventTypeDuplicates(type));
+    this.types = MAP_MARKER_TYPES.filter(
+      (type) => !this.disabledMarkerTypes.includes(type),
+    );
+    this.types = this.types.filter(
+      (type) => !this.disabledToPreventTypeDuplicates(type),
+    );
   }
 
   private buildForm() {
@@ -94,14 +107,24 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
       coordinates: [null],
       type: [null, [Validators.required]],
     });
-    const baseTypes = [MapMarkerType.AREA, MapMarkerType.SECTOR, MapMarkerType.CRAG, MapMarkerType.TOPO_IMAGE]
-    this.mapMarkerForm.get('type').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
-      this.nameAndDescriptionHidden = baseTypes.includes(this.mapMarkerForm.get('type').value);
-      if (this.nameAndDescriptionHidden) {
-        this.mapMarkerForm.get('name').reset();
-        this.mapMarkerForm.get('description').reset();
-      }
-    });
+    const baseTypes = [
+      MapMarkerType.AREA,
+      MapMarkerType.SECTOR,
+      MapMarkerType.CRAG,
+      MapMarkerType.TOPO_IMAGE,
+    ];
+    this.mapMarkerForm
+      .get('type')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.nameAndDescriptionHidden = baseTypes.includes(
+          this.mapMarkerForm.get('type').value,
+        );
+        if (this.nameAndDescriptionHidden) {
+          this.mapMarkerForm.get('name').reset();
+          this.mapMarkerForm.get('description').reset();
+        }
+      });
   }
 
   private setFormValue() {
@@ -110,7 +133,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
       name: this.marker.name,
       description: this.marker.description,
       coordinates: this.marker.coordinates,
-      type: this.marker.type
+      type: this.marker.type,
     });
   }
 
@@ -122,7 +145,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
     this.marker = marker;
     this.setFormValue();
     this.isOpen = true;
-    this.setTypes()
+    this.setTypes();
   }
 
   public close() {
@@ -132,7 +155,8 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public save() {
     if (this.mapMarkerForm.valid) {
       this.marker.name = this.mapMarkerForm.get('name').value || null;
-      this.marker.description = this.mapMarkerForm.get('description').value || null;
+      this.marker.description =
+        this.mapMarkerForm.get('description').value || null;
       this.marker.coordinates = this.mapMarkerForm.get('coordinates').value;
       this.marker.type = this.mapMarkerForm.get('type').value;
       if (!this.marker.id) {
@@ -148,12 +172,17 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
    * There can only be one marker of types CRAG, SECTOR and AREA for a single parent entity.
    */
   public disabledToPreventTypeDuplicates(type: MapMarkerType): boolean {
-    const restrictedTypes = [MapMarkerType.CRAG, MapMarkerType.SECTOR, MapMarkerType.AREA];
-    if (!restrictedTypes.includes(type) || restrictedTypes.includes(this.marker?.type)) {
+    const restrictedTypes = [
+      MapMarkerType.CRAG,
+      MapMarkerType.SECTOR,
+      MapMarkerType.AREA,
+    ];
+    if (
+      !restrictedTypes.includes(type) ||
+      restrictedTypes.includes(this.marker?.type)
+    ) {
       return false;
     }
-    return this.existingMarkers.some(marker => marker.type === type);
+    return this.existingMarkers.some((marker) => marker.type === type);
   }
-
-
 }

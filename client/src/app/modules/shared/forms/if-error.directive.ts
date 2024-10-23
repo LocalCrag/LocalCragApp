@@ -1,17 +1,23 @@
-import {Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import {ControlGroupService} from './control-group.service';
-import {Subscription} from 'rxjs';
-import {NgControl} from '@angular/forms';
+import {
+  Directive,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core';
+import { ControlGroupService } from './control-group.service';
+import { Subscription } from 'rxjs';
+import { NgControl } from '@angular/forms';
 
 /**
  * Directive for rendering lc control messages depending on the error state of the control. If the specified error
  * is present, the control message is rendered, if not it is hidden.
  */
 @Directive({
-  selector: '[lcIfError]'
+  selector: '[lcIfError]',
 })
-export class IfErrorDirective implements OnInit, OnDestroy{
-
+export class IfErrorDirective implements OnInit, OnDestroy {
   @Input() lcIfErrorControlName: string = null; // Name of the Angular control on which to look for errors
   @Input() lcIfError: string; // Name of the error to react on
 
@@ -21,10 +27,11 @@ export class IfErrorDirective implements OnInit, OnDestroy{
   private controlElementTouchedChangesSubscription: Subscription;
   private statusChangesSubscription: Subscription;
 
-  constructor(private templateRef: TemplateRef<any>,
-              private controlGroupService: ControlGroupService,
-              private viewContainer: ViewContainerRef) {
-  }
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private controlGroupService: ControlGroupService,
+    private viewContainer: ViewContainerRef,
+  ) {}
 
   /**
    * First, the view is destroyed as the initial state of the form is untouched. Then the control is fetched by using
@@ -33,18 +40,23 @@ export class IfErrorDirective implements OnInit, OnDestroy{
    */
   ngOnInit() {
     this.destroyView();
-    this.control = this.controlGroupService.getControl(this.lcIfErrorControlName);
+    this.control = this.controlGroupService.getControl(
+      this.lcIfErrorControlName,
+    );
     // When the control becomes touched, we may need to show the error messages
-    this.controlElementTouchedChangesSubscription =
-      this.controlGroupService.controlElementTouchedChanges(this.lcIfErrorControlName).subscribe(touched => {
+    this.controlElementTouchedChangesSubscription = this.controlGroupService
+      .controlElementTouchedChanges(this.lcIfErrorControlName)
+      .subscribe((touched) => {
         this.touched = touched;
         this.checkStatus();
       });
     // When the control's status (valid, invalid etc.) changes, we may need to show the error messages
     if (this.control.statusChanges) {
-      this.statusChangesSubscription = this.control.statusChanges.subscribe(() => {
-        this.checkStatus();
-      });
+      this.statusChangesSubscription = this.control.statusChanges.subscribe(
+        () => {
+          this.checkStatus();
+        },
+      );
     }
   }
 
@@ -63,7 +75,12 @@ export class IfErrorDirective implements OnInit, OnDestroy{
    * control messages accordingly.
    */
   checkStatus() {
-    if (this.control.invalid && this.touched && this.control.errors !== null && this.lcIfError in this.control.errors) {
+    if (
+      this.control.invalid &&
+      this.touched &&
+      this.control.errors !== null &&
+      this.lcIfError in this.control.errors
+    ) {
       this.createView();
     } else {
       this.destroyView();
@@ -90,6 +107,4 @@ export class IfErrorDirective implements OnInit, OnDestroy{
       this.hasView = false;
     }
   }
-
-
 }

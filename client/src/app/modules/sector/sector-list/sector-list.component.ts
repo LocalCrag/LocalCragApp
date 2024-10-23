@@ -1,18 +1,18 @@
-import {Component} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {TranslocoService} from '@jsverse/transloco';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {Sector} from '../../../models/sector';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {ActivatedRoute} from '@angular/router';
-import {PrimeIcons, SelectItem} from 'primeng/api';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import { Component, OnInit } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { TranslocoService } from '@jsverse/transloco';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { Sector } from '../../../models/sector';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { ActivatedRoute } from '@angular/router';
+import { PrimeIcons, SelectItem } from 'primeng/api';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 /**
  * Component that displays a list of sectors.
@@ -21,13 +21,10 @@ import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
   selector: 'lc-sector-list',
   templateUrl: './sector-list.component.html',
   styleUrls: ['./sector-list.component.scss'],
-  providers: [
-    DialogService
-  ]
+  providers: [DialogService],
 })
 @UntilDestroy()
-export class SectorListComponent {
-
+export class SectorListComponent implements OnInit {
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -39,39 +36,59 @@ export class SectorListComponent {
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
 
-  constructor(public sectorsService: SectorsService,
-              private route: ActivatedRoute,
-              private dialogService: DialogService,
-              private store: Store,
-              private translocoService: TranslocoService) {
-  }
+  constructor(
+    public sectorsService: SectorsService,
+    private route: ActivatedRoute,
+    private dialogService: DialogService,
+    private store: Store,
+    private translocoService: TranslocoService,
+  ) {}
 
   /**
    * Loads the sectors on initialization.
    */
   ngOnInit() {
-    this.route.parent.parent.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
-      this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
-      this.refreshData();
-    });
+    this.route.parent.parent.paramMap
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.cragSlug =
+          this.route.parent.parent.snapshot.paramMap.get('crag-slug');
+        this.refreshData();
+      });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
   }
 
   /**
    * Loads new data.
    */
-  refreshData(){
+  refreshData() {
     forkJoin([
       this.sectorsService.getSectors(this.cragSlug),
-      this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([sectors, e]) => {
+      this.translocoService.load(`${environment.language}`),
+    ]).subscribe(([sectors]) => {
       this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
-        {icon: PrimeIcons.SORT_ALPHA_DOWN, label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
-        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'}
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+          label: this.translocoService.translate(marker('sortAscending')),
+          value: '!orderIndex',
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN,
+          label: this.translocoService.translate(marker('sortDescending')),
+          value: 'orderIndex',
+        },
+        {
+          icon: PrimeIcons.SORT_ALPHA_DOWN,
+          label: this.translocoService.translate(marker('sortAZ')),
+          value: '!name',
+        },
+        {
+          icon: 'pi pi-sort-alpha-down-alt',
+          label: this.translocoService.translate(marker('sortZA')),
+          value: 'name',
+        },
       ];
       this.sortKey = this.sortOptions[0];
     });
@@ -82,7 +99,7 @@ export class SectorListComponent {
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);
@@ -97,17 +114,22 @@ export class SectorListComponent {
    */
   reorderSectors() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      header: this.translocoService.translate(marker('reorderSectorsDialogTitle')),
+      header: this.translocoService.translate(
+        marker('reorderSectorsDialogTitle'),
+      ),
       data: {
         items: this.sectors,
-        itemsName: this.translocoService.translate(marker('reorderSectorsDialogItemsName')),
-        callback: this.sectorsService.updateSectorOrder.bind(this.sectorsService),
-        slugParameter: this.cragSlug
-      }
+        itemsName: this.translocoService.translate(
+          marker('reorderSectorsDialogItemsName'),
+        ),
+        callback: this.sectorsService.updateSectorOrder.bind(
+          this.sectorsService,
+        ),
+        slugParameter: this.cragSlug,
+      },
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
     });
   }
-
 }

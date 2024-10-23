@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {File} from '../../models/file';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {AlignAction, DeleteAction, ImageSpec, ResizeAction} from 'quill-blot-formatter';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { File } from '../../models/file';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { DeleteAction, ImageSpec, ResizeAction } from 'quill-blot-formatter';
 
 /**
  * Adds event listeners for Blot Formatters ImageSpec to fix scrolling issues.
@@ -34,18 +34,17 @@ class CustomImageSpec extends ImageSpec {
   }
 }
 
-
 /**
  * Service for uploading a file.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadService {
-
-  constructor(private api: ApiService,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Uploads a file.
@@ -54,10 +53,10 @@ export class UploadService {
    */
   public uploadFile(file: any): Observable<File> {
     const formData = new FormData();
-    formData.append("upload", file);
-    return this.http.post(this.api.uploader.uploadFile(), formData).pipe(
-      map(File.deserialize)
-    );
+    formData.append('upload', file);
+    return this.http
+      .post(this.api.uploader.uploadFile(), formData)
+      .pipe(map(File.deserialize));
   }
 
   /**
@@ -67,17 +66,16 @@ export class UploadService {
     return {
       imageUploader: {
         upload: (file: any) => {
-          return new Promise((resolve, reject) => {
-            this.uploadFile(file).subscribe(uploadedFile => {
-              resolve(uploadedFile.thumbnailXL)
-            })
+          return new Promise((resolve) => {
+            this.uploadFile(file).subscribe((uploadedFile) => {
+              resolve(uploadedFile.thumbnailXL);
+            });
           });
         },
       },
       blotFormatter: {
-        specs: [CustomImageSpec]
-      }
+        specs: [CustomImageSpec],
+      },
     };
   }
-
 }

@@ -1,26 +1,26 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Sector} from '../../models/sector';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {ItemOrder} from '../../interfaces/item-order.interface';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
-import {Store} from '@ngrx/store';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Sector } from '../../models/sector';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { ItemOrder } from '../../interfaces/item-order.interface';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { Store } from '@ngrx/store';
+import { reloadMenus } from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for sectors.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SectorsService {
-
-  constructor(private api: ApiService,
-              private store: Store,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private store: Store,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Creates a Sector.
@@ -30,12 +30,14 @@ export class SectorsService {
    * @return Observable of a Sector.
    */
   public createSector(sector: Sector, cragSlug: string): Observable<Sector> {
-    return this.http.post(this.api.sectors.create(cragSlug), Sector.serialize(sector)).pipe(
-      tap(() => {
-        this.store.dispatch(reloadMenus());
-      }),
-      map(Sector.deserialize)
-    );
+    return this.http
+      .post(this.api.sectors.create(cragSlug), Sector.serialize(sector))
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+        }),
+        map(Sector.deserialize),
+      );
   }
 
   /**
@@ -44,7 +46,11 @@ export class SectorsService {
    * @return Observable of a list of Sectors.
    */
   public getSectors(cragSlug: string): Observable<Sector[]> {
-    return this.http.get(this.api.sectors.getList(cragSlug)).pipe(map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)))
+    return this.http
+      .get(this.api.sectors.getList(cragSlug))
+      .pipe(
+        map((sectorListJson: any) => sectorListJson.map(Sector.deserialize)),
+      );
   }
 
   /**
@@ -54,7 +60,9 @@ export class SectorsService {
    * @return Observable of a Sector.
    */
   public getSector(sectorSlug: string): Observable<Sector> {
-    return this.http.get(this.api.sectors.getDetail(sectorSlug)).pipe(map(Sector.deserialize));
+    return this.http
+      .get(this.api.sectors.getDetail(sectorSlug))
+      .pipe(map(Sector.deserialize));
   }
 
   /**
@@ -68,7 +76,7 @@ export class SectorsService {
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
 
@@ -78,13 +86,15 @@ export class SectorsService {
    * @param sector Sector to persist.
    * @return Observable of a Sector.
    */
-  public updateSector( sector: Sector): Observable<Sector> {
-    return this.http.put(this.api.sectors.update(sector.slug), Sector.serialize(sector)).pipe(
-      tap(() => {
-        this.store.dispatch(reloadMenus());
-      }),
-      map(Sector.deserialize)
-    );
+  public updateSector(sector: Sector): Observable<Sector> {
+    return this.http
+      .put(this.api.sectors.update(sector.slug), Sector.serialize(sector))
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+        }),
+        map(Sector.deserialize),
+      );
   }
 
   /**
@@ -94,12 +104,15 @@ export class SectorsService {
    * @param cragSlug Slug of the crag the sectors are in.
    * @return Observable of null.
    */
-  public updateSectorOrder(newOrder: ItemOrder, cragSlug: string): Observable<null> {
+  public updateSectorOrder(
+    newOrder: ItemOrder,
+    cragSlug: string,
+  ): Observable<null> {
     return this.http.put(this.api.sectors.updateOrder(cragSlug), newOrder).pipe(
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
 
@@ -110,7 +123,8 @@ export class SectorsService {
    * @return Observable of a list of Grades.
    */
   public getSectorGrades(sectorSlug: string): Observable<Grade[]> {
-    return this.http.get(this.api.sectors.getGrades(sectorSlug)).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http
+      .get(this.api.sectors.getGrades(sectorSlug))
+      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
-
 }

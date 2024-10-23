@@ -1,48 +1,93 @@
-<ng-container *transloco="let t, read: 'line.lineForm'">
-
+<ng-container *transloco="let t; read: 'line.lineForm'">
   <div class="content">
-
-    <p-card header="{{editMode ? t('editLineTitle') : t('createLineTitle')}}">
+    <p-card header="{{ editMode ? t('editLineTitle') : t('createLineTitle') }}">
       <p class="mt-0" *ngIf="!editMode">
-        {{t('createLineDescription')}}
+        {{ t("createLineDescription") }}
       </p>
 
       <ng-container *ngIf="lineForm">
-
         <form [formGroup]="lineForm" lcForm>
-
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineNameLabel')}}</label>
-            <input type="text" pInputText formControlName="name" placeholder="{{t('lineNamePlaceholder')}}"
-                   lcFormControl data-cy="line-form-name"/>
-            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+            <label class="form-label" for="name">{{
+              t("lineNameLabel")
+            }}</label>
+            <input
+              type="text"
+              pInputText
+              id="name"
+              formControlName="name"
+              placeholder="{{ t('lineNamePlaceholder') }}"
+              lcFormControl
+              data-cy="line-form-name"
+            />
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineDescriptionLabel')}}</label>
-            <p-editor formControlName="description" lcFormControl placeholder="{{t('lineDescriptionPlaceholder')}}"
-                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-                      data-cy="line-form-description">
+            <label class="form-label" for="description">{{
+              t("lineDescriptionLabel")
+            }}</label>
+            <p-editor
+              id="description"
+              formControlName="description"
+              lcFormControl
+              placeholder="{{ t('lineDescriptionPlaceholder') }}"
+              [style]="{ height: '200px' }"
+              [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+              data-cy="line-form-description"
+            >
               <ng-template pTemplate="header">
-              <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
-              </span>
                 <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Ordered List"></button>
-              </span>
+                  <button
+                    type="button"
+                    class="ql-bold"
+                    aria-label="Bold"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-italic"
+                    aria-label="Italic"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-underline"
+                    aria-label="Underline"
+                  ></button>
+                </span>
+                <span class="ql-formats">
+                  <button
+                    type="button"
+                    class="ql-link"
+                    aria-label="Ordered List"
+                  ></button>
+                </span>
               </ng-template>
             </p-editor>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineGradeLabel')}}</label>
-            <p-dropdown formControlName="grade" [options]="grades" data-cy="grade-dropdown"
-                        optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
+            <label class="form-label" for="grade">{{
+              t("lineGradeLabel")
+            }}</label>
+            <p-dropdown
+              formControlName="grade"
+              id="grade"
+              [options]="grades"
+              data-cy="grade-dropdown"
+              optionLabel="name"
+              placeholder="{{ t('gradePlaceholder') }}"
+              lcFormControl
+            >
               <ng-template let-grade pTemplate="item">
-                <div class="flex align-items-center gap-2" data-cy="grade-dropdown-item">
+                <div
+                  class="flex align-items-center gap-2"
+                  data-cy="grade-dropdown-item"
+                >
                   <div>{{ grade.name | transloco }}</div>
                 </div>
               </ng-template>
@@ -50,15 +95,27 @@
                 {{ selectedGrade.name | transloco }}
               </ng-template>
             </p-dropdown>
-            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('startingPositionLabel')}}</label>
-            <p-dropdown formControlName="startingPosition" [options]="startingPositions" lcFormControl
-                        data-cy="starting-position-dropdown">
+            <label class="form-label" for="starting-position">{{
+              t("startingPositionLabel")
+            }}</label>
+            <p-dropdown
+              id="starting-position"
+              formControlName="startingPosition"
+              [options]="startingPositions"
+              lcFormControl
+              data-cy="starting-position-dropdown"
+            >
               <ng-template let-startingPosition pTemplate="item">
-                <div class="flex align-items-center gap-2" data-cy="starting-position-dropdown-item">
+                <div
+                  class="flex align-items-center gap-2"
+                  data-cy="starting-position-dropdown-item"
+                >
                   <div>{{ startingPosition | transloco }}</div>
                 </div>
               </ng-template>
@@ -66,169 +123,412 @@
                 {{ selectedItem | transloco }}
               </ng-template>
             </p-dropdown>
-            <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineRatingLabel')}}</label>
-            <p-rating formControlName="rating" lcFormControl [cancel]="false" data-cy="rating"></p-rating>
+            <label class="form-label" for="rating">{{
+              t("lineRatingLabel")
+            }}</label>
+            <p-rating
+              id="rating"
+              formControlName="rating"
+              lcFormControl
+              [cancel]="false"
+              data-cy="rating"
+            ></p-rating>
           </div>
 
           <div class="flex flex-column gap-2">
-            <label class="form-label">{{t('lineVideosLabel')}}</label>
+            <!--           eslint-disable-next-line @angular-eslint/template/label-has-associated-control-->
+            <label class="form-label">{{ t("lineVideosLabel") }}</label>
 
-            <div *ngFor="let lineVideoGroup of (lineForm.get('videos') | asFormArray).controls; index as i"
-                 [formGroup]="lineVideoGroup | asFormGroup" class="flex flex-row gap-3">
-              <div lcControlGroup class=" flex flex-column flex-1 video-input-container">
-                <input type="text" pInputText formControlName="title" placeholder="{{t('lineVideoTitlePlaceholder')}}"
-                       lcFormControl/>
+            <div
+              *ngFor="
+                let lineVideoGroup of (lineForm.get('videos') | asFormArray)
+                  .controls;
+                index as i
+              "
+              [formGroup]="lineVideoGroup | asFormGroup"
+              class="flex flex-row gap-3"
+            >
+              <div
+                lcControlGroup
+                class="flex flex-column flex-1 video-input-container"
+              >
+                <input
+                  type="text"
+                  pInputText
+                  formControlName="title"
+                  placeholder="{{ t('lineVideoTitlePlaceholder') }}"
+                  lcFormControl
+                />
                 <div>
-                  <small class="p-error" *lcIfError="'required'">{{t('requiredValidationError')}}</small>
+                  <small class="p-error" *lcIfError="'required'">{{
+                    t("requiredValidationError")
+                  }}</small>
                 </div>
               </div>
-              <div lcControlGroup class=" flex flex-column flex-1 video-input-container">
-                <input type="text" pInputText formControlName="url" placeholder="{{t('lineVideoUrlPlaceholder')}}"
-                       lcFormControl/>
+              <div
+                lcControlGroup
+                class="flex flex-column flex-1 video-input-container"
+              >
+                <input
+                  type="text"
+                  pInputText
+                  formControlName="url"
+                  placeholder="{{ t('lineVideoUrlPlaceholder') }}"
+                  lcFormControl
+                />
                 <div>
-                  <small class="p-error" *lcIfError="'required'">{{t('requiredValidationError')}}</small>
-                  <small class="p-error" *lcIfError="'invalidHttpUrl'">{{t('invalidHttpUrlValidationError')}}</small>
+                  <small class="p-error" *lcIfError="'required'">{{
+                    t("requiredValidationError")
+                  }}</small>
+                  <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
+                    t("invalidHttpUrlValidationError")
+                  }}</small>
                 </div>
               </div>
-              <p-button (click)="deleteLineVideoControl(i)" icon="pi pi-trash"
-                        styleClass="p-button-danger"></p-button>
+              <p-button
+                (click)="deleteLineVideoControl(i)"
+                icon="pi pi-trash"
+                styleClass="p-button-danger"
+              ></p-button>
             </div>
 
             <div>
-              <p-button label="{{t('addVideoButtonLabel')}}" (click)="addLineVideoFormControl()"
-                        class="pl-0"
-                        styleClass="p-button-secondary" icon="pi pi-plus"></p-button>
+              <p-button
+                label="{{ t('addVideoButtonLabel') }}"
+                (click)="addLineVideoFormControl()"
+                class="pl-0"
+                styleClass="p-button-secondary"
+                icon="pi pi-plus"
+              ></p-button>
             </div>
-
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineFANameLabel')}}</label>
-            <input type="text" pInputText formControlName="faName" placeholder="{{t('lineFANamePlaceholder')}}"
-                   lcFormControl data-cy="line-form-faName"/>
-            <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+            <label class="form-label" for="fa-name">{{
+              t("lineFANameLabel")
+            }}</label>
+            <input
+              id="fa-name"
+              type="text"
+              pInputText
+              formControlName="faName"
+              placeholder="{{ t('lineFANamePlaceholder') }}"
+              lcFormControl
+              data-cy="line-form-faName"
+            />
+            <small class="p-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineFAYearLabel')}}</label>
-            <p-calendar formControlName="faYear" view="year" dateFormat="yy" inputId="faYear" lcFormControl
-                        [maxDate]="today" [readonlyInput]="true" data-cy="line-form-faYear"></p-calendar>
-            <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
+            <label class="form-label" for="fa-year">{{
+              t("lineFAYearLabel")
+            }}</label>
+            <p-calendar
+              id="fa-year"
+              formControlName="faYear"
+              view="year"
+              dateFormat="yy"
+              inputId="faYear"
+              lcFormControl
+              [maxDate]="today"
+              [readonlyInput]="true"
+              data-cy="line-form-faYear"
+            ></p-calendar>
+            <small class="p-error" *lcIfError="'dateInFuture'">{{
+              t("yearInFutureValidationError")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('linePropertiesLabel')}}</label>
-            <p-checkbox label="{{t('lineEliminateLabel')}}" name="eliminate" [binary]="true" formControlName="eliminate"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineHighballLabel')}}" name="highball" [binary]="true" formControlName="highball"
-                        lcFormControl data-cy="line-form-highball"></p-checkbox>
-            <p-checkbox label="{{t('lineLowballLabel')}}" name="lowball" [binary]="true" formControlName="lowball"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineMorphoLabel')}}" name="morpho" [binary]="true" formControlName="morpho"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineNoTopoutLabel')}}" name="noTopout" [binary]="true" formControlName="noTopout"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineBadDropzoneLabel')}}" name="badDropzone" [binary]="true"
-                        formControlName="badDropzone"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineChildFriendlyLabel')}}" name="childFriendly" [binary]="true"
-                        formControlName="childFriendly"
-                        lcFormControl></p-checkbox>
+            <!--           eslint-disable-next-line @angular-eslint/template/label-has-associated-control-->
+            <label class="form-label">{{ t("linePropertiesLabel") }}</label>
+            <p-checkbox
+              label="{{ t('lineEliminateLabel') }}"
+              name="eliminate"
+              [binary]="true"
+              formControlName="eliminate"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineHighballLabel') }}"
+              name="highball"
+              [binary]="true"
+              formControlName="highball"
+              lcFormControl
+              data-cy="line-form-highball"
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineLowballLabel') }}"
+              name="lowball"
+              [binary]="true"
+              formControlName="lowball"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineMorphoLabel') }}"
+              name="morpho"
+              [binary]="true"
+              formControlName="morpho"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineNoTopoutLabel') }}"
+              name="noTopout"
+              [binary]="true"
+              formControlName="noTopout"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineBadDropzoneLabel') }}"
+              name="badDropzone"
+              [binary]="true"
+              formControlName="badDropzone"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineChildFriendlyLabel') }}"
+              name="childFriendly"
+              [binary]="true"
+              formControlName="childFriendly"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineTypeLabel')}}</label>
-            <p-checkbox label="{{t('lineRoofLabel')}}" name="roof" [binary]="true" formControlName="roof"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineOverhangLabel')}}" name="overhang" [binary]="true" formControlName="overhang"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineVerticalLabel')}}" name="vertical" [binary]="true" formControlName="vertical"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineSlabLabel')}}" name="slab" [binary]="true" formControlName="slab"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineTraverseLabel')}}" name="traverse" [binary]="true" formControlName="traverse"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineDihedralLabel')}}" name="dihedral" [binary]="true" formControlName="dihedral"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineCompressionLabel')}}" name="compression" [binary]="true"
-                        formControlName="compression"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineAreteLabel')}}" name="arete" [binary]="true" formControlName="arete"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineCrackLabel')}}" name="crack" [binary]="true" formControlName="crack"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineDynoLabel')}}" name="dyno" [binary]="true" formControlName="dyno"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineMantleLabel')}}" name="mantle" [binary]="true" formControlName="mantle"
-                        lcFormControl></p-checkbox>
+            <label class="form-label" for="roof">{{
+              t("lineTypeLabel")
+            }}</label>
+            <p-checkbox
+              id="roof"
+              label="{{ t('lineRoofLabel') }}"
+              name="roof"
+              [binary]="true"
+              formControlName="roof"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineOverhangLabel') }}"
+              name="overhang"
+              [binary]="true"
+              formControlName="overhang"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineVerticalLabel') }}"
+              name="vertical"
+              [binary]="true"
+              formControlName="vertical"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineSlabLabel') }}"
+              name="slab"
+              [binary]="true"
+              formControlName="slab"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineTraverseLabel') }}"
+              name="traverse"
+              [binary]="true"
+              formControlName="traverse"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineDihedralLabel') }}"
+              name="dihedral"
+              [binary]="true"
+              formControlName="dihedral"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineCompressionLabel') }}"
+              name="compression"
+              [binary]="true"
+              formControlName="compression"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineAreteLabel') }}"
+              name="arete"
+              [binary]="true"
+              formControlName="arete"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineCrackLabel') }}"
+              name="crack"
+              [binary]="true"
+              formControlName="crack"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineDynoLabel') }}"
+              name="dyno"
+              [binary]="true"
+              formControlName="dyno"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineMantleLabel') }}"
+              name="mantle"
+              [binary]="true"
+              formControlName="mantle"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineKeyAspectsLabel')}}</label>
-            <p-checkbox label="{{t('lineAthleticLabel')}}" name="athletic" [binary]="true" formControlName="athletic"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineTechnicalLabel')}}" name="technical" [binary]="true" formControlName="technical"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineEnduranceLabel')}}" name="endurance" [binary]="true" formControlName="endurance"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineCruxyLabel')}}" name="cruxy" [binary]="true" formControlName="cruxy"
-                        lcFormControl></p-checkbox>
+            <label class="form-label" for="athletic">{{
+              t("lineKeyAspectsLabel")
+            }}</label>
+            <p-checkbox
+              id="athletic"
+              label="{{ t('lineAthleticLabel') }}"
+              name="athletic"
+              [binary]="true"
+              formControlName="athletic"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineTechnicalLabel') }}"
+              name="technical"
+              [binary]="true"
+              formControlName="technical"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineEnduranceLabel') }}"
+              name="endurance"
+              [binary]="true"
+              formControlName="endurance"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineCruxyLabel') }}"
+              name="cruxy"
+              [binary]="true"
+              formControlName="cruxy"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('linePrimaryHoldTypesLabel')}}</label>
-            <p-checkbox label="{{t('lineJugsLabel')}}" name="jugs" [binary]="true" formControlName="jugs"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineSloperLabel')}}" name="sloper" [binary]="true" formControlName="sloper"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('lineCrimpsLabel')}}" name="crimps" [binary]="true" formControlName="crimps"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('linePocketsLabel')}}" name="pockets" [binary]="true" formControlName="pockets"
-                        lcFormControl></p-checkbox>
-            <p-checkbox label="{{t('linePinchesLabel')}}" name="pinches" [binary]="true" formControlName="pinches"
-                        lcFormControl></p-checkbox>
+            <label class="form-label" for="jugs">{{
+              t("linePrimaryHoldTypesLabel")
+            }}</label>
+            <p-checkbox
+              id="jugs"
+              label="{{ t('lineJugsLabel') }}"
+              name="jugs"
+              [binary]="true"
+              formControlName="jugs"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineSloperLabel') }}"
+              name="sloper"
+              [binary]="true"
+              formControlName="sloper"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('lineCrimpsLabel') }}"
+              name="crimps"
+              [binary]="true"
+              formControlName="crimps"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('linePocketsLabel') }}"
+              name="pockets"
+              [binary]="true"
+              formControlName="pockets"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('linePinchesLabel') }}"
+              name="pinches"
+              [binary]="true"
+              formControlName="pinches"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{t('lineOptionsLabel')}}</label>
-            <p-checkbox label="{{t('lineSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
-                        lcFormControl></p-checkbox>
+            <label class="form-label" for="secret">{{
+              t("lineOptionsLabel")
+            }}</label>
+            <p-checkbox
+              label="{{ t('lineSecretLabel') }}"
+              name="secret"
+              [binary]="true"
+              id="secret"
+              formControlName="secret"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
-          <p-messages severity="warn" *ngIf="parentSecret && !lineForm.get('secret').value">
+          <p-messages
+            severity="warn"
+            *ngIf="parentSecret && !lineForm.get('secret').value"
+          >
             <ng-template pTemplate>
               <i class="pi pi-info-circle"></i>
-              <div class="ml-2">{{t('aPublicLineWillSetParentsToPublic')}}</div>
+              <div class="ml-2">
+                {{ t("aPublicLineWillSetParentsToPublic") }}
+              </div>
             </ng-template>
           </p-messages>
-
         </form>
 
         <div class="form-actions">
-          <p-button label="{{t('createLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save"
-                    class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"></p-button>
-          <p-button label="{{t('editLineButtonLabel')}}" (click)="saveLine()" icon="pi pi-save"
-                    class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-          <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
-                    styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
-          <p-button label="{{t('deleteLineButtonLabel')}}" (click)="confirmDeleteLine($event)" icon="pi pi-trash"
-                    styleClass="p-button-danger" class="ml-3 responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+          <p-button
+            label="{{ t('createLineButtonLabel') }}"
+            (click)="saveLine()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="!editMode"
+            data-cy="submit"
+          ></p-button>
+          <p-button
+            label="{{ t('editLineButtonLabel') }}"
+            (click)="saveLine()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="editMode"
+          ></p-button>
+          <p-button
+            label="{{ t('cancelButtonLabel') }}"
+            (click)="cancel()"
+            class="ml-3 responsive-button"
+            styleClass="p-button-secondary"
+            icon="pi pi-ban"
+          ></p-button>
+          <p-button
+            label="{{ t('deleteLineButtonLabel') }}"
+            (click)="confirmDeleteLine($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="editMode"
+          ></p-button>
           <p-confirmPopup></p-confirmPopup>
         </div>
-
       </ng-container>
 
       <lc-form-skeleton *ngIf="!lineForm"></lc-form-skeleton>
-
     </p-card>
-
   </div>
-
 </ng-container>

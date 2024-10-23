@@ -1,10 +1,15 @@
-import json
+from sqlalchemy import text
+
+from extensions import db
 
 
 def test_successful_search(client):
-    rv = client.get('/api/search/superspread')
+    # All other placements for this statement do not seem to work well
+    db.session.execute(text('create extension if not exists "fuzzystrmatch";'))
+
+    rv = client.get("/api/search/superspread")
     assert rv.status_code == 200
-    res = json.loads(rv.data)
+    res = rv.json
     assert len(res) == 10
-    assert res[0]['type'] == "LINE"
-    assert res[0]['item']['name'] == "Super-Spreader"
+    assert res[0]["type"] == "LINE"
+    assert res[0]["item"]["name"] == "Super-Spreader"

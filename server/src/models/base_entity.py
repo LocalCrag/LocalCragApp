@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from typing import Self
 
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declared_attr
@@ -13,6 +14,7 @@ class BaseEntity(db.Model):
     """
     Model of a basic entity that is extended by other entities.
     """
+
     __abstract__ = True
 
     id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
@@ -22,11 +24,11 @@ class BaseEntity(db.Model):
 
     @declared_attr
     def created_by_id(self):
-        return db.Column(UUID(), db.ForeignKey('users.id', ondelete='SET NULL'))
+        return db.Column(UUID(), db.ForeignKey("users.id", ondelete="SET NULL"))
 
     @declared_attr
     def created_by(self):
-        return db.relationship('User', foreign_keys='[%s.created_by_id]' % self.__name__)
+        return db.relationship("User", foreign_keys="[%s.created_by_id]" % self.__name__)
 
     @classmethod
     def return_all(cls, order_by=None, options=None, filter=None):
@@ -43,13 +45,13 @@ class BaseEntity(db.Model):
         else:
             query = query.order_by(cls.id)
         # Check if a model has the secret spot property, if yes add a filter based on view rights
-        if hasattr(cls, 'secret'):
+        if hasattr(cls, "secret"):
             if not get_show_secret():
-                query = query.filter(cls.secret == False)
+                query = query.filter(cls.secret.is_(False))
         return query.all()
 
     @classmethod
-    def find_by_id(cls, id):
+    def find_by_id(cls, id) -> Self:
         entity = cls.query.filter_by(id=id).first()
 
         if not entity:
@@ -58,7 +60,7 @@ class BaseEntity(db.Model):
         return entity
 
     @classmethod
-    def find_by_slug(cls, slug):
+    def find_by_slug(cls, slug) -> Self:
         entity = cls.query.filter_by(slug=slug).first()
 
         if not entity:

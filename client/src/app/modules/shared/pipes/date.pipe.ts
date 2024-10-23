@@ -1,14 +1,13 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import { format } from "date-fns";
+import { Pipe, PipeTransform } from '@angular/core';
+import { format } from 'date-fns';
 
 /**
  * Formats a date with the given formatting string.
  */
 @Pipe({
-  name: 'date'
+  name: 'date',
 })
 export class DatePipe implements PipeTransform {
-
   /**
    * Transforms the input value by formatting the Date with the given formatting string.
    *
@@ -16,12 +15,11 @@ export class DatePipe implements PipeTransform {
    * @param  formattingString Formatting string.
    * @return Formatted Date.
    */
-  transform(value:Date, formattingString: string): string {
+  transform(value: Date, formattingString: string): string {
     if (value) {
-      return format(value, formattingString)
+      return format(value, formattingString);
     } else {
       return '';
     }
   }
-
 }

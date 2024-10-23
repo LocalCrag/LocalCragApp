@@ -1,11 +1,11 @@
-import {Component} from '@angular/core';
-import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {AbstractModel} from '../../../../models/abstract-model';
-import {LoadingState} from '../../../../enums/loading-state';
-import {Observable} from 'rxjs';
-import {MenuItemType} from '../../../../enums/menu-item-type';
-import {Store} from '@ngrx/store';
-import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
+import { Component } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AbstractModel } from '../../../../models/abstract-model';
+import { LoadingState } from '../../../../enums/loading-state';
+import { Observable } from 'rxjs';
+import { MenuItemType } from '../../../../enums/menu-item-type';
+import { Store } from '@ngrx/store';
+import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -14,10 +14,9 @@ import {selectIsMobile} from '../../../../ngrx/selectors/device.selectors';
 @Component({
   selector: 'lc-order-items',
   templateUrl: './order-items.component.html',
-  styleUrls: ['./order-items.component.scss']
+  styleUrls: ['./order-items.component.scss'],
 })
 export class OrderItemsComponent {
-
   public items: AbstractModel[];
   public itemsName: string;
   public loadingState = LoadingState.DEFAULT;
@@ -32,17 +31,27 @@ export class OrderItemsComponent {
   private idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
   private slugParameter: string;
 
-  constructor(private dialogConfig: DynamicDialogConfig,
-              private store: Store,
-              private ref: DynamicDialogRef) {
+  constructor(
+    private dialogConfig: DynamicDialogConfig,
+    private store: Store,
+    private ref: DynamicDialogRef,
+  ) {
     this.items = [...this.dialogConfig.data.items];
     this.itemsName = this.dialogConfig.data.itemsName;
     this.callback = this.dialogConfig.data.callback;
     this.slugParameter = this.dialogConfig.data.slugParameter;
-    this.showImage = this.dialogConfig.data.showImage ? this.dialogConfig.data.showImage : false;
-    this.showLinePathLineName = this.dialogConfig.data.showLinePathLineName ? this.dialogConfig.data.showLinePathLineName : false;
-    this.showMenuItemTitle = this.dialogConfig.data.showMenuItemTitle ? this.dialogConfig.data.showMenuItemTitle : false;
-    this.idAccessor = this.dialogConfig.data.idAccessor ? this.dialogConfig.data.idAccessor : this.idAccessor;
+    this.showImage = this.dialogConfig.data.showImage
+      ? this.dialogConfig.data.showImage
+      : false;
+    this.showLinePathLineName = this.dialogConfig.data.showLinePathLineName
+      ? this.dialogConfig.data.showLinePathLineName
+      : false;
+    this.showMenuItemTitle = this.dialogConfig.data.showMenuItemTitle
+      ? this.dialogConfig.data.showMenuItemTitle
+      : false;
+    this.idAccessor = this.dialogConfig.data.idAccessor
+      ? this.dialogConfig.data.idAccessor
+      : this.idAccessor;
     this.isMobile$ = this.store.select(selectIsMobile);
   }
 
@@ -64,12 +73,11 @@ export class OrderItemsComponent {
     });
     let callback = this.callback(newOrder);
     if (this.slugParameter) {
-      callback = this.callback(newOrder, this.slugParameter)
+      callback = this.callback(newOrder, this.slugParameter);
     }
     callback.subscribe(() => {
       this.loadingState = LoadingState.DEFAULT;
       this.ref.close();
     });
   }
-
 }

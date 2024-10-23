@@ -1,44 +1,113 @@
-<ng-container *transloco="let t, read: 'ascentForm'">
-
+<ng-container *transloco="let t; read: 'ascentForm'">
   <form [formGroup]="ascentForm" lcForm>
-
     <p-divider align="center" type="dotted">
-      <b>{{t('ascentDate')}}</b>
+      <b>{{ t("ascentDate") }}</b>
     </p-divider>
 
     <div class="flex justify-content-center gap-2 mb-2">
-      <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup *ngIf="ascentForm.get('yearOnly').value">
-        <p-calendar formControlName="year" view="year" dateFormat="yy" inputId="year" lcFormControl
-                    appendTo="body"
-                    [maxDate]="today" [readonlyInput]="true"  styleClass="w-full"></p-calendar>
-        <small class="p-error" *lcIfError="'dateInFuture'">{{t('yearInFutureValidationError')}}</small>
-        <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+      <div
+        class="flex flex-column gap-2 flex-grow-1"
+        lcControlGroup
+        *ngIf="ascentForm.get('yearOnly').value"
+      >
+        <p-calendar
+          formControlName="year"
+          view="year"
+          dateFormat="yy"
+          inputId="year"
+          lcFormControl
+          appendTo="body"
+          [maxDate]="today"
+          [readonlyInput]="true"
+          styleClass="w-full"
+        ></p-calendar>
+        <small class="p-error" *lcIfError="'dateInFuture'">{{
+          t("yearInFutureValidationError")
+        }}</small>
+        <small class="p-error" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
       </div>
-      <div class="flex flex-column gap-2  flex-grow-1" lcControlGroup *ngIf="!ascentForm.get('yearOnly').value">
-        <p-calendar formControlName="date" view="date" inputId="date" lcFormControl styleClass="w-full"  appendTo="body"
-                    [maxDate]="today" [readonlyInput]="true" dateFormat="dd.mm.yy"></p-calendar>
-        <small class="p-error" *lcIfError="'dateInFuture'">{{t('dateInFutureValidationError')}}</small>
-        <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+      <div
+        class="flex flex-column gap-2 flex-grow-1"
+        lcControlGroup
+        *ngIf="!ascentForm.get('yearOnly').value"
+      >
+        <p-calendar
+          formControlName="date"
+          view="date"
+          inputId="date"
+          lcFormControl
+          styleClass="w-full"
+          appendTo="body"
+          [maxDate]="today"
+          [readonlyInput]="true"
+          dateFormat="dd.mm.yy"
+        ></p-calendar>
+        <small class="p-error" *lcIfError="'dateInFuture'">{{
+          t("dateInFutureValidationError")
+        }}</small>
+        <small class="p-error" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
       </div>
-      <p-toggleButton formControlName="yearOnly" [onLabel]="t('onlyYear')" [offLabel]="t('onlyYear')"></p-toggleButton>
+      <p-toggleButton
+        formControlName="yearOnly"
+        [onLabel]="t('onlyYear')"
+        [offLabel]="t('onlyYear')"
+      ></p-toggleButton>
     </div>
 
     <div class="flex justify-content-center gap-2">
-      <p-button [label]="t('today')" size="small" severity="secondary" (click)="setToToday()"  styleClass="shrink-padding-on-mobile"></p-button>
-      <p-button [label]="t('lastSaturday')"  size="small" severity="secondary" (click)="setToLastSaturday()"  styleClass="shrink-padding-on-mobile"></p-button>
-      <p-button [label]="t('lastSunday')"  size="small" severity="secondary" (click)="setToLastSunday()"  styleClass="shrink-padding-on-mobile"></p-button>
+      <p-button
+        [label]="t('today')"
+        size="small"
+        severity="secondary"
+        (click)="setToToday()"
+        styleClass="shrink-padding-on-mobile"
+      ></p-button>
+      <p-button
+        [label]="t('lastSaturday')"
+        size="small"
+        severity="secondary"
+        (click)="setToLastSaturday()"
+        styleClass="shrink-padding-on-mobile"
+      ></p-button>
+      <p-button
+        [label]="t('lastSunday')"
+        size="small"
+        severity="secondary"
+        (click)="setToLastSunday()"
+        styleClass="shrink-padding-on-mobile"
+      ></p-button>
     </div>
 
     <p-divider align="center" type="dotted">
-      <b>{{t('personalGrade')}}</b>
+      <b>{{ t("personalGrade") }}</b>
     </p-divider>
 
-    <div class="flex flex-row gap-2 justify-content-center align-items-center" lcControlGroup>
-      <p-toggleButton formControlName="soft" [onLabel]="t('soft')" [offLabel]="t('soft')"></p-toggleButton>
-      <p-dropdown formControlName="grade" [options]="grades" data-cy="grade-dropdown"
-                  optionLabel="name" placeholder="{{t('gradePlaceholder')}}" lcFormControl>
+    <div
+      class="flex flex-row gap-2 justify-content-center align-items-center"
+      lcControlGroup
+    >
+      <p-toggleButton
+        formControlName="soft"
+        [onLabel]="t('soft')"
+        [offLabel]="t('soft')"
+      ></p-toggleButton>
+      <p-dropdown
+        formControlName="grade"
+        [options]="grades"
+        data-cy="grade-dropdown"
+        optionLabel="name"
+        placeholder="{{ t('gradePlaceholder') }}"
+        lcFormControl
+      >
         <ng-template let-grade pTemplate="item">
-          <div class="flex align-items-center gap-2" data-cy="grade-dropdown-item">
+          <div
+            class="flex align-items-center gap-2"
+            data-cy="grade-dropdown-item"
+          >
             <div>{{ grade.name | transloco }}</div>
           </div>
         </ng-template>
@@ -46,47 +115,92 @@
           {{ selectedGrade.name | transloco }}
         </ng-template>
       </p-dropdown>
-      <p-toggleButton formControlName="hard" [onLabel]="t('hard')" [offLabel]="t('hard')"></p-toggleButton>
-      <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+      <p-toggleButton
+        formControlName="hard"
+        [onLabel]="t('hard')"
+        [offLabel]="t('hard')"
+      ></p-toggleButton>
+      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
     </div>
-    <p-message severity="warn" text="{{t('unusualGradeDifferenceWarning')}}"
-               styleClass="grade-difference-warning mt-2" *ngIf="gradeDifferenceWarning"></p-message>
+    <p-message
+      severity="warn"
+      text="{{ t('unusualGradeDifferenceWarning') }}"
+      styleClass="grade-difference-warning mt-2"
+      *ngIf="gradeDifferenceWarning"
+    ></p-message>
 
     <p-divider align="center" type="dotted">
-      <b>{{t('rating')}}</b>
+      <b>{{ t("rating") }}</b>
     </p-divider>
 
-    <div class="flex flex-column gap-2 align-items-center justify-content-center" lcControlGroup>
-      <p-rating formControlName="rating" lcFormControl [cancel]="false" data-cy="rating"></p-rating>
-      <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+    <div
+      class="flex flex-column gap-2 align-items-center justify-content-center"
+      lcControlGroup
+    >
+      <p-rating
+        formControlName="rating"
+        lcFormControl
+        [cancel]="false"
+        data-cy="rating"
+      ></p-rating>
+      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
     </div>
 
     <p-divider align="center" type="dotted">
-      <b>{{t('comment')}}</b>
+      <b>{{ t("comment") }}</b>
     </p-divider>
 
     <div class="flex flex-row gap-2" lcControlGroup>
-      <textarea rows="2" cols="30" pInputTextarea lcFormControl formControlName="comment"
-                class="w-full" data-cy="comment"></textarea>
+      <textarea
+        rows="2"
+        cols="30"
+        pInputTextarea
+        lcFormControl
+        formControlName="comment"
+        class="w-full"
+        data-cy="comment"
+      ></textarea>
     </div>
 
     <p-divider align="center" type="dotted">
-      <b>{{t('otherInfo')}}</b>
+      <b>{{ t("otherInfo") }}</b>
     </p-divider>
 
-    <div class="flex flex-row gap-2 align-items-center justify-content-center" lcControlGroup>
-      <p-toggleButton formControlName="flash" [onLabel]="t('flash')" [offLabel]="t('flash')" styleClass="shrink-padding-on-mobile"></p-toggleButton>
-      <p-toggleButton formControlName="withKneepad" [onLabel]="t('withKneepad')" data-cy="withKneepad"  styleClass="shrink-padding-on-mobile"
-                      [offLabel]="t('withKneepad')"></p-toggleButton>
-      <p-toggleButton formControlName="fa" [onLabel]="t('fa')" [offLabel]="t('fa')"  styleClass="shrink-padding-on-mobile"></p-toggleButton>
+    <div
+      class="flex flex-row gap-2 align-items-center justify-content-center"
+      lcControlGroup
+    >
+      <p-toggleButton
+        formControlName="flash"
+        [onLabel]="t('flash')"
+        [offLabel]="t('flash')"
+        styleClass="shrink-padding-on-mobile"
+      ></p-toggleButton>
+      <p-toggleButton
+        formControlName="withKneepad"
+        [onLabel]="t('withKneepad')"
+        data-cy="withKneepad"
+        styleClass="shrink-padding-on-mobile"
+        [offLabel]="t('withKneepad')"
+      ></p-toggleButton>
+      <p-toggleButton
+        formControlName="fa"
+        [onLabel]="t('fa')"
+        [offLabel]="t('fa')"
+        styleClass="shrink-padding-on-mobile"
+      ></p-toggleButton>
     </div>
-
   </form>
 
   <div class="form-actions">
-    <p-button label="{{ !editMode ? t('addAscentButtonLabel') : t('editAscentButtonLabel')}}"
-              (click)="saveAscent()" styleClass="w-full"
-              [loading]="loadingState === loadingStates.LOADING" data-cy="submit"></p-button>
+    <p-button
+      label="{{
+        !editMode ? t('addAscentButtonLabel') : t('editAscentButtonLabel')
+      }}"
+      (click)="saveAscent()"
+      styleClass="w-full"
+      [loading]="loadingState === loadingStates.LOADING"
+      data-cy="submit"
+    ></p-button>
   </div>
-
 </ng-container>

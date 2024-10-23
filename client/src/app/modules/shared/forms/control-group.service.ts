@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {NgControl} from '@angular/forms';
-import {FormService} from './form.service';
-import {ControlElement} from './control-element.interface';
+import { Observable, Subject } from 'rxjs';
+import { NgControl } from '@angular/forms';
+import { FormService } from './form.service';
+import { ControlElement } from './control-element.interface';
 
 /**
  * Service that manages the error states of a control group.
@@ -10,13 +10,13 @@ import {ControlElement} from './control-element.interface';
  * control messages. In most cases this is just a single input but it can also be an input group (value + unit).
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ControlGroupService {
-
   private controlElements: { [key: string]: ControlElement } = {};
   private hasErrorSubject: Subject<boolean> = new Subject<boolean>();
-  private hasErrorAndIsTouchedSubject: Subject<boolean> = new Subject<boolean>();
+  private hasErrorAndIsTouchedSubject: Subject<boolean> =
+    new Subject<boolean>();
   private isDisabledSubject: Subject<boolean> = new Subject<boolean>();
 
   constructor(private formService: FormService) {
@@ -42,9 +42,11 @@ export class ControlGroupService {
    *
    * @param name Name of the control for which to get the Observable stream.
    */
-  public controlElementTouchedChanges(name: string = null): Observable<boolean> {
+  public controlElementTouchedChanges(
+    name: string = null,
+  ): Observable<boolean> {
     const controlElementValues = Object.values(this.controlElements);
-    if(controlElementValues.length === 1 && name === null){
+    if (controlElementValues.length === 1 && name === null) {
       return controlElementValues[0].touchedChanged;
     }
     return this.controlElements[name].touchedChanged;
@@ -58,7 +60,7 @@ export class ControlGroupService {
    */
   public getControl(name: string = null): NgControl {
     const controlElementValues = Object.values(this.controlElements);
-    if(controlElementValues.length === 1 && name === null){
+    if (controlElementValues.length === 1 && name === null) {
       return controlElementValues[0].control;
     }
     try {
@@ -67,7 +69,7 @@ export class ControlGroupService {
       if (e instanceof TypeError) {
         throw new Error(`Could not get control with name "${name}"`);
       } else {
-        throw  e;
+        throw e;
       }
     }
   }
@@ -81,7 +83,7 @@ export class ControlGroupService {
   public onErrorStateChange() {
     let hasError = false;
     let isTouched = false;
-    Object.values(this.controlElements).map(controlElement => {
+    Object.values(this.controlElements).map((controlElement) => {
       hasError = hasError || !!controlElement.control.invalid;
       isTouched = isTouched || !!controlElement.control.touched;
     });
@@ -97,7 +99,7 @@ export class ControlGroupService {
    */
   public onDisabledStateChange() {
     let isDisabled = true;
-    Object.values(this.controlElements).map(controlElement => {
+    Object.values(this.controlElements).map((controlElement) => {
       isDisabled = isDisabled && controlElement.control.disabled;
     });
     this.isDisabledSubject.next(isDisabled);
@@ -128,11 +130,10 @@ export class ControlGroupService {
    * Maks all control elements in the group as touched.
    */
   public markAsTouched() {
-    Object.values(this.controlElements).map(controlElement => {
+    Object.values(this.controlElements).map((controlElement) => {
       controlElement.control.control?.markAllAsTouched();
       controlElement.control.control?.markAsDirty();
       controlElement.touchedChangedSubject.next(true);
     });
   }
-
 }

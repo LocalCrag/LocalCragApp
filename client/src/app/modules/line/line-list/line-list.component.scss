@@ -1,7 +1,6 @@
 lc-line-list {
-
-  p-slider{
-    width: 100%
+  p-slider {
+    width: 100%;
   }
 
   .line-info-container {
@@ -21,26 +20,23 @@ lc-line-list {
     }
   }
 
-  .bottom-row{
+  .bottom-row {
     display: flex;
     width: 100%;
 
-    .video-button{
-      button{
+    .video-button {
+      button {
         margin-left: -1.25rem;
       }
     }
 
-    lc-tick-button{
+    lc-tick-button {
       margin-right: -1.25rem;
     }
-
   }
 
-  .slider-container{
+  .slider-container {
     margin-left: 0.5715rem;
     margin-right: 0.5715rem;
   }
-
-
 }

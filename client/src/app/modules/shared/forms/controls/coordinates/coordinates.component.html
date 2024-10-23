@@ -1,40 +1,77 @@
 <ng-container *transloco="let t">
-
   <form [formGroup]="coordinatesForm" lcForm>
-
     <div class="flex flex-row gap-3">
-
       <div class="flex flex-column gap-2 flex-1" lcControlGroup>
-        <label>{{t('latLabel')}}</label>
-        <input type="text" pInputText formControlName="lat" placeholder="{{t('latPlaceholder')}}"
-               lcFormControl  data-cy="lat"/>
-        <small class="p-error" *lcIfError="'invalidLat'">{{t('invalidLat')}}</small>
+        <label for="lat">{{ t("latLabel") }}</label>
+        <input
+          id="lat"
+          type="text"
+          pInputText
+          formControlName="lat"
+          placeholder="{{ t('latPlaceholder') }}"
+          lcFormControl
+          data-cy="lat"
+        />
+        <small class="p-error" *lcIfError="'invalidLat'">{{
+          t("invalidLat")
+        }}</small>
       </div>
 
       <div class="flex flex-column gap-2 flex-1" lcControlGroup>
-        <label>{{t('lngLabel')}}</label>
-        <input type="text" pInputText formControlName="lng" placeholder="{{t('lngPlaceholder')}}"
-               lcFormControl data-cy="lng"/>
-        <small class="p-error" *lcIfError="'invalidLng'">{{t('invalidLng')}}</small>
+        <label for="lng">{{ t("lngLabel") }}</label>
+        <input
+          type="text"
+          id="lng"
+          pInputText
+          formControlName="lng"
+          placeholder="{{ t('lngPlaceholder') }}"
+          lcFormControl
+          data-cy="lng"
+        />
+        <small class="p-error" *lcIfError="'invalidLng'">{{
+          t("invalidLng")
+        }}</small>
       </div>
 
       <div class="flex flex-column gap-2">
-        <label>&nbsp;</label>
-        <p-button label="{{t('getCoordinatesPosition')}}" icon="pi pi-map-marker" (click)="getGeoLocation()"
-                  class="responsive-button"
-                  [loading]="positionLoading"></p-button>
+        <label for="get-location-button">&nbsp;</label>
+        <p-button
+          id="get-location-button"
+          label="{{ t('getCoordinatesPosition') }}"
+          icon="pi pi-map-marker"
+          (click)="getGeoLocation()"
+          class="responsive-button"
+          [loading]="positionLoading"
+        ></p-button>
       </div>
-
     </div>
-
   </form>
 
-  <div class="mt-3" *ngIf="coordinatesLoadingSuccess || coordinatesLoadingError">
-    <p-message *ngIf="coordinatesLoadingSuccess && !positionLoading" severity="success"
-               text="{{t('coordinatesLoadedSuccessfullyWithAccuracyX', {x: accuracy})}}"></p-message>
-    <p-message *ngIf="coordinatesLoadingSuccess && positionLoading" severity="success"
-               text="{{t('coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement', {x: accuracy})}}"></p-message>
-    <p-message *ngIf="coordinatesLoadingError" severity="error" text="{{t('coordinatesCouldNotBeLoaded')}}"></p-message>
+  <div
+    class="mt-3"
+    *ngIf="coordinatesLoadingSuccess || coordinatesLoadingError"
+  >
+    <p-message
+      *ngIf="coordinatesLoadingSuccess && !positionLoading"
+      severity="success"
+      text="{{
+        t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
+      }}"
+    ></p-message>
+    <p-message
+      *ngIf="coordinatesLoadingSuccess && positionLoading"
+      severity="success"
+      text="{{
+        t(
+          'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
+          { x: accuracy }
+        )
+      }}"
+    ></p-message>
+    <p-message
+      *ngIf="coordinatesLoadingError"
+      severity="error"
+      text="{{ t('coordinatesCouldNotBeLoaded') }}"
+    ></p-message>
   </div>
-
 </ng-container>

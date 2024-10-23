@@ -1,25 +1,25 @@
-import {Component, OnInit} from '@angular/core';
-import {LoadingState} from '../../../enums/loading-state';
-import {SelectItem} from 'primeng/api';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Post} from '../../../models/post';
-import {PostsService} from '../../../services/crud/posts.service';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {RouterLink} from '@angular/router';
-import {FormsModule} from '@angular/forms';
-import {SharedModule} from '../../shared/shared.module';
-import {Title} from '@angular/platform-browser';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import { Component, OnInit } from '@angular/core';
+import { LoadingState } from '../../../enums/loading-state';
+import { SelectItem } from 'primeng/api';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Post } from '../../../models/post';
+import { PostsService } from '../../../services/crud/posts.service';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
+import { Title } from '@angular/platform-browser';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 /**
  * A component that shows a list of blog posts.
@@ -40,13 +40,12 @@ import {HasPermissionDirective} from '../../shared/directives/has-permission.dir
     FormsModule,
     NgClass,
     SharedModule,
-    HasPermissionDirective
+    HasPermissionDirective,
   ],
   templateUrl: './post-list.component.html',
-  styleUrl: './post-list.component.scss'
+  styleUrl: './post-list.component.scss',
 })
-export class PostListComponent implements OnInit{
-
+export class PostListComponent implements OnInit {
   public posts: Post[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -56,11 +55,12 @@ export class PostListComponent implements OnInit{
   public sortField: string;
   public isMobile$: Observable<boolean>;
 
-  constructor(public postsService: PostsService,
-              private store: Store,
-              private title: Title,
-              private translocoService: TranslocoService) {
-  }
+  constructor(
+    public postsService: PostsService,
+    private store: Store,
+    private title: Title,
+    private translocoService: TranslocoService,
+  ) {}
 
   /**
    * Loads the posts on initialization.
@@ -68,8 +68,10 @@ export class PostListComponent implements OnInit{
   ngOnInit() {
     this.refreshData();
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
-    this.store.select(selectInstanceName).subscribe(instanceName => {
-      this.title.setTitle(`${this.translocoService.translate(marker('postListBrowserTitle'))} - ${instanceName}`);
+    this.store.select(selectInstanceName).subscribe((instanceName) => {
+      this.title.setTitle(
+        `${this.translocoService.translate(marker('postListBrowserTitle'))} - ${instanceName}`,
+      );
     });
   }
 
@@ -79,13 +81,19 @@ export class PostListComponent implements OnInit{
   refreshData() {
     forkJoin([
       this.postsService.getPosts(),
-      this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([posts, e]) => {
+      this.translocoService.load(`${environment.language}`),
+    ]).subscribe(([posts]) => {
       this.posts = posts;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {label: this.translocoService.translate(marker('sortNewToOld')), value: 'timeCreated'},
-        {label: this.translocoService.translate(marker('sortOldToNew')), value: '!timeCreated'},
+        {
+          label: this.translocoService.translate(marker('sortNewToOld')),
+          value: 'timeCreated',
+        },
+        {
+          label: this.translocoService.translate(marker('sortOldToNew')),
+          value: '!timeCreated',
+        },
       ];
       this.sortKey = this.sortOptions[0];
     });
@@ -96,7 +104,7 @@ export class PostListComponent implements OnInit{
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);
@@ -105,5 +113,4 @@ export class PostListComponent implements OnInit{
       this.sortField = value;
     }
   }
-
 }

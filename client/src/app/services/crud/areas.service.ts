@@ -1,26 +1,26 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {Area} from '../../models/area';
-import {ItemOrder} from '../../interfaces/item-order.interface';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
-import {Store} from '@ngrx/store';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Area } from '../../models/area';
+import { ItemOrder } from '../../interfaces/item-order.interface';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { reloadMenus } from '../../ngrx/actions/core.actions';
+import { Store } from '@ngrx/store';
 
 /**
  * CRUD service for areas.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AreasService {
-
-  constructor(private api: ApiService,
-              private store: Store,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private store: Store,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Creates an Area.
@@ -30,12 +30,14 @@ export class AreasService {
    * @return Observable of a Crag.
    */
   public createArea(area: Area, sectorSlug: string): Observable<Area> {
-    return this.http.post(this.api.areas.create(sectorSlug), Area.serialize(area)).pipe(
-      tap(() => {
-        this.store.dispatch(reloadMenus());
-      }),
-      map(Area.deserialize)
-    );
+    return this.http
+      .post(this.api.areas.create(sectorSlug), Area.serialize(area))
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+        }),
+        map(Area.deserialize),
+      );
   }
 
   /**
@@ -45,7 +47,9 @@ export class AreasService {
    * @return Observable of a list of Areas.
    */
   public getAreas(sectorSlug: string): Observable<Area[]> {
-    return this.http.get(this.api.areas.getList(sectorSlug)).pipe(map((areaListJson: any) => areaListJson.map(Area.deserialize)));
+    return this.http
+      .get(this.api.areas.getList(sectorSlug))
+      .pipe(map((areaListJson: any) => areaListJson.map(Area.deserialize)));
   }
 
   /**
@@ -55,7 +59,9 @@ export class AreasService {
    * @return Observable of an Area.
    */
   public getArea(slug: string): Observable<Area> {
-    return this.http.get(this.api.areas.getDetail(slug)).pipe(map(Area.deserialize));
+    return this.http
+      .get(this.api.areas.getDetail(slug))
+      .pipe(map(Area.deserialize));
   }
 
   /**
@@ -64,12 +70,12 @@ export class AreasService {
    * @param area Area to delete.
    * @return Observable of an Area.
    */
-  public deleteArea( area: Area): Observable<null> {
+  public deleteArea(area: Area): Observable<null> {
     return this.http.delete(this.api.areas.delete(area.slug)).pipe(
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
 
@@ -79,13 +85,15 @@ export class AreasService {
    * @param area Area to persist.
    * @return Observable of null.
    */
-  public updateArea( area: Area): Observable<Area> {
-    return this.http.put(this.api.areas.update(area.slug), Area.serialize(area)).pipe(
-      tap(() => {
-        this.store.dispatch(reloadMenus());
-      }),
-      map(Area.deserialize)
-    );
+  public updateArea(area: Area): Observable<Area> {
+    return this.http
+      .put(this.api.areas.update(area.slug), Area.serialize(area))
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+        }),
+        map(Area.deserialize),
+      );
   }
 
   /**
@@ -95,12 +103,15 @@ export class AreasService {
    * @param sectorSlug Slug of the sector the areas are in.
    * @return Observable of null.
    */
-  public updateAreaOrder(newOrder: ItemOrder, sectorSlug: string): Observable<null> {
+  public updateAreaOrder(
+    newOrder: ItemOrder,
+    sectorSlug: string,
+  ): Observable<null> {
     return this.http.put(this.api.areas.updateOrder(sectorSlug), newOrder).pipe(
       tap(() => {
         this.store.dispatch(reloadMenus());
       }),
-      map(() => null)
+      map(() => null),
     );
   }
 
@@ -111,7 +122,8 @@ export class AreasService {
    * @return Observable of a list of Grades.
    */
   public getAreaGrades(areaSlug: string): Observable<Grade[]> {
-    return this.http.get(this.api.areas.getGrades(areaSlug)).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http
+      .get(this.api.areas.getGrades(areaSlug))
+      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
-
 }

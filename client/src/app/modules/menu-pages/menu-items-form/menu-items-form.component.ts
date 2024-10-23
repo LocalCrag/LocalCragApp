@@ -1,34 +1,43 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {MenuPage} from '../../../models/menu-page';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MenuPagesService} from '../../../services/crud/menu-pages.service';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {environment} from '../../../../environments/environment';
-import {catchError} from 'rxjs/operators';
-import {forkJoin, Observable, of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {MenuItem} from '../../../models/menu-item';
-import {MenuItemsService} from '../../../services/crud/menu-items.service';
-import {MenuItemType} from '../../../enums/menu-item-type';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {CardModule} from 'primeng/card';
-import {NgClass, NgIf} from '@angular/common';
-import {PaginatorModule} from 'primeng/paginator';
-import {SharedModule} from '../../shared/shared.module';
-import {ButtonModule} from 'primeng/button';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {MenuItemPosition} from '../../../enums/menu-item-position';
-import {getInstanceEquivalentFromList} from '../../../utility/array-operations';
-import {reloadMenus} from '../../../ngrx/actions/core.actions';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { MenuPage } from '../../../models/menu-page';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MenuPagesService } from '../../../services/crud/menu-pages.service';
+import { Title } from '@angular/platform-browser';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { ConfirmationService } from 'primeng/api';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { environment } from '../../../../environments/environment';
+import { catchError } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { MenuItem } from '../../../models/menu-item';
+import { MenuItemsService } from '../../../services/crud/menu-items.service';
+import { MenuItemType } from '../../../enums/menu-item-type';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { CardModule } from 'primeng/card';
+import { NgClass, NgIf } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { SharedModule } from '../../shared/shared.module';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { MenuItemPosition } from '../../../enums/menu-item-position';
+import { getInstanceEquivalentFromList } from '../../../utility/array-operations';
+import { reloadMenus } from '../../../ngrx/actions/core.actions';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -43,7 +52,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
     TranslocoPipe,
     ButtonModule,
     ConfirmPopupModule,
-    NgClass
+    NgClass,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',
@@ -51,7 +60,6 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
 })
 @UntilDestroy()
 export class MenuItemsFormComponent implements OnInit {
-
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public menuItemForm: FormGroup;
@@ -68,11 +76,8 @@ export class MenuItemsFormComponent implements OnInit {
     MenuItemType.NEWS,
     MenuItemType.YOUTUBE,
     MenuItemType.INSTAGRAM,
-  ]
-  public positions = [
-    MenuItemPosition.TOP,
-    MenuItemPosition.BOTTOM,
-  ]
+  ];
+  public positions = [MenuItemPosition.TOP, MenuItemPosition.BOTTOM];
   public icons = [
     marker('pi-book'),
     marker('pi-building'),
@@ -85,19 +90,19 @@ export class MenuItemsFormComponent implements OnInit {
     marker('pi-home'),
     marker('pi-shield'),
     marker('pi-wallet'),
-  ]
+  ];
 
-  constructor(private fb: FormBuilder,
-              private store: Store,
-              private route: ActivatedRoute,
-              private router: Router,
-              private menuPagesService: MenuPagesService,
-              private menuItemsService: MenuItemsService,
-              private title: Title,
-              private translocoService: TranslocoService,
-              private confirmationService: ConfirmationService) {
-  }
-
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private route: ActivatedRoute,
+    private router: Router,
+    private menuPagesService: MenuPagesService,
+    private menuItemsService: MenuItemsService,
+    private title: Title,
+    private translocoService: TranslocoService,
+    private confirmationService: ConfirmationService,
+  ) {}
 
   /**
    * Builds the form on component initialization.
@@ -106,66 +111,79 @@ export class MenuItemsFormComponent implements OnInit {
     const menuItemId = this.route.snapshot.paramMap.get('menu-item-id');
     let menuItemRequest: Observable<MenuItem> = of(null);
     if (menuItemId) {
-      menuItemRequest = this.menuItemsService.getMenuItem(menuItemId).pipe(catchError(e => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      }));
+      menuItemRequest = this.menuItemsService.getMenuItem(menuItemId).pipe(
+        catchError((e) => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        }),
+      );
     }
-    forkJoin([menuItemRequest, this.menuPagesService.getMenuPages()]).subscribe(([menuItem, menuPages]) => {
-      this.menuPages = menuPages;
-      this.buildForm();
-      if (menuItem) {
-        this.store.select(selectInstanceName).subscribe(instanceName => {
-          this.title.setTitle(`${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${instanceName}`)
-        });
-        this.editMode = true;
-        this.menuItemForm.disable();
-        this.menuItem = menuItem;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-      } else {
-        this.store.select(selectInstanceName).subscribe(instanceName => {
-          this.title.setTitle(`${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`)
-        });
-        this.loadingState = LoadingState.DEFAULT;
-      }
-    })
+    forkJoin([menuItemRequest, this.menuPagesService.getMenuPages()]).subscribe(
+      ([menuItem, menuPages]) => {
+        this.menuPages = menuPages;
+        this.buildForm();
+        if (menuItem) {
+          this.store.select(selectInstanceName).subscribe((instanceName) => {
+            this.title.setTitle(
+              `${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${instanceName}`,
+            );
+          });
+          this.editMode = true;
+          this.menuItemForm.disable();
+          this.menuItem = menuItem;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+        } else {
+          this.store.select(selectInstanceName).subscribe((instanceName) => {
+            this.title.setTitle(
+              `${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`,
+            );
+          });
+          this.loadingState = LoadingState.DEFAULT;
+        }
+      },
+    );
   }
-
 
   /**
    * Builds the menu item form.
    */
   private buildForm() {
     const positionParam = this.route.snapshot.paramMap.get('position');
-    const position = positionParam === 'top' ? MenuItemPosition.TOP : MenuItemPosition.BOTTOM;
+    const position =
+      positionParam === 'top' ? MenuItemPosition.TOP : MenuItemPosition.BOTTOM;
     this.menuItemForm = this.fb.group({
       type: [MenuItemType.MENU_PAGE, [Validators.required]],
       position: [position, [Validators.required]],
       menuPage: [null],
       icon: [null],
     });
-    this.menuItemForm.get('type').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
-      this.setValidators();
-    });
+    this.menuItemForm
+      .get('type')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.setValidators();
+      });
     this.setValidators();
   }
 
   private setValidators() {
     if (this.menuItemForm.get('type').value === MenuItemType.MENU_PAGE) {
-      this.menuItemForm.get('menuPage').setValidators([Validators.required])
+      this.menuItemForm.get('menuPage').setValidators([Validators.required]);
       this.menuItemForm.get('menuPage').enable();
-      this.menuItemForm.get('menuPage').setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
-      this.menuItemForm.get('icon').setValidators([Validators.required])
+      this.menuItemForm
+        .get('menuPage')
+        .setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
+      this.menuItemForm.get('icon').setValidators([Validators.required]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
     } else {
-      this.menuItemForm.get('menuPage').setValidators([])
+      this.menuItemForm.get('menuPage').setValidators([]);
       this.menuItemForm.get('menuPage').disable();
       this.menuItemForm.get('menuPage').setValue(null);
-      this.menuItemForm.get('icon').setValidators([])
+      this.menuItemForm.get('icon').setValidators([]);
       this.menuItemForm.get('icon').disable();
       this.menuItemForm.get('icon').setValue(null);
     }
@@ -180,7 +198,10 @@ export class MenuItemsFormComponent implements OnInit {
       type: this.menuItem.type,
       position: this.menuItem.position,
       icon: this.menuItem.icon,
-      menuPage: getInstanceEquivalentFromList(this.menuItem.menuPage, this.menuPages)
+      menuPage: getInstanceEquivalentFromList(
+        this.menuItem.menuPage,
+        this.menuPages,
+      ),
     });
   }
 
@@ -205,14 +226,18 @@ export class MenuItemsFormComponent implements OnInit {
       if (this.menuItem) {
         menuItem.id = this.menuItem.id;
         this.menuItemsService.updateMenuItem(menuItem).subscribe(() => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_UPDATED));
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.MENU_ITEM_UPDATED),
+          );
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
         });
       } else {
         this.menuItemsService.createMenuItem(menuItem).subscribe(() => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_CREATED));
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.MENU_ITEM_CREATED),
+          );
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
@@ -231,10 +256,16 @@ export class MenuItemsFormComponent implements OnInit {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('menuItems.askReallyWantToDeleteMenuItem')),
-        acceptLabel: this.translocoService.translate(marker('menuItems.yesDelete')),
+        message: this.translocoService.translate(
+          marker('menuItems.askReallyWantToDeleteMenuItem'),
+        ),
+        acceptLabel: this.translocoService.translate(
+          marker('menuItems.yesDelete'),
+        ),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('menuItems.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('menuItems.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteMenuItem();
@@ -248,11 +279,12 @@ export class MenuItemsFormComponent implements OnInit {
    */
   public deleteMenuItem() {
     this.menuItemsService.deleteMenuItem(this.menuItem).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.MENU_ITEM_DELETED));
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.MENU_ITEM_DELETED),
+      );
       this.store.dispatch(reloadMenus());
       this.router.navigate(['/menu-items']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }
-
 }

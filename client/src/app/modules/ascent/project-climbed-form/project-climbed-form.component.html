@@ -1,0 +1,32 @@
+<ng-container *transloco="let t; read: 'projectClimbedForm'">
+  <form [formGroup]="projectClimbedForm" lcForm>
+    <p-message
+      severity="info"
+      text="{{ t('projectClimbedInfoMessage') }}"
+    ></p-message>
+
+    <div class="flex flex-column gap-2" lcControlGroup>
+      <textarea
+        rows="5"
+        cols="30"
+        pInputTextarea
+        lcFormControl
+        formControlName="message"
+        class="w-full mt-3"
+        data-cy="message"
+        [placeholder]="t('message')"
+      ></textarea>
+      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+    </div>
+  </form>
+
+  <div class="form-actions">
+    <p-button
+      label="{{ t('sendProjectClimbedMessageButtonLabel') }}"
+      (click)="sendMessage()"
+      styleClass="w-full"
+      [loading]="loadingState === loadingStates.LOADING"
+      data-cy="submit"
+    ></p-button>
+  </div>
+</ng-container>

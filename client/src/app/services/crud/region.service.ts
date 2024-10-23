@@ -1,22 +1,22 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Region} from '../../models/region';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Region } from '../../models/region';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
 
 /**
  * CRUD service for regions.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegionService {
-
-  constructor(private api: ApiService,
-              private http: HttpClient) {
-  }
+  constructor(
+    private api: ApiService,
+    private http: HttpClient,
+  ) {}
 
   /**
    * Returns a Region.
@@ -24,7 +24,9 @@ export class RegionService {
    * @return Observable of a Region.
    */
   public getRegion(): Observable<Region> {
-    return this.http.get(this.api.region.getDetail()).pipe(map(Region.deserialize));
+    return this.http
+      .get(this.api.region.getDetail())
+      .pipe(map(Region.deserialize));
   }
 
   /**
@@ -34,9 +36,9 @@ export class RegionService {
    * @return Observable of null.
    */
   public updateRegion(region: Region): Observable<Region> {
-    return this.http.put(this.api.region.update(), Region.serialize(region)).pipe(
-      map(Region.deserialize)
-    );
+    return this.http
+      .put(this.api.region.update(), Region.serialize(region))
+      .pipe(map(Region.deserialize));
   }
 
   /**
@@ -45,7 +47,8 @@ export class RegionService {
    * @return Observable of a list of Grades.
    */
   public getRegionGrades(): Observable<Grade[]> {
-    return this.http.get(this.api.region.getGrades()).pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+    return this.http
+      .get(this.api.region.getGrades())
+      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
   }
-
 }

@@ -1,13 +1,15 @@
-<ng-container *transloco="let t, read: 'tickButton'">
-
-  <p-button styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-            data-cy="tick-button"
-            label="{{ticked ? t('lineClimbed'): t('addAscent')}}"
-            (click)="addAscent($event)" [ngClass]="{'hide-label': !showLabel, 'disabled': ticked}" [disabled]="ticked">
+<ng-container *transloco="let t; read: 'tickButton'">
+  <p-button
+    styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+    data-cy="tick-button"
+    label="{{ ticked ? t('lineClimbed') : t('addAscent') }}"
+    (click)="addAscent($event)"
+    [ngClass]="{ 'hide-label': !showLabel, disabled: ticked }"
+    [disabled]="ticked"
+  >
     <ng-template pTemplate="icon">
-      <i  *ngIf="!ticked" class="pi pi-check"></i>
-      <i  *ngIf="ticked" class="pi pi-check ticked-icon"></i>
+      <i *ngIf="!ticked" class="pi pi-check"></i>
+      <i *ngIf="ticked" class="pi pi-check ticked-icon"></i>
     </ng-template>
   </p-button>
-
 </ng-container>

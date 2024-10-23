@@ -1,114 +1,234 @@
-<ng-container *transloco="let t, read: 'area.areaForm'">
-
+<ng-container *transloco="let t; read: 'area.areaForm'">
   <div class="content">
-
-    <p-card header="{{editMode ? t('editAreaTitle') : t('createAreaTitle')}}">
+    <p-card header="{{ editMode ? t('editAreaTitle') : t('createAreaTitle') }}">
       <p class="mt-0" *ngIf="!editMode">
-        {{ t('createAreaDescription') }}
+        {{ t("createAreaDescription") }}
       </p>
 
       <ng-container *ngIf="areaForm">
-
         <form [formGroup]="areaForm" lcForm>
-
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('areaNameLabel') }}</label>
-            <input type="text" pInputText formControlName="name" placeholder="{{t('areaNamePlaceholder')}}"
-                   lcFormControl data-cy="area-form-name"/>
-            <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
+            <label class="form-label" for="name">{{
+              t("areaNameLabel")
+            }}</label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              formControlName="name"
+              placeholder="{{ t('areaNamePlaceholder') }}"
+              lcFormControl
+              data-cy="area-form-name"
+            />
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('areaShortDescriptionLabel') }}</label>
-            <p-editor formControlName="shortDescription" lcFormControl data-cy="area-form-shortDescription"
-                      placeholder="{{t('areaShortDescriptionPlaceholder')}}"
-                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <label class="form-label" for="short-description">{{
+              t("areaShortDescriptionLabel")
+            }}</label>
+            <p-editor
+              id="short-description"
+              formControlName="shortDescription"
+              lcFormControl
+              data-cy="area-form-shortDescription"
+              placeholder="{{ t('areaShortDescriptionPlaceholder') }}"
+              [style]="{ height: '200px' }"
+              [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+            >
               <ng-template pTemplate="header">
-              <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
-              </span>
                 <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
-              </span>
+                  <button
+                    type="button"
+                    class="ql-bold"
+                    aria-label="Bold"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-italic"
+                    aria-label="Italic"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-underline"
+                    aria-label="Underline"
+                  ></button>
+                </span>
+                <span class="ql-formats">
+                  <button
+                    type="button"
+                    class="ql-link"
+                    aria-label="Link"
+                  ></button>
+                </span>
               </ng-template>
             </p-editor>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('areaDescriptionLabel') }}</label>
-            <p-editor formControlName="description" lcFormControl placeholder="{{t('areaDescriptionPlaceholder')}}"
-                      [modules]="quillModules" data-cy="area-form-description"
-                      [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+            <label class="form-label" for="description">{{
+              t("areaDescriptionLabel")
+            }}</label>
+            <p-editor
+              id="description"
+              formControlName="description"
+              lcFormControl
+              placeholder="{{ t('areaDescriptionPlaceholder') }}"
+              [modules]="quillModules"
+              data-cy="area-form-description"
+              [style]="{ height: '200px' }"
+              [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+            >
               <ng-template pTemplate="header">
-              <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
-              </span>
                 <span class="ql-formats">
-                  <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
-                  <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
-              </span>
+                  <button
+                    type="button"
+                    class="ql-bold"
+                    aria-label="Bold"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-italic"
+                    aria-label="Italic"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-underline"
+                    aria-label="Underline"
+                  ></button>
+                </span>
                 <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
-                  <button type="button" class="ql-image" aria-label="Image"></button>
-                  <button type="button" class="ql-video" aria-label="Video"></button>
-              </span>
+                  <button
+                    type="button"
+                    value="ordered"
+                    class="ql-list"
+                    aria-label="Ordered List"
+                  ></button>
+                  <button
+                    type="button"
+                    value="bullet"
+                    class="ql-list"
+                    aria-label="Unordered List"
+                  ></button>
+                </span>
+                <span class="ql-formats">
+                  <button
+                    type="button"
+                    class="ql-link"
+                    aria-label="Link"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-image"
+                    aria-label="Image"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-video"
+                    aria-label="Video"
+                  ></button>
+                </span>
               </ng-template>
             </p-editor>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('areaPortraitImageLabel') }}</label>
-            <lc-single-image-upload lcFormControl formControlName="portraitImage" data-cy="area-form-portraitImage">
+            <label class="form-label" for="portrait-image">{{
+              t("areaPortraitImageLabel")
+            }}</label>
+            <lc-single-image-upload
+              id="portrait-image"
+              lcFormControl
+              formControlName="portraitImage"
+              data-cy="area-form-portraitImage"
+            >
             </lc-single-image-upload>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('mapMarkersLabel') }}</label>
-            <lc-map-marker-form-array formControlName="mapMarkers" [disabledMarkerTypes]="disabledMarkerTypesArea"
-                                      lcFormControl [defaultMarkerType]="MapMarkerType.AREA"></lc-map-marker-form-array>
+            <label class="form-label" for="map-markers">{{
+              t("mapMarkersLabel")
+            }}</label>
+            <lc-map-marker-form-array
+              id="map-markers"
+              formControlName="mapMarkers"
+              [disabledMarkerTypes]="disabledMarkerTypesArea"
+              lcFormControl
+              [defaultMarkerType]="MapMarkerType.AREA"
+            ></lc-map-marker-form-array>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t('secretOptionsLabel') }}</label>
-            <p-checkbox label="{{t('secretSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
-                        lcFormControl></p-checkbox>
+            <label class="form-label" for="secret">{{
+              t("secretOptionsLabel")
+            }}</label>
+            <p-checkbox
+              label="{{ t('secretSecretLabel') }}"
+              name="secret"
+              [binary]="true"
+              id="secret"
+              formControlName="secret"
+              lcFormControl
+            ></p-checkbox>
           </div>
 
-          <p-messages severity="warn" *ngIf="parentSecret && !areaForm.get('secret').value">
+          <p-messages
+            severity="warn"
+            *ngIf="parentSecret && !areaForm.get('secret').value"
+          >
             <ng-template pTemplate>
               <i class="pi pi-info-circle"></i>
-              <div class="ml-2">{{ t('aPublicAreaWillSetParentsToPublic') }}</div>
+              <div class="ml-2">
+                {{ t("aPublicAreaWillSetParentsToPublic") }}
+              </div>
             </ng-template>
           </p-messages>
-
         </form>
 
         <div class="form-actions">
-          <p-button label="{{t('createAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save"
-                    class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"></p-button>
-          <p-button label="{{t('editAreaButtonLabel')}}" (click)="saveArea()" icon="pi pi-save"
-                    class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
-          <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
-                    styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
-          <p-button label="{{t('deleteAreaButtonLabel')}}" (click)="confirmDeleteArea($event)" icon="pi pi-trash"
-                    styleClass="p-button-danger" class="ml-3 responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+          <p-button
+            label="{{ t('createAreaButtonLabel') }}"
+            (click)="saveArea()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="!editMode"
+            data-cy="submit"
+          ></p-button>
+          <p-button
+            label="{{ t('editAreaButtonLabel') }}"
+            (click)="saveArea()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="editMode"
+          ></p-button>
+          <p-button
+            label="{{ t('cancelButtonLabel') }}"
+            (click)="cancel()"
+            class="ml-3 responsive-button"
+            styleClass="p-button-secondary"
+            icon="pi pi-ban"
+          ></p-button>
+          <p-button
+            label="{{ t('deleteAreaButtonLabel') }}"
+            (click)="confirmDeleteArea($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            *ngIf="editMode"
+          ></p-button>
           <p-confirmPopup></p-confirmPopup>
         </div>
-
       </ng-container>
 
       <lc-form-skeleton *ngIf="!areaForm"></lc-form-skeleton>
-
     </p-card>
-
   </div>
-
 </ng-container>

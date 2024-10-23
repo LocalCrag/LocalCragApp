@@ -1,18 +1,11 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Coordinates} from '../interfaces/coordinates.interface';
-import {deserializeGrade, Grade} from '../utility/misc/grades';
-import {Line} from './line';
-import {format, formatISO, parseISO} from 'date-fns';
-import {User} from './user';
-import {Area} from './area';
-import {Sector} from './sector';
-import {Crag} from './crag';
-import {A} from '@angular/cdk/keycodes';
-import {TodoPriority} from '../enums/todo-priority';
+import { AbstractModel } from './abstract-model';
+import { Line } from './line';
+import { Area } from './area';
+import { Sector } from './sector';
+import { Crag } from './crag';
+import { TodoPriority } from '../enums/todo-priority';
 
 export class Todo extends AbstractModel {
-
   priority: TodoPriority;
   line: Line;
   area: Area;
@@ -42,5 +35,4 @@ export class Todo extends AbstractModel {
 
     return todo;
   }
-
 }

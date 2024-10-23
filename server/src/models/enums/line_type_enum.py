@@ -5,6 +5,7 @@ class LineTypeEnum(Enum):
     """
     All possible types of lines.
     """
-    BOULDER = 'BOULDER'
-    SPORT = 'SPORT'
-    TRAD = 'TRAD'
+
+    BOULDER = "BOULDER"
+    SPORT = "SPORT"
+    TRAD = "TRAD"
