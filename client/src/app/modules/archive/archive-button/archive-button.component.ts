@@ -62,10 +62,14 @@ export class ArchiveButtonComponent {
 
     const resultHandler = {
       next: _ => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.ARCHIVED))
+        this.store.dispatch(toastNotification(
+          this.getCurrentState() ? NotificationIdentifier.ARCHIVED : NotificationIdentifier.UNARCHIVED,
+        ));
       },
       error: () => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.ARCHIVED_ERROR))
+        this.store.dispatch(toastNotification(
+          this.getCurrentState() ? NotificationIdentifier.ARCHIVED_ERROR : NotificationIdentifier.UNARCHIVED_ERROR,
+        ));
       }
     };
 
@@ -76,7 +80,7 @@ export class ArchiveButtonComponent {
 
     if (this.topoImage) {
       this.topoImage.archived = !this.topoImage.archived;
-      this.topoImagesService.updateTopoImage(this.topoImage, "").subscribe(resultHandler);
+      this.topoImagesService.updateTopoImage(this.topoImage).subscribe(resultHandler);
     }
 
     if (this.area) {

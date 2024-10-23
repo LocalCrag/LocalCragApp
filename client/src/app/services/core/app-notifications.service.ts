@@ -301,6 +301,38 @@ export class AppNotificationsService {
        * t(notifications.LOG_OUT_TO_USE_THIS_FUNCTION_TITLE)
        * t(notifications.LOG_OUT_TO_USE_THIS_FUNCTION_MESSAGE)
        **/
+      [
+        NotificationIdentifier.ARCHIVED,
+        NotificationType.SUCCESS,
+      ],
+      /**
+       * t(notifications.ARCHIVED_TITLE)
+       * t(notifications.ARCHIVED_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.UNARCHIVED,
+        NotificationType.SUCCESS,
+      ],
+      /**
+       * t(notifications.UNARCHIVED_TITLE)
+       * t(notifications.UNARCHIVED_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.ARCHIVED_ERROR,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.ARCHIVED_ERROR_TITLE)
+       * t(notifications.ARCHIVED_ERROR_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.UNARCHIVED_ERROR,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.UNARCHIVED_ERROR_TITLE)
+       * t(notifications.UNARCHIVED_ERROR_MESSAGE)
+       **/
     ]);
 
   constructor(
