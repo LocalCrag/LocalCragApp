@@ -7,8 +7,9 @@
 
       <form [formGroup]="linePathForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("lineLabel") }}</label>
+          <label class="form-label" for="line">{{ t("lineLabel") }}</label>
           <p-dropdown
+            id="line"
             formControlName="line"
             [options]="lines"
             data-cy="line-dropdown"
@@ -34,8 +35,8 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("linePathLabel") }}</label>
-          <lc-line-path-editor formControlName="path" lcFormControl>
+          <label class="form-label" for="path-editor">{{ t("linePathLabel") }}</label>
+          <lc-line-path-editor formControlName="path" lcFormControl id="path-editor">
           </lc-line-path-editor>
           <small class="p-error" *lcIfError="'required'">{{
             t("drawALineWithAtLeastTwoAnchorPoints")

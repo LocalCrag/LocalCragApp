@@ -159,7 +159,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginError),
-        map((action) => {
+        map(() => {
           this.store.dispatch(
             toastNotification(NotificationIdentifier.LOGIN_ERROR),
           );
@@ -272,7 +272,6 @@ export class AuthEffects {
           this.store.pipe(select(selectAccessTokenExpires), unixToDate),
         ),
         tap(([_action, accessTokenExpiresValue]) => {
-          const now = new Date();
           const validityDelta = differenceInMilliseconds(
             accessTokenExpiresValue,
             new Date(),
@@ -429,7 +428,6 @@ export class AuthEffects {
           this.store.pipe(select(selectRefreshTokenExpires), unixToDate),
         ),
         tap(([_action, refreshTokenExpiresValue]) => {
-          const now = new Date();
           const warningBeforeExpiry = subMilliseconds(
             refreshTokenExpiresValue,
             REFRESH_TOKEN_EXPIRY_WARNING_TIME,

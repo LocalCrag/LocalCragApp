@@ -7,10 +7,11 @@
     >
       <form [formGroup]="menuPageForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("menuPageTitleLabel") }}</label>
+          <label class="form-label" for="title" {{ t("menuPageTitleLabel") }}</label>
           <input
             type="text"
             pInputText
+            id="title"
             formControlName="title"
             placeholder="{{ t('menuPageTitlePlaceholder') }}"
             lcFormControl
@@ -24,8 +25,9 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("menuPageTextLabel") }}</label>
+          <label class="form-label" for="text">{{ t("menuPageTextLabel") }}</label>
           <p-editor
+            id="text"
             formControlName="text"
             lcFormControl
             [modules]="quillModules"

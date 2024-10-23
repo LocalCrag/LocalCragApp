@@ -92,7 +92,7 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    * Registers the onTouched function in the ControlValueAccessor.
    * @param fn onTouched function.
    */
-  registerOnTouched(fn: any): void {}
+  registerOnTouched(_fn: any): void {}
 
   /**
    * Sets the disabled state.

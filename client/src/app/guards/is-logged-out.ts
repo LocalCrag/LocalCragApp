@@ -8,12 +8,12 @@ import {selectIsLoggedOut,} from '../ngrx/selectors/auth.selectors';
 
 /**
  * CanActivateFn for checking if a user is logged out.
- * @param route Route to navigate to.
- * @param state Router state.
+ * @param _route Route to navigate to.
+ * @param _state Router state.
  */
 export const isLoggedOut: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
+  _route: ActivatedRouteSnapshot,
+  _state: RouterStateSnapshot,
 ): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);

@@ -1,5 +1,5 @@
 import {inject} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot,} from '@angular/router';
+import {CanActivateFn, Router,} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {select, Store} from '@ngrx/store';

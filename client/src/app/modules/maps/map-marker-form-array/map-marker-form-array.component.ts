@@ -56,7 +56,7 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
     this.propagateChange = fn;
   }
 
-  registerOnTouched(fn: any): void {}
+  registerOnTouched(_fn: any): void {}
 
   propagateChange = (_: any) => {};
 

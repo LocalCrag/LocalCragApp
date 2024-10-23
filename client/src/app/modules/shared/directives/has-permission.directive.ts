@@ -11,6 +11,7 @@ import {User} from '../../../models/user';
 
 @Directive({
   selector:
+    // eslint-disable-next-line  @angular-eslint/directive-selector
     '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
   standalone: true,
 })
@@ -19,7 +20,8 @@ export class HasPermissionDirective {
     private templateRef: TemplateRef<any>,
     private viewContainerRef: ViewContainerRef,
     private store: Store,
-  ) {}
+  ) {
+  }
 
   @Input()
   set isOwnUser(testUser: User) {
