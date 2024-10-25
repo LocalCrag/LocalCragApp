@@ -1,14 +1,9 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Observable} from 'rxjs';
-import {Grade} from '../utility/misc/grades';
-import {User} from './user';
+import { AbstractModel } from './abstract-model';
 
 /**
  * Model of a menu page.
  */
 export class MenuPage extends AbstractModel {
-
   title: string;
   text: string;
   slug: string;
@@ -40,5 +35,4 @@ export class MenuPage extends AbstractModel {
       text: menuPage.text,
     };
   }
-
 }

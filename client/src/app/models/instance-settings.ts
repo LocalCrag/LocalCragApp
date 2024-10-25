@@ -1,9 +1,6 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {Coordinates} from '../interfaces/coordinates.interface';
+import { File } from './file';
 
 export class InstanceSettings {
-
   timeUpdated: Date;
   instanceName: string;
   copyrightOwner: string;
@@ -18,29 +15,37 @@ export class InstanceSettings {
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
-  superadminEmail: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
+  maptilerApiKey: string;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
-    instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z')
+    instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z');
     instanceSettings.instanceName = payload.instanceName;
     instanceSettings.copyrightOwner = payload.copyrightOwner;
     instanceSettings.youtubeUrl = payload.youtubeUrl;
     instanceSettings.instagramUrl = payload.instagramUrl;
-    instanceSettings.logoImage = payload.logoImage ? File.deserialize(payload.logoImage) : null;
-    instanceSettings.faviconImage = payload.faviconImage ? File.deserialize(payload.faviconImage) : null;
-    instanceSettings.mainBgImage = payload.mainBgImage ? File.deserialize(payload.mainBgImage) : null;
-    instanceSettings.authBgImage = payload.authBgImage ? File.deserialize(payload.authBgImage) : null;
+    instanceSettings.logoImage = payload.logoImage
+      ? File.deserialize(payload.logoImage)
+      : null;
+    instanceSettings.faviconImage = payload.faviconImage
+      ? File.deserialize(payload.faviconImage)
+      : null;
+    instanceSettings.mainBgImage = payload.mainBgImage
+      ? File.deserialize(payload.mainBgImage)
+      : null;
+    instanceSettings.authBgImage = payload.authBgImage
+      ? File.deserialize(payload.authBgImage)
+      : null;
     instanceSettings.arrowColor = payload.arrowColor;
     instanceSettings.arrowTextColor = payload.arrowTextColor;
     instanceSettings.arrowHighlightColor = payload.arrowHighlightColor;
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
     instanceSettings.barChartColor = payload.barChartColor;
-    instanceSettings.superadminEmail = payload.superadminEmail;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
+    instanceSettings.maptilerApiKey = payload.maptilerApiKey;
     return instanceSettings;
   }
 
@@ -50,10 +55,18 @@ export class InstanceSettings {
       copyrightOwner: instanceSettings.copyrightOwner,
       youtubeUrl: instanceSettings.youtubeUrl,
       instagramUrl: instanceSettings.instagramUrl,
-      logoImage: instanceSettings.logoImage ? instanceSettings.logoImage.id : null,
-      faviconImage: instanceSettings.faviconImage ? instanceSettings.faviconImage.id : null,
-      mainBgImage: instanceSettings.mainBgImage ? instanceSettings.mainBgImage.id : null,
-      authBgImage: instanceSettings.authBgImage ? instanceSettings.authBgImage.id : null,
+      logoImage: instanceSettings.logoImage
+        ? instanceSettings.logoImage.id
+        : null,
+      faviconImage: instanceSettings.faviconImage
+        ? instanceSettings.faviconImage.id
+        : null,
+      mainBgImage: instanceSettings.mainBgImage
+        ? instanceSettings.mainBgImage.id
+        : null,
+      authBgImage: instanceSettings.authBgImage
+        ? instanceSettings.authBgImage.id
+        : null,
       arrowColor: instanceSettings.arrowColor,
       arrowTextColor: instanceSettings.arrowTextColor,
       arrowHighlightColor: instanceSettings.arrowHighlightColor,
@@ -61,7 +74,7 @@ export class InstanceSettings {
       barChartColor: instanceSettings.barChartColor,
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
+      maptilerApiKey: instanceSettings.maptilerApiKey,
     };
   }
-
 }

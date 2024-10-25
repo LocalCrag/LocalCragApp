@@ -7,8 +7,6 @@ from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
 from models.grades import GRADES
-from models.line import Line
-from models.sector import Sector
 from models.user import User
 
 
@@ -33,9 +31,11 @@ def create_dummy_ascents():
                                 ascent.sector_id = sector.id
                                 ascent.rating = 5
                                 ascent.grade_scale = line.grade_scale
-                                ascent.grade_name = random.choice(GRADES[LineTypeEnum.BOULDER][line.grade_scale])['name']
-                                if ascent.grade_name in ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED']:
-                                    ascent.grade_name = '1'
+                                ascent.grade_name = random.choice(GRADES[LineTypeEnum.BOULDER][line.grade_scale])[
+                                    "name"
+                                ]
+                                if ascent.grade_name in ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"]:
+                                    ascent.grade_name = "1"
                                 db.session.add(ascent)
         db.session.commit()
 

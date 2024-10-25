@@ -12,7 +12,8 @@
     "i18n:extract": "transloco-keys-manager extract -d \"\"",
     "i18n:find": "transloco-keys-manager find",
     "cypress": "cypress open",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org localcrag --project localcrag-client ./dist/client && sentry-cli sourcemaps upload --org localcrag --project localcrag-client ./dist/client"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org localcrag --project localcrag-client ./dist/client && sentry-cli sourcemaps upload --org localcrag --project localcrag-client ./dist/client",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -56,17 +57,26 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.1.3",
+    "@angular-eslint/builder": "17.5.3",
+    "@angular-eslint/eslint-plugin": "17.5.3",
+    "@angular-eslint/eslint-plugin-template": "17.5.3",
+    "@angular-eslint/schematics": "17.5.3",
+    "@angular-eslint/template-parser": "17.5.3",
     "@angular/cli": "~17.1.3",
     "@angular/compiler-cli": "^17.1.3",
     "@types/jasmine": "~4.0.0",
     "@types/mapbox-gl": "^3.1.0",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
     "cypress": "^13.6.6",
+    "eslint": "^8.57.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "prettier": "^3.3.3",
     "typescript": "~5.3.3"
   }
 }

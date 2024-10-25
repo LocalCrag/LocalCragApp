@@ -1,23 +1,23 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {RankingService} from '../../../services/crud/ranking.service';
-import {Ranking} from '../../../models/ranking';
-import {LoadingState} from '../../../enums/loading-state';
-import {LineType} from '../../../enums/line-type';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {SelectItem, SharedModule} from 'primeng/api';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {ButtonModule} from 'primeng/button';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import {AvatarModule} from 'primeng/avatar';
-import {RouterLink} from '@angular/router';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {FormsModule} from '@angular/forms';
-import {DialogModule} from 'primeng/dialog';
-import {InputSwitchModule} from 'primeng/inputswitch';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { RankingService } from '../../../services/crud/ranking.service';
+import { Ranking } from '../../../models/ranking';
+import { LoadingState } from '../../../enums/loading-state';
+import { LineType } from '../../../enums/line-type';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { SelectItem, SharedModule } from 'primeng/api';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { AvatarModule } from 'primeng/avatar';
+import { RouterLink } from '@angular/router';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -38,14 +38,13 @@ import {HasPermissionDirective} from '../../shared/directives/has-permission.dir
     FormsModule,
     DialogModule,
     InputSwitchModule,
-    HasPermissionDirective
+    HasPermissionDirective,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class RankingListComponent implements OnInit {
-
   @Input() cragId: string;
   @Input() sectorId: string;
 
@@ -59,25 +58,25 @@ export class RankingListComponent implements OnInit {
   public secretRankings = false;
   public showInfoPopup = false;
 
-  constructor(private rankingService: RankingService,
-              private translocoService: TranslocoService) {
-  }
-
+  constructor(
+    private rankingService: RankingService,
+    private translocoService: TranslocoService,
+  ) {}
 
   ngOnInit() {
     this.rankingTypes = [
       {
         label: this.translocoService.translate(marker('top10Ranking')),
-        value: 'top10'
+        value: 'top10',
       },
       {
         label: this.translocoService.translate(marker('top50Ranking')),
-        value: 'top50'
+        value: 'top50',
       },
       {
         label: this.translocoService.translate(marker('totalCountRanking')),
-        value: 'totalCount'
-      }
+        value: 'totalCount',
+      },
     ];
     this.rankingType = this.rankingTypes[0];
     this.loadRanking();
@@ -95,16 +94,21 @@ export class RankingListComponent implements OnInit {
     if (this.secretRankings) {
       query_params += `&secret=1`;
     }
-    this.rankingService.getRanking(query_params).subscribe(rankings => {
+    this.rankingService.getRanking(query_params).subscribe((rankings) => {
       this.rankings = rankings;
       this.sortField = this.rankingType.value;
-      this.rankings.sort((a, b) => a[this.sortField] < b[this.sortField] ? 1 : a[this.sortField] > b[this.sortField] ? -1 : 0)
+      this.rankings.sort((a, b) =>
+        a[this.sortField] < b[this.sortField]
+          ? 1
+          : a[this.sortField] > b[this.sortField]
+            ? -1
+            : 0,
+      );
       this.loading = LoadingState.DEFAULT;
-    })
+    });
   }
 
   showDialog() {
     this.showInfoPopup = true;
   }
-
 }

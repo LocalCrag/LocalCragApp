@@ -1,23 +1,23 @@
-import {Injectable} from '@angular/core';
-import {MessageService} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
+import { Injectable } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ClipboardService {
-
-  constructor(private messageService: MessageService,
-              private translocoService: TranslocoService,) {
-  }
+  constructor(
+    private messageService: MessageService,
+    private translocoService: TranslocoService,
+  ) {}
 
   private fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
+    const textArea = document.createElement('textarea');
     textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
@@ -25,14 +25,22 @@ export class ClipboardService {
       document.execCommand('copy');
       this.messageService.add({
         severity: 'success',
-        summary: this.translocoService.translate(marker('clipboardSuccessToastTitle')),
-        detail: this.translocoService.translate(marker('clipboardSuccessToastDescription')),
+        summary: this.translocoService.translate(
+          marker('clipboardSuccessToastTitle'),
+        ),
+        detail: this.translocoService.translate(
+          marker('clipboardSuccessToastDescription'),
+        ),
       });
     } catch (err) {
       this.messageService.add({
         severity: 'error',
-        summary: this.translocoService.translate(marker('clipboardErrorToastTitle')),
-        detail: this.translocoService.translate(marker('clipboardErrorToastDescription')),
+        summary: this.translocoService.translate(
+          marker('clipboardErrorToastTitle'),
+        ),
+        detail: this.translocoService.translate(
+          marker('clipboardErrorToastDescription'),
+        ),
       });
     }
 
@@ -44,19 +52,29 @@ export class ClipboardService {
       this.fallbackCopyTextToClipboard(text);
       return;
     }
-    navigator.clipboard.writeText(text).then(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: this.translocoService.translate(marker('clipboardSuccessToastTitle')),
-        detail: this.translocoService.translate(marker('clipboardSuccessToastDescription')),
-      });
-    }, () => {
-      this.messageService.add({
-        severity: 'error',
-        summary: this.translocoService.translate(marker('clipboardErrorToastTitle')),
-        detail: this.translocoService.translate(marker('clipboardErrorToastDescription')),
-      });
-    });
+    navigator.clipboard.writeText(text).then(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate(
+            marker('clipboardSuccessToastTitle'),
+          ),
+          detail: this.translocoService.translate(
+            marker('clipboardSuccessToastDescription'),
+          ),
+        });
+      },
+      () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translocoService.translate(
+            marker('clipboardErrorToastTitle'),
+          ),
+          detail: this.translocoService.translate(
+            marker('clipboardErrorToastDescription'),
+          ),
+        });
+      },
+    );
   }
-
 }

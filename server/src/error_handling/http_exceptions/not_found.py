@@ -9,6 +9,4 @@ class NotFound(Exception):
         self.message = message
 
     def to_dict(self):
-        return {
-            'message': self.message
-        }
+        return {"message": self.message}

@@ -2,6 +2,7 @@
  * Defines identifiers for all notifications in the system.
  */
 export enum NotificationIdentifier {
+  PROJECT_CLIMBED_MESSAGE_SENT = 'PROJECT_CLIMBED_MESSAGE_SENT',
   TODO_DELETED = 'TODO_DELETED',
   TODO_PRIORITY_UPDATED = 'TODO_PRIORITY_UPDATED',
   TODO_ADD_ERROR = 'TODO_ADD_ERROR',

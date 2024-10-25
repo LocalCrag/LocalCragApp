@@ -1,12 +1,7 @@
 @use "../../../styles/media-queries" as m;
 
-
-.user-actions{
-
+.user-actions {
   @include m.prime-xl {
-
-    margin-left: -1.25rem
-
+    margin-left: -1.25rem;
   }
-
 }

@@ -1,23 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
-import {SkeletonModule} from 'primeng/skeleton';
+import { Component, Input } from '@angular/core';
+import { NgForOf, NgIf } from '@angular/common';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-form-skeleton',
   standalone: true,
-  imports: [
-    NgIf,
-    SkeletonModule,
-    NgForOf
-  ],
+  imports: [NgIf, SkeletonModule, NgForOf],
   templateUrl: './form-skeleton.component.html',
-  styleUrl: './form-skeleton.component.scss'
+  styleUrl: './form-skeleton.component.scss',
 })
-export class FormSkeletonComponent  {
-
+export class FormSkeletonComponent {
   /**
    * Accepts a string of "I" and "T". "I" will render an inout skeleton, "T" a textarea skeleton.
    */
-  @Input() parts = 'ITTTII'
-
+  @Input() parts = 'ITTTII';
 }

@@ -1,5 +1,4 @@
-<ng-container *transloco="let t, read: 'searchDialog'">
-
+<ng-container *transloco="let t; read: 'searchDialog'">
   <!-- t(BOULDER) -->
   <!-- t(SPORT) -->
   <!-- t(TRAD) -->
@@ -8,62 +7,135 @@
     <div class="p-input-icon-left">
       <i class="pi pi-search" *ngIf="!loading"></i>
       <i class="pi pi-spin pi-spinner" *ngIf="loading"></i>
-      <input type="text" pInputText [(ngModel)]="query" (ngModelChange)="search()"
-             placeholder="{{t('searchInputPlaceholder')}}"/>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="query"
+        (ngModelChange)="search()"
+        placeholder="{{ t('searchInputPlaceholder') }}"
+      />
     </div>
     <p-button icon="pi pi-times" (click)="close()"></p-button>
   </div>
 
   <div class="spacer" *ngIf="searchables?.length > 0"></div>
   <ng-container *ngFor="let searchable of searchables">
-    <div class="search-result" *ngIf="searchable.line" [routerLink]="searchable.line.routerLink">
+    <div
+      class="search-result"
+      *ngIf="searchable.line"
+      [routerLink]="searchable.line.routerLink"
+    >
       <div class="grade-circle">
-        <ng-container *ngIf="searchable.line.grade.value > 0">{{searchable.line.grade.name}}</ng-container>
-        <ng-container *ngIf="searchable.line.grade.value == 0">{{t('gradeCircleNotGraded')}}</ng-container>
-        <ng-container *ngIf="searchable.line.grade.value < 0">{{t('gradeCircleProject')}}</ng-container>
+        <ng-container *ngIf="searchable.line.grade.value > 0">{{
+          searchable.line.grade.name
+        }}</ng-container>
+        <ng-container *ngIf="searchable.line.grade.value === 0">{{
+          t("gradeCircleNotGraded")
+        }}</ng-container>
+        <ng-container *ngIf="searchable.line.grade.value < 0">{{
+          t("gradeCircleProject")
+        }}</ng-container>
       </div>
       <div class="search-result-description">
-        <div class="search-result-name">{{searchable.line.name}}</div>
-        <div class="search-result-meta"><b>{{t(searchable.line.type)}}</b>, {{searchable.line.area.name}}
-          , {{searchable.line.area.sector.name}}, {{searchable.line.area.sector.crag.name}}</div>
+        <div class="search-result-name">{{ searchable.line.name }}</div>
+        <div class="search-result-meta">
+          <b>{{ t(searchable.line.type) }}</b
+          >, {{ searchable.line.area.name }} ,
+          {{ searchable.line.area.sector.name }},
+          {{ searchable.line.area.sector.crag.name }}
+        </div>
       </div>
     </div>
-    <div class="search-result" *ngIf="searchable.area" [routerLink]="searchable.area.routerLink">
+    <div
+      class="search-result"
+      *ngIf="searchable.area"
+      [routerLink]="searchable.area.routerLink"
+    >
       <p-avatar
-        [image]="searchable.area.portraitImage ? searchable.area.portraitImage.thumbnailS : 'assets/placeholder.png'"
-        styleClass="mr-2" size="normal" shape="circle"></p-avatar>
+        [image]="
+          searchable.area.portraitImage
+            ? searchable.area.portraitImage.thumbnailS
+            : 'assets/placeholder.png'
+        "
+        styleClass="mr-2"
+        size="normal"
+        shape="circle"
+      ></p-avatar>
       <div class="search-result-description">
-        <div class="search-result-name">{{searchable.area.name}}</div>
-        <div class="search-result-meta"><b>{{t('area')}}</b>, {{searchable.area.sector.name}}
-          , {{searchable.area.sector.crag.name}}</div>
+        <div class="search-result-name">{{ searchable.area.name }}</div>
+        <div class="search-result-meta">
+          <b>{{ t("area") }}</b
+          >, {{ searchable.area.sector.name }} ,
+          {{ searchable.area.sector.crag.name }}
+        </div>
       </div>
     </div>
-    <div class="search-result" *ngIf="searchable.sector" [routerLink]="searchable.sector.routerLink">
+    <div
+      class="search-result"
+      *ngIf="searchable.sector"
+      [routerLink]="searchable.sector.routerLink"
+    >
       <p-avatar
-        [image]="searchable.sector.portraitImage ? searchable.sector.portraitImage.thumbnailS : 'assets/placeholder.png'"
-        styleClass="mr-2" size="normal" shape="circle"></p-avatar>
+        [image]="
+          searchable.sector.portraitImage
+            ? searchable.sector.portraitImage.thumbnailS
+            : 'assets/placeholder.png'
+        "
+        styleClass="mr-2"
+        size="normal"
+        shape="circle"
+      ></p-avatar>
       <div class="search-result-description">
-        <div class="search-result-name">{{searchable.sector.name}}</div>
-        <div class="search-result-meta"><b>{{t('sector')}}</b>, {{searchable.sector.crag.name}}</div>
+        <div class="search-result-name">{{ searchable.sector.name }}</div>
+        <div class="search-result-meta">
+          <b>{{ t("sector") }}</b
+          >, {{ searchable.sector.crag.name }}
+        </div>
       </div>
     </div>
-    <div class="search-result" *ngIf="searchable.crag" [routerLink]="searchable.crag.routerLink">
+    <div
+      class="search-result"
+      *ngIf="searchable.crag"
+      [routerLink]="searchable.crag.routerLink"
+    >
       <p-avatar
-        [image]="searchable.crag.portraitImage ? searchable.crag.portraitImage.thumbnailS : 'assets/placeholder.png'"
-        styleClass="mr-2" size="normal" shape="circle"></p-avatar>
+        [image]="
+          searchable.crag.portraitImage
+            ? searchable.crag.portraitImage.thumbnailS
+            : 'assets/placeholder.png'
+        "
+        styleClass="mr-2"
+        size="normal"
+        shape="circle"
+      ></p-avatar>
       <div class="search-result-description">
-        <div class="search-result-name">{{searchable.crag.name}}</div>
-        <div class="search-result-meta"><b>{{t('crag')}}</b></div>
+        <div class="search-result-name">{{ searchable.crag.name }}</div>
+        <div class="search-result-meta">
+          <b>{{ t("crag") }}</b>
+        </div>
       </div>
     </div>
-    <div class="search-result" *ngIf="searchable.user" [routerLink]="searchable.user.routerLink">
-      <p-avatar [image]="searchable.user.avatar ? searchable.user.avatar.thumbnailS : 'assets/user.png'"
-                styleClass="mr-2" size="normal" shape="circle"></p-avatar>
+    <div
+      class="search-result"
+      *ngIf="searchable.user"
+      [routerLink]="searchable.user.routerLink"
+    >
+      <p-avatar
+        [image]="
+          searchable.user.avatar
+            ? searchable.user.avatar.thumbnailS
+            : 'assets/user.png'
+        "
+        styleClass="mr-2"
+        size="normal"
+        shape="circle"
+      ></p-avatar>
       <div class="search-result-description">
-        <div class="search-result-name">{{searchable.user.fullname}}</div>
-        <div class="search-result-meta"><b>{{t('user')}}</b></div>
+        <div class="search-result-name">{{ searchable.user.fullname }}</div>
+        <div class="search-result-meta">
+          <b>{{ t("user") }}</b>
+        </div>
       </div>
     </div>
   </ng-container>
-
 </ng-container>

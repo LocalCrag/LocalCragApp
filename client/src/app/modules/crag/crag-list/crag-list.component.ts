@@ -1,17 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
-import {CragsService} from '../../../services/crud/crags.service';
-import {LoadingState} from '../../../enums/loading-state';
-import {PrimeIcons, SelectItem} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {forkJoin, Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {environment} from '../../../../environments/environment';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {OrderItemsComponent} from '../../shared/components/order-items/order-items.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { Component, OnInit } from '@angular/core';
+import { Crag } from '../../../models/crag';
+import { CragsService } from '../../../services/crud/crags.service';
+import { LoadingState } from '../../../enums/loading-state';
+import { PrimeIcons, SelectItem } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { forkJoin, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { environment } from '../../../../environments/environment';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Component that lists all crags in an area.
@@ -20,13 +20,10 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   selector: 'lc-crag-list',
   templateUrl: './crag-list.component.html',
   styleUrls: ['./crag-list.component.scss'],
-  providers: [
-    DialogService
-  ]
+  providers: [DialogService],
 })
 @UntilDestroy()
 export class CragListComponent implements OnInit {
-
   public crags: Crag[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -37,11 +34,12 @@ export class CragListComponent implements OnInit {
   public isMobile$: Observable<boolean>;
   public ref: DynamicDialogRef | undefined;
 
-  constructor(public cragsService: CragsService,
-              private store: Store,
-              private dialogService: DialogService,
-              private translocoService: TranslocoService) {
-  }
+  constructor(
+    public cragsService: CragsService,
+    private store: Store,
+    private dialogService: DialogService,
+    private translocoService: TranslocoService,
+  ) {}
 
   /**
    * Loads the crags on initialization.
@@ -57,15 +55,31 @@ export class CragListComponent implements OnInit {
   refreshData() {
     forkJoin([
       this.cragsService.getCrags(),
-      this.translocoService.load(`${environment.language}`)
-    ]).subscribe(([crags, e]) => {
+      this.translocoService.load(`${environment.language}`),
+    ]).subscribe(([crags]) => {
       this.crags = crags;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT, label: this.translocoService.translate(marker('sortAscending')), value: '!orderIndex'},
-        {icon: PrimeIcons.SORT_AMOUNT_DOWN, label: this.translocoService.translate(marker('sortDescending')), value: 'orderIndex'},
-        {icon: PrimeIcons.SORT_ALPHA_DOWN, label: this.translocoService.translate(marker('sortAZ')), value: '!name'},
-        {icon: 'pi pi-sort-alpha-down-alt', label: this.translocoService.translate(marker('sortZA')), value: 'name'}
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+          label: this.translocoService.translate(marker('sortAscending')),
+          value: '!orderIndex',
+        },
+        {
+          icon: PrimeIcons.SORT_AMOUNT_DOWN,
+          label: this.translocoService.translate(marker('sortDescending')),
+          value: 'orderIndex',
+        },
+        {
+          icon: PrimeIcons.SORT_ALPHA_DOWN,
+          label: this.translocoService.translate(marker('sortAZ')),
+          value: '!name',
+        },
+        {
+          icon: 'pi pi-sort-alpha-down-alt',
+          label: this.translocoService.translate(marker('sortZA')),
+          value: 'name',
+        },
       ];
       this.sortKey = this.sortOptions[0];
     });
@@ -76,7 +90,7 @@ export class CragListComponent implements OnInit {
    * @param event Sort change event.
    */
   onSortChange(event: any) {
-    let value = event.value.value;
+    const value = event.value.value;
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);
@@ -91,16 +105,19 @@ export class CragListComponent implements OnInit {
    */
   reorderCrags() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      header: this.translocoService.translate(marker('reorderCragsDialogTitle')),
+      header: this.translocoService.translate(
+        marker('reorderCragsDialogTitle'),
+      ),
       data: {
         items: this.crags,
-        itemsName: this.translocoService.translate(marker('reorderCragsDialogItemsName')),
-        callback: this.cragsService.updateCragOrder.bind(this.cragsService)
-      }
+        itemsName: this.translocoService.translate(
+          marker('reorderCragsDialogItemsName'),
+        ),
+        callback: this.cragsService.updateCragOrder.bind(this.cragsService),
+      },
     });
     this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
       this.refreshData();
     });
   }
-
 }

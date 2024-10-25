@@ -1,14 +1,13 @@
-:host{
+:host {
   display: flex;
   align-items: center;
 
-  .ticked{
-    margin-right: .25rem;
+  .ticked {
+    margin-right: 0.25rem;
     transform: translateX(-3px);
     background-color: var(--gray-500);
-    border-radius: .25rem;
-    padding: .1rem;
-    color: white
+    border-radius: 0.25rem;
+    padding: 0.1rem;
+    color: white;
   }
-
 }

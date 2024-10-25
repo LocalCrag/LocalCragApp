@@ -8,8 +8,10 @@ from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.create_user_mail import create_user_mail
+from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
 from i18n.user_registered_mail import user_registered_mail
+from models.line import Line
 from models.user import User
 
 
@@ -22,7 +24,7 @@ def build_i18n_keyword_arg_dict(locale, i18n_source_dict):
     """
     i18n_keyword_arg_dict = {}
     for key, value in i18n_source_dict[locale].items():
-        i18n_keyword_arg_dict['i18n_{}'.format(key)] = value
+        i18n_keyword_arg_dict["i18n_{}".format(key)] = value
     return i18n_keyword_arg_dict
 
 
@@ -32,22 +34,32 @@ def send_generic_mail(msg):
     :param msg: Mail to send.
     """
 
-    if current_app.config['PRINT_MAILS_TO_CONSOLE']:
+    if current_app.config["PRINT_MAILS_TO_CONSOLE"]:
         print_decoded_email_parts(msg)
         return
 
-    if current_app.config['SMTP_PORT'] == '587':  # pragma: no cover
+    smtp_type = current_app.config.get("SMTP_TYPE", "").lower()
+    if smtp_type not in ["smtps", "starttls", "plain", "disabled"]:
+        print(f"WARNING: Invalid SMTP_TYPE set ({smtp_type!r}), defaulting to 'disabled'")
+        smtp_type = "disabled"
+
+    if smtp_type == "starttls":  # pragma: no cover
         context = ssl.create_default_context()
-        with smtplib.SMTP(current_app.config['SMTP_HOST'], current_app.config['SMTP_PORT']) as server:
+        with smtplib.SMTP(current_app.config["SMTP_HOST"], current_app.config["SMTP_PORT"]) as server:
             server.ehlo()
             server.starttls(context=context)
             server.ehlo()
-            server.login(current_app.config['SMTP_USER'], current_app.config['SMTP_PASSWORD'])
-            server.sendmail(msg['From'], msg['To'], msg.as_string())
-    if current_app.config['SMTP_PORT'] == '465':
-        with smtplib.SMTP_SSL(current_app.config['SMTP_HOST'], current_app.config['SMTP_PORT']) as server:
-            server.login(current_app.config['SMTP_USER'], current_app.config['SMTP_PASSWORD'])
-            server.sendmail(msg['From'], msg['To'], msg.as_string())
+            server.login(current_app.config["SMTP_USER"], current_app.config["SMTP_PASSWORD"])
+            server.sendmail(msg["From"], msg["To"], msg.as_string())
+    elif smtp_type == "smtps":
+        with smtplib.SMTP_SSL(current_app.config["SMTP_HOST"], current_app.config["SMTP_PORT"]) as server:
+            server.login(current_app.config["SMTP_USER"], current_app.config["SMTP_PASSWORD"])
+            server.sendmail(msg["From"], msg["To"], msg.as_string())
+            server.quit()
+    elif smtp_type == "plain":
+        with smtplib.SMTP(current_app.config["SMTP_HOST"], current_app.config["SMTP_PORT"]) as server:
+            server.login(current_app.config["SMTP_USER"], current_app.config["SMTP_PASSWORD"])
+            server.sendmail(msg["From"], msg["To"], msg.as_string())
             server.quit()
 
 
@@ -59,9 +71,9 @@ def prepare_message(user: User, i18n_dict_source):
     :return: Tuple of message object and translation dict.
     """
     i18n_keyword_arg_dict = build_i18n_keyword_arg_dict(user.language, i18n_dict_source)
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = i18n_keyword_arg_dict['i18n_subject']
-    msg['From'] = current_app.config['SYSTEM_EMAIL']
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"]
+    msg["From"] = current_app.config["SYSTEM_EMAIL"]
     return msg, i18n_keyword_arg_dict
 
 
@@ -71,12 +83,16 @@ def send_forgot_password_email(user: User):
     :param user: User to send the reset mail to.
     """
     msg, i18n_keyword_arg_dict = prepare_message(user, reset_password_mail)
-    msg['To'] = user.email
-    action_link = '{}reset-password/{}'.format(current_app.config['FRONTEND_HOST'], user.reset_password_hash)
-    template = render_template('reset-password-mail.html', name='{} {}'.format(user.firstname, user.lastname),
-                               action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
-                               **i18n_keyword_arg_dict)
-    msg.attach(MIMEText(template, 'html'))
+    msg["To"] = user.email
+    action_link = "{}reset-password/{}".format(current_app.config["FRONTEND_HOST"], user.reset_password_hash)
+    template = render_template(
+        "reset-password-mail.html",
+        name="{} {}".format(user.firstname, user.lastname),
+        action_link=action_link,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
 
     send_generic_mail(msg)
 
@@ -87,12 +103,16 @@ def send_change_email_address_email(user: User):
     :param user: User to send the change email address mail to.
     """
     msg, i18n_keyword_arg_dict = prepare_message(user, change_email_address_mail)
-    msg['To'] = user.email
-    action_link = '{}change-email/{}'.format(current_app.config['FRONTEND_HOST'], user.new_email_hash)
-    template = render_template('change-email-address-mail.html', name='{} {}'.format(user.firstname, user.lastname),
-                               action_link=action_link, frontend_host=current_app.config['FRONTEND_HOST'],
-                               **i18n_keyword_arg_dict)
-    msg.attach(MIMEText(template, 'html'))
+    msg["To"] = user.email
+    action_link = "{}change-email/{}".format(current_app.config["FRONTEND_HOST"], user.new_email_hash)
+    template = render_template(
+        "change-email-address-mail.html",
+        name="{} {}".format(user.firstname, user.lastname),
+        action_link=action_link,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
 
     send_generic_mail(msg)
 
@@ -102,27 +122,61 @@ def send_create_user_email(password: str, created_user: User):
     Sends a reset password mail to the user.
     """
     msg, i18n_keyword_arg_dict = prepare_message(created_user, create_user_mail)
-    msg['To'] = created_user.email
-    action_link = '{}activate-account'.format(current_app.config['FRONTEND_HOST'])
-    template = render_template('create-user-mail.html', firstname=created_user.firstname,
-                               lastname=created_user.lastname, action_link=action_link,
-                               password=password, email=created_user.email,
-                               frontend_host=current_app.config['FRONTEND_HOST'],
-                               **i18n_keyword_arg_dict)
-    msg.attach(MIMEText(template, 'html'))
+    msg["To"] = created_user.email
+    action_link = "{}activate-account".format(current_app.config["FRONTEND_HOST"])
+    template = render_template(
+        "create-user-mail.html",
+        firstname=created_user.firstname,
+        lastname=created_user.lastname,
+        action_link=action_link,
+        password=password,
+        email=created_user.email,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
 
     send_generic_mail(msg)
 
 
 def send_user_registered_email(registered_user: User, receiver: User, user_count: int):
     msg, i18n_keyword_arg_dict = prepare_message(registered_user, user_registered_mail)
-    msg['To'] = receiver.email
-    action_link = '{}users/{}'.format(current_app.config['FRONTEND_HOST'], registered_user.slug)
-    template = render_template('user-registered-mail.html', firstname=registered_user.firstname,
-                               lastname=registered_user.lastname, action_link=action_link, admin=receiver.firstname,
-                               frontend_host=current_app.config['FRONTEND_HOST'], user_count=user_count,
-                               **i18n_keyword_arg_dict)
-    msg.attach(MIMEText(template, 'html'))
+    msg["To"] = receiver.email
+    action_link = "{}users/{}".format(current_app.config["FRONTEND_HOST"], registered_user.slug)
+    template = render_template(
+        "user-registered-mail.html",
+        firstname=registered_user.firstname,
+        lastname=registered_user.lastname,
+        action_link=action_link,
+        admin=receiver.firstname,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        user_count=user_count,
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
+
+    send_generic_mail(msg)
+
+
+def send_project_climbed_email(climber: User, receiver: User, message: str, line: Line):
+    msg, i18n_keyword_arg_dict = prepare_message(climber, project_climbed_mail)
+    msg["To"] = receiver.email
+    action_link_project = (
+        f"{current_app.config['FRONTEND_HOST']}topo/{line.area.sector.crag.slug}/"
+        f"{line.area.sector.slug}/{line.area.slug}/{line.slug}"
+    )
+    action_link_user = f"{current_app.config['FRONTEND_HOST']}users/{climber.slug}"
+    template = render_template(
+        "project-climbed-mail.html",
+        message=message,
+        action_link_project=action_link_project,
+        action_link_user=action_link_user,
+        admin=receiver.firstname,
+        climber_mail=climber.email,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
 
     send_generic_mail(msg)
 

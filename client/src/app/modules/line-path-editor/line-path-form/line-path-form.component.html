@@ -1,50 +1,75 @@
-<ng-container *transloco="let t, read: 'linePath.linePathForm'">
+<ng-container *transloco="let t; read: 'linePath.linePathForm'">
+  <div class="content">
+    <p-card header="{{ t('addLinePathTitle') }}">
+      <p class="mt-0">
+        {{ t("addLinePathDescription") }}
+      </p>
 
-    <div class="content">
+      <form [formGroup]="linePathForm" lcForm>
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="line">{{ t("lineLabel") }}</label>
+          <p-dropdown
+            id="line"
+            formControlName="line"
+            [options]="lines"
+            data-cy="line-dropdown"
+            [optionDisabled]="'disabled'"
+            placeholder="{{ t('linePlaceholder') }}"
+            lcFormControl
+          >
+            <ng-template let-line pTemplate="item">
+              <div
+                class="flex align-items-center gap-2"
+                data-cy="line-dropdown-item"
+              >
+                <div>{{ line.name }} {{ line.grade.name | transloco }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedItem pTemplate="selectedItem">
+              {{ selectedItem.name }} {{ selectedItem.grade.name | transloco }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+        </div>
 
-        <p-card header="{{t('addLinePathTitle')}}">
-            <p class="mt-0">
-                {{t('addLinePathDescription')}}
-            </p>
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="path-editor">{{
+            t("linePathLabel")
+          }}</label>
+          <lc-line-path-editor
+            formControlName="path"
+            lcFormControl
+            id="path-editor"
+          >
+          </lc-line-path-editor>
+          <small class="p-error" *lcIfError="'required'">{{
+            t("drawALineWithAtLeastTwoAnchorPoints")
+          }}</small>
+          <small class="p-error" *lcIfError="'minlength'">{{
+            t("drawALineWithAtLeastTwoAnchorPoints")
+          }}</small>
+        </div>
+      </form>
 
-            <form [formGroup]="linePathForm" lcForm>
-
-                <div class="flex flex-column gap-2" lcControlGroup>
-                    <label class="form-label">{{t('lineLabel')}}</label>
-                    <p-dropdown formControlName="line" [options]="lines" data-cy="line-dropdown"
-                                [optionDisabled]="'disabled'" placeholder="{{t('linePlaceholder')}}" lcFormControl>
-                        <ng-template let-line pTemplate="item">
-                            <div class="flex align-items-center gap-2"  data-cy="line-dropdown-item">
-                                <div>{{ line.name }} {{line.grade.name | transloco}}</div>
-                            </div>
-                        </ng-template>
-                      <ng-template let-selectedItem pTemplate="selectedItem">
-                        {{ selectedItem.name }} {{selectedItem.grade.name | transloco}}
-                      </ng-template>
-                    </p-dropdown>
-                    <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
-                </div>
-
-                <div class="flex flex-column gap-2" lcControlGroup>
-                    <label class="form-label">{{t('linePathLabel')}}</label>
-                    <lc-line-path-editor formControlName="path" lcFormControl>
-                    </lc-line-path-editor>
-                    <small class="p-error" *lcIfError="'required'">{{t('drawALineWithAtLeastTwoAnchorPoints')}}</small>
-                    <small class="p-error" *lcIfError="'minlength'">{{t('drawALineWithAtLeastTwoAnchorPoints')}}</small>
-                </div>
-
-            </form>
-
-            <div class="form-actions">
-                <p-button label="{{t('addLinePathButtonLabel')}}" (click)="saveLinePath()" icon="pi pi-save"
-                          class="responsive-button" data-cy="submit"
-                          [loading]="loadingState === loadingStates.LOADING" ></p-button>
-                <p-button label="{{t('leaveEditorButtonLabel')}}" (click)="leaveEditor()" class="ml-3 responsive-button"
-                          styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
-            </div>
-
-        </p-card>
-
-    </div>
-
+      <div class="form-actions">
+        <p-button
+          label="{{ t('addLinePathButtonLabel') }}"
+          (click)="saveLinePath()"
+          icon="pi pi-save"
+          class="responsive-button"
+          data-cy="submit"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+        <p-button
+          label="{{ t('leaveEditorButtonLabel') }}"
+          (click)="leaveEditor()"
+          class="ml-3 responsive-button"
+          styleClass="p-button-secondary"
+          icon="pi pi-ban"
+        ></p-button>
+      </div>
+    </p-card>
+  </div>
 </ng-container>

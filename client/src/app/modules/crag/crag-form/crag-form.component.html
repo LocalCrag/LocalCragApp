@@ -1,126 +1,278 @@
-<ng-container *transloco="let t, read: 'crag.cragForm'">
-
+<ng-container *transloco="let t; read: 'crag.cragForm'">
   <div class="content">
-
-    <p-card header="{{editMode ? t('editCragTitle') : t('createCragTitle')}}">
+    <p-card header="{{ editMode ? t('editCragTitle') : t('createCragTitle') }}">
       <p class="mt-0" *ngIf="!editMode">
-        {{ t('createCragDescription') }}
+        {{ t("createCragDescription") }}
       </p>
 
       <form [formGroup]="cragForm" lcForm>
-
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragNameLabel') }}</label>
-          <input type="text" pInputText formControlName="name" placeholder="{{t('cragNamePlaceholder')}}"
-                 lcFormControl data-cy="crag-form-name"/>
-          <small class="p-error" *lcIfError="'required'">{{ t('required') }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{ t('maxlength120') }}</small>
+          <label class="form-label" for="name">{{ t("cragNameLabel") }}</label>
+          <input
+            id="name"
+            type="text"
+            pInputText
+            formControlName="name"
+            placeholder="{{ t('cragNamePlaceholder') }}"
+            lcFormControl
+            data-cy="crag-form-name"
+          />
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragShortDescriptionLabel') }}</label>
-          <p-editor formControlName="shortDescription" lcFormControl
-                    placeholder="{{t('cragShortDescriptionPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-                    data-cy="crag-form-shortDescription">
+          <label class="form-label" for="short-description">{{
+            t("cragShortDescriptionLabel")
+          }}</label>
+          <p-editor
+            id="short-description"
+            formControlName="shortDescription"
+            lcFormControl
+            placeholder="{{ t('cragShortDescriptionPlaceholder') }}"
+            [style]="{ height: '200px' }"
+            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+            data-cy="crag-form-shortDescription"
+          >
             <ng-template pTemplate="header">
               <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button
+                  type="button"
+                  class="ql-bold"
+                  aria-label="Bold"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-italic"
+                  aria-label="Italic"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-underline"
+                  aria-label="Underline"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
+                <button
+                  type="button"
+                  class="ql-link"
+                  aria-label="Link"
+                ></button>
               </span>
             </ng-template>
           </p-editor>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragDescriptionLabel') }}</label>
-          <p-editor formControlName="description" lcFormControl placeholder="{{t('cragDescriptionPlaceholder')}}"
-                    [modules]="quillModules" data-cy="crag-form-description"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+          <label class="form-label" for="description">{{
+            t("cragDescriptionLabel")
+          }}</label>
+          <p-editor
+            id="description"
+            formControlName="description"
+            lcFormControl
+            placeholder="{{ t('cragDescriptionPlaceholder') }}"
+            [modules]="quillModules"
+            data-cy="crag-form-description"
+            [style]="{ height: '200px' }"
+            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+          >
             <ng-template pTemplate="header">
               <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button
+                  type="button"
+                  class="ql-bold"
+                  aria-label="Bold"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-italic"
+                  aria-label="Italic"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-underline"
+                  aria-label="Underline"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
-                  <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
+                <button
+                  type="button"
+                  value="ordered"
+                  class="ql-list"
+                  aria-label="Ordered List"
+                ></button>
+                <button
+                  type="button"
+                  value="bullet"
+                  class="ql-list"
+                  aria-label="Unordered List"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
-                  <button type="button" class="ql-image" aria-label="Image"></button>
-                  <button type="button" class="ql-video" aria-label="Video"></button>
+                <button
+                  type="button"
+                  class="ql-link"
+                  aria-label="Link"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-image"
+                  aria-label="Image"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-video"
+                  aria-label="Video"
+                ></button>
               </span>
             </ng-template>
           </p-editor>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragRulesLabel') }}</label>
-          <p-editor formControlName="rules" lcFormControl placeholder="{{t('cragRulesPlaceholder')}}"
-                    [modules]="quillModules" data-cy="crag-form-rules"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING">
+          <label class="form-label" for="rules">{{
+            t("cragRulesLabel")
+          }}</label>
+          <p-editor
+            formControlName="rules"
+            id="rules"
+            lcFormControl
+            placeholder="{{ t('cragRulesPlaceholder') }}"
+            [modules]="quillModules"
+            data-cy="crag-form-rules"
+            [style]="{ height: '200px' }"
+            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+          >
             <ng-template pTemplate="header">
               <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button
+                  type="button"
+                  class="ql-bold"
+                  aria-label="Bold"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-italic"
+                  aria-label="Italic"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-underline"
+                  aria-label="Underline"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
-                  <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
+                <button
+                  type="button"
+                  value="ordered"
+                  class="ql-list"
+                  aria-label="Ordered List"
+                ></button>
+                <button
+                  type="button"
+                  value="bullet"
+                  class="ql-list"
+                  aria-label="Unordered List"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
-                  <button type="button" class="ql-image" aria-label="Image"></button>
+                <button
+                  type="button"
+                  class="ql-link"
+                  aria-label="Link"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-image"
+                  aria-label="Image"
+                ></button>
               </span>
             </ng-template>
           </p-editor>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragPortraitImageLabel') }}</label>
-          <lc-single-image-upload lcFormControl formControlName="portraitImage" data-cy="crag-form-portraitImage">
+          <label class="form-label" for="portrait-image">{{
+            t("cragPortraitImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            lcFormControl
+            id="portrait-image"
+            formControlName="portraitImage"
+            data-cy="crag-form-portraitImage"
+          >
           </lc-single-image-upload>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('mapMarkersLabel') }}</label>
-          <lc-map-marker-form-array formControlName="mapMarkers" [disabledMarkerTypes]="disabledMarkerTypesCrag"
-                                    lcFormControl  [defaultMarkerType]="MapMarkerType.CRAG"></lc-map-marker-form-array>
+          <label class="form-label" for="map-markers">{{
+            t("mapMarkersLabel")
+          }}</label>
+          <lc-map-marker-form-array
+            id="map-markers"
+            formControlName="mapMarkers"
+            [disabledMarkerTypes]="disabledMarkerTypesCrag"
+            lcFormControl
+            [defaultMarkerType]="MapMarkerType.CRAG"
+          ></lc-map-marker-form-array>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('cragOptionsLabel') }}</label>
-          <p-checkbox label="{{t('cragSecretLabel')}}" name="secret" [binary]="true" formControlName="secret"
-                      lcFormControl></p-checkbox>
+          <label class="form-label" for="secret">{{
+            t("cragOptionsLabel")
+          }}</label>
+          <p-checkbox
+            id="secret"
+            label="{{ t('cragSecretLabel') }}"
+            name="secret"
+            [binary]="true"
+            formControlName="secret"
+            lcFormControl
+          ></p-checkbox>
         </div>
-
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('createCragButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save"
-                  class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="!editMode" data-cy="submit"
+        <p-button
+          label="{{ t('createCragButtonLabel') }}"
+          (click)="saveCrag()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+          *ngIf="!editMode"
+          data-cy="submit"
         ></p-button>
-        <p-button label="{{t('editCragButtonLabel')}}" (click)="saveCrag()" icon="pi pi-save" class="responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"
+        <p-button
+          label="{{ t('editCragButtonLabel') }}"
+          (click)="saveCrag()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+          *ngIf="editMode"
         ></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
-                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
-        <p-button label="{{t('deleteCragButtonLabel')}}" (click)="confirmDeleteCrag($event)" icon="pi pi-trash"
-                  styleClass="p-button-danger" class="ml-3 responsive-button"
-                  [loading]="loadingState === loadingStates.LOADING" *ngIf="editMode"></p-button>
+        <p-button
+          label="{{ t('cancelButtonLabel') }}"
+          (click)="cancel()"
+          class="ml-3 responsive-button"
+          styleClass="p-button-secondary"
+          icon="pi pi-ban"
+        ></p-button>
+        <p-button
+          label="{{ t('deleteCragButtonLabel') }}"
+          (click)="confirmDeleteCrag($event)"
+          icon="pi pi-trash"
+          styleClass="p-button-danger"
+          class="ml-3 responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+          *ngIf="editMode"
+        ></p-button>
         <p-confirmPopup></p-confirmPopup>
       </div>
-
     </p-card>
-
   </div>
-
 </ng-container>

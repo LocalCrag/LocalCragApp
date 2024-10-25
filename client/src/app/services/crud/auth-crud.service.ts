@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ApiService} from '../core/api.service';
-import {HttpBackendClientService} from '../core/http-backend-client.service';
-import {LoginResponse} from '../../models/login-response';
-import {map} from 'rxjs/operators';
-
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiService } from '../core/api.service';
+import { HttpBackendClientService } from '../core/http-backend-client.service';
+import { LoginResponse } from '../../models/login-response';
+import { map } from 'rxjs/operators';
 
 /**
  * A simple response that only contains a message.
@@ -18,16 +17,14 @@ export interface MessageResponse {
  * A CRUD service that performs authorization requests.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthCrudService {
-
-  constructor(private httpBackend: HttpBackendClientService,
-              private http: HttpClient,
-              private api: ApiService) {
-  }
-
-
+  constructor(
+    private httpBackend: HttpBackendClientService,
+    private http: HttpClient,
+    private api: ApiService,
+  ) {}
 
   /**
    * Performs a login HTTP request.
@@ -37,9 +34,9 @@ export class AuthCrudService {
    * @return Returns an Observable that resolves to a login response.
    */
   public login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post(this.api.auth.login(), {email, password}).pipe(map(res =>
-      LoginResponse.deserialize(res))
-    );
+    return this.http
+      .post(this.api.auth.login(), { email, password })
+      .pipe(map((res) => LoginResponse.deserialize(res)));
   }
 
   /**
@@ -50,18 +47,17 @@ export class AuthCrudService {
    */
   public loginRefresh(refreshToken: string): Observable<LoginResponse> {
     const headers = this.getRefreshTokenHeaders(refreshToken);
-    return this.httpBackend.post(this.api.auth.loginRefresh(), null, {headers}).pipe(
-      map(res => LoginResponse.deserialize(res))
-    );
+    return this.httpBackend
+      .post(this.api.auth.loginRefresh(), null, { headers })
+      .pipe(map((res) => LoginResponse.deserialize(res)));
   }
 
   /**
    * Performs an access token logout. This will blacklist the access token.
    *
-   * @param  accessToken Current access token.
    * @return Observable that resolves to a message response.
    */
-  public logoutAccess(accessToken: string): Observable<MessageResponse> {
+  public logoutAccess(): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(this.api.auth.logoutAccess(), null);
   }
 
@@ -73,7 +69,11 @@ export class AuthCrudService {
    */
   public logoutRefresh(refreshToken: string): Observable<MessageResponse> {
     const headers = this.getRefreshTokenHeaders(refreshToken);
-    return this.httpBackend.post<MessageResponse>(this.api.auth.logoutRefresh(), null, {headers});
+    return this.httpBackend.post<MessageResponse>(
+      this.api.auth.logoutRefresh(),
+      null,
+      { headers },
+    );
   }
 
   /**
@@ -83,7 +83,9 @@ export class AuthCrudService {
    * @return Returns an Observable that resolves to a message response.
    */
   public forgotPassword(email: string): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(this.api.auth.forgotPassword(), {email});
+    return this.http.post<MessageResponse>(this.api.auth.forgotPassword(), {
+      email,
+    });
   }
 
   /**
@@ -93,10 +95,13 @@ export class AuthCrudService {
    * @param resetPasswordHash Hash to validate that the user actually requested to reset the password.
    * @return Returns an Observable that resolves to a login response.
    */
-  public resetPassword(newPassword: string, resetPasswordHash: string): Observable<LoginResponse> {
-    return this.http.post(this.api.auth.resetPassword(), {newPassword, resetPasswordHash}).pipe(
-      map(res => LoginResponse.deserialize(res))
-    );
+  public resetPassword(
+    newPassword: string,
+    resetPasswordHash: string,
+  ): Observable<LoginResponse> {
+    return this.http
+      .post(this.api.auth.resetPassword(), { newPassword, resetPasswordHash })
+      .pipe(map((res) => LoginResponse.deserialize(res)));
   }
 
   /**
@@ -105,10 +110,13 @@ export class AuthCrudService {
    * @param oldPassword The old password.
    * @param newPassword The new password.
    */
-  public changePassword(oldPassword: string, newPassword: string): Observable<MessageResponse> {
+  public changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Observable<MessageResponse> {
     return this.http.put<MessageResponse>(this.api.auth.changePassword(), {
       oldPassword,
-      newPassword
+      newPassword,
     });
   }
 
@@ -121,8 +129,7 @@ export class AuthCrudService {
   private getRefreshTokenHeaders(refreshToken: string): HttpHeaders {
     return new HttpHeaders({
       Authorization: `Bearer ${refreshToken}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
   }
-
 }

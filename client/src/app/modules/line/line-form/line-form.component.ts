@@ -1,28 +1,28 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Line} from '../../../models/line';
-import {LinesService} from '../../../services/crud/lines.service';
-import {Grade, GRADES} from '../../../utility/misc/grades';
-import {yearOfDateNotInFutureValidator} from '../../../utility/validators/year-not-in-future.validator';
-import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {StartingPosition} from '../../../enums/starting-position';
-import {Title} from '@angular/platform-browser';
-import {Editor} from 'primeng/editor';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {AreasService} from '../../../services/crud/areas.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
+import { ConfirmationService } from 'primeng/api';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Line } from '../../../models/line';
+import { LinesService } from '../../../services/crud/lines.service';
+import { GRADES } from '../../../utility/misc/grades';
+import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
+import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { StartingPosition } from '../../../enums/starting-position';
+import { Title } from '@angular/platform-browser';
+import { Editor } from 'primeng/editor';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { AreasService } from '../../../services/crud/areas.service';
 
 /**
  * Form component for lines.
@@ -35,7 +35,6 @@ import {AreasService} from '../../../services/crud/areas.service';
 })
 @UntilDestroy()
 export class LineFormComponent implements OnInit {
-
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
 
@@ -50,8 +49,8 @@ export class LineFormComponent implements OnInit {
     StartingPosition.SIT,
     StartingPosition.CROUCH,
     StartingPosition.FRENCH,
-    StartingPosition.CANDLE
-  ]
+    StartingPosition.CANDLE,
+  ];
   public today = new Date();
   public parentSecret = false;
 
@@ -59,16 +58,17 @@ export class LineFormComponent implements OnInit {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(private fb: FormBuilder,
-              private store: Store,
-              private title: Title,
-              private route: ActivatedRoute,
-              private router: Router,
-              private linesService: LinesService,
-              private areasService: AreasService,
-              private translocoService: TranslocoService,
-              private confirmationService: ConfirmationService) {
-  }
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private title: Title,
+    private route: ActivatedRoute,
+    private router: Router,
+    private linesService: LinesService,
+    private areasService: AreasService,
+    private translocoService: TranslocoService,
+    private confirmationService: ConfirmationService,
+  ) {}
 
   /**
    * Builds the form on component initialization.
@@ -78,31 +78,38 @@ export class LineFormComponent implements OnInit {
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
-    this.areasService.getArea(this.areaSlug).subscribe(area => {
+    this.areasService.getArea(this.areaSlug).subscribe((area) => {
       this.parentSecret = area.secret;
       this.buildForm();
       if (lineSlug) {
         this.editMode = true;
         this.lineForm.disable();
-        this.linesService.getLine(lineSlug).pipe(catchError(e => {
-          if (e.status === 404) {
-            this.router.navigate(['/not-found']);
-          }
-          return of(e);
-        })).subscribe(line => {
-          this.line = line;
-          if (this.line.ascentCount > 0) {
-            this.grades = this.grades.filter(grade => grade.value >= 0);
-          }
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-          if (this.editor) {
-            this.editor.getQuill().enable();
-          }
-        });
+        this.linesService
+          .getLine(lineSlug)
+          .pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          )
+          .subscribe((line) => {
+            this.line = line;
+            if (this.line.ascentCount > 0) {
+              this.grades = this.grades.filter((grade) => grade.value >= 0);
+            }
+            this.setFormValue();
+            this.loadingState = LoadingState.DEFAULT;
+            if (this.editor) {
+              this.editor.getQuill().enable();
+            }
+          });
       } else {
-        this.store.select(selectInstanceName).subscribe(instanceName => {
-          this.title.setTitle(`${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`)
+        this.store.select(selectInstanceName).subscribe((instanceName) => {
+          this.title.setTitle(
+            `${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`,
+          );
         });
         this.lineForm.get('secret').setValue(this.parentSecret);
         this.loadingState = LoadingState.DEFAULT;
@@ -118,7 +125,7 @@ export class LineFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       videos: this.fb.array([]),
-      grade: [null, [Validators.required,]],
+      grade: [null, [Validators.required]],
       rating: [null],
       faYear: [null, [yearOfDateNotInFutureValidator()]],
       faName: [null, [Validators.maxLength(120)]],
@@ -152,13 +159,17 @@ export class LineFormComponent implements OnInit {
       mantle: [false],
       secret: [false],
     });
-    this.lineForm.get('grade').valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
-      this.setFormDisabledState();
-    });
+    this.lineForm
+      .get('grade')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.setFormDisabledState();
+      });
   }
 
   setFormDisabledState() {
-    if (this.lineForm.get('grade').value?.value < 0) { // Projects can't have ratings or FA info
+    if (this.lineForm.get('grade').value?.value < 0) {
+      // Projects can't have ratings or FA info
       this.lineForm.get('faYear').disable();
       this.lineForm.get('faName').disable();
       this.lineForm.get('faYear').setValue(null);
@@ -173,17 +184,22 @@ export class LineFormComponent implements OnInit {
    * Adds a new line video control to the videos form array.
    */
   public addLineVideoFormControl() {
-    (this.lineForm.get('videos') as FormArray).push(this.fb.group({
-      url: [null, [Validators.required, httpUrlValidator()]],
-      title: [this.translocoService.translate(marker('videoTitle')), [Validators.required]]
-    }))
+    (this.lineForm.get('videos') as FormArray).push(
+      this.fb.group({
+        url: [null, [Validators.required, httpUrlValidator()]],
+        title: [
+          this.translocoService.translate(marker('videoTitle')),
+          [Validators.required],
+        ],
+      }),
+    );
   }
 
   /**
    * Sets the form value based on an input crag and enables the form afterward.
    */
   private setFormValue() {
-    this.line.videos.map(video => {
+    this.line.videos.map(() => {
       this.addLineVideoFormControl();
     });
     this.lineForm.patchValue({
@@ -233,9 +249,21 @@ export class LineFormComponent implements OnInit {
    */
   cancel() {
     if (this.line) {
-      this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, this.line.slug]);
+      this.router.navigate([
+        '/topo',
+        this.cragSlug,
+        this.sectorSlug,
+        this.areaSlug,
+        this.line.slug,
+      ]);
     } else {
-      this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
+      this.router.navigate([
+        '/topo',
+        this.cragSlug,
+        this.sectorSlug,
+        this.areaSlug,
+        'lines',
+      ]);
     }
   }
 
@@ -251,7 +279,9 @@ export class LineFormComponent implements OnInit {
       line.videos = this.lineForm.get('videos').value;
       line.grade = this.lineForm.get('grade').value;
       line.rating = this.lineForm.get('rating').value;
-      line.faYear = this.lineForm.get('faYear').value ? this.lineForm.get('faYear').value.getFullYear() : null;
+      line.faYear = this.lineForm.get('faYear').value
+        ? this.lineForm.get('faYear').value.getFullYear()
+        : null;
       line.faName = this.lineForm.get('faName').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
@@ -284,15 +314,31 @@ export class LineFormComponent implements OnInit {
       line.secret = this.lineForm.get('secret').value;
       if (this.line) {
         line.slug = this.line.slug;
-        this.linesService.updateLine(line).subscribe(line => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.LINE_UPDATED));
-          this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, line.slug]);
+        this.linesService.updateLine(line).subscribe((line) => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.LINE_UPDATED),
+          );
+          this.router.navigate([
+            '/topo',
+            this.cragSlug,
+            this.sectorSlug,
+            this.areaSlug,
+            line.slug,
+          ]);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.linesService.createLine(line, this.areaSlug).subscribe(crag => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.LINE_CREATED));
-          this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
+        this.linesService.createLine(line, this.areaSlug).subscribe(() => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.LINE_CREATED),
+          );
+          this.router.navigate([
+            '/topo',
+            this.cragSlug,
+            this.sectorSlug,
+            this.areaSlug,
+            'lines',
+          ]);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -309,10 +355,14 @@ export class LineFormComponent implements OnInit {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('line.askReallyWantToDeleteLine')),
+        message: this.translocoService.translate(
+          marker('line.askReallyWantToDeleteLine'),
+        ),
         acceptLabel: this.translocoService.translate(marker('line.yesDelete')),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('line.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('line.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteLine();
@@ -326,8 +376,16 @@ export class LineFormComponent implements OnInit {
    */
   public deleteLine() {
     this.linesService.deleteLine(this.line).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.LINE_DELETED));
-      this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'lines']);
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.LINE_DELETED),
+      );
+      this.router.navigate([
+        '/topo',
+        this.cragSlug,
+        this.sectorSlug,
+        this.areaSlug,
+        'lines',
+      ]);
       this.loadingState = LoadingState.DEFAULT;
     });
   }
@@ -337,8 +395,6 @@ export class LineFormComponent implements OnInit {
    * @param index Index of the control in the array.
    */
   public deleteLineVideoControl(index: number) {
-    (this.lineForm.get('videos') as FormArray).removeAt(index)
+    (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
-
-
 }

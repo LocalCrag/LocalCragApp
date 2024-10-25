@@ -1,10 +1,10 @@
-import {Component, Input, ViewEncapsulation} from '@angular/core';
-import {ButtonModule} from 'primeng/button';
-import {TopoImage} from '../../../models/topo-image';
-import {NgIf} from '@angular/common';
-import {SharedModule} from '../../shared/shared.module';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {CoordinatesButtonComponent} from '../../shared/components/coordinates-button/coordinates-button.component';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { TopoImage } from '../../../models/topo-image';
+import { NgIf } from '@angular/common';
+import { SharedModule } from '../../shared/shared.module';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 
 @Component({
   selector: 'lc-topo-image-details',
@@ -14,14 +14,12 @@ import {CoordinatesButtonComponent} from '../../shared/components/coordinates-bu
     NgIf,
     SharedModule,
     TranslocoDirective,
-    CoordinatesButtonComponent
+    CoordinatesButtonComponent,
   ],
   templateUrl: './topo-image-details.component.html',
   styleUrl: './topo-image-details.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TopoImageDetailsComponent {
-
   @Input() topoImage: TopoImage;
-
 }

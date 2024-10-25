@@ -1,14 +1,13 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 /**
  * Simple container service holding api route definitions.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
-
   public auth = {
     login: (): string => `${this.apiHost}login`,
     loginRefresh: (): string => `${this.apiHost}token/refresh`,
@@ -29,7 +28,8 @@ export class ApiService {
   };
 
   public maps = {
-    getMarkers: (filters: string): string => `${this.apiHost}maps/markers${filters}`,
+    getMarkers: (filters: string): string =>
+      `${this.apiHost}maps/markers${filters}`,
   };
 
   public ticks = {
@@ -45,11 +45,13 @@ export class ApiService {
     getList: (): string => `${this.apiHost}users`,
     getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
     updateAccount: (): string => `${this.apiHost}users/account`,
-    resendUserCreateMail: (id: string): string => `${this.apiHost}users/${id}/resend-user-create-mail`,
+    resendUserCreateMail: (id: string): string =>
+      `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
     promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
     changeEmail: (): string => `${this.apiHost}users/account/change-email`,
-    getEmailTaken: (email: string): string => `${this.apiHost}users/email-taken/${email}`,
+    getEmailTaken: (email: string): string =>
+      `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
   };
 
@@ -57,7 +59,8 @@ export class ApiService {
     create: (): string => `${this.apiHost}todos`,
     getList: (filters: string): string => `${this.apiHost}todos${filters}`,
     delete: (id: string): string => `${this.apiHost}todos/${id}`,
-    updatePriority: (id: string): string => `${this.apiHost}todos/${id}/update-priority`,
+    updatePriority: (id: string): string =>
+      `${this.apiHost}todos/${id}/update-priority`,
   };
 
   public posts = {
@@ -83,8 +86,10 @@ export class ApiService {
     delete: (id: string): string => `${this.apiHost}menu-items/${id}`,
     update: (id: string): string => `${this.apiHost}menu-items/${id}`,
     updateOrderTop: (): string => `${this.apiHost}menu-items/update-order-top`,
-    updateOrderBottom: (): string => `${this.apiHost}menu-items/update-order-bottom`,
-    getCragMenuStructure: (): string => `${this.apiHost}menu-items/crag-menu-structure`,
+    updateOrderBottom: (): string =>
+      `${this.apiHost}menu-items/update-order-bottom`,
+    getCragMenuStructure: (): string =>
+      `${this.apiHost}menu-items/crag-menu-structure`,
   };
 
   public region = {
@@ -104,23 +109,30 @@ export class ApiService {
   };
 
   public sectors = {
-    create: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
-    getList: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors`,
+    create: (cragSlug: string): string =>
+      `${this.apiHost}crags/${cragSlug}/sectors`,
+    getList: (cragSlug: string): string =>
+      `${this.apiHost}crags/${cragSlug}/sectors`,
     getDetail: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     delete: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     update: (slug: string): string => `${this.apiHost}sectors/${slug}`,
-    getGrades: (slug: string): string => `${this.apiHost}sectors/${slug}/grades`,
-    updateOrder: (cragSlug: string): string => `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
+    getGrades: (slug: string): string =>
+      `${this.apiHost}sectors/${slug}/grades`,
+    updateOrder: (cragSlug: string): string =>
+      `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
   };
 
   public areas = {
-    create: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas`,
-    getList: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas`,
+    create: (sectorSlug: string): string =>
+      `${this.apiHost}sectors/${sectorSlug}/areas`,
+    getList: (sectorSlug: string): string =>
+      `${this.apiHost}sectors/${sectorSlug}/areas`,
     getDetail: (slug: string): string => `${this.apiHost}areas/${slug}`,
     delete: (slug: string): string => `${this.apiHost}areas/${slug}`,
     update: (slug: string): string => `${this.apiHost}areas/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}areas/${slug}/grades`,
-    updateOrder: (sectorSlug: string): string => `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
+    updateOrder: (sectorSlug: string): string =>
+      `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
   };
 
   public ascents = {
@@ -128,6 +140,8 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}ascents/${id}`,
     delete: (id: string): string => `${this.apiHost}ascents/${id}`,
     getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
+    sendProjectClimbedMessage: (): string =>
+      `${this.apiHost}ascents/send-project-climbed-message`,
   };
 
   public ranking = {
@@ -135,34 +149,41 @@ export class ApiService {
   };
 
   public topoImages = {
-    add: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
-    getList: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images`,
+    add: (areaSlug: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images`,
+    getList: (areaSlug: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,
-    updateOrder: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
+    updateOrder: (areaSlug: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
   };
 
   public linePaths = {
-    addLinePath: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths`,
-    updateOrder: (topoImageId: string): string => `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,
-    updateOrderForLines: (lineSlug: string): string => `${this.apiHost}lines/${lineSlug}/line-paths/update-order`,
+    addLinePath: (topoImageId: string): string =>
+      `${this.apiHost}topo-images/${topoImageId}/line-paths`,
+    updateOrder: (topoImageId: string): string =>
+      `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,
+    updateOrderForLines: (lineSlug: string): string =>
+      `${this.apiHost}lines/${lineSlug}/line-paths/update-order`,
     delete: (id: string): string => `${this.apiHost}line-paths/${id}`,
   };
 
   public lines = {
-    create: (areaSlug: string): string => `${this.apiHost}areas/${areaSlug}/lines`,
+    create: (areaSlug: string): string =>
+      `${this.apiHost}areas/${areaSlug}/lines`,
     getList: (filters: string): string => `${this.apiHost}lines${filters}`,
-    getListForLineEditor: (areaSlug: string): string => `${this.apiHost}lines/for-line-editor/${areaSlug}`,
+    getListForLineEditor: (areaSlug: string): string =>
+      `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
-    update: (slug: string): string => `${this.apiHost}lines/${slug}`
+    update: (slug: string): string => `${this.apiHost}lines/${slug}`,
   };
 
   public uploader = {
-    uploadFile: (): string => `${this.apiHost}upload`
+    uploadFile: (): string => `${this.apiHost}upload`,
   };
 
-  private apiHost = `${environment.apiHost}/api/`
-
+  private apiHost = `${environment.apiHost}/api/`;
 }

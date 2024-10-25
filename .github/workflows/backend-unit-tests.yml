@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - main
-      - next
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
   backend-unit-tests:
     environment: Testing
@@ -45,10 +45,9 @@ jobs:
           cd server/src
           pipenv install
 
-      - name: Setup database with test dump
+      - name: Add UUID extension to test database
         run: |
           export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
-          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_test_dump.sql
 
       - name: Run Tests
         run: |

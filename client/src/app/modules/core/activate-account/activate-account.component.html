@@ -1,20 +1,21 @@
-<ng-container *transloco="let t, read: 'activateAccount'">
-
+<ng-container *transloco="let t; read: 'activateAccount'">
   <div class="auth-container">
-
     <div class="card login-card">
+      <h3>{{ t("activateAccountTitle") }}</h3>
 
-      <h3>{{t('activateAccountTitle')}}</h3>
+      {{ t("activateAccountDescription") }}
 
-      {{t('activateAccountDescription')}}
+      <p-button
+        label="{{ t('activateNowButtonLabel') }}"
+        (click)="logout()"
+      ></p-button>
 
-      <p-button label="{{t('activateNowButtonLabel')}}" (click)="logout()"></p-button>
-
-      <p-button label="{{t('cancelButtonLabel')}}" styleClass="p-button-link" class="link-button"
-                [routerLink]="'/'"></p-button>
-
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        styleClass="p-button-link"
+        class="link-button"
+        [routerLink]="'/'"
+      ></p-button>
     </div>
-
   </div>
-
 </ng-container>

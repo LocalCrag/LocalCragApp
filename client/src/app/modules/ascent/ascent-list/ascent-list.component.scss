@@ -1,22 +1,20 @@
 lc-ascent-list {
-
-  .slider-container{
+  .slider-container {
     margin-left: 0.5715rem;
     margin-right: 0.5715rem;
   }
 
-  p-slider{
-    width: 100%
+  p-slider {
+    width: 100%;
   }
 
-  a{
+  a {
     text-decoration: none;
     color: #4b5563;
 
-    &:hover{
+    &:hover {
       text-decoration: underline;
     }
-
   }
 
   .ascent-table-container {
@@ -26,7 +24,7 @@ lc-ascent-list {
   // LARGE SCREEN
 
   .ascent-table-row-large {
-    font-size: .9rem;
+    font-size: 0.9rem;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -46,12 +44,11 @@ lc-ascent-list {
       justify-content: center;
       flex-basis: 20rem;
 
-
       .ascent-table-line-name {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: .5rem;
+        gap: 0.5rem;
         overflow-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
@@ -60,17 +57,15 @@ lc-ascent-list {
           overflow-wrap: normal;
           word-break: keep-all;
         }
-
       }
 
       .ascent-table-line-location {
-        font-size: .65rem;
+        font-size: 0.65rem;
         overflow-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
         max-width: 100%;
       }
-
     }
 
     .ascent-table-comment {
@@ -96,7 +91,6 @@ lc-ascent-list {
         display: flex;
         flex-direction: row;
       }
-
     }
 
     .ascent-table-properties {
@@ -107,36 +101,34 @@ lc-ascent-list {
       flex-basis: 7rem;
 
       p-tag {
-        margin-top: .25rem;
-        margin-bottom: .25rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
       }
 
       .p-tag-value {
         white-space: nowrap;
       }
-
     }
 
     .ascent-table-date {
       display: flex;
-      gap: .5rem;
+      gap: 0.5rem;
       flex-direction: row;
       align-items: center;
       flex-basis: 7rem;
     }
 
-    .ascent-actions{
+    .ascent-actions {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-basis: 1rem;
 
-      p-button, button{
-        width: 1rem
+      p-button,
+      button {
+        width: 1rem;
       }
-
     }
-
   }
 
   @container (max-width: 84rem) {
@@ -148,7 +140,7 @@ lc-ascent-list {
   // MEDIUM SCREEN
 
   .ascent-table-row-medium {
-    font-size: .9rem;
+    font-size: 0.9rem;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -174,7 +166,7 @@ lc-ascent-list {
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: .5rem;
+          gap: 0.5rem;
           overflow-wrap: break-word;
           word-break: break-word;
           hyphens: auto;
@@ -183,19 +175,16 @@ lc-ascent-list {
             overflow-wrap: normal;
             word-break: keep-all;
           }
-
         }
 
         .ascent-table-line-location {
-          font-size: .65rem;
+          font-size: 0.65rem;
           overflow-wrap: break-word;
           word-break: break-word;
           hyphens: auto;
           max-width: 100%;
         }
-
       }
-
     }
 
     .ascent-table-comment {
@@ -221,7 +210,6 @@ lc-ascent-list {
         display: flex;
         flex-direction: row;
       }
-
     }
 
     .ascent-table-properties {
@@ -232,36 +220,34 @@ lc-ascent-list {
       flex-basis: 7rem;
 
       p-tag {
-        margin-top: .25rem;
-        margin-bottom: .25rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
       }
 
       .p-tag-value {
         white-space: nowrap;
       }
-
     }
 
     .ascent-table-date {
       display: flex;
-      gap: .5rem;
+      gap: 0.5rem;
       flex-direction: row;
       align-items: center;
       flex-basis: 6rem;
     }
 
-    .ascent-actions{
+    .ascent-actions {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-basis: 1rem;
 
-      p-button, button{
-        width: 1rem
+      p-button,
+      button {
+        width: 1rem;
       }
-
     }
-
   }
 
   @container (min-width: 84rem) {
@@ -279,24 +265,24 @@ lc-ascent-list {
   // SMALL SCREEN
 
   .ascent-table-row-small {
-    font-size: .9rem;
+    font-size: 0.9rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
     width: 100%;
 
-    .ascent-actions{
+    .ascent-actions {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-basis: 1rem;
       margin-right: -1rem;
 
-      p-button, button{
-        width: 1rem
+      p-button,
+      button {
+        width: 1rem;
       }
-
     }
 
     .ascent-table-user-and-name-info {
@@ -319,7 +305,7 @@ lc-ascent-list {
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: .5rem;
+          gap: 0.5rem;
           overflow-wrap: break-word;
           word-break: break-word;
           hyphens: auto;
@@ -328,19 +314,16 @@ lc-ascent-list {
             overflow-wrap: normal;
             word-break: keep-all;
           }
-
         }
 
         .ascent-table-line-location {
-          font-size: .65rem;
+          font-size: 0.65rem;
           overflow-wrap: break-word;
           word-break: break-word;
           hyphens: auto;
           max-width: 100%;
         }
-
       }
-
     }
 
     .ascent-table-comment {
@@ -350,7 +333,6 @@ lc-ascent-list {
     }
 
     .ascent-table-bottom-row {
-
       display: flex;
       align-items: center;
       flex-basis: 100%;
@@ -362,26 +344,23 @@ lc-ascent-list {
         justify-content: flex-start;
         flex-basis: 7rem;
         flex-grow: 1;
-        gap: .5rem;
+        gap: 0.5rem;
 
         .grade {
-
           .grade-name {
             display: flex;
             flex-direction: row;
           }
-
         }
 
         p-tag {
-          margin-top: .25rem;
-          margin-bottom: .25rem;
+          margin-top: 0.25rem;
+          margin-bottom: 0.25rem;
         }
 
         .p-tag-value {
           white-space: nowrap;
         }
-
       }
 
       .ascent-table-rating {
@@ -391,34 +370,30 @@ lc-ascent-list {
         flex-basis: 8rem;
 
         p-rating {
-          gap: .25rem;
+          gap: 0.25rem;
           margin-top: 3px; // Fixes weird off-center placement
 
-           svg{
-            width: .75rem;
-            height: .75rem;
+          svg {
+            width: 0.75rem;
+            height: 0.75rem;
           }
-
         }
-
       }
 
       .ascent-table-date {
         margin-left: 1rem;
         display: flex;
-        gap: .5rem;
+        gap: 0.5rem;
         flex-direction: row;
         align-items: center;
         flex-basis: 6rem;
         justify-content: flex-end;
       }
-
     }
-
 
     .property-row-very-small {
       display: flex;
-      gap: .5rem;
+      gap: 0.5rem;
       flex-direction: row;
     }
 
@@ -433,7 +408,6 @@ lc-ascent-list {
         display: none;
       }
     }
-
   }
 
   @container (min-width: 65rem) {
@@ -441,6 +415,4 @@ lc-ascent-list {
       display: none;
     }
   }
-
-
 }

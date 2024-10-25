@@ -1,7 +1,5 @@
 lc-avatar-upload {
-
   .avatar-wrapper {
-
     position: relative;
 
     .avatar {
@@ -13,7 +11,7 @@ lc-avatar-upload {
       background-repeat: no-repeat;
     }
 
-    p-progressspinner{
+    p-progressspinner {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -27,7 +25,5 @@ lc-avatar-upload {
       bottom: 0;
       right: 0;
     }
-
   }
-
 }

@@ -1,22 +1,21 @@
 @use "media-queries" as m;
 
-.p-card-title{
-  @include m.on-mobile{
+.p-card-title {
+  @include m.on-mobile {
     margin-bottom: 0 !important;
   }
 }
 
-.black-font{
+.black-font {
   color: #000000;
 }
 
-
-a.title-link{
+a.title-link {
   text-decoration: none;
   color: var(--surface-900);
-  &:hover{
+  &:hover {
     text-decoration: underline;
     cursor: pointer;
-    color: var(--highlight-text-color)
+    color: var(--highlight-text-color);
   }
 }

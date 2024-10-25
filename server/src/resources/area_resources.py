@@ -2,24 +2,23 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.area_schema import areas_schema, area_schema
+from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
 from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import update_area_secret_property, set_area_parents_unsecret
+from util.secret_spots import set_area_parents_unsecret, update_area_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
-
 from webargs_schemas.area_args import area_args
 
 
@@ -30,8 +29,9 @@ class GetAreas(MethodView):
         Returns all areas of a sector.
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
-        areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id,
-                                            order_by=lambda: Area.order_index.asc())
+        areas: List[Area] = Area.return_all(
+            filter=lambda: Area.sector_id == sector_id, order_by=lambda: Area.order_index.asc()
+        )
         return jsonify(areas_schema.dump(areas)), 200
 
 
@@ -58,15 +58,15 @@ class CreateArea(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         new_area: Area = Area()
-        new_area.name = area_data['name'].strip()
-        new_area.description = add_bucket_placeholders(area_data['description'])
-        new_area.short_description = area_data['shortDescription']
-        new_area.portrait_image_id = area_data['portraitImage']
+        new_area.name = area_data["name"].strip()
+        new_area.description = add_bucket_placeholders(area_data["description"])
+        new_area.short_description = area_data["shortDescription"]
+        new_area.portrait_image_id = area_data["portraitImage"]
         new_area.sector_id = sector_id
         new_area.created_by_id = created_by.id
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
-        new_area.secret = area_data['secret']
-        new_area.map_markers = create_or_update_markers(area_data['mapMarkers'], new_area)
+        new_area.secret = area_data["secret"]
+        new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
 
         if not new_area.secret:
             set_area_parents_unsecret(new_area)
@@ -87,12 +87,12 @@ class UpdateArea(MethodView):
         area_data = parser.parse(area_args, request)
         area: Area = Area.find_by_slug(area_slug)
 
-        area.name = area_data['name'].strip()
-        area.description = add_bucket_placeholders(area_data['description'])
-        area.short_description = area_data['shortDescription']
-        area.portrait_image_id = area_data['portraitImage']
-        update_area_secret_property(area, area_data['secret'])
-        area.map_markers = create_or_update_markers(area_data['mapMarkers'], area)
+        area.name = area_data["name"].strip()
+        area.description = add_bucket_placeholders(area_data["description"])
+        area.short_description = area_data["shortDescription"]
+        area.portrait_image_id = area_data["portraitImage"]
+        update_area_secret_property(area, area_data["secret"])
+        area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()
 
@@ -110,8 +110,10 @@ class DeleteArea(MethodView):
         area: Area = Area.find_by_slug(area_slug)
 
         db.session.delete(area)
-        query = text("UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id")
-        db.session.execute(query, {'order_index': area.order_index, 'sector_id': area.sector_id})
+        query = text(
+            "UPDATE areas SET order_index=order_index - 1 WHERE order_index > :order_index AND sector_id = :sector_id"
+        )
+        db.session.execute(query, {"order_index": area.order_index, "sector_id": area.sector_id})
         db.session.commit()
 
         return jsonify(None), 204
@@ -129,7 +131,7 @@ class UpdateAreaOrder(MethodView):
         areas: List[Area] = Area.return_all(filter=lambda: Area.sector_id == sector_id)
 
         if not validate_order_payload(new_order, areas):
-            raise BadRequest('New order doesn\'t match the requirements of the data to order.')
+            raise BadRequest("New order doesn't match the requirements of the data to order.")
 
         for area in areas:
             area.order_index = new_order[str(area.id)]
@@ -149,6 +151,6 @@ class GetAreaGrades(MethodView):
         area_id = Area.get_id_by_slug(area_slug)
         query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id)
         if not get_show_secret():
-            query = query.filter(Line.secret == False)
+            query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{'gradeName': r[0], 'gradeScale': r[1]} for r in result]), 200
+        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200

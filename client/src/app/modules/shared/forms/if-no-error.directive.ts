@@ -1,6 +1,12 @@
-import {Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import {ControlGroupService} from './control-group.service';
-import {Subscription} from 'rxjs';
+import {
+  Directive,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core';
+import { ControlGroupService } from './control-group.service';
+import { Subscription } from 'rxjs';
 
 /**
  * Directive for rendering cds control messages depending on the error state of the control group.
@@ -8,17 +14,17 @@ import {Subscription} from 'rxjs';
  * bchIfError directives.
  */
 @Directive({
-  selector: '[lcIfNoError]'
+  selector: '[lcIfNoError]',
 })
 export class IfNoErrorDirective implements OnInit, OnDestroy {
-
   private hasView = false;
   private hasErrorSubscription: Subscription;
 
-  constructor(private templateRef: TemplateRef<any>,
-              private controlGroupService: ControlGroupService,
-              private viewContainer: ViewContainerRef) {
-  }
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private controlGroupService: ControlGroupService,
+    private viewContainer: ViewContainerRef,
+  ) {}
 
   /**
    * Initially creates the view and subscribes to the form controls error state changes to
@@ -26,13 +32,15 @@ export class IfNoErrorDirective implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.createView();
-    this.hasErrorSubscription = this.controlGroupService.hasError.subscribe(hasError => {
-      if (hasError) {
-        this.destroyView();
-      } else {
-        this.createView();
-      }
-    });
+    this.hasErrorSubscription = this.controlGroupService.hasError.subscribe(
+      (hasError) => {
+        if (hasError) {
+          this.destroyView();
+        } else {
+          this.createView();
+        }
+      },
+    );
   }
 
   /**
@@ -61,5 +69,4 @@ export class IfNoErrorDirective implements OnInit, OnDestroy {
       this.hasView = false;
     }
   }
-
 }

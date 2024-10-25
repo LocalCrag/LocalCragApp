@@ -11,12 +11,12 @@ def str_to_slug(name: str) -> str:
     Converts a string to a slug like string that can be used in URLs.
     """
     name = name.lower()
-    name = re.sub('[ä]', 'ae', name)
-    name = re.sub('[ö]', 'oe', name)
-    name = re.sub('[ü]', 'ue', name)
-    name = re.sub('[ß]', 'ss', name)
-    name = re.sub('[^a-z0-9]', '-', name)
-    return name.strip('-')
+    name = re.sub("[ä]", "ae", name)
+    name = re.sub("[ö]", "oe", name)
+    name = re.sub("[ü]", "ue", name)
+    name = re.sub("[ß]", "ss", name)
+    name = re.sub("[^a-z0-9]", "-", name)
+    return name.strip("-")
 
 
 @declarative_mixin
@@ -24,6 +24,7 @@ class HasSlug:
     """
     Mixin class that adds a slug column to a model.
     """
+
     slug_blocklist = []
     slug_target_columns = "name"
     slug = db.Column(
@@ -33,8 +34,8 @@ class HasSlug:
     )
 
 
-@event.listens_for(db.session, "before_commit")
-def update_slugs(session):
+@event.listens_for(db.session, "before_flush")
+def update_slugs(session, _flush_context, _instances):
     """
     Generates a free slug for all dirty slug items.
     Source: https://digitalhedgehog.org/articles/how-to-manage-slugs-for-database-entities-with-flask-and-sqlalchemy
@@ -48,18 +49,16 @@ def update_slugs(session):
             table = item.__table__
 
             if table not in slugs_map:
-                slugs_map[table] = set(
-                    c[0] for c in session.execute(db.select(table.c.slug))
-                )
+                slugs_map[table] = set(c[0] for c in session.execute(db.select(table.c.slug)))
 
             for blocklisted_slug in item.slug_blocklist:
                 slugs_map[table].add(blocklisted_slug)
 
             item_slug = item.slug or ""
             title_parts = []
-            for slug_target_column in item.slug_target_columns.split(', '):
+            for slug_target_column in item.slug_target_columns.split(", "):
                 title_parts.append(getattr(item, slug_target_column))
-            title = ' '.join(title_parts)
+            title = " ".join(title_parts)
             slug = str_to_slug(title)
             if not item_slug.startswith(slug):
                 i = 1

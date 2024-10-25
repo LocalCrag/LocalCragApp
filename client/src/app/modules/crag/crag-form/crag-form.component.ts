@@ -1,24 +1,33 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {LoadingState} from '../../../enums/loading-state';
-import {CragsService} from '../../../services/crud/crags.service';
-import {Crag} from '../../../models/crag';
-import {environment} from '../../../../environments/environment';
-import {Store} from '@ngrx/store';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {ActivatedRoute, Router} from '@angular/router';
-import {of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {ConfirmationService} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Title} from '@angular/platform-browser';
-import {Editor} from 'primeng/editor';
-import {UploadService} from '../../../services/crud/upload.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {disabledMarkerTypesCrag, MapMarkerType} from '../../../enums/map-marker-type';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { LoadingState } from '../../../enums/loading-state';
+import { CragsService } from '../../../services/crud/crags.service';
+import { Crag } from '../../../models/crag';
+import { environment } from '../../../../environments/environment';
+import { Store } from '@ngrx/store';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Title } from '@angular/platform-browser';
+import { Editor } from 'primeng/editor';
+import { UploadService } from '../../../services/crud/upload.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  disabledMarkerTypesCrag,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
 
 /**
  * A component for creating and editing crags.
@@ -27,10 +36,9 @@ import {disabledMarkerTypesCrag, MapMarkerType} from '../../../enums/map-marker-
   selector: 'lc-crag-form',
   templateUrl: './crag-form.component.html',
   styleUrls: ['./crag-form.component.scss'],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService],
 })
 export class CragFormComponent implements OnInit {
-
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
@@ -41,15 +49,17 @@ export class CragFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(private fb: FormBuilder,
-              private store: Store,
-              private route: ActivatedRoute,
-              private router: Router,
-              private title: Title,
-              private uploadService: UploadService,
-              private cragsService: CragsService,
-              private translocoService: TranslocoService,
-              private confirmationService: ConfirmationService) {
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private route: ActivatedRoute,
+    private router: Router,
+    private title: Title,
+    private uploadService: UploadService,
+    private cragsService: CragsService,
+    private translocoService: TranslocoService,
+    private confirmationService: ConfirmationService,
+  ) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -62,22 +72,29 @@ export class CragFormComponent implements OnInit {
     if (cragSlug) {
       this.editMode = true;
       this.cragForm.disable();
-      this.cragsService.getCrag(cragSlug).pipe(catchError(e => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      })).subscribe(crag => {
-        this.crag = crag;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-        this.editors?.map(editor => {
-          editor.getQuill().enable();
+      this.cragsService
+        .getCrag(cragSlug)
+        .pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        )
+        .subscribe((crag) => {
+          this.crag = crag;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          this.editors?.map((editor) => {
+            editor.getQuill().enable();
+          });
         });
-      });
     } else {
-      this.store.select(selectInstanceName).subscribe(instanceName => {
-        this.title.setTitle(`${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`);
+      this.store.select(selectInstanceName).subscribe((instanceName) => {
+        this.title.setTitle(
+          `${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`,
+        );
       });
       this.loadingState = LoadingState.DEFAULT;
     }
@@ -132,23 +149,27 @@ export class CragFormComponent implements OnInit {
     if (this.cragForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const crag = new Crag();
-      crag.name = this.cragForm.get('name').value
-      crag.description = this.cragForm.get('description').value
-      crag.shortDescription = this.cragForm.get('shortDescription').value
-      crag.rules = this.cragForm.get('rules').value
-      crag.portraitImage = this.cragForm.get('portraitImage').value
-      crag.secret = this.cragForm.get('secret').value
-      crag.mapMarkers = this.cragForm.get('mapMarkers').value
+      crag.name = this.cragForm.get('name').value;
+      crag.description = this.cragForm.get('description').value;
+      crag.shortDescription = this.cragForm.get('shortDescription').value;
+      crag.rules = this.cragForm.get('rules').value;
+      crag.portraitImage = this.cragForm.get('portraitImage').value;
+      crag.secret = this.cragForm.get('secret').value;
+      crag.mapMarkers = this.cragForm.get('mapMarkers').value;
       if (this.crag) {
         crag.slug = this.crag.slug;
-        this.cragsService.updateCrag(crag).subscribe(crag => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_UPDATED));
+        this.cragsService.updateCrag(crag).subscribe((crag) => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.CRAG_UPDATED),
+          );
           this.router.navigate(['/topo', crag.slug]);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.cragsService.createCrag(crag).subscribe(_crag => {
-          this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_CREATED));
+        this.cragsService.createCrag(crag).subscribe(() => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.CRAG_CREATED),
+          );
           this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;
         });
@@ -166,10 +187,14 @@ export class CragFormComponent implements OnInit {
     this.translocoService.load(`${environment.language}`).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('crag.askReallyWantToDeleteCrag')),
+        message: this.translocoService.translate(
+          marker('crag.askReallyWantToDeleteCrag'),
+        ),
         acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('crag.noDontDelete')),
+        rejectLabel: this.translocoService.translate(
+          marker('crag.noDontDelete'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteCrag();
@@ -183,12 +208,14 @@ export class CragFormComponent implements OnInit {
    */
   public deleteCrag() {
     this.cragsService.deleteCrag(this.crag).subscribe(() => {
-      this.store.dispatch(toastNotification(NotificationIdentifier.CRAG_DELETED));
+      this.store.dispatch(
+        toastNotification(NotificationIdentifier.CRAG_DELETED),
+      );
       this.router.navigate(['/topo']);
       this.loadingState = LoadingState.DEFAULT;
     });
   }
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
-    protected readonly MapMarkerType = MapMarkerType;
+  protected readonly MapMarkerType = MapMarkerType;
 }

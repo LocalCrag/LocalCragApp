@@ -1,20 +1,26 @@
-<ng-container *transloco="let t, read: 'todos.todoList'">
-
+<ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
-
-    <p-card header="{{t('todos')}}">
-
-      <p-dataView #dv [value]="todos"
-                  [emptyMessage]="t('noTodosFoundMessage')"
-                  [loading]="loadingFirstPage === loadingStates.LOADING">
+    <p-card header="{{ t('todos') }}">
+      <p-dataView
+        #dv
+        [value]="todos"
+        [emptyMessage]="t('noTodosFoundMessage')"
+        [loading]="loadingFirstPage === loadingStates.LOADING"
+      >
         <ng-template pTemplate="header">
-          <div class="flex flex-column sm:flex-column justify-content-between gap-2">
-
-            <div class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row">
-              {{t('orderByLabel')}}
+          <div
+            class="flex flex-column sm:flex-column justify-content-between gap-2"
+          >
+            <div
+              class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+            >
+              {{ t("orderByLabel") }}
               <div class="flex flex-wrap gap-2">
-                <p-dropdown [options]="orderOptions" [(ngModel)]="orderKey"
-                            optionLabel="label" (onChange)="loadFirstPage()"
+                <p-dropdown
+                  [options]="orderOptions"
+                  [(ngModel)]="orderKey"
+                  optionLabel="label"
+                  (onChange)="loadFirstPage()"
                 >
                   <ng-template pTemplate="selectedItem">
                     <div class="flex align-items-center gap-2" *ngIf="orderKey">
@@ -27,11 +33,17 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
-                <p-dropdown [options]="orderDirectionOptions" [(ngModel)]="orderDirectionKey"
-                            optionLabel="label" (onChange)="loadFirstPage()"
+                <p-dropdown
+                  [options]="orderDirectionOptions"
+                  [(ngModel)]="orderDirectionKey"
+                  optionLabel="label"
+                  (onChange)="loadFirstPage()"
                 >
                   <ng-template pTemplate="selectedItem">
-                    <div class="flex align-items-center gap-2" *ngIf="orderDirectionKey">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="orderDirectionKey"
+                    >
                       <div>{{ orderDirectionKey.label }}</div>
                     </div>
                   </ng-template>
@@ -44,14 +56,22 @@
               </div>
             </div>
 
-            <div class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row">
-              {{t('filterLabel')}}
+            <div
+              class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+            >
+              {{ t("filterLabel") }}
               <div class="flex flex-wrap gap-2">
-                <p-dropdown [options]="priorityFilterOptions" [(ngModel)]="priorityFilterKey"
-                            optionLabel="label" (onChange)="loadFirstPage()"
+                <p-dropdown
+                  [options]="priorityFilterOptions"
+                  [(ngModel)]="priorityFilterKey"
+                  optionLabel="label"
+                  (onChange)="loadFirstPage()"
                 >
                   <ng-template pTemplate="selectedItem">
-                    <div class="flex align-items-center gap-2" *ngIf="priorityFilterKey">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="priorityFilterKey"
+                    >
                       <div>{{ priorityFilterKey.label }}</div>
                     </div>
                   </ng-template>
@@ -61,11 +81,18 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
-                <p-dropdown [options]="cragFilterOptions" [(ngModel)]="cragFilterKey"
-                            optionLabel="label" (onChange)="buildSectorFilterOptions(); loadFirstPage()"
-                            *ngIf="cragFilterOptions">
+                <p-dropdown
+                  [options]="cragFilterOptions"
+                  [(ngModel)]="cragFilterKey"
+                  optionLabel="label"
+                  (onChange)="buildSectorFilterOptions(); loadFirstPage()"
+                  *ngIf="cragFilterOptions"
+                >
                   <ng-template pTemplate="selectedItem">
-                    <div class="flex align-items-center gap-2" *ngIf="cragFilterKey">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="cragFilterKey"
+                    >
                       <div>{{ cragFilterKey.label }}</div>
                     </div>
                   </ng-template>
@@ -75,11 +102,18 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
-                <p-dropdown [options]="sectorFilterOptions" [(ngModel)]="sectorFilterKey"
-                            optionLabel="label" (onChange)="buildAreaFilterOptions(); loadFirstPage()"
-                            *ngIf="sectorFilterOptions">
+                <p-dropdown
+                  [options]="sectorFilterOptions"
+                  [(ngModel)]="sectorFilterKey"
+                  optionLabel="label"
+                  (onChange)="buildAreaFilterOptions(); loadFirstPage()"
+                  *ngIf="sectorFilterOptions"
+                >
                   <ng-template pTemplate="selectedItem">
-                    <div class="flex align-items-center gap-2" *ngIf="sectorFilterKey">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="sectorFilterKey"
+                    >
                       <div>{{ sectorFilterKey.label }}</div>
                     </div>
                   </ng-template>
@@ -89,11 +123,18 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
-                <p-dropdown [options]="areaFilterOptions" [(ngModel)]="areaFilterKey"
-                            optionLabel="label" (onChange)="loadFirstPage()"
-                            *ngIf="areaFilterOptions">
+                <p-dropdown
+                  [options]="areaFilterOptions"
+                  [(ngModel)]="areaFilterKey"
+                  optionLabel="label"
+                  (onChange)="loadFirstPage()"
+                  *ngIf="areaFilterOptions"
+                >
                   <ng-template pTemplate="selectedItem">
-                    <div class="flex align-items-center gap-2" *ngIf="areaFilterKey">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="areaFilterKey"
+                    >
                       <div>{{ areaFilterKey.label }}</div>
                     </div>
                   </ng-template>
@@ -107,35 +148,61 @@
             </div>
 
             <div class="slider-container mt-1">
-              <lc-slider-labels [rangeMin]="gradeFilterRange[0]" [rangeMax]="gradeFilterRange[1]" [min]="minGradeValue"
-                                [max]="maxGradeValue"
-                                [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
-                                [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"></lc-slider-labels>
-              <p-slider [(ngModel)]="gradeFilterRange" [min]="minGradeValue" [max]="maxGradeValue" [range]="true"
-                        [step]="1"
-                        (touchstart)="listenForSliderStop = true"
-                        (mousedown)="listenForSliderStop = true"/>
+              <lc-slider-labels
+                [rangeMin]="gradeFilterRange[0]"
+                [rangeMax]="gradeFilterRange[1]"
+                [min]="minGradeValue"
+                [max]="maxGradeValue"
+                [minLabel]="
+                  gradeNameByValue['FB'][gradeFilterRange[0]] | transloco
+                "
+                [maxLabel]="
+                  gradeNameByValue['FB'][gradeFilterRange[1]] | transloco
+                "
+              ></lc-slider-labels>
+              <p-slider
+                [(ngModel)]="gradeFilterRange"
+                [min]="minGradeValue"
+                [max]="maxGradeValue"
+                [range]="true"
+                [step]="1"
+                (touchstart)="listenForSliderStop = true"
+                (mousedown)="listenForSliderStop = true"
+              />
             </div>
-
           </div>
         </ng-template>
         <ng-template let-todos pTemplate="list">
           <div class="grid grid-nogutter">
-            <div class="col-12 " *ngFor="let todo of todos; let first = first" data-cy="todo-list-item">
-              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 todo-table-container"
-                   [ngClass]="{ 'border-top-1 surface-border': !first }">
-
+            <div
+              class="col-12"
+              *ngFor="let todo of todos; let first = first"
+              data-cy="todo-list-item"
+            >
+              <div
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 todo-table-container"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
                 <!-- DISPLAY FOR NORMAL SCREENS -->
                 <div class="todo-table-row-normal">
                   <div class="todo-table-line-info">
                     <div class="todo-table-line-name font-bold">
-                      <a routerLink="{{todo.routerLinkLine}}">{{ todo.line.name }}</a>
-
+                      <a routerLink="{{ todo.routerLinkLine }}">{{
+                        todo.line.name
+                      }}</a>
                     </div>
                     <div class="todo-table-line-location mt-1">
-                      <a routerLink="{{todo.routerLinkCrag}}">{{todo.crag.name}}</a>, <a
-                      routerLink="{{todo.routerLinkSector}}">{{todo.sector.name}}</a>, <a
-                      routerLink="{{todo.routerLinkArea}}">{{todo.area.name}}</a>
+                      <a routerLink="{{ todo.routerLinkCrag }}">{{
+                        todo.crag.name
+                      }}</a
+                      >,
+                      <a routerLink="{{ todo.routerLinkSector }}">{{
+                        todo.sector.name
+                      }}</a
+                      >,
+                      <a routerLink="{{ todo.routerLinkArea }}">{{
+                        todo.area.name
+                      }}</a>
                     </div>
                   </div>
                   <div class="todo-table-grade">
@@ -146,13 +213,21 @@
                     </div>
                   </div>
                   <div class="todo-table-priority">
-                    <lc-todo-priority-button [todo]="todo"></lc-todo-priority-button>
+                    <lc-todo-priority-button
+                      [todo]="todo"
+                    ></lc-todo-priority-button>
                   </div>
                   <div class="todo-actions">
-                    <lc-tick-button [line]="todo.line" [showLabel]="false" [ticked]="false"></lc-tick-button>
-                    <p-button styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                              data-cy="delete-todo"
-                              (click)="deleteTodo(todo)">
+                    <lc-tick-button
+                      [line]="todo.line"
+                      [showLabel]="false"
+                      [ticked]="false"
+                    ></lc-tick-button>
+                    <p-button
+                      styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                      data-cy="delete-todo"
+                      (click)="deleteTodo(todo)"
+                    >
                       <ng-template pTemplate="icon">
                         <i class="pi pi-trash"></i>
                       </ng-template>
@@ -165,13 +240,22 @@
                   <div class="todo-table-row-top">
                     <div class="todo-table-line-info">
                       <div class="todo-table-line-name font-bold">
-                        <a routerLink="{{todo.routerLinkLine}}">{{ todo.line.name }}</a>
-
+                        <a routerLink="{{ todo.routerLinkLine }}">{{
+                          todo.line.name
+                        }}</a>
                       </div>
                       <div class="todo-table-line-location mt-1">
-                        <a routerLink="{{todo.routerLinkCrag}}">{{todo.crag.name}}</a>, <a
-                        routerLink="{{todo.routerLinkSector}}">{{todo.sector.name}}</a>, <a
-                        routerLink="{{todo.routerLinkArea}}">{{todo.area.name}}</a>
+                        <a routerLink="{{ todo.routerLinkCrag }}">{{
+                          todo.crag.name
+                        }}</a
+                        >,
+                        <a routerLink="{{ todo.routerLinkSector }}">{{
+                          todo.sector.name
+                        }}</a
+                        >,
+                        <a routerLink="{{ todo.routerLinkArea }}">{{
+                          todo.area.name
+                        }}</a>
                       </div>
                     </div>
                     <div class="todo-table-grade">
@@ -184,13 +268,21 @@
                   </div>
                   <div class="todo-table-row-bottom">
                     <div class="todo-table-priority">
-                      <lc-todo-priority-button [todo]="todo"></lc-todo-priority-button>
+                      <lc-todo-priority-button
+                        [todo]="todo"
+                      ></lc-todo-priority-button>
                     </div>
                     <div class="todo-actions">
-                      <lc-tick-button [line]="todo.line" [showLabel]="false" [ticked]="false"></lc-tick-button>
-                      <p-button styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                                data-cy="tick-button"
-                                (click)="deleteTodo(todo)">
+                      <lc-tick-button
+                        [line]="todo.line"
+                        [showLabel]="false"
+                        [ticked]="false"
+                      ></lc-tick-button>
+                      <p-button
+                        styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                        data-cy="tick-button"
+                        (click)="deleteTodo(todo)"
+                      >
                         <ng-template pTemplate="icon">
                           <i class="pi pi-trash"></i>
                         </ng-template>
@@ -198,8 +290,6 @@
                     </div>
                   </div>
                 </div>
-
-
               </div>
             </div>
           </div>
@@ -207,17 +297,16 @@
       </p-dataView>
 
       <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-        <p-button label="{{t('loadMore')}}"
-                  (scrolled)="loadNextPage()"
-                  (click)="loadNextPage()"
-                  infiniteScroll
-                  [infiniteScrollDistance]="2"
-                  [infiniteScrollThrottle]="50"
-                  [loading]="loadingAdditionalPage === loadingStates.LOADING"></p-button>
+        <p-button
+          label="{{ t('loadMore') }}"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          [loading]="loadingAdditionalPage === loadingStates.LOADING"
+        ></p-button>
       </div>
-
     </p-card>
-
   </div>
-
 </ng-container>

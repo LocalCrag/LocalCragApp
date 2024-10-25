@@ -1,32 +1,35 @@
-import {Component, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {Editor, EditorModule} from 'primeng/editor';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UploadService} from '../../../services/crud/upload.service';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {InstanceSettings} from '../../../models/instance-settings';
-import {InstanceSettingsService} from '../../../services/crud/instance-settings.service';
-import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {CoordinatesComponent} from '../../shared/forms/controls/coordinates/coordinates.component';
-import {InputTextModule} from 'primeng/inputtext';
-import {NgIf} from '@angular/common';
-import {PaginatorModule} from 'primeng/paginator';
-import {SharedModule} from '../../shared/shared.module';
-import {updateInstanceSettings} from '../../../ngrx/actions/instance-settings.actions';
-import {ColorPickerModule} from 'primeng/colorpicker';
-import {DividerModule} from 'primeng/divider';
-import {getRgbObject} from '../../../utility/misc/color';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { EditorModule } from 'primeng/editor';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { InstanceSettings } from '../../../models/instance-settings';
+import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
+import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgIf } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { SharedModule } from '../../shared/shared.module';
+import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { DividerModule } from 'primeng/divider';
+import { getRgbObject } from '../../../utility/misc/color';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -45,13 +48,12 @@ import {getRgbObject} from '../../../utility/misc/color';
     SharedModule,
     TranslocoDirective,
     ColorPickerModule,
-    DividerModule
+    DividerModule,
   ],
   templateUrl: './instance-settings-form.component.html',
-  styleUrl: './instance-settings-form.component.scss'
+  styleUrl: './instance-settings-form.component.scss',
 })
-export class InstanceSettingsFormComponent {
-
+export class InstanceSettingsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public instanceSettingsForm: FormGroup;
@@ -59,25 +61,31 @@ export class InstanceSettingsFormComponent {
   public loadingStates = LoadingState;
   public instanceSettings: InstanceSettings;
 
-  constructor(private fb: FormBuilder,
-              private store: Store,
-              private router: Router,
-              private instanceSettingsService: InstanceSettingsService) {
-  }
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private router: Router,
+    private instanceSettingsService: InstanceSettingsService,
+  ) {}
 
   ngOnInit() {
     this.buildForm();
     this.instanceSettingsForm.disable();
-    this.instanceSettingsService.getInstanceSettings().pipe(catchError(e => {
-      if (e.status === 404) {
-        this.router.navigate(['/not-found']);
-      }
-      return of(e);
-    })).subscribe(instanceSettings => {
-      this.instanceSettings = instanceSettings;
-      this.setFormValue();
-      this.loadingState = LoadingState.DEFAULT;
-    });
+    this.instanceSettingsService
+      .getInstanceSettings()
+      .pipe(
+        catchError((e) => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        }),
+      )
+      .subscribe((instanceSettings) => {
+        this.instanceSettings = instanceSettings;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+      });
   }
 
   private buildForm() {
@@ -97,6 +105,7 @@ export class InstanceSettingsFormComponent {
       barChartColor: [null],
       matomoTrackerUrl: [null],
       matomoSiteId: [null],
+      maptilerApiKey: [null],
     });
   }
 
@@ -118,6 +127,7 @@ export class InstanceSettingsFormComponent {
       barChartColor: getRgbObject(this.instanceSettings.barChartColor),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
+      maptilerApiKey: this.instanceSettings.maptilerApiKey,
     });
   }
 
@@ -125,33 +135,58 @@ export class InstanceSettingsFormComponent {
     if (this.instanceSettingsForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const instanceSettings = new InstanceSettings();
-      instanceSettings.instanceName = this.instanceSettingsForm.get('instanceName').value;
-      instanceSettings.copyrightOwner = this.instanceSettingsForm.get('copyrightOwner').value;
-      instanceSettings.youtubeUrl = this.instanceSettingsForm.get('youtubeUrl').value;
-      instanceSettings.instagramUrl = this.instanceSettingsForm.get('instagramUrl').value;
-      instanceSettings.logoImage = this.instanceSettingsForm.get('logoImage').value;
-      instanceSettings.faviconImage = this.instanceSettingsForm.get('faviconImage').value;
-      instanceSettings.mainBgImage = this.instanceSettingsForm.get('mainBgImage').value;
-      instanceSettings.authBgImage = this.instanceSettingsForm.get('authBgImage').value;
-      instanceSettings.arrowColor = this.instanceSettingsForm.get('arrowColor').value;
-      instanceSettings.arrowTextColor = this.instanceSettingsForm.get('arrowTextColor').value;
-      instanceSettings.arrowHighlightColor = this.instanceSettingsForm.get('arrowHighlightColor').value;
-      instanceSettings.arrowHighlightTextColor = this.instanceSettingsForm.get('arrowHighlightTextColor').value;
-      instanceSettings.barChartColor = this.getCSSRgbValue(this.instanceSettingsForm.get('barChartColor').value);
-      instanceSettings.matomoSiteId = this.instanceSettingsForm.get('matomoSiteId').value;
-      instanceSettings.matomoTrackerUrl = this.instanceSettingsForm.get('matomoTrackerUrl').value;
-      this.instanceSettingsService.updateInstanceSettings(instanceSettings).subscribe(instanceSettings => {
-        this.store.dispatch(toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED));
-        this.loadingState = LoadingState.DEFAULT;
-        this.store.dispatch(updateInstanceSettings({settings: instanceSettings}))
-      });
+      instanceSettings.instanceName =
+        this.instanceSettingsForm.get('instanceName').value;
+      instanceSettings.copyrightOwner =
+        this.instanceSettingsForm.get('copyrightOwner').value;
+      instanceSettings.youtubeUrl =
+        this.instanceSettingsForm.get('youtubeUrl').value;
+      instanceSettings.instagramUrl =
+        this.instanceSettingsForm.get('instagramUrl').value;
+      instanceSettings.logoImage =
+        this.instanceSettingsForm.get('logoImage').value;
+      instanceSettings.faviconImage =
+        this.instanceSettingsForm.get('faviconImage').value;
+      instanceSettings.mainBgImage =
+        this.instanceSettingsForm.get('mainBgImage').value;
+      instanceSettings.authBgImage =
+        this.instanceSettingsForm.get('authBgImage').value;
+      instanceSettings.arrowColor =
+        this.instanceSettingsForm.get('arrowColor').value;
+      instanceSettings.arrowTextColor =
+        this.instanceSettingsForm.get('arrowTextColor').value;
+      instanceSettings.arrowHighlightColor = this.instanceSettingsForm.get(
+        'arrowHighlightColor',
+      ).value;
+      instanceSettings.arrowHighlightTextColor = this.instanceSettingsForm.get(
+        'arrowHighlightTextColor',
+      ).value;
+      instanceSettings.barChartColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('barChartColor').value,
+      );
+      instanceSettings.matomoSiteId =
+        this.instanceSettingsForm.get('matomoSiteId').value;
+      instanceSettings.matomoTrackerUrl =
+        this.instanceSettingsForm.get('matomoTrackerUrl').value;
+      instanceSettings.maptilerApiKey =
+        this.instanceSettingsForm.get('maptilerApiKey').value;
+      this.instanceSettingsService
+        .updateInstanceSettings(instanceSettings)
+        .subscribe((instanceSettings) => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED),
+          );
+          this.loadingState = LoadingState.DEFAULT;
+          this.store.dispatch(
+            updateInstanceSettings({ settings: instanceSettings }),
+          );
+        });
     } else {
       this.formDirective.markAsTouched();
     }
   }
 
   private getCSSRgbValue(raw: any): string {
-    return `rgb(${raw.r}, ${raw.g}, ${raw.b})`
+    return `rgb(${raw.r}, ${raw.g}, ${raw.b})`;
   }
-
 }

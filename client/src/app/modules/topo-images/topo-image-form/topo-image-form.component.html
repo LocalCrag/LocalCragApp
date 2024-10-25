@@ -1,65 +1,121 @@
-<ng-container *transloco="let t, read: 'topoImage.topoImageForm'">
-
+<ng-container *transloco="let t; read: 'topoImage.topoImageForm'">
   <div class="content">
-
-    <p-card header="{{!editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')}}">
+    <p-card
+      header="{{
+        !editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')
+      }}"
+    >
       <p class="mt-0" *ngIf="!editMode">
-        {{t('addTopoImageDescription')}}
+        {{ t("addTopoImageDescription") }}
       </p>
       <p class="mt-0" *ngIf="editMode">
-        {{t('editTopoImageDescription')}}
+        {{ t("editTopoImageDescription") }}
       </p>
 
       <form [formGroup]="topoImageForm" lcForm>
-
         <div class="flex flex-column gap-2" lcControlGroup>
-          <lc-single-image-upload lcFormControl formControlName="image"
-                                  data-cy="topo-image-input"></lc-single-image-upload>
-          <small class="p-error" *lcIfError="'required'">{{t('required')}}</small>
+          <lc-single-image-upload
+            lcFormControl
+            formControlName="image"
+            data-cy="topo-image-input"
+          ></lc-single-image-upload>
+          <small class="p-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('topoImageTitleLabel')}}</label>
-          <input type="text" pInputText formControlName="title" placeholder="{{t('topoImageTitlePlaceholder')}}"
-                 lcFormControl data-cy="topo-image-form-title"/>
-          <small class="p-error" *lcIfError="'maxlength'">{{t('maxlength120')}}</small>
+          <label class="form-label" for="title">{{
+            t("topoImageTitleLabel")
+          }}</label>
+          <input
+            id="title"
+            type="text"
+            pInputText
+            formControlName="title"
+            placeholder="{{ t('topoImageTitlePlaceholder') }}"
+            lcFormControl
+            data-cy="topo-image-form-title"
+          />
+          <small class="p-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('topoImageDescriptionLabel')}}</label>
-          <p-editor formControlName="description" lcFormControl placeholder="{{t('topoImageDescriptionPlaceholder')}}"
-                    [style]="{ height: '200px' }" [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-                    data-cy="topo-image-form-description">
+          <label class="form-label" for="description">{{
+            t("topoImageDescriptionLabel")
+          }}</label>
+          <p-editor
+            id="description"
+            formControlName="description"
+            lcFormControl
+            placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
+            [style]="{ height: '200px' }"
+            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+            data-cy="topo-image-form-description"
+          >
             <ng-template pTemplate="header">
               <span class="ql-formats">
-                  <button type="button" class="ql-bold" aria-label="Bold"></button>
-                  <button type="button" class="ql-italic" aria-label="Italic"></button>
-                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button
+                  type="button"
+                  class="ql-bold"
+                  aria-label="Bold"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-italic"
+                  aria-label="Italic"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-underline"
+                  aria-label="Underline"
+                ></button>
               </span>
               <span class="ql-formats">
-                  <button type="button" class="ql-link" aria-label="Link"></button>
+                <button
+                  type="button"
+                  class="ql-link"
+                  aria-label="Link"
+                ></button>
               </span>
             </ng-template>
           </p-editor>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{t('coordinatesLabel')}}</label>
-          <lc-coordinates formControlName="coordinates" lcFormControl data-cy="topo-image-form-coordinates" #coordinates></lc-coordinates>
+          <label class="form-label" for="coordinates">{{
+            t("coordinatesLabel")
+          }}</label>
+          <lc-coordinates
+            id="coordinates"
+            formControlName="coordinates"
+            lcFormControl
+            data-cy="topo-image-form-coordinates"
+            #coordinates
+          ></lc-coordinates>
         </div>
-
       </form>
 
       <div class="form-actions">
-        <p-button label="{{t('addTopoImageButtonLabel')}}" (click)="saveTopoImage()" icon="pi pi-save"
-                  class="responsive-button" data-cy="submit" [disabled]="coordinates.positionLoading"
-                  [loading]="loadingState === loadingStates.LOADING"></p-button>
-        <p-button label="{{t('cancelButtonLabel')}}" (click)="cancel()" class="ml-3 responsive-button"
-                  styleClass="p-button-secondary" icon="pi pi-ban"></p-button>
+        <p-button
+          label="{{ t('addTopoImageButtonLabel') }}"
+          (click)="saveTopoImage()"
+          icon="pi pi-save"
+          class="responsive-button"
+          data-cy="submit"
+          [disabled]="coordinates.positionLoading"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+        <p-button
+          label="{{ t('cancelButtonLabel') }}"
+          (click)="cancel()"
+          class="ml-3 responsive-button"
+          styleClass="p-button-secondary"
+          icon="pi pi-ban"
+        ></p-button>
       </div>
-
     </p-card>
-
   </div>
-
 </ng-container>

@@ -1,13 +1,7 @@
-<ng-container *transloco="let t, read: 'ascents.ascents'">
-
+<ng-container *transloco="let t; read: 'ascents.ascents'">
   <div class="content">
-
-    <p-card header="{{t('ascents')}}">
-
+    <p-card header="{{ t('ascents') }}">
       <router-outlet name="ascentsContent"></router-outlet>
-
     </p-card>
-
   </div>
-
 </ng-container>
