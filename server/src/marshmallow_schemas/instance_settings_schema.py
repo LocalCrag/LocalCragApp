@@ -22,6 +22,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
     maptilerApiKey = fields.String(attribute="maptiler_api_key")
+    gymMode = fields.Boolean(attribute="gym_mode")
 
 
 instance_settings_schema = InstanceSettingsSchema()

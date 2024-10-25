@@ -34,6 +34,7 @@ class InstanceSettings(db.Model):
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
     maptiler_api_key = db.Column(db.String(120), nullable=True)
+    gym_mode = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     @hybrid_property
     def superadmin_email(self) -> str:
