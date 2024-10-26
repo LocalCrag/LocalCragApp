@@ -1,8 +1,12 @@
 from marshmallow import fields
 
 from extensions import ma
-from marshmallow_schemas.line_schema import  LineSchemaMin
-from marshmallow_schemas.search_schema import AreaSearchSchema, SectorSearchSchema, CragSearchSchema
+from marshmallow_schemas.line_schema import LineSchemaMin
+from marshmallow_schemas.search_schema import (
+    AreaSearchSchema,
+    CragSearchSchema,
+    SectorSearchSchema,
+)
 from marshmallow_schemas.user_schema import UserMinSchema
 from models.area import Area
 from models.crag import Crag

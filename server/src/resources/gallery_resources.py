@@ -1,15 +1,17 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
-from marshmallow_schemas.gallery_image_schema import gallery_images_schema, gallery_image_schema
+from marshmallow_schemas.gallery_image_schema import (
+    gallery_image_schema,
+    gallery_images_schema,
+)
 from models.gallery_image import GalleryImage
 from models.tag import Tag
 from models.user import User
 from webargs_schemas.gallery_image_args import gallery_image_args
-
 
 # todo pagination
 
