@@ -20,6 +20,7 @@ from webargs_schemas.gallery_image_args import gallery_image_args
 # todo tests
 # todo pagination
 
+
 class GetGalleryImages(MethodView):
 
     def get(self):
