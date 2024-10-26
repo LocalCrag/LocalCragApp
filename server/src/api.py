@@ -34,6 +34,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
+from resources.gallery_resources import GetGalleryImages, CreateGalleryImage
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,
@@ -189,6 +190,12 @@ def configure_api(app):
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
+
+    # Gallery API
+    gallery_bp = Blueprint("gallery", __name__)
+    gallery_bp.add_url_rule("", view_func=GetGalleryImages.as_view("get_gallery_images"))
+    gallery_bp.add_url_rule("", view_func=CreateGalleryImage.as_view("create_gallery_image"))
+    app.register_blueprint(gallery_bp, url_prefix="/api/gallery")
 
     # Line API
     line_bp = Blueprint("lines", __name__)
