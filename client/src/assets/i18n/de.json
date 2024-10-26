@@ -185,7 +185,7 @@
   "instanceSettings.instanceSettingsForm.editInstanceSettingsButtonLabel": "Speichern",
   "instanceSettings.instanceSettingsForm.editInstanceSettings": "Einstellungen",
   "instanceSettings.instanceSettingsForm.gymModeLabel": "Betriebsmodus",
-  "instanceSettings.instanceSettingsForm.gymModeLabelFalse": "Outdoor Modus",
+  "instanceSettings.instanceSettingsForm.gymModeLabelFalse": "Outdoormodus",
   "instanceSettings.instanceSettingsForm.gymModeLabelTrue": "Hallenmodus",
   "forgotPasswordCheckMailbox.title": "Fast geschafft!",
   "forgotPasswordCheckMailbox.description": "Bitte überprüfe Deine Mailbox. Du solltest eine Mail mit Instruktionen zum zurücksetzen Deines Passworts erhalten haben.",

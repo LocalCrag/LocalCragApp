@@ -47,7 +47,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
-        "gymMode": True
+        "gymMode": True,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
