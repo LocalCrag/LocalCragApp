@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {Sector} from '../../../models/sector';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {NgIf} from '@angular/common';
-import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.component';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Sector } from '../../../models/sector';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { NgIf } from '@angular/common';
+import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
 
 @Component({
   selector: 'lc-sector-ranking',
@@ -14,7 +14,7 @@ import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.comp
   styleUrl: './sector-ranking.component.scss',
 })
 @UntilDestroy()
-export class SectorRankingComponent implements OnInit{
+export class SectorRankingComponent implements OnInit {
   public sector: Sector;
 
   constructor(

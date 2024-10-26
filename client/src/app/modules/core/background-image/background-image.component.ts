@@ -1,7 +1,10 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
-import {ActivationEnd, Router,} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {selectAuthBgImage, selectMainBgImage,} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { ActivationEnd, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import {
+  selectAuthBgImage,
+  selectMainBgImage,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 
 export enum StaticBackgroundImages {
   DEFAULT,

@@ -1,15 +1,15 @@
-import {Component, Input, ViewEncapsulation} from '@angular/core';
-import {Line} from '../../../models/line';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {Store} from '@ngrx/store';
-import {TodosService} from '../../../services/crud/todos.service';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {ButtonModule} from 'primeng/button';
-import {NgClass, NgIf} from '@angular/common';
-import {SharedModule} from 'primeng/api';
-import {Router} from '@angular/router';
-import {todoAdded} from '../../../ngrx/actions/todo.actions';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Line } from '../../../models/line';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { Store } from '@ngrx/store';
+import { TodosService } from '../../../services/crud/todos.service';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { ButtonModule } from 'primeng/button';
+import { NgClass, NgIf } from '@angular/common';
+import { SharedModule } from 'primeng/api';
+import { Router } from '@angular/router';
+import { todoAdded } from '../../../ngrx/actions/todo.actions';
 
 @Component({
   selector: 'lc-todo-button',

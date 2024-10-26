@@ -1,39 +1,48 @@
-import {Component, HostListener, OnInit, ViewEncapsulation,} from '@angular/core';
-import {LinesService} from '../../../services/crud/lines.service';
-import {select, Store} from '@ngrx/store';
-import {Actions, ofType} from '@ngrx/effects';
-import {TicksService} from '../../../services/crud/ticks.service';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
-import {AscentCountComponent} from '../../ascent/ascent-count/ascent-count.component';
-import {ButtonModule} from 'primeng/button';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
-import {LineModule} from '../line.module';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {RatingModule} from 'primeng/rating';
-import {SecretSpotTagComponent} from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import {TickButtonComponent} from '../../ascent/tick-button/tick-button.component';
-import {selectIsMobile} from '../../../ngrx/selectors/device.selectors';
-import {forkJoin, Observable, of} from 'rxjs';
-import {SharedModule} from '../../shared/shared.module';
-import {Line} from '../../../models/line';
-import {LoadingState} from '../../../enums/loading-state';
-import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import {FormsModule} from '@angular/forms';
-import {SliderModule} from 'primeng/slider';
-import {gradeNameByValue, GRADES} from '../../../utility/misc/grades';
-import {SliderLabelsComponent} from '../../shared/components/slider-labels/slider-labels.component';
-import {SelectItem} from 'primeng/api';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {AccordionModule} from 'primeng/accordion';
-import {map, mergeMap} from 'rxjs/operators';
-import {reloadAfterAscent} from '../../../ngrx/actions/ascent.actions';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {TodoButtonComponent} from '../../todo/todo-button/todo-button.component';
-import {IsTodoService} from '../../../services/crud/is-todo.service';
-import {todoAdded} from '../../../ngrx/actions/todo.actions';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { LinesService } from '../../../services/crud/lines.service';
+import { select, Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { TicksService } from '../../../services/crud/ticks.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { LineModule } from '../line.module';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
+import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
+import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { forkJoin, Observable, of } from 'rxjs';
+import { SharedModule } from '../../shared/shared.module';
+import { Line } from '../../../models/line';
+import { LoadingState } from '../../../enums/loading-state';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { FormsModule } from '@angular/forms';
+import { SliderModule } from 'primeng/slider';
+import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
+import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
+import { SelectItem } from 'primeng/api';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { AccordionModule } from 'primeng/accordion';
+import { map, mergeMap } from 'rxjs/operators';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
+import { IsTodoService } from '../../../services/crud/is-todo.service';
+import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import {ArchiveButtonComponent} from "../../archive/archive-button/archive-button.component";
 
 @Component({

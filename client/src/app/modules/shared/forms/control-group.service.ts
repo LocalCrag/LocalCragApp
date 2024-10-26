@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {NgControl} from '@angular/forms';
-import {FormService} from './form.service';
-import {ControlElement} from './control-element.interface';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { NgControl } from '@angular/forms';
+import { FormService } from './form.service';
+import { ControlElement } from './control-element.interface';
 
 /**
  * Service that manages the error states of a control group.

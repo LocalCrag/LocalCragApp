@@ -3,8 +3,11 @@
     <p-card header="{{ editMode ? t('editPostTitle') : t('createPostTitle') }}">
       <form [formGroup]="postForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("postTitleLabel") }}</label>
+          <label class="form-label" for="title">{{
+            t("postTitleLabel")
+          }}</label>
           <input
+            id="title"
             type="text"
             pInputText
             formControlName="title"
@@ -20,8 +23,9 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("postTextLabel") }}</label>
+          <label class="form-label" for="text">{{ t("postTextLabel") }}</label>
           <p-editor
+            id="text"
             formControlName="text"
             lcFormControl
             [modules]="quillModules"

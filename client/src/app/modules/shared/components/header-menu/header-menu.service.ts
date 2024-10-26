@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Injectable} from '@angular/core';
-import {ProcessedMenuItem} from './processed-menu-item';
-import {HeaderMenuComponent} from './header-menu.component';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { ProcessedMenuItem } from './processed-menu-item';
+import { HeaderMenuComponent } from './header-menu.component';
 
 @Injectable()
 export class HeaderMenuService {

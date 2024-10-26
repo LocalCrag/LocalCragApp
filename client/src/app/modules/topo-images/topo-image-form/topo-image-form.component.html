@@ -25,8 +25,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("topoImageTitleLabel") }}</label>
+          <label class="form-label" for="title">{{
+            t("topoImageTitleLabel")
+          }}</label>
           <input
+            id="title"
             type="text"
             pInputText
             formControlName="title"
@@ -40,8 +43,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("topoImageDescriptionLabel") }}</label>
+          <label class="form-label" for="description">{{
+            t("topoImageDescriptionLabel")
+          }}</label>
           <p-editor
+            id="description"
             formControlName="description"
             lcFormControl
             placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
@@ -79,8 +85,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("coordinatesLabel") }}</label>
+          <label class="form-label" for="coordinates">{{
+            t("coordinatesLabel")
+          }}</label>
           <lc-coordinates
+            id="coordinates"
             formControlName="coordinates"
             lcFormControl
             data-cy="topo-image-form-coordinates"

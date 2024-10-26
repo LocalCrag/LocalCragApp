@@ -8,10 +8,13 @@
       <ng-container *ngIf="lineForm">
         <form [formGroup]="lineForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineNameLabel") }}</label>
+            <label class="form-label" for="name">{{
+              t("lineNameLabel")
+            }}</label>
             <input
               type="text"
               pInputText
+              id="name"
               formControlName="name"
               placeholder="{{ t('lineNamePlaceholder') }}"
               lcFormControl
@@ -26,8 +29,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineDescriptionLabel") }}</label>
+            <label class="form-label" for="description">{{
+              t("lineDescriptionLabel")
+            }}</label>
             <p-editor
+              id="description"
               formControlName="description"
               lcFormControl
               placeholder="{{ t('lineDescriptionPlaceholder') }}"
@@ -65,9 +71,12 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineGradeLabel") }}</label>
+            <label class="form-label" for="grade">{{
+              t("lineGradeLabel")
+            }}</label>
             <p-dropdown
               formControlName="grade"
+              id="grade"
               [options]="grades"
               data-cy="grade-dropdown"
               optionLabel="name"
@@ -92,8 +101,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("startingPositionLabel") }}</label>
+            <label class="form-label" for="starting-position">{{
+              t("startingPositionLabel")
+            }}</label>
             <p-dropdown
+              id="starting-position"
               formControlName="startingPosition"
               [options]="startingPositions"
               lcFormControl
@@ -117,8 +129,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineRatingLabel") }}</label>
+            <label class="form-label" for="rating">{{
+              t("lineRatingLabel")
+            }}</label>
             <p-rating
+              id="rating"
               formControlName="rating"
               lcFormControl
               [cancel]="false"
@@ -127,6 +142,7 @@
           </div>
 
           <div class="flex flex-column gap-2">
+            <!--           eslint-disable-next-line @angular-eslint/template/label-has-associated-control-->
             <label class="form-label">{{ t("lineVideosLabel") }}</label>
 
             <div
@@ -194,8 +210,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineFANameLabel") }}</label>
+            <label class="form-label" for="fa-name">{{
+              t("lineFANameLabel")
+            }}</label>
             <input
+              id="fa-name"
               type="text"
               pInputText
               formControlName="faName"
@@ -209,8 +228,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineFAYearLabel") }}</label>
+            <label class="form-label" for="fa-year">{{
+              t("lineFAYearLabel")
+            }}</label>
             <p-calendar
+              id="fa-year"
               formControlName="faYear"
               view="year"
               dateFormat="yy"
@@ -226,6 +248,7 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
+            <!--           eslint-disable-next-line @angular-eslint/template/label-has-associated-control-->
             <label class="form-label">{{ t("linePropertiesLabel") }}</label>
             <p-checkbox
               label="{{ t('lineEliminateLabel') }}"
@@ -280,8 +303,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineTypeLabel") }}</label>
+            <label class="form-label" for="roof">{{
+              t("lineTypeLabel")
+            }}</label>
             <p-checkbox
+              id="roof"
               label="{{ t('lineRoofLabel') }}"
               name="roof"
               [binary]="true"
@@ -361,8 +387,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineKeyAspectsLabel") }}</label>
+            <label class="form-label" for="athletic">{{
+              t("lineKeyAspectsLabel")
+            }}</label>
             <p-checkbox
+              id="athletic"
               label="{{ t('lineAthleticLabel') }}"
               name="athletic"
               [binary]="true"
@@ -393,10 +422,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
+            <label class="form-label" for="jugs">{{
               t("linePrimaryHoldTypesLabel")
             }}</label>
             <p-checkbox
+              id="jugs"
               label="{{ t('lineJugsLabel') }}"
               name="jugs"
               [binary]="true"
@@ -434,11 +464,14 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("lineOptionsLabel") }}</label>
+            <label class="form-label" for="secret">{{
+              t("lineOptionsLabel")
+            }}</label>
             <p-checkbox
               label="{{ t('lineSecretLabel') }}"
               name="secret"
               [binary]="true"
+              id="secret"
               formControlName="secret"
               lcFormControl
             ></p-checkbox>

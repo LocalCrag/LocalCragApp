@@ -7,8 +7,9 @@
   >
     <form [formGroup]="mapMarkerForm" lcForm>
       <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label">{{ t("typeLabel") }}</label>
+        <label class="form-label" for="type">{{ t("typeLabel") }}</label>
         <p-dropdown
+          id="type"
           formControlName="type"
           [options]="types"
           data-cy="type-dropdown"
@@ -34,8 +35,11 @@
       </div>
 
       <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label">{{ t("coordinatesLabel") }}</label>
+        <label class="form-label" for="coordinates">{{
+          t("coordinatesLabel")
+        }}</label>
         <lc-coordinates
+          id="coordinates"
           formControlName="coordinates"
           lcFormControl
           data-cy="marker-form-coordinates"
@@ -48,8 +52,9 @@
         lcControlGroup
         *ngIf="!nameAndDescriptionHidden"
       >
-        <label class="form-label">{{ t("markerNameLabel") }}</label>
+        <label class="form-label" for="name">{{ t("markerNameLabel") }}</label>
         <input
+          id="name"
           type="text"
           pInputText
           formControlName="name"
@@ -67,8 +72,11 @@
         lcControlGroup
         *ngIf="!nameAndDescriptionHidden"
       >
-        <label class="form-label">{{ t("markerDescriptionLabel") }}</label>
+        <label class="form-label" for="description">{{
+          t("markerDescriptionLabel")
+        }}</label>
         <p-editor
+          id="description"
           formControlName="description"
           lcFormControl
           placeholder="{{ t('markerDescriptionPlaceholder') }}"

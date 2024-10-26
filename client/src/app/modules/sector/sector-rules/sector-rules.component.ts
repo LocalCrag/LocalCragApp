@@ -1,14 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {
-  GradeDistributionBarChartComponent
-} from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import {NgIf} from '@angular/common';
-import {SharedModule} from '../../shared/shared.module';
-import {SkeletonModule} from 'primeng/skeleton';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {Sector} from '../../../models/sector';
-import {ActivatedRoute, Router} from '@angular/router';
-import {SectorsService} from '../../../services/crud/sectors.service';
+import { Component, OnInit } from '@angular/core';
+import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import { NgIf } from '@angular/common';
+import { SharedModule } from '../../shared/shared.module';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { Sector } from '../../../models/sector';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SectorsService } from '../../../services/crud/sectors.service';
 
 /**
  * Component that displays sector rules.

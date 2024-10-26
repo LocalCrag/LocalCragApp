@@ -1,5 +1,5 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
 
 /**
  * Model of a user.

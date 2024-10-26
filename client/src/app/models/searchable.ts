@@ -1,8 +1,8 @@
-import {Line} from './line';
-import {Area} from './area';
-import {Sector} from './sector';
-import {Crag} from './crag';
-import {User} from './user';
+import { Line } from './line';
+import { Area } from './area';
+import { Sector } from './sector';
+import { Crag } from './crag';
+import { User } from './user';
 
 export class Searchable {
   line: Line;

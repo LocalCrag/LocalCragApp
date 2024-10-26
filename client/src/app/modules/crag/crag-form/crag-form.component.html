@@ -7,8 +7,9 @@
 
       <form [formGroup]="cragForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragNameLabel") }}</label>
+          <label class="form-label" for="name">{{ t("cragNameLabel") }}</label>
           <input
+            id="name"
             type="text"
             pInputText
             formControlName="name"
@@ -25,8 +26,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragShortDescriptionLabel") }}</label>
+          <label class="form-label" for="short-description">{{
+            t("cragShortDescriptionLabel")
+          }}</label>
           <p-editor
+            id="short-description"
             formControlName="shortDescription"
             lcFormControl
             placeholder="{{ t('cragShortDescriptionPlaceholder') }}"
@@ -64,8 +68,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragDescriptionLabel") }}</label>
+          <label class="form-label" for="description">{{
+            t("cragDescriptionLabel")
+          }}</label>
           <p-editor
+            id="description"
             formControlName="description"
             lcFormControl
             placeholder="{{ t('cragDescriptionPlaceholder') }}"
@@ -128,9 +135,12 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragRulesLabel") }}</label>
+          <label class="form-label" for="rules">{{
+            t("cragRulesLabel")
+          }}</label>
           <p-editor
             formControlName="rules"
+            id="rules"
             lcFormControl
             placeholder="{{ t('cragRulesPlaceholder') }}"
             [modules]="quillModules"
@@ -187,9 +197,12 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragPortraitImageLabel") }}</label>
+          <label class="form-label" for="portrait-image">{{
+            t("cragPortraitImageLabel")
+          }}</label>
           <lc-single-image-upload
             lcFormControl
+            id="portrait-image"
             formControlName="portraitImage"
             data-cy="crag-form-portraitImage"
           >
@@ -197,8 +210,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("mapMarkersLabel") }}</label>
+          <label class="form-label" for="map-markers">{{
+            t("mapMarkersLabel")
+          }}</label>
           <lc-map-marker-form-array
+            id="map-markers"
             formControlName="mapMarkers"
             [disabledMarkerTypes]="disabledMarkerTypesCrag"
             lcFormControl
@@ -207,8 +223,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("cragOptionsLabel") }}</label>
+          <label class="form-label" for="secret">{{
+            t("cragOptionsLabel")
+          }}</label>
           <p-checkbox
+            id="secret"
             label="{{ t('cragSecretLabel') }}"
             name="secret"
             [binary]="true"

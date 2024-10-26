@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {AscentListComponent} from '../../ascent/ascent-list/ascent-list.component';
-import {NgForOf, NgIf} from '@angular/common';
-import {SkeletonModule} from 'primeng/skeleton';
-import {TranslocoService} from '@jsverse/transloco';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {AreasService} from '../../../services/crud/areas.service';
-import {Area} from '../../../models/area';
-import {AscentListSkeletonComponent} from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
+import { Component, OnInit } from '@angular/core';
+import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
+import { NgForOf, NgIf } from '@angular/common';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TranslocoService } from '@jsverse/transloco';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { AreasService } from '../../../services/crud/areas.service';
+import { Area } from '../../../models/area';
+import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-area-ascents',

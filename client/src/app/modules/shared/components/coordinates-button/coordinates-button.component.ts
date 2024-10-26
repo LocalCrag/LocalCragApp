@@ -1,10 +1,10 @@
-import {Component, Input, ViewEncapsulation} from '@angular/core';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {Coordinates} from '../../../../interfaces/coordinates.interface';
-import {SplitButtonModule} from 'primeng/splitbutton';
-import {MenuItem} from 'primeng/api';
-import {ClipboardService} from '../../../../services/core/clipboard.service';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { Coordinates } from '../../../../interfaces/coordinates.interface';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
+import { ClipboardService } from '../../../../services/core/clipboard.service';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-coordinates-button',

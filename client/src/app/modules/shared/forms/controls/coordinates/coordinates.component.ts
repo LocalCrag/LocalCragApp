@@ -1,4 +1,11 @@
-import {AfterViewInit, Component, forwardRef, Injector, OnInit, ViewChild,} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  forwardRef,
+  Injector,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -7,17 +14,17 @@ import {
   NgControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {Coordinates} from '../../../../../interfaces/coordinates.interface';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {SharedModule} from '../../../shared.module';
-import {InputTextModule} from 'primeng/inputtext';
-import {latValidator} from '../../../../../utility/validators/lat.validator';
-import {lngValidator} from '../../../../../utility/validators/lng.validator';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {FormDirective} from '../../form.directive';
-import {ButtonModule} from 'primeng/button';
-import {MessageModule} from 'primeng/message';
-import {NgIf} from '@angular/common';
+import { Coordinates } from '../../../../../interfaces/coordinates.interface';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { SharedModule } from '../../../shared.module';
+import { InputTextModule } from 'primeng/inputtext';
+import { latValidator } from '../../../../../utility/validators/lat.validator';
+import { lngValidator } from '../../../../../utility/validators/lng.validator';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FormDirective } from '../../form.directive';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-coordinates',

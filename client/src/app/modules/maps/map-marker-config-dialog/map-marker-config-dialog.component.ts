@@ -10,22 +10,34 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {SharedModule} from '../../shared/shared.module';
-import {InputTextModule} from 'primeng/inputtext';
-import {TRANSLOCO_SCOPE, TranslocoDirective, TranslocoPipe,} from '@jsverse/transloco';
-import {Editor, EditorModule} from 'primeng/editor';
-import {CoordinatesComponent} from '../../shared/forms/controls/coordinates/coordinates.component';
-import {ColorPickerModule} from 'primeng/colorpicker';
-import {DropdownModule} from 'primeng/dropdown';
-import {ToggleButtonModule} from 'primeng/togglebutton';
-import {MAP_MARKER_TYPES, MapMarkerType,} from '../../../enums/map-marker-type';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {MapMarker} from '../../../models/map-marker';
-import {DialogModule} from 'primeng/dialog';
-import {ButtonModule} from 'primeng/button';
-import {NgIf} from '@angular/common';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
+import { InputTextModule } from 'primeng/inputtext';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoPipe,
+} from '@jsverse/transloco';
+import { Editor, EditorModule } from 'primeng/editor';
+import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import {
+  MAP_MARKER_TYPES,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { MapMarker } from '../../../models/map-marker';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',

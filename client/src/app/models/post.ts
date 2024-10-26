@@ -1,5 +1,5 @@
-import {AbstractModel} from './abstract-model';
-import {User} from './user';
+import { AbstractModel } from './abstract-model';
+import { User } from './user';
 
 /**
  * Model of a blog post.

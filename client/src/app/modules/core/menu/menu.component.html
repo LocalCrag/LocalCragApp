@@ -2,6 +2,7 @@
   <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template pTemplate="start">
       <img
+        alt="{{ t('logoImageAlt') }}"
         [src]="(logoImage$ | async).thumbnailM"
         height="40"
         class="mr-2 flex cursor-pointer"
@@ -9,7 +10,9 @@
         routerLink="/"
       />
       <strong
-        *ngIf="!(logoImage$ | async)"
+        *ngIf="
+          (logoImage$ | async) === null || (logoImage$ | async) === undefined
+        "
         routerLink="/"
         class="cursor-pointer"
         >{{ instanceName$ | async }}</strong
@@ -17,7 +20,7 @@
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex justify-content-center flex-wrap gap-2">
-        <div class="search-fake-input" (click)="openSearch()">
+        <div class="search-fake-input" (click)="openSearch()" tabindex="0">
           <i class="pi pi-search mr-2"></i>
           <span class="search-label">{{ t("searchPlaceholder") }}</span>
         </div>

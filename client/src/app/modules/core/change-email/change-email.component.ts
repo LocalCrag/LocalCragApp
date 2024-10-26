@@ -1,16 +1,16 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
-import {ButtonModule} from 'primeng/button';
-import {MessageModule} from 'primeng/message';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {NgIf} from '@angular/common';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {UsersService} from '../../../services/crud/users.service';
-import {Store} from '@ngrx/store';
-import {Title} from '@angular/platform-browser';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {newAuthCredentials,} from '../../../ngrx/actions/auth.actions';
+import { Component, HostBinding, OnInit } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { UsersService } from '../../../services/crud/users.service';
+import { Store } from '@ngrx/store';
+import { Title } from '@angular/platform-browser';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { newAuthCredentials } from '../../../ngrx/actions/auth.actions';
 
 @Component({
   selector: 'lc-change-email',

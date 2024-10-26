@@ -1,5 +1,5 @@
-import {Directive, HostBinding} from '@angular/core';
-import {ControlGroupService} from './control-group.service';
+import { Directive, HostBinding } from '@angular/core';
+import { ControlGroupService } from './control-group.service';
 
 /**
  * Directive that provides the ControlGroupService for a control group.

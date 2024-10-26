@@ -1,7 +1,7 @@
-import {AbstractModel} from './abstract-model';
-import {Line} from './line';
+import { AbstractModel } from './abstract-model';
+import { Line } from './line';
 import Konva from 'konva';
-import {LoadingState} from '../enums/loading-state';
+import { LoadingState } from '../enums/loading-state';
 
 /**
  * Model of a line path.

@@ -3,8 +3,11 @@
     <p-card header="{{ t('editRegionTitle') }}">
       <form [formGroup]="regionForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("regionNameLabel") }}</label>
+          <label class="form-label" for="name">{{
+            t("regionNameLabel")
+          }}</label>
           <input
+            id="name"
             type="text"
             pInputText
             formControlName="name"
@@ -21,8 +24,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("regionDescriptionLabel") }}</label>
+          <label class="form-label" for="description">{{
+            t("regionDescriptionLabel")
+          }}</label>
           <p-editor
+            id="description"
             formControlName="description"
             lcFormControl
             placeholder="{{ t('regionDescriptionPlaceholder') }}"
@@ -84,8 +90,11 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t("regionRulesLabel") }}</label>
+          <label class="form-label" for="rules">{{
+            t("regionRulesLabel")
+          }}</label>
           <p-editor
+            id="rules"
             formControlName="rules"
             lcFormControl
             placeholder="{{ t('regionRulesPlaceholder') }}"

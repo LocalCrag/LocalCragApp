@@ -1,15 +1,15 @@
-import {Component, Input, ViewEncapsulation,} from '@angular/core';
-import {ButtonModule} from 'primeng/button';
-import {NgClass, NgIf} from '@angular/common';
-import {SharedModule} from 'primeng/api';
-import {Line} from '../../../models/line';
-import {AscentFormComponent} from '../ascent-form/ascent-form.component';
-import {AscentFormTitleComponent} from '../ascent-form-title/ascent-form-title.component';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {Store} from '@ngrx/store';
-import {ProjectClimbedFormComponent} from '../project-climbed-form/project-climbed-form.component';
-import {ProjectClimbedFormTitleComponent} from '../project-climbed-form-title/project-climbed-form-title.component';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { NgClass, NgIf } from '@angular/common';
+import { SharedModule } from 'primeng/api';
+import { Line } from '../../../models/line';
+import { AscentFormComponent } from '../ascent-form/ascent-form.component';
+import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { Store } from '@ngrx/store';
+import { ProjectClimbedFormComponent } from '../project-climbed-form/project-climbed-form.component';
+import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
 
 @Component({
   selector: 'lc-tick-button',

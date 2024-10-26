@@ -1,30 +1,35 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {EditorModule} from 'primeng/editor';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {InstanceSettings} from '../../../models/instance-settings';
-import {InstanceSettingsService} from '../../../services/crud/instance-settings.service';
-import {httpUrlValidator} from '../../../utility/validators/http-url.validator';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {CoordinatesComponent} from '../../shared/forms/controls/coordinates/coordinates.component';
-import {InputTextModule} from 'primeng/inputtext';
-import {NgIf} from '@angular/common';
-import {PaginatorModule} from 'primeng/paginator';
-import {SharedModule} from '../../shared/shared.module';
-import {updateInstanceSettings} from '../../../ngrx/actions/instance-settings.actions';
-import {ColorPickerModule} from 'primeng/colorpicker';
-import {DividerModule} from 'primeng/divider';
-import {getRgbObject} from '../../../utility/misc/color';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { EditorModule } from 'primeng/editor';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { InstanceSettings } from '../../../models/instance-settings';
+import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
+import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgIf } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { SharedModule } from '../../shared/shared.module';
+import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { DividerModule } from 'primeng/divider';
+import { getRgbObject } from '../../../utility/misc/color';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -48,7 +53,7 @@ import {getRgbObject} from '../../../utility/misc/color';
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
 })
-export class InstanceSettingsFormComponent implements OnInit{
+export class InstanceSettingsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public instanceSettingsForm: FormGroup;

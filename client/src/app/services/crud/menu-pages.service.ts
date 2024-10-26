@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {MenuPage} from '../../models/menu-page';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { MenuPage } from '../../models/menu-page';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * CRUD service for menuPages.

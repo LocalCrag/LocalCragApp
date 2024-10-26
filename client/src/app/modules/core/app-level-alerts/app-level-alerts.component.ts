@@ -1,19 +1,19 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
-import {AppState} from '../../../ngrx/reducers';
-import {selectRefreshTokenExpires} from '../../../ngrx/selectors/auth.selectors';
-import {unixToDate} from '../../../utility/operators/unix-to-date';
-import {filter, map, mergeMap} from 'rxjs/operators';
-import {bigIntTimer} from '../../../utility/observables/bigint-timer';
-import {openRefreshLoginModal} from 'src/app/ngrx/actions/auth.actions';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '../../../ngrx/reducers';
+import { selectRefreshTokenExpires } from '../../../ngrx/selectors/auth.selectors';
+import { unixToDate } from '../../../utility/operators/unix-to-date';
+import { filter, map, mergeMap } from 'rxjs/operators';
+import { bigIntTimer } from '../../../utility/observables/bigint-timer';
+import { openRefreshLoginModal } from 'src/app/ngrx/actions/auth.actions';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import {
   selectShowCookieAlert,
   selectShowRefreshTokenAboutToExpireAlert,
 } from '../../../ngrx/selectors/app-level-alerts.selectors';
-import {cookiesAccepted} from '../../../ngrx/actions/app-level-alerts.actions';
-import {differenceInMilliseconds, subMinutes} from 'date-fns';
+import { cookiesAccepted } from '../../../ngrx/actions/app-level-alerts.actions';
+import { differenceInMilliseconds, subMinutes } from 'date-fns';
 
 @Component({
   selector: 'lc-app-level-alerts',
@@ -22,7 +22,7 @@ import {differenceInMilliseconds, subMinutes} from 'date-fns';
   encapsulation: ViewEncapsulation.None,
 })
 @UntilDestroy()
-export class AppLevelAlertsComponent implements OnInit{
+export class AppLevelAlertsComponent implements OnInit {
   public showCookieAlert$: Observable<boolean>;
   public refreshLoginAlertType = 'warning';
   public refreshTokenExpires$: Observable<Date>;

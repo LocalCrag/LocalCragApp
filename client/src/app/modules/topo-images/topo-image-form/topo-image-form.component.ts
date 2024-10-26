@@ -1,20 +1,26 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TranslocoService} from '@jsverse/transloco';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {TopoImage} from '../../../models/topo-image';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
-import {Title} from '@angular/platform-browser';
-import {Editor} from 'primeng/editor';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { TopoImage } from '../../../models/topo-image';
+import { TopoImagesService } from '../../../services/crud/topo-images.service';
+import { Title } from '@angular/platform-browser';
+import { Editor } from 'primeng/editor';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Component for uploading topo images.
@@ -24,7 +30,7 @@ import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.sele
   templateUrl: './topo-image-form.component.html',
   styleUrls: ['./topo-image-form.component.scss'],
 })
-export class TopoImageFormComponent implements OnInit{
+export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
 
@@ -142,21 +148,19 @@ export class TopoImageFormComponent implements OnInit{
       topoImage.coordinates = this.topoImageForm.get('coordinates').value;
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
-        this.topoImagesService
-          .updateTopoImage(topoImage)
-          .subscribe(() => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.TOPO_IMAGE_UPDATED),
-            );
-            this.router.navigate([
-              '/topo',
-              this.cragSlug,
-              this.sectorSlug,
-              this.areaSlug,
-              'topo-images',
-            ]);
-            this.loadingState = LoadingState.DEFAULT;
-          });
+        this.topoImagesService.updateTopoImage(topoImage).subscribe(() => {
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.TOPO_IMAGE_UPDATED),
+          );
+          this.router.navigate([
+            '/topo',
+            this.cragSlug,
+            this.sectorSlug,
+            this.areaSlug,
+            'topo-images',
+          ]);
+          this.loadingState = LoadingState.DEFAULT;
+        });
       } else {
         this.topoImagesService
           .addTopoImage(topoImage, this.areaSlug)

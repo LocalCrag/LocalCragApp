@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {ControlGroupService} from './control-group.service';
+import { Injectable } from '@angular/core';
+import { ControlGroupService } from './control-group.service';
 
 /**
  * Service that manages a complete form. Provides functionality that is affecting the complete form.

@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {HttpBackend, HttpClient} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 
 /**
  * A version of the http client that is not calling any interceptors.

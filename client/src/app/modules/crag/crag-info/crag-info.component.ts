@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {CragsService} from '../../../services/crud/crags.service';
-import {Crag} from '../../../models/crag';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../utility/misc/grades';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CragsService } from '../../../services/crud/crags.service';
+import { Crag } from '../../../models/crag';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../utility/misc/grades';
 
 /**
  * Component that shows information about a crag.

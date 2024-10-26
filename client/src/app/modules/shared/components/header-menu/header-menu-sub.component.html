@@ -7,6 +7,7 @@
 >
   <div class="item-wrapper">
     <div
+      tabindex="0"
       class="item-content"
       (click)="onItemClick(item)"
       [ngClass]="{ 'no-sub-menu': !item.items }"
@@ -20,6 +21,7 @@
       <span>{{ item.item.label }}</span>
     </div>
     <div
+      tabindex="0"
       class="item-angle"
       *ngIf="item.items?.length > 0"
       (click)="onAngleClick(item)"
@@ -28,6 +30,7 @@
       <AngleRightIcon *ngIf="!root" class="ml-2" />
     </div>
     <div
+      tabindex="0"
       class="item-angle-placeholder"
       *ngIf="!item.items"
       (click)="onItemClick(item)"

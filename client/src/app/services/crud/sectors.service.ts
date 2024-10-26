@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Sector} from '../../models/sector';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
-import {ItemOrder} from '../../interfaces/item-order.interface';
-import {deserializeGrade, Grade} from '../../utility/misc/grades';
-import {Store} from '@ngrx/store';
-import {reloadMenus} from '../../ngrx/actions/core.actions';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Sector } from '../../models/sector';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { ItemOrder } from '../../interfaces/item-order.interface';
+import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { Store } from '@ngrx/store';
+import { reloadMenus } from '../../ngrx/actions/core.actions';
 
 /**
  * CRUD service for sectors.

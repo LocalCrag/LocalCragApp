@@ -2,8 +2,9 @@
   <form [formGroup]="coordinatesForm" lcForm>
     <div class="flex flex-row gap-3">
       <div class="flex flex-column gap-2 flex-1" lcControlGroup>
-        <label>{{ t("latLabel") }}</label>
+        <label for="lat">{{ t("latLabel") }}</label>
         <input
+          id="lat"
           type="text"
           pInputText
           formControlName="lat"
@@ -17,9 +18,10 @@
       </div>
 
       <div class="flex flex-column gap-2 flex-1" lcControlGroup>
-        <label>{{ t("lngLabel") }}</label>
+        <label for="lng">{{ t("lngLabel") }}</label>
         <input
           type="text"
+          id="lng"
           pInputText
           formControlName="lng"
           placeholder="{{ t('lngPlaceholder') }}"
@@ -32,8 +34,9 @@
       </div>
 
       <div class="flex flex-column gap-2">
-        <label>&nbsp;</label>
+        <label for="get-location-button">&nbsp;</label>
         <p-button
+          id="get-location-button"
           label="{{ t('getCoordinatesPosition') }}"
           icon="pi pi-map-marker"
           (click)="getGeoLocation()"

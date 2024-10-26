@@ -1,4 +1,4 @@
-import {MenuItem} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 
 export class ProcessedMenuItem {
   isActive = false;

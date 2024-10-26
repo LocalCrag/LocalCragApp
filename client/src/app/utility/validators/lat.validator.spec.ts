@@ -1,5 +1,5 @@
-import {FormControl} from '@angular/forms';
-import {latValidator} from './lat.validator';
+import { FormControl } from '@angular/forms';
+import { latValidator } from './lat.validator';
 
 describe('latValidator', () => {
   it('should accept correct latitude value', () => {

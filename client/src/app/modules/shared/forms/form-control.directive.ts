@@ -1,8 +1,8 @@
-import {Directive, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {fromEvent, Subject, Subscription} from 'rxjs';
-import {ControlGroupService} from './control-group.service';
-import {NgControl} from '@angular/forms';
-import {UntilDestroy} from '@ngneat/until-destroy';
+import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { fromEvent, Subject, Subscription } from 'rxjs';
+import { ControlGroupService } from './control-group.service';
+import { NgControl } from '@angular/forms';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
 /**
  * A directive that is responsible for watching the touched state of a form control and for registering

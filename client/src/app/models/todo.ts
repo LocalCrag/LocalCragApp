@@ -1,9 +1,9 @@
-import {AbstractModel} from './abstract-model';
-import {Line} from './line';
-import {Area} from './area';
-import {Sector} from './sector';
-import {Crag} from './crag';
-import {TodoPriority} from '../enums/todo-priority';
+import { AbstractModel } from './abstract-model';
+import { Line } from './line';
+import { Area } from './area';
+import { Sector } from './sector';
+import { Crag } from './crag';
+import { TodoPriority } from '../enums/todo-priority';
 
 export class Todo extends AbstractModel {
   priority: TodoPriority;

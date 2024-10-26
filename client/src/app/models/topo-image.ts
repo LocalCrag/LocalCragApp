@@ -1,10 +1,10 @@
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {LinePath} from './line-path';
-import {LoadingState} from '../enums/loading-state';
-import {Coordinates} from '../interfaces/coordinates.interface';
-import {MapMarkerType} from '../enums/map-marker-type';
-import {Area} from './area';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { LinePath } from './line-path';
+import { LoadingState } from '../enums/loading-state';
+import { Coordinates } from '../interfaces/coordinates.interface';
+import { MapMarkerType } from '../enums/map-marker-type';
+import { Area } from './area';
 
 /**
  * Model of a topo image.

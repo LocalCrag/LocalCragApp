@@ -1,34 +1,46 @@
-import {Component, OnInit} from '@angular/core';
-import {CardModule} from 'primeng/card';
-import {TranslocoDirective, TranslocoPipe, TranslocoService,} from '@jsverse/transloco';
-import {LoadingState} from '../../../enums/loading-state';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {ButtonModule} from 'primeng/button';
-import {DataViewModule} from 'primeng/dataview';
-import {DropdownModule} from 'primeng/dropdown';
-import {LineModule} from '../../line/line.module';
-import {RatingModule} from 'primeng/rating';
-import {RouterLink} from '@angular/router';
-import {SharedModule} from '../../shared/shared.module';
-import {ConfirmationService, MenuItem, PrimeIcons, SelectItem,} from 'primeng/api';
-import {BehaviorSubject, forkJoin} from 'rxjs';
-import {Store} from '@ngrx/store';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {selectCurrentUser, selectIsAdmin,} from '../../../ngrx/selectors/auth.selectors';
-import {User} from '../../../models/user';
-import {UsersService} from '../../../services/crud/users.service';
-import {FormsModule} from '@angular/forms';
-import {AvatarModule} from 'primeng/avatar';
-import {TagModule} from 'primeng/tag';
-import {ChipModule} from 'primeng/chip';
-import {MenuModule} from 'primeng/menu';
-import {take} from 'rxjs/operators';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {environment} from '../../../../environments/environment';
-import {ConfirmPopupModule} from 'primeng/confirmpopup';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {UserPromotionTargets} from '../../../enums/user-promotion-targets';
+import { Component, OnInit } from '@angular/core';
+import { CardModule } from 'primeng/card';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { LoadingState } from '../../../enums/loading-state';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { LineModule } from '../../line/line.module';
+import { RatingModule } from 'primeng/rating';
+import { RouterLink } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
+import {
+  ConfirmationService,
+  MenuItem,
+  PrimeIcons,
+  SelectItem,
+} from 'primeng/api';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import {
+  selectCurrentUser,
+  selectIsAdmin,
+} from '../../../ngrx/selectors/auth.selectors';
+import { User } from '../../../models/user';
+import { UsersService } from '../../../services/crud/users.service';
+import { FormsModule } from '@angular/forms';
+import { AvatarModule } from 'primeng/avatar';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { MenuModule } from 'primeng/menu';
+import { take } from 'rxjs/operators';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { environment } from '../../../../environments/environment';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 
 @Component({
   selector: 'lc-user-list',
@@ -60,7 +72,7 @@ import {UserPromotionTargets} from '../../../enums/user-promotion-targets';
   styleUrl: './user-list.component.scss',
   providers: [ConfirmationService],
 })
-export class UserListComponent implements OnInit{
+export class UserListComponent implements OnInit {
   public users: User[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;

@@ -1,25 +1,35 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren,} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TranslocoService} from '@jsverse/transloco';
-import {ConfirmationService} from 'primeng/api';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {environment} from '../../../../environments/environment';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Sector} from '../../../models/sector';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {Title} from '@angular/platform-browser';
-import {Editor} from 'primeng/editor';
-import {UploadService} from '../../../services/crud/upload.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {CragsService} from '../../../services/crud/crags.service';
-import {disabledMarkerTypesCrag, disabledMarkerTypesSector, MapMarkerType,} from '../../../enums/map-marker-type';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
+import { ConfirmationService } from 'primeng/api';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Sector } from '../../../models/sector';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { Title } from '@angular/platform-browser';
+import { Editor } from 'primeng/editor';
+import { UploadService } from '../../../services/crud/upload.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { CragsService } from '../../../services/crud/crags.service';
+import {
+  disabledMarkerTypesCrag,
+  disabledMarkerTypesSector,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
 
 /**
  * Form component for creating and editing sectors.

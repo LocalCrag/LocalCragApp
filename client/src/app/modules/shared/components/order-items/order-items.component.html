@@ -3,7 +3,7 @@
     [value]="items"
     [listStyle]="{ height: '25rem' }"
     [header]="itemsName"
-    [dragdrop]="!(isMobile$ | async)"
+    [dragdrop]="(isMobile$ | async) === false"
   >
     <ng-template let-item pTemplate="item">
       <div
@@ -28,6 +28,7 @@
         >
       </div>
       <img
+        alt="{{ t('orderItemImageAlt') }}"
         class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
         *ngIf="showImage"
         [src]="item.image.thumbnailM"

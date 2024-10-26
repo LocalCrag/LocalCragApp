@@ -1,23 +1,34 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren,} from '@angular/core';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {Editor, EditorModule} from 'primeng/editor';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {LoadingState} from '../../../enums/loading-state';
-import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
-import {UploadService} from '../../../services/crud/upload.service';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {RegionService} from '../../../services/crud/region.service';
-import {Region} from '../../../models/region';
-import {CardModule} from 'primeng/card';
-import {SharedModule} from '../../shared/shared.module';
-import {ButtonModule} from 'primeng/button';
-import {NgIf} from '@angular/common';
-import {InputTextModule} from 'primeng/inputtext';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { Editor, EditorModule } from 'primeng/editor';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LoadingState } from '../../../enums/loading-state';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { UploadService } from '../../../services/crud/upload.service';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { RegionService } from '../../../services/crud/region.service';
+import { Region } from '../../../models/region';
+import { CardModule } from 'primeng/card';
+import { SharedModule } from '../../shared/shared.module';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
 
 /**
  * A component for editing regions.

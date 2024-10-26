@@ -1,8 +1,14 @@
-import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
-import {ErrorHandlerService} from '../../services/core/error-handler.service';
+import { Injectable } from '@angular/core';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { ErrorHandlerService } from '../../services/core/error-handler.service';
 
 /**
  * Http interceptor for handling errors.
@@ -24,7 +30,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       tap(
-        (_event: HttpEvent<any>) => {},
+        () => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
             this.errorHandler.handleHttpError(err);

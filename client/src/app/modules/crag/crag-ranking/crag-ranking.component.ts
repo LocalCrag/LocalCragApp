@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Crag} from '../../../models/crag';
-import {ActivatedRoute} from '@angular/router';
-import {CragsService} from '../../../services/crud/crags.service';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {RankingListComponent} from '../../ranking/ranking-list/ranking-list.component';
-import {NgIf} from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Crag } from '../../../models/crag';
+import { ActivatedRoute } from '@angular/router';
+import { CragsService } from '../../../services/crud/crags.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-crag-ranking',
@@ -14,7 +14,7 @@ import {NgIf} from '@angular/common';
   styleUrl: './crag-ranking.component.scss',
 })
 @UntilDestroy()
-export class CragRankingComponent implements OnInit{
+export class CragRankingComponent implements OnInit {
   public crag: Crag;
 
   constructor(

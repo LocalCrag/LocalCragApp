@@ -1,24 +1,33 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren,} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {FormDirective} from '../../shared/forms/form.directive';
-import {LoadingState} from '../../../enums/loading-state';
-import {CragsService} from '../../../services/crud/crags.service';
-import {Crag} from '../../../models/crag';
-import {environment} from '../../../../environments/environment';
-import {Store} from '@ngrx/store';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {ActivatedRoute, Router} from '@angular/router';
-import {of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {ConfirmationService} from 'primeng/api';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Title} from '@angular/platform-browser';
-import {Editor} from 'primeng/editor';
-import {UploadService} from '../../../services/crud/upload.service';
-import {selectInstanceName} from '../../../ngrx/selectors/instance-settings.selectors';
-import {disabledMarkerTypesCrag, MapMarkerType,} from '../../../enums/map-marker-type';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormDirective } from '../../shared/forms/form.directive';
+import { LoadingState } from '../../../enums/loading-state';
+import { CragsService } from '../../../services/crud/crags.service';
+import { Crag } from '../../../models/crag';
+import { environment } from '../../../../environments/environment';
+import { Store } from '@ngrx/store';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Title } from '@angular/platform-browser';
+import { Editor } from 'primeng/editor';
+import { UploadService } from '../../../services/crud/upload.service';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  disabledMarkerTypesCrag,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
 
 /**
  * A component for creating and editing crags.

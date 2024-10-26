@@ -1,13 +1,16 @@
-import {Component, HostListener, OnInit} from '@angular/core';
-import {PrimeNGConfig} from 'primeng/api';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../ngrx/reducers';
-import {tryAutoLogin} from '../../ngrx/actions/auth.actions';
-import {checkShowCookieAlert} from '../../ngrx/actions/app-level-alerts.actions';
-import {checkIsMobile} from '../../ngrx/actions/device.actions';
-import {Title} from '@angular/platform-browser';
-import {selectInstanceName, selectInstanceSettingsState,} from '../../ngrx/selectors/instance-settings.selectors';
-import {take} from 'rxjs/operators';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { PrimeNGConfig } from 'primeng/api';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../ngrx/reducers';
+import { tryAutoLogin } from '../../ngrx/actions/auth.actions';
+import { checkShowCookieAlert } from '../../ngrx/actions/app-level-alerts.actions';
+import { checkIsMobile } from '../../ngrx/actions/device.actions';
+import { Title } from '@angular/platform-browser';
+import {
+  selectInstanceName,
+  selectInstanceSettingsState,
+} from '../../ngrx/selectors/instance-settings.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-root',

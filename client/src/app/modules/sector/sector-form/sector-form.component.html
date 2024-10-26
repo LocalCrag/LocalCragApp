@@ -10,8 +10,11 @@
       <ng-container *ngIf="sectorForm">
         <form [formGroup]="sectorForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("sectorNameLabel") }}</label>
+            <label class="form-label" for="name">{{
+              t("sectorNameLabel")
+            }}</label>
             <input
+              id="name"
               type="text"
               pInputText
               formControlName="name"
@@ -28,10 +31,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
+            <label class="form-label" for="shortDescription">{{
               t("sectorShortDescriptionLabel")
             }}</label>
             <p-editor
+              id="shortDescription"
               formControlName="shortDescription"
               lcFormControl
               placeholder="{{ t('sectorShortDescriptionPlaceholder') }}"
@@ -69,8 +73,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("sectorDescriptionLabel") }}</label>
+            <label class="form-label" for="description">{{
+              t("sectorDescriptionLabel")
+            }}</label>
             <p-editor
+              id="description"
               formControlName="description"
               lcFormControl
               placeholder="{{ t('sectorDescriptionPlaceholder') }}"
@@ -133,8 +140,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("sectorRulesLabel") }}</label>
+            <label class="form-label" for="rules">{{
+              t("sectorRulesLabel")
+            }}</label>
             <p-editor
+              id="rules"
               formControlName="rules"
               lcFormControl
               placeholder="{{ t('sectorRulesPlaceholder') }}"
@@ -172,10 +182,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
+            <label class="form-label" for="portrait-image">{{
               t("sectorPortraitImageLabel")
             }}</label>
             <lc-single-image-upload
+              id="portrait-image"
               lcFormControl
               formControlName="portraitImage"
               data-cy="sector-form-portraitImage"
@@ -184,8 +195,11 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("mapMarkersLabel") }}</label>
+            <label class="form-label" for="map-markers">{{
+              t("mapMarkersLabel")
+            }}</label>
             <lc-map-marker-form-array
+              id="map-markers"
               formControlName="mapMarkers"
               [disabledMarkerTypes]="disabledMarkerTypesSector"
               lcFormControl
@@ -194,10 +208,13 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
+            <label class="form-label" for="secret">{{
+              t("sectorOptionsLabel")
+            }}</label>
             <p-checkbox
               label="{{ t('sectorSecretLabel') }}"
               name="secret"
+              id="secret"
               [binary]="true"
               formControlName="secret"
               lcFormControl

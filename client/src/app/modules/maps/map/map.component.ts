@@ -1,22 +1,36 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, ViewChild,} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 
-import {GeolocateControl, LngLat, LngLatBounds, Map as MaplibreMap, NavigationControl,} from 'maplibre-gl';
-import {MapsService} from '../../../services/crud/maps.service';
-import {Feature, FeatureCollection, Geometry, Point} from 'geojson';
-import {MapMarkerProperties} from '../../../models/map-marker';
-import {MapItemInfoDialogComponent} from '../map-item-info-dialog/map-item-info-dialog.component';
-import {Area} from '../../../models/area';
-import {Crag} from '../../../models/crag';
-import {Sector} from '../../../models/sector';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {forkJoin, from, mergeMap, Observable, toArray} from 'rxjs';
-import {MapMarkerType} from '../../../enums/map-marker-type';
-import {NgIf} from '@angular/common';
-import {Store} from '@ngrx/store';
-import {selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
-import {take} from 'rxjs/operators';
-import {MapStyles} from '../../../enums/map-styles';
+import {
+  GeolocateControl,
+  LngLat,
+  LngLatBounds,
+  Map as MaplibreMap,
+  NavigationControl,
+} from 'maplibre-gl';
+import { MapsService } from '../../../services/crud/maps.service';
+import { Feature, FeatureCollection, Geometry, Point } from 'geojson';
+import { MapMarkerProperties } from '../../../models/map-marker';
+import { MapItemInfoDialogComponent } from '../map-item-info-dialog/map-item-info-dialog.component';
+import { Area } from '../../../models/area';
+import { Crag } from '../../../models/crag';
+import { Sector } from '../../../models/sector';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { forkJoin, from, mergeMap, Observable, toArray } from 'rxjs';
+import { MapMarkerType } from '../../../enums/map-marker-type';
+import { NgIf } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { take } from 'rxjs/operators';
+import { MapStyles } from '../../../enums/map-styles';
 
 @Component({
   selector: 'lc-map',

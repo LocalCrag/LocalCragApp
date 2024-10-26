@@ -1,5 +1,5 @@
-import {Directive, Input, TemplateRef, ViewContainerRef,} from '@angular/core';
-import {Store} from '@ngrx/store';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Store } from '@ngrx/store';
 import {
   selectCurrentUser,
   selectIsAdmin,
@@ -7,10 +7,11 @@ import {
   selectIsMember,
   selectIsModerator,
 } from '../../../ngrx/selectors/auth.selectors';
-import {User} from '../../../models/user';
+import { User } from '../../../models/user';
 
 @Directive({
   selector:
+    // eslint-disable-next-line  @angular-eslint/directive-selector
     '[isAdmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
   standalone: true,
 })
