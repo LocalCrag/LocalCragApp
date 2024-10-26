@@ -32,6 +32,11 @@ export class ApiService {
       `${this.apiHost}maps/markers${filters}`,
   };
 
+  public gallery = {
+    create: (): string => `${this.apiHost}gallery`,
+    getList: (filters: string): string => `${this.apiHost}gallery${filters}`,
+  };
+
   public ticks = {
     getList: (): string => `${this.apiHost}ticks`,
   };
