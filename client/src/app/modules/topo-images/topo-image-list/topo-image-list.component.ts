@@ -26,6 +26,7 @@ import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Area } from '../../../models/area';
+import {highlightColor, textColor} from '../../../utility/misc/color';
 
 /**
  * Component that lists all topo images in an area.
@@ -307,13 +308,11 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(instanceSettingsState.arrowHighlightColor);
-          linePath.konvaLine.stroke(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.fill(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.stroke(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
-          linePath.konvaRect.fill(instanceSettingsState.arrowHighlightColor);
-          linePath.konvaText.fill(
-            instanceSettingsState.arrowHighlightTextColor,
-          );
+          linePath.konvaRect.fill(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
+          linePath.konvaText.fill(textColor(highlightColor(linePath.line?.color)) ?? instanceSettingsState.arrowHighlightTextColor);
         });
     }
   }
@@ -328,11 +327,11 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(instanceSettingsState.arrowColor);
-          linePath.konvaLine.stroke(instanceSettingsState.arrowColor);
+          linePath.konvaLine.fill(linePath.line?.color ?? instanceSettingsState.arrowColor);
+          linePath.konvaLine.stroke(linePath.line?.color ?? instanceSettingsState.arrowColor);
           linePath.konvaLine.zIndex(1); // 0 is the BG image
-          linePath.konvaRect.fill(instanceSettingsState.arrowColor);
-          linePath.konvaText.fill(instanceSettingsState.arrowTextColor);
+          linePath.konvaRect.fill(linePath.line?.color ?? instanceSettingsState.arrowColor);
+          linePath.konvaText.fill(textColor(linePath.line?.color) ?? instanceSettingsState.arrowTextColor);
         });
     }
   }

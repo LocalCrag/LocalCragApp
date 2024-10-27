@@ -110,6 +110,7 @@
             <lc-topo-image
               class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
               [topoImage]="line.topoImages[0]"
+              [color]="line.color ?? undefined"
               *ngIf="line.topoImages.length > 0"
             ></lc-topo-image>
             <img

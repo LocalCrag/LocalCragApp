@@ -23,6 +23,7 @@ import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
+import {highlightColor, textColor} from '../../../../utility/misc/color';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -41,6 +42,7 @@ export class TopoImageComponent implements OnInit {
   @Input() linePathInProgress: LinePath = null;
   @Input() editorMode = false;
   @Input() showLineNumbers = false;
+  @Input() color?: string;  // Auxiliary color if topoImage.linePaths[i].line is not set
 
   @Output() anchorClick: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Output() imageClick: EventEmitter<number[]> = new EventEmitter<number[]>();
@@ -244,8 +246,8 @@ export class TopoImageComponent implements OnInit {
       .subscribe((instanceSettingsState) => {
         const line = new Konva.Arrow({
           points: this.getAbsoluteCoordinates(linePath.path),
-          stroke: instanceSettingsState.arrowColor,
-          fill: instanceSettingsState.arrowColor,
+          stroke: linePath.line?.color ?? this.color ?? instanceSettingsState.arrowColor,
+          fill: linePath.line?.color ?? this.color ?? instanceSettingsState.arrowColor,
           strokeWidth: 2 * this.lineSizeMultiplicator,
           lineCap: 'square',
           tension: 0,
@@ -280,7 +282,7 @@ export class TopoImageComponent implements OnInit {
         const rectangle = new Konva.Rect({
           width: label.width,
           height: label.height,
-          fill: instanceSettingsState.arrowColor,
+          fill: linePath.line?.color ?? this.color ?? instanceSettingsState.arrowColor,
           cornerRadius: label.height / 6,
           preventDefault: this.editorMode,
         });
@@ -290,7 +292,7 @@ export class TopoImageComponent implements OnInit {
           fontSize: label.height / 1.2,
           fontFamily:
             '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-          fill: instanceSettingsState.arrowTextColor,
+          fill: textColor(linePath.line?.color ?? this.color) ?? instanceSettingsState.arrowTextColor,
           width: label.width,
           padding: label.height / 8,
           align: 'center',
@@ -348,7 +350,7 @@ export class TopoImageComponent implements OnInit {
             x: absoluteCoordinates[i * 2],
             y: absoluteCoordinates[i * 2 + 1],
             radius: 10 * anchorFactor,
-            fill: instanceSettingsState.arrowColor,
+            fill: linePath.line?.color ?? instanceSettingsState.arrowColor,
             stroke: instanceSettingsState.arrowTextColor,
             strokeWidth: 1,
             preventDefault: this.editorMode,
@@ -368,11 +370,11 @@ export class TopoImageComponent implements OnInit {
             ]);
           });
           anchor.on('mouseenter', () => {
-            anchor.fill(instanceSettingsState.arrowHighlightColor);
+            anchor.fill(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
             this.stage.container().style.cursor = 'pointer';
           });
           anchor.on('mouseleave', () => {
-            anchor.fill(instanceSettingsState.arrowColor);
+            anchor.fill(linePath.line?.color ?? instanceSettingsState.arrowColor);
             this.stage.container().style.cursor = 'default';
           });
           this.lineLayer.add(anchor);

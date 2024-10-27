@@ -146,7 +146,7 @@
                     data-cy="line-row"
                   >
                     <div class="line-table-column-number">
-                      <div class="line-number">
+                      <div class="line-number" [style]="{'background-color': linePath.line.color ?? undefined}">
                         {{ i + 1 }}
                       </div>
                     </div>

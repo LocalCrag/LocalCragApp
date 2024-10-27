@@ -1,7 +1,4 @@
 import {Component, Input} from '@angular/core';
-import { ChipModule } from 'primeng/chip';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'lc-color-square',
