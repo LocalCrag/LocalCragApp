@@ -95,6 +95,7 @@ class UpdateSector(MethodView):
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
         update_sector_secret_property(sector, sector_data["secret"])
+
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()

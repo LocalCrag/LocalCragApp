@@ -35,6 +35,7 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
+    archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     eliminate = db.Column(db.Boolean, nullable=False, default=False)
     traverse = db.Column(db.Boolean, nullable=False, default=False)

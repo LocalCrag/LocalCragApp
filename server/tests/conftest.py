@@ -39,7 +39,6 @@ from models.revoked_token import RevokedToken
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
-from scripts.backup_digitalocean_instances import instance
 
 
 @pytest.fixture(scope="session", autouse=True)

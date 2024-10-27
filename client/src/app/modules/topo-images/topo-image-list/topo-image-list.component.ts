@@ -52,6 +52,7 @@ export class TopoImageListComponent implements OnInit {
   public areaSlug: string;
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
+  public showArchive = false;
 
   private scrollTarget: Scroll;
   private area: Area;
@@ -105,18 +106,26 @@ export class TopoImageListComponent implements OnInit {
       });
   }
 
+  toggleArchive() {
+    this.showArchive = !this.showArchive;
+    this.refreshData();
+  }
+
   /**
    * Loads new data.
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
+    const filters = new URLSearchParams();
+    if (this.showArchive)
+      filters.set("archived", "1");
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           this.area = area;
           return forkJoin([
-            this.topoImagesService.getTopoImages(this.areaSlug),
+            this.topoImagesService.getTopoImages(this.areaSlug, "?" + filters.toString()),
             this.ticksService.getTicks(null, null, area.id),
             this.translocoService.load(`${environment.language}`),
           ]);

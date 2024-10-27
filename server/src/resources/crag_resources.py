@@ -86,6 +86,7 @@ class UpdateCrag(MethodView):
         crag.rules = add_bucket_placeholders(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_secret_property(crag, crag_data["secret"])
+
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()

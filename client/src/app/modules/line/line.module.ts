@@ -32,6 +32,7 @@ import { AscentCountComponent } from '../ascent/ascent-count/ascent-count.compon
 import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
     SecretSpotTagComponent,
     FormSkeletonComponent,
     TodoButtonComponent,
+    ArchiveButtonComponent,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],

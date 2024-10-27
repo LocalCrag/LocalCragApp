@@ -40,6 +40,10 @@ export class ApiService {
     getList: (): string => `${this.apiHost}is-todo`,
   };
 
+  public archive = {
+    setArchived: (): string => `${this.apiHost}archive`,
+  };
+
   public users = {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,
@@ -151,8 +155,8 @@ export class ApiService {
   public topoImages = {
     add: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/topo-images`,
-    getList: (areaSlug: string): string =>
-      `${this.apiHost}areas/${areaSlug}/topo-images`,
+    getList: (areaSlug: string, filters?: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images${filters ?? ''}`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,

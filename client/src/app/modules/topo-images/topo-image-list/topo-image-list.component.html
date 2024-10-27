@@ -9,26 +9,37 @@
   >
     <ng-template pTemplate="header">
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <p-dropdown
-          [options]="sortOptions"
-          [(ngModel)]="sortKey"
-          optionLabel="label"
-          (onChange)="onSortChange($event)"
-          styleClass="md:mb-0"
-        >
-          <ng-template pTemplate="selectedItem">
-            <div class="flex align-items-center gap-2" *ngIf="sortKey">
-              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
-              <div>{{ sortKey.label }}</div>
-            </div>
-          </ng-template>
-          <ng-template let-option pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <i [class]="option.icon" *ngIf="option.icon"></i>
-              <div>{{ option.label }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
+        <div class="flex flex-column sm:flex-row gap-2">
+          <p-dropdown
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            (onChange)="onSortChange($event)"
+            styleClass="md:mb-0"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" *ngIf="sortKey">
+                <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
+                <div>{{ sortKey.label }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <i [class]="option.icon" *ngIf="option.icon"></i>
+                <div>{{ option.label }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <div>
+            <p-button
+              label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
+              [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
+              *isModerator="true"
+              class="responsive-button"
+              (click)="toggleArchive()"
+            ></p-button>
+          </div>
+        </div>
         <div class="flex justify-content-start sm:justify-content-end gap-3">
           <p-button
             label="{{ t('newTopoImageButtonLabel') }}"
@@ -60,7 +71,7 @@
         >
           <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
+            [ngClass]="{ 'border-top-1 surface-border': !first, 'archived': topoImage.archived }"
           >
             <div class="w-12 sm:w-9 xl:w-5 align-self-center">
               <lc-topo-image
@@ -90,7 +101,7 @@
                   </div>
                   <div
                     *isModerator="true"
-                    class="justify-content-start sm:justify-content-end flex flex-grow-1"
+                    class="justify-content-start sm:justify-content-end flex flex-grow-1 align-items-center"
                   >
                     <p-button
                       label="{{ t('addLineToImageButtonLabel') }}"
@@ -109,7 +120,7 @@
                       icon="pi pi-sort"
                       (click)="reorderLinePaths(topoImage)"
                       [disabled]="topoImage.linePaths?.length < 2"
-                      styleClass=" p-button-sm"
+                      styleClass="p-button-sm"
                       class="ml-2 responsive-button"
                     ></p-button>
                     <p-button
@@ -119,8 +130,10 @@
                       routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
                         areaSlug
                       }}/topo-images/{{ topoImage.id }}/edit"
-                      styleClass=" p-button-sm"
+                      styleClass="p-button-sm"
                     ></p-button>
+                    <lc-archive-button *isModerator="true" [showLabel]="false" [topoImage]="topoImage" [style]="'plain'"
+                              class="ml-2 responsive-button"></lc-archive-button>
                     <p-button
                       icon="pi pi-trash"
                       class="ml-2"

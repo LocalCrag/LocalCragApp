@@ -79,7 +79,7 @@ class GetTodos(MethodView):
         query = db.session.query(Todo).join(Line).options(joinedload(Todo.line))
 
         # Filter for user, crag, sector or area
-        query = query.filter(Todo.created_by_id == user.id)
+        query = query.filter(Todo.created_by_id == user.id, Line.archived.is_(False))
         if crag_id:
             query = query.filter(Todo.crag_id == crag_id)
         if sector_id:
