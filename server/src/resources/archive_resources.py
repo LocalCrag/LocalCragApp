@@ -1,4 +1,6 @@
-from flask import request
+import logging
+
+from flask import request, jsonify
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
@@ -31,7 +33,7 @@ class SetArchived(MethodView):
             db.session.add(line)
             db.session.commit()
         elif archive_data["type"] == ArchiveTypeEnum.TOPO_IMAGE:
-            topo_image = TopoImage.query.filter_by(id=archive_data["slug"]).first()
+            topo_image = TopoImage.query.filter(TopoImage.id == archive_data["slug"]).first()
             if topo_image is None:
                 raise NotFound()
             topo_image.archived = archive_data["value"]
@@ -50,4 +52,4 @@ class SetArchived(MethodView):
             set_crag_archived(crag)
             db.session.commit()
 
-        return "{}", 204
+        return jsonify({}), 204

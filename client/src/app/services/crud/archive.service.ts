@@ -45,7 +45,7 @@ export class ArchiveService {
   public changeTopoImageArchived(topoImage: TopoImage): Observable<object> {
     return this.http
       .post(this.api.archive.setArchived(), {
-        type: ArchiveType.LINE,
+        type: ArchiveType.TOPO_IMAGE  ,
         slug: topoImage.id,
         value: Boolean(topoImage.archived),
       });
