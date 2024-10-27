@@ -1,8 +1,15 @@
-<p-image
-  *ngFor="let image of images"
-  [src]="image.image.thumbnailM"
-  [preview]="true"
-  alt="Image"
-  width="250"
->
-</p-image>
+
+
+
+<ngx-masonry [options]="masonryOptions" style="width: 100%">
+  <p-image
+    class="grid-item"
+    ngxMasonryItem
+    masonryLazy
+    *ngFor="let image of images"
+    [src]="image.image.thumbnailM"
+    [preview]="true"
+    [ngStyle]="{ 'margin-bottom': '10px' }"
+  >
+  </p-image>
+</ngx-masonry>
