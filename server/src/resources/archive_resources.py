@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
