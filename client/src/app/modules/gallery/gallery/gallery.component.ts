@@ -7,8 +7,8 @@ import { switchMap } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EMPTY } from 'rxjs';
 import { ImageModule } from 'primeng/image';
-import {NgForOf, NgStyle} from '@angular/common';
-import {NgxMasonryModule} from 'ngx-masonry';
+import { NgForOf, NgStyle } from '@angular/common';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 @Component({
   selector: 'lc-gallery',
@@ -23,7 +23,7 @@ export class GalleryComponent implements OnInit {
   public images: GalleryImage[] = [];
   public masonryOptions = {
     gutter: 10,
-  }
+  };
 
   constructor(
     private galleryService: GalleryService,
