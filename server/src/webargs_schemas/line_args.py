@@ -26,7 +26,6 @@ line_args = {
     "faName": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "startingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
     "secret": fields.Boolean(required=True, allow_none=False),
-    "archived": fields.Boolean(required=False, allow_none=False, load_default=False),
     "eliminate": fields.Boolean(required=True, allow_none=False),
     "traverse": fields.Boolean(required=True, allow_none=False),
     "highball": fields.Boolean(required=True, allow_none=False),

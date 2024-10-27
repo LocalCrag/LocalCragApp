@@ -126,7 +126,6 @@ class CreateLine(MethodView):
         new_line.starting_position = line_data["startingPosition"]
         new_line.rating = line_data["rating"]
         new_line.secret = line_data["secret"]
-        new_line.archived = line_data["archived"]
 
         if new_line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
             new_line.fa_year = line_data["faYear"]
@@ -202,7 +201,6 @@ class UpdateLine(MethodView):
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]
         update_line_secret_property(line, line_data["secret"])
-        line.archived = line_data["archived"]
 
         if line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
             line.fa_year = line_data["faYear"]

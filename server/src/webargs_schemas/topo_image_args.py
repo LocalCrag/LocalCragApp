@@ -8,5 +8,4 @@ topo_image_args = {
     "description": fields.Str(required=True, allow_none=True),
     "title": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "mapMarkers": fields.List(fields.Nested(map_marker_args), required=True, allow_none=False),
-    "archived": fields.Boolean(required=False, allow_none=False, load_default=False),
 }

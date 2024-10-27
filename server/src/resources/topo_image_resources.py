@@ -38,7 +38,6 @@ class AddTopoImage(MethodView):
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
         new_topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], new_topo_image)
-        new_topo_image.archived = topo_image_data["archived"]
 
         db.session.add(new_topo_image)
         db.session.commit()
@@ -56,7 +55,6 @@ class UpdateTopoImage(MethodView):
         topo_image.title = topo_image_data["title"]
         topo_image.description = topo_image_data["description"]
         topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], topo_image)
-        topo_image.archived = topo_image_data["archived"]
         db.session.add(topo_image)
         db.session.commit()
 
