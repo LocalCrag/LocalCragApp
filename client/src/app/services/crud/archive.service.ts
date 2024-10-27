@@ -9,9 +9,6 @@ import {TopoImage} from '../../models/topo-image';
 import {Sector} from '../../models/sector';
 import {Crag} from '../../models/crag';
 
-/**
- * CRUD service for areas.
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -29,7 +26,7 @@ export class ArchiveService {
    */
   public changeLineArchived(line: Line): Observable<object> {
     return this.http
-      .post(this.api.archive.setArchived(), {
+      .put(this.api.archive.setArchived(), {
         type: ArchiveType.LINE,
         slug: line.slug,
         value: Boolean(line.archived),
@@ -44,7 +41,7 @@ export class ArchiveService {
    */
   public changeTopoImageArchived(topoImage: TopoImage): Observable<object> {
     return this.http
-      .post(this.api.archive.setArchived(), {
+      .put(this.api.archive.setArchived(), {
         type: ArchiveType.TOPO_IMAGE  ,
         slug: topoImage.id,
         value: Boolean(topoImage.archived),
@@ -59,7 +56,7 @@ export class ArchiveService {
    */
   public setAreaArchived(area: Area): Observable<object> {
     return this.http
-      .post(this.api.archive.setArchived(), {
+      .put(this.api.archive.setArchived(), {
         type: ArchiveType.AREA,
         slug: area.slug,
         value: true,
@@ -74,7 +71,7 @@ export class ArchiveService {
    */
   public setSectorArchived(sector: Sector): Observable<object> {
     return this.http
-      .post(this.api.archive.setArchived(), {
+      .put(this.api.archive.setArchived(), {
         type: ArchiveType.SECTOR,
         slug: sector.slug,
         value: true,
@@ -89,7 +86,7 @@ export class ArchiveService {
    */
   public setCragArchived(crag: Crag): Observable<object> {
     return this.http
-      .post(this.api.archive.setArchived(), {
+      .put(this.api.archive.setArchived(), {
         type: ArchiveType.CRAG,
         slug: crag.slug,
         value: true,

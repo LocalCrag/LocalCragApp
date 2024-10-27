@@ -35,7 +35,7 @@ export class ArchiveButtonComponent {
   @Input() sector?: Sector;
   @Input() crag?: Crag;
   @Input() showLabel: boolean;
-  @Input() style = "plain";
+  @Input() style: "plain" | "outline" | "rounded" = "plain";
 
   constructor(private archiveService: ArchiveService,
               private translocoService: TranslocoService,
@@ -48,7 +48,7 @@ export class ArchiveButtonComponent {
     return false;
   }
 
-  switchArchived(event: MouseEvent) {
+  toggleArchived(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
 
