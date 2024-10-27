@@ -35,8 +35,6 @@ class SetArchived(MethodView):
         elif archive_data["type"] == ArchiveTypeEnum.TOPO_IMAGE:
             # TopoImages don't have a slug, so use the id as workaround
             topo_image = TopoImage.find_by_id(archive_data["slug"])
-            if topo_image is None:
-                raise NotFound()
             topo_image.archived = archive_data["value"]
             db.session.add(topo_image)
             db.session.commit()
