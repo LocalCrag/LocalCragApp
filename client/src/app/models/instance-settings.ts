@@ -18,6 +18,7 @@ export class InstanceSettings {
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
+  gymMode: boolean;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -46,6 +47,7 @@ export class InstanceSettings {
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
+    instanceSettings.gymMode = payload.gymMode;
     return instanceSettings;
   }
 
@@ -75,6 +77,7 @@ export class InstanceSettings {
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
+      gymMode: instanceSettings.gymMode,
     };
   }
 }

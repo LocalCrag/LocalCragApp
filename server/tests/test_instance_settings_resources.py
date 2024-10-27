@@ -24,6 +24,7 @@ def test_successful_get_instance_settings(client):
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
+    assert res["gymMode"] == instance_settings.gym_mode
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -46,6 +47,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
+        "gymMode": True,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -66,3 +68,4 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
+    assert res["gymMode"] == True

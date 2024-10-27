@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -30,6 +30,8 @@ import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
+import {InputSwitchModule} from 'primeng/inputswitch';
+import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -49,9 +51,12 @@ import { getRgbObject } from '../../../utility/misc/color';
     TranslocoDirective,
     ColorPickerModule,
     DividerModule,
+    InputSwitchModule,
+    GymModeDirective,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class InstanceSettingsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -92,6 +97,7 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm = this.fb.group({
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
+      gymMode: [null],
       youtubeUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       instagramUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       logoImage: [null],
@@ -114,6 +120,7 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm.patchValue({
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
+      gymMode: this.instanceSettings.gymMode,
       youtubeUrl: this.instanceSettings.youtubeUrl,
       instagramUrl: this.instanceSettings.instagramUrl,
       logoImage: this.instanceSettings.logoImage,
@@ -139,6 +146,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('instanceName').value;
       instanceSettings.copyrightOwner =
         this.instanceSettingsForm.get('copyrightOwner').value;
+      instanceSettings.gymMode =
+        this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.youtubeUrl =
         this.instanceSettingsForm.get('youtubeUrl').value;
       instanceSettings.instagramUrl =

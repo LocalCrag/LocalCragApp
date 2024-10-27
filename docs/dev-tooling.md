@@ -1,23 +1,18 @@
 # Dev tooling
 
-## pre-commit hooks for linting
+## pre-commit hooks for linting using Husky
 
+The linting pipeline will do several checks on the codebase. To ensure that your code is properly formatted and passes all checks _before_ you commit and push it, you can install and set up Husky.  
 
-The linting pipeline will do several checks on the codebase. To ensure that your code is properly formatted and passes all checks, you need to install and set up pre-commit.  
+### Installing Husky
 
-### Installing pre-commit
+1. Run `npm install` in the root directory of the project to install Husky and its dependencies.
+2. Initialize Husky by running `npx husky init`. This will activate the existing hooks in the project.
 
-1. Install pre-commit:  
-- Using `pip`: `pip install pre-commit`
-- Using `brew`: `brew install pre-commit`
-2. Install the pre-commit hooks:  
- - Run the following command to install the hooks defined in `.pre-commit-config.yaml`: `pre-commit install`
+### Using Husky during development
 
-### Using pre-commit during development
+- Automatic hook execution: Once initialized, the Husky hooks will run automatically before each commit. This ensures that your code is formatted and linted according to the project's standards.
 
-- Automatic hook execution: Once installed, the pre-commit hooks will run automatically before each commit. This ensures that your code is formatted and linted according to the project's standards.
-- Manual hook execution: To run the hooks on all files manually, use: `pre-commit run --all-files`
+### Importance of Husky
 
-### Importance of pre-commit
-
-Using `pre-commit` ensures that your code is formatted correctly and passes all linting checks before being committed. This helps prevent pipeline failures due to formatting issues or linting errors. Make sure to set up and use `pre-commit` to maintain code quality and consistency throughout the project.
+Using `husky` ensures that your code is formatted correctly and passes all linting checks before being committed. This helps prevent pipeline failures due to formatting issues or linting errors. Make sure to set up and use `Husky` to maintain code quality and consistency throughout the project.

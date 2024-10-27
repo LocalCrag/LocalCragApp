@@ -1,0 +1,9 @@
+#gym-mode  {
+  .p-inputswitch-slider {
+    background-color: var(--green-600);
+  }
+
+  .p-inputswitch-checked .p-inputswitch-slider {
+    background-color: var(--blue-600);
+  }
+}

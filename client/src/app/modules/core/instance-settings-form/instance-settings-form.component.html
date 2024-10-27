@@ -46,6 +46,17 @@
           }}</small>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="gym-mode">
+            {{ t("gymModeLabel") }}
+          </label>
+          <div class="flex align-items-center justify-content-center sm:justify-content-start">
+            {{ t("gymModeLabelFalse") }}
+            <p-inputSwitch id="gym-mode" class="mx-2" formControlName="gymMode" lcFormControl />
+            {{ t("gymModeLabelTrue") }}
+          </div>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2 block"
           ><b>{{ t("menuSettings") }}</b></p-divider
         >
