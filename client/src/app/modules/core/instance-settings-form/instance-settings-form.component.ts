@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -56,6 +56,7 @@ import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class InstanceSettingsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
