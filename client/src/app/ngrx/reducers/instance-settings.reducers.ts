@@ -17,6 +17,7 @@ export interface InstanceSettingsState {
   arrowHighlightTextColor: string;
   barChartColor: string;
   maptilerApiKey: string;
+  gymMode: boolean;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -34,6 +35,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowHighlightTextColor: null,
   barChartColor: null,
   maptilerApiKey: null,
+  gymMode: false,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -54,6 +56,7 @@ const instanceSettingsReducer = createReducer(
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
     maptilerApiKey: action.settings.maptilerApiKey,
+    gymMode: action.settings.gymMode,
   })),
 );
 

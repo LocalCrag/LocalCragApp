@@ -24,4 +24,4 @@ FROM node AS localcragapp-client
 USER 1000:1000
 WORKDIR /localcragapp
 COPY ./client .
-RUN npm ci
+RUN npm ci --include dev
