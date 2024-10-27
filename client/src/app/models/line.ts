@@ -18,6 +18,7 @@ export class Line extends AbstractModel {
   name: string;
   description: string;
   slug: string;
+  color?: string;
   videos: LineVideo[];
   grade: Grade;
   rating: number;
@@ -90,6 +91,7 @@ export class Line extends AbstractModel {
     line.description = payload.description;
     line.videos = payload.videos ? payload.videos : [];
     line.slug = payload.slug;
+    line.color = payload.color;
 
     line.grade = deserializeGrade(payload);
     line.rating = payload.rating;
@@ -162,6 +164,7 @@ export class Line extends AbstractModel {
     return {
       name: line.name,
       description: line.description,
+      color: line.color,
       videos: line.videos ? line.videos : null,
       gradeScale: 'FB',
       gradeName: line.grade.name,

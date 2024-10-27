@@ -70,6 +70,35 @@
             </p-editor>
           </div>
 
+          <ng-container *isGymMode="true">
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label" for="color">
+                {{ t("colorLabel") }}
+              </label>
+              <div class="flex align-items-center">
+                <p-colorPicker
+                  formControlName="color"
+                  id="color"
+                />
+                <span class="ml-4 mr-2">
+                  {{ t("selectFromCommonColors") }}
+                </span>
+                <div class="flex flex-wrap" style="max-width: 12rem">
+                  <lc-color-square color="#ffd811" (click)="this.lineForm.patchValue({color: '#ffd811'})" />
+                  <lc-color-square color="#ff6811" (click)="this.lineForm.patchValue({color: '#ff6811'})" />
+                  <lc-color-square color="#f10d0d" (click)="this.lineForm.patchValue({color: '#f10d0d'})" />
+                  <lc-color-square color="#078001" (click)="this.lineForm.patchValue({color: '#078001'})" />
+                  <lc-color-square color="#0e34b2" (click)="this.lineForm.patchValue({color: '#0e34b2'})" />
+                  <lc-color-square color="#ea1eb6" (click)="this.lineForm.patchValue({color: '#ff1ec4'})" />
+                  <lc-color-square color="#00af56" (click)="this.lineForm.patchValue({color: '#00af7a'})" />
+                  <lc-color-square color="#ffffff" (click)="this.lineForm.patchValue({color: '#ffffff'})" />
+                  <lc-color-square color="#545454" (click)="this.lineForm.patchValue({color: '#545454'})" />
+                  <lc-color-square color="#000000" (click)="this.lineForm.patchValue({color: '#000000'})" />
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")

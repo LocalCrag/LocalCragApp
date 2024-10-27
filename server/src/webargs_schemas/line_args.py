@@ -16,7 +16,7 @@ videos_args = {
 line_args = {
     "name": fields.Str(required=True, validate=validate.Length(max=120)),
     "description": fields.Str(required=True, allow_none=True),
-    "color": fields.Str(required=True, allow_none=True, validate=color_validator),
+    "color": fields.Str(required=False, allow_none=True, validate=color_validator),
     "videos": fields.List(fields.Nested(videos_args), required=True, allow_none=True),
     "gradeName": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),
     "gradeScale": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),

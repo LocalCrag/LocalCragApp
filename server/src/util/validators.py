@@ -32,6 +32,6 @@ def validate_order_payload(new_order, items):
 
 def color_validator(color: str):
     try:
-        return len(color) == 6 and int(color, 16) >= 0 and "x" not in color.lower()
+        return len(color) == 7 and color[0] == "#" and int(color[1:], 16) >= 0 and "x" not in color.lower()
     except ValueError:
         return False

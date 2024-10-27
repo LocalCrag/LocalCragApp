@@ -23,6 +23,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RatingModule } from 'primeng/rating';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ColorPickerModule } from 'primeng/colorpicker';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 import { LineInfoComponent } from './line-info/line-info.component';
 import { TopoImageDetailsComponent } from '../topo-images/topo-image-details/topo-image-details.component';
@@ -32,6 +33,8 @@ import { AscentCountComponent } from '../ascent/ascent-count/ascent-count.compon
 import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
+import { GymModeDirective } from '../shared/directives/gym-mode.directive';
+import {ColorSquareComponent} from '../shared/components/color-square/color-square.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,7 @@ import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
     RatingModule,
     CalendarModule,
     CheckboxModule,
+    ColorPickerModule,
     TopoImageDetailsComponent,
     HasPermissionDirective,
     TickButtonComponent,
@@ -71,6 +75,8 @@ import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
     SecretSpotTagComponent,
     FormSkeletonComponent,
     TodoButtonComponent,
+    GymModeDirective,
+    ColorSquareComponent,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
