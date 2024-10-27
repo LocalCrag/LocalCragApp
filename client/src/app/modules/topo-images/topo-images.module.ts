@@ -24,6 +24,7 @@ import { HasPermissionDirective } from '../shared/directives/has-permission.dire
 import { TickButtonComponent } from '../ascent/tick-button/tick-button.component';
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
 import { CoordinatesComponent } from '../shared/forms/controls/coordinates/coordinates.component';
+import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
 
 @NgModule({
   declarations: [TopoImageListComponent, TopoImageFormComponent],
@@ -53,6 +54,7 @@ import { CoordinatesComponent } from '../shared/forms/controls/coordinates/coord
     TickButtonComponent,
     TodoButtonComponent,
     CoordinatesComponent,
+    ArchiveButtonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
   exports: [TopoImageListComponent],

@@ -43,6 +43,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import {ArchiveButtonComponent} from "../../archive/archive-button/archive-button.component";
 
 @Component({
   selector: 'lc-line-list',
@@ -70,6 +71,7 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
     SliderLabelsComponent,
     AccordionModule,
     TodoButtonComponent,
+    ArchiveButtonComponent,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -98,6 +100,7 @@ export class LineListComponent implements OnInit {
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
   public listenForSliderStop = false;
+  public showArchive = false;
 
   constructor(
     private linesService: LinesService,
@@ -162,6 +165,11 @@ export class LineListComponent implements OnInit {
     }
   }
 
+  toggleArchive() {
+    this.showArchive = !this.showArchive;
+    this.loadFirstPage();
+  }
+
   loadFirstPage() {
     this.listenForSliderStop = false;
     this.currentPage = 0;
@@ -182,22 +190,26 @@ export class LineListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = [`page=${this.currentPage}`];
+      const filters = new URLSearchParams();
+      filters.set("page", this.currentPage.toString());
+      if (this.showArchive) {
+        filters.set("archived", "1");
+      }
       if (this.cragSlug) {
-        filters.push(`crag_slug=${this.cragSlug}`);
+        filters.set("crag_slug", this.cragSlug);
       }
       if (this.sectorSlug) {
-        filters.push(`sector_slug=${this.sectorSlug}`);
+        filters.set("sector_slug", this.sectorSlug);
       }
       if (this.areaSlug) {
-        filters.push(`area_slug=${this.areaSlug}`);
+        filters.set("area_slug", this.areaSlug);
       }
-      filters.push(`min_grade=${this.gradeFilterRange[0]}`);
-      filters.push(`max_grade=${this.gradeFilterRange[1]}`);
-      filters.push(`order_by=${this.orderKey.value}`);
-      filters.push(`order_direction=${this.orderDirectionKey.value}`);
-      filters.push(`per_page=10`);
-      const filterString = `?${filters.join('&')}`;
+      filters.set("min_grade", this.gradeFilterRange[0].toString());
+      filters.set("max_grade", this.gradeFilterRange[1].toString());
+      filters.set("order_by", this.orderKey.value);
+      filters.set("order_direction", this.orderDirectionKey.value);
+      filters.set("per_page", "10");
+      const filterString = `?${filters.toString()}`;
       this.linesService
         .getLines(filterString)
         .pipe(

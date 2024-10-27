@@ -1,7 +1,7 @@
 """Add color to lines
 
 Revision ID: 6fe7f8cbfc44
-Revises: 1c25754527db
+Revises: fc965fe6216c
 Create Date: 2024-10-27 15:04:21.395990
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "6fe7f8cbfc44"
-down_revision = "1c25754527db"
+down_revision = "fc965fe6216c"
 branch_labels = None
 depends_on = None
 

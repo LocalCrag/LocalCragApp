@@ -39,4 +39,20 @@ lc-line-list {
     margin-left: 0.5715rem;
     margin-right: 0.5715rem;
   }
+
+  .archived {
+    background-color: #ddd;
+
+    .line-name {
+      color: var(--surface-700) !important;
+    }
+
+    .p-rating-icon {
+      color: inherit;
+    }
+
+    img {
+      filter: grayscale(60%);
+    }
+  }
 }

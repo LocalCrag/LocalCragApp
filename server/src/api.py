@@ -1,5 +1,6 @@
 from flask import Blueprint
 
+from resources.archive_resources import SetArchived
 from resources.area_resources import (
     CreateArea,
     DeleteArea,
@@ -337,3 +338,8 @@ def configure_api(app):
     )
     menu_item_bp.add_url_rule("/crag-menu-structure", view_func=GetCragMenuStructure.as_view("get_crag_menu_structure"))
     app.register_blueprint(menu_item_bp, url_prefix="/api/menu-items")
+
+    # Archive API
+    archive_bp = Blueprint("archive", __name__)
+    archive_bp.add_url_rule("", view_func=SetArchived.as_view("set_archived"))
+    app.register_blueprint(archive_bp, url_prefix="/api/archive")

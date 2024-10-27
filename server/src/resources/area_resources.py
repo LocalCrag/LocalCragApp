@@ -92,6 +92,7 @@ class UpdateArea(MethodView):
         area.short_description = area_data["shortDescription"]
         area.portrait_image_id = area_data["portraitImage"]
         update_area_secret_property(area, area_data["secret"])
+
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()

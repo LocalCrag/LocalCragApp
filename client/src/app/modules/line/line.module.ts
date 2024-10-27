@@ -34,7 +34,8 @@ import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/sec
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
 import { GymModeDirective } from '../shared/directives/gym-mode.directive';
-import {ColorSquareComponent} from '../shared/components/color-square/color-square.component';
+import { ColorSquareComponent } from '../shared/components/color-square/color-square.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import {ColorSquareComponent} from '../shared/components/color-square/color-squa
     TodoButtonComponent,
     GymModeDirective,
     ColorSquareComponent,
+    ArchiveButtonComponent,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],

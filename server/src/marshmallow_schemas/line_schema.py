@@ -22,6 +22,7 @@ class LineSchemaMin(BaseEntityMinSchema):
     type = EnumField(LineTypeEnum, by_value=True)
     gradeName = fields.String(attribute="grade_name")
     gradeScale = fields.String(attribute="grade_scale")
+    archived = fields.Boolean()
 
 
 class LineSchema(BaseEntityMinSchema):
@@ -41,6 +42,7 @@ class LineSchema(BaseEntityMinSchema):
     faName = fields.String(attribute="fa_name")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     secret = fields.Boolean()
+    archived = fields.Boolean()
 
     eliminate = fields.Boolean()
     traverse = fields.Boolean()

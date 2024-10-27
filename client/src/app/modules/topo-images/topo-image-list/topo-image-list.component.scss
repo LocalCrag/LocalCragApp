@@ -31,6 +31,22 @@ lc-topo-image-list {
       padding: 0.5rem;
     }
   }
+
+  .archived {
+    background-color: #ddd;
+
+    .line-table .table-header {
+      background-color: inherit;
+    }
+
+    .p-rating-icon {
+      color: inherit;
+    }
+
+    canvas {
+      filter: grayscale(60%);
+    }
+  }
 }
 
 lc-topo-image-list {
