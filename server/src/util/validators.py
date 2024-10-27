@@ -28,3 +28,10 @@ def validate_order_payload(new_order, items):
     if not (correct_length and all_integer and correct_start and correct_end and no_duplicates):
         return False
     return True
+
+
+def color_validator(color: str):
+    try:
+        return len(color) == 6 and int(color, 16) >= 0 and "x" not in color.lower()
+    except ValueError:
+        return False

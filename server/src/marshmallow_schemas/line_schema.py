@@ -18,6 +18,7 @@ class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
 class LineSchemaMin(BaseEntityMinSchema):
     name = fields.String()
     slug = fields.String()
+    color = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
     gradeName = fields.String(attribute="grade_name")
     gradeScale = fields.String(attribute="grade_scale")
@@ -27,6 +28,7 @@ class LineSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
+    color = fields.String()
     areaSlug = fields.String(attribute="area_slug")
     sectorSlug = fields.String(attribute="sector_slug")
     cragSlug = fields.String(attribute="crag_slug")
