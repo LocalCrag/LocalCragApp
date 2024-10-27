@@ -5,14 +5,14 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 
 
-def test_archive_line(client, moderator_token):
+def test_archive_line(client, moderator_token, gym_mode):
     archive_data = {
         "type": ArchiveTypeEnum.LINE,
         "slug": "treppe",
         "value": True,
     }
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     line = Line.find_by_slug("treppe")
@@ -20,14 +20,14 @@ def test_archive_line(client, moderator_token):
 
     archive_data["value"] = False
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     line = Line.find_by_slug("treppe")
     assert not line.archived
 
 
-def test_archive_topo_image(client, moderator_token):
+def test_archive_topo_image(client, moderator_token, gym_mode):
     area_id = Area.get_id_by_slug("dritter-block-von-links")
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
 
@@ -37,7 +37,7 @@ def test_archive_topo_image(client, moderator_token):
         "value": True,
     }
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
@@ -51,14 +51,14 @@ def test_archive_topo_image(client, moderator_token):
 
     archive_data["value"] = False
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
     assert not topo_image.archived
 
 
-def test_archive_area(client, moderator_token):
+def test_archive_area(client, moderator_token, gym_mode):
     area_id = Area.get_id_by_slug("dritter-block-von-links")
 
     archive_data = {
@@ -67,7 +67,7 @@ def test_archive_area(client, moderator_token):
         "value": True,
     }
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     assert Line.query.filter_by(area_id=area_id, archived=False).count() == 0
@@ -78,18 +78,18 @@ def test_archive_area(client, moderator_token):
 
     archive_data["value"] = False
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert 400 <= rv.status_code < 500
 
 
-def test_archive_sector(client, moderator_token):
+def test_archive_sector(client, moderator_token, gym_mode):
     archive_data = {
         "type": ArchiveTypeEnum.SECTOR,
         "slug": "schattental",
         "value": True,
     }
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     assert Line.query.filter_by(sector_slug="schattental", archived=False).count() == 0
@@ -100,18 +100,18 @@ def test_archive_sector(client, moderator_token):
 
     archive_data["value"] = False
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert 400 <= rv.status_code < 500
 
 
-def test_archive_crag(client, moderator_token):
+def test_archive_crag(client, moderator_token, gym_mode):
     archive_data = {
         "type": ArchiveTypeEnum.CRAG,
         "slug": "brione",
         "value": True,
     }
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
     assert Line.query.filter_by(crag_slug="brione", archived=False).count() == 0
@@ -125,5 +125,5 @@ def test_archive_crag(client, moderator_token):
 
     archive_data["value"] = False
 
-    rv = client.post("/api/archive", token=moderator_token, json=archive_data)
+    rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert 400 <= rv.status_code < 500

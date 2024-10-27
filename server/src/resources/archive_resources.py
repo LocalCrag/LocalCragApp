@@ -1,5 +1,3 @@
-import logging
-
 from flask import request, jsonify
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
@@ -14,6 +12,7 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from util.archive import set_area_archived, set_crag_archived, set_sector_archived
+from util.gym_mode import is_gym_mode
 from util.security_util import check_auth_claims
 from webargs_schemas.archive_args import archive_args, cross_validate_archive_args
 
@@ -21,7 +20,8 @@ from webargs_schemas.archive_args import archive_args, cross_validate_archive_ar
 class SetArchived(MethodView):
     @jwt_required()
     @check_auth_claims(moderator=True)
-    def post(self):
+    @is_gym_mode(True)
+    def put(self):
         """
         Adjusts the archive status
         """
@@ -33,7 +33,7 @@ class SetArchived(MethodView):
             db.session.add(line)
             db.session.commit()
         elif archive_data["type"] == ArchiveTypeEnum.TOPO_IMAGE:
-            topo_image = TopoImage.query.filter(TopoImage.id == archive_data["slug"]).first()
+            topo_image = TopoImage.find_by_id(archive_data["slug"])
             if topo_image is None:
                 raise NotFound()
             topo_image.archived = archive_data["value"]
