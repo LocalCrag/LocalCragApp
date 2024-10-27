@@ -17,7 +17,7 @@ export class TopoImage extends AbstractModel {
   title: string;
   description: string;
   area: Area;
-  archived: boolean;
+  archived?: boolean;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
@@ -69,7 +69,6 @@ export class TopoImage extends AbstractModel {
         : [],
       title: topoImage.title,
       description: topoImage.description,
-      archived: topoImage.archived,
     };
   }
 }

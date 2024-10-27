@@ -26,7 +26,7 @@ export class Line extends AbstractModel {
   faName: string;
   startingPosition: StartingPosition;
   secret: boolean;
-  archived: boolean;
+  archived?: boolean;
 
   eliminate: boolean;
   traverse: boolean;
@@ -173,7 +173,6 @@ export class Line extends AbstractModel {
       faName: line.faName ? line.faName : null,
       startingPosition: line.startingPosition,
       secret: line.secret,
-      archived: line.archived,
 
       eliminate: line.eliminate,
       traverse: line.traverse,

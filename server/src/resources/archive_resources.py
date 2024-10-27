@@ -50,4 +50,4 @@ class SetArchived(MethodView):
             set_crag_archived(crag)
             db.session.commit()
 
-        return "", 204
+        return "{}", 204

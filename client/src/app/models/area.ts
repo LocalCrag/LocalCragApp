@@ -15,7 +15,6 @@ export class Area extends AbstractModel {
   orderIndex: number;
   ascentCount: number;
   secret: boolean;
-  archived?: boolean;
   mapMarkers: MapMarker[];
 
   sector: Sector;
@@ -62,7 +61,6 @@ export class Area extends AbstractModel {
       description: area.description,
       shortDescription: area.shortDescription,
       secret: area.secret,
-      archived: area.archived,
       portraitImage: area.portraitImage ? area.portraitImage.id : null,
       mapMarkers: area.mapMarkers
         ? area.mapMarkers.map(MapMarker.serialize)

@@ -11,11 +11,7 @@ import {Crag} from "../../../models/crag";
 import {Sector} from "../../../models/sector";
 import {Area} from "../../../models/area";
 import {TopoImage} from '../../../models/topo-image';
-import {LinesService} from '../../../services/crud/lines.service';
-import {CragsService} from '../../../services/crud/crags.service';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {AreasService} from '../../../services/crud/areas.service';
-import {TopoImagesService} from '../../../services/crud/topo-images.service';
+import {ArchiveService} from '../../../services/crud/archive.service';
 
 @Component({
   selector: 'lc-archive-button',
@@ -41,11 +37,7 @@ export class ArchiveButtonComponent {
   @Input() showLabel: boolean;
   @Input() style = "plain";
 
-  constructor(private linesService: LinesService,
-              private topoImagesService: TopoImagesService,
-              private cragsService: CragsService,
-              private sectorsService: SectorsService,
-              private areasService: AreasService,
+  constructor(private archiveService: ArchiveService,
               private translocoService: TranslocoService,
               private store: Store) {
   }
@@ -75,27 +67,24 @@ export class ArchiveButtonComponent {
 
     if (this.line) {
       this.line.archived = !this.line.archived;
-      this.linesService.updateLine(this.line).subscribe(resultHandler);
+      this.archiveService.changeLineArchived(this.line).subscribe(resultHandler);
     }
 
     if (this.topoImage) {
       this.topoImage.archived = !this.topoImage.archived;
-      this.topoImagesService.updateTopoImage(this.topoImage).subscribe(resultHandler);
+      this.archiveService.changeTopoImageArchived(this.topoImage).subscribe(resultHandler);
     }
 
     if (this.area) {
-      this.area.archived = true;
-      this.areasService.updateArea(this.area).subscribe(resultHandler);
+      this.archiveService.setAreaArchived(this.area).subscribe(resultHandler);
     }
 
     if (this.sector) {
-      this.sector.archived = true;
-      this.sectorsService.updateSector(this.sector).subscribe(resultHandler);
+      this.archiveService.setSectorArchived(this.sector).subscribe(resultHandler);
     }
 
     if (this.crag) {
-      this.crag.archived = true;
-      this.cragsService.updateCrag(this.crag).subscribe(resultHandler);
+      this.archiveService.setCragArchived(this.crag).subscribe(resultHandler);
     }
   }
 

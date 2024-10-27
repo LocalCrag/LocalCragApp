@@ -1,10 +1,8 @@
 services:
   database:
-    build:
-      target: localcragapp-database
+    image: postgres
     volumes:
       - database:/var/lib/postgresql/data
-      - ./server/tests/dumps/localcrag_test_dump.sql:/dump.sql
     environment:
       POSTGRES_USER: localcrag
       POSTGRES_DB: localcrag
@@ -78,11 +76,11 @@ services:
     volumes:
       - ./server/src:/localcragapp/src
       - ./server/tests:/localcragapp/tests
-    command: 
+    command:
       - sh
       - "-c"
       - "pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && pipenv run flask run --host=0.0.0.0"
-      
+
   client:
     build:
       target: localcragapp-client
@@ -90,7 +88,7 @@ services:
       - ./client/src:/localcragapp/src
     ports:
       - "127.0.0.1:4200:4200"  # Web Frontend
-    command: 
+    command:
       - sh
       - "-c"
       - "npx ng serve --host 0.0.0.0"
