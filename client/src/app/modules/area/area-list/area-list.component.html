@@ -78,10 +78,10 @@
                 class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
               >
                 <div class="flex justify-content-between w-full">
-                  <span class="text-2xl font-bold black-font">{{
-                  area.name
-                }}</span>
-                  <lc-archive-button *isModerator="true" [showLabel]="true" [area]="area"></lc-archive-button>
+                  <span class="text-2xl font-bold black-font">
+                    {{ area.name }}
+                  </span>
+                  <lc-archive-button *isModerator="true" [showLabel]="true" [area]="area" />
                 </div>
                 <div
                   [innerHTML]="area.shortDescription | sanitizeHtml"

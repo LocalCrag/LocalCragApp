@@ -397,6 +397,4 @@ export class TopoImageListComponent implements OnInit {
       this.refreshData();
     });
   }
-
-  protected readonly top = top;
 }
