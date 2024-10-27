@@ -39,6 +39,7 @@ from models.revoked_token import RevokedToken
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from scripts.backup_digitalocean_instances import instance
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -107,6 +108,13 @@ def client():
 
     client.open = open_wrapper.__get__(client, client.__class__)
     return client
+
+
+@pytest.fixture()
+def gym_mode():
+    instance_settings = InstanceSettings.return_it()
+    instance_settings.gym_mode = True
+    db.session.add(instance_settings)
 
 
 @pytest.fixture(scope="session")
