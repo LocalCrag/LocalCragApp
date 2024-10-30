@@ -1,0 +1,13 @@
+.gallery-image-card {
+  .p-card-body {
+    padding: 0.5rem !important;
+  }
+  .p-card-header img {
+    width: inherit;
+  }
+  .p-card-header {
+    display: flex;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+}

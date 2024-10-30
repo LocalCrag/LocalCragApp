@@ -1,0 +1,12 @@
+<p-card styleClass="gallery-image-card">
+  <ng-template pTemplate="header">
+    <p-image
+      [src]="image.image.thumbnailM"
+      [preview]="true"
+      height="300"
+      [width]="(200 / image.image.height) * image.image.width + ''"
+    >
+    </p-image>
+  </ng-template>
+  <lc-tag [tag]="tag" *ngFor="let tag of image.tags"></lc-tag>
+</p-card>

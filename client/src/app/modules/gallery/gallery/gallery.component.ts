@@ -8,12 +8,12 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EMPTY } from 'rxjs';
 import { ImageModule } from 'primeng/image';
 import { NgForOf, NgStyle } from '@angular/common';
-import { NgxMasonryModule } from 'ngx-masonry';
+import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
 
 @Component({
   selector: 'lc-gallery',
   standalone: true,
-  imports: [ImageModule, NgForOf, NgxMasonryModule, NgStyle],
+  imports: [ImageModule, NgForOf, NgStyle, GalleryImageComponent],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
 })
@@ -21,9 +21,6 @@ import { NgxMasonryModule } from 'ngx-masonry';
 export class GalleryComponent implements OnInit {
   public isLoading = false;
   public images: GalleryImage[] = [];
-  public masonryOptions = {
-    gutter: 10,
-  };
 
   constructor(
     private galleryService: GalleryService,
