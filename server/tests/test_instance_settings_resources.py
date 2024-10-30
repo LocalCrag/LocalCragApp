@@ -25,6 +25,7 @@ def test_successful_get_instance_settings(client):
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
     assert res["gymMode"] == instance_settings.gym_mode
+    assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -48,6 +49,8 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
+        # Can only change the value with a "clean" database
+        "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200

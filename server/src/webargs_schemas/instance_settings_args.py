@@ -24,4 +24,5 @@ instance_settings_args = {
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True),
     "matomoSiteId": fields.Str(required=True, allow_none=True),
     "maptilerApiKey": fields.Str(required=True, allow_none=True),
+    "skippedHierarchicalLayers": fields.Integer(required=True, validate=validate.Range(min=0, min_inclusive=True)),
 }

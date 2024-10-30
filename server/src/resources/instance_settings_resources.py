@@ -40,6 +40,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]
         instance_settings.maptiler_api_key = instance_settings_data["maptilerApiKey"]
         instance_settings.gym_mode = instance_settings_data["gymMode"]
+        instance_settings.skipped_hierarchical_layers = instance_settings_data["skippedHierarchicalLayers"]
         db.session.add(instance_settings)
         db.session.commit()
 
