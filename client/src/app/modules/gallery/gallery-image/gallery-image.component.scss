@@ -1,13 +1,43 @@
-.gallery-image-card {
-  .p-card-body {
-    padding: 0.5rem !important;
-  }
-  .p-card-header img {
-    width: inherit;
-  }
-  .p-card-header {
+lc-gallery-image {
+  .tags {
     display: flex;
-    justify-content: center;
-    background-color: #f4f4f4;
+    justify-content: end;
+    gap: 0.25rem;
+  }
+
+  .gallery-image-card {
+    overflow: hidden;
+
+    .p-card-body {
+      padding: 0.5rem !important;
+    }
+
+    .p-card-header {
+      img {
+        width: auto;
+      }
+
+      .image-container {
+        height: 300px;
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+
+        p-image {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+
+    .p-card-header {
+      display: flex;
+      justify-content: center;
+      background-color: #f4f4f4;
+    }
   }
 }

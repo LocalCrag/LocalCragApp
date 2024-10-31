@@ -14,6 +14,7 @@ export enum ObjectType {
 
 export class Tag {
   object: Crag | Sector | Area | Line | User;
+  objectType: ObjectType;
 
   public static serialize(tag: Tag): any {
     return {
@@ -27,6 +28,7 @@ export class Tag {
     tag.object = payload.object
       ? Tag.deserializeObject(payload.objectType, payload.object)
       : null;
+    tag.objectType = payload.objectType;
     return tag;
   }
 

@@ -1,11 +1,11 @@
 from marshmallow import fields
 
 from extensions import ma
-from marshmallow_schemas.line_schema import LineSchemaMin
 from marshmallow_schemas.search_schema import (
     AreaSearchSchema,
     CragSearchSchema,
     SectorSearchSchema,
+    LineSearchSchema,
 )
 from marshmallow_schemas.user_schema import UserMinSchema
 from models.area import Area
@@ -20,7 +20,7 @@ class GenericRelatedTagField(fields.Field):
         if isinstance(value, User):
             return UserMinSchema().dump(value)
         if isinstance(value, Line):
-            return LineSchemaMin().dump(value)
+            return LineSearchSchema().dump(value)
         if isinstance(value, Area):
             return AreaSearchSchema().dump(value)
         if isinstance(value, Sector):
@@ -33,7 +33,7 @@ class GenericRelatedTagField(fields.Field):
 
 class TagSchema(ma.SQLAlchemySchema):
     object = GenericRelatedTagField(attribute="object")
-    object_type = fields.String(attribute="object_type")
+    objectType = fields.String(attribute="object_type")
 
 
 tag_schema = TagSchema(many=True)

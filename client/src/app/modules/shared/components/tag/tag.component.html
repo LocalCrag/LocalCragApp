@@ -1,1 +1,45 @@
-<p-tag value="Primary" [rounded]="true" severity="info" />
+<a [routerLink]="tag.object | entityLink">
+  <p-tag
+    [value]="tag.object['name']"
+    [rounded]="true"
+    *ngIf="tag.objectType === objectTypes.Line"
+  >
+    <i class="pi pi-map-marker mr-1"></i>
+  </p-tag>
+  <p-tag
+    [value]="tag.object['name']"
+    [rounded]="true"
+    *ngIf="tag.objectType === objectTypes.Area"
+  >
+    <i class="pi pi-map-marker mr-1"></i>
+  </p-tag>
+  <p-tag
+    [value]="tag.object['name']"
+    [rounded]="true"
+    *ngIf="tag.objectType === objectTypes.Sector"
+  >
+    <i class="pi pi-map-marker mr-1"></i>
+  </p-tag>
+  <p-tag
+    [value]="tag.object['name']"
+    [rounded]="true"
+    *ngIf="tag.objectType === objectTypes.Crag"
+  >
+    <i class="pi pi-map-marker mr-1"></i>
+  </p-tag>
+  <p-tag
+    [value]="tag.object['fullname']"
+    [rounded]="true"
+    *ngIf="tag.objectType === objectTypes.User"
+  >
+    <p-avatar
+      [image]="
+        tag.object['avatar']
+          ? tag.object['avatar'].thumbnailS
+          : 'assets/user.png'
+      "
+      styleClass="mr-1"
+      shape="circle"
+    ></p-avatar>
+  </p-tag>
+</a>
