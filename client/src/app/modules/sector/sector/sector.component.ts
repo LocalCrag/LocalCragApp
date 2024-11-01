@@ -131,12 +131,14 @@ export class SectorComponent implements OnInit {
         this.breadcrumbs = [
           {
             label: crag.name,
+            slug: crag.slug,
             routerLink: `/topo/${crag.slug}/sectors`,
           },
           {
             label: sector.name,
+            slug: sector.slug,
           },
-        ];
+        ].filter(menuItem => menuItem.slug != '_default');
         this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });

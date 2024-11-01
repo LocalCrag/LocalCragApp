@@ -121,16 +121,19 @@ export class AreaComponent implements OnInit {
         this.breadcrumbs = [
           {
             label: crag.name,
+            slug: crag.slug,
             routerLink: `/topo/${crag.slug}/sectors`,
           },
           {
             label: sector.name,
+            slug: sector.slug,
             routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
           },
           {
             label: area.name,
+            slug: area.slug,
           },
-        ];
+        ].filter(menuItem => menuItem.slug != '_default');
         this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });

@@ -230,18 +230,21 @@ export class MenuComponent implements OnInit {
   }
 
   buildCragNavigationMenu(crags: Crag[]) {
-    const cragItems = [];
+    let cragItems = [];
     crags.map((crag) => {
       cragItems.push({
         label: crag.name,
         routerLink: `/topo/${crag.slug}/sectors`,
+        slug: crag.slug,
         items: crag.sectors.map((sector) => {
           return {
             label: sector.name,
             routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+            slug: sector.slug,
             items: sector.areas.map((area) => {
               return {
                 label: area.name,
+                slug: area.slug,
                 routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
               };
             }),
@@ -249,6 +252,10 @@ export class MenuComponent implements OnInit {
         }),
       });
     });
+    while (cragItems.length > 0 && cragItems[0].slug == '_default') {
+      // Pop _default items
+      cragItems = cragItems[0].items;
+    }
     return cragItems;
   }
 
