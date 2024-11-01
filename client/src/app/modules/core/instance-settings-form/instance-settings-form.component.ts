@@ -98,6 +98,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
+      skippedHierarchicalLayers: [null],
       youtubeUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       instagramUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       logoImage: [null],
@@ -121,6 +122,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
       gymMode: this.instanceSettings.gymMode,
+      skippedHierarchicalLayers: this.instanceSettings.skippedHierarchicalLayers,
       youtubeUrl: this.instanceSettings.youtubeUrl,
       instagramUrl: this.instanceSettings.instagramUrl,
       logoImage: this.instanceSettings.logoImage,
@@ -148,6 +150,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('copyrightOwner').value;
       instanceSettings.gymMode =
         this.instanceSettingsForm.get('gymMode').value;
+      instanceSettings.skippedHierarchicalLayers =
+        this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
       instanceSettings.youtubeUrl =
         this.instanceSettingsForm.get('youtubeUrl').value;
       instanceSettings.instagramUrl =
@@ -181,14 +185,29 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('maptilerApiKey').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
-        .subscribe((instanceSettings) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED),
-          );
-          this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(
-            updateInstanceSettings({ settings: instanceSettings }),
-          );
+        .subscribe({
+          next: (instanceSettings) => {
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED),
+            );
+            this.loadingState = LoadingState.DEFAULT;
+            this.store.dispatch(
+              updateInstanceSettings({settings: instanceSettings}),
+            );
+          },
+          error: (e) => {
+            this.loadingState = LoadingState.DEFAULT;
+            if (e.error?.message == "MIGRATION_IMPOSSIBLE") {
+              this.store.dispatch(
+                toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE),
+              );
+            } else {
+              this.store.dispatch(
+                toastNotification(NotificationIdentifier.UNKNOWN_ERROR),
+              );
+
+            }
+          }
         });
     } else {
       this.formDirective.markAsTouched();

@@ -48,7 +48,7 @@ class UpdateInstanceSettings(MethodView):
         if instance_settings_data["skippedHierarchicalLayers"] > instance_settings.skipped_hierarchical_layers:
             if instance_settings_data["skippedHierarchicalLayers"] >= 1:
                 if Crag.query.filter(Crag.slug != "_default").count() > 0:
-                    raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE)
+                    raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE.value)
                 if Crag.query.filter(Crag.slug == "_default").count() == 0:
                     crag = Crag()
                     crag.name = "_default"
@@ -57,7 +57,7 @@ class UpdateInstanceSettings(MethodView):
 
             if instance_settings_data["skippedHierarchicalLayers"] >= 2:
                 if Sector.query.filter(Sector.slug != "_default").count() > 0:
-                    raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE)
+                    raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE.value)
                 if Sector.query.filter(Sector.slug == "_default").count() == 0:
                     sector = Sector()
                     sector.name = "_default"

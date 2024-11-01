@@ -19,6 +19,7 @@ export class InstanceSettings {
   matomoSiteId: string;
   maptilerApiKey: string;
   gymMode: boolean;
+  skippedHierarchicalLayers: number;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -48,6 +49,7 @@ export class InstanceSettings {
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
     instanceSettings.gymMode = payload.gymMode;
+    instanceSettings.skippedHierarchicalLayers = payload.skippedHierarchicalLayers;
     return instanceSettings;
   }
 
@@ -78,6 +80,7 @@ export class InstanceSettings {
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
       gymMode: instanceSettings.gymMode,
+      skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
     };
   }
 }
