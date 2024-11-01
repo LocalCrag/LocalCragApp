@@ -12,6 +12,7 @@ import {Sector} from "../../../models/sector";
 import {Area} from "../../../models/area";
 import {TopoImage} from '../../../models/topo-image';
 import {ArchiveService} from '../../../services/crud/archive.service';
+import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-archive-button',
@@ -21,7 +22,8 @@ import {ArchiveService} from '../../../services/crud/archive.service';
     NgIf,
     SharedModule,
     NgClass,
-    TranslocoDirective
+    TranslocoDirective,
+    GymModeDirective
   ],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',

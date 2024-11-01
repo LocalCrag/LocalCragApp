@@ -405,6 +405,4 @@ export class LineFormComponent implements OnInit {
   public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
-
-  protected readonly console = console;
 }
