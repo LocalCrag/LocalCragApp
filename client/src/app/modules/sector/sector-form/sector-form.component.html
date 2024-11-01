@@ -9,7 +9,7 @@
 
       <ng-container *ngIf="sectorForm">
         <form [formGroup]="sectorForm" lcForm>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-column gap-2" lcControlGroup *ngIf="sector?.slug != '_default'">
             <label class="form-label" for="name">{{
               t("sectorNameLabel")
             }}</label>
@@ -207,7 +207,7 @@
             ></lc-map-marker-form-array>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-column gap-2" lcControlGroup *ngIf="sector?.slug != '_default'">
             <label class="form-label" for="secret">{{
               t("sectorOptionsLabel")
             }}</label>
@@ -266,7 +266,7 @@
             styleClass="p-button-danger"
             class="ml-3 responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
+            *ngIf="editMode && sector?.slug != '_default'"
           ></p-button>
           <p-confirmPopup></p-confirmPopup>
         </div>

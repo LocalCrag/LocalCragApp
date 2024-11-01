@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import {catchError, map, take} from 'rxjs/operators';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -15,6 +15,7 @@ import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import {RegionService} from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-sector',
@@ -32,6 +33,7 @@ export class SectorComponent implements OnInit {
   constructor(
     private cragsService: CragsService,
     private sectorsService: SectorsService,
+    private regionService: RegionService,
     private translocoService: TranslocoService,
     private router: Router,
     private store: Store,
@@ -43,6 +45,24 @@ export class SectorComponent implements OnInit {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+
+      const getSector = sectorSlug != '_default' ? this.sectorsService.getSector(sectorSlug).pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        ) : forkJoin([
+        this.regionService.getRegion(),
+        this.sectorsService.getSector(sectorSlug)
+      ]).pipe(
+        map(([region, sector]) => {
+        sector.name = region.name;
+        return sector;
+      })
+      );
+
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
@@ -52,14 +72,7 @@ export class SectorComponent implements OnInit {
             return of(e);
           }),
         ),
-        this.sectorsService.getSector(sectorSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
+        getSector,
         this.store.pipe(select(selectIsLoggedIn), take(1)),
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, sector, isLoggedIn]) => {

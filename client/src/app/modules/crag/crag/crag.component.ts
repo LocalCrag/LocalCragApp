@@ -7,12 +7,13 @@ import { TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import {catchError, map, take} from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {RegionService} from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-crag',
@@ -28,6 +29,7 @@ export class CragComponent implements OnInit {
 
   constructor(
     private cragsService: CragsService,
+    private regionService: RegionService,
     private translocoService: TranslocoService,
     private router: Router,
     private store: Store,
@@ -39,15 +41,26 @@ export class CragComponent implements OnInit {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
+
+      const getCrag = cragSlug != '_default' ? this.cragsService.getCrag(cragSlug).pipe(
+        catchError((e) => {
+          if (e.status === 404) {
+            this.router.navigate(['/not-found']);
+          }
+          return of(e);
+        }),
+      ) : forkJoin([
+        this.regionService.getRegion(),
+        this.cragsService.getCrag(cragSlug)
+      ]).pipe(
+        map(([region, crag]) => {
+          // Merge region and crag
+          crag.name = region.name;
+          return crag;
+        })
+      );
       forkJoin([
-        this.cragsService.getCrag(cragSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
+        getCrag,
         this.store.pipe(select(selectIsModerator), take(1)),
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, isModerator]) => {
