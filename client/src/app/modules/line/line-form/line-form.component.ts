@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import {catchError, take} from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
@@ -21,7 +21,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
-import {selectInstanceName, selectInstanceSettingsState} from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AreasService } from '../../../services/crud/areas.service';
 
 /**
@@ -125,8 +125,7 @@ export class LineFormComponent implements OnInit {
       this.lineForm = this.fb.group({
         name: ['', [Validators.required, Validators.maxLength(120)]],
         description: [null],
-        color: [instanceSettings.arrowColor],
-        customColor: [instanceSettings.gymMode],
+        color: [instanceSettings.gymMode ? instanceSettings.arrowColor : null],
         videos: this.fb.array([]),
         grade: [null, [Validators.required]],
         rating: [null],
@@ -206,53 +205,47 @@ export class LineFormComponent implements OnInit {
     this.line.videos.map(() => {
       this.addLineVideoFormControl();
     });
-    this.store
-      .select(selectInstanceSettingsState)
-      .pipe(take(1))
-      .subscribe((instanceSettingsState) => {
-        this.lineForm.patchValue({
-          name: this.line.name,
-          description: this.line.description,
-          videos: this.line.videos,
-          grade: this.line.grade,
-          customColor: !!this.line.color,
-          color: this.line.color ?? instanceSettingsState.arrowColor,
-          rating: this.line.rating,
-          faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
-          faName: this.line.faName,
-          startingPosition: this.line.startingPosition,
-          eliminate: this.line.eliminate,
-          traverse: this.line.traverse,
-          highball: this.line.highball,
-          lowball: this.line.lowball,
-          morpho: this.line.morpho,
-          noTopout: this.line.noTopout,
-          badDropzone: this.line.badDropzone,
-          childFriendly: this.line.childFriendly,
-          roof: this.line.roof,
-          slab: this.line.slab,
-          vertical: this.line.vertical,
-          overhang: this.line.overhang,
-          athletic: this.line.athletic,
-          technical: this.line.technical,
-          endurance: this.line.endurance,
-          cruxy: this.line.cruxy,
-          dyno: this.line.dyno,
-          jugs: this.line.jugs,
-          sloper: this.line.sloper,
-          crimps: this.line.crimps,
-          pockets: this.line.pockets,
-          pinches: this.line.pinches,
-          crack: this.line.crack,
-          dihedral: this.line.dihedral,
-          compression: this.line.compression,
-          arete: this.line.arete,
-          mantle: this.line.mantle,
-          secret: this.line.secret,
-        });
-        this.lineForm.enable();
-        this.setFormDisabledState();
-      });
+    this.lineForm.patchValue({
+      name: this.line.name,
+      description: this.line.description,
+      videos: this.line.videos,
+      grade: this.line.grade,
+      color: this.line.color,
+      rating: this.line.rating,
+      faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
+      faName: this.line.faName,
+      startingPosition: this.line.startingPosition,
+      eliminate: this.line.eliminate,
+      traverse: this.line.traverse,
+      highball: this.line.highball,
+      lowball: this.line.lowball,
+      morpho: this.line.morpho,
+      noTopout: this.line.noTopout,
+      badDropzone: this.line.badDropzone,
+      childFriendly: this.line.childFriendly,
+      roof: this.line.roof,
+      slab: this.line.slab,
+      vertical: this.line.vertical,
+      overhang: this.line.overhang,
+      athletic: this.line.athletic,
+      technical: this.line.technical,
+      endurance: this.line.endurance,
+      cruxy: this.line.cruxy,
+      dyno: this.line.dyno,
+      jugs: this.line.jugs,
+      sloper: this.line.sloper,
+      crimps: this.line.crimps,
+      pockets: this.line.pockets,
+      pinches: this.line.pinches,
+      crack: this.line.crack,
+      dihedral: this.line.dihedral,
+      compression: this.line.compression,
+      arete: this.line.arete,
+      mantle: this.line.mantle,
+      secret: this.line.secret,
+    });
+    this.lineForm.enable();
+    this.setFormDisabledState();
   }
 
   /**
@@ -287,9 +280,7 @@ export class LineFormComponent implements OnInit {
       const line = new Line();
       line.name = this.lineForm.get('name').value;
       line.description = this.lineForm.get('description').value;
-      line.color = this.lineForm.get('customColor').value
-        ? this.lineForm.get('color').value
-        : null;
+      line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
       line.grade = this.lineForm.get('grade').value;
       line.rating = this.lineForm.get('rating').value;
