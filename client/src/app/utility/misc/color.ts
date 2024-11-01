@@ -14,7 +14,7 @@ export function getRgbObject(raw: string): any {
   };
 }
 
-function extractColor(color) {
+function extractColor(color: string) {
   const ret = {
     r: parseInt(color.slice(1, 3), 16),
     g: parseInt(color.slice(3, 5), 16),
@@ -25,6 +25,12 @@ function extractColor(color) {
   return ret;
 }
 
+/**
+ * Given a color, calculate an accented variant so an object looks highlighted
+ *
+ * @param color Color as hex string, e.g., #abba42. May be undefined
+ * @return Hex color string, or undefined if color is undefined
+ */
 export function highlightColor(color?: string): string | undefined {
   if (color) {
     const {r, g, b, brightness} = extractColor(color);
@@ -39,6 +45,12 @@ export function highlightColor(color?: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Given a color, return black or white as text color, depending on what has the better contrast
+ *
+ * @param color Color as hex string, e.g., #abba42. May be undefined
+ * @return Hex color string, or undefined if color is undefined
+ */
 export function textColor(color?: string): string | undefined {
   if (color) {
     const {brightness} = extractColor(color);
