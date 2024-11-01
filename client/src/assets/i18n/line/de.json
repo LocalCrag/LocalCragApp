@@ -70,6 +70,8 @@
   "lineForm.editLineTitle": "Linie bearbeiten",
   "lineForm.createLineTitle": "Linie erstellen",
   "lineForm.colorLabel": "Farbe wählen",
+  "lineForm.globalColor": "Globale Farbe",
+  "lineForm.customColor": "Eigene Farbe",
   "lineForm.selectFromCommonColors": "oder aus häufigen Farben auswählen:",
   "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.traverse": "Traverse",

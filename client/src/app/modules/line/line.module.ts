@@ -36,6 +36,7 @@ import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
 import { GymModeDirective } from '../shared/directives/gym-mode.directive';
 import { ColorSquareComponent } from '../shared/components/color-square/color-square.component';
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import {SelectButtonModule} from 'primeng/selectbutton';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     GymModeDirective,
     ColorSquareComponent,
     ArchiveButtonComponent,
+    SelectButtonModule,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],

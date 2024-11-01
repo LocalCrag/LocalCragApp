@@ -7,5 +7,6 @@ import {Component, Input} from '@angular/core';
   styleUrl: './color-square.component.scss',
 })
 export class ColorSquareComponent {
-  @Input() color: string;
+  @Input({ required: true }) color: string;
+  @Input() transparent = false;
 }
