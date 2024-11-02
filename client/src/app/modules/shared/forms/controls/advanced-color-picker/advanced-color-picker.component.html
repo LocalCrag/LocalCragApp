@@ -1,0 +1,41 @@
+<ng-container *transloco="let t; read: 'advancedColorPicker'">
+  <form *ngIf="isInitalized" [formGroup]="colorForm" lcForm class="flex flex-column gap-2">
+    <div>
+      <p-selectButton
+        formControlName="customColor"
+        [options]="[
+                     { value: false, label: t('globalColor') },
+                     { value: true, label: t('customColor') },
+                   ]"
+        optionLabel="label"
+        optionValue="value"
+        lcFormControl
+      />
+    </div>
+    <div
+      class="flex align-items-center colorSegment"
+      [class]="{disabledColorSegment: !colorForm?.get('customColor').value}"
+    >
+      <p-colorPicker
+        [id]="id"
+        formControlName="color"
+        lcFormControl
+      />
+      <span class="ml-4 mr-2">
+        {{ t("selectFromCommonColors") }}
+      </span>
+      <div class="flex flex-wrap" style="max-width: 12rem">
+        <lc-color-square color="#ffd811" (click)="writeValue('#ffd811')"/>
+        <lc-color-square color="#ff6811" (click)="writeValue('#ff6811')"/>
+        <lc-color-square color="#f10d0d" (click)="writeValue('#f10d0d')"/>
+        <lc-color-square color="#078001" (click)="writeValue('#078001')"/>
+        <lc-color-square color="#0e34b2" (click)="writeValue('#0e34b2')"/>
+        <lc-color-square color="#ea1eb6" (click)="writeValue('#ff1ec4')"/>
+        <lc-color-square color="#6402fd" (click)="writeValue('#6402fd')"/>
+        <lc-color-square color="#ffffff" (click)="writeValue('#ffffff')"/>
+        <lc-color-square color="#545454" (click)="writeValue('#545454')"/>
+        <lc-color-square color="#000000" (click)="writeValue('#000000')"/>
+      </div>
+    </div>
+  </form>
+</ng-container>

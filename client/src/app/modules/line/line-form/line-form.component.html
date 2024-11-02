@@ -70,6 +70,19 @@
             </p-editor>
           </div>
 
+          <ng-container *isGymMode="true">
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label" for="color">
+                {{ t("colorLabel") }}
+              </label>
+              <lc-advanced-color-picker
+                id="color"
+                formControlName="color"
+                lcFormControl
+              />
+            </div>
+          </ng-container>
+
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")

@@ -69,6 +69,7 @@
   "lineForm.deleteLineButtonLabel": "Linie löschen",
   "lineForm.editLineTitle": "Linie bearbeiten",
   "lineForm.createLineTitle": "Linie erstellen",
+  "lineForm.colorLabel": "Farbe wählen",
   "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.traverse": "Traverse",
   "lineBoolPropList.highball": "Highball",

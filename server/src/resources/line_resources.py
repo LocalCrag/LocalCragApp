@@ -118,6 +118,7 @@ class CreateLine(MethodView):
 
         new_line.name = line_data["name"].strip()
         new_line.description = line_data["description"]
+        new_line.color = line_data.get("color", None)
         new_line.videos = line_data["videos"]
         new_line.grade_name = line_data["gradeName"]
         new_line.grade_scale = line_data["gradeScale"]
@@ -193,6 +194,7 @@ class UpdateLine(MethodView):
 
         line.name = line_data["name"].strip()
         line.description = line_data["description"]
+        line.color = line_data.get("color", None)
         line.videos = line_data["videos"]
         line.grade_name = line_data["gradeName"]
         line.grade_scale = line_data["gradeScale"]

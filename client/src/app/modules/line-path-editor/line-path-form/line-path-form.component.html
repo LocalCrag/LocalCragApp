@@ -42,6 +42,7 @@
             formControlName="path"
             lcFormControl
             id="path-editor"
+            [color]="linePathForm.get('line').value?.color"
           >
           </lc-line-path-editor>
           <small class="p-error" *lcIfError="'required'">{{

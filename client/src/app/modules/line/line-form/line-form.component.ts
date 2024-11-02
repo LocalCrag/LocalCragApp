@@ -21,7 +21,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AreasService } from '../../../services/crud/areas.service';
 
 /**
@@ -121,50 +121,53 @@ export class LineFormComponent implements OnInit {
    * Builds the line form.
    */
   private buildForm() {
-    this.lineForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(120)]],
-      description: [null],
-      videos: this.fb.array([]),
-      grade: [null, [Validators.required]],
-      rating: [null],
-      faYear: [null, [yearOfDateNotInFutureValidator()]],
-      faName: [null, [Validators.maxLength(120)]],
-      startingPosition: [StartingPosition.STAND, [Validators.required]],
-      eliminate: [false],
-      traverse: [false],
-      highball: [false],
-      lowball: [false],
-      morpho: [false],
-      noTopout: [false],
-      badDropzone: [false],
-      childFriendly: [false],
-      roof: [false],
-      slab: [false],
-      vertical: [false],
-      overhang: [false],
-      athletic: [false],
-      technical: [false],
-      endurance: [false],
-      cruxy: [false],
-      dyno: [false],
-      jugs: [false],
-      sloper: [false],
-      crimps: [false],
-      pockets: [false],
-      pinches: [false],
-      crack: [false],
-      dihedral: [false],
-      compression: [false],
-      arete: [false],
-      mantle: [false],
-      secret: [false],
-    });
-    this.lineForm
-      .get('grade')
-      .valueChanges.pipe(untilDestroyed(this))
-      .subscribe(() => {
-        this.setFormDisabledState();
+    this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
+      this.lineForm = this.fb.group({
+        name: ['', [Validators.required, Validators.maxLength(120)]],
+        description: [null],
+        color: [instanceSettings.gymMode ? instanceSettings.arrowColor : null],
+        videos: this.fb.array([]),
+        grade: [null, [Validators.required]],
+        rating: [null],
+        faYear: [null, [yearOfDateNotInFutureValidator()]],
+        faName: [null, [Validators.maxLength(120)]],
+        startingPosition: [StartingPosition.STAND, [Validators.required]],
+        eliminate: [false],
+        traverse: [false],
+        highball: [false],
+        lowball: [false],
+        morpho: [false],
+        noTopout: [false],
+        badDropzone: [false],
+        childFriendly: [false],
+        roof: [false],
+        slab: [false],
+        vertical: [false],
+        overhang: [false],
+        athletic: [false],
+        technical: [false],
+        endurance: [false],
+        cruxy: [false],
+        dyno: [false],
+        jugs: [false],
+        sloper: [false],
+        crimps: [false],
+        pockets: [false],
+        pinches: [false],
+        crack: [false],
+        dihedral: [false],
+        compression: [false],
+        arete: [false],
+        mantle: [false],
+        secret: [false],
       });
+      this.lineForm
+        .get('grade')
+        .valueChanges.pipe(untilDestroyed(this))
+        .subscribe(() => {
+          this.setFormDisabledState();
+        });
+    })
   }
 
   setFormDisabledState() {
@@ -207,6 +210,7 @@ export class LineFormComponent implements OnInit {
       description: this.line.description,
       videos: this.line.videos,
       grade: this.line.grade,
+      color: this.line.color,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
@@ -276,6 +280,7 @@ export class LineFormComponent implements OnInit {
       const line = new Line();
       line.name = this.lineForm.get('name').value;
       line.description = this.lineForm.get('description').value;
+      line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
       line.grade = this.lineForm.get('grade').value;
       line.rating = this.lineForm.get('rating').value;

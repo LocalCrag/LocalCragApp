@@ -6,6 +6,7 @@ def test_successful_create_line(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "color": "#334433",
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -50,6 +51,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["slug"] == "es"
     assert res["description"] == "Super Boulder"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res["color"] == "#334433"
     assert res["gradeName"] == "7B+"
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
@@ -598,6 +600,53 @@ def test_create_line_invalid_video_payload(client, moderator_token):
     assert rv.status_code == 400
 
 
+def test_create_line_invalid_color(client, moderator_token):
+    line_data = {
+        "name": "Es",
+        "description": "Super Boulder",
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "color": "#0x3120",
+        "gradeName": "7B+",
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "rating": 5,
+        "faYear": 2016,
+        "faName": "Dave Graham",
+        "startingPosition": "FRENCH",
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "morpho": True,
+        "lowball": True,
+        "noTopout": True,
+        "badDropzone": True,
+        "childFriendly": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
+        "secret": False,
+    }
+
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 400
+
+
 def test_successful_get_lines(client):
     lines = Line.query.all()
 
@@ -611,6 +660,7 @@ def test_successful_get_lines(client):
         assert r["name"] == line.name
         assert r["ascentCount"] == line.ascent_count
         assert r["secret"] == line.secret
+        assert r["color"] == line.color
         assert len(r["linePaths"]) == len(line.line_paths)
 
 
@@ -622,6 +672,7 @@ def test_successful_get_line(client):
     assert res["slug"] == "super-spreader"
     assert res["description"] == "<p>Geiler Kühlschrankboulder!</p>"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
+    assert res["color"] is None
     assert res["gradeName"] == "8A"
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
@@ -682,6 +733,7 @@ def test_successful_edit_line(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "color": "#123456",
         "gradeName": "7B+",
         "gradeScale": "FB",
         "type": "BOULDER",
@@ -726,6 +778,7 @@ def test_successful_edit_line(client, moderator_token):
     assert res["slug"] == "es"
     assert res["description"] == "Super Boulder"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert res["color"] == "#123456"
     assert res["gradeName"] == "7B+"
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
