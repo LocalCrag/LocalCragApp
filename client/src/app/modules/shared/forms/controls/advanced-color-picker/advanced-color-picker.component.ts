@@ -50,9 +50,11 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
   public isDisabled = false;
   public colorForm: FormGroup;
   public isInitalized = false;
+  public deferredCalls: (() => any)[] = [];
 
   private changeHandlers = [];
   private color: string | null = null;
+
 
   constructor(
     private fb: FormBuilder,
@@ -71,12 +73,18 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
         });
         this.colorForm.valueChanges
           .pipe(untilDestroyed(this))
-          .subscribe(this.onChange);
+          .subscribe(this.onChange.bind(this));
         this.isInitalized = true; // We need some extra initialization as colorForm gets populated asynchronously
+        for (const fn of this.deferredCalls) fn();
       });
   }
 
   writeValue(color: string | null) {
+    if (!this.isInitalized) {
+      this.deferredCalls.push(() => this.writeValue(color));
+      return;
+    }
+
     if (color) {
       this.colorForm.patchValue({
         customColor: true,
@@ -97,6 +105,11 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
   }
 
   onChange() {
+    if (!this.isInitalized) {
+      this.deferredCalls.push(() => this.onChange());
+      return;
+    }
+
     this.color = this.colorForm.get("customColor").value
       ? this.colorForm.get("color").value
       : null;
@@ -107,6 +120,11 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
   }
 
   setDisabledState(isDisabled: boolean): void {
+    if (!this.isInitalized) {
+      this.deferredCalls.push(() => this.setDisabledState(isDisabled));
+      return;
+    }
+
     this.isDisabled = isDisabled;
     if (this.isDisabled)
       this.colorForm.disable();
