@@ -26,7 +26,7 @@ import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Area } from '../../../models/area';
-import {highlightColor, textColor} from '../../../utility/misc/color';
+import { highlightColor, textColor } from '../../../utility/misc/color';
 
 /**
  * Component that lists all topo images in an area.
