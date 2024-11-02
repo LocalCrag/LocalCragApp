@@ -9,22 +9,39 @@ import { EMPTY } from 'rxjs';
 import { ImageModule } from 'primeng/image';
 import { NgForOf, NgStyle } from '@angular/common';
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'lc-gallery',
   standalone: true,
-  imports: [ImageModule, NgForOf, NgStyle, GalleryImageComponent],
+  imports: [
+    ImageModule,
+    NgForOf,
+    NgStyle,
+    GalleryImageComponent,
+    ButtonModule,
+    TranslocoDirective,
+  ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
+  providers: [DialogService, ConfirmationService],
 })
 @UntilDestroy()
 export class GalleryComponent implements OnInit {
   public isLoading = false;
   public images: GalleryImage[] = [];
+  public ref: DynamicDialogRef | undefined;
 
   constructor(
+    private dialogService: DialogService,
     private galleryService: GalleryService,
     private route: ActivatedRoute,
+    private translocoService: TranslocoService,
   ) {}
 
   ngOnInit(): void {
@@ -72,5 +89,16 @@ export class GalleryComponent implements OnInit {
         this.images = images;
         this.isLoading = false;
       });
+  }
+
+  addImage() {
+    this.ref = this.dialogService.open(GalleryFormComponent, {
+      header: this.translocoService.translate(marker('gallery.addImage')),
+      focusOnShow: false,
+      contentStyle: { overflow: 'visible' },
+      data: {
+        // todo add default tag depending on where it is opened
+      },
+    });
   }
 }

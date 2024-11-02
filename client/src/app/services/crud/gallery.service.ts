@@ -15,12 +15,35 @@ export class GalleryService {
     private http: HttpClient,
   ) {}
 
+  public getGalleryImage(galleryImageId: string): Observable<GalleryImage> {
+    return this.http
+      .get(this.api.gallery.getDetail(galleryImageId))
+      .pipe(map(GalleryImage.deserialize));
+  }
+
   public createGalleryImage(
     galleryImage: GalleryImage,
   ): Observable<GalleryImage> {
     return this.http
       .post(this.api.gallery.create(), GalleryImage.serialize(galleryImage))
       .pipe(map(GalleryImage.deserialize));
+  }
+
+  public updateGalleryImage(
+    galleryImage: GalleryImage,
+  ): Observable<GalleryImage> {
+    return this.http
+      .put(
+        this.api.gallery.update(galleryImage.id),
+        GalleryImage.serialize(galleryImage),
+      )
+      .pipe(map(GalleryImage.deserialize));
+  }
+
+  public deleteGalleryImage(galleryImageId: string): Observable<null> {
+    return this.http
+      .delete(this.api.gallery.delete(galleryImageId))
+      .pipe(map(() => null));
   }
 
   public getGalleryImages(

@@ -4,8 +4,8 @@ from extensions import ma
 from marshmallow_schemas.search_schema import (
     AreaSearchSchema,
     CragSearchSchema,
-    SectorSearchSchema,
     LineSearchSchema,
+    SectorSearchSchema,
 )
 from marshmallow_schemas.user_schema import UserMinSchema
 from models.area import Area

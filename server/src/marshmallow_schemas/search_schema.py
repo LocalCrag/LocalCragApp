@@ -7,6 +7,7 @@ from models.enums.line_type_enum import LineTypeEnum
 
 
 class CragSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     name = fields.String()
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute="portrait_image")
@@ -16,6 +17,7 @@ crag_search_schema = CragSearchSchema()
 
 
 class SectorSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     name = fields.String()
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute="portrait_image")
@@ -26,6 +28,7 @@ sector_search_schema = SectorSearchSchema()
 
 
 class AreaSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     name = fields.String()
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute="portrait_image")
@@ -36,6 +39,7 @@ area_search_schema = AreaSearchSchema()
 
 
 class LineSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     name = fields.String()
     slug = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
@@ -48,6 +52,7 @@ line_search_schema = LineSearchSchema()
 
 
 class UserSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     firstname = fields.String()
     lastname = fields.String()
     slug = fields.String()
@@ -55,3 +60,5 @@ class UserSearchSchema(ma.SQLAlchemySchema):
 
 
 user_search_schema = UserSearchSchema()
+
+# todo add ids in tests

@@ -33,7 +33,10 @@ export class ApiService {
   };
 
   public gallery = {
+    getDetail: (id: string): string => `${this.apiHost}gallery/${id}`,
     create: (): string => `${this.apiHost}gallery`,
+    update: (id: string): string => `${this.apiHost}gallery/${id}`,
+    delete: (id: string): string => `${this.apiHost}gallery/${id}`,
     getList: (filters: string): string => `${this.apiHost}gallery${filters}`,
   };
 

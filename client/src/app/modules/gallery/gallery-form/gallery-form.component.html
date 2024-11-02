@@ -1,0 +1,48 @@
+<ng-container *transloco="let t; read: 'gallery.galleryForm'">
+  <p-messages severity="info">
+    <ng-template pTemplate *ngIf="!editMode">
+      {{ t("addGalleryImageDescription") }}
+    </ng-template>
+    <ng-template pTemplate *ngIf="editMode">
+      {{ t("editGalleryImageDescription") }}
+    </ng-template>
+  </p-messages>
+
+  <form [formGroup]="galleryImageForm" lcForm>
+    <div class="flex flex-column gap-2" lcControlGroup>
+      <label class="form-label" for="image">{{ t("galleryImageLabel") }}</label>
+      <lc-single-image-upload
+        lcFormControl
+        id="image"
+        formControlName="image"
+        data-cy="topo-image-input"
+      ></lc-single-image-upload>
+      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+    </div>
+
+    <div class="flex flex-column gap-2" lcControlGroup>
+      <label class="form-label" for="image">{{ t("tagsLabel") }}</label>
+      <p-autoComplete
+        formControlName="searchables"
+        optionLabel="name"
+        [suggestions]="searchablesSuggestions"
+        (completeMethod)="loadTagSuggestions($event)"
+        [multiple]="true"
+      />
+    </div>
+  </form>
+
+  <div class="form-actions">
+    <p-button
+      label="{{
+        !editMode
+          ? t('addGalleryImageButtonLabel')
+          : t('editGalleryImageButtonLabel')
+      }}"
+      (click)="saveGalleryImage()"
+      styleClass="w-full"
+      [loading]="loadingState === loadingStates.LOADING"
+      data-cy="submit"
+    ></p-button>
+  </div>
+</ng-container>

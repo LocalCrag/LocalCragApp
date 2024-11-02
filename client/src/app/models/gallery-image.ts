@@ -16,7 +16,7 @@ export class GalleryImage extends AbstractModel {
 
   public static serialize(galleryImage: GalleryImage): any {
     return {
-      image: galleryImage.image.id,
+      fileId: galleryImage.image.id,
       tags: galleryImage.tags ? galleryImage.tags.map(Tag.serialize) : null,
     };
   }
