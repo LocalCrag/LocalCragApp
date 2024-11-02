@@ -24,6 +24,7 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     searchable_type = SearchableItemTypeEnum.LINE
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    color = db.Column(db.String(7), nullable=True)
     videos = db.Column(JSON, nullable=True)
     grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)

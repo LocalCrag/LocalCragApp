@@ -3,7 +3,6 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
-from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from models.area import Area
 from models.crag import Crag
