@@ -101,7 +101,7 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
     this.changeHandlers.push(fn);
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(_fn: any) {
   }
 
   onChange() {
