@@ -77,11 +77,6 @@ export class RegionComponent implements OnInit {
           icon: 'pi pi-fw pi-chart-line',
           routerLink: `/topo/lines`,
         },
-        // {
-        //   label: this.translocoService.translate(marker('region.gallery')),
-        //   icon: 'pi pi-fw pi-images',
-        //   routerLink: `/topo/gallery`,
-        // },
         {
           label: this.translocoService.translate(marker('region.ascents')),
           icon: 'pi pi-fw pi-check-square',
@@ -91,6 +86,11 @@ export class RegionComponent implements OnInit {
           label: this.translocoService.translate(marker('region.ranking')),
           icon: 'pi pi-fw pi-trophy',
           routerLink: `/topo/ranking`,
+        },
+        {
+          label: this.translocoService.translate(marker('region.gallery')),
+          icon: 'pi pi-fw pi-images',
+          routerLink: `/topo/gallery`,
         },
         {
           label: this.translocoService.translate(marker('region.edit')),

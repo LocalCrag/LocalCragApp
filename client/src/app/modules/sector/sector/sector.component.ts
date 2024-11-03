@@ -93,11 +93,6 @@ export class SectorComponent implements OnInit {
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
           },
-          // {
-          //   label: this.translocoService.translate(marker('sector.gallery')),
-          //   icon: 'pi pi-fw pi-images',
-          //   routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
-          // },
           {
             label: this.translocoService.translate(marker('sector.ascents')),
             icon: 'pi pi-fw pi-check-square',
@@ -107,6 +102,11 @@ export class SectorComponent implements OnInit {
             label: this.translocoService.translate(marker('sector.ranking')),
             icon: 'pi pi-fw pi-trophy',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ranking`,
+          },
+          {
+            label: this.translocoService.translate(marker('sector.gallery')),
+            icon: 'pi pi-fw pi-images',
+            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
           },
           {
             label: this.translocoService.translate(marker('sector.edit')),

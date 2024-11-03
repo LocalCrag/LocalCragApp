@@ -19,7 +19,7 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
 
     __tablename__ = "crags"
 
-    slug_blocklist = ["create-crag", "edit-region", "areas", "gallery", "ascents", "rules"]
+    slug_blocklist = ["create-crag", "edit-region", "areas", "gallery", "ascents", "rules", "gallery"]
     searchable_type = SearchableItemTypeEnum.CRAG
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)

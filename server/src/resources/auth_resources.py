@@ -119,8 +119,6 @@ class ForgotPassword(MethodView):
         user = User.find_by_email(email_canonical)
         if not user:
             raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
-        if not user.activated:
-            raise Unauthorized(ResponseMessage.USER_NOT_ACTIVATED.value)
         user.reset_password_hash = uuid4()
         user.reset_password_hash_created = datetime.now()
         db.session.add(user)
@@ -140,8 +138,6 @@ class ResetPassword(MethodView):
         user = User.find_by_reset_password_hash(data["resetPasswordHash"])
         if not user:
             raise Unauthorized(ResponseMessage.RESET_PASSWORD_HASH_INVALID.value)
-        if not user.activated:
-            raise Unauthorized(ResponseMessage.USER_NOT_ACTIVATED.value)
         now = datetime.now(pytz.utc)
         hash_age = now - user.reset_password_hash_created
         # Hash must be younger than 24 hours
