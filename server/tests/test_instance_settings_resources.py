@@ -136,7 +136,6 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": 2,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
