@@ -15,6 +15,7 @@ export class File extends AbstractModel {
   thumbnailL: string;
   thumbnailXL: string;
   path: string;
+  srcSet: string;
 
   /**
    * Parses a file object.
@@ -45,6 +46,20 @@ export class File extends AbstractModel {
     media.thumbnailXL = payload.thumbnailXL
       ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1')
       : null;
+
+    // Build srcSet
+    const srcSetEntries = [
+      { url: media.thumbnailXS, width: ThumbnailWidths.XS },
+      { url: media.thumbnailS, width: ThumbnailWidths.S },
+      { url: media.thumbnailM, width: ThumbnailWidths.M },
+      { url: media.thumbnailL, width: ThumbnailWidths.L },
+      { url: media.thumbnailXL, width: ThumbnailWidths.XL },
+    ];
+    media.srcSet = srcSetEntries
+      .filter((entry) => entry.url !== null)
+      .map((entry) => `${entry.url} ${entry.width}w`)
+      .join(', ');
+
     // When sizes are missing, set the next available size
     if (!media.thumbnailXS) {
       media.thumbnailXS = media.path;

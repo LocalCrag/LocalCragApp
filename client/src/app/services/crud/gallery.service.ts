@@ -50,13 +50,14 @@ export class GalleryService {
     objectType: ObjectType = null,
     objectSlug: string = null,
   ): Observable<GalleryImage[]> {
-    let filterString = '';
-    if (objectType && objectSlug) {
-      const filters: string[] = [];
-      filters.push(`tag-object-type=${objectType}`);
-      filters.push(`tag-object-slug=${objectSlug}`);
-      filterString = `?${filters.join('&')}`;
+    const params = new URLSearchParams();
+    if (objectType) {
+      params.set('tag-object-type', objectType);
     }
+    if (objectSlug) {
+      params.set('tag-object-slug', objectSlug);
+    }
+    const filterString = params.toString() ? `?${params.toString()}` : '';
     return this.http
       .get(this.api.gallery.getList(filterString))
       .pipe(

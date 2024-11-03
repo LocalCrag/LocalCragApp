@@ -292,6 +292,19 @@ const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'gallery',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'userContent',
+            data: {
+              objectType: ObjectType.User,
+            },
+          },
+        ],
+      },
     ],
   },
   {
@@ -358,7 +371,13 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -448,7 +467,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'cragContent',
+            data: {
+              objectType: ObjectType.Crag,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -538,7 +566,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'sectorContent',
+            data: {
+              objectType: ObjectType.Sector,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -644,7 +681,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'areaContent',
+            data: {
+              objectType: ObjectType.Area,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',

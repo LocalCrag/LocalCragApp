@@ -7,6 +7,7 @@ from marshmallow_schemas.tag_schema import tag_schema
 
 class GalleryImageSchema(ma.SQLAlchemySchema):
     id = fields.String()
+    createdBy = ma.Nested("UserMinSchema", attribute="created_by")
     image = fields.Nested(file_schema, attribute="file")
     tags = fields.Nested(tag_schema, many=True)
 

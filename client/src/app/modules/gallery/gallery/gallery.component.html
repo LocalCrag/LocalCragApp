@@ -7,8 +7,24 @@
         [label]="t('addImage')"
       ></p-button>
     </div>
+    <div
+      class="col-12 md:col-6 xl:col-4"
+      *ngFor="let _ of !isLoading ? [] : [1, 2, 3, 4, 5, 6]"
+    >
+      <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+    </div>
     <div class="col-12 md:col-6 xl:col-4" *ngFor="let image of images">
-      <lc-gallery-image [image]="image"></lc-gallery-image>
+      <lc-gallery-image
+        [image]="image"
+        (delete)="confirmDeleteImage($event, image)"
+        (edit)="editImage(image)"
+      ></lc-gallery-image>
     </div>
   </div>
+  <p-messages severity="info" *ngIf="!isLoading && images.length === 0">
+    <ng-template pTemplate>
+      {{ t("thisGalleryIsEmpty") }}
+    </ng-template>
+  </p-messages>
+  <p-confirmPopup></p-confirmPopup>
 </ng-container>

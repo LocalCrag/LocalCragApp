@@ -2,6 +2,8 @@
  * Defines identifiers for all notifications in the system.
  */
 export enum NotificationIdentifier {
+  MAP_MARKER_REMOVED = 'MAP_MARKER_REMOVED',
+  MAP_MARKER_ADDED = 'MAP_MARKER_ADDED',
   GALLERY_IMAGE_CREATED = 'GALLERY_IMAGE_CREATED',
   GALLERY_IMAGE_UPDATED = 'GALLERY_IMAGE_UPDATED',
   GALLERY_IMAGE_DELETED = 'GALLERY_IMAGE_DELETED',

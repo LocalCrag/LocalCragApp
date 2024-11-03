@@ -1,4 +1,37 @@
 lc-gallery-image {
+  .speed-dial-container {
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .p-speeddial {
+    position: absolute;
+    top: 2px; // Button is disaligned for some reason
+    left: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .p-speeddial-button {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    .p-button-icon {
+      font-size: 0.75rem;
+    }
+  }
+
+  .p-speeddial-action {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+
+    .p-speeddial-action-icon {
+      font-size: 0.75rem;
+    }
+  }
+
   .tags {
     display: flex;
     justify-content: end;

@@ -4,6 +4,8 @@ import { Sector } from './sector';
 import { Crag } from './crag';
 import { User } from './user';
 
+export type SearchableObject = Line | Area | Sector | Crag | User;
+
 export class Searchable {
   name: string;
   id: string;
@@ -41,6 +43,36 @@ export class Searchable {
         searchable.name = searchable.user.fullname;
         searchable.id = searchable.user.id;
         break;
+    }
+    return searchable;
+  }
+
+  public static fromObject(object: SearchableObject): Searchable {
+    const searchable = new Searchable();
+    if (object instanceof Line) {
+      searchable.line = object;
+      searchable.name = object.name;
+      searchable.id = object.id;
+    }
+    if (object instanceof Area) {
+      searchable.area = object;
+      searchable.name = object.name;
+      searchable.id = object.id;
+    }
+    if (object instanceof Sector) {
+      searchable.sector = object;
+      searchable.name = object.name;
+      searchable.id = object.id;
+    }
+    if (object instanceof Crag) {
+      searchable.crag = object;
+      searchable.name = object.name;
+      searchable.id = object.id;
+    }
+    if (object instanceof User) {
+      searchable.user = object;
+      searchable.name = object.fullname;
+      searchable.id = object.id;
     }
     return searchable;
   }

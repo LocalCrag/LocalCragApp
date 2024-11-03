@@ -34,7 +34,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.gallery_resources import CreateGalleryImage, GetGalleryImages
+from resources.gallery_resources import CreateGalleryImage, GetGalleryImages, DeleteGalleryImage, UpdateGalleryImage
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,
@@ -195,6 +195,8 @@ def configure_api(app):
     gallery_bp = Blueprint("gallery", __name__)
     gallery_bp.add_url_rule("", view_func=GetGalleryImages.as_view("get_gallery_images"))
     gallery_bp.add_url_rule("", view_func=CreateGalleryImage.as_view("create_gallery_image"))
+    gallery_bp.add_url_rule("/<string:image_id>", view_func=DeleteGalleryImage.as_view("delete_gallery_image"))
+    gallery_bp.add_url_rule("/<string:image_id>", view_func=UpdateGalleryImage.as_view("update_gallery_image"))
     app.register_blueprint(gallery_bp, url_prefix="/api/gallery")
 
     # Line API
