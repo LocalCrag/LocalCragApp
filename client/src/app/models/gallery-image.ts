@@ -1,7 +1,7 @@
-import { Tag } from './tag';
-import { AbstractModel } from './abstract-model';
-import { File } from './file';
-import { User } from './user';
+import {Tag} from './tag';
+import {AbstractModel} from './abstract-model';
+import {File} from './file';
+import {User} from './user';
 
 export class GalleryImage extends AbstractModel {
   image: File;
@@ -17,10 +17,18 @@ export class GalleryImage extends AbstractModel {
     return galleryImage;
   }
 
-  public static serialize(galleryImage: GalleryImage): any {
+  public static serializeForCreate(galleryImage: GalleryImage): any {
     return {
       fileId: galleryImage.image.id,
       tags: galleryImage.tags ? galleryImage.tags.map(Tag.serialize) : null,
     };
   }
+
+  public static serializeForUpdate(galleryImage: GalleryImage): any {
+    return {
+      tags: galleryImage.tags ? galleryImage.tags.map(Tag.serialize) : null,
+    };
+  }
+
+
 }

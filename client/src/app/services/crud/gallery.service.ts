@@ -25,7 +25,7 @@ export class GalleryService {
     galleryImage: GalleryImage,
   ): Observable<GalleryImage> {
     return this.http
-      .post(this.api.gallery.create(), GalleryImage.serialize(galleryImage))
+      .post(this.api.gallery.create(), GalleryImage.serializeForCreate(galleryImage))
       .pipe(map(GalleryImage.deserialize));
   }
 
@@ -35,7 +35,7 @@ export class GalleryService {
     return this.http
       .put(
         this.api.gallery.update(galleryImage.id),
-        GalleryImage.serialize(galleryImage),
+        GalleryImage.serializeForUpdate(galleryImage),
       )
       .pipe(map(GalleryImage.deserialize));
   }
