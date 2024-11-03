@@ -9,7 +9,6 @@
   </p-messages>
 
   <form [formGroup]="galleryImageForm" lcForm>
-
     <div class="flex flex-column gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("galleryImageLabel") }}</label>
       <lc-single-image-upload
@@ -35,9 +34,10 @@
         (completeMethod)="loadTagSuggestions($event)"
         [multiple]="true"
       />
-      <small class="p-error" *lcIfError="'required'">{{ t("min1TagRequired") }}</small>
+      <small class="p-error" *lcIfError="'required'">{{
+        t("min1TagRequired")
+      }}</small>
     </div>
-
   </form>
 
   <div class="form-actions">

@@ -20,26 +20,17 @@ export class AppNotificationsService {
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> =
     new Map<NotificationIdentifier, NotificationType>([
-      [
-        NotificationIdentifier.GALLERY_IMAGE_UPDATED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.GALLERY_IMAGE_UPDATED, NotificationType.SUCCESS],
       /**
        * t(notifications.GALLERY_IMAGE_UPDATED_TITLE)
        * t(notifications.GALLERY_IMAGE_UPDATED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.GALLERY_IMAGE_DELETED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.GALLERY_IMAGE_DELETED, NotificationType.SUCCESS],
       /**
        * t(notifications.GALLERY_IMAGE_DELETED_TITLE)
        * t(notifications.GALLERY_IMAGE_DELETED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.GALLERY_IMAGE_CREATED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.GALLERY_IMAGE_CREATED, NotificationType.SUCCESS],
       /**
        * t(notifications.GALLERY_IMAGE_CREATED_TITLE)
        * t(notifications.GALLERY_IMAGE_CREATED_MESSAGE)

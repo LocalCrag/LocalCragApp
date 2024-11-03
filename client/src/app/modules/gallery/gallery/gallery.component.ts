@@ -1,21 +1,21 @@
-import {Component, OnInit} from '@angular/core';
-import {GalleryService} from '../../../services/crud/gallery.service';
-import {GalleryImage} from '../../../models/gallery-image';
-import {ObjectType} from '../../../models/tag';
-import {ActivatedRoute} from '@angular/router';
-import {switchMap} from 'rxjs/operators';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {EMPTY} from 'rxjs';
-import {ImageModule} from 'primeng/image';
-import {NgForOf, NgStyle} from '@angular/common';
-import {GalleryImageComponent} from '../gallery-image/gallery-image.component';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {GalleryFormComponent} from '../gallery-form/gallery-form.component';
-import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {ButtonModule} from 'primeng/button';
-import {ConfirmationService} from 'primeng/api';
-import {HasPermissionDirective} from '../../shared/directives/has-permission.directive';
+import { Component, OnInit } from '@angular/core';
+import { GalleryService } from '../../../services/crud/gallery.service';
+import { GalleryImage } from '../../../models/gallery-image';
+import { ObjectType } from '../../../models/tag';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { EMPTY } from 'rxjs';
+import { ImageModule } from 'primeng/image';
+import { NgForOf, NgStyle } from '@angular/common';
+import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmationService } from 'primeng/api';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-gallery',
@@ -47,8 +47,7 @@ export class GalleryComponent implements OnInit {
     private galleryService: GalleryService,
     private route: ActivatedRoute,
     private translocoService: TranslocoService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -94,8 +93,6 @@ export class GalleryComponent implements OnInit {
         this.images = images;
         this.isLoading = false;
       });
-
-
   }
 
   addImage() {
@@ -104,21 +101,23 @@ export class GalleryComponent implements OnInit {
       focusOnShow: false,
       data: {
         defaultSearchableSlug: this.objectSlug,
-        defaultSearchableType: this.objectType
+        defaultSearchableType: this.objectType,
       },
     });
     // Add or update gallery image after dialog is closed
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe((galleryImage: GalleryImage) => {
-      if (galleryImage) {
-        console.log(galleryImage);
-        if (this.images.map(i => i.id).indexOf(galleryImage.id) === -1) {
-          this.images.unshift(galleryImage);
-        } else {
-          this.images = this.images.map((i) =>
-            i.id === galleryImage.id ? galleryImage : i,
-          );
+    this.ref.onClose
+      .pipe(untilDestroyed(this))
+      .subscribe((galleryImage: GalleryImage) => {
+        if (galleryImage) {
+          console.log(galleryImage);
+          if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
+            this.images.unshift(galleryImage);
+          } else {
+            this.images = this.images.map((i) =>
+              i.id === galleryImage.id ? galleryImage : i,
+            );
+          }
         }
-      }
-    });
+      });
   }
 }

@@ -10,7 +10,7 @@ import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
 import { TranslocoDirective } from '@jsverse/transloco';
-import {JsonPipe, NgIf} from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
@@ -21,18 +21,18 @@ import {
 } from 'primeng/autocomplete';
 import { Searchable } from '../../../models/searchable';
 import { SearchService } from '../../../services/crud/search.service';
-import {ObjectType, Tag} from '../../../models/tag';
-import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {toastNotification} from '../../../ngrx/actions/notifications.actions';
-import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
-import {Store} from '@ngrx/store';
-import {EMPTY, Observable} from 'rxjs';
-import {LinesService} from '../../../services/crud/lines.service';
-import {AreasService} from '../../../services/crud/areas.service';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {CragsService} from '../../../services/crud/crags.service';
-import {UsersService} from '../../../services/crud/users.service';
-import {map} from 'rxjs/operators';
+import { ObjectType, Tag } from '../../../models/tag';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { Store } from '@ngrx/store';
+import { EMPTY, Observable } from 'rxjs';
+import { LinesService } from '../../../services/crud/lines.service';
+import { AreasService } from '../../../services/crud/areas.service';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { CragsService } from '../../../services/crud/crags.service';
+import { UsersService } from '../../../services/crud/users.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -93,57 +93,77 @@ export class GalleryFormComponent implements OnInit {
     } else {
       this.galleryImageForm.get('searchables').disable();
       let defaultSearchableRequest: Observable<Searchable>;
-      console.log(this.config.data)
-      switch (this.config.data.defaultSearchableType){
+      console.log(this.config.data);
+      switch (this.config.data.defaultSearchableType) {
         case ObjectType.Crag:
-          defaultSearchableRequest = this.cragsService.getCrag(this.config.data.defaultSearchableSlug).pipe(map(crag => {
-            const searchable = new Searchable();
-            searchable.crag = crag;
-            searchable.name = crag.name;
-            searchable.id = crag.id;
-            return searchable;
-          }));
+          defaultSearchableRequest = this.cragsService
+            .getCrag(this.config.data.defaultSearchableSlug)
+            .pipe(
+              map((crag) => {
+                const searchable = new Searchable();
+                searchable.crag = crag;
+                searchable.name = crag.name;
+                searchable.id = crag.id;
+                return searchable;
+              }),
+            );
           break;
         case ObjectType.Sector:
-          defaultSearchableRequest = this.sectorsService.getSector(this.config.data.defaultSearchableSlug).pipe(map(sector => {
-            const searchable = new Searchable();
-            searchable.sector = sector;
-            searchable.name = sector.name;
-            searchable.id = sector.id;
-            return searchable;
-          }));
+          defaultSearchableRequest = this.sectorsService
+            .getSector(this.config.data.defaultSearchableSlug)
+            .pipe(
+              map((sector) => {
+                const searchable = new Searchable();
+                searchable.sector = sector;
+                searchable.name = sector.name;
+                searchable.id = sector.id;
+                return searchable;
+              }),
+            );
           break;
         case ObjectType.Area:
-          defaultSearchableRequest = this.areasService.getArea(this.config.data.defaultSearchableSlug).pipe(map(area => {
-            const searchable = new Searchable();
-            searchable.area = area;
-            searchable.name = area.name;
-            searchable.id = area.id
-            return searchable;
-          }));
+          defaultSearchableRequest = this.areasService
+            .getArea(this.config.data.defaultSearchableSlug)
+            .pipe(
+              map((area) => {
+                const searchable = new Searchable();
+                searchable.area = area;
+                searchable.name = area.name;
+                searchable.id = area.id;
+                return searchable;
+              }),
+            );
           break;
         case ObjectType.Line:
-          defaultSearchableRequest = this.linesService.getLine(this.config.data.defaultSearchableSlug).pipe(map(line => {
-            const searchable = new Searchable();
-            searchable.line = line;
-            searchable.name = line.name;
-            searchable.id = line.id
-            return searchable;
-          }));
+          defaultSearchableRequest = this.linesService
+            .getLine(this.config.data.defaultSearchableSlug)
+            .pipe(
+              map((line) => {
+                const searchable = new Searchable();
+                searchable.line = line;
+                searchable.name = line.name;
+                searchable.id = line.id;
+                return searchable;
+              }),
+            );
           break;
         case ObjectType.User:
-          defaultSearchableRequest = this.usersService.getUser(this.config.data.defaultSearchableSlug).pipe(map(user => {
-            const searchable = new Searchable();
-            searchable.user = user;
-            searchable.name = user.fullname;
-            searchable.id = user.id
-            return searchable;
-          }));
+          defaultSearchableRequest = this.usersService
+            .getUser(this.config.data.defaultSearchableSlug)
+            .pipe(
+              map((user) => {
+                const searchable = new Searchable();
+                searchable.user = user;
+                searchable.name = user.fullname;
+                searchable.id = user.id;
+                return searchable;
+              }),
+            );
           break;
         default:
           defaultSearchableRequest = EMPTY;
       }
-      defaultSearchableRequest.subscribe(searchable => {
+      defaultSearchableRequest.subscribe((searchable) => {
         this.galleryImageForm.get('searchables').setValue([searchable]);
         this.galleryImageForm.get('searchables').enable();
       });
@@ -187,21 +207,25 @@ export class GalleryFormComponent implements OnInit {
           return tag;
         });
       if (this.editMode) {
-        this.galleryService.updateGalleryImage(galleryImage).subscribe((galleryImage) => {
-          this.loadingState = LoadingState.DEFAULT;
-          this.ref.close(galleryImage);
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.GALLERY_IMAGE_CREATED),
-          );
-        });
+        this.galleryService
+          .updateGalleryImage(galleryImage)
+          .subscribe((galleryImage) => {
+            this.loadingState = LoadingState.DEFAULT;
+            this.ref.close(galleryImage);
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.GALLERY_IMAGE_CREATED),
+            );
+          });
       } else {
-        this.galleryService.createGalleryImage(galleryImage).subscribe((galleryImage) => {
-          this.loadingState = LoadingState.DEFAULT;
-          this.ref.close(galleryImage);
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.GALLERY_IMAGE_UPDATED),
-          );
-        });
+        this.galleryService
+          .createGalleryImage(galleryImage)
+          .subscribe((galleryImage) => {
+            this.loadingState = LoadingState.DEFAULT;
+            this.ref.close(galleryImage);
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.GALLERY_IMAGE_UPDATED),
+            );
+          });
       }
     } else {
       this.formDirective.markAsTouched();
@@ -213,5 +237,4 @@ export class GalleryFormComponent implements OnInit {
       this.searchablesSuggestions = searchables;
     });
   }
-
 }
