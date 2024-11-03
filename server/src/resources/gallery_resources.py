@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.unauthorized import Unauthorized

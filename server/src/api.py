@@ -34,7 +34,12 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.gallery_resources import CreateGalleryImage, GetGalleryImages, DeleteGalleryImage, UpdateGalleryImage
+from resources.gallery_resources import (
+    CreateGalleryImage,
+    DeleteGalleryImage,
+    GetGalleryImages,
+    UpdateGalleryImage,
+)
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,
