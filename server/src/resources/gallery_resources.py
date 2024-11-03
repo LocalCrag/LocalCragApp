@@ -45,6 +45,7 @@ class GetGalleryImages(MethodView):
                 db.session.query(GalleryImage)
                 .join(GalleryImage.tags)
                 .filter(Tag.object_type == tag_object_type, Tag.object_id == tag_object_id)
+                .order_by(GalleryImage.time_created.desc())
                 .all()
             )
             # todo also show for parents

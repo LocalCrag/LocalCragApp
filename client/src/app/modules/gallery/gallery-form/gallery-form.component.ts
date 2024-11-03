@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -10,7 +10,7 @@ import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+import {JsonPipe, NgIf} from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
@@ -21,7 +21,18 @@ import {
 } from 'primeng/autocomplete';
 import { Searchable } from '../../../models/searchable';
 import { SearchService } from '../../../services/crud/search.service';
-import { Tag } from '../../../models/tag';
+import {ObjectType, Tag} from '../../../models/tag';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {Store} from '@ngrx/store';
+import {EMPTY, Observable} from 'rxjs';
+import {LinesService} from '../../../services/crud/lines.service';
+import {AreasService} from '../../../services/crud/areas.service';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {CragsService} from '../../../services/crud/crags.service';
+import {UsersService} from '../../../services/crud/users.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -35,11 +46,12 @@ import { Tag } from '../../../models/tag';
     MessagesModule,
     MultiSelectModule,
     AutoCompleteModule,
+    JsonPipe,
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',
 })
-export class GalleryFormComponent implements OnInit{
+export class GalleryFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public galleryImageForm: FormGroup;
@@ -52,6 +64,14 @@ export class GalleryFormComponent implements OnInit{
   constructor(
     private fb: FormBuilder,
     private searchService: SearchService,
+    private linesService: LinesService,
+    private areasService: AreasService,
+    private sectorsService: SectorsService,
+    private cragsService: CragsService,
+    private usersService: UsersService,
+    private store: Store,
+    private ref: DynamicDialogRef,
+    public config: DynamicDialogConfig,
     private galleryService: GalleryService,
   ) {}
 
@@ -60,6 +80,7 @@ export class GalleryFormComponent implements OnInit{
 
     const galleryImageId = null; // TODO
     if (galleryImageId) {
+      this.loadingState = LoadingState.LOADING;
       this.editMode = true;
       this.galleryImageForm.disable();
       this.galleryService
@@ -69,6 +90,63 @@ export class GalleryFormComponent implements OnInit{
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
         });
+    } else {
+      this.galleryImageForm.get('searchables').disable();
+      let defaultSearchableRequest: Observable<Searchable>;
+      console.log(this.config.data)
+      switch (this.config.data.defaultSearchableType){
+        case ObjectType.Crag:
+          defaultSearchableRequest = this.cragsService.getCrag(this.config.data.defaultSearchableSlug).pipe(map(crag => {
+            const searchable = new Searchable();
+            searchable.crag = crag;
+            searchable.name = crag.name;
+            searchable.id = crag.id;
+            return searchable;
+          }));
+          break;
+        case ObjectType.Sector:
+          defaultSearchableRequest = this.sectorsService.getSector(this.config.data.defaultSearchableSlug).pipe(map(sector => {
+            const searchable = new Searchable();
+            searchable.sector = sector;
+            searchable.name = sector.name;
+            searchable.id = sector.id;
+            return searchable;
+          }));
+          break;
+        case ObjectType.Area:
+          defaultSearchableRequest = this.areasService.getArea(this.config.data.defaultSearchableSlug).pipe(map(area => {
+            const searchable = new Searchable();
+            searchable.area = area;
+            searchable.name = area.name;
+            searchable.id = area.id
+            return searchable;
+          }));
+          break;
+        case ObjectType.Line:
+          defaultSearchableRequest = this.linesService.getLine(this.config.data.defaultSearchableSlug).pipe(map(line => {
+            const searchable = new Searchable();
+            searchable.line = line;
+            searchable.name = line.name;
+            searchable.id = line.id
+            return searchable;
+          }));
+          break;
+        case ObjectType.User:
+          defaultSearchableRequest = this.usersService.getUser(this.config.data.defaultSearchableSlug).pipe(map(user => {
+            const searchable = new Searchable();
+            searchable.user = user;
+            searchable.name = user.fullname;
+            searchable.id = user.id
+            return searchable;
+          }));
+          break;
+        default:
+          defaultSearchableRequest = EMPTY;
+      }
+      defaultSearchableRequest.subscribe(searchable => {
+        this.galleryImageForm.get('searchables').setValue([searchable]);
+        this.galleryImageForm.get('searchables').enable();
+      });
     }
   }
 
@@ -78,7 +156,7 @@ export class GalleryFormComponent implements OnInit{
   private buildForm() {
     this.galleryImageForm = this.fb.group({
       image: [null, [Validators.required]],
-      searchables: [[], [Validators.minLength(1)]],
+      searchables: [[], [Validators.required]],
     });
   }
 
@@ -109,12 +187,20 @@ export class GalleryFormComponent implements OnInit{
           return tag;
         });
       if (this.editMode) {
-        this.galleryService.updateGalleryImage(galleryImage).subscribe(() => {
+        this.galleryService.updateGalleryImage(galleryImage).subscribe((galleryImage) => {
           this.loadingState = LoadingState.DEFAULT;
+          this.ref.close(galleryImage);
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.GALLERY_IMAGE_CREATED),
+          );
         });
       } else {
-        this.galleryService.createGalleryImage(galleryImage).subscribe(() => {
+        this.galleryService.createGalleryImage(galleryImage).subscribe((galleryImage) => {
           this.loadingState = LoadingState.DEFAULT;
+          this.ref.close(galleryImage);
+          this.store.dispatch(
+            toastNotification(NotificationIdentifier.GALLERY_IMAGE_UPDATED),
+          );
         });
       }
     } else {
@@ -122,9 +208,10 @@ export class GalleryFormComponent implements OnInit{
     }
   }
 
-  loadTagSuggestions(event: AutoCompleteCompleteEvent) {
+  public loadTagSuggestions(event: AutoCompleteCompleteEvent) {
     this.searchService.search(event.query).subscribe((searchables) => {
       this.searchablesSuggestions = searchables;
     });
   }
+
 }

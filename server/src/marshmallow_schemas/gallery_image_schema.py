@@ -6,6 +6,7 @@ from marshmallow_schemas.tag_schema import tag_schema
 
 
 class GalleryImageSchema(ma.SQLAlchemySchema):
+    id = fields.String()
     image = fields.Nested(file_schema, attribute="file")
     tags = fields.Nested(tag_schema, many=True)
 

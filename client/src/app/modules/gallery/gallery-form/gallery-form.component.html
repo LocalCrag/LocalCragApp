@@ -9,6 +9,7 @@
   </p-messages>
 
   <form [formGroup]="galleryImageForm" lcForm>
+
     <div class="flex flex-column gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("galleryImageLabel") }}</label>
       <lc-single-image-upload
@@ -23,13 +24,20 @@
     <div class="flex flex-column gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("tagsLabel") }}</label>
       <p-autoComplete
+        lcFormControl
         formControlName="searchables"
-        optionLabel="name"
+        [appendTo]="'body'"
+        [unique]="true"
+        [dataKey]="'id'"
+        [placeholder]="t('tagsPlaceholder')"
+        [optionLabel]="'name'"
         [suggestions]="searchablesSuggestions"
         (completeMethod)="loadTagSuggestions($event)"
         [multiple]="true"
       />
+      <small class="p-error" *lcIfError="'required'">{{ t("min1TagRequired") }}</small>
     </div>
+
   </form>
 
   <div class="form-actions">
