@@ -18,7 +18,10 @@ from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
 from util.generic_relationships import check_object_exists
-from webargs_schemas.gallery_image_args import gallery_image_post_args, gallery_image_put_args
+from webargs_schemas.gallery_image_args import (
+    gallery_image_post_args,
+    gallery_image_put_args,
+)
 
 
 class GetGalleryImages(MethodView):
@@ -29,15 +32,15 @@ class GetGalleryImages(MethodView):
         if tag_object_type and tag_object_slug:
             # Get the object_id for the slug based on object type
             tag_object_model = None
-            if tag_object_type == 'Line':
+            if tag_object_type == "Line":
                 tag_object_model = Line
-            if tag_object_type == 'User':
+            if tag_object_type == "User":
                 tag_object_model = User
-            if tag_object_type == 'Area':
+            if tag_object_type == "Area":
                 tag_object_model = Area
-            if tag_object_type == 'Sector':
+            if tag_object_type == "Sector":
                 tag_object_model = Sector
-            if tag_object_type == 'Crag':
+            if tag_object_type == "Crag":
                 tag_object_model = Crag
             tag_object_id = tag_object_model.get_id_by_slug(tag_object_slug)
             # Get the images for the object
@@ -59,6 +62,7 @@ class GetGalleryImages(MethodView):
             images = GalleryImage.return_all(order_by=lambda: GalleryImage.time_created.desc())
         return jsonify(gallery_images_schema.dump(images)), 200
 
+
 def set_image_tags(image, tag_data):
     image.tags = []
     for tag_data in tag_data:
@@ -70,6 +74,7 @@ def set_image_tags(image, tag_data):
             if not check_object_exists(tag.object_type, tag.object_id):
                 raise NotFound(f"{tag.object_type} with id {tag.object_id} does not exist.")
         image.tags.append(tag)
+
 
 class CreateGalleryImage(MethodView):
 

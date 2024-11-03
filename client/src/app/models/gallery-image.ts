@@ -1,7 +1,7 @@
-import {Tag} from './tag';
-import {AbstractModel} from './abstract-model';
-import {File} from './file';
-import {User} from './user';
+import { Tag } from './tag';
+import { AbstractModel } from './abstract-model';
+import { File } from './file';
+import { User } from './user';
 
 export class GalleryImage extends AbstractModel {
   image: File;
@@ -29,6 +29,4 @@ export class GalleryImage extends AbstractModel {
       tags: galleryImage.tags ? galleryImage.tags.map(Tag.serialize) : null,
     };
   }
-
-
 }
