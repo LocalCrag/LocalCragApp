@@ -7,13 +7,13 @@ import { TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, of } from 'rxjs';
-import {catchError, map, take} from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import {RegionService} from '../../../services/crud/region.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-crag',

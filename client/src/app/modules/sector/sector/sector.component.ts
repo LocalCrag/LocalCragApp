@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
-import {catchError, map, take} from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -15,7 +15,7 @@ import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {RegionService} from '../../../services/crud/region.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-sector',
