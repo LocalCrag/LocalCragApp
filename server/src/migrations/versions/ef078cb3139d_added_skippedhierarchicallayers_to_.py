@@ -1,7 +1,7 @@
 """Added skippedHierarchicalLayers to instance_settings
 
 Revision ID: ef078cb3139d
-Revises: fc965fe6216c
+Revises: 6fe7f8cbfc44
 Create Date: 2024-10-30 18:10:33.992135
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "ef078cb3139d"
-down_revision = "fc965fe6216c"
+down_revision = "6fe7f8cbfc44"
 branch_labels = None
 depends_on = None
 
