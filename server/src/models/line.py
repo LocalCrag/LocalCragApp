@@ -20,7 +20,7 @@ class Line(HasSlug, IsSearchable, BaseEntity):
 
     __tablename__ = "lines"
 
-    slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image"]
+    slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image", "gallery"]
     searchable_type = SearchableItemTypeEnum.LINE
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)

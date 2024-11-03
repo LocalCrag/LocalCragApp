@@ -63,6 +63,8 @@ import { SectorRankingComponent } from '../sector/sector-ranking/sector-ranking.
 import { TodoListComponent } from '../todo/todo-list/todo-list.component';
 import { SentryTestComponent } from './sentry-test/sentry-test.component';
 import { MapComponent } from '../maps/map/map.component';
+import { GalleryComponent } from '../gallery/gallery/gallery.component';
+import { ObjectType } from '../../models/tag';
 
 const routes: Routes = [
   {
@@ -290,6 +292,19 @@ const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'gallery',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'userContent',
+            data: {
+              objectType: ObjectType.User,
+            },
+          },
+        ],
+      },
     ],
   },
   {
@@ -356,7 +371,13 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'regionContent',
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -446,7 +467,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'cragContent',
+            data: {
+              objectType: ObjectType.Crag,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -536,7 +566,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'sectorContent',
+            data: {
+              objectType: ObjectType.Sector,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -642,7 +681,16 @@ const routes: Routes = [
       },
       {
         path: 'gallery',
-        redirectTo: '',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'areaContent',
+            data: {
+              objectType: ObjectType.Area,
+            },
+          },
+        ],
       },
       {
         path: 'ascents',
@@ -684,6 +732,19 @@ const routes: Routes = [
             path: '',
             component: LineAscentsComponent,
             outlet: 'lineContent',
+          },
+        ],
+      },
+      {
+        path: 'gallery',
+        children: [
+          {
+            path: '',
+            component: GalleryComponent,
+            outlet: 'lineContent',
+            data: {
+              objectType: ObjectType.Line,
+            },
           },
         ],
       },

@@ -1,0 +1,25 @@
+lc-tag {
+  p-avatar {
+    width: 1.5rem;
+    height: 1rem;
+    position: relative;
+  }
+
+  p-avatar .p-avatar {
+    position: absolute;
+    top: -0.25rem;
+    left: -0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .p-tag {
+    background-color: var(--gray-400);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--gray-500);
+    }
+  }
+}

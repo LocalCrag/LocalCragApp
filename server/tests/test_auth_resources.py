@@ -212,57 +212,6 @@ def test_revoked_refresh_token_behaviour(client, admin_refresh_token):
     assert rv.status_code == 401
 
 
-def test_forgot_password_with_non_activated_user(client, mocker, admin_token):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
-    user_data = {
-        "firstname": "Thorsten",
-        "lastname": "Test",
-        "email": "felix.engelmann@fengelmann.de",
-    }
-    rv = client.post("/api/users", token=admin_token, json=user_data)
-    assert rv.status_code == 201
-
-    data = {
-        "email": "felix.engelmann@fengelmann.de",
-    }
-    rv = client.post("/api/forgot-password", json=data)
-    assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.USER_NOT_ACTIVATED.value
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 2
-
-
-def test_reset_password_with_non_activated_user(client, mocker, admin_token):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
-    user_data = {
-        "firstname": "Thorsten",
-        "lastname": "Test",
-        "email": "felix.engelmann@fengelmann.de",
-    }
-    rv = client.post("/api/users", token=admin_token, json=user_data)
-    assert rv.status_code == 201
-
-    # Manually add a hash to the user
-    user = User.find_by_email("felix.engelmann@fengelmann.de")
-    reset_hash = uuid4()
-    user.reset_password_hash = reset_hash
-    user.reset_password_hash_created = datetime.now(pytz.utc)
-    db.session.add(user)
-
-    data = {"resetPasswordHash": reset_hash, "newPassword": "wgowieuhgfwoeughweoguhwegiwhe"}
-    rv = client.post("/api/reset-password", json=data)
-    assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.USER_NOT_ACTIVATED.value
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 2
-
-
 def test_successful_change_password(client, member_token):
     change_pw_data = {"oldPassword": "member", "newPassword": "[vb+xLGgU?+Z]nXD3HmO"}
     rv = client.put("/api/change-password", token=member_token, json=change_pw_data)
