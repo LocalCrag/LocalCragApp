@@ -60,5 +60,3 @@ class UserSearchSchema(ma.SQLAlchemySchema):
 
 
 user_search_schema = UserSearchSchema()
-
-# todo add ids in tests

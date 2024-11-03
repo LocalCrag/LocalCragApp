@@ -13,3 +13,5 @@ def test_successful_search(client):
     assert len(res) == 10
     assert res[0]["type"] == "LINE"
     assert res[0]["item"]["name"] == "Super-Spreader"
+    assert type(res[0]["item"]["id"]) == str
+

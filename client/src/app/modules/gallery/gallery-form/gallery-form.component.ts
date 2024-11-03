@@ -1,38 +1,38 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormDirective } from '../../shared/forms/form.directive';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormDirective} from '../../shared/forms/form.directive';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { GalleryService } from '../../../services/crud/gallery.service';
-import { GalleryImage } from '../../../models/gallery-image';
-import { LoadingState } from '../../../enums/loading-state';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { JsonPipe, NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
-import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
-import { MultiSelectModule } from 'primeng/multiselect';
+import {GalleryService} from '../../../services/crud/gallery.service';
+import {GalleryImage} from '../../../models/gallery-image';
+import {LoadingState} from '../../../enums/loading-state';
+import {TranslocoDirective} from '@jsverse/transloco';
+import {JsonPipe, NgIf} from '@angular/common';
+import {SharedModule} from '../../shared/shared.module';
+import {ButtonModule} from 'primeng/button';
+import {MessagesModule} from 'primeng/messages';
+import {MultiSelectModule} from 'primeng/multiselect';
 import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,
 } from 'primeng/autocomplete';
-import { Searchable, SearchableObject } from '../../../models/searchable';
-import { SearchService } from '../../../services/crud/search.service';
-import { ObjectType, Tag } from '../../../models/tag';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
-import { Store } from '@ngrx/store';
-import { EMPTY, Observable } from 'rxjs';
-import { LinesService } from '../../../services/crud/lines.service';
-import { AreasService } from '../../../services/crud/areas.service';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { CragsService } from '../../../services/crud/crags.service';
-import { UsersService } from '../../../services/crud/users.service';
-import { map } from 'rxjs/operators';
+import {Searchable, SearchableObject} from '../../../models/searchable';
+import {SearchService} from '../../../services/crud/search.service';
+import {ObjectType, Tag} from '../../../models/tag';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {toastNotification} from '../../../ngrx/actions/notifications.actions';
+import {NotificationIdentifier} from '../../../utility/notifications/notification-identifier.enum';
+import {Store} from '@ngrx/store';
+import {EMPTY, Observable} from 'rxjs';
+import {LinesService} from '../../../services/crud/lines.service';
+import {AreasService} from '../../../services/crud/areas.service';
+import {SectorsService} from '../../../services/crud/sectors.service';
+import {CragsService} from '../../../services/crud/crags.service';
+import {UsersService} from '../../../services/crud/users.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -52,6 +52,7 @@ import { map } from 'rxjs/operators';
   styleUrl: './gallery-form.component.scss',
 })
 export class GalleryFormComponent implements OnInit {
+  
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public galleryImageForm: FormGroup;
@@ -73,7 +74,8 @@ export class GalleryFormComponent implements OnInit {
     private ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private galleryService: GalleryService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -127,9 +129,6 @@ export class GalleryFormComponent implements OnInit {
     }
   }
 
-  /**
-   * Builds the area form.
-   */
   private buildForm() {
     this.galleryImageForm = this.fb.group({
       image: [null, [Validators.required]],
