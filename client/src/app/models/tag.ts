@@ -17,8 +17,24 @@ export class Tag {
   objectType: ObjectType;
 
   public static serialize(tag: Tag): any {
+    let objectType: string;
+    if (tag.object instanceof Crag) {
+      objectType = ObjectType.Crag;
+    }
+    if (tag.object instanceof Sector) {
+      objectType = ObjectType.Sector;
+    }
+    if (tag.object instanceof Area) {
+      objectType = ObjectType.Area;
+    }
+    if (tag.object instanceof Line) {
+      objectType = ObjectType.Line;
+    }
+    if (tag.object instanceof User) {
+      objectType = ObjectType.User;
+    }
     return {
-      objectType: tag.object.constructor.name,
+      objectType: objectType,
       objectId: tag.object.id,
     };
   }
