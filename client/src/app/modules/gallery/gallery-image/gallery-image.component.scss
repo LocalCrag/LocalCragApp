@@ -33,9 +33,18 @@ lc-gallery-image {
   }
 
   .tags {
+    flex-wrap: wrap;
     display: flex;
     justify-content: end;
     gap: 0.25rem;
+
+    lc-tag .p-tag-value {
+      display: block;
+      max-width: 150px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   .gallery-image-card {
