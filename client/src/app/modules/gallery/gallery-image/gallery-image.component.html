@@ -13,7 +13,7 @@
     <lc-tag [tag]="tag" *ngFor="let tag of image.tags"></lc-tag>
     <div
       class="speed-dial-container"
-      *ngIf="image.createdBy.id === loggedInUser.id || loggedInUser.moderator"
+      *ngIf="image.createdBy.id === loggedInUser?.id || loggedInUser?.moderator"
     >
       <p-speedDial
         [model]="speedDialItems"
