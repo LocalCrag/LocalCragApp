@@ -133,7 +133,7 @@ export class AreaComponent implements OnInit {
             label: area.name,
             slug: area.slug,
           },
-        ].filter(menuItem => menuItem.slug != '_default');
+        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
         this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });

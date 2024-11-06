@@ -42,7 +42,7 @@ export class CragComponent implements OnInit {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
 
-      const getCrag = cragSlug != '_default' ? this.cragsService.getCrag(cragSlug).pipe(
+      const getCrag = cragSlug != environment.skippedSlug ? this.cragsService.getCrag(cragSlug).pipe(
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);

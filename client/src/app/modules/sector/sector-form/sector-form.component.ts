@@ -234,4 +234,5 @@ export class SectorFormComponent implements OnInit {
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
   protected readonly disabledMarkerTypesSector = disabledMarkerTypesSector;
   protected readonly MapMarkerType = MapMarkerType;
+  protected readonly environment = environment;
 }

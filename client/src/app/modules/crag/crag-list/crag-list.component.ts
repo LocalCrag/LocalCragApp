@@ -59,8 +59,8 @@ export class CragListComponent implements OnInit {
       this.cragsService.getCrags(),
       this.translocoService.load(`${environment.language}`),
     ]).subscribe(([crags]) => {
-      if (crags.length > 0 && crags[0].slug === "_default") {
-        this.router.navigate(['topo', '_default', 'sectors']);
+      if (crags.length > 0 && crags[0].slug == environment.skippedSlug) {
+        this.router.navigate(['topo', environment.skippedSlug, 'sectors']);
         return;
       }
       this.crags = crags;

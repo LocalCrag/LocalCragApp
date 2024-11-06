@@ -31,6 +31,7 @@ import { File } from '../../../models/file';
 import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'lc-menu',
@@ -252,8 +253,8 @@ export class MenuComponent implements OnInit {
         }),
       });
     });
-    while (cragItems.length > 0 && cragItems[0].slug == '_default') {
-      // Pop _default items
+    while (cragItems.length > 0 && cragItems[0].slug == environment.skippedSlug) {
+      // Pop skippedSlug items
       cragItems = cragItems[0].items;
     }
     return cragItems;

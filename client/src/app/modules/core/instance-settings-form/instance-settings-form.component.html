@@ -61,18 +61,22 @@
           <label class="form-label" for="skippedHierarchicalLayers">
             {{ t("skippedHierarchicalLayersLabel") }}
           </label>
-          <p-dropdown
-            id="skippedHierarchicalLayers"
-            [options]="[
-              { value: 0, label: '0 ' + t('skippedHierarchicalLayersItemLabel') },
-              { value: 1, label: '1 ' + t('skippedHierarchicalLayersItemLabel') },
-              { value: 2, label: '2 ' + t('skippedHierarchicalLayersItemLabel') },
+          <div>
+            <p-dropdown
+              id="skippedHierarchicalLayers"
+              [options]="[
+              { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
+              { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
+              { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
             ]"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="skippedHierarchicalLayers"
-            lcFormControl
-          ></p-dropdown>
+              optionLabel="label"
+              optionValue="value"
+              formControlName="skippedHierarchicalLayers"
+              lcFormControl
+            ></p-dropdown>
+            <span class="pi pi-question-circle" [pTooltip]="t('skippedHierarchicalLayersDescription')" tooltipPosition="right"></span>
+          </div>
+
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2 block">

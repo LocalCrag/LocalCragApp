@@ -46,7 +46,7 @@ export class SectorComponent implements OnInit {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
 
-      const getSector = sectorSlug != '_default' ? this.sectorsService.getSector(sectorSlug).pipe(
+      const getSector = sectorSlug != environment.skippedSlug ? this.sectorsService.getSector(sectorSlug).pipe(
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
@@ -138,7 +138,7 @@ export class SectorComponent implements OnInit {
             label: sector.name,
             slug: sector.slug,
           },
-        ].filter(menuItem => menuItem.slug != '_default');
+        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
         this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });

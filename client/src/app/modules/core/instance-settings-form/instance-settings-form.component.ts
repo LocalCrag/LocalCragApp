@@ -32,6 +32,7 @@ import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -53,6 +54,7 @@ import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
     DividerModule,
     InputSwitchModule,
     GymModeDirective,
+    TooltipModule,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
