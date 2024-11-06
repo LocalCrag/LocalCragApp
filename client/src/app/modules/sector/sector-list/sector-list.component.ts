@@ -68,7 +68,7 @@ export class SectorListComponent implements OnInit {
       this.translocoService.load(`${environment.language}`),
     ]).subscribe(([sectors]) => {
       if (sectors.length > 0 && sectors[0].slug == environment.skippedSlug) {
-        this.router.navigate(['topo', this.cragSlug, environment.skippedSlug, 'areas']);
+        this.router.navigate(['topo', this.cragSlug, environment.skippedSlug, 'areas'], { skipLocationChange: true });
         return;
       }
       this.sectors = sectors;
