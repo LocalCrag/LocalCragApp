@@ -207,7 +207,7 @@
             ></lc-map-marker-form-array>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup *ngIf="sector?.slug != environment.skippedSlug">
+          <div class="flex flex-column gap-2" lcControlGroup *ngIf="sector?.slug !== environment.skippedSlug">
             <label class="form-label" for="secret">{{
               t("sectorOptionsLabel")
             }}</label>
@@ -266,7 +266,7 @@
             styleClass="p-button-danger"
             class="ml-3 responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode && sector?.slug != environment.skippedSlug"
+            *ngIf="editMode && sector?.slug !== environment.skippedSlug"
           ></p-button>
           <p-confirmPopup></p-confirmPopup>
         </div>

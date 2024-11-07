@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
-import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
