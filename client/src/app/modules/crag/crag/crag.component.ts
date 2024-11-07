@@ -7,12 +7,12 @@ import { TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, of } from 'rxjs';
-import { catchError, map, take } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
@@ -26,6 +26,8 @@ export class CragComponent implements OnInit {
   public items: MenuItem[];
   public breadcrumbs: MenuItem[] | undefined;
   public breadcrumbHome: MenuItem | undefined;
+
+  public readonly environment = environment;  // Make available in scope
 
   constructor(
     private cragsService: CragsService,
@@ -42,31 +44,22 @@ export class CragComponent implements OnInit {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
 
-      const getCrag = cragSlug != environment.skippedSlug ? this.cragsService.getCrag(cragSlug).pipe(
-        catchError((e) => {
-          if (e.status === 404) {
-            this.router.navigate(['/not-found']);
-          }
-          return of(e);
-        }),
-      ) : forkJoin([
-        this.regionService.getRegion(),
-        this.cragsService.getCrag(cragSlug)
-      ]).pipe(
-        map(([region, crag]) => {
-          // Merge region and crag
-          crag.name = region.name;
-          return crag;
-        })
-      );
       forkJoin([
-        getCrag,
+        this.cragsService.getCrag(cragSlug).pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        ),
         this.store.pipe(select(selectIsModerator), take(1)),
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, isModerator]) => {
         this.crag = crag;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(`${crag.name} - ${instanceName}`);
+        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
+          this.title.setTitle(`${crag.name} - ${instanceSettings.instanceName}`);
+          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
         });
         this.items = [
           {
@@ -119,7 +112,6 @@ export class CragComponent implements OnInit {
             routerLink: `/topo/${crag.slug}`,
           },
         ];
-        this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });
   }

@@ -12,8 +12,8 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
@@ -30,6 +30,7 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
+import { RegionService } from '../../../services/crud/region.service';
 
 /**
  * Form component for creating and editing sectors.
@@ -60,6 +61,7 @@ export class SectorFormComponent implements OnInit {
     private title: Title,
     private route: ActivatedRoute,
     private router: Router,
+    private regionService: RegionService,
     private sectorsService: SectorsService,
     private cragsService: CragsService,
     private uploadService: UploadService,
@@ -75,14 +77,25 @@ export class SectorFormComponent implements OnInit {
   ngOnInit() {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+
     this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
       this.parentSecret = crag.secret;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
         this.sectorForm.disable();
-        this.sectorsService
-          .getSector(sectorSlug)
+
+        const getSector = sectorSlug != environment.skippedSlug
+          ? this.sectorsService.getSector(sectorSlug)
+          : forkJoin([
+            this.sectorsService.getSector(sectorSlug),
+            this.regionService.getRegion()
+          ]).pipe(map(([sector, region]) => {
+            sector.name = region.name;
+            return sector;
+          }));
+
+        getSector
           .pipe(
             catchError((e) => {
               if (e.status === 404) {

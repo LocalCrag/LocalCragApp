@@ -6,7 +6,7 @@
       </p>
 
       <form [formGroup]="cragForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup *ngIf="crag?.slug != environment.skippedSlug">
+        <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="name">{{ t("cragNameLabel") }}</label>
           <input
             id="name"

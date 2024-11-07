@@ -18,6 +18,7 @@ export interface InstanceSettingsState {
   barChartColor: string;
   maptilerApiKey: string;
   gymMode: boolean;
+  skippedHierarchyLayers: number;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -36,6 +37,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   barChartColor: null,
   maptilerApiKey: null,
   gymMode: false,
+  skippedHierarchyLayers: 0,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -57,6 +59,7 @@ const instanceSettingsReducer = createReducer(
     barChartColor: action.settings.barChartColor,
     maptilerApiKey: action.settings.maptilerApiKey,
     gymMode: action.settings.gymMode,
+    skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
   })),
 );
 

@@ -9,6 +9,7 @@ from marshmallow_schemas.instance_settings_schema import instance_settings_schem
 from messages.messages import ResponseMessage
 from models.crag import Crag
 from models.instance_settings import InstanceSettings
+from models.region import Region
 from models.sector import Sector
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
@@ -50,8 +51,9 @@ class UpdateInstanceSettings(MethodView):
                 if Crag.query.filter(Crag.slug != "_default").count() > 0:
                     raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE.value)
                 if Crag.query.filter(Crag.slug == "_default").count() == 0:
+                    region = Region.return_it()
                     crag = Crag()
-                    crag.name = "_default"
+                    crag.name = region.name
                     crag.slug = "_default"
                     db.session.add(crag)
 
@@ -59,8 +61,9 @@ class UpdateInstanceSettings(MethodView):
                 if Sector.query.filter(Sector.slug != "_default").count() > 0:
                     raise Conflict(ResponseMessage.MIGRATION_IMPOSSIBLE.value)
                 if Sector.query.filter(Sector.slug == "_default").count() == 0:
+                    region = Region.return_it()
                     sector = Sector()
-                    sector.name = "_default"
+                    sector.name = region.name
                     sector.slug = "_default"
                     sector.crag_id = Crag.get_id_by_slug("_default")
                     db.session.add(sector)
