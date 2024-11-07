@@ -15,7 +15,6 @@ import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-sector',
@@ -30,12 +29,9 @@ export class SectorComponent implements OnInit {
   public breadcrumbs: MenuItem[] | undefined;
   public breadcrumbHome: MenuItem | undefined;
 
-  public readonly environment = environment;  // Make available in scope
-
   constructor(
     private cragsService: CragsService,
     private sectorsService: SectorsService,
-    private regionService: RegionService,
     private translocoService: TranslocoService,
     private router: Router,
     private store: Store,
@@ -48,23 +44,6 @@ export class SectorComponent implements OnInit {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
 
-      const getSector = sectorSlug != environment.skippedSlug ? this.sectorsService.getSector(sectorSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ) : forkJoin([
-        this.regionService.getRegion(),
-        this.sectorsService.getSector(sectorSlug)
-      ]).pipe(
-        map(([region, sector]) => {
-        sector.name = region.name;
-        return sector;
-      })
-      );
-
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
@@ -74,7 +53,14 @@ export class SectorComponent implements OnInit {
             return of(e);
           }),
         ),
-        getSector,
+        this.sectorsService.getSector(sectorSlug).pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        ),
         this.store.pipe(select(selectIsLoggedIn), take(1)),
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, sector, isLoggedIn]) => {
@@ -146,4 +132,6 @@ export class SectorComponent implements OnInit {
       });
     });
   }
+
+  protected readonly environment = environment;
 }

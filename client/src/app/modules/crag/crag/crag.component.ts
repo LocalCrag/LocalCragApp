@@ -27,8 +27,6 @@ export class CragComponent implements OnInit {
   public breadcrumbs: MenuItem[] | undefined;
   public breadcrumbHome: MenuItem | undefined;
 
-  public readonly environment = environment;  // Make available in scope
-
   constructor(
     private cragsService: CragsService,
     private regionService: RegionService,
@@ -115,4 +113,6 @@ export class CragComponent implements OnInit {
       });
     });
   }
+
+  protected readonly environment = environment;
 }

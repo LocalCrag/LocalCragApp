@@ -12,7 +12,7 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 /**
  * Component that lists all crags in an area.
