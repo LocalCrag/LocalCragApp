@@ -43,7 +43,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
-import {ArchiveButtonComponent} from "../../archive/archive-button/archive-button.component";
+import { ArchiveButtonComponent } from "../../archive/archive-button/archive-button.component";
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-line-list',
@@ -72,6 +73,7 @@ import {ArchiveButtonComponent} from "../../archive/archive-button/archive-butto
     AccordionModule,
     TodoButtonComponent,
     ArchiveButtonComponent,
+    GymModeDirective,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
