@@ -43,7 +43,6 @@ export class SectorComponent implements OnInit {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {

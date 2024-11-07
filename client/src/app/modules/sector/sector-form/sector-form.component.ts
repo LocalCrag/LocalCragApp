@@ -75,14 +75,14 @@ export class SectorFormComponent implements OnInit {
   ngOnInit() {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-
     this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
       this.parentSecret = crag.secret;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
         this.sectorForm.disable();
-        this.sectorsService.getSector(sectorSlug)
+        this.sectorsService
+          .getSector(sectorSlug)
           .pipe(
             catchError((e) => {
               if (e.status === 404) {
