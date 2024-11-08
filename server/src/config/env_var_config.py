@@ -23,6 +23,7 @@ def overwrite_config_by_env_vars(app):
         "FRONTEND_HOST",
         "SENTRY_DSN",
         "SENTRY_ENABLED",
+        "CRON_ACCESS_TOKEN",
     ]
     for var_name in var_names:
         if os.environ.get(var_name):

@@ -1,4 +1,6 @@
-from flask import jsonify, request
+import threading
+
+from flask import jsonify, request, copy_current_request_context
 from flask.views import MethodView
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -41,6 +43,12 @@ class GetRanking(MethodView):
 
 class UpdateRanking(MethodView):
 
+    # @cron_job_token_required
     def get(self):
-        build_rankings()
-        return jsonify({"message": "Rankings updated"}), 200
+        @copy_current_request_context
+        def start_ranking_calculation():
+            build_rankings()
+
+        thread = threading.Thread(target=start_ranking_calculation)
+        thread.start()
+        return jsonify({"message": "Ranking calculation started"}), 200
