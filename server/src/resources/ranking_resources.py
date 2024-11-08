@@ -1,6 +1,6 @@
 import threading
 
-from flask import jsonify, request, copy_current_request_context
+from flask import copy_current_request_context, jsonify, request
 from flask.views import MethodView
 
 from error_handling.http_exceptions.bad_request import BadRequest

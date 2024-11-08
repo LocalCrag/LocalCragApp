@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import request, current_app
+from flask import current_app, request
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from models.user import User
