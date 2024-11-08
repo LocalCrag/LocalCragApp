@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -30,7 +30,7 @@ import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
-import {PasswordModule} from 'primeng/password';
+import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'lc-instance-settings-form',
