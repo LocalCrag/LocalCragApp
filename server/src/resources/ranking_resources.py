@@ -9,6 +9,7 @@ from extensions import db
 from marshmallow_schemas.ranking_schema import ranking_schema
 from models.enums.line_type_enum import LineTypeEnum
 from models.ranking import Ranking
+from util.auth import cron_job_token_required
 from util.scripts.build_rankings import build_rankings
 from util.secret_spots_auth import get_show_secret
 
@@ -43,7 +44,7 @@ class GetRanking(MethodView):
 
 class UpdateRanking(MethodView):
 
-    # @cron_job_token_required
+    @cron_job_token_required
     def get(self):
         @copy_current_request_context
         def start_ranking_calculation():
