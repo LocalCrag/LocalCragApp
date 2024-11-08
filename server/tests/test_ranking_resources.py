@@ -95,8 +95,13 @@ def test_successful_update_ranking(client, admin_token):
         rv = client.get("/api/ranking?line_type=BOULDER")
         if rv.status_code == 200:
             res = rv.json
-            if len(res) == 1 and res[0]["user"]["slug"] == "admin-admin" and res[0]["top10"] == 23 and res[0][
-                "top50"] == 23 and res[0]["totalCount"] == 2:
+            if (
+                len(res) == 1
+                and res[0]["user"]["slug"] == "admin-admin"
+                and res[0]["top10"] == 23
+                and res[0]["top50"] == 23
+                and res[0]["totalCount"] == 2
+            ):
                 break
         time.sleep(wait_time)
         total_wait_time += wait_time
