@@ -43,14 +43,14 @@ class GetGalleryImages(MethodView):
             if tag_object_type == "Crag":
                 tag_object_model = Crag
             tag_object_id = tag_object_model.get_id_by_slug(tag_object_slug)
-            # Get the images for the object
+
+            # Get the tag and all child tags (even if the parent tag does not actually exist yet)
             tag = Tag.query.filter_by(object_type=tag_object_type, object_id=tag_object_id).first()
+            tags = get_child_tags(tag_object_type, tag_object_id)
+            if tag:
+                tags.append(tag)
 
-            # If the tag does not exist yet, gallery must be empty, return an empty list
-            if not tag:
-                return jsonify([]), 200
-
-            tags = [tag] + get_child_tags(tag)
+            # Get all images that have at least one of the tags
             images = (
                 db.session.query(GalleryImage)
                 .join(GalleryImage.tags)
