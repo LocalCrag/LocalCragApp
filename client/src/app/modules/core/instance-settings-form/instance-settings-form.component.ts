@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -30,6 +30,7 @@ import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
+import {PasswordModule} from 'primeng/password';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -49,9 +50,11 @@ import { getRgbObject } from '../../../utility/misc/color';
     TranslocoDirective,
     ColorPickerModule,
     DividerModule,
+    PasswordModule,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class InstanceSettingsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
