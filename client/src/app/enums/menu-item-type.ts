@@ -6,4 +6,5 @@ export enum MenuItemType {
   NEWS = 'NEWS' /** t(NEWS) **/,
   YOUTUBE = 'YOUTUBE' /** t(YOUTUBE) **/,
   INSTAGRAM = 'INSTAGRAM' /** t(INSTAGRAM) **/,
+  GALLERY = 'GALLERY' /** t(GALLERY) **/,
 }

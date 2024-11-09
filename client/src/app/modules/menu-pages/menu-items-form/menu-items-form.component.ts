@@ -73,6 +73,7 @@ export class MenuItemsFormComponent implements OnInit {
     MenuItemType.TOPO,
     MenuItemType.ASCENTS,
     MenuItemType.RANKING,
+    MenuItemType.GALLERY,
     MenuItemType.NEWS,
     MenuItemType.YOUTUBE,
     MenuItemType.INSTAGRAM,

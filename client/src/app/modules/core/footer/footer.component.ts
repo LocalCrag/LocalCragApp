@@ -55,35 +55,35 @@ export class FooterComponent implements OnInit {
           case MenuItemType.MENU_PAGE:
             this.menuItems.push({
               title: menuItem.menuPage.title,
-              routerLink: 'pages/' + menuItem.menuPage.slug,
+              routerLink: '/pages/' + menuItem.menuPage.slug,
               link: null,
             });
             break;
           case MenuItemType.NEWS:
             this.menuItems.push({
               title: this.translocoService.translate('menu.news'),
-              routerLink: 'news',
+              routerLink: '/news',
               link: null,
             });
             break;
           case MenuItemType.TOPO:
             this.menuItems.push({
               title: this.translocoService.translate('menu.topo'),
-              routerLink: 'topo',
+              routerLink: '/topo',
               link: null,
             });
             break;
           case MenuItemType.ASCENTS:
             this.menuItems.push({
               title: this.translocoService.translate('menu.ascents'),
-              routerLink: 'ascents',
+              routerLink: '/ascents',
               link: null,
             });
             break;
           case MenuItemType.RANKING:
             this.menuItems.push({
               title: this.translocoService.translate('menu.ranking'),
-              routerLink: 'ranking',
+              routerLink: '/ranking',
               link: null,
             });
             break;
@@ -99,6 +99,13 @@ export class FooterComponent implements OnInit {
               title: this.translocoService.translate('menu.instagram'),
               routerLink: null,
               link: instagramUrl,
+            });
+            break;
+          case MenuItemType.GALLERY:
+            this.menuItems.push({
+              title: this.translocoService.translate('menu.gallery'),
+              routerLink: '/topo/gallery',
+              link: null,
             });
             break;
         }
