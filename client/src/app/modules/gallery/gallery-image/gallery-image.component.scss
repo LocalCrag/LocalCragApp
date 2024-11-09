@@ -56,22 +56,28 @@ lc-gallery-image {
 
     .p-card-header {
       img {
-        width: auto;
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        object-position: center;
       }
 
       .image-container {
         height: 300px;
         width: 100%;
-        background-size: cover;
-        background-position: center;
         display: flex;
 
         p-image {
           width: 100%;
           height: 100%;
-          object-fit: contain;
           display: flex;
           justify-content: center;
+
+          .p-image{
+            width: 100%;
+            height: 100%;
+          }
+
         }
       }
     }
