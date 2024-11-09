@@ -174,6 +174,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.map.fitBounds(bounds, {
       duration: 0,
       padding: { top: 50, bottom: 50, left: 25, right: 25 },
+      maxZoom: 18,
     });
   }
 

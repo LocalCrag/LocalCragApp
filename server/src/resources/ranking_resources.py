@@ -1,4 +1,6 @@
-from flask import jsonify, request
+import threading
+
+from flask import copy_current_request_context, jsonify, request
 from flask.views import MethodView
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -7,6 +9,7 @@ from extensions import db
 from marshmallow_schemas.ranking_schema import ranking_schema
 from models.enums.line_type_enum import LineTypeEnum
 from models.ranking import Ranking
+from util.auth import cron_job_token_required
 from util.scripts.build_rankings import build_rankings
 from util.secret_spots_auth import get_show_secret
 
@@ -41,6 +44,12 @@ class GetRanking(MethodView):
 
 class UpdateRanking(MethodView):
 
+    @cron_job_token_required
     def get(self):
-        build_rankings()
-        return jsonify({"message": "Rankings updated"}), 200
+        @copy_current_request_context
+        def start_ranking_calculation():
+            build_rankings()
+
+        thread = threading.Thread(target=start_ranking_calculation)
+        thread.start()
+        return jsonify({"message": "Ranking calculation started"}), 200

@@ -34,3 +34,4 @@ class DefaultConfig(object):
     SPACES_ADDRESSING = "virtual"
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
+    CRON_ACCESS_TOKEN = "thisTokenIsNotSecretChangeIt"
