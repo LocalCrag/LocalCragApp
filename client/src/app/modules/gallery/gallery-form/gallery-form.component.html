@@ -1,10 +1,10 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
   <p-messages severity="info">
     <ng-template pTemplate *ngIf="!editMode">
-      {{ t("addGalleryImageDescription") }}
+      <div [innerHTML]="t('addGalleryImageDescription')"></div>
     </ng-template>
     <ng-template pTemplate *ngIf="editMode">
-      {{ t("editGalleryImageDescription") }}
+      <div [innerHTML]="t('editGalleryImageDescription')"></div>
     </ng-template>
   </p-messages>
 

@@ -102,7 +102,7 @@
   "map.map": "Karte",
   "linePathEditor.undo": "Rückgängig",
   "linePathEditor.restart": "Neu starten",
-  "gallery.galleryForm.addGalleryImageDescription": "Hier kannst du ein Bild für die Galerie hochladen. Tagge es mit Linien, Gebieten oder Benutzern, um es in den entsprechenden Galerien anzuzeigen.",
+  "gallery.galleryForm.addGalleryImageDescription": "Lade ein Bild hoch und ordne es mittels Tags zu, so dass es in den dazugehörigen Galerien angezeigt wird.<br><br>Konkrete Boulder benötigen einen Tag mit dem <strong>Namen der Linie</strong> und ggf. dem <strong>Kletterer</strong>.\nSonstige Fotos (z.B. Panoramabilder) benötigen vor allem einen Tag für den <strong>Bereichsnamen</strong>, in dem sie aufgenommen wurden.",
   "gallery.galleryForm.editGalleryImageDescription": "Bearbeite die Tags des Bildes, um es in den entsprechenden Galerien anzuzeigen.",
   "gallery.galleryForm.galleryImageLabel": "Bild",
   "gallery.galleryForm.required": "Pflichtfeld",
