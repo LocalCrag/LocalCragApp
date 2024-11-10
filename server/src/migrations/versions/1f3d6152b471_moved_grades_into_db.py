@@ -22,7 +22,7 @@ def upgrade():
     op.create_table(
         "grades",
         sa.Column("name", sa.String(length=32), nullable=False),
-        sa.Column("type", postgresql.ENUM(name="linetypeenum", create_type=False)  , nullable=False),
+        sa.Column("type", postgresql.ENUM(name="linetypeenum", create_type=False), nullable=False),
         sa.Column("grades", postgresql.JSON(astext_type=sa.Text()), nullable=False),
         sa.PrimaryKeyConstraint("name", "type"),
     )

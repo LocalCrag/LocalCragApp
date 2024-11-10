@@ -34,6 +34,9 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default="0")
     map_markers = db.relationship("MapMarker", back_populates="crag")
+    default_boulder_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
+    default_sport_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
+    default_trad_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
 
     @hybrid_property
     def ascent_count(self):
