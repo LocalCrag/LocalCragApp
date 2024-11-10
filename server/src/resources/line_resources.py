@@ -13,7 +13,7 @@ from marshmallow_schemas.line_schema import (
 )
 from models.area import Area
 from models.crag import Crag
-from models.grades import get_grade_value
+from models.scale import get_grade_value
 from models.line import Line
 from models.sector import Sector
 from models.user import User

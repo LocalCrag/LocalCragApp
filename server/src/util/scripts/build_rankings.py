@@ -3,7 +3,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from extensions import db
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
-from models.grades import get_grade_value
+from models.scale import get_grade_value
 from models.line import Line
 from models.ranking import Ranking
 from models.user import User

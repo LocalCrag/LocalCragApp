@@ -1,4 +1,4 @@
-from util.scripts.add_grades import add_grades
+from util.scripts.add_scales import add_scales
 from util.scripts.add_initial_instance_settings import add_initial_instance_settings
 from util.scripts.add_region import add_region
 from util.scripts.add_superadmin import add_superadmin
@@ -10,7 +10,7 @@ def setup_database(down=False):
     """
     scripts = [
         add_superadmin,
-        add_grades,
+        add_scales,
         add_region,
         add_initial_instance_settings,
     ]

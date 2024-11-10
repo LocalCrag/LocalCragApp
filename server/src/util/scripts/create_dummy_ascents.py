@@ -6,7 +6,7 @@ from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
-from models.grades import GRADES
+from models.scale import GRADES
 from models.user import User
 
 

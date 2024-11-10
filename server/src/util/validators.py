@@ -1,4 +1,4 @@
-from models.grades import GRADES
+from models.scale import GRADES
 
 
 def cross_validate_grade(grade_name, grade_scale, line_type):

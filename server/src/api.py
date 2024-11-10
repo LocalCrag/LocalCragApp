@@ -35,7 +35,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.grades_resources import GetGradesList, GetGrades, CreateGrades, UpdateGrades, DeleteGrades
+from resources.grades_resources import GetScales, GetScale, CreateScale, UpdateScale, DeleteScale
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,
@@ -345,11 +345,11 @@ def configure_api(app):
     archive_bp.add_url_rule("", view_func=SetArchived.as_view("set_archived"))
     app.register_blueprint(archive_bp, url_prefix="/api/archive")
 
-    # Grades API
-    grades_bp = Blueprint("grades", __name__)
-    grades_bp.add_url_rule("", view_func=GetGradesList.as_view("get_grades_list"))
-    grades_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=GetGrades.as_view("get_grades"))
-    grades_bp.add_url_rule("", view_func=CreateGrades.as_view("create_grades"))
-    grades_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateGrades.as_view("update_grades"))
-    grades_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=DeleteGrades.as_view("delete_grades"))
-    app.register_blueprint(grades_bp, url_prefix="/api/grades")
+    # Scale API
+    scale_bp = Blueprint("scales", __name__)
+    scale_bp.add_url_rule("", view_func=GetScales.as_view("get_scales"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=GetScale.as_view("get_scale"))
+    scale_bp.add_url_rule("", view_func=CreateScale.as_view("create_scale"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateScale.as_view("update_scale"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=DeleteScale.as_view("delete_scale"))
+    app.register_blueprint(scale_bp, url_prefix="/api/scales")

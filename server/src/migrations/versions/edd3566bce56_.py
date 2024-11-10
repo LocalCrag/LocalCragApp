@@ -12,7 +12,7 @@ from sqlalchemy import orm
 from sqlalchemy.orm import declarative_base
 
 from models.enums.line_type_enum import LineTypeEnum
-from models.grades import get_grade_value
+from models.scale import get_grade_value
 
 # revision identifiers, used by Alembic.
 revision = "edd3566bce56"

@@ -13,7 +13,7 @@ from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
-from models.grades import get_grade_value
+from models.scale import get_grade_value
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo

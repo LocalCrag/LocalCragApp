@@ -6,93 +6,95 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.conflict import Conflict
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from marshmallow_schemas.grades_schema import grades_list_schema, grades_schema
+from marshmallow_schemas.scale_schema import scale_schema, scales_schema
 from messages.messages import ResponseMessage
-from models.grades import Grades
+from models.scale import Scale
 from models.line import Line
 from util.security_util import check_auth_claims
-from webargs_schemas.grades_args import grades_args
+from webargs_schemas.scale_args import scale_args
 
 
-class GetGradesList(MethodView):
+class GetScales(MethodView):
     def get(self):
-        grades = Grades.query.all()
+        scale = Scale.query.all()
 
-        return jsonify(grades_list_schema.dump(grades)), 200
+        return jsonify(scales_schema.dump(scale)), 200
 
 
-class GetGrades(MethodView):
+class GetScale(MethodView):
     def get(self, line_type, name):
-        grades = Grades.query.filter_by(name=name, type=line_type).first()
+        scale = Scale.query.filter_by(name=name, type=line_type).first()
+        if scale is None:
+            raise NotFound()
 
-        return jsonify(grades_schema.dump(grades)), 200
+        return jsonify(scale_schema.dump(scale)), 200
 
 
-class CreateGrades(MethodView):
+class CreateScale(MethodView):
     @jwt_required()
     @check_auth_claims(admin=True)
     def post(self):
-        grades_data = parser.parse(grades_args, request)
+        scale_data = parser.parse(scale_args, request)
 
-        grades = Grades()
-        grades.name = grades_data["name"]
-        grades.type = grades_data["type"]
-        grades.grades = grades_data["grades"]
-        db.session.add(grades)
+        scale = Scale()
+        scale.name = scale_data["name"]
+        scale.type = scale_data["type"]
+        scale.grades = scale_data["grades"]
+        db.session.add(scale)
         db.session.commit()
 
-        return jsonify(grades_schema.dump(grades)), 201
+        return jsonify(scale_schema.dump(scale)), 201
 
 
-class UpdateGrades(MethodView):
+class UpdateScale(MethodView):
     @jwt_required()
     @check_auth_claims(admin=True)
     def put(self, line_type, name):
-        grades: Grades | None = Grades.query.filter_by(name=name, type=line_type).first()
-        if grades is None:
+        scale: Scale | None = Scale.query.filter_by(name=name, type=line_type).first()
+        if scale is None:
             raise NotFound()
 
-        grades_data = parser.parse(grades_args, request)
+        scale_data = parser.parse(scale_args, request)
 
         lines = Line.query.filter(Line.grade_scale == name, Line.type == line_type).all()
 
         # Line Type may only be changed if no lines use this scale
-        if str(grades.type) != str(grades_data["type"]) and len(lines) > 0:
-            raise Conflict(ResponseMessage.CANNOT_CHANGE_GRADES_CONFLICTING_LINES.value)
+        if str(scale.type) != str(scale_data["type"]) and len(lines) > 0:
+            raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
         # All values set on lines must still be there
-        scale = {g["value"]: g["name"] for g in grades_data["grades"]}
-        values = set(scale.keys())
+        grades = {s["value"]: s["name"] for s in scale_data["grades"]}
+        values = set(grades.keys())
         for line in lines:
             if line.grade_value not in values:
-                raise Conflict(ResponseMessage.CANNOT_CHANGE_GRADES_CONFLICTING_LINES.value)
+                raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
-        grades.name = grades_data["name"]
-        grades.type = grades_data["type"]
-        grades.grades = grades_data["grades"]
+        scale.name = scale_data["name"]
+        scale.type = scale_data["type"]
+        scale.grades = scale_data["grades"]
 
         for line in lines:
-            line.grade_scale = grades.name
-            line.grade_name = scale[line.grade_value]
+            line.grade_scale = scale.name
+            line.grade_name = grades[line.grade_value]
             db.session.add(line)
 
-        db.session.add(grades)
+        db.session.add(scale)
         db.session.commit()
 
-        return jsonify(grades_schema.dump(grades)), 200
+        return jsonify(scale_schema.dump(scale)), 200
 
 
-class DeleteGrades(MethodView):
+class DeleteScale(MethodView):
     @jwt_required()
     @check_auth_claims(admin=True)
     def delete(self, line_type, name):
-        grades = Grades.query.filter_by(name=name, type=line_type).first()
-        if grades is None:
+        scale = Scale.query.filter_by(name=name, type=line_type).first()
+        if scale is None:
             raise NotFound()
         if Line.query.filter(Line.grade_scale == name, Line.type == line_type).count() > 0:
-            raise Conflict(ResponseMessage.CANNOT_CHANGE_GRADES_CONFLICTING_LINES.value)
+            raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
-        db.session.delete(grades)
+        db.session.delete(scale)
         db.session.commit()
 
         return jsonify(None), 204
