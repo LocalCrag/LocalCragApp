@@ -12,7 +12,6 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Router } from '@angular/router';
 
 /**
  * Component that lists all crags in an area.
@@ -40,7 +39,6 @@ export class CragListComponent implements OnInit {
     private store: Store,
     private dialogService: DialogService,
     private translocoService: TranslocoService,
-    private router: Router,
   ) {}
 
   /**
@@ -59,10 +57,6 @@ export class CragListComponent implements OnInit {
       this.cragsService.getCrags(),
       this.translocoService.load(`${environment.language}`),
     ]).subscribe(([crags]) => {
-      if (crags.length > 0 && crags[0].slug == environment.skippedSlug) {
-        this.router.navigate(['topo', environment.skippedSlug, 'sectors'], { skipLocationChange: true });
-        return;
-      }
       this.crags = crags;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [

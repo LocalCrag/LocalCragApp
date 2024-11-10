@@ -63,6 +63,8 @@ import { SectorRankingComponent } from '../sector/sector-ranking/sector-ranking.
 import { TodoListComponent } from '../todo/todo-list/todo-list.component';
 import { SentryTestComponent } from './sentry-test/sentry-test.component';
 import { MapComponent } from '../maps/map/map.component';
+import { skipHierarchy } from '../../guards/skip-hierarchy';
+import { environment } from '../../../environments/environment';
 
 const routes: Routes = [
   {
@@ -306,6 +308,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
+        canActivate: [skipHierarchy(1, ['/topo'])],
         children: [
           {
             path: '',
@@ -316,6 +319,7 @@ const routes: Routes = [
       },
       {
         path: 'crags',
+        canActivate: [skipHierarchy(1, ['/topo', environment.skippedSlug], ['sectors'], false)],
         children: [
           {
             path: '',
@@ -326,6 +330,7 @@ const routes: Routes = [
       },
       {
         path: 'lines',
+        canActivate: [skipHierarchy(1, ['/topo'], ['lines'])],
         children: [
           {
             path: '',
@@ -336,6 +341,7 @@ const routes: Routes = [
       },
       {
         path: 'map',
+        canActivate: [skipHierarchy(1, ['/topo'])],  // No level below corresponding to map
         children: [
           {
             path: '',
@@ -346,6 +352,7 @@ const routes: Routes = [
       },
       {
         path: 'rules',
+        canActivate: [skipHierarchy(1, ['/topo'], ['rules'])],
         children: [
           {
             path: '',
@@ -360,6 +367,7 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
+        canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
         children: [
           {
             path: '',
@@ -370,6 +378,7 @@ const routes: Routes = [
       },
       {
         path: 'ranking',
+        canActivate: [skipHierarchy(1, ['/topo'], ['ranking'])],
         children: [
           {
             path: '',
@@ -383,7 +392,7 @@ const routes: Routes = [
   {
     path: 'topo/edit-region',
     component: RegionFormComponent,
-    canActivate: [isModerator],
+    canActivate: [isModerator, skipHierarchy(1, ['/topo'], ['edit'])],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
@@ -391,7 +400,7 @@ const routes: Routes = [
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
-    canActivate: [isModerator],
+    canActivate: [isModerator, skipHierarchy(1, ['/topo', environment.skippedSlug], ['create-sector'], false)],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
@@ -406,6 +415,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
+        canActivate: [skipHierarchy(2, ['/topo'])],
         children: [
           {
             path: '',
@@ -419,6 +429,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
+            canActivate: [skipHierarchy(2, ['/topo', environment.skippedSlug, environment.skippedSlug], ['areas'], false)],
             component: SectorListComponent,
             outlet: 'cragContent',
           },
@@ -426,6 +437,7 @@ const routes: Routes = [
       },
       {
         path: 'lines',
+        canActivate: [skipHierarchy(2, ['/topo'], ['lines'])],
         children: [
           {
             path: '',
@@ -436,6 +448,7 @@ const routes: Routes = [
       },
       {
         path: 'rules',
+        canActivate: [skipHierarchy(2, ['/topo'], ['rules'])],
         children: [
           {
             path: '',
@@ -450,6 +463,7 @@ const routes: Routes = [
       },
       {
         path: 'ascents',
+        canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
         children: [
           {
             path: '',
@@ -460,6 +474,7 @@ const routes: Routes = [
       },
       {
         path: 'ranking',
+        canActivate: [skipHierarchy(2, ['/topo'], ['ranking'])],
         children: [
           {
             path: '',
@@ -473,7 +488,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/edit',
     component: CragFormComponent,
-    canActivate: [isModerator],
+    canActivate: [isModerator, skipHierarchy(2, ['/topo'], ['edit'])],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
@@ -481,7 +496,7 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
-    canActivate: [isModerator],
+    canActivate: [isModerator, skipHierarchy(2, ['/topo', environment.skippedSlug, environment.skippedSlug], ['create-area'], false)],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },

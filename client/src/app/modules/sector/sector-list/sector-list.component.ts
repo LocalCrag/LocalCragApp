@@ -8,7 +8,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PrimeIcons, SelectItem } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -42,7 +42,6 @@ export class SectorListComponent implements OnInit {
     private dialogService: DialogService,
     private store: Store,
     private translocoService: TranslocoService,
-    private router: Router,
   ) {}
 
   /**
@@ -67,10 +66,6 @@ export class SectorListComponent implements OnInit {
       this.sectorsService.getSectors(this.cragSlug),
       this.translocoService.load(`${environment.language}`),
     ]).subscribe(([sectors]) => {
-      if (sectors.length > 0 && sectors[0].slug == environment.skippedSlug) {
-        this.router.navigate(['topo', this.cragSlug, environment.skippedSlug, 'areas'], { skipLocationChange: true });
-        return;
-      }
       this.sectors = sectors;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
