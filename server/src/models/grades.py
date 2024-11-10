@@ -1,7 +1,6 @@
 from sqlalchemy.dialects.postgresql import JSON
 
 from extensions import db
-from models.base_entity import BaseEntity
 from models.enums.line_type_enum import LineTypeEnum
 
 GRADES = {
@@ -83,13 +82,13 @@ class Grades(db.Model):
     __tablename__ = "grades"
 
     name = db.Column(db.String(32), nullable=False, primary_key=True)
-    line_type = db.Column(db.Enum(LineTypeEnum), nullable=False, primary_key=True)
+    type = db.Column(db.Enum(LineTypeEnum), nullable=False, primary_key=True)
     grades = db.Column(JSON, nullable=False)
 
 
 def get_grade_value(grade_name, grade_scale, line_type):
     # get_grade_value might be called very often, we should cache this
-    grades = Grades.query.filter(Grades.line_type == line_type, Grades.name == grade_scale).first()
+    grades = Grades.query.filter(Grades.type == line_type, Grades.name == grade_scale).first()
     for grade in grades:
         if grade["name"] == grade_name:
             return grade["value"]

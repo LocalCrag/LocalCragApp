@@ -39,6 +39,7 @@ from models.revoked_token import RevokedToken
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.scripts.add_grades import add_grades
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -228,6 +229,8 @@ def clean_uploads_after_all_tests():
 
 
 def fill_db_with_sample_data():
+    add_grades()
+
     user = User()
     user.email = "admin@localcrag.invalid.org"
     user.password = User.generate_hash("admin")
