@@ -21,25 +21,25 @@ def test_successful_create_gallery_image(client, user_token):
     expected_id = res["id"]
 
     # Check, that the image is now shown in the user's gallery
-    rv = client.get(f"/api/gallery?tag-object-type=User&tag-object-slug={user.slug}")
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=User&tag-object-slug={user.slug}")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 1
-    assert res[0]["id"] == expected_id
+    assert len(res["items"]) == 1
+    assert res["items"][0]["id"] == expected_id
 
     # Check, that the image is not shown in the line gallery of e.g. superspreader
-    rv = client.get(f"/api/gallery?tag-object-type=Line&tag-object-slug=super-spreader")
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug=super-spreader")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 1
-    assert res[0]["id"] != expected_id
+    assert len(res["items"]) == 1
+    assert res["items"][0]["id"] != expected_id
 
     # Check, that the main gallery shows the image
     rv = client.get("/api/gallery")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 3
-    all_ids = [r["id"] for r in res]
+    assert len(res["items"]) == 3
+    all_ids = [r["id"] for r in res["items"]]
     assert expected_id in all_ids
 
 
@@ -70,24 +70,26 @@ def test_get_gallery_images(client):
 
 
 def test_get_gallery_images_for_line(client):
-    rv = client.get("/api/gallery?tag-object-type=Line&tag-object-slug=super-spreader")
+    rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=super-spreader")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 1
-    assert res[0]["tags"][0]["objectType"] == "Line"
+    assert len(res["items"]) == 1
+    assert res["items"][0]["tags"][0]["objectType"] == "Line"
 
-    rv = client.get("/api/gallery?tag-object-type=Line&tag-object-slug=treppe")
+    rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=treppe")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 0
+    assert len(res["items"]) == 0
 
 
 def test_get_gallery_images_for_crag(client):
-    rv = client.get("/api/gallery?tag-object-type=Crag&tag-object-slug=brione")
+    rv = client.get("/api/gallery?page=1&tag-object-type=Crag&tag-object-slug=brione")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    all_object_types = [r["tags"][0]["objectType"] for r in res]  # Both have only 1 tag, so we can just take the first
+    assert len(res["items"]) == 2
+    all_object_types = [
+        r["tags"][0]["objectType"] for r in res["items"]
+    ]  # Both have only 1 tag, so we can just take the first
     assert "Crag" in all_object_types
     assert "Line" in all_object_types
 

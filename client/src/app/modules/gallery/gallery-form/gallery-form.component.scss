@@ -1,4 +1,8 @@
-:host {
+lc-gallery-form {
   display: block;
   max-width: 35rem;
+}
+
+.searchable-autocomplete .p-autocomplete-item {
+  padding: 0 !important;
 }

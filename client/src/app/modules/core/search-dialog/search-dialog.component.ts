@@ -13,6 +13,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { SearchableComponent } from '../searchable/searchable.component';
 
 @Component({
   selector: 'lc-search-dialog',
@@ -28,6 +29,7 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     MessagesModule,
     MessageModule,
+    SearchableComponent,
   ],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',

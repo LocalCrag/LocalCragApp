@@ -12,5 +12,10 @@ class GalleryImageSchema(ma.SQLAlchemySchema):
     tags = fields.Nested(tag_schema, many=True)
 
 
-gallery_images_schema = GalleryImageSchema(many=True)
+class PaginatedLinesSchema(ma.SQLAlchemySchema):
+    items = fields.List(fields.Nested(GalleryImageSchema()))
+    hasNext = fields.Boolean(attribute="has_next")
+
+
+paginated_gallery_images_schema = PaginatedLinesSchema()
 gallery_image_schema = GalleryImageSchema()

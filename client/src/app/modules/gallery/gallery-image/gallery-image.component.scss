@@ -1,21 +1,22 @@
 lc-gallery-image {
   .speed-dial-container {
     position: relative;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
   }
 
   .p-speeddial {
     position: absolute;
     top: 2px; // Button is disaligned for some reason
     left: 0;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
   }
 
   .p-speeddial-button {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 1rem 0;
 
     .p-button-icon {
       font-size: 0.75rem;
@@ -23,8 +24,8 @@ lc-gallery-image {
   }
 
   .p-speeddial-action {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     font-size: 0.75rem;
 
     .p-speeddial-action-icon {
@@ -37,14 +38,6 @@ lc-gallery-image {
     display: flex;
     justify-content: end;
     gap: 0.25rem;
-
-    lc-tag .p-tag-value {
-      display: block;
-      max-width: 150px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
   }
 
   .gallery-image-card {
@@ -56,22 +49,27 @@ lc-gallery-image {
 
     .p-card-header {
       img {
-        width: auto;
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        object-position: center;
       }
 
       .image-container {
         height: 300px;
         width: 100%;
-        background-size: cover;
-        background-position: center;
         display: flex;
 
         p-image {
           width: 100%;
           height: 100%;
-          object-fit: contain;
           display: flex;
           justify-content: center;
+
+          .p-image {
+            width: 100%;
+            height: 100%;
+          }
         }
       }
     }

@@ -8,7 +8,7 @@ from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.gallery_image_schema import (
     gallery_image_schema,
-    gallery_images_schema,
+    paginated_gallery_images_schema,
 )
 from models.area import Area
 from models.crag import Crag
@@ -29,6 +29,8 @@ class GetGalleryImages(MethodView):
     def get(self):
         tag_object_type = request.args.get("tag-object-type")
         tag_object_slug = request.args.get("tag-object-slug")
+        page = request.args.get("page") or 1
+        per_page = request.args.get("per_page") or 10
         if tag_object_type and tag_object_slug:
             # Get the object_id for the slug based on object type
             tag_object_model = None
@@ -51,16 +53,16 @@ class GetGalleryImages(MethodView):
                 tags.append(tag)
 
             # Get all images that have at least one of the tags
-            images = (
+            images_query = (
                 db.session.query(GalleryImage)
                 .join(GalleryImage.tags)
                 .filter(GalleryImage.tags.any(Tag.id.in_([t.id for t in tags])))
                 .order_by(GalleryImage.time_created.desc())
-                .all()
             )
         else:
-            images = GalleryImage.return_all(order_by=lambda: GalleryImage.time_created.desc())
-        return jsonify(gallery_images_schema.dump(images)), 200
+            images_query = db.session.query(GalleryImage).order_by(GalleryImage.time_created.desc())
+        paginated_images = db.paginate(images_query, page=int(page), per_page=per_page)
+        return jsonify(paginated_gallery_images_schema.dump(paginated_images)), 200
 
 
 def set_image_tags(image, tag_data):

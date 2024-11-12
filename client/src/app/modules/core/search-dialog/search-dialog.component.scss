@@ -50,55 +50,12 @@ lc-search-dialog {
     height: 1.5rem;
   }
 
-  .grade-circle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 100%;
-    background-color: #d0d0d0;
-    color: rgb(75, 85, 99);
-    font-size: 0.8rem;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 0.5rem;
-  }
-
-  p-avatar {
-    margin-right: 0.5rem;
-    height: 2rem;
-    width: 2rem;
-
-    .p-avatar {
-      margin-right: 0;
-    }
-  }
-
-  .search-result {
+  lc-searchable .search-result {
     border-radius: 0.5rem;
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    padding: 0.5rem;
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
 
     &:hover {
       cursor: pointer;
       background-color: var(--gray-100);
-    }
-
-    .search-result-description {
-      display: flex;
-      flex-direction: column;
-
-      .search-result-name {
-      }
-
-      .search-result-meta {
-        font-size: 0.6rem;
-      }
     }
   }
 }

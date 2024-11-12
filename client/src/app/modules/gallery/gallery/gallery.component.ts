@@ -3,9 +3,8 @@ import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { ObjectType } from '../../../models/tag';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { EMPTY } from 'rxjs';
 import { ImageModule } from 'primeng/image';
 import { NgForOf, NgIf, NgStyle } from '@angular/common';
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
@@ -23,6 +22,8 @@ import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
 import { MessagesModule } from 'primeng/messages';
+import { LoadingState } from '../../../enums/loading-state';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-gallery',
@@ -39,6 +40,7 @@ import { MessagesModule } from 'primeng/messages';
     GalleryImageSkeletonComponent,
     MessagesModule,
     NgIf,
+    InfiniteScrollModule,
   ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
@@ -46,9 +48,13 @@ import { MessagesModule } from 'primeng/messages';
 })
 @UntilDestroy()
 export class GalleryComponent implements OnInit {
-  public isLoading = false;
   public images: GalleryImage[] = [];
   public ref: DynamicDialogRef | undefined;
+  public hasNextPage = true;
+  public currentPage = 0;
+  public loadingStates = LoadingState;
+  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
+  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
 
   private objectSlug: string;
   private objectType: ObjectType;
@@ -63,18 +69,14 @@ export class GalleryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isLoading = true;
     this.route.data
       .pipe(
         untilDestroyed(this),
         switchMap((data) => {
           this.objectType = data['objectType'];
-          if (!this.objectType) {
-            return this.galleryService.getGalleryImages();
-          }
           return this.route.parent.parent.paramMap.pipe(
             untilDestroyed(this),
-            switchMap((params) => {
+            map((params) => {
               switch (this.objectType) {
                 case ObjectType.Crag:
                   this.objectSlug = params.get('crag-slug');
@@ -91,21 +93,52 @@ export class GalleryComponent implements OnInit {
                 case ObjectType.User:
                   this.objectSlug = params.get('user-slug');
               }
-              if (!this.objectSlug) {
-                return EMPTY;
-              }
-              return this.galleryService.getGalleryImages(
-                this.objectType,
-                this.objectSlug,
-              );
             }),
           );
         }),
       )
-      .subscribe((images: GalleryImage[]) => {
-        this.images = images;
-        this.isLoading = false;
+      .subscribe(() => {
+        this.loadFirstPage();
       });
+  }
+
+  loadFirstPage() {
+    this.currentPage = 0;
+    this.hasNextPage = true;
+    this.loadNextPage();
+  }
+
+  loadNextPage() {
+    if (
+      this.loadingFirstPage !== LoadingState.LOADING &&
+      this.loadingAdditionalPage !== LoadingState.LOADING &&
+      this.hasNextPage
+    ) {
+      this.currentPage += 1;
+      if (this.currentPage === 1) {
+        this.loadingFirstPage = LoadingState.LOADING;
+        this.images = [];
+      } else {
+        this.loadingAdditionalPage = LoadingState.LOADING;
+      }
+      const filters = [`page=${this.currentPage}`];
+      if (this.objectType) {
+        filters.push(`tag-object-type=${this.objectType}`);
+        filters.push(`tag-object-slug=${this.objectSlug}`);
+      }
+      const filterString = `?${filters.join('&')}`;
+      this.galleryService
+        .getGalleryImages(filterString)
+        .pipe(
+          map((images) => {
+            this.images.push(...images.items);
+            this.hasNextPage = images.hasNext;
+            this.loadingFirstPage = LoadingState.DEFAULT;
+            this.loadingAdditionalPage = LoadingState.DEFAULT;
+          }),
+        )
+        .subscribe();
+    }
   }
 
   addImage() {
