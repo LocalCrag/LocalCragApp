@@ -24,22 +24,22 @@ def test_successful_create_gallery_image(client, user_token):
     rv = client.get(f"/api/gallery?page=1&tag-object-type=User&tag-object-slug={user.slug}")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res['items']) == 1
-    assert res['items'][0]["id"] == expected_id
+    assert len(res["items"]) == 1
+    assert res["items"][0]["id"] == expected_id
 
     # Check, that the image is not shown in the line gallery of e.g. superspreader
     rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug=super-spreader")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res['items']) == 1
-    assert res['items'][0]["id"] != expected_id
+    assert len(res["items"]) == 1
+    assert res["items"][0]["id"] != expected_id
 
     # Check, that the main gallery shows the image
     rv = client.get("/api/gallery")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res['items']) == 3
-    all_ids = [r["id"] for r in res['items']]
+    assert len(res["items"]) == 3
+    all_ids = [r["id"] for r in res["items"]]
     assert expected_id in all_ids
 
 
@@ -87,7 +87,9 @@ def test_get_gallery_images_for_crag(client):
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 2
-    all_object_types = [r["tags"][0]["objectType"] for r in res["items"]]  # Both have only 1 tag, so we can just take the first
+    all_object_types = [
+        r["tags"][0]["objectType"] for r in res["items"]
+    ]  # Both have only 1 tag, so we can just take the first
     assert "Crag" in all_object_types
     assert "Line" in all_object_types
 
