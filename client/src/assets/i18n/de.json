@@ -107,7 +107,7 @@
   "gallery.galleryForm.galleryImageLabel": "Bild",
   "gallery.galleryForm.required": "Pflichtfeld",
   "gallery.galleryForm.tagsLabel": "Tags",
-  "gallery.galleryForm.tagsPlaceholder": "Line, User, ...",
+  "gallery.galleryForm.tagsPlaceholder": "Linie, User, ...",
   "gallery.galleryForm.min1TagRequired": "Für mindestens einen Tag hinzu",
   "gallery.galleryForm.addGalleryImageButtonLabel": "Bild hinzufügen",
   "gallery.galleryForm.editGalleryImageButtonLabel": "Bild speichern",

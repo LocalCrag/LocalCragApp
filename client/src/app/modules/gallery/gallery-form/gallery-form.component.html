@@ -28,12 +28,17 @@
         [appendTo]="'body'"
         [unique]="true"
         [dataKey]="'id'"
+        [panelStyleClass]="'searchable-autocomplete'"
         [placeholder]="t('tagsPlaceholder')"
         [optionLabel]="'name'"
         [suggestions]="searchablesSuggestions"
         (completeMethod)="loadTagSuggestions($event)"
         [multiple]="true"
-      />
+      >
+        <ng-template let-searchable pTemplate="item">
+          <lc-searchable [searchable]="searchable"></lc-searchable>
+        </ng-template>
+      </p-autoComplete>
       <small class="p-error" *lcIfError="'required'">{{
         t("min1TagRequired")
       }}</small>

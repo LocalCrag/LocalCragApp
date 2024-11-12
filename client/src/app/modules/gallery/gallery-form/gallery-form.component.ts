@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -33,6 +33,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { UsersService } from '../../../services/crud/users.service';
 import { map } from 'rxjs/operators';
+import { SearchableComponent } from '../../core/searchable/searchable.component';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -47,9 +48,11 @@ import { map } from 'rxjs/operators';
     MultiSelectModule,
     AutoCompleteModule,
     JsonPipe,
+    SearchableComponent,
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class GalleryFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
