@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { GalleryImage } from '../../models/gallery-image';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ObjectType } from '../../models/tag';
+import { Paginated } from '../../models/paginated';
 
 @Injectable({
   providedIn: 'root',
@@ -50,22 +50,13 @@ export class GalleryService {
   }
 
   public getGalleryImages(
-    objectType: ObjectType = null,
-    objectSlug: string = null,
-  ): Observable<GalleryImage[]> {
-    const params = new URLSearchParams();
-    if (objectType) {
-      params.set('tag-object-type', objectType);
-    }
-    if (objectSlug) {
-      params.set('tag-object-slug', objectSlug);
-    }
-    const filterString = params.toString() ? `?${params.toString()}` : '';
+    filterString: string,
+  ): Observable<Paginated<GalleryImage>> {
     return this.http
       .get(this.api.gallery.getList(filterString))
       .pipe(
-        map((galleryImageListJson: any) =>
-          galleryImageListJson.map(GalleryImage.deserialize),
+        map((payload) =>
+          Paginated.deserialize(payload, GalleryImage.deserialize),
         ),
       );
   }

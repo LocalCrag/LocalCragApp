@@ -80,7 +80,7 @@ class GetLines(MethodView):
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
-            # Order by Line.id as a tie breaker to prevent duplicate entries in paginate
+            # Order by Line.id as a tie-breaker to prevent duplicate entries in paginate
             query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
