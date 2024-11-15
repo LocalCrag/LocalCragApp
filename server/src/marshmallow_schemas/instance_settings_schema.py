@@ -23,6 +23,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     matomoSiteId = fields.String(attribute="matomo_site_id")
     maptilerApiKey = fields.String(attribute="maptiler_api_key")
     gymMode = fields.Boolean(attribute="gym_mode")
+    skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
 
 
 instance_settings_schema = InstanceSettingsSchema()

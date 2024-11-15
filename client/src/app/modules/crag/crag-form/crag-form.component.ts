@@ -218,4 +218,5 @@ export class CragFormComponent implements OnInit {
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
   protected readonly MapMarkerType = MapMarkerType;
+  protected readonly environment = environment;
 }

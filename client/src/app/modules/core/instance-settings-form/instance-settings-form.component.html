@@ -57,9 +57,30 @@
           </div>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
-          ><b>{{ t("menuSettings") }}</b></p-divider
-        >
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="skippedHierarchicalLayers">
+              {{ t("skippedHierarchicalLayersLabel") }}
+            </label>
+            <span class="pi pi-question-circle ml-2" [pTooltip]="t('skippedHierarchicalLayersDescription')" tooltipPosition="right"></span>
+          </div>
+          <p-dropdown
+            id="skippedHierarchicalLayers"
+            [options]="[
+            { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
+            { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
+            { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
+          ]"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="skippedHierarchicalLayers"
+            lcFormControl
+          ></p-dropdown>
+        </div>
+
+        <p-divider align="center" type="solid" class="mt-6 mb-2 block">
+          <b>{{ t("menuSettings") }}</b>
+        </p-divider>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="youtube-url">{{

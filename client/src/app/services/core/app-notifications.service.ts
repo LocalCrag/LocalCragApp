@@ -109,6 +109,14 @@ export class AppNotificationsService {
        * t(notifications.INSTANCE_SETTINGS_UPDATED_TITLE)
        * t(notifications.INSTANCE_SETTINGS_UPDATED_MESSAGE)
        **/
+      [
+        NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE_TITLE)
+       * t(notifications.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE_MESSAGE)
+       **/
       [NotificationIdentifier.MENU_ITEM_DELETED, NotificationType.SUCCESS],
       /**
        * t(notifications.MENU_ITEM_DELETED_TITLE)

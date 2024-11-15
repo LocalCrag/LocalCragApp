@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
@@ -79,10 +79,12 @@ export class AreaComponent implements OnInit {
         this.crag = crag;
         this.sector = sector;
         this.area = area;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
+        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
+          const components = [area, sector, crag].filter(e => e.slug != environment.skippedSlug).map(e => e.name);
           this.title.setTitle(
-            `${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
+            `${components.join(" / ")} - ${instanceSettings.instanceName}`,
           );
+          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
         });
         this.items = [
           {
@@ -121,17 +123,19 @@ export class AreaComponent implements OnInit {
         this.breadcrumbs = [
           {
             label: crag.name,
+            slug: crag.slug,
             routerLink: `/topo/${crag.slug}/sectors`,
           },
           {
             label: sector.name,
+            slug: sector.slug,
             routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
           },
           {
             label: area.name,
+            slug: area.slug,
           },
-        ];
-        this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
+        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
       });
     });
   }

@@ -13,7 +13,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
@@ -65,10 +65,12 @@ export class SectorComponent implements OnInit {
       ]).subscribe(([crag, sector, isLoggedIn]) => {
         this.crag = crag;
         this.sector = sector;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(
-            `${sector.name} / ${crag.name} - ${instanceName}`,
+        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
+          this.title.setTitle(cragSlug != environment.skippedSlug
+            ? `${sector.name} / ${crag.name} - ${instanceSettings.instanceName}`
+            : `${sector.name} - ${instanceSettings.instanceName}`,
           );
+          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
         });
         this.items = [
           {
@@ -118,14 +120,17 @@ export class SectorComponent implements OnInit {
         this.breadcrumbs = [
           {
             label: crag.name,
+            slug: crag.slug,
             routerLink: `/topo/${crag.slug}/sectors`,
           },
           {
             label: sector.name,
+            slug: sector.slug,
           },
-        ];
-        this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
+        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
       });
     });
   }
+
+  protected readonly environment = environment;
 }

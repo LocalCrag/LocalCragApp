@@ -30,7 +30,7 @@
               </div>
             </ng-template>
           </p-dropdown>
-          <div>
+          <div *isGymMode="true">
             <p-button
               label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
               [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"

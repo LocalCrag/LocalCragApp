@@ -12,7 +12,8 @@ import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-crag',
@@ -28,6 +29,7 @@ export class CragComponent implements OnInit {
 
   constructor(
     private cragsService: CragsService,
+    private regionService: RegionService,
     private translocoService: TranslocoService,
     private router: Router,
     private store: Store,
@@ -39,6 +41,7 @@ export class CragComponent implements OnInit {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
+
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
@@ -52,8 +55,9 @@ export class CragComponent implements OnInit {
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, isModerator]) => {
         this.crag = crag;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(`${crag.name} - ${instanceName}`);
+        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
+          this.title.setTitle(`${crag.name} - ${instanceSettings.instanceName}`);
+          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
         });
         this.items = [
           {
@@ -106,8 +110,9 @@ export class CragComponent implements OnInit {
             routerLink: `/topo/${crag.slug}`,
           },
         ];
-        this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
       });
     });
   }
+
+  protected readonly environment = environment;
 }

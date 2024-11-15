@@ -222,7 +222,7 @@
           ></lc-map-marker-form-array>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-column gap-2" lcControlGroup *ngIf="crag?.slug !== environment.skippedSlug">
           <label class="form-label" for="secret">{{
             t("cragOptionsLabel")
           }}</label>
@@ -269,7 +269,7 @@
           styleClass="p-button-danger"
           class="ml-3 responsive-button"
           [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
+          *ngIf="editMode && crag?.slug !== environment.skippedSlug"
         ></p-button>
         <p-confirmPopup></p-confirmPopup>
       </div>
