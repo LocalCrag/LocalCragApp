@@ -14,6 +14,7 @@ import { AngleRightIcon } from 'primeng/icons/angleright';
 import { Router } from '@angular/router';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
+import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
 
 @Component({
   selector: 'lc-header-menu-sub',
@@ -31,7 +32,6 @@ export class HeaderMenuSubComponent {
   @HostBinding('class.first-child')
   @Input()
   firstChild: boolean = false;
-  @Input() isMobile: boolean;
 
   @ViewChildren('menuItem') menuItems: QueryList<ElementRef>;
 
@@ -56,7 +56,7 @@ export class HeaderMenuSubComponent {
    * In non-mobile view, we handle the menu activate / deactivate via hover (mouseenter).
    */
   onMouseenter(item: ProcessedMenuItem, element: HTMLDivElement) {
-    if (!this.isMobile) {
+    if (window.innerWidth > MOBILE_BREAKPOINT_HEADER_MENU) {
       const itemElement = element.querySelector('lc-header-menu-sub');
       this.headerMenuService.setActive(item, itemElement as HTMLElement);
     }
@@ -66,7 +66,7 @@ export class HeaderMenuSubComponent {
    * In mobile view, we handle the menu activate / deactivate via click on the angle icons.
    */
   onAngleClick(item: ProcessedMenuItem) {
-    if (this.isMobile) {
+    if (window.innerWidth <= MOBILE_BREAKPOINT_HEADER_MENU) {
       this.headerMenuService.toggleActive(item);
     }
   }

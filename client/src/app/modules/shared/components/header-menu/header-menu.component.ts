@@ -1,11 +1,8 @@
 import {
   AfterContentInit,
-  AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ContentChildren,
-  ElementRef,
   HostListener,
   Input,
   OnChanges,
@@ -32,7 +29,7 @@ import { BarsIcon } from 'primeng/icons/bars';
   providers: [HeaderMenuService],
 })
 export class HeaderMenuComponent
-  implements AfterContentInit, OnChanges, OnInit, AfterViewInit
+  implements AfterContentInit, OnChanges, OnInit
 {
   @Input() model: MenuItem[];
 
@@ -40,20 +37,13 @@ export class HeaderMenuComponent
     | QueryList<PrimeTemplate>
     | undefined;
 
-  public processedModel: ProcessedMenuItem[];
-  public startTemplate: TemplateRef<any> | undefined;
-  public endTemplate: TemplateRef<any> | undefined;
-  public isMobile = false;
-  public mobileExpanded = false;
-  public overflowDetected = false;
+  processedModel: ProcessedMenuItem[];
+  startTemplate: TemplateRef<any> | undefined;
+  endTemplate: TemplateRef<any> | undefined;
+  isMobile = false;
+  mobileExpanded = false;
 
-  private resizeObserver!: ResizeObserver;
-
-  constructor(
-    private headerMenuService: HeaderMenuService,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef,
-  ) {}
+  constructor(private headerMenuService: HeaderMenuService) {}
 
   ngAfterContentInit() {
     this.templates?.forEach((item) => {
@@ -79,32 +69,6 @@ export class HeaderMenuComponent
     }
   }
 
-  /**
-   * Set the overflowDetected flag if the menu is overflowing.
-   */
-  setOverflowDetected() {
-    // Don't run if it's already detected. As the menu is not overflowing anymore
-    // after the mobile version is shown, this check is necessary.
-    if (!this.overflowDetected) {
-      const width = this.el.nativeElement.offsetWidth;
-      this.overflowDetected = width < this.el.nativeElement.scrollWidth;
-      if (this.overflowDetected) {
-        // Change detection needed as this happens after the regular cycle
-        this.cdr.detectChanges();
-      }
-    }
-  }
-
-  ngAfterViewInit() {
-    this.setOverflowDetected();
-    this.resizeObserver = new ResizeObserver((entries) => {
-      for (const _entry of entries) {
-        this.setOverflowDetected();
-      }
-    });
-    this.resizeObserver.observe(this.el.nativeElement);
-  }
-
   processItems(
     items: MenuItem[],
     parent: ProcessedMenuItem,
@@ -125,15 +89,11 @@ export class HeaderMenuComponent
 
   @HostListener('window:resize', ['$event.target.innerWidth'])
   onResize(width: number) {
-    // Reset overflow detection when the window is resized. Widths will be recalculated after
-    this.overflowDetected = false;
     this.isMobile = width <= MOBILE_BREAKPOINT_HEADER_MENU;
   }
 
   toggleMobileMenu(event) {
     event.stopPropagation();
-    this.mobileExpanded =
-      (this.isMobile || this.overflowDetected) && !this.mobileExpanded;
-    this.cdr.detectChanges();
+    this.mobileExpanded = this.isMobile && !this.mobileExpanded;
   }
 }
