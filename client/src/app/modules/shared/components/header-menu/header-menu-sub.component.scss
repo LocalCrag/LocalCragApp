@@ -119,6 +119,7 @@ lc-header-menu-sub {
   align-items: center;
   overflow-wrap: anywhere;
   hyphens: auto;
+  white-space: nowrap;
 
   &.no-sub-menu {
     padding: 0.75rem 1.25rem 0.75rem 1.25rem;

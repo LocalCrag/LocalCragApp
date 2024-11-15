@@ -3,14 +3,18 @@
     <ng-container *ngTemplateOutlet="startTemplate"></ng-container>
   </div>
   <BarsIcon
-    *ngIf="isMobile"
+    *ngIf="isMobile || overflowDetected"
     (click)="toggleMobileMenu($event)"
-    class="ml-2 mr-2"
+    class="ml-2 mr-2 bars"
   />
   <lc-header-menu-sub
+    [isMobile]="isMobile || overflowDetected"
     [model]="processedModel"
     [root]="true"
-    [ngClass]="{ 'is-mobile': isMobile, 'is-expanded': mobileExpanded }"
+    [ngClass]="{
+      'is-mobile': isMobile || overflowDetected,
+      'is-expanded': mobileExpanded,
+    }"
   ></lc-header-menu-sub>
   <div class="menubar-end" *ngIf="endTemplate">
     <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
