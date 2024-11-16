@@ -1,13 +1,10 @@
 import uuid
 
-from sqlalchemy import event
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Session
 from sqlalchemy_utils import generic_relationship
 
 from extensions import db
 from models.area import Area
-from models.crag import Crag
 from models.line import Line
 from models.sector import Sector
 
@@ -22,17 +19,11 @@ class Tag(db.Model):
     secret = db.Column(db.Boolean, default=False, server_default="0")
 
 
-@event.listens_for(Area, "after_update")
-@event.listens_for(Sector, "after_update")
-@event.listens_for(Crag, "after_update")
-@event.listens_for(Line, "after_update")
-def update_tag_secret_listener(mapper, connection, target):
-    with Session(db.engine) as separate_session:
-        tag = separate_session.query(Tag).filter_by(object=target).first()
-        if tag:
-            tag.secret = target.secret
-            separate_session.add(tag)
-            separate_session.commit()
+def update_tag_secret_property(target):
+    tag = db.session.query(Tag).filter_by(object=target).first()
+    if tag:
+        tag.secret = target.secret
+        db.session.add(tag)
 
 
 def get_child_tags(tag_object_type, tag_object_id):

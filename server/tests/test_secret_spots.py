@@ -1,6 +1,5 @@
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.file import File
-from models.user import User
 from tests.conftest import member_token
 
 
@@ -332,8 +331,6 @@ def test_secret_property_doesnt_change(client, moderator_token):
     assert res["secret"] == True
 
 
-
-
 def test_gallery_secret(client, moderator_token, member_token):
     # First create a secret line
     line_data = {
@@ -400,3 +397,16 @@ def test_gallery_secret(client, moderator_token, member_token):
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 0
+
+    # Set the line public
+    line_data["secret"] = False
+    rv = client.put("/api/lines/" + line_slug, token=moderator_token, json=line_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["secret"] == False
+
+    # Anonymous users can now see the image
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug={line_slug}")
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 1
