@@ -28,7 +28,7 @@ lc-header-menu-sub {
     flex-direction: row;
   }
 
-  &.root > .item > .item-wrapper > .item-content {
+  &.root:not(.is-mobile) > .item > .item-wrapper > .item-content {
     white-space: nowrap;
   }
 
