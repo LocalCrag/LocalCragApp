@@ -82,7 +82,7 @@ def db_session():
         transaction = connection.begin()
         saved_session = db.session
         db.session = scoped_session(sessionmaker(bind=connection))
-        # We need to re-register all handler, as we change the session
+        # We need to re-register all handlers, as we change the session
         listen(db.session, "before_flush", update_slugs)
         listen(db.session, "before_flush", update_searchables)
         listen(db.session, "after_flush", create_searchables)

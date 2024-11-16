@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from sqlalchemy import true
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.not_found import NotFound
@@ -12,12 +13,13 @@ from marshmallow_schemas.gallery_image_schema import (
 )
 from models.area import Area
 from models.crag import Crag
-from models.gallery_image import GalleryImage
+from models.gallery_image import GalleryImage, gallery_image_tags
 from models.line import Line
 from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
-from util.generic_relationships import check_object_exists
+from util.generic_relationships import check_object_exists, get_object_secret
+from util.secret_spots_auth import get_show_secret
 from webargs_schemas.gallery_image_args import (
     gallery_image_post_args,
     gallery_image_put_args,
@@ -31,6 +33,7 @@ class GetGalleryImages(MethodView):
         tag_object_slug = request.args.get("tag-object-slug")
         page = request.args.get("page") or 1
         per_page = request.args.get("per_page") or 10
+
         if tag_object_type and tag_object_slug:
             # Get the object_id for the slug based on object type
             tag_object_model = None
@@ -58,9 +61,24 @@ class GetGalleryImages(MethodView):
                 .join(GalleryImage.tags)
                 .filter(GalleryImage.tags.any(Tag.id.in_([t.id for t in tags])))
                 .order_by(GalleryImage.time_created.desc())
+                .distinct()
             )
         else:
-            images_query = db.session.query(GalleryImage).order_by(GalleryImage.time_created.desc())
+            images_query = (
+                db.session.query(GalleryImage)
+                .join(GalleryImage.tags)
+                .order_by(GalleryImage.time_created.desc())
+                .distinct()
+            )
+
+        if not get_show_secret():
+            secret_images_subquery = (
+                db.session.query(gallery_image_tags.c.gallery_image_id)
+                .join(Tag, gallery_image_tags.c.tag_id == Tag.id)
+                .filter(Tag.secret == true())
+            )
+            images_query = images_query.filter(~GalleryImage.id.in_(secret_images_subquery))
+
         paginated_images = db.paginate(images_query, page=int(page), per_page=per_page)
         return jsonify(paginated_gallery_images_schema.dump(paginated_images)), 200
 
@@ -75,6 +93,7 @@ def set_image_tags(image, tag_data):
             tag.object_id = tag_data["objectId"]
             if not check_object_exists(tag.object_type, tag.object_id):
                 raise NotFound(f"{tag.object_type} with id {tag.object_id} does not exist.")
+            tag.secret = get_object_secret(tag.object_type, tag.object_id)
         image.tags.append(tag)
 
 
