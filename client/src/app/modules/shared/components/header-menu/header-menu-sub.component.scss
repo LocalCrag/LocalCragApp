@@ -28,6 +28,7 @@ lc-header-menu-sub {
     flex-direction: row;
   }
 
+  // Only allow nowrap the big-screen root menu items. This will make overflow detection work and also look nicer before overflow happens
   &.root:not(.is-mobile) > .item > .item-wrapper > .item-content {
     white-space: nowrap;
   }
