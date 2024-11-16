@@ -1,6 +1,6 @@
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.orm import sessionmaker, declarative_base
+from alembic import op
+from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy_utils import generic_relationship
 
 # revision identifiers, used by Alembic.
