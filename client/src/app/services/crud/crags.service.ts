@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { deserializeGrade, Grade } from '../../models/scale';
 
 /**
  * CRUD service for crags.

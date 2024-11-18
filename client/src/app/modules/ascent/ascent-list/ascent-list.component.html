@@ -65,8 +65,8 @@
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
-            [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"
+            [minLabel]="scalesService.gradeNameByValue(LineType.BOULDER, 'FB', gradeFilterRange[0]) | async | translateSpecialGrades"
+            [maxLabel]="scalesService.gradeNameByValue(LineType.BOULDER, 'FB', gradeFilterRange[1]) | async | translateSpecialGrades"
           ></lc-slider-labels>
           <p-slider
             [(ngModel)]="gradeFilterRange"

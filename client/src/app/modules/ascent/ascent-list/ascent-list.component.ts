@@ -1,20 +1,9 @@
-import {
-  Component,
-  HostListener,
-  Input,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, HostListener, Input, OnInit, ViewEncapsulation, } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { TabMenuModule } from 'primeng/tabmenu';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe, TranslocoService, } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { Ascent } from '../../../models/ascent';
 import { ButtonModule } from 'primeng/button';
@@ -46,10 +35,11 @@ import { Actions, ofType } from '@ngrx/effects';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { User } from '../../../models/user';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
 import { MenuModule } from 'primeng/menu';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -58,7 +48,6 @@ import { MenuModule } from 'primeng/menu';
     BreadcrumbModule,
     CardModule,
     NgIf,
-    RouterOutlet,
     TabMenuModule,
     TranslocoDirective,
     ButtonModule,
@@ -106,8 +95,8 @@ export class AscentListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
 
-  public minGradeValue = GRADES['FB'][2].value; // Skip project grades
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public minGradeValue = 0; // Skip project grades
+  public maxGradeValue = 20;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -124,7 +113,13 @@ export class AscentListComponent implements OnInit {
     private actions$: Actions,
     private confirmationService: ConfirmationService,
     private translocoService: TranslocoService,
-  ) {}
+    protected scalesService: ScalesService,
+  ) {
+    // todo hardcoded values
+    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
+      this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+    });
+  }
 
   ngOnInit() {
     this.orderOptions = [
@@ -288,5 +283,5 @@ export class AscentListComponent implements OnInit {
     });
   }
 
-  protected readonly gradeNameByValue = gradeNameByValue;
+  protected readonly LineType = LineType;
 }

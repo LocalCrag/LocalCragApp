@@ -1,13 +1,5 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ViewEncapsulation,
-} from '@angular/core';
-import { debounceTime, fromEvent, Observable } from 'rxjs';
-import { Grade, GRADES } from '../../../../utility/misc/grades';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation, } from '@angular/core';
+import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
 import { NgIf } from '@angular/common';
@@ -17,6 +9,9 @@ import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
+import { Grade } from '../../../../models/scale';
+import { ScalesService } from '../../../../services/crud/scales.service';
+import { LineType } from '../../../../enums/line-type';
 
 /**
  * Component that shows grades in a bar chart.
@@ -44,6 +39,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
   constructor(
     private translocoService: TranslocoService,
+    private scalesService: ScalesService,
     private store: Store,
   ) {
     fromEvent(window, 'resize')
@@ -132,10 +128,12 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
    * Builds the charts.js data object for displaying the grades in a chart.
    */
   buildData() {
-    this.store
-      .select(selectBarChartColor)
-      .pipe(take(1))
-      .subscribe((barChartColor) => {
+    forkJoin([
+      this.store
+        .select(selectBarChartColor)
+        .pipe(take(1)),
+      this.scalesService.getScale(LineType.BOULDER, this.scaleName),
+    ]).subscribe(([barChartColor, scale]) => {
         const genericProjectGrade: Grade = {
           name: marker('GENERIC_PROJECT'),
           value: 0,
@@ -148,10 +146,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
           return;
         }
         this.isCondensed = window.innerWidth <= MOBILE_BREAKPOINT;
-        const usedScaleName = this.isCondensed
-          ? this.scaleName + '_CONDENSED'
-          : this.scaleName;
-        let gradesInUsedScale = GRADES[usedScaleName];
+        let gradesInUsedScale = scale.grades;
         gradesInUsedScale = gradesInUsedScale.filter(
           (grade) => grade.value > 0,
         );
@@ -166,7 +161,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
         // Map keys from the full scale to keys of the used scale
         const condensedSortingMap = {};
-        const gradesInFullScale = GRADES[this.scaleName];
+        const gradesInFullScale = scale.grades;
         gradesInFullScale.map((grade) => {
           for (const usedGrade of gradesInUsedScale) {
             if (usedGrade.value >= grade.value) {

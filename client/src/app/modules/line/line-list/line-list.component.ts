@@ -20,7 +20,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { LineModule } from '../line.module';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -32,7 +32,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -45,6 +44,8 @@ import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ArchiveButtonComponent } from "../../archive/archive-button/archive-button.component";
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
 
 @Component({
   selector: 'lc-line-list',
@@ -74,6 +75,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
     TodoButtonComponent,
     ArchiveButtonComponent,
     GymModeDirective,
+    AsyncPipe,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -94,8 +96,8 @@ export class LineListComponent implements OnInit {
   public ticks: Set<string> = new Set();
   public isTodo: Set<string> = new Set();
 
-  public minGradeValue = GRADES['FB'][0].value;
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public minGradeValue = 0;
+  public maxGradeValue = 20;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -112,7 +114,12 @@ export class LineListComponent implements OnInit {
     private route: ActivatedRoute,
     private actions$: Actions,
     private translocoService: TranslocoService,
-  ) {}
+    protected scalesService: ScalesService,
+  ) {
+    // todo hardcoded values
+    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
+      this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+    });}
 
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -249,5 +256,5 @@ export class LineListComponent implements OnInit {
     }
   }
 
-  protected readonly gradeNameByValue = gradeNameByValue;
+  protected readonly LineType = LineType;
 }

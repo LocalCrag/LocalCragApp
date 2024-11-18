@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { LoginResponse } from '../../models/login-response';
 import { UserPromotionTargets } from '../../enums/user-promotion-targets';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { deserializeGrade, Grade } from '../../models/scale';
 
 @Injectable({
   providedIn: 'root',

@@ -7,6 +7,6 @@ import { Ascent } from '../../../models/ascent';
 })
 export class UpgradePipe implements PipeTransform {
   transform(ascent: Ascent): boolean {
-    return ascent.grade.value > ascent.line.grade.value;
+    return ascent.grade.value > ascent.line.gradeValue;
   }
 }

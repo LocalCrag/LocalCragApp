@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Area } from '../../models/area';
 import { ItemOrder } from '../../interfaces/item-order.interface';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { Store } from '@ngrx/store';
+import { deserializeGrade, Grade } from '../../models/scale';
 
 /**
  * CRUD service for areas.

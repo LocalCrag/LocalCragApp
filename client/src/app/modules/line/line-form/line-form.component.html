@@ -101,11 +101,11 @@
                   class="flex align-items-center gap-2"
                   data-cy="grade-dropdown-item"
                 >
-                  <div>{{ grade.name | transloco }}</div>
+                  <div>{{ grade.name | translateSpecialGrades }}</div>
                 </div>
               </ng-template>
               <ng-template let-selectedGrade pTemplate="selectedItem">
-                {{ selectedGrade.name | transloco }}
+                {{ selectedGrade.name | translateSpecialGrades }}
               </ng-template>
             </p-dropdown>
             <small class="p-error" *lcIfError="'required'">{{

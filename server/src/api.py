@@ -35,7 +35,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.grades_resources import GetScales, GetScale, CreateScale, UpdateScale, DeleteScale
+from resources.scale_resources import GetScales, GetScale, CreateScale, UpdateScale, DeleteScale
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,

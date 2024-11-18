@@ -6,8 +6,7 @@ import {
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
-import { SelectItem, SharedModule } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import {
@@ -24,20 +23,16 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { ConsensusGradePipe } from '../../ascent/pipes/consensus-grade.pipe';
 import { DataViewModule } from 'primeng/dataview';
-import { DowngradePipe } from '../../ascent/pipes/downgrade.pipe';
 import { DropdownModule } from 'primeng/dropdown';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MenuModule } from 'primeng/menu';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
 import { TagModule } from 'primeng/tag';
-import { UpgradePipe } from '../../ascent/pipes/upgrade.pipe';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
@@ -46,6 +41,9 @@ import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { Crag } from '../../../models/crag';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-todo-list',
@@ -54,30 +52,26 @@ import { NotificationIdentifier } from '../../../utility/notifications/notificat
     AvatarModule,
     ButtonModule,
     ConfirmPopupModule,
-    ConsensusGradePipe,
     DataViewModule,
-    DowngradePipe,
     DropdownModule,
-    HasPermissionDirective,
     InfiniteScrollModule,
     MenuModule,
     NgForOf,
     NgIf,
     RatingModule,
     RouterLink,
-    SharedModule,
-    SharedModule,
     SliderLabelsComponent,
     SliderModule,
     TagModule,
     TranslocoDirective,
     TranslocoPipe,
-    UpgradePipe,
     FormsModule,
     NgClass,
     CardModule,
     TodoPriorityButtonComponent,
     TickButtonComponent,
+    AsyncPipe,
+    SharedModule,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -92,8 +86,8 @@ export class TodoListComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
-  public minGradeValue = GRADES['FB'][0].value;
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public minGradeValue = 0;
+  public maxGradeValue = 20;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -116,7 +110,13 @@ export class TodoListComponent implements OnInit {
     private menuItemsService: MenuItemsService,
     private actions$: Actions,
     private translocoService: TranslocoService,
-  ) {}
+    protected scalesService: ScalesService,
+  ) {
+    // todo hardcoded values
+    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
+      this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+    });
+  }
 
   ngOnInit() {
     this.orderOptions = [
@@ -291,6 +291,5 @@ export class TodoListComponent implements OnInit {
     }
   }
 
-  protected readonly;
-  gradeNameByValue = gradeNameByValue;
+  protected readonly LineType = LineType;
 }

@@ -17,7 +17,6 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
-import { Grade, GRADES } from '../../../utility/misc/grades';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
 import { Store } from '@ngrx/store';
@@ -36,6 +35,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -77,7 +77,7 @@ export class AscentFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public line: Line;
   public ascent: Ascent;
-  public grades = GRADES.FB.filter((grade) => grade.value >= 0);
+  public grades = [];
   public today = new Date();
   public gradeDifferenceWarning = false;
   public editMode = false;
@@ -88,10 +88,17 @@ export class AscentFormComponent implements OnInit {
     private store: Store,
     private ref: DynamicDialogRef,
     private ascentsService: AscentsService,
+    private scalesService: ScalesService,
   ) {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;
+
+    this.scalesService.getScale(this.line.type, this.line.gradeScale).subscribe({
+      next: (scale) => {
+        this.grades = scale.grades.filter((grade) => grade.value >= 0);
+      }
+    });
   }
 
   ngOnInit() {
@@ -106,7 +113,7 @@ export class AscentFormComponent implements OnInit {
 
   private buildForm() {
     this.ascentForm = this.fb.group({
-      grade: [this.line.grade, [Validators.required]],
+      grade: [this.line.gradeValue, [Validators.required]],
       rating: [null, [Validators.required]],
       year: [
         new Date(),
@@ -142,9 +149,9 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('grade')
       .valueChanges.pipe(untilDestroyed(this))
-      .subscribe((newGrade: Grade) => {
+      .subscribe((newGrade: number) => {
         this.gradeDifferenceWarning =
-          Math.abs(this.line.grade.value - newGrade.value) >= 3;
+          Math.abs(this.line.gradeValue - newGrade) >= 3;
       });
   }
 

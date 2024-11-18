@@ -14,7 +14,6 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
-import { GRADES } from '../../../utility/misc/grades';
 import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -23,6 +22,8 @@ import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AreasService } from '../../../services/crud/areas.service';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
 
 /**
  * Form component for lines.
@@ -43,7 +44,7 @@ export class LineFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public line: Line;
   public editMode = false;
-  public grades = GRADES.FB;
+  public grades = [];
   public startingPositions = [
     StartingPosition.STAND,
     StartingPosition.SIT,
@@ -68,7 +69,13 @@ export class LineFormComponent implements OnInit {
     private areasService: AreasService,
     private translocoService: TranslocoService,
     private confirmationService: ConfirmationService,
-  ) {}
+    private scalesService: ScalesService,
+  ) {
+    // todo hardcoded values
+    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
+      this.grades = scale.grades;
+    })
+  }
 
   /**
    * Builds the form on component initialization.
@@ -209,7 +216,7 @@ export class LineFormComponent implements OnInit {
       name: this.line.name,
       description: this.line.description,
       videos: this.line.videos,
-      grade: this.line.grade,
+      gradeValue: this.line.gradeValue,
       color: this.line.color,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
@@ -282,7 +289,8 @@ export class LineFormComponent implements OnInit {
       line.description = this.lineForm.get('description').value;
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
-      line.grade = this.lineForm.get('grade').value;
+      line.gradeValue = this.lineForm.get('grade').value;
+      line.gradeScale = this.line?.gradeScale ?? "FB"; // todo hardcoded value
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
