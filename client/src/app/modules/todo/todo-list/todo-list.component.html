@@ -204,7 +204,7 @@
                   <div class="todo-table-grade">
                     <div class="grade">
                       <div class="ml-1 grade-name">
-                        {{ todo.line.grade.name | transloco }}
+                        {{ scalesService.gradeNameByValue(todo.line.type, todo.line.gradeScale, todo.line.gradeValue) | async | translateSpecialGrades }}
                       </div>
                     </div>
                   </div>
@@ -257,7 +257,7 @@
                     <div class="todo-table-grade">
                       <div class="grade">
                         <div class="ml-1 grade-name">
-                          {{ todo.line.grade.name | transloco }}
+                          {{ scalesService.gradeNameByValue(todo.line.type, todo.line.gradeScale, todo.line.gradeValue) | async | translateSpecialGrades }}
                         </div>
                       </div>
                     </div>

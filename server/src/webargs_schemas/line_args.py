@@ -18,8 +18,8 @@ line_args = {
     "description": fields.Str(required=True, allow_none=True),
     "color": fields.Str(required=False, allow_none=True, validate=color_validator),
     "videos": fields.List(fields.Nested(videos_args), required=True, allow_none=True),
-    "gradeName": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),
     "gradeScale": fields.Str(required=True, allow_none=False, validate=validate.Length(max=120)),
+    "gradeValue": fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2)),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),
     "rating": fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None),
     "faYear": fields.Integer(

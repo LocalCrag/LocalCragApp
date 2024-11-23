@@ -7,12 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line-ascents',
@@ -37,6 +38,7 @@ export class LineAscentsComponent implements OnInit {
     private store: Store,
     private title: Title,
     private route: ActivatedRoute,
+    private scalesService: ScalesService,
   ) {}
 
   ngOnInit() {
@@ -54,9 +56,12 @@ export class LineAscentsComponent implements OnInit {
       )
       .subscribe((line) => {
         this.line = line;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
+        forkJoin([
+          this.store.select(selectInstanceName),
+          this.scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue),
+        ]).subscribe(([instanceName, gradeName]) => {
           this.title.setTitle(
-            `${line.name} ${line.grade.name} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
+            `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
           );
         });
       });

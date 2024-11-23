@@ -3,7 +3,7 @@
     <ng-template pTemplate="header">
       <div class="card-header p-card-title">
         {{ line?.name }}
-        <span class="grade-font">{{ scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue) | async | translateSpecialGrades }}</span>
+        <span class="grade-font">{{ scalesService.gradeNameByValue(line?.type, line?.gradeScale, line?.gradeValue) | async | translateSpecialGrades }}</span>
       </div>
     </ng-template>
 

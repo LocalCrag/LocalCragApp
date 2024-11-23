@@ -19,7 +19,7 @@ export class Scale {
 
   public static deserialize(payload: any): Scale {
     const scale = new Scale();
-    scale.lineType = payload.lineType;
+    scale.lineType = payload.type;
     scale.name = payload.name;
     scale.grades = payload.grades;
 
@@ -29,7 +29,7 @@ export class Scale {
   // For some endpoints, we know that we receive the full scale
   public static deserializeFull(payload: any): Required<Scale> {
     const scale = new Scale();
-    scale.lineType = payload.lineType;
+    scale.lineType = payload.type;
     scale.name = payload.name;
     scale.grades = payload.grades;
 
@@ -38,7 +38,7 @@ export class Scale {
 
   public static serialize(scale: Scale): any {
     return {
-      lineType: scale.lineType,
+      type: scale.lineType,
       name: scale.name,
       grades: scale.grades,
     };

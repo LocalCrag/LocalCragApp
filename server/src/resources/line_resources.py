@@ -13,7 +13,7 @@ from marshmallow_schemas.line_schema import (
 )
 from models.area import Area
 from models.crag import Crag
-from models.scale import get_grade_value
+from models.scale import get_grade_name
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -111,7 +111,7 @@ class CreateLine(MethodView):
         line_data = parser.parse(line_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        if not cross_validate_grade(line_data["gradeName"], line_data["gradeScale"], line_data["type"]):
+        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, name and line type do not match.")
 
         new_line: Line = Line()
@@ -120,10 +120,10 @@ class CreateLine(MethodView):
         new_line.description = line_data["description"]
         new_line.color = line_data.get("color", None)
         new_line.videos = line_data["videos"]
-        new_line.grade_name = line_data["gradeName"]
-        new_line.grade_scale = line_data["gradeScale"]
         new_line.type = line_data["type"]
-        new_line.grade_value = get_grade_value(new_line.grade_name, new_line.grade_scale, new_line.type)
+        new_line.grade_scale = line_data["gradeScale"]
+        new_line.grade_value = line_data["gradeValue"]
+        new_line.grade_name = get_grade_name(new_line.grade_value, new_line.grade_scale, new_line.type)
         new_line.starting_position = line_data["startingPosition"]
         new_line.rating = line_data["rating"]
         new_line.secret = line_data["secret"]
@@ -196,9 +196,10 @@ class UpdateLine(MethodView):
         line.description = line_data["description"]
         line.color = line_data.get("color", None)
         line.videos = line_data["videos"]
-        line.grade_name = line_data["gradeName"]
+        line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
-        line.grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+        line.grade_value = line_data["gradeValue"]
+        line.grade_name = get_grade_name(line.grade_value, line.grade_scale, line.type)
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]

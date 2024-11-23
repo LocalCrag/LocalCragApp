@@ -96,7 +96,7 @@ export class LineListComponent implements OnInit {
   public ticks: Set<string> = new Set();
   public isTodo: Set<string> = new Set();
 
-  public minGradeValue = 0;
+  public minGradeValue = -2;
   public maxGradeValue = 20;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
@@ -119,7 +119,9 @@ export class LineListComponent implements OnInit {
     // todo hardcoded values
     this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
       this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-    });}
+      this.gradeFilterRange[1] = this.maxGradeValue;
+    });
+  }
 
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');

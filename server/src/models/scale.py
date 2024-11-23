@@ -93,3 +93,12 @@ def get_grade_value(grade_name, scale_name, line_type):
         if grade["name"] == grade_name:
             return grade["value"]
     raise ValueError()
+
+
+def get_grade_name(grade_value, scale_name, line_type):
+    # get_grade_name might be called very often, we should cache this
+    scale = Scale.query.filter(Scale.type == line_type, Scale.name == scale_name).first()
+    for grade in scale.grades:
+        if grade["value"] == grade_value:
+            return grade["name"]
+    raise ValueError()

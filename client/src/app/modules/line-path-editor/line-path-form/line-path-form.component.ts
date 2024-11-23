@@ -17,6 +17,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 /**
  * Form for line paths.
@@ -51,6 +52,7 @@ export class LinePathFormComponent implements OnInit {
     private linesService: LinesService,
     private topoImagesService: TopoImagesService,
     private linePathsService: LinePathsService,
+    protected scalesService: ScalesService,
   ) {}
 
   /**

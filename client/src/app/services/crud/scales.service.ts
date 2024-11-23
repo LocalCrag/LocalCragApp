@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LineType } from '../../enums/line-type';
 import { Scale } from '../../models/scale';
@@ -61,13 +61,29 @@ export class ScalesService {
       .pipe(map(() => delete CACHE[scale.lineType][scale.name]), map(() => null));
   }
 
-  public gradeNameByValue(lineType: LineType, name: string, value: number): Observable<string> {
+  public gradeNameByValue(lineType?: LineType, name?: string, value?: number): Observable<string> {
+    if (!lineType || !name || typeof value !== "number") {
+      // Convenience case to allow use of function in eventually-initialized locations
+      console.warn("Warning: Eventually initialized usage")
+      return of("");
+    }
+
+    if (CACHE[lineType][name]) {
+      return of(CACHE[lineType][name][1][value]);
+    }
     return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1][value]));
   }
 
   private updateCache<T extends Scale>(scale: T) {
-    // todo update cache
-    // todo use cache
+    const gradeValueByName: Record<string, number> = {};
+    const gradeNameByValue: Record<number, string> = {};
+
+    for (const grade of scale.grades) {
+      gradeValueByName[grade.name] = grade.value;
+      gradeNameByValue[grade.value] = grade.name;
+    }
+
+    CACHE[scale.lineType][scale.name] = [gradeValueByName, gradeNameByValue];
     return scale;
   }
 }

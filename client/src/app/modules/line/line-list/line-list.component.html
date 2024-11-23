@@ -82,7 +82,7 @@
 
         <div class="slider-container mt-1">
           <lc-slider-labels
-            [rangeMin]="gradeFilterRange[0]"
+            [rangeMin]=""
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
@@ -139,7 +139,7 @@
                 >
                   <div>
                     <strong>{{ line.name }}</strong>
-                    {{ line.grade.name | transloco }}
+                    {{ scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue) | async | translateSpecialGrades }}
                   </div>
                   <p-rating
                     [ngModel]="line.rating"

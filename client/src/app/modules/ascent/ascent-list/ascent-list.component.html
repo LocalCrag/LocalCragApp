@@ -117,7 +117,7 @@
                     ascent.line.name
                   }}</a>
                   <div class="grade">
-                    {{ ascent.line.grade.name | transloco }}
+                    {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.line.gradeValue) | async | translateSpecialGrades }}
                   </div>
                 </div>
                 <div class="ascent-table-line-location mt-1">
@@ -238,7 +238,7 @@
                       ascent.line.name
                     }}</a>
                     <div class="grade">
-                      {{ ascent.line.grade.name | transloco }}
+                      {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.line.gradeValue) | async | translateSpecialGrades }}
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">
@@ -358,7 +358,7 @@
                       ascent.line.name
                     }}</a>
                     <div class="grade">
-                      {{ ascent.line.grade.name | transloco }}
+                      {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.line.gradeValue) | async | translateSpecialGrades }}
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">

@@ -69,7 +69,7 @@ export class Ascent extends AbstractModel {
       rating: ascent.rating,
       comment: ascent.comment,
       year: ascent.year,
-      gradeScale: 'FB',
+      gradeScale: 'FB', // todo hardcoded value
       gradeName: ascent.grade.name,
       line: ascent.line.id,
       date: ascent.date
