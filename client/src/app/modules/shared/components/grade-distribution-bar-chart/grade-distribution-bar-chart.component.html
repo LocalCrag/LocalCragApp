@@ -1,14 +1,17 @@
 <ng-container *transloco="let t">
-  <p-chart
-    type="bar"
-    [data]="data"
-    [options]="options"
-    *ngIf="gradeDistribution"
-  ></p-chart>
-  <div class="total">
-    {{ t("totalLines") }}: {{ totalCount - projectCount }}
-    <span *ngIf="!excludeProjects"
-      >({{ t("plusXProjects", { projects: projectCount }) }})</span
-    >
+  <div *ngFor="let chartData of chartData">
+    <h6>{{ chartData.lineType }} {{ chartData.gradeScale }}</h6><!-- TODO how should we present these labels? -->
+    <p-chart
+      type="bar"
+      [data]="chartData.data"
+      [options]="options"
+      *ngIf="gradeDistribution"
+    ></p-chart>
+    <div class="total">
+      {{ t("totalLines") }}: {{ chartData.totalCount - chartData.projectCount }}
+      <span *ngIf="!excludeProjects">
+        ({{ t("plusXProjects", { projects: chartData.projectCount }) }})
+      </span>
+    </div>
   </div>
 </ng-container>
