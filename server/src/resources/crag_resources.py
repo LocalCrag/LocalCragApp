@@ -1,3 +1,5 @@
+from collections import defaultdict, Counter
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -9,6 +11,7 @@ from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.area import Area
 from models.crag import Crag
+from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -142,7 +145,7 @@ class GetCragGrades(MethodView):
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
         query = (
-            db.session.query(Line.grade_name, Line.grade_scale)
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
             .join(Area)
             .join(Sector)
             .filter(Sector.crag_id == crag_id)
@@ -150,4 +153,13 @@ class GetCragGrades(MethodView):
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { LoginResponse } from '../../models/login-response';
 import { UserPromotionTargets } from '../../enums/user-promotion-targets';
-import { deserializeGrade, Grade } from '../../models/scale';
+import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 
 @Injectable({
   providedIn: 'root',
@@ -74,9 +74,9 @@ export class UsersService {
       .pipe(map(User.deserialize));
   }
 
-  public getUserGrades(userSlug: string): Observable<Grade[]> {
+  public getUserGrades(userSlug: string): Observable<GradeDistribution> {
     return this.http
       .get(this.api.users.getGrades(userSlug))
-      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+      .pipe(map(deserializeGradeList));
   }
 }

@@ -64,7 +64,6 @@ import { SharedModule } from '../../shared/shared.module';
     SliderModule,
     TagModule,
     TranslocoDirective,
-    TranslocoPipe,
     FormsModule,
     NgClass,
     CardModule,
@@ -86,7 +85,7 @@ export class TodoListComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
-  public minGradeValue = 0;
+  public minGradeValue = -2;
   public maxGradeValue = 20;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
@@ -115,6 +114,7 @@ export class TodoListComponent implements OnInit {
     // todo hardcoded values
     this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
       this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+      this.gradeFilterRange[1] = this.maxGradeValue;
     });
   }
 

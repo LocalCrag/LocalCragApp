@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
-import { deserializeGrade, Grade } from '../../models/scale';
+import { deserializeGradeList, Grade, GradeDistribution } from '../../models/scale';
 
 /**
  * CRUD service for crags.
@@ -113,9 +113,9 @@ export class CragsService {
    * @param cragSlug Slug of the crag to return the grades for.
    * @return Observable of a list of Grades.
    */
-  public getCragGrades(cragSlug: string): Observable<Grade[]> {
+  public getCragGrades(cragSlug: string): Observable<GradeDistribution> {
     return this.http
       .get(this.api.crags.getGrades(cragSlug))
-      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+      .pipe(map(deserializeGradeList));
   }
 }

@@ -65,7 +65,6 @@ import { LineType } from '../../../enums/line-type';
     SharedModule,
     TickButtonComponent,
     TranslocoDirective,
-    TranslocoPipe,
     InfiniteScrollModule,
     NgClass,
     FormsModule,

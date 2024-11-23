@@ -5,11 +5,10 @@ export interface Grade {
   value: number;
 }
 
-export function deserializeGrade(payload: any): Grade {
-  return {
-    name: payload.gradeName,
-    value: -42, // todo
-  };
+export type GradeDistribution = Record<LineType, Record<string, Record<number, number>>>;
+
+export function deserializeGradeList(payload: any): GradeDistribution {
+  return payload;
 }
 
 export class Scale {

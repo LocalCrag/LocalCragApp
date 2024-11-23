@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
-import { Grade } from '../../../../models/scale';
+import { Grade, GradeDistribution } from '../../../../models/scale';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { LineType } from '../../../../enums/line-type';
 
@@ -25,11 +25,11 @@ import { LineType } from '../../../../enums/line-type';
   encapsulation: ViewEncapsulation.None,
 })
 export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
-  @Input() fetchingObservable: Observable<Grade[]>;
-  @Input() scaleName: string = 'FB';
+  @Input() fetchingObservable: Observable<GradeDistribution>;
+  @Input() scaleName: string = 'FB'; // todo hardcoded values
   @Input() excludeProjects: boolean = false;
 
-  public grades: Grade[];
+  public gradeDistribution: GradeDistribution["BOULDER"]["scaleName"];
   public data: any;
   public options: any;
   public totalCount: number;
@@ -51,8 +51,9 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['fetchingObservable']) {
-      this.fetchingObservable.subscribe((grades) => {
-        this.grades = grades;
+      this.fetchingObservable.subscribe((gradeDistributions) => {
+        // todo for now just take the first distribution
+        this.gradeDistribution = Object.values(gradeDistributions)[0][this.scaleName];
         this.buildData();
       });
     }
@@ -146,7 +147,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
           return;
         }
         this.isCondensed = window.innerWidth <= MOBILE_BREAKPOINT;
-        let gradesInUsedScale = scale.grades;
+        let gradesInUsedScale = scale.grades.sort((a, b) => a.value - b.value);
         gradesInUsedScale = gradesInUsedScale.filter(
           (grade) => grade.value > 0,
         );
@@ -171,17 +172,12 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
           }
         });
 
-        // Count values
-        this.grades.map(
-          (grade) => (gradeValueCount[condensedSortingMap[grade.value]] += 1),
-        );
-
         // Build chart data
         const labels = gradesInUsedScale.map((grade) =>
-          this.translocoService.translate(grade.name),
+          grade.value > 0 ? grade.name : this.translocoService.translate(grade.name),
         );
         const counts = gradeValues.map(
-          (gradeValue) => gradeValueCount[gradeValue],
+          (gradeValue) => this.gradeDistribution[gradeValue] ?? 0,
         );
         this.projectCount = counts[0];
         const maxCount = Math.max(...counts);
@@ -205,7 +201,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
             },
           ],
         };
-        this.totalCount = this.grades.length;
+        this.totalCount = counts.reduce((a, b) => a + b, 0);
       });
   }
 }

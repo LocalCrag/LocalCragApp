@@ -5,7 +5,7 @@ import { User } from './user';
 import { Area } from './area';
 import { Sector } from './sector';
 import { Crag } from './crag';
-import { deserializeGrade, Grade } from './scale';
+import { deserializeGradeList, Grade } from './scale';
 
 export class Ascent extends AbstractModel {
   flash: boolean;
@@ -34,7 +34,7 @@ export class Ascent extends AbstractModel {
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
     AbstractModel.deserializeAbstractAttributes(ascent, payload);
-    ascent.grade = deserializeGrade(payload);
+    ascent.grade = {name: payload.gradeName, value: payload.gradeValue} // deserializeGrade__(payload); // todo adjust
     ascent.flash = payload.flash;
     ascent.fa = payload.fa;
     ascent.soft = payload.soft;

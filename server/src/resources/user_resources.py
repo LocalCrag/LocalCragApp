@@ -271,6 +271,6 @@ class GetUserGrades(MethodView):
             LineTypeEnum.TRAD.value: defaultdict(Counter),
         }
         for lineType, gradeScale, gradeValue, _id, _created_by in result:
-            response_data[lineType][gradeScale].update({gradeValue: 1})
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
 
         return jsonify(response_data), 200

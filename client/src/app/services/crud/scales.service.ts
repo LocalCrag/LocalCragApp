@@ -17,6 +17,12 @@ const CACHE: Record<LineType,
   [LineType.TRAD]: {},
 };
 
+const OPEN_REQUESTS: Record<LineType, Record<string, Observable<Required<Scale>>>> = {
+  [LineType.BOULDER]: {},
+  [LineType.SPORT]: {},
+  [LineType.TRAD]: {},
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,12 +33,24 @@ export class ScalesService {
   ) {}
 
   public getScale(lineType: LineType, name: string): Observable<Required<Scale>> {
-    return this.http
+    // Prevent parallel requests to the same endpoint
+    if (OPEN_REQUESTS[lineType][name]) {
+      return OPEN_REQUESTS[lineType][name];
+    }
+
+    const req = this.http
       .get(this.api.scales.get(lineType, name))
       .pipe(
         map((payload) => Scale.deserializeFull(payload)),
         map((scale) => this.updateCache(scale)),
+        map((scale) => {
+          delete OPEN_REQUESTS[lineType][name];
+          return scale;
+        }),
       );
+
+    OPEN_REQUESTS[lineType][name] = req;
+    return req;
   }
 
   public getScales(): Observable<Scale[]> {

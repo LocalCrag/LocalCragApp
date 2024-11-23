@@ -7,7 +7,7 @@ import { Area } from '../../models/area';
 import { ItemOrder } from '../../interfaces/item-order.interface';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { Store } from '@ngrx/store';
-import { deserializeGrade, Grade } from '../../models/scale';
+import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 
 /**
  * CRUD service for areas.
@@ -121,9 +121,9 @@ export class AreasService {
    * @param areaSlug Slug of the area to return the grades for.
    * @return Observable of a list of Grades.
    */
-  public getAreaGrades(areaSlug: string): Observable<Grade[]> {
+  public getAreaGrades(areaSlug: string): Observable<GradeDistribution> {
     return this.http
       .get(this.api.areas.getGrades(areaSlug))
-      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+      .pipe(map(deserializeGradeList));
   }
 }

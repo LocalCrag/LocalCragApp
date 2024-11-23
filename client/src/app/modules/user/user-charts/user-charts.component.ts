@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
-import { Grade } from '../../../models/scale';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-user-charts',
@@ -16,7 +16,7 @@ import { Grade } from '../../../models/scale';
 })
 export class UserChartsComponent implements OnInit {
   public user: User;
-  public fetchUserGrades: Observable<Grade[]>;
+  public fetchUserGrades: Observable<GradeDistribution>;
 
   constructor(
     private route: ActivatedRoute,

@@ -1,3 +1,4 @@
+from collections import defaultdict, Counter
 from typing import List
 
 from flask import jsonify, request
@@ -10,6 +11,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
+from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -150,8 +152,17 @@ class GetAreaGrades(MethodView):
         Returns the grades of all lines of an area.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id)
+        query = db.session.query(Line.type, Line.grade_scale, Line.grade_value).filter(Line.area_id == area_id)
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

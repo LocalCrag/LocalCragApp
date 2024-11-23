@@ -4,7 +4,7 @@ import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Observable } from 'rxjs';
 import { MapStyles } from '../../../enums/map-styles';
-import { Grade } from '../../../models/scale';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-area-info',
@@ -13,7 +13,7 @@ import { Grade } from '../../../models/scale';
 })
 export class AreaInfoComponent implements OnInit {
   public area: Area;
-  public fetchAreaGrades: Observable<Grade[]>;
+  public fetchAreaGrades: Observable<GradeDistribution>;
 
   constructor(
     private route: ActivatedRoute,

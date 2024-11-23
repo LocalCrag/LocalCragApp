@@ -4,7 +4,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
-import { Grade } from '../../../models/scale';
+import { GradeDistribution } from '../../../models/scale';
 
 /**
  * Component that shows information about a crag.
@@ -17,7 +17,7 @@ import { Grade } from '../../../models/scale';
 @UntilDestroy()
 export class CragInfoComponent implements OnInit {
   public crag: Crag;
-  public fetchCragGrades: Observable<Grade[]>;
+  public fetchCragGrades: Observable<GradeDistribution>;
 
   constructor(
     private route: ActivatedRoute,

@@ -7,9 +7,8 @@ import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { NgIf } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { MapComponent } from '../../maps/map/map.component';
-import { Grade } from '../../../models/scale';
+import { GradeDistribution } from '../../../models/scale';
 
 /**
  * Component that shows information about a region.
@@ -23,7 +22,6 @@ import { Grade } from '../../../models/scale';
     SkeletonModule,
     NgIf,
     TranslocoDirective,
-    AscentCountComponent,
     MapComponent,
   ],
   templateUrl: './region-info.component.html',
@@ -31,7 +29,7 @@ import { Grade } from '../../../models/scale';
 })
 export class RegionInfoComponent implements OnInit {
   public region: Region;
-  public fetchRegionGrades: Observable<Grade[]>;
+  public fetchRegionGrades: Observable<GradeDistribution>;
 
   constructor(private regionsService: RegionService) {}
 

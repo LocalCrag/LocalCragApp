@@ -118,6 +118,7 @@ export class AscentListComponent implements OnInit {
     // todo hardcoded values
     this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
       this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+      this.gradeFilterRange[1] = this.maxGradeValue;
     });
   }
 
