@@ -19,6 +19,7 @@ import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line',
@@ -46,6 +47,7 @@ export class LineComponent implements OnInit {
     private store: Store,
     private title: Title,
     private route: ActivatedRoute,
+    protected scalesService: ScalesService,
   ) {}
 
   ngOnInit() {
