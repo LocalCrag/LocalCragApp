@@ -2,7 +2,7 @@
   <p-skeleton width="100%" height="2rem" *ngIf="gradeDistributionEmpty"></p-skeleton>
 
   <ng-container *ngIf="!gradeDistributionEmpty">
-    <div class="grade-distribution-stack hidden sm:flex" *ngFor="let data of stackChartData">
+    <div class="grade-distribution-stack hidden sm:flex mb-3" *ngFor="let data of stackChartData">
       <div class="level-total">
         {{ data.total - data.data.level5 }} {{ data.gradeScale // todo translation? }} {{ t("lines") }}:
       </div>
@@ -54,7 +54,7 @@
     </div>
 
     <div
-      class="grade-distribution-tags flex align-items-center gap-3 sm:hidden"
+      class="grade-distribution-tags flex align-items-center gap-3 sm:hidden mb-3"
       *ngFor="let data of stackChartData"
     >
       <p-tag styleClass="level-total">
