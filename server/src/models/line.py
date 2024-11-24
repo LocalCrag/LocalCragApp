@@ -19,6 +19,7 @@ class Line(HasSlug, IsSearchable, BaseEntity):
     """
 
     __tablename__ = "lines"
+    __versioned__ = {}
 
     slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image", "gallery"]
     searchable_type = SearchableItemTypeEnum.LINE

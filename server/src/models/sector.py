@@ -19,6 +19,7 @@ class Sector(HasSlug, IsSearchable, BaseEntity):
     """
 
     __tablename__ = "sectors"
+    __versioned__ = {}
 
     slug_blocklist = ["edit", "create-sector", "sectors", "gallery", "ascents", "rules", "gallery"]
     searchable_type = SearchableItemTypeEnum.SECTOR

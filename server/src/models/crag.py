@@ -18,6 +18,7 @@ class Crag(HasSlug, IsSearchable, BaseEntity):
     """
 
     __tablename__ = "crags"
+    __versioned__ = {}
 
     slug_blocklist = ["create-crag", "edit-region", "areas", "gallery", "ascents", "rules", "gallery"]
     searchable_type = SearchableItemTypeEnum.CRAG

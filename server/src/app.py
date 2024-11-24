@@ -2,6 +2,7 @@ import os
 
 import sentry_sdk
 from flask import Flask
+from sqlalchemy.orm import configure_mappers
 
 from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
@@ -37,6 +38,7 @@ def init_sentry_sdk(application):
 
 
 def create_app():
+
     application = Flask(__name__, static_url_path="/uploads", static_folder="uploads")
     application.config.from_object("config.default.DefaultConfig")
     if "LOCALCRAG_CONFIG" in os.environ:
@@ -47,6 +49,8 @@ def create_app():
     init_sentry_sdk(application)
 
     register_extensions(application)
+
+    configure_mappers()
 
     configure_extensions(application)
 

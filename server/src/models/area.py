@@ -19,6 +19,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     """
 
     __tablename__ = "areas"
+    __versioned__ = {}
 
     slug_blocklist = ["edit", "create-area", "areas", "gallery", "ascents", "rules", "gallery"]
     searchable_type = SearchableItemTypeEnum.AREA
