@@ -4,6 +4,19 @@ import { Grade, GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
 import { ScalesService } from '../../../../services/crud/scales.service';
 
+type StackChartData = {
+  lineType: LineType;
+  gradeScale: string;
+  data: {
+    level1: number;
+    level2: number;
+    level3: number;
+    level4: number;
+    level5: number;
+  };
+  total: number;
+}
+
 /**
  * Component that displays a leveled grade distribution.
  */
@@ -15,20 +28,16 @@ import { ScalesService } from '../../../../services/crud/scales.service';
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
 
-  public level1: number = 0;
-  public level2: number = 0;
-  public level3: number = 0;
-  public level4: number = 0;
-  public level5: number = 0;
-  public total: number = 0;
-  public gradeDistribution: GradeDistribution["BOULDER"]["scaleName"];
+  public stackChartData = [];
+  public gradeDistribution: GradeDistribution;
+  public gradeDistributionEmpty = true;
 
   constructor(private scalesService: ScalesService) {
   }
 
   ngOnInit() {
     this.fetchingObservable.subscribe((gradeDistributions) => {
-      this.gradeDistribution = gradeDistributions["BOULDER"]["FB"];  // todo hardcoded values
+      this.gradeDistribution = gradeDistributions;
       this.buildGradeDistribution();
     });
   }
@@ -38,20 +47,45 @@ export class LeveledGradeDistributionComponent implements OnInit {
    */
   buildGradeDistribution() {
     // todo hardcoded thresholds
-    for (const gradeValue of Object.keys(this.gradeDistribution).map(Number)) {
-      const count = this.gradeDistribution[gradeValue];
-      this.total += count;
-      if (gradeValue <= 0) {
-        this.level5 += count;
-      } else if (gradeValue > 0 && gradeValue < 10) {
-        this.level1 += count;
-      } else if (gradeValue >= 10 && gradeValue < 16) {
-        this.level2 += count;
-      } else if (gradeValue >= 16 && gradeValue < 22) {
-        this.level3 += count;
-      } else if (gradeValue >= 22) {
-        this.level4 += count;
+    const stackChartData: StackChartData[] = [];
+    let gradeDistributionEmpty = true;
+
+    for (const lineType in this.gradeDistribution) {
+      for (const gradeScale in this.gradeDistribution[lineType]) {
+        const data: StackChartData = {
+          lineType: lineType as LineType,
+          gradeScale,
+          data : {
+            level1: 0,
+            level2: 0,
+            level3: 0,
+            level4: 0,
+            level5: 0,
+          },
+          total: 0,
+        }
+        for (const gradeValue of Object.keys(this.gradeDistribution[lineType][gradeScale]).map(Number)) {
+          gradeDistributionEmpty = false;
+
+          const count = this.gradeDistribution[lineType][gradeScale][gradeValue];
+          data.total += count;
+          if (gradeValue <= 0) {
+            data.data.level5 += count;
+          } else if (gradeValue > 0 && gradeValue < 10) {
+            data.data.level1 += count;
+          } else if (gradeValue >= 10 && gradeValue < 16) {
+            data.data.level2 += count;
+          } else if (gradeValue >= 16 && gradeValue < 22) {
+            data.data.level3 += count;
+          } else if (gradeValue >= 22) {
+            data.data.level4 += count;
+          }
+        }
+        stackChartData.push(data);
       }
     }
+
+    this.gradeDistributionEmpty = gradeDistributionEmpty;
+    this.stackChartData = stackChartData.sort((a, b) => a.total - b.total);
   }
 }
