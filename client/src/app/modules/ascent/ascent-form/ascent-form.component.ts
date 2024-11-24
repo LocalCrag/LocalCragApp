@@ -11,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -47,7 +47,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
     ReactiveFormsModule,
     SharedModule,
     SharedModule,
-    TranslocoPipe,
     CheckboxModule,
     SharedModule,
     ButtonModule,
@@ -156,31 +155,37 @@ export class AscentFormComponent implements OnInit {
   }
 
   private setFormValue() {
-    this.ascentForm.patchValue({
-      grade: this.ascent.grade,
-      rating: this.ascent.rating,
-      hard: this.ascent.hard,
-      soft: this.ascent.soft,
-      fa: this.ascent.fa,
-      flash: this.ascent.flash,
-      withKneepad: this.ascent.withKneepad,
-      comment: this.ascent.comment,
-      year: this.ascent.year
-        ? new Date(this.ascent.year, 1, 1)
-        : this.ascent.date,
-      date: this.ascent.date
-        ? this.ascent.date
-        : new Date(this.ascent.year, 1, 1),
-      yearOnly: this.ascent.year !== null,
-    });
-    this.ascentForm.enable();
+    this.scalesService.gradeNameByValue(this.line.type, this.line.gradeScale, this.ascent.gradeValue)
+      .subscribe((gradeName) => {
+        this.ascentForm.patchValue({
+          grade: {
+            name: gradeName,
+            value: this.ascent.gradeValue,
+          },
+          rating: this.ascent.rating,
+          hard: this.ascent.hard,
+          soft: this.ascent.soft,
+          fa: this.ascent.fa,
+          flash: this.ascent.flash,
+          withKneepad: this.ascent.withKneepad,
+          comment: this.ascent.comment,
+          year: this.ascent.year
+            ? new Date(this.ascent.year, 1, 1)
+            : this.ascent.date,
+          date: this.ascent.date
+            ? this.ascent.date
+            : new Date(this.ascent.year, 1, 1),
+          yearOnly: this.ascent.year !== null,
+        });
+        this.ascentForm.enable();
+      });
   }
 
   public saveAscent() {
     if (this.ascentForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const ascent = new Ascent();
-      ascent.grade = this.ascentForm.get('grade').value;
+      ascent.gradeValue = this.ascentForm.get('grade').value.value;
       ascent.rating = this.ascentForm.get('rating').value;
       ascent.year = this.ascentForm.get('yearOnly').value
         ? this.ascentForm.get('year').value.getFullYear()

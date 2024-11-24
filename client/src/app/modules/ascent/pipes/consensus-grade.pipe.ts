@@ -7,6 +7,6 @@ import { Ascent } from '../../../models/ascent';
 })
 export class ConsensusGradePipe implements PipeTransform {
   transform(ascent: Ascent): boolean {
-    return ascent.grade.value === ascent.line.gradeValue;
+    return ascent.gradeValue === ascent.line.gradeValue;
   }
 }
