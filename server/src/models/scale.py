@@ -84,21 +84,3 @@ class Scale(db.Model):
     name = db.Column(db.String(32), nullable=False, primary_key=True)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False, primary_key=True)
     grades = db.Column(JSON, nullable=False)
-
-
-def get_grade_value(grade_name, scale_name, line_type):
-    # get_grade_value might be called very often, we should cache this
-    scale = Scale.query.filter(Scale.type == line_type, Scale.name == scale_name).first()
-    for grade in scale.grades:
-        if grade["name"] == grade_name:
-            return grade["value"]
-    raise ValueError()
-
-
-def get_grade_name(grade_value, scale_name, line_type):
-    # get_grade_name might be called very often, we should cache this
-    scale = Scale.query.filter(Scale.type == line_type, Scale.name == scale_name).first()
-    for grade in scale.grades:
-        if grade["value"] == grade_value:
-            return grade["name"]
-    raise ValueError()

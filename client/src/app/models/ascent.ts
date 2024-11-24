@@ -5,7 +5,6 @@ import { User } from './user';
 import { Area } from './area';
 import { Sector } from './sector';
 import { Crag } from './crag';
-import { deserializeGradeList, Grade } from './scale';
 
 export class Ascent extends AbstractModel {
   flash: boolean;
@@ -13,7 +12,7 @@ export class Ascent extends AbstractModel {
   soft: boolean;
   hard: boolean;
   withKneepad: boolean;
-  grade: Grade;
+  gradeValue: number;
   rating: number;
   comment: string;
   year: number;
@@ -34,7 +33,7 @@ export class Ascent extends AbstractModel {
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
     AbstractModel.deserializeAbstractAttributes(ascent, payload);
-    ascent.grade = {name: payload.gradeName, value: payload.gradeValue} // deserializeGrade__(payload); // todo adjust
+    ascent.gradeValue = payload.gradeValue
     ascent.flash = payload.flash;
     ascent.fa = payload.fa;
     ascent.soft = payload.soft;
@@ -69,8 +68,7 @@ export class Ascent extends AbstractModel {
       rating: ascent.rating,
       comment: ascent.comment,
       year: ascent.year,
-      gradeScale: 'FB', // todo hardcoded value
-      gradeName: ascent.grade.name,
+      gradeValue: ascent.gradeValue,
       line: ascent.line.id,
       date: ascent.date
         ? formatISO(ascent.date, { representation: 'date' })

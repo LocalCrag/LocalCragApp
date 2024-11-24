@@ -63,8 +63,7 @@ class UpdateScale(MethodView):
             raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
         # All values set on lines must still be there
-        grades = {s["value"]: s["name"] for s in scale_data["grades"]}
-        values = set(grades.keys())
+        values = {s["value"] for s in scale_data["grades"]}
         for line in lines:
             if line.grade_value not in values:
                 raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
@@ -75,7 +74,6 @@ class UpdateScale(MethodView):
 
         for line in lines:
             line.grade_scale = scale.name
-            line.grade_name = grades[line.grade_value]
             db.session.add(line)
 
         db.session.add(scale)

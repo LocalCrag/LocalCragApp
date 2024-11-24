@@ -14,7 +14,6 @@ from marshmallow_schemas.line_schema import (
 from models.area import Area
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
-from models.scale import get_grade_name
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -121,7 +120,7 @@ class CreateLine(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
-            raise BadRequest("Grade scale, name and line type do not match.")
+            raise BadRequest("Grade scale, value and line type do not match.")
 
         new_line: Line = Line()
 
@@ -132,12 +131,11 @@ class CreateLine(MethodView):
         new_line.type = line_data["type"]
         new_line.grade_scale = line_data["gradeScale"]
         new_line.grade_value = line_data["gradeValue"]
-        new_line.grade_name = get_grade_name(new_line.grade_value, new_line.grade_scale, new_line.type)
         new_line.starting_position = line_data["startingPosition"]
         new_line.rating = line_data["rating"]
         new_line.secret = line_data["secret"]
 
-        if new_line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
+        if new_line.grade_value >= 0:
             new_line.fa_year = line_data["faYear"]
             new_line.fa_name = line_data["faName"]
         else:
@@ -198,8 +196,8 @@ class UpdateLine(MethodView):
         line_data = parser.parse(line_args, request)
         line: Line = Line.find_by_slug(line_slug)
 
-        if not cross_validate_grade(line_data["gradeName"], line_data["gradeScale"], line_data["type"]):
-            raise BadRequest("Grade scale, name and line type do not match.")
+        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
+            raise BadRequest("Grade scale, value and line type do not match.")
 
         line.name = line_data["name"].strip()
         line.description = line_data["description"]
@@ -208,13 +206,12 @@ class UpdateLine(MethodView):
         line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
         line.grade_value = line_data["gradeValue"]
-        line.grade_name = get_grade_name(line.grade_value, line.grade_scale, line.type)
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]
         update_line_secret_property(line, line_data["secret"])
 
-        if line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
+        if line.grade_value >= 0:
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
         else:

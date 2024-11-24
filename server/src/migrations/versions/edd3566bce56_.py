@@ -12,7 +12,6 @@ from sqlalchemy import orm
 from sqlalchemy.orm import declarative_base
 
 from models.enums.line_type_enum import LineTypeEnum
-from models.scale import get_grade_value
 
 # revision identifiers, used by Alembic.
 revision = "edd3566bce56"
@@ -22,6 +21,40 @@ depends_on = None
 
 
 Base = declarative_base()
+
+mapping = {
+    "CLOSED_PROJECT": -2,
+    "OPEN_PROJECT": -1,
+    "UNGRADED": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4A": 4,
+    "4B": 5,
+    "4C": 6,
+    "5A": 7,
+    "5B": 8,
+    "5C": 9,
+    "6A": 10,
+    "6A+": 11,
+    "6B": 12,
+    "6B+": 13,
+    "6C": 14,
+    "6C+": 15,
+    "7A": 16,
+    "7A+": 17,
+    "7B": 18,
+    "7B+": 19,
+    "7C": 20,
+    "7C+": 21,
+    "8A": 22,
+    "8A+": 23,
+    "8B": 24,
+    "8B+": 25,
+    "8C": 26,
+    "8C+": 27,
+    "9A": 28,
+}
 
 
 class Line(Base):
@@ -43,7 +76,7 @@ def upgrade():
     session = orm.Session(bind=bind)
 
     for line in session.query(Line):
-        line.grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+        line.grade_value = mapping.get(line.grade_name, "")
         session.add(line)
 
     session.commit()

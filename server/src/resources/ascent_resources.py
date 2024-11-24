@@ -13,7 +13,6 @@ from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
-from models.scale import get_grade_value
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -119,11 +118,11 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
-        if get_grade_value(ascent_data["gradeName"], ascent_data["gradeScale"], line.type) < 0:
+        if line.grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
-        if ascent_data["gradeScale"] != line.grade_scale:
-            raise BadRequest("Cannot change grade scale of the climbed line.")
-        if not cross_validate_grade(ascent_data["gradeName"], ascent_data["gradeScale"], line.type):
+        if ascent_data["grade_value"] < 0:
+            raise BadRequest("Cannot propose project status.")
+        if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
         if (
             db.session.query(Ascent.line_id)
@@ -140,8 +139,7 @@ class CreateAscent(MethodView):
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
-        ascent.grade_name = ascent_data["gradeName"]
-        ascent.grade_scale = ascent_data["gradeScale"]
+        ascent.grade_value = ascent_data["gradeValue"]
         ascent.rating = ascent_data["rating"]
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]
@@ -179,9 +177,9 @@ class UpdateAscent(MethodView):
             raise Unauthorized("Ascents can only be edited by users themselves.")
 
         line: Line = Line.find_by_id(ascent.line_id)
-        if ascent_data["gradeScale"] != line.grade_scale:
-            raise BadRequest("Cannot change grade scale of the climbed line.")
-        if not cross_validate_grade(ascent_data["gradeName"], ascent_data["gradeScale"], line.type):
+        if ascent_data["grade_value"] < 0:
+            raise BadRequest("Cannot propose project status.")
+        if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
 
         ascent.flash = ascent_data["flash"]
@@ -190,7 +188,6 @@ class UpdateAscent(MethodView):
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
         ascent.grade_name = ascent_data["gradeName"]
-        ascent.grade_scale = ascent_data["gradeScale"]
         ascent.rating = ascent_data["rating"]
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]

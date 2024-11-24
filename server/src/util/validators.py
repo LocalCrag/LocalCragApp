@@ -1,21 +1,15 @@
-from models.scale import GRADES
+from models.scale import Scale
 
 
 def cross_validate_grade(grade_value, grade_scale, line_type):
     """
     Tests if the given grade name exists in the scale for the line type.
     """
-    return True
+    scale = Scale.query.filter(Scale.line_type == line_type, Scale.name == grade_scale).first()
+    if scale is None:
+        return False
 
-    # todo implement
-
-    if line_type not in GRADES:
-        return False
-    if grade_scale not in GRADES[line_type]:
-        return False
-    if grade_name not in [g["name"] for g in GRADES[line_type][grade_scale]]:
-        return False
-    return True
+    return grade_value in [grade.value for grade in scale.grades]
 
 
 def validate_order_payload(new_order, items):
