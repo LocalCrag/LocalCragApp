@@ -148,7 +148,7 @@ class GetCragGrades(MethodView):
             db.session.query(Line.type, Line.grade_scale, Line.grade_value)
             .join(Area)
             .join(Sector)
-            .filter(Sector.crag_id == crag_id)
+            .filter(Sector.crag_id == crag_id, Line.archived.is_(False))
         )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))

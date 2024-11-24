@@ -55,7 +55,7 @@ class GetRegionGrades(MethodView):
         Returns the grades of all lines of the region.
         """
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value).join(Area).join(Sector).join(Crag)
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value).join(Area).join(Sector).join(Crag).filter(Line.archived.is_(False))
         )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))

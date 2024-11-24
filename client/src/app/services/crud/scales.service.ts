@@ -4,24 +4,25 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LineType } from '../../enums/line-type';
-import { Scale } from '../../models/scale';
+import { FullScale, Scale } from '../../models/scale';
 
-// LineType -> scaleName -> [gradeNamesToValues, gradeValuesToNames]
+// LineType -> scaleName -> [gradeNamesToValues, gradeValuesToNames, scale]
 const CACHE: Record<LineType,
                     Record<string, [
                       Record<string, number>,
-                      Record<number, string>
+                      Record<number, string>,
+                      FullScale
                     ]>> = {
   [LineType.BOULDER]: {},
   [LineType.SPORT]: {},
   [LineType.TRAD]: {},
 };
 
-const OPEN_REQUESTS: Record<LineType, Record<string, Observable<Required<Scale>>>> = {
+const OPEN_REQUESTS: Record<LineType, Record<string, Observable<FullScale>>> = {
   [LineType.BOULDER]: {},
   [LineType.SPORT]: {},
   [LineType.TRAD]: {},
-}
+};
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,11 @@ export class ScalesService {
     private http: HttpClient,
   ) {}
 
-  public getScale(lineType: LineType, name: string): Observable<Required<Scale>> {
+  public getScale(lineType: LineType, name: string): Observable<FullScale> {
+    if (CACHE[lineType][name]) {
+      return of(CACHE[lineType][name][2]);
+    }
+
     // Prevent parallel requests to the same endpoint
     if (OPEN_REQUESTS[lineType][name]) {
       return OPEN_REQUESTS[lineType][name];
@@ -61,16 +66,16 @@ export class ScalesService {
       );
   }
 
-  public createScale(scale: Scale): Observable<Scale> {
+  public createScale(scale: Scale): Observable<FullScale> {
     return this.http
       .post(this.api.scales.create(), Scale.serialize(scale))
-      .pipe(map(Scale.deserialize), map((scale) => this.updateCache(scale)),);
+      .pipe(map(Scale.deserializeFull), map((scale) => this.updateCache(scale)),);
   }
 
-  public updateScale(scale: Scale): Observable<Scale> {
+  public updateScale(scale: Scale): Observable<FullScale> {
     return this.http
       .put(this.api.scales.update(scale.lineType, scale.name), Scale.serialize(scale))
-      .pipe(map(Scale.deserialize), map((scale) => this.updateCache(scale)),);
+      .pipe(map(Scale.deserializeFull), map((scale) => this.updateCache(scale)),);
   }
 
   public deleteScale(scale: Scale): Observable<null> {
@@ -82,7 +87,6 @@ export class ScalesService {
   public gradeNameByValue(lineType?: LineType, name?: string, value?: number): Observable<string> {
     if (!lineType || !name || typeof value !== "number") {
       // Convenience case to allow use of function in eventually-initialized locations
-      console.warn("Warning: Eventually initialized usage")
       return of("");
     }
 
@@ -92,7 +96,7 @@ export class ScalesService {
     return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1][value]));
   }
 
-  private updateCache<T extends Scale>(scale: T) {
+  private updateCache(scale: FullScale) {
     const gradeValueByName: Record<string, number> = {};
     const gradeNameByValue: Record<number, string> = {};
 
@@ -101,7 +105,7 @@ export class ScalesService {
       gradeNameByValue[grade.value] = grade.name;
     }
 
-    CACHE[scale.lineType][scale.name] = [gradeValueByName, gradeNameByValue];
+    CACHE[scale.lineType][scale.name] = [gradeValueByName, gradeNameByValue, scale];
     return scale;
   }
 }

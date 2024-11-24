@@ -156,7 +156,7 @@ class GetSectorGrades(MethodView):
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value).join(Area).filter(Area.sector_id == sector_id)
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value).join(Area).filter(Area.sector_id == sector_id, Line.archived.is_(False))
         )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))

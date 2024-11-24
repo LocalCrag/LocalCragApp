@@ -262,7 +262,7 @@ class GetUserGrades(MethodView):
         user_id = User.get_id_by_slug(user_slug)
         result = (
             db.session.query(Line.type, Line.grade_scale, Line.grade_value, Ascent.line_id, Ascent.created_by_id)
-            .filter(Line.id == Ascent.line_id, Ascent.created_by_id == user_id)
+            .filter(Line.id == Ascent.line_id, Ascent.created_by_id == user_id, Line.archived.is_(False))
             .all()
         )
         response_data = {

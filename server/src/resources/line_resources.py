@@ -13,6 +13,7 @@ from marshmallow_schemas.line_schema import (
 )
 from models.area import Area
 from models.crag import Crag
+from models.enums.line_type_enum import LineTypeEnum
 from models.scale import get_grade_name
 from models.line import Line
 from models.sector import Sector
@@ -52,6 +53,10 @@ class GetLines(MethodView):
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
         archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
+        line_type = request.args.get("line_type", None, type=LineTypeEnum)
+        grade_scale = request.args.get("grade_scale", None)
+
+        # todo add filter options for linetype+gradescale
 
         if order_by not in ["grade_value", "name", "rating", None] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -67,6 +72,10 @@ class GetLines(MethodView):
             query = query.filter(Sector.slug == sector_slug)
         if area_slug:
             query = query.filter(Area.slug == area_slug)
+        if line_type:
+            query = query.filter(Line.type == line_type)
+        if grade_scale:
+            query = query.filter(Line.grade_scale == grade_scale)
 
         # Filter by grades
         if min_grade_value and max_grade_value:

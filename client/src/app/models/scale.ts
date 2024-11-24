@@ -43,3 +43,5 @@ export class Scale {
     };
   }
 }
+
+export type FullScale = Required<Scale>;
