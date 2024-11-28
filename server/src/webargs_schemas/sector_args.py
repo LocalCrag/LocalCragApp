@@ -11,4 +11,7 @@ sector_args = {
     "rules": fields.Str(required=True, allow_none=True),
     "secret": fields.Boolean(required=True, allow_none=False),
     "mapMarkers": fields.List(fields.Nested(map_marker_args), required=True, allow_none=False),
+    "defaultBoulderScale": fields.Str(required=True, allow_none=True),
+    "defaultSportScale": fields.Str(required=True, allow_none=True),
+    "defaultTradScale": fields.Str(required=True, allow_none=True),
 }

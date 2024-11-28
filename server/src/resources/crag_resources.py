@@ -7,6 +7,7 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.area import Area
@@ -20,7 +21,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload
+from util.validators import validate_order_payload, validate_default_scales
 from webargs_schemas.crag_args import crag_args
 
 
@@ -55,6 +56,10 @@ class CreateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        valid, error = validate_default_scales(crag_data)
+        if not valid:
+            return NotFound(error), 404
+
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
         new_crag.description = add_bucket_placeholders(crag_data["description"])
@@ -65,6 +70,9 @@ class CreateCrag(MethodView):
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
+        new_crag.default_boulder_scale = crag_data["defaultBoulderScale"]
+        new_crag.default_sport_scale = crag_data["defaultSportScale"]
+        new_crag.default_trad_scale = crag_data["defaultTradScale"]
 
         db.session.add(new_crag)
         db.session.commit()
@@ -83,12 +91,19 @@ class UpdateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         crag: Crag = Crag.find_by_slug(crag_slug)
 
+        valid, error = validate_default_scales(crag_data)
+        if not valid:
+            return NotFound(error), 404
+
         crag.name = crag_data["name"].strip()
         crag.description = add_bucket_placeholders(crag_data["description"])
         crag.short_description = crag_data["shortDescription"]
         crag.rules = add_bucket_placeholders(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_secret_property(crag, crag_data["secret"])
+        crag.default_boulder_scale = crag_data["defaultBoulderScale"]
+        crag.default_sport_scale = crag_data["defaultSportScale"]
+        crag.default_trad_scale = crag_data["defaultTradScale"]
 
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)

@@ -8,6 +8,7 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
@@ -20,7 +21,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import set_area_parents_unsecret, update_area_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload
+from util.validators import validate_order_payload, validate_default_scales
 from webargs_schemas.area_args import area_args
 
 
@@ -59,6 +60,10 @@ class CreateArea(MethodView):
         area_data = parser.parse(area_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        valid, error = validate_default_scales(area_data)
+        if not valid:
+            return NotFound(error), 404
+
         new_area: Area = Area()
         new_area.name = area_data["name"].strip()
         new_area.description = add_bucket_placeholders(area_data["description"])
@@ -69,6 +74,9 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
+        new_area.default_boulder_scale = area_data["defaultBoulderScale"]
+        new_area.default_sport_scale = area_data["defaultSportScale"]
+        new_area.default_trad_scale = area_data["defaultTradScale"]
 
         if not new_area.secret:
             set_area_parents_unsecret(new_area)
@@ -89,11 +97,18 @@ class UpdateArea(MethodView):
         area_data = parser.parse(area_args, request)
         area: Area = Area.find_by_slug(area_slug)
 
+        valid, error = validate_default_scales(area_data)
+        if not valid:
+            return NotFound(error), 404
+
         area.name = area_data["name"].strip()
         area.description = add_bucket_placeholders(area_data["description"])
         area.short_description = area_data["shortDescription"]
         area.portrait_image_id = area_data["portraitImage"]
         update_area_secret_property(area, area_data["secret"])
+        area.default_boulder_scale = area_data["defaultBoulderScale"]
+        area.default_sport_scale = area_data["defaultSportScale"]
+        area.default_trad_scale = area_data["defaultTradScale"]
 
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
