@@ -1,11 +1,10 @@
 import datetime
+import uuid
 
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy_continuum import version_class
 
 from extensions import db
-import uuid
-
 from models.enums.change_type_enum import ChangeTypeEnum
 
 

@@ -27,6 +27,7 @@ def configure_extensions(application):
     configure_api(application)
     setup_http_error_handlers(application)
 
+
 def init_sentry_sdk(application):
     if application.config["SENTRY_ENABLED"]:
         sentry_sdk.init(
