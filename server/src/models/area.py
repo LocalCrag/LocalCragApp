@@ -36,9 +36,9 @@ class Area(HasSlug, IsSearchable, BaseEntity):
     sector_slug = association_proxy("sector", "slug")
     crag_slug = association_proxy("sector", "crag_slug")
     map_markers = db.relationship("MapMarker", back_populates="area")
-    default_boulder_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
-    default_sport_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
-    default_trad_scale = db.Column(db.String(32), nullable=True, server_default="NULL")
+    default_boulder_scale = db.Column(db.String(32), nullable=True)
+    default_sport_scale = db.Column(db.String(32), nullable=True)
+    default_trad_scale = db.Column(db.String(32), nullable=True)
 
     @hybrid_property
     def ascent_count(self):

@@ -96,15 +96,15 @@ def downgrade():
 
     with op.batch_alter_table("ascents", schema=None) as batch_op:
         batch_op.alter_column(
-            "grade_name", existing_type=sa.VARCHAR(length=120), nullable=False, server_default=None
+            "grade_name", nullable=False, server_default=None
         )  # server_default only required for migration
         batch_op.alter_column(
-            "grade_scale", existing_type=sa.VARCHAR(length=120), nullable=False, server_default=None
+            "grade_scale", nullable=False, server_default=None
         )  # server_default only required for migration
         batch_op.drop_column("grade_value")
 
     with op.batch_alter_table("lines", schema=None) as batch_op:
-        batch_op.add_column(
-            "grade_name", existing_type=sa.VARCHAR(length=120), nullable=False, server_default=None
+        batch_op.alter_column(
+            "grade_name", nullable=False, server_default=None
         )  # server_default only required for migration
     # ### end Alembic commands ###
