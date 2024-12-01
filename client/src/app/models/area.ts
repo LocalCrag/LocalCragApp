@@ -16,6 +16,9 @@ export class Area extends AbstractModel {
   ascentCount: number;
   secret: boolean;
   mapMarkers: MapMarker[];
+  defaultBoulderScale: string | null = null;
+  defaultSportScale: string | null = null;
+  defaultTradScale: string | null = null;
 
   sector: Sector;
   routerLink: string;
@@ -46,6 +49,9 @@ export class Area extends AbstractModel {
     area.routerLink = area.sector
       ? `/topo/${area.sector.crag.slug}/${area.sector.slug}/${area.slug}`
       : null;
+    area.defaultBoulderScale = payload.defaultBoulderScale;
+    area.defaultSportScale = payload.defaultSportScale;
+    area.defaultTradScale = payload.defaultTradScale;
     return area;
   }
 
@@ -65,6 +71,9 @@ export class Area extends AbstractModel {
       mapMarkers: area.mapMarkers
         ? area.mapMarkers.map(MapMarker.serialize)
         : null,
+      defaultBoulderScale: area.defaultBoulderScale,
+      defaultSportScale: area.defaultSportScale,
+      defaultTradScale: area.defaultTradScale,
     };
   }
 }

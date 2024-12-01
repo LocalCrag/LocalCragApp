@@ -21,6 +21,9 @@ export class Sector extends AbstractModel {
   routerLink: string;
   secret: boolean;
   mapMarkers: MapMarker[];
+  defaultBoulderScale: string | null = null;
+  defaultSportScale: string | null = null;
+  defaultTradScale: string | null = null;
 
   /**
    * Parses a sector.
@@ -50,6 +53,9 @@ export class Sector extends AbstractModel {
     sector.routerLink = sector.crag
       ? `/topo/${sector.crag.slug}/${sector.slug}`
       : null;
+    sector.defaultBoulderScale = payload.defaultBoulderScale;
+    sector.defaultSportScale = payload.defaultSportScale;
+    sector.defaultTradScale = payload.defaultTradScale;
     return sector;
   }
 
@@ -70,6 +76,9 @@ export class Sector extends AbstractModel {
       mapMarkers: sector.mapMarkers
         ? sector.mapMarkers.map(MapMarker.serialize)
         : null,
+      defaultBoulderScale: sector.defaultBoulderScale,
+      defaultSportScale: sector.defaultSportScale,
+      defaultTradScale: sector.defaultTradScale,
     };
   }
 }

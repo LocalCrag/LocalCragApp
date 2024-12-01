@@ -30,7 +30,7 @@ class SectorDetailSchema(SectorSchema):
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")
     defaultSportScale = fields.String(attribute="default_sport_scale")
-    defaultTradScale = fields.String(attribute="default_trade_scale")
+    defaultTradScale = fields.String(attribute="default_trad_scale")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

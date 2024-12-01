@@ -11,9 +11,9 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { ConfirmationService, SelectItem } from 'primeng/api';
+import { catchError, map } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
@@ -30,6 +30,8 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
 
 /**
  * Form component for creating and editing sectors.
@@ -49,6 +51,9 @@ export class SectorFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public sector: Sector;
   public editMode = false;
+  public boulderScales: SelectItem<string | null>[] = [];
+  public sportScales: SelectItem<string | null>[] = [];
+  public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
   public parentSecret = false;
 
@@ -65,6 +70,7 @@ export class SectorFormComponent implements OnInit {
     private uploadService: UploadService,
     private translocoService: TranslocoService,
     private confirmationService: ConfirmationService,
+    private scalesService: ScalesService,
   ) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
@@ -73,40 +79,67 @@ export class SectorFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    const scalesPopulated = this.scalesService.getScales().pipe(map(scales => {
+      scales.forEach(scale => {
+        switch (scale.lineType) {
+          case LineType.BOULDER:
+            this.boulderScales.push({label: scale.name, value: scale.name});
+            break;
+          case LineType.SPORT:
+            this.sportScales.push({label: scale.name, value: scale.name});
+            break;
+          case LineType.TRAD:
+            this.tradScales.push({label: scale.name, value: scale.name});
+        }
+      });
+      this.boulderScales.unshift({label: "inherit", value: null})  // todo translate
+      this.sportScales.unshift({label: "inherit", value: null})  // todo translate
+      this.tradScales.unshift({label: "inherit", value: null})  // todo translate
+
+      return true;
+    }));
+
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+
     this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
       this.parentSecret = crag.secret;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
         this.sectorForm.disable();
-        this.sectorsService
-          .getSector(sectorSlug)
-          .pipe(
-            catchError((e) => {
-              if (e.status === 404) {
-                this.router.navigate(['/not-found']);
-              }
-              return of(e);
-            }),
-          )
-          .subscribe((sector) => {
-            this.sector = sector;
-            this.setFormValue();
-            this.loadingState = LoadingState.DEFAULT;
-            this.editors?.map((editor) => {
-              editor.getQuill().enable();
-            });
+        forkJoin([
+          this.sectorsService
+            .getSector(sectorSlug)
+            .pipe(
+              catchError((e) => {
+                if (e.status === 404) {
+                  this.router.navigate(['/not-found']);
+                }
+                return of(e);
+              }),
+            ),
+          scalesPopulated
+        ]).subscribe(([sector, _]) => {
+          this.sector = sector;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          this.editors?.map((editor) => {
+            editor.getQuill().enable();
           });
+        });
       } else {
         this.store.select(selectInstanceName).subscribe((instanceName) => {
           this.title.setTitle(
             `${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`,
           );
         });
-        this.sectorForm.get('secret').setValue(this.parentSecret);
-        this.loadingState = LoadingState.DEFAULT;
+        this.sectorForm.disable();
+        scalesPopulated.subscribe(() => {
+          this.sectorForm.get('secret').setValue(this.parentSecret);
+          this.sectorForm.enable();
+          this.loadingState = LoadingState.DEFAULT;
+        });
       }
     });
   }
@@ -123,6 +156,9 @@ export class SectorFormComponent implements OnInit {
       rules: [null],
       secret: [false],
       mapMarkers: [[]],
+      defaultBoulderScale: [null],
+      defaultSportScale: [null],
+      defaultTradScale: [null],
     });
   }
 
@@ -139,6 +175,9 @@ export class SectorFormComponent implements OnInit {
       rules: this.sector.rules,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
+      defaultBoulderScale: this.sector.defaultBoulderScale,
+      defaultSportScale: this.sector.defaultSportScale,
+      defaultTradScale: this.sector.defaultTradScale,
     });
   }
 
@@ -167,6 +206,9 @@ export class SectorFormComponent implements OnInit {
       sector.portraitImage = this.sectorForm.get('portraitImage').value;
       sector.secret = this.sectorForm.get('secret').value;
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
+      sector.defaultBoulderScale = this.sectorForm.get('defaultBoulderScale').value;
+      sector.defaultSportScale = this.sectorForm.get('defaultSportScale').value;
+      sector.defaultTradScale = this.sectorForm.get('defaultTradScale').value;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(sector).subscribe((sector) => {
