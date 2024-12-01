@@ -6,11 +6,11 @@ def cross_validate_grade(grade_value, grade_scale, line_type):
     """
     Tests if the given grade name exists in the scale for the line type.
     """
-    scale = Scale.query.filter(Scale.line_type == line_type, Scale.name == grade_scale).first()
+    scale = Scale.query.filter(Scale.type == line_type, Scale.name == grade_scale).first()
     if scale is None:
         return False
 
-    return grade_value in [grade.value for grade in scale.grades]
+    return grade_value in [grade["value"] for grade in scale.grades]
 
 
 def validate_order_payload(new_order, items):

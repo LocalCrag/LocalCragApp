@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
@@ -24,6 +24,11 @@ import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/s
 import { AreasService } from '../../../services/crud/areas.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
+import { Crag } from '../../../models/crag';
+import { Sector } from '../../../models/sector';
+import { Area } from '../../../models/area';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { CragsService } from '../../../services/crud/crags.service';
 
 /**
  * Form component for lines.
@@ -42,6 +47,11 @@ export class LineFormComponent implements OnInit {
   public lineForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
+
+  public crag: Crag;
+  public sector: Sector;
+  public area: Area;
+
   public line: Line;
   public editMode = false;
   public grades = [];
@@ -55,6 +65,12 @@ export class LineFormComponent implements OnInit {
   public today = new Date();
   public parentSecret = false;
 
+  public defaultScales: Record<LineType, string | null> = {
+    [LineType.BOULDER]: null,
+    [LineType.SPORT]: null,
+    [LineType.TRAD]: null,
+  };
+
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
@@ -67,15 +83,12 @@ export class LineFormComponent implements OnInit {
     private router: Router,
     private linesService: LinesService,
     private areasService: AreasService,
+    private sectorsService: SectorsService,
+    private cragsService: CragsService,
     private translocoService: TranslocoService,
     private confirmationService: ConfirmationService,
     private scalesService: ScalesService,
-  ) {
-    // todo hardcoded values
-    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
-      this.grades = scale.grades;
-    })
-  }
+  ) {}
 
   /**
    * Builds the form on component initialization.
@@ -85,9 +98,31 @@ export class LineFormComponent implements OnInit {
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
-    this.areasService.getArea(this.areaSlug).subscribe((area) => {
+
+    forkJoin([
+      this.cragsService.getCrag(this.cragSlug),
+      this.sectorsService.getSector(this.sectorSlug),
+      this.areasService.getArea(this.areaSlug),
+    ])
+    .subscribe(([crag, sector, area]) => {
       this.parentSecret = area.secret;
+
+      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale ?? "FB";
+      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? "UIAA";
+      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
+
       this.buildForm();
+      this.lineForm.get("type").valueChanges.subscribe((item) => {
+        if (this.defaultScales[item.value]) {
+          this.scalesService.getScale(item.value, this.defaultScales[item.value]).subscribe((scale) => {
+            this.grades = scale.grades;
+            if (this.line?.ascentCount > 0) {
+              this.grades = this.grades.filter((grade) => grade.value >= 0);
+            }
+          });
+        } // todo what if there is no scale?
+      });
+
       if (lineSlug) {
         this.editMode = true;
         this.lineForm.disable();
@@ -103,14 +138,18 @@ export class LineFormComponent implements OnInit {
           )
           .subscribe((line) => {
             this.line = line;
-            if (this.line.ascentCount > 0) {
-              this.grades = this.grades.filter((grade) => grade.value >= 0);
-            }
-            this.setFormValue();
-            this.loadingState = LoadingState.DEFAULT;
-            if (this.editor) {
-              this.editor.getQuill().enable();
-            }
+
+            this.scalesService.getScale(line.type, line.gradeScale).subscribe((scale) => {
+              this.grades = scale.grades;
+              if (this.line.ascentCount > 0) {
+                this.grades = this.grades.filter((grade) => grade.value >= 0);
+              }
+              this.setFormValue();
+              this.loadingState = LoadingState.DEFAULT;
+              if (this.editor) {
+                this.editor.getQuill().enable();
+              }
+            });
           });
       } else {
         this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -119,6 +158,7 @@ export class LineFormComponent implements OnInit {
           );
         });
         this.lineForm.get('secret').setValue(this.parentSecret);
+        this.lineForm.get('type').setValue(LineType.BOULDER);
         this.loadingState = LoadingState.DEFAULT;
       }
     });
@@ -134,6 +174,7 @@ export class LineFormComponent implements OnInit {
         description: [null],
         color: [instanceSettings.gymMode ? instanceSettings.arrowColor : null],
         videos: this.fb.array([]),
+        type: [LineType.BOULDER, [Validators.required]],
         grade: [null, [Validators.required]],
         rating: [null],
         faYear: [null, [yearOfDateNotInFutureValidator()]],
@@ -174,6 +215,8 @@ export class LineFormComponent implements OnInit {
         .subscribe(() => {
           this.setFormDisabledState();
         });
+
+      console.log(this.lineForm.get('type'))
     })
   }
 
@@ -216,6 +259,7 @@ export class LineFormComponent implements OnInit {
       name: this.line.name,
       description: this.line.description,
       videos: this.line.videos,
+      type: this.line.type,
       grade: {
         value: this.line.gradeValue,
       },
@@ -291,8 +335,9 @@ export class LineFormComponent implements OnInit {
       line.description = this.lineForm.get('description').value;
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
+      line.type = this.lineForm.get('type').value.value;  // todo when editing there is an issue somewhere
       line.gradeValue = this.lineForm.get('grade').value.value;
-      line.gradeScale = this.line?.gradeScale ?? "FB"; // todo hardcoded value
+      line.gradeScale = this.defaultScales[line.type];
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
@@ -412,4 +457,6 @@ export class LineFormComponent implements OnInit {
   public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
+
+  protected readonly LineType = LineType;
 }

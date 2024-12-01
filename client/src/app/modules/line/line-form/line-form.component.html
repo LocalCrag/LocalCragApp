@@ -84,6 +84,26 @@
           </ng-container>
 
           <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="type">{{
+                t("lineTypeLabel")
+              }}</label>
+            <p-dropdown
+              formControlName="type"
+              id="type"
+              [options]="[
+                { label: t(LineType.BOULDER), value: LineType.BOULDER },
+                { label: t(LineType.SPORT), value: LineType.SPORT },
+                { label: t(LineType.TRAD), value: LineType.TRAD },
+              ]"
+              lcFormControl
+            >
+              <ng-template let-selectedType pTemplate="selectedItem">
+                {{ selectedType.label }}
+              </ng-template>
+            </p-dropdown>
+          </div>
+
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")
             }}</label>
