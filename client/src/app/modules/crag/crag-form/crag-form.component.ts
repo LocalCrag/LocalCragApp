@@ -40,9 +40,9 @@ export class CragFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public crag: Crag;
   public editMode = false;
-  public boulderScales: SelectItem<string | null>[] = [];
-  public sportScales: SelectItem<string | null>[] = [];
-  public tradScales: SelectItem<string | null>[] = [];
+  public boulderScales: SelectItem<string | null>[] = null;
+  public sportScales: SelectItem<string | null>[] = null;
+  public tradScales: SelectItem<string | null>[] = null;
   public quillModules: any;
 
   constructor(
@@ -66,21 +66,26 @@ export class CragFormComponent implements OnInit {
   ngOnInit() {
     this.buildForm();
     const scalesPopulated = this.scalesService.getScales().pipe(map(scales => {
+      const boulderScales = [{label: "inherit", value: null}];
+      const sportScales = [{label: "inherit", value: null}];
+      const tradScales = [{label: "inherit", value: null}];
+
       scales.forEach(scale => {
         switch (scale.lineType) {
           case LineType.BOULDER:
-            this.boulderScales.push({label: scale.name, value: scale.name});
+            boulderScales.push({label: scale.name, value: scale.name});
             break;
           case LineType.SPORT:
-            this.sportScales.push({label: scale.name, value: scale.name});
+            sportScales.push({label: scale.name, value: scale.name});
             break;
           case LineType.TRAD:
-            this.tradScales.push({label: scale.name, value: scale.name});
+            tradScales.push({label: scale.name, value: scale.name});
         }
       });
-      this.boulderScales.unshift({label: "inherit", value: null})  // todo translate
-      this.sportScales.unshift({label: "inherit", value: null})  // todo translate
-      this.tradScales.unshift({label: "inherit", value: null})  // todo translate
+
+      this.boulderScales = boulderScales;
+      this.sportScales = sportScales;
+      this.tradScales = tradScales;
 
       return true;
     }));
