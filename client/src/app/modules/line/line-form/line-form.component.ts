@@ -71,6 +71,8 @@ export class LineFormComponent implements OnInit {
     [LineType.TRAD]: null,
   };
 
+  public typeOptions = null;
+
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
@@ -111,16 +113,21 @@ export class LineFormComponent implements OnInit {
       this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? "UIAA";
       this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
 
+      this.typeOptions = Object.entries(this.defaultScales).filter(([_, v]) => !!v).map(([k]) => k);
+
       this.buildForm();
-      this.lineForm.get("type").valueChanges.subscribe((item) => {
-        if (this.defaultScales[item.value]) {
-          this.scalesService.getScale(item.value, this.defaultScales[item.value]).subscribe((scale) => {
-            this.grades = scale.grades;
-            if (this.line?.ascentCount > 0) {
-              this.grades = this.grades.filter((grade) => grade.value >= 0);
-            }
-          });
-        } // todo what if there is no scale?
+      this.lineForm.get("type").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
+        this.scalesService.getScale(item, this.defaultScales[item]).subscribe((scale) => {
+          this.grades = scale.grades;
+          if (this.line?.ascentCount > 0) {
+            this.grades = this.grades.filter((grade) => grade.value >= 0);
+          }
+          if (!this.line || this.line.type != item) {
+            this.lineForm.get("grade").reset(); // todo these have no UI effect :/
+          } else {
+            this.lineForm.get("grade").setValue(this.line.gradeValue); // todo these have no UI effect :/
+          }
+        });
       });
 
       if (lineSlug) {
@@ -139,17 +146,11 @@ export class LineFormComponent implements OnInit {
           .subscribe((line) => {
             this.line = line;
 
-            this.scalesService.getScale(line.type, line.gradeScale).subscribe((scale) => {
-              this.grades = scale.grades;
-              if (this.line.ascentCount > 0) {
-                this.grades = this.grades.filter((grade) => grade.value >= 0);
-              }
-              this.setFormValue();
-              this.loadingState = LoadingState.DEFAULT;
-              if (this.editor) {
-                this.editor.getQuill().enable();
-              }
-            });
+            this.setFormValue();
+            this.loadingState = LoadingState.DEFAULT;
+            if (this.editor) {
+              this.editor.getQuill().enable();
+            }
           });
       } else {
         this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -209,14 +210,13 @@ export class LineFormComponent implements OnInit {
         mantle: [false],
         secret: [false],
       });
+
       this.lineForm
         .get('grade')
         .valueChanges.pipe(untilDestroyed(this))
         .subscribe(() => {
           this.setFormDisabledState();
         });
-
-      console.log(this.lineForm.get('type'))
     })
   }
 
@@ -335,8 +335,9 @@ export class LineFormComponent implements OnInit {
       line.description = this.lineForm.get('description').value;
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
-      line.type = this.lineForm.get('type').value.value;  // todo when editing there is an issue somewhere
+      line.type = this.lineForm.get('type').value.value;
       line.gradeValue = this.lineForm.get('grade').value.value;
+      console.log("saveline", line.type);  // todo when editing the value here is undefined for some reason ...
       line.gradeScale = this.defaultScales[line.type];
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value

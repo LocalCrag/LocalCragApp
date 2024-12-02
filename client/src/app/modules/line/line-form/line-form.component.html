@@ -90,15 +90,11 @@
             <p-dropdown
               formControlName="type"
               id="type"
-              [options]="[
-                { label: t(LineType.BOULDER), value: LineType.BOULDER },
-                { label: t(LineType.SPORT), value: LineType.SPORT },
-                { label: t(LineType.TRAD), value: LineType.TRAD },
-              ]"
+              [options]="typeOptions"
               lcFormControl
             >
               <ng-template let-selectedType pTemplate="selectedItem">
-                {{ selectedType.label }}
+                {{ selectedType | transloco }}
               </ng-template>
             </p-dropdown>
           </div>
