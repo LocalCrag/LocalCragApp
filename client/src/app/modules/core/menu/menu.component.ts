@@ -111,6 +111,13 @@ export class MenuComponent implements OnInit {
                   visible: authState.user.moderator,
                 },
                 {
+                  icon: 'pi pi-fw pi-sliders-h',
+                  label: this.translocoService.translate(
+                    marker('menu.scales'),
+                  ),
+                  routerLink: '/scales',
+                },
+                {
                   icon: 'pi pi-fw pi-cog',
                   label: this.translocoService.translate(
                     marker('menu.instanceSettings'),

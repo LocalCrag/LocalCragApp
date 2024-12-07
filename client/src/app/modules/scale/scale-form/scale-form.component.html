@@ -1,0 +1,14 @@
+<ng-container *transloco="let t; read: 'scale.scaleForm'">
+  <div class="content">
+    <p-card header="{{ t('editScale') }}">
+      <form [formGroup]="scaleForm">
+        <div formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index">
+          <div [formGroupName]="i">
+            <strong>Name:</strong> {{ grade.get('name').value | translateSpecialGrades }}<br>
+            <strong>Value:</strong> {{ grade.get('value').value }}<br>
+          </div>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</ng-container>

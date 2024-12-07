@@ -1,0 +1,34 @@
+<ng-container *transloco="let t; read: 'scale.scaleList'">
+  <div class="content">
+    <p-card header="{{ t('editScales') }}">
+      <p-dataView
+        [value]="scales"
+        [emptyMessage]="t('noScalesFoundEmptyMessage')"
+        [loading]="loadingState === LoadingState.LOADING"
+      >
+        <ng-template let-scales pTemplate="list">
+          <div class="grid grid-nogutter">
+            <a
+              class="col-12 clickable-data-item scale-link"
+              *ngFor="let scale of scales; let first = first"
+              routerLink="/scales/{{ scale.lineType }}/{{ scale.name }}"
+              data-cy="scale-list-item"
+            >
+              <div
+                class="flex flex-column xl:flex-row xl:align-items-center justify-content-between p-4 gap-4 ascent-table-container"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
+                <div class="scale">
+                  <span class="pi pi-folder"></span>
+                  {{ scale.lineType | transloco }}
+                  <span class="ml-4 pi pi-chart-bar"></span>
+                  {{ scale.name }}
+                </div>
+              </div>
+            </a>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </p-card>
+  </div>
+</ng-container>
