@@ -2,12 +2,79 @@
   <div class="content">
     <p-card header="{{ t('editScale') }}">
       <form [formGroup]="scaleForm">
-        <div formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index">
-          <div [formGroupName]="i">
-            <strong>Name:</strong> {{ grade.get('name').value | translateSpecialGrades }}<br>
-            <strong>Value:</strong> {{ grade.get('value').value }}<br>
+        <p-card header="{{ scale?.lineType | transloco }} {{ scale?.name }}">
+          <div class="grid grid-nogutter">
+            <div class="col-12" formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index">
+              <div [formGroupName]="i" class="flex gap-4 justify-content-center mb-2">
+                <ng-container *ngIf="grade.get('value').value <= 0">
+                  <div>
+                    <label>
+                      {{ t('gradeNameLabel') }}
+                      <input type="text" pInputText disabled value="{{ grade.get('name').value | translateSpecialGrades }}" />
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      {{ t('gradeValueLabel') }}
+                      <input type="text" pInputText disabled value="{{ grade.get('value').value | translateSpecialGrades }}" />
+                    </label>
+                  </div>
+                  <p-button icon="pi pi-trash" styleClass="p-button-danger" disabled />
+                </ng-container>
+                <ng-container *ngIf="grade.get('value').value > 0">
+                  <div>
+                    <label>
+                      {{ t('gradeNameLabel') }}
+                      <input type="text" pInputText formControlName="name" />
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      {{ t('gradeValueLabel') }}
+                      <p-inputNumber formControlName="value" [min]="1" />
+                    </label>
+                  </div>
+                  <p-button icon="pi pi-trash" styleClass="p-button-danger" (click)="deleteValue(i)" />
+                </ng-container>
+              </div>
+            </div>
           </div>
-        </div>
+        </p-card>
+        <p-toolbar>
+          <div class="p-toolbar-group-start">
+            <p-button
+              label="{{ t('addGrade') }}"
+              (click)="addGrade()"
+              icon="pi pi-plus-circle"
+              class="responsive-button"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('reorderGrades') }}"
+              (click)="reorderByValue()"
+              icon="pi pi-sort-amount-down-alt"
+              class="responsive-button ml-2"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+          </div>
+          <div class="p-toolbar-group-end">
+            <p-button
+              label="{{ t('saveScale') }}"
+              (click)="saveScale()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('deleteScale') }}"
+              (click)="deleteScale()"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              class="responsive-button ml-2"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+          </div>
+        </p-toolbar>
       </form>
     </p-card>
   </div>
