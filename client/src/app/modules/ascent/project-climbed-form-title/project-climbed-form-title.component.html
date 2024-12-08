@@ -1,7 +1,7 @@
 <div class="line-name">
   <h3>{{ line.name }}</h3>
   <div class="grade">
-    {{ line.grade.name | transloco }}
+    {{ scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue) | async | translateSpecialGrades }}
   </div>
 </div>
 

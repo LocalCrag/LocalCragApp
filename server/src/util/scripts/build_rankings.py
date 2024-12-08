@@ -3,7 +3,6 @@ from sqlalchemy.orm.attributes import flag_modified
 from extensions import db
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
-from models.grades import get_grade_value
 from models.line import Line
 from models.ranking import Ranking
 from models.user import User
@@ -85,7 +84,7 @@ def build_rankings():
                     line: Line = ascent.line
                     if not secret and line.secret:
                         continue
-                    ascent_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+                    ascent_value = line.grade_value
                     global_ranking = ranking_map.get_global(line.type, secret)
                     crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id, secret)
                     sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id, secret)
