@@ -6,7 +6,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
 import { NgClass, NgForOf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
@@ -44,6 +44,7 @@ export class ScaleListComponent implements OnInit {
   constructor(
     private scalesService: ScalesService,
     private translocoService: TranslocoService,
+    protected router: Router,
   ) {}
 
   ngOnInit() {

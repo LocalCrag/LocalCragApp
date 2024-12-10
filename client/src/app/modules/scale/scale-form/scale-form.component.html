@@ -2,8 +2,40 @@
   <div class="content">
     <p-card header="{{ t('editScale') }}">
       <form [formGroup]="scaleForm">
-        <p-card header="{{ scale?.lineType | transloco }} {{ scale?.name }}">
+        <p-card>
+          <ng-template pTemplate="title">
+            <ng-container *ngIf="editMode">{{ scale?.lineType | transloco }} {{ scale?.name }}</ng-container>
+            <ng-container *ngIf="!editMode">{{ t('createTitle') }}</ng-container>
+          </ng-template>
           <div class="grid grid-nogutter">
+            <ng-container *ngIf="!editMode">
+              <div class="col-12 flex gap-4 justify-content-center mb-2">
+                <label for="linetype">
+                  {{ t('lineTypeLabel') }}
+                </label>
+                <p-dropdown
+                  id="linetype"
+                  formControlName="lineType"
+                  [options]="[
+                    {name: t('BOULDER'), value: LineType.BOULDER},
+                    {name: t('SPORT'), value: LineType.SPORT},
+                    {name: t('TRAD'), value: LineType.TRAD},
+                  ]"
+                  optionLabel="name"
+                />
+              </div>
+              <div class="col-12 flex gap-4 justify-content-center mb-2">
+                <label for="name">
+                  {{ t('nameInputLabel') }}
+                </label>
+                <input
+                  type="text"
+                  pInputText
+                  id="name"
+                  formControlName="name"
+                />
+              </div>
+            </ng-container>
             <div class="col-12" formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index">
               <div [formGroupName]="i" class="flex gap-4 justify-content-center mb-2">
                 <ng-container *ngIf="grade.get('value').value <= 0">
@@ -67,12 +99,13 @@
             />
             <p-button
               label="{{ t('deleteScale') }}"
-              (click)="deleteScale()"
+              (click)="confirmDeleteScale($event)"
               icon="pi pi-trash"
               styleClass="p-button-danger"
               class="responsive-button ml-2"
               [loading]="loadingState === LoadingState.LOADING"
             />
+            <p-confirmPopup></p-confirmPopup>
           </div>
         </p-toolbar>
       </form>

@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -17,6 +17,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
+import { environment } from '../../../../environments/environment';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
+import { Store } from '@ngrx/store';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'lc-scale-form',
@@ -35,8 +43,11 @@ import { ButtonModule } from 'primeng/button';
     InputNumberModule,
     ToolbarModule,
     ButtonModule,
-    FormsModule
-  ]
+    FormsModule,
+    ConfirmPopupModule,
+    DropdownModule
+  ],
+  providers: [ConfirmationService],
 })
 @UntilDestroy()
 export class ScaleFormComponent implements OnInit {
@@ -45,43 +56,67 @@ export class ScaleFormComponent implements OnInit {
   public scaleForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public scale: Scale;
+  public editMode = true;
 
   constructor(
     private fb: FormBuilder,
     private scalesService: ScalesService,
+    private confirmationService: ConfirmationService,
+    private translocoService: TranslocoService,
     private route: ActivatedRoute,
     private router: Router,
+    private store: Store,
   ) {}
 
   ngOnInit() {
     const lineType = this.route.snapshot.paramMap.get('lineType') as LineType;
     const name = this.route.snapshot.paramMap.get('name');
 
+    if (!lineType) {
+      this.editMode = false;
+    }
+
     this.buildForm();
     this.scaleForm.disable();
-    this.scalesService.getScale(lineType, name).pipe(catchError((e) => {
-      if (e.status === 404) {
-        this.router.navigate(['/not-found']);
-      }
-      return of(e);
-    })).subscribe((scale) => {
-      this.scale = scale;
+    if (this.editMode) {
+      this.scalesService.getScale(lineType, name).pipe(catchError((e) => {
+        if (e.status === 404) {
+          this.router.navigate(['/not-found']);
+        }
+        return of(e);
+      })).subscribe((scale) => {
+        this.scale = scale;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+      });
+    } else {
       this.setFormValue();
       this.loadingState = LoadingState.DEFAULT;
-    });
+    }
   }
 
   buildForm() {
     this.scaleForm = this.fb.group({
-      grades: this.fb.array([]),
+      lineType: this.editMode ? undefined : [LineType.BOULDER, [Validators.required]],
+      name: this.editMode ? undefined : ['', Validators.required],
+      grades: this.fb.array([], [
+        (ctl) => ctl.value.length === (new Set(ctl.value.map(v => v.value))).size ? null : {'not_unique': true}
+      ]),
     });
   }
 
   setFormValue() {
-    this.scale.grades.map((g) => this.fb.group({
-      name: [g.name],
-      value: [g.value],
-    })).forEach((ctl) => this.gradeControls().push(ctl));
+    if (this.editMode) {
+      this.scale.grades.map((g) => this.fb.group({
+        name: [g.name],
+        value: [g.value],
+      })).forEach((ctl) => this.gradeControls().push(ctl));
+    } else {
+      this.gradeControls().push(this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }));
+      this.gradeControls().push(this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }));
+      this.gradeControls().push(this.fb.group({ name: marker('UNGRADED'), value: 0 }));
+      this.addGrade();
+    }
     this.scaleForm.enable();
   }
 
@@ -112,12 +147,82 @@ export class ScaleFormComponent implements OnInit {
   }
 
   saveScale() {
-    // todo
+    if (this.scaleForm.valid) {
+      this.loadingState = LoadingState.LOADING;
+      this.scale.grades = this.gradeControls().value;
+
+      if (this.editMode) {
+        this.scalesService.updateScale(this.scale).subscribe({
+          next: () => {
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.SCALE_UPDATED)
+            );
+            this.loadingState = LoadingState.DEFAULT
+          },
+          error: () => {
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.SCALE_UPDATED_ERROR)
+            );
+            this.loadingState = LoadingState.DEFAULT
+          },
+        });
+      } else {
+        const scale = new Scale();
+        scale.lineType = this.scaleForm.get('lineType').value;
+        scale.name = this.scaleForm.get('name').value;
+        scale.grades = this.gradeControls().value;
+        this.scalesService.createScale(scale).subscribe({
+          next: () => {
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.SCALE_CREATED)
+            );
+            this.loadingState = LoadingState.DEFAULT
+            this.router.navigate(['/scales'])
+          },
+          error: () => {
+            this.store.dispatch(
+              toastNotification(NotificationIdentifier.SCALE_CREATED_ERROR)
+            );
+            this.loadingState = LoadingState.DEFAULT
+          },
+        });
+      }
+    }
+  }
+
+  confirmDeleteScale(event: Event) {
+    this.translocoService.load(environment.language).subscribe(() => {
+      this.confirmationService.confirm({
+        target: event.target,
+        message: this.translocoService.translate(marker('scale.scaleForm.confirmDeleteMessage')),
+        acceptLabel: this.translocoService.translate(marker('scale.scaleForm.acceptConfirmDelete')),
+        acceptButtonStyleClass: 'p-button-danger',
+        rejectLabel: this.translocoService.translate(marker('scale.scaleForm.rejectConfirmDelete')),
+        icon: 'pi pi-exclamation-triangle',
+        accept: this.deleteScale.bind(this),
+      });
+    });
   }
 
   deleteScale() {
-    // todo
+    this.loadingState = LoadingState.LOADING;
+    this.scalesService.deleteScale(this.scale).subscribe({
+      next: () => {
+        this.router.navigate(['/scales']);
+        this.store.dispatch(
+          toastNotification(NotificationIdentifier.SCALE_DELETED),
+        );
+        this.loadingState = LoadingState.DEFAULT;
+      },
+      error: () => {
+        this.store.dispatch(
+          toastNotification(NotificationIdentifier.SCALE_DELETED_ERROR),
+        );
+        this.loadingState = LoadingState.DEFAULT;
+      },
+    });
   }
 
   protected readonly LoadingState = LoadingState;
+  protected readonly LineType = LineType;
 }

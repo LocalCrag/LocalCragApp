@@ -29,6 +29,13 @@
           </div>
         </ng-template>
       </p-dataView>
+      <div>
+        <p-button
+          icon="pi pi-plus"
+          (click)="router.navigate(['/scales/create'])"
+          label="{{ t('createScale') }}"
+        />
+      </div>
     </p-card>
   </div>
 </ng-container>

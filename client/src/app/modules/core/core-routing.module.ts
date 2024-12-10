@@ -264,6 +264,14 @@ const routes: Routes = [
     },
   },
   {
+    path: 'scales/create',
+    component: ScaleFormComponent,
+    canActivate: [isAdmin],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
     path: 'scales/:lineType/:name',
     component: ScaleFormComponent,
     canActivate: [isAdmin],
