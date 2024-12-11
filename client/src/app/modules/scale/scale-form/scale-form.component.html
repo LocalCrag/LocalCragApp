@@ -105,6 +105,13 @@
               class="responsive-button ml-2"
               [loading]="loadingState === LoadingState.LOADING"
             />
+            <p-button
+              label="{{ t('cancel') }}"
+              (click)="router.navigate(['/scales'])"
+              icon="pi pi-ban"
+              severity="secondary"
+              class="responsive-button ml-2"
+            />
             <p-confirmPopup></p-confirmPopup>
           </div>
         </p-toolbar>

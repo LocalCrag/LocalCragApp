@@ -64,7 +64,7 @@ export class ScaleFormComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private translocoService: TranslocoService,
     private route: ActivatedRoute,
-    private router: Router,
+    protected router: Router,
     private store: Store,
   ) {}
 
@@ -197,7 +197,7 @@ export class ScaleFormComponent implements OnInit {
         message: this.translocoService.translate(marker('scale.scaleForm.confirmDeleteMessage')),
         acceptLabel: this.translocoService.translate(marker('scale.scaleForm.acceptConfirmDelete')),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('scale.scaleForm.rejectConfirmDelete')),
+        rejectLabel: this.translocoService.translate(marker('scale.scaleForm.cancel')),
         icon: 'pi pi-exclamation-triangle',
         accept: this.deleteScale.bind(this),
       });

@@ -5,31 +5,33 @@
         [value]="scales"
         [emptyMessage]="t('noScalesFoundEmptyMessage')"
         [loading]="loadingState === LoadingState.LOADING"
+        class="p-5"
       >
         <ng-template let-scales pTemplate="list">
-          <div class="grid grid-nogutter">
+          <div class="grid gap-4">
             <a
-              class="col-12 clickable-data-item scale-link"
+              class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
               *ngFor="let scale of scales; let first = first"
               routerLink="/scales/{{ scale.lineType }}/{{ scale.name }}"
               data-cy="scale-list-item"
             >
-              <div
-                class="flex flex-column xl:flex-row xl:align-items-center justify-content-between p-4 gap-4 ascent-table-container"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
-              >
-                <div class="scale">
-                  <span class="pi pi-folder"></span>
-                  {{ scale.lineType | transloco }}
-                  <span class="ml-4 pi pi-chart-bar"></span>
-                  {{ scale.name }}
+              <p-card class="width-100">
+                <div class="flex flex-column scale width-100 pb-3">
+                  <div class="scale-large md:ml-4 flex align-items-center">
+                    <span class="pi pi-image scale-vlarge mr-3"></span>
+                    {{ scale.lineType | transloco }}
+                  </div>
+                  <div class="scale-large mt-4 md:ml-4 flex align-items-center">
+                    <span class="pi pi-chart-bar scale-vlarge mr-3"></span>
+                    {{ scale.name }}
+                  </div>
                 </div>
-              </div>
+              </p-card>
             </a>
           </div>
         </ng-template>
       </p-dataView>
-      <div>
+      <div class="mt-4">
         <p-button
           icon="pi pi-plus"
           (click)="router.navigate(['/scales/create'])"
