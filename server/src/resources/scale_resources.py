@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.conflict import Conflict
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
@@ -36,10 +37,15 @@ class CreateScale(MethodView):
     def post(self):
         scale_data = parser.parse(scale_args, request)
 
+        all_grades = set(g["value"] for g in scale_data["grades"])
+        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_SCALES_GRADE_BRACKETS)
+
         scale = Scale()
         scale.name = scale_data["name"]
         scale.type = scale_data["type"]
         scale.grades = scale_data["grades"]
+        scale.grade_brackets = scale_data["gradeBrackets"]
         db.session.add(scale)
         db.session.commit()
 
@@ -68,9 +74,14 @@ class UpdateScale(MethodView):
             if line.grade_value not in values:
                 raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
+        all_grades = set(g["value"] for g in scale_data["grades"])
+        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_SCALES_GRADE_BRACKETS)
+
         scale.name = scale_data["name"]
         scale.type = scale_data["type"]
         scale.grades = scale_data["grades"]
+        scale.grade_brackets = scale_data["gradeBrackets"]
 
         for line in lines:
             line.grade_scale = scale.name

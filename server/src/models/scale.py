@@ -77,6 +77,15 @@ GRADES = {
     },
 }
 
+GRADE_BRACKETS = {
+    LineTypeEnum.BOULDER: {
+        "FB": [9, 15, 21, 22]
+    },
+    LineTypeEnum.SPORT: {
+        "UIAA": [9, 15, 21, 22]
+    },
+}
+
 
 class Scale(db.Model):
     __tablename__ = "scales"
@@ -84,3 +93,4 @@ class Scale(db.Model):
     name = db.Column(db.String(32), nullable=False, primary_key=True)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False, primary_key=True)
     grades = db.Column(JSON, nullable=False)
+    grade_brackets = db.Column(JSON, nullable=False)
