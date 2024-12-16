@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import generic_relationship
@@ -7,8 +8,6 @@ from models.area import Area
 from models.base_entity import BaseEntity
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
-from sqlalchemy.dialects.postgresql import UUID
-
 from models.line import Line
 from models.sector import Sector
 from models.user import User

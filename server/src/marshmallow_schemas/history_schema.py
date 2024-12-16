@@ -3,7 +3,12 @@ from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
-from marshmallow_schemas.search_schema import LineSearchSchema, AreaSearchSchema, SectorSearchSchema, CragSearchSchema
+from marshmallow_schemas.search_schema import (
+    AreaSearchSchema,
+    CragSearchSchema,
+    LineSearchSchema,
+    SectorSearchSchema,
+)
 from models.area import Area
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
