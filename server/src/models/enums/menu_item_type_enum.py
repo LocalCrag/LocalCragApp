@@ -14,3 +14,4 @@ class MenuItemTypeEnum(Enum):
     YOUTUBE = "YOUTUBE"
     INSTAGRAM = "INSTAGRAM"
     GALLERY = "GALLERY"
+    HISTORY = "HISTORY"

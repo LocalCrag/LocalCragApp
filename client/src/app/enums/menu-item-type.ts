@@ -7,4 +7,5 @@ export enum MenuItemType {
   YOUTUBE = 'YOUTUBE' /** t(YOUTUBE) **/,
   INSTAGRAM = 'INSTAGRAM' /** t(INSTAGRAM) **/,
   GALLERY = 'GALLERY' /** t(GALLERY) **/,
+  HISTORY = 'HISTORY' /** t(HISTORY) **/,
 }

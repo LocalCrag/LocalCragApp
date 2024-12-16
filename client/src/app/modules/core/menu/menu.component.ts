@@ -231,6 +231,13 @@ export class MenuComponent implements OnInit {
               routerLink: '/topo/gallery',
             });
             break;
+          case MenuItemType.HISTORY:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.history')),
+              icon: 'pi pi-fw pi-clock',
+              routerLink: '/history',
+            });
+            break;
         }
       });
     });
