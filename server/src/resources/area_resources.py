@@ -10,6 +10,8 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
+from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -70,8 +72,11 @@ class CreateArea(MethodView):
 
         if not new_area.secret:
             set_area_parents_unsecret(new_area)
+
         db.session.add(new_area)
         db.session.commit()
+
+        HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_area, created_by)
 
         return area_schema.dump(new_area), 201
 

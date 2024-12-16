@@ -13,7 +13,9 @@ from marshmallow_schemas.line_schema import (
 )
 from models.area import Area
 from models.crag import Crag
+from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.grades import get_grade_value
+from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -38,7 +40,7 @@ class GetLines(MethodView):
 
     def get(self):
         """
-        Returns all lines of an area in a paginated manner.
+        Returns all lines in a paginated manner.
         """
         crag_slug = request.args.get("crag_slug")
         sector_slug = request.args.get("sector_slug")
@@ -173,6 +175,8 @@ class CreateLine(MethodView):
         db.session.add(new_line)
         db.session.commit()
 
+        HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
+
         return line_schema.dump(new_line), 201
 
 
@@ -195,7 +199,16 @@ class UpdateLine(MethodView):
         line.videos = line_data["videos"]
         line.grade_name = line_data["gradeName"]
         line.grade_scale = line_data["gradeScale"]
-        line.grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+        new_grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+        HistoryItem.create_history_item(
+            HistoryItemTypeEnum.UPDATED,
+            line,
+            User.find_by_email(get_jwt_identity()),
+            old_value=line.grade_value,
+            new_value=new_grade_value,
+            property_name="grade_value",
+        )
+        line.grade_value = new_grade_value
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]

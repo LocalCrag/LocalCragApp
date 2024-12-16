@@ -65,6 +65,7 @@ import { SentryTestComponent } from './sentry-test/sentry-test.component';
 import { MapComponent } from '../maps/map/map.component';
 import { GalleryComponent } from '../gallery/gallery/gallery.component';
 import { ObjectType } from '../../models/tag';
+import { HistoryListComponent } from '../history/history-list/history-list.component';
 
 const routes: Routes = [
   {
@@ -306,6 +307,10 @@ const routes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'history',
+    component: HistoryListComponent,
   },
   {
     path: 'ascents',

@@ -1,0 +1,48 @@
+<ng-container *transloco="let t; read: 'history'">
+  <div class="content">
+    <p-card header="{{ t('historyTitle') }}">
+      <p-timeline
+        [value]="historyItems"
+        [align]="(isMobile$ | async) ? 'left' : 'alternate'"
+        styleClass="customized-timeline"
+        *ngIf="historyItems?.length > 0"
+        [ngClass]="{ mobile: isMobile$ | async }"
+      >
+        <ng-template pTemplate="marker" let-event>
+          <span
+            class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+            [class.created]="event.type === historyItemType.CREATED"
+            [class.updated]="event.type === historyItemType.UPDATED"
+          >
+            <i [class]="getIcon(event)"></i>
+          </span>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+          <p-card
+            [header]="getHeader(event) + ': ' + event.object.name"
+            [subheader]="event.timeCreated | date: 'dd.MM.yyyy'"
+          >
+            <div>{{ getDescription(event) }}</div>
+            <p-button
+              styleClass="card-button"
+              [label]="t('openObject')"
+              (click)="openObject(event)"
+              [text]="true"
+            />
+          </p-card>
+        </ng-template>
+      </p-timeline>
+      <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
+        <p-button
+          label="{{ t('loadMore') }}"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          [loading]="loadingAdditionalPage === loadingStates.LOADING"
+        ></p-button>
+      </div>
+    </p-card>
+  </div>
+</ng-container>

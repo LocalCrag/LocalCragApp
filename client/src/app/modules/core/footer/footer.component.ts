@@ -108,6 +108,13 @@ export class FooterComponent implements OnInit {
               link: null,
             });
             break;
+          case MenuItemType.HISTORY:
+            this.menuItems.push({
+              title: this.translocoService.translate('menu.history'),
+              routerLink: '/history',
+              link: null,
+            });
+            break;
         }
       });
     });

@@ -27,6 +27,10 @@ export class ApiService {
     search: (query: string): string => `${this.apiHost}search/${query}`,
   };
 
+  public history = {
+    getList: (filters: string): string => `${this.apiHost}history${filters}`,
+  };
+
   public maps = {
     getMarkers: (filters: string): string =>
       `${this.apiHost}maps/markers${filters}`,

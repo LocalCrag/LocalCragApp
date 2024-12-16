@@ -41,6 +41,7 @@ from resources.gallery_resources import (
     UpdateGalleryImage,
 )
 from resources.health_resources import Health
+from resources.history_resources import GetHistory
 from resources.instance_settings_resources import (
     GetInstanceSettings,
     UpdateInstanceSettings,
@@ -158,6 +159,11 @@ def configure_api(app):
     search_bp = Blueprint("search", __name__)
     search_bp.add_url_rule("/<string:query>", view_func=Search.as_view("search"))
     app.register_blueprint(search_bp, url_prefix="/api/search")
+
+    # History API
+    history_bp = Blueprint("history", __name__)
+    history_bp.add_url_rule("", view_func=GetHistory.as_view("history"))
+    app.register_blueprint(history_bp, url_prefix="/api/history")
 
     # To-do API
     todo_bp = Blueprint("todos", __name__)

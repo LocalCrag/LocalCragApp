@@ -1,0 +1,32 @@
+@use "../../../styles/media-queries" as m;
+
+lc-history-list {
+  .updated {
+    background-color: var(--yellow-400);
+  }
+
+  .created {
+    background-color: var(--green-600);
+  }
+
+  .card-button {
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+  }
+
+  .mobile {
+    .p-timeline-event-opposite {
+      display: none;
+    }
+    .p-card-content {
+      padding: 0;
+    }
+    .p-card-body {
+      padding-top: 0;
+    }
+    .p-card-title {
+      font-size: 1.25rem;
+      padding-bottom: 0.5rem;
+    }
+  }
+}
