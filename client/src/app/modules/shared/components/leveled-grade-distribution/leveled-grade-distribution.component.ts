@@ -1,18 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
-import { Grade, GradeDistribution } from '../../../../models/scale';
+import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
 import { ScalesService } from '../../../../services/crud/scales.service';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 type StackChartData = {
   lineType: LineType;
   gradeScale: string;
   data: {
-    level1: number;
-    level2: number;
-    level3: number;
-    level4: number;
-    level5: number;
+    projects: number;
+    brackets: number[];
+    bracketLabels: string[];
   };
   total: number;
 }
@@ -32,8 +32,10 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
 
-  constructor(private scalesService: ScalesService) {
-  }
+  constructor(
+    private scalesService: ScalesService,
+    private translocoService: TranslocoService,
+  ) {}
 
   ngOnInit() {
     this.fetchingObservable.subscribe((gradeDistributions) => {
@@ -46,42 +48,58 @@ export class LeveledGradeDistributionComponent implements OnInit {
    * Sorts the grades in buckets and calculates the total count for each bucket.
    */
   buildGradeDistribution() {
-    // todo hardcoded thresholds
     const stackChartData: StackChartData[] = [];
     let gradeDistributionEmpty = true;
 
     for (const lineType in this.gradeDistribution) {
       for (const gradeScale in this.gradeDistribution[lineType]) {
-        const data: StackChartData = {
-          lineType: lineType as LineType,
-          gradeScale,
-          data : {
-            level1: 0,
-            level2: 0,
-            level3: 0,
-            level4: 0,
-            level5: 0,
-          },
-          total: 0,
-        }
-        for (const gradeValue of Object.keys(this.gradeDistribution[lineType][gradeScale]).map(Number)) {
-          gradeDistributionEmpty = false;
+        forkJoin([
+          this.scalesService.getScale(lineType as LineType, gradeScale),
+          this.scalesService.gradeNameByValueMap(lineType as LineType, gradeScale)
+        ]).subscribe(([scale, gradeNameByValueMap]) => {
+            const labels = Array(scale.gradeBrackets.length).fill("");
 
-          const count = this.gradeDistribution[lineType][gradeScale][gradeValue];
-          data.total += count;
-          if (gradeValue <= 0) {
-            data.data.level5 += count;
-          } else if (gradeValue > 0 && gradeValue < 10) {
-            data.data.level1 += count;
-          } else if (gradeValue >= 10 && gradeValue < 16) {
-            data.data.level2 += count;
-          } else if (gradeValue >= 16 && gradeValue < 22) {
-            data.data.level3 += count;
-          } else if (gradeValue >= 22) {
-            data.data.level4 += count;
-          }
-        }
-        stackChartData.push(data);
+            for (let i = 0; i < scale.gradeBrackets.length; i++) {
+              if (i == 0) {
+                labels.push(`${this.translocoService.translate(marker("leveledGradeDistributionUntil"))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`);
+              } else if (i == scale.gradeBrackets.length - 1) {
+                labels.push(`${this.translocoService.translate(marker("leveledGradeDistributionFrom"))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`);
+              } else {
+                labels.push(`${gradeNameByValueMap[scale.gradeBrackets[i-1] + 1]} - ${gradeNameByValueMap[scale.gradeBrackets[i]]}`); // todo here we assume that grade values are spaced by 1
+              }
+            }
+
+            const data: StackChartData = {
+              lineType: lineType as LineType,
+              gradeScale,
+              data: {
+                projects: 0,
+                brackets: Array(scale.gradeBrackets.length).fill(0),
+                bracketLabels: labels,
+              },
+              total: 0,
+            }
+            for (const gradeValue of Object.keys(this.gradeDistribution[lineType][gradeScale]).map(Number)) {
+              gradeDistributionEmpty = false;
+
+              const count = this.gradeDistribution[lineType][gradeScale][gradeValue];
+              data.total += count;
+              if (gradeValue <= 0) {
+                data.data.projects += count;
+              } else {
+                for (let i = 0; i < scale.gradeBrackets.length; i++) {
+                  const bracket = scale.gradeBrackets[i];
+                  if (i == scale.gradeBrackets.length - 1) {
+                    data.data.brackets[i] += count;
+                  } else if (gradeValue <= bracket) {
+                    data.data.brackets[i] += count;
+                    break;
+                  }
+                }
+              }
+            }
+            stackChartData.push(data);
+        });
       }
     }
 

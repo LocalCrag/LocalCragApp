@@ -96,6 +96,13 @@ export class ScalesService {
     return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1][value]));
   }
 
+  public gradeNameByValueMap(lineType: LineType, name: string): Observable<Record<number, string>> {
+    if (CACHE[lineType][name]) {
+      return of(CACHE[lineType][name][1]);
+    }
+    return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1]));
+  }
+
   private updateCache(scale: FullScale) {
     const gradeValueByName: Record<string, number> = {};
     const gradeNameByValue: Record<number, string> = {};

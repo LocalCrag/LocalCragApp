@@ -15,12 +15,14 @@ export class Scale {
   lineType: LineType;
   name: string;
   grades?: Grade[];
+  gradeBrackets: number[];
 
   public static deserialize(payload: any): Scale {
     const scale = new Scale();
     scale.lineType = payload.type;
     scale.name = payload.name;
     scale.grades = payload.grades;
+    scale.gradeBrackets = payload.gradeBrackets;
 
     return scale;
   }
@@ -31,6 +33,7 @@ export class Scale {
     scale.lineType = payload.type;
     scale.name = payload.name;
     scale.grades = payload.grades;
+    scale.gradeBrackets = payload.gradeBrackets;
 
     return scale as Required<Scale>;
   }
@@ -40,6 +43,7 @@ export class Scale {
       type: scale.lineType,
       name: scale.name,
       grades: scale.grades,
+      gradeBrackets: scale.gradeBrackets,
     };
   }
 }
