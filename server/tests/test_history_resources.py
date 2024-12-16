@@ -75,3 +75,24 @@ def test_successful_change_value_history(client, moderator_token):
     assert rv.status_code == 200
     res = rv.json
     assert res["items"][0]["oldValue"] != res["items"][0]["newValue"]
+
+
+def test_history_respects_secret_flag(client, moderator_token):
+    area_data = {
+        "name": "Kreuzfels",
+        "description": "Super Bereich",
+        "shortDescription": "Super Bereich Kurz",
+        "mapMarkers": [],
+        "portraitImage": None,
+        "secret": True,
+    }
+    rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
+    assert rv.status_code == 201
+    rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 1
+    rv = client.get("/api/history?page=1&per_page=1000")
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 0
