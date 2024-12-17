@@ -32,6 +32,9 @@ class HistoryItem(BaseEntity):
     def create_history_item(
         cls, item_type, target_object, user: User, old_value=None, new_value=None, property_name=None
     ):
+        # Return immediately if both values are the same in update type
+        if item_type == HistoryItemTypeEnum.UPDATED and old_value == new_value:
+            return
         history_item = cls()
         history_item.created_by = user
         history_item.type = item_type
