@@ -4,25 +4,25 @@
   <ng-container *ngIf="!gradeDistributionEmpty">
     <div class="grade-distribution-stack hidden sm:flex mb-3" *ngFor="let data of stackChartData">
       <div class="level-total">
-        {{ data.total - data.data.projects }}
+        {{ data.total - data.projects }}
         {{ stackChartData.length > 1 ? data.gradeScale : "" }}
         {{ t("lines") }}:
       </div>
-      <ng-template *ngFor="let count of data.brackets; index as i">
-          <div
-            class="level-{{ i == data.brackets.length - 1 ? 'max' : i}}"
-            [style.width]="data.total > 0 ? (data.data.brackets[i] / data.total) * 100 + '%' : '20%'"
-          >
-            <p-badge [value]="count | toString" styleClass="neutral-badge"></p-badge>
-            {{ data.bracketLabels[i] }}
-          </div>
-      </ng-template>
+      <ng-container *ngFor="let count of data.brackets; index as i">
+        <div
+          class="level-{{ i == data.brackets.length - 1 ? 'max' : i+1 }}"
+          [style.width]="data.total > 0 ? (data.brackets[i] / data.total) * 100 + '%' : '20%'"
+        >
+          <p-badge [value]="count | toString" styleClass="neutral-badge"></p-badge>
+          {{ data.bracketLabels[i] }}
+        </div>
+      </ng-container>
       <div
         class="level-projects"
-        [style.width]="data.total > 0 ? (data.data.projects / data.total) * 100 + '%' : '20%'"
+        [style.width]="data.total > 0 ? (data.projects / data.total) * 100 + '%' : '20%'"
       >
-        <p-badge [value]="data.data.projects | toString" styleClass="neutral-badge"></p-badge>
-        {{ t("leveledGradeDistributionLevelProjects") }}
+        <p-badge [value]="data.projects | toString" styleClass="neutral-badge"></p-badge>
+        {{ t("leveledGradeDistributionProjects") }}
       </div>
     </div>
 
@@ -32,7 +32,7 @@
     >
       <p-tag styleClass="level-total">
         <p-badge
-          [value]="data.total - data.data.projects"
+          [value]="data.total - data.projects"
           styleClass="neutral-badge"
         ></p-badge>
         {{ stackChartData.length > 1 ? data.gradeScale : "" }}
@@ -40,13 +40,13 @@
       </p-tag>
       <ng-template *ngFor="let count of data.brackets; index as i">
         <p-tag styleClass="level-{{ i == data.brackets.length - 1 ? 'max' : i}}">
-          <p-badge [value]="data.data.brackets[i] | toString" styleClass="neutral-badge"></p-badge>
+          <p-badge [value]="data.brackets[i] | toString" styleClass="neutral-badge"></p-badge>
           {{ data.bracketLabels[i] }}
         </p-tag>
       </ng-template>
       <p-tag styleClass="level-projects">
-        <p-badge [value]="data.data.projects | toString" styleClass="neutral-badge"></p-badge>
-        {{ t("leveledGradeDistributionLevelProjects") }}
+        <p-badge [value]="data.projects | toString" styleClass="neutral-badge"></p-badge>
+        {{ t("leveledGradeDistributionProjects") }}
       </p-tag>
     </div>
   </ng-container>
