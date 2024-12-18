@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { MenuItemType } from '../../../../enums/menu-item-type';
 import { Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
+import { ScalesService } from '../../../../services/crud/scales.service';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -35,6 +36,7 @@ export class OrderItemsComponent {
     private dialogConfig: DynamicDialogConfig,
     private store: Store,
     private ref: DynamicDialogRef,
+    protected scalesService: ScalesService,
   ) {
     this.items = [...this.dialogConfig.data.items];
     this.itemsName = this.dialogConfig.data.itemsName;

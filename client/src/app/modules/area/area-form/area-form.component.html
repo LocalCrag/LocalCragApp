@@ -175,6 +175,31 @@
               formControlName="secret"
               lcFormControl
             ></p-checkbox>
+
+            <p-dropdown
+              id="defaultBoulderScale"
+              [options]="boulderScales"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="defaultBoulderScale"
+              lcFormControl
+            ></p-dropdown>
+
+            <p-dropdown
+              [options]="sportScales"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="defaultSportScale"
+              lcFormControl
+            ></p-dropdown>
+
+            <p-dropdown
+              [options]="tradScales"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="defaultTradScale"
+              lcFormControl
+            ></p-dropdown>
           </div>
 
           <p-messages

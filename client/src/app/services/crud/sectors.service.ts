@@ -5,9 +5,9 @@ import { Sector } from '../../models/sector';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ItemOrder } from '../../interfaces/item-order.interface';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
+import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 
 /**
  * CRUD service for sectors.
@@ -122,9 +122,9 @@ export class SectorsService {
    * @param sectorSlug Slug of the sector to return the grades for.
    * @return Observable of a list of Grades.
    */
-  public getSectorGrades(sectorSlug: string): Observable<Grade[]> {
+  public getSectorGrades(sectorSlug: string): Observable<GradeDistribution> {
     return this.http
       .get(this.api.sectors.getGrades(sectorSlug))
-      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+      .pipe(map(deserializeGradeList));
   }
 }

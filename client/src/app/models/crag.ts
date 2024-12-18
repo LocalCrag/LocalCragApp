@@ -19,6 +19,9 @@ export class Crag extends AbstractModel {
   routerLink: string;
   secret: boolean;
   mapMarkers: MapMarker[];
+  defaultBoulderScale: string | null = null;
+  defaultSportScale: string | null = null;
+  defaultTradScale: string | null = null;
 
   /**
    * Parses a crag.
@@ -47,6 +50,9 @@ export class Crag extends AbstractModel {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     crag.routerLink = `/topo/${crag.slug}`;
+    crag.defaultBoulderScale = payload.defaultBoulderScale;
+    crag.defaultSportScale = payload.defaultSportScale;
+    crag.defaultTradScale = payload.defaultTradScale;
     return crag;
   }
 
@@ -67,6 +73,9 @@ export class Crag extends AbstractModel {
       mapMarkers: crag.mapMarkers
         ? crag.mapMarkers.map(MapMarker.serialize)
         : null,
+      defaultBoulderScale: crag.defaultBoulderScale,
+      defaultSportScale: crag.defaultSportScale,
+      defaultTradScale: crag.defaultTradScale,
     };
   }
 }
