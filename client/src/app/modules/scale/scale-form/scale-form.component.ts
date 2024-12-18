@@ -102,6 +102,12 @@ export class ScaleFormComponent implements OnInit {
       grades: this.fb.array([], [
         (ctl) => ctl.value.length === (new Set(ctl.value.map(v => v.value))).size ? null : {'not_unique': true}
       ]),
+      gradeBrackets: this.fb.array([], [
+        (ctl) => ctl.value.length >= 2
+          && ctl.value.reduce((p, c) => p && c.value > 0, true)
+          && ctl.value.at(-2).value + 1 === ctl.value.at(-1).value
+          ? null : {'semantic_error': true}
+      ]),
     });
   }
 
@@ -111,6 +117,9 @@ export class ScaleFormComponent implements OnInit {
         name: [g.name],
         value: [g.value],
       })).forEach((ctl) => this.gradeControls().push(ctl));
+      this.scale.gradeBrackets.map((value) => this.fb.group({
+        value: [value]
+      })).forEach((ctl) => this.gradeBracketsControls().push(ctl));
     } else {
       this.gradeControls().push(this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }));
       this.gradeControls().push(this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }));
@@ -122,6 +131,10 @@ export class ScaleFormComponent implements OnInit {
 
   gradeControls() {
     return this.scaleForm.controls.grades as FormArray;
+  }
+
+  gradeBracketsControls() {
+    return this.scaleForm.controls.gradeBrackets as FormArray;
   }
 
   reorderByValue() {
@@ -140,18 +153,30 @@ export class ScaleFormComponent implements OnInit {
     this.gradeControls().push(this.fb.group({name: [], value: [42]}));
   }
 
-  deleteValue(index: number) {
+  deleteGrade(index: number) {
     this.scaleForm.disable();
     this.gradeControls().removeAt(index);
+    this.scaleForm.enable();
+  }
+
+  addBracket() {
+    this.gradeBracketsControls().push(this.fb.group({name: [], value: [42]}));
+  }
+
+  deleteBracket(index: number) {
+    this.scaleForm.disable();
+    this.gradeBracketsControls().removeAt(index);
     this.scaleForm.enable();
   }
 
   saveScale() {
     if (this.scaleForm.valid) {
       this.loadingState = LoadingState.LOADING;
-      this.scale.grades = this.gradeControls().value;
 
       if (this.editMode) {
+        this.scale.grades = this.gradeControls().value;
+        this.scale.gradeBrackets = this.gradeBracketsControls().value.map((gb) => gb.value);
+
         this.scalesService.updateScale(this.scale).subscribe({
           next: () => {
             this.store.dispatch(
@@ -171,6 +196,7 @@ export class ScaleFormComponent implements OnInit {
         scale.lineType = this.scaleForm.get('lineType').value;
         scale.name = this.scaleForm.get('name').value;
         scale.grades = this.gradeControls().value;
+        scale.gradeBrackets = this.gradeBracketsControls().value;
         this.scalesService.createScale(scale).subscribe({
           next: () => {
             this.store.dispatch(
@@ -187,6 +213,8 @@ export class ScaleFormComponent implements OnInit {
           },
         });
       }
+    } else {
+      console.log(this.scaleForm.status);
     }
   }
 

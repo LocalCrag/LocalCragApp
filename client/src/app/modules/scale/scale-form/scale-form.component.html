@@ -66,9 +66,21 @@
                       <p-inputNumber formControlName="value" [min]="1" />
                     </label>
                   </div>
-                  <p-button icon="pi pi-trash" styleClass="p-button-danger" (click)="deleteValue(i)" />
+                  <p-button icon="pi pi-trash" styleClass="p-button-danger" (click)="deleteGrade(i)" />
                 </ng-container>
               </div>
+            </div>
+          </div>
+          <hr/>
+          <h4>{{ t('gradeBracketsLabel') }}</h4>
+          <em>{{ t('gradeBracketsDescription') }}</em>
+          <div class="col-12" formArrayName="gradeBrackets" *ngFor="let bracket of gradeBracketsControls().controls; let i = index">
+            <div [formGroupName]="i" class="flex gap-4 justify-content-center mb-2">
+              <label>
+                {{ t('gradeBracketsInputLabel') }}
+                <p-inputNumber formControlName="value" [min]="1" />
+                <p-button icon="pi pi-trash" styleClass="p-button-danger ml-2" (click)="deleteBracket(i)" />
+              </label>
             </div>
           </div>
         </p-card>
@@ -79,6 +91,13 @@
               (click)="addGrade()"
               icon="pi pi-plus-circle"
               class="responsive-button"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('addBracket') }}"
+              (click)="addBracket()"
+              icon="pi pi-plus-circle"
+              class="responsive-button ml-2"
               [loading]="loadingState === LoadingState.LOADING"
             />
             <p-button
