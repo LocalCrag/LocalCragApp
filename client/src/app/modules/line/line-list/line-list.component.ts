@@ -103,7 +103,7 @@ export class LineListComponent implements OnInit {
   public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
 
   public minGradeValue = -2;
-  public maxGradeValue = 20;
+  public maxGradeValue = 9999;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -153,7 +153,7 @@ export class LineListComponent implements OnInit {
         for (const gradeScale in gradeDistribution[lineType]) {
           if (gradeDistribution[lineType][gradeScale]) {
             this.availableScales.push({
-              label: `${lineType} ${gradeScale}`,  // todo translations
+              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,  // todo translations
               value: { lineType: lineType as LineType, gradeScale }
             });
           }

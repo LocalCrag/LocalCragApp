@@ -113,7 +113,12 @@ export class LineFormComponent implements OnInit {
       this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? "UIAA";
       this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
 
-      this.typeOptions = Object.entries(this.defaultScales).filter(([_, v]) => !!v).map(([k]) => k);
+      this.typeOptions = Object.entries(this.defaultScales)
+        .filter(([_, v]) => !!v)
+        .map(([k]) => ({
+          label: this.translocoService.translate(k),
+          value: k,
+        }));
 
       this.buildForm();
       this.lineForm.get("type").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
@@ -145,6 +150,8 @@ export class LineFormComponent implements OnInit {
           )
           .subscribe((line) => {
             this.line = line;
+
+            this.defaultScales[this.line.type] = this.line.gradeScale;
 
             this.setFormValue();
             this.loadingState = LoadingState.DEFAULT;
@@ -260,9 +267,8 @@ export class LineFormComponent implements OnInit {
       description: this.line.description,
       videos: this.line.videos,
       type: this.line.type,
-      grade: {
-        value: this.line.gradeValue,
-      },
+      gradeScale: this.defaultScales[this.line.type],
+      gradeValue: this.line.gradeValue,
       color: this.line.color,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
@@ -335,9 +341,8 @@ export class LineFormComponent implements OnInit {
       line.description = this.lineForm.get('description').value;
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
-      line.type = this.lineForm.get('type').value.value;
+      line.type = this.lineForm.get('type').value;
       line.gradeValue = this.lineForm.get('grade').value.value;
-      console.log("saveline", line.type);  // todo when editing the value here is undefined for some reason ...
       line.gradeScale = this.defaultScales[line.type];
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
