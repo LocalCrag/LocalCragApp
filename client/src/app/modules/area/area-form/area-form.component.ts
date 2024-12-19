@@ -80,9 +80,9 @@ export class AreaFormComponent implements OnInit {
    */
   ngOnInit() {
     const scalesPopulated = this.scalesService.getScales().pipe(map(scales => {
-      const boulderScales = [{label: "inherit", value: null}];
-      const sportScales = [{label: "inherit", value: null}];
-      const tradScales = [{label: "inherit", value: null}];
+      const boulderScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
+      const sportScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
+      const tradScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
 
       scales.forEach(scale => {
         switch (scale.lineType) {

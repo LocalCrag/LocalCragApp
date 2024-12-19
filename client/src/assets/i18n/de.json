@@ -690,5 +690,7 @@
   "descending": "Absteigend",
   "singleImageUploader.clearUploadedImageButtonLabel": "Bild entfernen",
   "maps.mapItemInfoDialog.navigateToItem": "Navigation",
-  "maps.mapItemInfoDialog.openItem": "Öffnen"
+  "maps.mapItemInfoDialog.openItem": "Öffnen",
+  "inherit": "Vererbt",
+  "defaultScalesLabel": "Standard-Skala für Linien"
 }
