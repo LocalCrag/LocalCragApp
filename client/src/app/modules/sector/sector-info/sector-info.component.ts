@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-sector-info',
@@ -14,7 +14,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
 export class SectorInfoComponent implements OnInit {
   public sector: Sector;
-  public fetchSectorGrades: Observable<Grade[]>;
+  public fetchSectorGrades: Observable<GradeDistribution>;
 
   constructor(
     private route: ActivatedRoute,

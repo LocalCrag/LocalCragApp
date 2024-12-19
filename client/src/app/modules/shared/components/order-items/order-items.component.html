@@ -16,7 +16,8 @@
         class="flex flex-wrap p-2 align-items-center gap-3"
         *ngIf="showLinePathLineName"
       >
-        {{ item.line.name }} {{ item.line.grade.name | transloco }}
+        {{ item.line.name }}
+        {{ scalesService.gradeNameByValue(item.line.type, item.line.gradeScale, item.line.gradeValue) | async | translateSpecialGrades }}
       </div>
       <div
         class="flex flex-wrap p-2 align-items-center gap-3"

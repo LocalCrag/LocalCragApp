@@ -36,7 +36,7 @@ export class TickButtonComponent {
   addAscent(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (this.line.grade.value >= 0) {
+    if (this.line.gradeValue >= 0) {
       this.ref = this.dialogService.open(AscentFormComponent, {
         focusOnShow: false,
         templates: {
