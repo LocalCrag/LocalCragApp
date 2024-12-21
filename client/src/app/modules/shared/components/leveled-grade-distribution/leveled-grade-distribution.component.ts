@@ -48,8 +48,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
    */
   buildGradeDistribution() {
     const stackChartData: StackChartData[] = [];
-    let gradeDistributionEmpty = true;
-
     const observables: Observable<any>[] = [];
 
     for (const lineType in this.gradeDistribution) {
@@ -79,8 +77,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
             total: 0,
           }
           for (const gradeValue of Object.keys(this.gradeDistribution[lineType][gradeScale]).map(Number)) {
-            gradeDistributionEmpty = false;
-
             const count = this.gradeDistribution[lineType][gradeScale][gradeValue];
             data.total += count;
             if (gradeValue <= 0) {
@@ -102,9 +98,13 @@ export class LeveledGradeDistributionComponent implements OnInit {
       }
     }
 
-    forkJoin(observables).subscribe(() => {
-      this.stackChartData = stackChartData.sort((a, b) => a.total - b.total);
-      this.gradeDistributionEmpty = gradeDistributionEmpty;
-    });
+    if (observables.length == 0) {
+      this.gradeDistributionEmpty = false;
+    } else {
+      forkJoin(observables).subscribe(() => {
+        this.stackChartData = stackChartData.sort((a, b) => a.total - b.total);
+        this.gradeDistributionEmpty = false;
+      });
+    }
   }
 }
