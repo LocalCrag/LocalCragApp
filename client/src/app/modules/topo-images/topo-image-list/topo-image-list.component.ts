@@ -27,6 +27,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Area } from '../../../models/area';
 import { highlightColor, textColor } from '../../../utility/misc/color';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 /**
  * Component that lists all topo images in an area.
@@ -71,6 +72,7 @@ export class TopoImageListComponent implements OnInit {
     private translocoService: TranslocoService,
     private router: Router,
     private viewportScroller: ViewportScroller,
+    protected scalesService: ScalesService,
   ) {
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))

@@ -341,6 +341,54 @@ export class AppNotificationsService {
        * t(notifications.UNARCHIVED_ERROR_TITLE)
        * t(notifications.UNARCHIVED_ERROR_MESSAGE)
        **/
+      [
+        NotificationIdentifier.SCALE_CREATED,
+        NotificationType.SUCCESS,
+      ],
+      /**
+       * t(notifications.SCALE_CREATED_TITLE)
+       * t(notifications.SCALE_CREATED_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.SCALE_CREATED_ERROR,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.SCALE_CREATED_ERROR_TITLE)
+       * t(notifications.SCALE_CREATED_ERROR_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.SCALE_UPDATED,
+        NotificationType.SUCCESS,
+      ],
+      /**
+       * t(notifications.SCALE_UPDATED_TITLE)
+       * t(notifications.SCALE_UPDATED_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.SCALE_UPDATED_ERROR,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.SCALE_UPDATED_ERROR_TITLE)
+       * t(notifications.SCALE_UPDATED_ERROR_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.SCALE_DELETED,
+        NotificationType.SUCCESS,
+      ],
+      /**
+       * t(notifications.SCALE_DELETED_TITLE)
+       * t(notifications.SCALE_DELETED_MESSAGE)
+       **/
+      [
+        NotificationIdentifier.SCALE_DELETED_ERROR,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.SCALE_DELETED_ERROR_TITLE)
+       * t(notifications.SCALE_DELETED_ERROR_MESSAGE)
+       **/
     ]);
 
   constructor(

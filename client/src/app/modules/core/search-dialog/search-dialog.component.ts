@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { SearchService } from '../../../services/crud/search.service';
 import { Searchable } from '../../../models/searchable';
-import { NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { debounceTime, Subject } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { environment } from '../../../../environments/environment';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-search-dialog',
@@ -29,6 +30,7 @@ import { environment } from '../../../../environments/environment';
     ButtonModule,
     MessagesModule,
     MessageModule,
+    AsyncPipe,
   ],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',
@@ -45,6 +47,7 @@ export class SearchDialogComponent {
     private searchService: SearchService,
     private router: Router,
     private ref: DynamicDialogRef,
+    protected scalesService: ScalesService,
   ) {
     this.queryUpdate.pipe(debounceTime(400)).subscribe(() => {
       if (this.query) {

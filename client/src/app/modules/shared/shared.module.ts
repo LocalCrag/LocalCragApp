@@ -25,6 +25,7 @@ import { ToStringPipe } from './pipes/to-string.pipe';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
+import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
 
 /**
  * Module for shared components, pipes etc.
@@ -46,6 +47,7 @@ import { ChipModule } from 'primeng/chip';
     AsFormGroupPipe,
     SanitizeHtmlPipe,
     ToStringPipe,
+    TranslateSpecialGradesPipe,
   ],
   imports: [
     CommonModule,
@@ -74,6 +76,7 @@ import { ChipModule } from 'primeng/chip';
     AsFormArrayPipe,
     AsFormGroupPipe,
     SanitizeHtmlPipe,
+    TranslateSpecialGradesPipe,
   ],
 })
 export class SharedModule {}
