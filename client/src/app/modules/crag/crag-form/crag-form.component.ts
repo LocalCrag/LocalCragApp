@@ -66,9 +66,9 @@ export class CragFormComponent implements OnInit {
   ngOnInit() {
     this.buildForm();
     const scalesPopulated = this.scalesService.getScales().pipe(map(scales => {
-      const boulderScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
-      const sportScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
-      const tradScales = [{label: this.translocoService.translate(marker("inherit")), value: null}];
+      const boulderScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
+      const sportScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
+      const tradScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
 
       scales.forEach(scale => {
         switch (scale.lineType) {

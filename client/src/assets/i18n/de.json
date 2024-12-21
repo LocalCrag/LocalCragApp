@@ -694,6 +694,6 @@
   "singleImageUploader.clearUploadedImageButtonLabel": "Bild entfernen",
   "maps.mapItemInfoDialog.navigateToItem": "Navigation",
   "maps.mapItemInfoDialog.openItem": "Öffnen",
-  "inherit": "Vererbt",
-  "defaultScalesLabel": "Standard-Skala für Linien"
+  "defaultScalesLabel": "Standard-Skala für Linien",
+  "defaultScaleNotSet": "Nicht gesetzt"
 }
