@@ -25,6 +25,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { DropdownModule } from 'primeng/dropdown';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'lc-scale-form',
@@ -45,7 +46,8 @@ import { DropdownModule } from 'primeng/dropdown';
     ButtonModule,
     FormsModule,
     ConfirmPopupModule,
-    DropdownModule
+    DropdownModule,
+    MessageModule
   ],
   providers: [ConfirmationService],
 })
@@ -124,6 +126,8 @@ export class ScaleFormComponent implements OnInit {
       this.gradeControls().push(this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }));
       this.gradeControls().push(this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }));
       this.gradeControls().push(this.fb.group({ name: marker('UNGRADED'), value: 0 }));
+      this.gradeBracketsControls().push(this.fb.group({value: 1}));
+      this.gradeBracketsControls().push(this.fb.group({value: 2}));
       this.addGrade();
     }
     this.scaleForm.enable();
@@ -193,10 +197,10 @@ export class ScaleFormComponent implements OnInit {
         });
       } else {
         const scale = new Scale();
-        scale.lineType = this.scaleForm.get('lineType').value;
+        scale.lineType = this.scaleForm.get('lineType').value.value;
         scale.name = this.scaleForm.get('name').value;
         scale.grades = this.gradeControls().value;
-        scale.gradeBrackets = this.gradeBracketsControls().value;
+        scale.gradeBrackets = this.gradeBracketsControls().value.map((gb) => gb.value);
         this.scalesService.createScale(scale).subscribe({
           next: () => {
             this.store.dispatch(

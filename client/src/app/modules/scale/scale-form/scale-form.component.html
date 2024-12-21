@@ -1,15 +1,14 @@
 <ng-container *transloco="let t; read: 'scale.scaleForm'">
   <div class="content">
-    <p-card header="{{ t('editScale') }}">
-      <form [formGroup]="scaleForm">
+    <p-card header="{{ editMode ? t('editScale') : t('createTitle') }}">
+      <form [formGroup]="scaleForm" lcForm>
         <p-card>
           <ng-template pTemplate="title">
             <ng-container *ngIf="editMode">{{ scale?.lineType | transloco }} {{ scale?.name }}</ng-container>
-            <ng-container *ngIf="!editMode">{{ t('createTitle') }}</ng-container>
           </ng-template>
           <div class="grid grid-nogutter">
             <ng-container *ngIf="!editMode">
-              <div class="col-12 flex gap-4 justify-content-center mb-2">
+              <div class="col-12 flex gap-4 align-items-center mb-2">
                 <label for="linetype">
                   {{ t('lineTypeLabel') }}
                 </label>
@@ -24,7 +23,7 @@
                   optionLabel="name"
                 />
               </div>
-              <div class="col-12 flex gap-4 justify-content-center mb-2">
+              <div class="col-12 flex gap-4 align-items-center mb-2" lcControlGroup>
                 <label for="name">
                   {{ t('nameInputLabel') }}
                 </label>
@@ -33,37 +32,48 @@
                   pInputText
                   id="name"
                   formControlName="name"
+                  lcFormControl
                 />
+                <small class="p-error" *lcIfError="'required'">
+                  {{ t("required") }}
+                </small>
               </div>
+              <hr class="col-12"/>
             </ng-container>
-            <div class="col-12" formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index">
-              <div [formGroupName]="i" class="flex gap-4 justify-content-center mb-2">
-                <ng-container *ngIf="grade.get('value').value <= 0">
+            <p-message
+              *ngIf="gradeControls().invalid"
+              severity="error"
+              text="{{ t('gradesErrorMsg') }}"
+              styleClass="min-w-full mt-2"
+            />
+            <div class="col-12" formArrayName="grades" *ngFor="let grade of gradeControls().controls; let i = index" lcControlGroup>
+              <div [formGroupName]="i" class="flex gap-4 mb-2">
+                <ng-container *ngIf="grade.get('value').value <= 0 && ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(grade.get('name').value)">
                   <div>
                     <label>
                       {{ t('gradeNameLabel') }}
-                      <input type="text" pInputText disabled value="{{ grade.get('name').value | translateSpecialGrades }}" />
+                      <input type="text" class="ml-2" pInputText disabled value="{{ grade.get('name').value | translateSpecialGrades }}" />
                     </label>
                   </div>
                   <div>
                     <label>
                       {{ t('gradeValueLabel') }}
-                      <input type="text" pInputText disabled value="{{ grade.get('value').value | translateSpecialGrades }}" />
+                      <input type="text" class="ml-2" pInputText disabled value="{{ grade.get('value').value | translateSpecialGrades }}" />
                     </label>
                   </div>
                   <p-button icon="pi pi-trash" styleClass="p-button-danger" disabled />
                 </ng-container>
-                <ng-container *ngIf="grade.get('value').value > 0">
+                <ng-container *ngIf="grade.get('value').value > 0 || ! ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(grade.get('name').value)">
                   <div>
                     <label>
                       {{ t('gradeNameLabel') }}
-                      <input type="text" pInputText formControlName="name" />
+                      <input type="text" class="ml-2" pInputText formControlName="name" />
                     </label>
                   </div>
                   <div>
                     <label>
                       {{ t('gradeValueLabel') }}
-                      <p-inputNumber formControlName="value" [min]="1" />
+                      <p-inputNumber styleClass="ml-2" formControlName="value" [min]="1" />
                     </label>
                   </div>
                   <p-button icon="pi pi-trash" styleClass="p-button-danger" (click)="deleteGrade(i)" />
@@ -73,9 +83,17 @@
           </div>
           <hr/>
           <h4>{{ t('gradeBracketsLabel') }}</h4>
-          <em>{{ t('gradeBracketsDescription') }}</em>
+          <div class="mb-2">
+            <em>{{ t('gradeBracketsDescription') }}</em>
+          </div>
+          <p-message
+            *ngIf="gradeBracketsControls().invalid"
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full"
+          />
           <div class="col-12" formArrayName="gradeBrackets" *ngFor="let bracket of gradeBracketsControls().controls; let i = index">
-            <div [formGroupName]="i" class="flex gap-4 justify-content-center mb-2">
+            <div [formGroupName]="i" class="flex gap-4 mb-2">
               <label>
                 {{ t('gradeBracketsInputLabel') }}
                 <p-inputNumber formControlName="value" [min]="1" />
