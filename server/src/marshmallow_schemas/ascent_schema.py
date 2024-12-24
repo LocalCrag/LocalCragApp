@@ -14,7 +14,7 @@ class AscentSchema(BaseEntitySchema):
     soft = fields.Boolean()
     hard = fields.Boolean()
     withKneepad = fields.Boolean(attribute="with_kneepad")
-    gradeValue = fields.String(attribute="grade_value")
+    gradeValue = fields.Integer(attribute="grade_value")
     rating = fields.Integer()
     comment = fields.String()
     year = fields.Integer()

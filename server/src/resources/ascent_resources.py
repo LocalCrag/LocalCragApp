@@ -120,7 +120,7 @@ class CreateAscent(MethodView):
         line: Line = Line.find_by_id(ascent_data["line"])
         if line.grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
-        if ascent_data["grade_value"] < 0:
+        if ascent_data["gradeValue"] < 0:
             raise BadRequest("Cannot propose project status.")
         if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
@@ -177,7 +177,7 @@ class UpdateAscent(MethodView):
             raise Unauthorized("Ascents can only be edited by users themselves.")
 
         line: Line = Line.find_by_id(ascent.line_id)
-        if ascent_data["grade_value"] < 0:
+        if ascent_data["gradeValue"] < 0:
             raise BadRequest("Cannot propose project status.")
         if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
@@ -187,7 +187,7 @@ class UpdateAscent(MethodView):
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
-        ascent.grade_name = ascent_data["gradeName"]
+        ascent.grade_value = ascent_data["gradeValue"]
         ascent.rating = ascent_data["rating"]
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]

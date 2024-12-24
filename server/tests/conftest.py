@@ -369,8 +369,7 @@ def fill_db_with_sample_data():
     ascent = Ascent()
     ascent.fa = True
     ascent.hard = True
-    ascent.grade_name = "8A"
-    ascent.grade_scale = "FB"
+    ascent.grade_value = 22
     ascent.rating = 3
     ascent.comment = "Yeeha!"
     ascent.date = "2024-04-16"
