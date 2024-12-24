@@ -41,11 +41,17 @@ def validate_default_scales(args: dict) -> tuple[bool, str]:
     Validates that the requested scales exist for the spcific line types
     """
     if args["defaultBoulderScale"] is not None:
-        if Scale.query.filter(Scale.type == LineTypeEnum.BOULDER, Scale.name == args["defaultBoulderScale"]).first() is None:
+        if (
+            Scale.query.filter(Scale.type == LineTypeEnum.BOULDER, Scale.name == args["defaultBoulderScale"]).first()
+            is None
+        ):
             return False, f"Scale Boulder/{args['defaultBoulderScale']} does not exist."
 
     if args["defaultSportScale"] is not None:
-        if Scale.query.filter(Scale.type == LineTypeEnum.SPORT, Scale.name == args["defaultSportScale"]).first() is None:
+        if (
+            Scale.query.filter(Scale.type == LineTypeEnum.SPORT, Scale.name == args["defaultSportScale"]).first()
+            is None
+        ):
             return False, f"Scale Sport/{args['defaultSportScale']} does not exist."
 
     if args["defaultTradScale"] is not None:

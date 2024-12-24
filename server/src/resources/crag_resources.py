@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 
 from flask import jsonify, request
 from flask.views import MethodView
@@ -21,7 +21,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import update_crag_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload, validate_default_scales
+from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
 

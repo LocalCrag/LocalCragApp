@@ -1,5 +1,5 @@
 from models.enums.line_type_enum import LineTypeEnum
-from models.scale import GRADES, GRADE_BRACKETS
+from models.scale import GRADE_BRACKETS, GRADES
 
 
 def test_successful_get_scales(client):
@@ -32,7 +32,7 @@ def test_successful_create_scale(client, admin_token):
             {"name": "hard", "value": 3},
             {"name": "insane", "value": 4},
         ],
-        "gradeBrackets": [1, 3, 4]
+        "gradeBrackets": [1, 3, 4],
     }
 
     rv = client.post("/api/scales", token=admin_token, json=scale_data)
@@ -48,9 +48,7 @@ def test_successful_update_scale(client, admin_token):
     scale_data = {
         "type": "BOULDER",
         "name": "FBnew",
-        "grades": [
-            {"name": f"g{val}", "value": val} for val in range(28)
-        ],
+        "grades": [{"name": f"g{val}", "value": val} for val in range(28)],
         "gradeBrackets": GRADE_BRACKETS[LineTypeEnum.BOULDER]["FB"],
     }
 
@@ -79,9 +77,7 @@ def test_unsuccessful_update_scale_missing_values(client, admin_token):
     grades_data = {
         "type": "BOULDER",
         "name": "FB",
-        "grades": [
-            {"name": "idontcare", "value": 42}
-        ],
+        "grades": [{"name": "idontcare", "value": 42}],
         "gradeBrackets": GRADE_BRACKETS[LineTypeEnum.BOULDER]["FB"],
     }
 
@@ -92,7 +88,6 @@ def test_unsuccessful_update_scale_missing_values(client, admin_token):
 def test_successful_delete_scale(client, admin_token):
     rv = client.delete(f"/api/scales/SPORT/UIAA", token=admin_token)
     assert rv.status_code == 204
-
 
 
 def test_unsuccessful_delete_scale(client, admin_token):

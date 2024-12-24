@@ -1,6 +1,5 @@
 import datetime
 
-from marshmallow import validate
 from webargs import fields
 
 ticks_args = {

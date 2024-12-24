@@ -78,12 +78,8 @@ GRADES = {
 }
 
 GRADE_BRACKETS = {
-    LineTypeEnum.BOULDER: {
-        "FB": [9, 15, 21, 22]
-    },
-    LineTypeEnum.SPORT: {
-        "UIAA": [9, 15, 21, 22]
-    },
+    LineTypeEnum.BOULDER: {"FB": [9, 15, 21, 22]},
+    LineTypeEnum.SPORT: {"UIAA": [9, 15, 21, 22]},
 }
 
 

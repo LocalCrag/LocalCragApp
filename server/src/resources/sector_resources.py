@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from typing import List
 
 from flask import jsonify, request
@@ -22,7 +22,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload, validate_default_scales
+from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.sector_args import sector_args
 
 
@@ -171,7 +171,9 @@ class GetSectorGrades(MethodView):
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value).join(Area).filter(Area.sector_id == sector_id, Line.archived.is_(False))
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
+            .join(Area)
+            .filter(Area.sector_id == sector_id, Line.archived.is_(False))
         )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))

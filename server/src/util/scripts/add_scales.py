@@ -1,6 +1,6 @@
 from app import app
 from extensions import db
-from models.scale import GRADES, Scale, GRADE_BRACKETS
+from models.scale import GRADE_BRACKETS, GRADES, Scale
 
 
 def add_scales():

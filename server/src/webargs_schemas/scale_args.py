@@ -16,5 +16,7 @@ scale_args = {
         allow_none=False,
         validate=lambda gs: len(gs) == len(set([g["name"] for g in gs])),  # Grade names must be unique
     ),
-    "gradeBrackets": fields.List(fields.Integer(), required=True, allow_none=False, validate=lambda gbs: all(gb > 0 for gb in gbs)),
+    "gradeBrackets": fields.List(
+        fields.Integer(), required=True, allow_none=False, validate=lambda gbs: all(gb > 0 for gb in gbs)
+    ),
 }

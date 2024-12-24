@@ -9,8 +9,8 @@ from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.scale_schema import scale_schema, scales_schema
 from messages.messages import ResponseMessage
-from models.scale import Scale
 from models.line import Line
+from models.scale import Scale
 from util.security_util import check_auth_claims
 from webargs_schemas.scale_args import scale_args
 

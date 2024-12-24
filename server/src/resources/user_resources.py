@@ -1,5 +1,5 @@
 import re
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 from uuid import uuid4
 

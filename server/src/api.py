@@ -35,7 +35,6 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.scale_resources import GetScales, GetScale, CreateScale, UpdateScale, DeleteScale
 from resources.health_resources import Health
 from resources.instance_settings_resources import (
     GetInstanceSettings,
@@ -82,6 +81,13 @@ from resources.post_resources import (
 )
 from resources.ranking_resources import GetRanking, UpdateRanking
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
+from resources.scale_resources import (
+    CreateScale,
+    DeleteScale,
+    GetScale,
+    GetScales,
+    UpdateScale,
+)
 from resources.search_resources import Search
 from resources.sector_resources import (
     CreateSector,
