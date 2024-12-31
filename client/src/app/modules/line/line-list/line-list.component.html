@@ -111,8 +111,8 @@
           }}/{{ line.slug }}"
           *ngFor="let line of lines; let first = first"
           data-cy="line-list-item"
-        >
-          <div
+
+        >  <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
             [ngClass]="{ 'border-top-1 surface-border': !first, 'archived': line.archived }"
           >

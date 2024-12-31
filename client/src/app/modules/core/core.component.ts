@@ -48,7 +48,6 @@ export class CoreComponent implements OnInit {
         } else {
           favIcon.href = 'assets/lc_logo.svg';
         }
-        console.log(favIcon.href);
       });
     this.store
       .select(selectInstanceName)

@@ -70,6 +70,11 @@ export class UserDetailComponent implements OnInit {
             routerLink: `/users/${userSlug}/charts`,
             routerLinkActiveOptions: { exact: true },
           },
+          {
+            label: this.translocoService.translate(marker('user.gallery')),
+            icon: 'pi pi-fw pi-images',
+            routerLink: `/users/${userSlug}/gallery`,
+          },
         ];
       });
     });

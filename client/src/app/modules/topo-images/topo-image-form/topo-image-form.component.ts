@@ -100,7 +100,7 @@ export class TopoImageFormComponent implements OnInit {
   }
 
   /**
-   * Builds the area form.
+   * Builds the topo image form.
    */
   private buildForm() {
     this.topoImageForm = this.fb.group({

@@ -11,6 +11,8 @@ from extensions import db
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
+from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -74,6 +76,8 @@ class CreateSector(MethodView):
             set_sector_parents_unsecret(new_sector)
         db.session.add(new_sector)
         db.session.commit()
+
+        HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_sector, created_by)
 
         return sector_schema.dump(new_sector), 201
 

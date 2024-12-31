@@ -1,0 +1,133 @@
+<ng-container *transloco="let t; read: 'searchDialog'">
+  <!-- t(BOULDER) -->
+  <!-- t(SPORT) -->
+  <!-- t(TRAD) -->
+
+  <div
+    class="search-result"
+    *ngIf="searchable.line"
+    [routerLink]="searchable.line.routerLink"
+  >
+    <div class="grade-circle">
+      <ng-container *ngIf="searchable.line.grade.value > 0">{{
+        searchable.line.grade.name
+      }}</ng-container>
+      <ng-container *ngIf="searchable.line.grade.value === 0">{{
+        t("gradeCircleNotGraded")
+      }}</ng-container>
+      <ng-container *ngIf="searchable.line.grade.value < 0">{{
+        t("gradeCircleProject")
+      }}</ng-container>
+    </div>
+    <div class="search-result-description">
+      <div class="search-result-name">{{ searchable.line.name }}</div>
+      <div class="search-result-meta">
+        <b>{{ t(searchable.line.type) }}</b>,
+        {{ searchable.line.area.name }}<!--
+          --><ng-container *ngIf="searchable.line.area.sector.slug != environment.skippedSlug">, {{
+          searchable.line.area.sector.name
+        }}</ng-container><!--
+          --><ng-container *ngIf="searchable.line.area.sector.crag.slug != environment.skippedSlug">, {{
+          searchable.line.area.sector.crag.name
+        }}</ng-container>
+      </div>
+    </div>
+  </div>
+  <div
+    class="search-result"
+    *ngIf="searchable.area"
+    [routerLink]="searchable.area.routerLink"
+  >
+    <p-avatar
+      [image]="
+        searchable.area.portraitImage
+          ? searchable.area.portraitImage.thumbnailS
+          : 'assets/placeholder.png'
+      "
+      styleClass="mr-2"
+      size="normal"
+      shape="circle"
+    ></p-avatar>
+    <div class="search-result-description">
+      <div class="search-result-name">{{ searchable.area.name }}</div>
+      <div class="search-result-meta">
+        <b>{{ t("area") }}</b><!--
+          --><ng-container *ngIf="searchable.area.sector.slug != environment.skippedSlug">, {{
+          searchable.area.sector.name
+        }}</ng-container><!--
+          --><ng-container *ngIf="searchable.area.sector.crag.slug != environment.skippedSlug">, {{
+          searchable.area.sector.crag.name
+        }}</ng-container>
+      </div>
+    </div>
+  </div>
+  <div
+    class="search-result"
+    *ngIf="searchable.sector"
+    [routerLink]="searchable.sector.routerLink"
+  >
+    <p-avatar
+      [image]="
+        searchable.sector.portraitImage
+          ? searchable.sector.portraitImage.thumbnailS
+          : 'assets/placeholder.png'
+      "
+      styleClass="mr-2"
+      size="normal"
+      shape="circle"
+    ></p-avatar>
+    <div class="search-result-description">
+      <div class="search-result-name">{{ searchable.sector.name }}</div>
+      <div class="search-result-meta">
+        <b>{{ t("sector") }}</b><!--
+          --><ng-container *ngIf="searchable.sector.crag.slug != environment.skippedSlug">, {{
+          searchable.sector.crag.name
+        }}</ng-container>
+      </div>
+    </div>
+  </div>
+  <div
+    class="search-result"
+    *ngIf="searchable.crag"
+    [routerLink]="searchable.crag.routerLink"
+  >
+    <p-avatar
+      [image]="
+        searchable.crag.portraitImage
+          ? searchable.crag.portraitImage.thumbnailS
+          : 'assets/placeholder.png'
+      "
+      styleClass="mr-2"
+      size="normal"
+      shape="circle"
+    ></p-avatar>
+    <div class="search-result-description">
+      <div class="search-result-name">{{ searchable.crag.name }}</div>
+      <div class="search-result-meta">
+        <b>{{ t("crag") }}</b>
+      </div>
+    </div>
+  </div>
+  <div
+    class="search-result"
+    *ngIf="searchable.user"
+    [routerLink]="searchable.user.routerLink"
+  >
+    <p-avatar
+      [image]="
+        searchable.user.avatar
+          ? searchable.user.avatar.thumbnailS
+          : 'assets/user.png'
+      "
+      styleClass="mr-2"
+      size="normal"
+      shape="circle"
+    ></p-avatar>
+    <div class="search-result-description">
+      <div class="search-result-name">{{ searchable.user.fullname }}</div>
+      <div class="search-result-meta">
+        <b>{{ t("user") }}</b>
+      </div>
+    </div>
+  </div>
+</ng-container>

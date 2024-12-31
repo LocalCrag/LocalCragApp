@@ -53,7 +53,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "maptilerApiKey": "maptiler",
         "gymMode": True,
         # Can only change the value with a "clean" database
-        "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
+        "skippedHierarchicalLayers": 2,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -76,7 +76,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["maptilerApiKey"] == "maptiler"
     assert res["gymMode"] == True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
-
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
     # Clean database

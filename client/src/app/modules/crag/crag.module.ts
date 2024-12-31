@@ -33,7 +33,6 @@ import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/sec
 import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-marker-form-array.component';
 import { MapComponent } from '../maps/map/map.component';
 import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
-
 /**
  * Module for crags.
  */
@@ -77,9 +76,7 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
     MapComponent,
     ArchiveButtonComponent,
   ],
-  providers: [
-    {provide: TRANSLOCO_SCOPE, useValue: 'crag'}
-  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
   exports: [CragFormComponent],
 })
 export class CragModule {}

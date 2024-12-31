@@ -23,7 +23,7 @@ import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
-import {highlightColor, textColor} from '../../../../utility/misc/color';
+import { highlightColor, textColor } from '../../../../utility/misc/color';
 
 /**
  * Component that shows a topo image with line paths on it.

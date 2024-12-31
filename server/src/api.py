@@ -35,7 +35,14 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
+from resources.gallery_resources import (
+    CreateGalleryImage,
+    DeleteGalleryImage,
+    GetGalleryImages,
+    UpdateGalleryImage,
+)
 from resources.health_resources import Health
+from resources.history_resources import GetHistory
 from resources.instance_settings_resources import (
     GetInstanceSettings,
     UpdateInstanceSettings,
@@ -154,6 +161,11 @@ def configure_api(app):
     search_bp.add_url_rule("/<string:query>", view_func=Search.as_view("search"))
     app.register_blueprint(search_bp, url_prefix="/api/search")
 
+    # History API
+    history_bp = Blueprint("history", __name__)
+    history_bp.add_url_rule("", view_func=GetHistory.as_view("history"))
+    app.register_blueprint(history_bp, url_prefix="/api/history")
+
     # To-do API
     todo_bp = Blueprint("todos", __name__)
     todo_bp.add_url_rule("", view_func=GetTodos.as_view("get_todos"))
@@ -190,6 +202,14 @@ def configure_api(app):
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
+
+    # Gallery API
+    gallery_bp = Blueprint("gallery", __name__)
+    gallery_bp.add_url_rule("", view_func=GetGalleryImages.as_view("get_gallery_images"))
+    gallery_bp.add_url_rule("", view_func=CreateGalleryImage.as_view("create_gallery_image"))
+    gallery_bp.add_url_rule("/<string:image_id>", view_func=DeleteGalleryImage.as_view("delete_gallery_image"))
+    gallery_bp.add_url_rule("/<string:image_id>", view_func=UpdateGalleryImage.as_view("update_gallery_image"))
+    app.register_blueprint(gallery_bp, url_prefix="/api/gallery")
 
     # Line API
     line_bp = Blueprint("lines", __name__)

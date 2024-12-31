@@ -179,7 +179,7 @@ export class MenuComponent implements OnInit {
             this.items.push({
               label: menuItem.menuPage.title,
               icon: `pi pi-fw ${menuItem.icon}`,
-              routerLink: 'pages/' + menuItem.menuPage.slug,
+              routerLink: '/pages/' + menuItem.menuPage.slug,
             });
             break;
           case MenuItemType.NEWS:
@@ -223,6 +223,20 @@ export class MenuComponent implements OnInit {
               label: this.translocoService.translate(marker('menu.ranking')),
               icon: 'pi pi-fw pi-trophy',
               routerLink: '/ranking',
+            });
+            break;
+          case MenuItemType.GALLERY:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.gallery')),
+              icon: 'pi pi-fw pi-images',
+              routerLink: '/topo/gallery',
+            });
+            break;
+          case MenuItemType.HISTORY:
+            this.items.push({
+              label: this.translocoService.translate(marker('menu.history')),
+              icon: 'pi pi-fw pi-clock',
+              routerLink: '/history',
             });
             break;
         }

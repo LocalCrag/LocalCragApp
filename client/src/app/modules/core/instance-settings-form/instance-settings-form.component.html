@@ -275,10 +275,10 @@
           <label class="form-label" for="maptiler-api-key">{{
             t("maptilerApiKeyLabel")
           }}</label>
-          <input
+          <p-password
+            [toggleMask]="true"
+            [feedback]="false"
             id="maptiler-api-key"
-            type="text"
-            pInputText
             formControlName="maptilerApiKey"
             placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
             lcFormControl

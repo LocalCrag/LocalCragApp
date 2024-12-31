@@ -24,6 +24,7 @@ from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
+from models.gallery_image import GalleryImage
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.line_path import LinePath
@@ -37,6 +38,7 @@ from models.ranking import Ranking
 from models.region import Region
 from models.revoked_token import RevokedToken
 from models.sector import Sector
+from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
 
@@ -80,7 +82,7 @@ def db_session():
         transaction = connection.begin()
         saved_session = db.session
         db.session = scoped_session(sessionmaker(bind=connection))
-        # We need to re-register all handler, as we change the session
+        # We need to re-register all handlers, as we change the session
         listen(db.session, "before_flush", update_slugs)
         listen(db.session, "before_flush", update_searchables)
         listen(db.session, "after_flush", create_searchables)
@@ -276,7 +278,7 @@ def fill_db_with_sample_data():
     user.member = False
     db.session.add(user)
 
-    adminId = User.find_by_email("admin@localcrag.invalid.org").id
+    admin_id = User.find_by_email("admin@localcrag.invalid.org").id
 
     region = Region()
     region.id = "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
@@ -372,7 +374,7 @@ def fill_db_with_sample_data():
     ascent.comment = "Yeeha!"
     ascent.date = "2024-04-16"
     ascent.ascent_date = "2024-04-16"
-    ascent.created_by_id = adminId
+    ascent.created_by_id = admin_id
     ascent.with_kneepad = True
     ascent.line_id = Line.get_id_by_slug("super-spreader")
     ascent.area_id = Area.get_id_by_slug("dritter-block-von-links")
@@ -383,13 +385,13 @@ def fill_db_with_sample_data():
     post = Post()
     post.title = "Mein erster Post"
     post.text = "<p>Juhu, sie haben Post!</p>"
-    post.created_by_id = adminId
+    post.created_by_id = admin_id
     db.session.add(post)
 
     post = Post()
     post.title = "Noch ein Post"
     post.text = "<p>Was steht hier nur für ein Quatsch?</p>"
-    post.created_by_id = adminId
+    post.created_by_id = admin_id
     db.session.add(post)
 
     file = File()
@@ -399,7 +401,7 @@ def fill_db_with_sample_data():
     file.thumbnail_xs = True
     file.thumbnail_s = True
     file.filename = "ed22745d-ce4a-49f1-b9af-d29918d07923.jpg"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -410,7 +412,7 @@ def fill_db_with_sample_data():
     file.thumbnail_s = True
     file.thumbnail_m = True
     file.filename = "f7b185e048994c178d1bcee8364a0eed.png"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -423,7 +425,7 @@ def fill_db_with_sample_data():
     file.thumbnail_l = True
     file.thumbnail_xl = True
     file.filename = "556c457bf2984a3d83d34d8fa486fea9.jpeg"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -434,7 +436,7 @@ def fill_db_with_sample_data():
     file.thumbnail_s = True
     file.thumbnail_m = True
     file.filename = "f4947937541045fdade9cfdf5cdb5afa.png"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -447,7 +449,7 @@ def fill_db_with_sample_data():
     file.thumbnail_l = True
     file.thumbnail_xl = True
     file.filename = "70ea657f1c744d8da30b0104651129b0.jpeg"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -460,7 +462,7 @@ def fill_db_with_sample_data():
     file.thumbnail_l = True
     file.thumbnail_xl = True
     file.filename = "678a49a6ebc94a55afcac1185af80ce6.jpeg"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     file = File()
@@ -473,7 +475,7 @@ def fill_db_with_sample_data():
     file.thumbnail_l = True
     file.thumbnail_xl = True
     file.filename = "1847c84526574b0f9a15f258cf9a0de8.jpeg"
-    file.created_by_id = adminId
+    file.created_by_id = admin_id
     db.session.add(file)
 
     instance_settings = InstanceSettings()
@@ -489,24 +491,24 @@ def fill_db_with_sample_data():
     instance_settings.gym_mode = False
     db.session.add(instance_settings)
 
-    topoImage = TopoImage()
-    topoImage.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    topoImage.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
-    topoImage.created_by_id = adminId
-    topoImage.order_index = 0
-    db.session.add(topoImage)
+    topo_image = TopoImage()
+    topo_image.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topo_image.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
+    topo_image.created_by_id = admin_id
+    topo_image.order_index = 0
+    db.session.add(topo_image)
 
-    topoImage = TopoImage()
-    topoImage.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    topoImage.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
-    topoImage.created_by_id = adminId
-    topoImage.order_index = 1
-    db.session.add(topoImage)
+    topo_image = TopoImage()
+    topo_image.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topo_image.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    topo_image.created_by_id = admin_id
+    topo_image.order_index = 1
+    db.session.add(topo_image)
 
-    linePath = LinePath()
-    linePath.line_id = Line.get_id_by_slug("super-spreader")
-    linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = [
+    line_path = LinePath()
+    line_path.line_id = Line.get_id_by_slug("super-spreader")
+    line_path.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
+    line_path.path = [
         63.0,
         65.32448061683445,
         45.857142857142854,
@@ -516,15 +518,15 @@ def fill_db_with_sample_data():
         39.714285714285715,
         16.170486185478687,
     ]
-    linePath.created_by_id = adminId
-    linePath.order_index = 0
-    linePath.order_index_for_line = 0
-    db.session.add(linePath)
+    line_path.created_by_id = admin_id
+    line_path.order_index = 0
+    line_path.order_index_for_line = 0
+    db.session.add(line_path)
 
-    linePath = LinePath()
-    linePath.line_id = Line.get_id_by_slug("treppe")
-    linePath.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
-    linePath.path = [
+    line_path = LinePath()
+    line_path.line_id = Line.get_id_by_slug("treppe")
+    line_path.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
+    line_path.path = [
         84.42857142857143,
         70.25058899121868,
         75.85714285714286,
@@ -532,15 +534,15 @@ def fill_db_with_sample_data():
         68.71428571428571,
         8.781323623902335,
     ]
-    linePath.created_by_id = adminId
-    linePath.order_index = 1
-    linePath.order_index_for_line = 0
-    db.session.add(linePath)
+    line_path.created_by_id = admin_id
+    line_path.order_index = 1
+    line_path.order_index_for_line = 0
+    db.session.add(line_path)
 
-    linePath = LinePath()
-    linePath.line_id = Line.get_id_by_slug("super-spreader")
-    linePath.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
-    linePath.path = [
+    line_path = LinePath()
+    line_path.line_id = Line.get_id_by_slug("super-spreader")
+    line_path.topo_image_id = TopoImage.query.filter_by(order_index=1).first().id
+    line_path.path = [
         57.71428571428571,
         59.04761904761905,
         57.57142857142858,
@@ -552,10 +554,10 @@ def fill_db_with_sample_data():
         41.14285714285714,
         2.4761904761904763,
     ]
-    linePath.created_by_id = adminId
-    linePath.order_index = 1
-    linePath.order_index_for_line = 1
-    db.session.add(linePath)
+    line_path.created_by_id = admin_id
+    line_path.order_index = 1
+    line_path.order_index_for_line = 1
+    db.session.add(line_path)
 
     mapMarker = MapMarker()
     mapMarker.lat = 34.343434
@@ -567,62 +569,62 @@ def fill_db_with_sample_data():
     menuPage = MenuPage()
     menuPage.title = "Impressum"
     menuPage.text = "<p>Hier steht ein Impressums Text.</p>"
-    menuPage.created_by_id = adminId
+    menuPage.created_by_id = admin_id
     db.session.add(menuPage)
 
     menuPage = MenuPage()
     menuPage.title = "Datenschutzerklärung"
     menuPage.text = "<p>Hier steht die Datenschutzerklärung.</p>"
-    menuPage.created_by_id = adminId
+    menuPage.created_by_id = admin_id
     db.session.add(menuPage)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.MENU_PAGE
-    menuItem.position = MenuItemPositionEnum.BOTTOM
-    menuItem.order_index = 0
-    menuItem.menu_page_id = menuPage.get_id_by_slug("impressum")
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.MENU_PAGE
+    menu_item.position = MenuItemPositionEnum.BOTTOM
+    menu_item.order_index = 0
+    menu_item.menu_page_id = menuPage.get_id_by_slug("impressum")
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.MENU_PAGE
-    menuItem.position = MenuItemPositionEnum.BOTTOM
-    menuItem.order_index = 1
-    menuItem.menu_page_id = menuPage.get_id_by_slug("datenschutzerklaerung")
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.MENU_PAGE
+    menu_item.position = MenuItemPositionEnum.BOTTOM
+    menu_item.order_index = 1
+    menu_item.menu_page_id = menuPage.get_id_by_slug("datenschutzerklaerung")
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.TOPO
-    menuItem.position = MenuItemPositionEnum.TOP
-    menuItem.order_index = 1
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.TOPO
+    menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.order_index = 1
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.YOUTUBE
-    menuItem.position = MenuItemPositionEnum.TOP
-    menuItem.order_index = 2
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.YOUTUBE
+    menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.order_index = 2
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.INSTAGRAM
-    menuItem.position = MenuItemPositionEnum.TOP
-    menuItem.order_index = 3
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.INSTAGRAM
+    menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.order_index = 3
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
-    menuItem = MenuItem()
-    menuItem.type = MenuItemTypeEnum.NEWS
-    menuItem.position = MenuItemPositionEnum.TOP
-    menuItem.order_index = 0
-    menuItem.created_by_id = adminId
-    db.session.add(menuItem)
+    menu_item = MenuItem()
+    menu_item.type = MenuItemTypeEnum.NEWS
+    menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.order_index = 0
+    menu_item.created_by_id = admin_id
+    db.session.add(menu_item)
 
     for secret in [None, True]:
         ranking = Ranking()
-        ranking.user_id = adminId
+        ranking.user_id = admin_id
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
@@ -632,7 +634,7 @@ def fill_db_with_sample_data():
         db.session.add(ranking)
 
         ranking = Ranking()
-        ranking.user_id = adminId
+        ranking.user_id = admin_id
         ranking.sector_id = Sector.get_id_by_slug("schattental")
         ranking.top_10 = 22
         ranking.top_50 = 22
@@ -643,7 +645,7 @@ def fill_db_with_sample_data():
         db.session.add(ranking)
 
         ranking = Ranking()
-        ranking.user_id = adminId
+        ranking.user_id = admin_id
         ranking.crag_id = Crag.get_id_by_slug("brione")
         ranking.top_10 = 22
         ranking.top_50 = 22
@@ -661,8 +663,28 @@ def fill_db_with_sample_data():
         "7d291e44-016a-4869-91af-3416d2060c9c",
         "f5bd3862-78ba-471a-b0e5-fa55d419e435",
     ]:
-        revokedToken = RevokedToken()
-        revokedToken.jti = jti
-        db.session.add(revokedToken)
+        revoked_token = RevokedToken()
+        revoked_token.jti = jti
+        db.session.add(revoked_token)
+
+    line_tag = Tag()
+    line_tag.object = Line.query.filter_by(slug="super-spreader").first()
+    db.session.add(line_tag)
+
+    crag_tag = Tag()
+    crag_tag.object = Crag.query.filter_by(slug="brione").first()
+    db.session.add(crag_tag)
+
+    line_gallery_image = GalleryImage()
+    line_gallery_image.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
+    line_gallery_image.tags = [line_tag]
+    line_gallery_image.created_by = User.query.filter_by(email="user@localcrag.invalid.org").first()
+    db.session.add(line_gallery_image)
+
+    crag_gallery_image = GalleryImage()
+    crag_gallery_image.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    crag_gallery_image.tags = [crag_tag]
+    crag_gallery_image.created_by = User.query.filter_by(email="moderator@localcrag.invalid.org").first()
+    db.session.add(crag_gallery_image)
 
     db.session.commit()
