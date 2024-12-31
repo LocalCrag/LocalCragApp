@@ -20,7 +20,7 @@ class Area(HasSlug, IsSearchable, BaseEntity):
 
     __tablename__ = "areas"
 
-    slug_blocklist = ["edit", "create-area", "areas", "gallery", "ascents", "rules"]
+    slug_blocklist = ["edit", "create-area", "areas", "gallery", "ascents", "rules", "gallery"]
     searchable_type = SearchableItemTypeEnum.AREA
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)

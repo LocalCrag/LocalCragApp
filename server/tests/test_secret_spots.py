@@ -337,3 +337,84 @@ def test_secret_property_doesnt_change(client, moderator_token):
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] == True
+
+
+def test_gallery_secret(client, moderator_token, member_token):
+    # First create a secret line
+    line_data = {
+        "name": "Es geheim",
+        "description": "Super Boulder",
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "gradeName": "7B+",
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "rating": 5,
+        "faYear": 2016,
+        "faName": "Dave Graham",
+        "startingPosition": "FRENCH",
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "morpho": True,
+        "lowball": True,
+        "noTopout": True,
+        "badDropzone": True,
+        "childFriendly": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
+        "secret": True,
+    }
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["secret"] == True
+    line_id = res["id"]
+    line_slug = res["slug"]
+
+    # Create an image for the secret line
+    image_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
+    post_data = {"fileId": image_id, "tags": [{"objectType": "Line", "objectId": line_id}]}
+    rv = client.post("/api/gallery", token=member_token, json=post_data)
+    assert rv.status_code == 201
+
+    # Check, that the image is now shown in the line's gallery for logged in members
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug={line_slug}", token=member_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 1
+
+    # But not for anonymous users
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug={line_slug}")
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 0
+
+    # Set the line public
+    line_data["secret"] = False
+    rv = client.put("/api/lines/" + line_slug, token=moderator_token, json=line_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["secret"] == False
+
+    # Anonymous users can now see the image
+    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug={line_slug}")
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res["items"]) == 1

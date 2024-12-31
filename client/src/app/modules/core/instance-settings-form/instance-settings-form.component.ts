@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -30,9 +30,10 @@ import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
-import {InputSwitchModule} from 'primeng/inputswitch';
-import {GymModeDirective} from '../../shared/directives/gym-mode.directive';
+import { PasswordModule } from 'primeng/password';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -51,6 +52,8 @@ import { TooltipModule } from 'primeng/tooltip';
     SharedModule,
     TranslocoDirective,
     ColorPickerModule,
+    DividerModule,
+    PasswordModule,
     DividerModule,
     InputSwitchModule,
     GymModeDirective,

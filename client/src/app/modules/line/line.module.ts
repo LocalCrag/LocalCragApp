@@ -40,7 +40,6 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import {
   AdvancedColorPickerComponent
 } from '../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
-
 @NgModule({
   declarations: [
     LineComponent,
@@ -81,7 +80,7 @@ import {
     FormSkeletonComponent,
     TodoButtonComponent,
     GymModeDirective,
-    ColorSquareComponent,
+  ColorSquareComponent,
     ArchiveButtonComponent,
     SelectButtonModule,
     AdvancedColorPickerComponent,

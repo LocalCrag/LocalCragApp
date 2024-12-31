@@ -1,3 +1,17 @@
+lc-instance-settings-form {
+  p-password {
+    width: 100%;
+
+    .p-password {
+      width: 100%;
+
+      .p-password-input {
+        width: 100%;
+      }
+    }
+  }
+}
+
 #gym-mode  {
   .p-inputswitch-slider {
     background-color: var(--green-600);

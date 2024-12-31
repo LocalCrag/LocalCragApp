@@ -319,11 +319,19 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
-          linePath.konvaLine.stroke(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.fill(
+            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+          );
+          linePath.konvaLine.stroke(
+            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+          );
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
-          linePath.konvaRect.fill(highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor);
-          linePath.konvaText.fill(textColor(highlightColor(linePath.line?.color)) ?? instanceSettingsState.arrowHighlightTextColor);
+          linePath.konvaRect.fill(
+            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+          );
+          linePath.konvaText.fill(
+            textColor(highlightColor(linePath.line?.color)) ?? instanceSettingsState.arrowHighlightTextColor
+          );
         });
     }
   }

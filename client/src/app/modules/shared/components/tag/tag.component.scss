@@ -1,0 +1,12 @@
+lc-tag {
+  .p-tag {
+    background-color: var(--gray-400);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    padding-left: 0.25rem;
+
+    &:hover {
+      background-color: var(--gray-500);
+    }
+  }
+}

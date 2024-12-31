@@ -73,9 +73,11 @@ export class MenuItemsFormComponent implements OnInit {
     MenuItemType.TOPO,
     MenuItemType.ASCENTS,
     MenuItemType.RANKING,
+    MenuItemType.GALLERY,
     MenuItemType.NEWS,
     MenuItemType.YOUTUBE,
     MenuItemType.INSTAGRAM,
+    MenuItemType.HISTORY,
   ];
   public positions = [MenuItemPosition.TOP, MenuItemPosition.BOTTOM];
   public icons = [
@@ -90,6 +92,7 @@ export class MenuItemsFormComponent implements OnInit {
     marker('pi-home'),
     marker('pi-shield'),
     marker('pi-wallet'),
+    marker('pi-clock'),
   ];
 
   constructor(

@@ -13,6 +13,8 @@ from marshmallow_schemas.line_schema import (
 )
 from models.area import Area
 from models.crag import Crag
+from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.history_item import HistoryItem
 from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
@@ -38,7 +40,7 @@ class GetLines(MethodView):
 
     def get(self):
         """
-        Returns all lines of an area in a paginated manner.
+        Returns all lines in a paginated manner.
         """
         crag_slug = request.args.get("crag_slug")
         sector_slug = request.args.get("sector_slug")
@@ -89,7 +91,7 @@ class GetLines(MethodView):
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
-            # Order by Line.id as a tie breaker to prevent duplicate entries in paginate
+            # Order by Line.id as a tie-breaker to prevent duplicate entries in paginate
             query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
@@ -182,6 +184,8 @@ class CreateLine(MethodView):
         db.session.add(new_line)
         db.session.commit()
 
+        HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
+
         return line_schema.dump(new_line), 201
 
 
@@ -205,6 +209,14 @@ class UpdateLine(MethodView):
         line.videos = line_data["videos"]
         line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
+        HistoryItem.create_history_item(
+            HistoryItemTypeEnum.UPDATED,
+            line,
+            User.find_by_email(get_jwt_identity()),
+            old_value=line.grade_value,
+            new_value=line_data["gradeValue"],
+            property_name="grade_value",
+        )
         line.grade_value = line_data["gradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]

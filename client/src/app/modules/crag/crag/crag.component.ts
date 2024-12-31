@@ -82,11 +82,6 @@ export class CragComponent implements OnInit {
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/lines`,
           },
-          // {
-          //   label: this.translocoService.translate(marker('crag.gallery')),
-          //   icon: 'pi pi-fw pi-images',
-          //   routerLink: `/topo/${this.crag.slug}/gallery`,
-          // },
           {
             label: this.translocoService.translate(marker('crag.ascents')),
             icon: 'pi pi-fw pi-check-square',
@@ -96,6 +91,11 @@ export class CragComponent implements OnInit {
             label: this.translocoService.translate(marker('crag.ranking')),
             icon: 'pi pi-fw pi-trophy',
             routerLink: `/topo/${this.crag.slug}/ranking`,
+          },
+          {
+            label: this.translocoService.translate(marker('crag.gallery')),
+            icon: 'pi pi-fw pi-images',
+            routerLink: `/topo/${this.crag.slug}/gallery`,
           },
           {
             label: this.translocoService.translate(marker('crag.edit')),

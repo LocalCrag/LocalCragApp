@@ -29,8 +29,12 @@ pytest-mock = "*"
 boto3 = "*"
 moto = "*"
 sentry-sdk = {extras = ["flask"], version = "*"}
+sqlalchemy-utils = "*"
 
 [dev-packages]
+flake8 = "*"
+black = "*"
+isort = "*"
 
 flake8 = "*"
 black = "*"

@@ -1,0 +1,25 @@
+<p-card styleClass="gallery-image-card">
+  <ng-template pTemplate="header">
+    <div class="image-container">
+      <p-image
+        [src]="image.image.thumbnailM"
+        [preview]="true"
+        [previewImageSrcSet]="image.image.srcSet"
+      ></p-image>
+    </div>
+  </ng-template>
+  <div class="tags">
+    <lc-tag [tag]="tag" *ngFor="let tag of image.tags"></lc-tag>
+    <div
+      class="speed-dial-container"
+      *ngIf="image.createdBy.id === loggedInUser?.id || loggedInUser?.moderator"
+    >
+      <p-speedDial
+        [model]="speedDialItems"
+        direction="up"
+        showIcon="pi pi-bars"
+        hideIcon="pi pi-times"
+      />
+    </div>
+  </div>
+</p-card>
