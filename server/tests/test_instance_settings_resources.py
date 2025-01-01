@@ -77,6 +77,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["gymMode"] == True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
 
+
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
     # Clean database
     crags = Crag.query.all()
