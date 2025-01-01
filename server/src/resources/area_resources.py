@@ -13,8 +13,8 @@ from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
-from models.history_item import HistoryItem
 from models.enums.line_type_enum import LineTypeEnum
+from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
 from models.user import User
