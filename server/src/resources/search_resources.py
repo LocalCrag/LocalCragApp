@@ -26,7 +26,7 @@ class Search(MethodView):
     def get(self, query):
         if not query:
             raise BadRequest("A search query is required.")
-        instance_settings =  InstanceSettings.return_it()
+        instance_settings = InstanceSettings.return_it()
         db_query = db.session.query(Searchable)
         if not get_show_secret():
             db_query = db_query.filter(Searchable.secret.is_(False))

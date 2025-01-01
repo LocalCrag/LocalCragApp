@@ -79,7 +79,8 @@ services:
     command:
       - sh
       - "-c"
-      - "pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && pipenv run flask run --host=0.0.0.0"
+      - "while true; do sleep 60; done"
+#      - "pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && pipenv run flask run --host=0.0.0.0"
 
   client:
     build:
