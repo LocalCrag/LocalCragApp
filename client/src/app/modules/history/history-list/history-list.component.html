@@ -22,7 +22,7 @@
             [header]="getHeader(event) + ': ' + event.object.name"
             [subheader]="event.timeCreated | date: 'dd.MM.yyyy'"
           >
-            <div>{{ getDescription(event) }}</div>
+            <div>{{ getDescription(event) | async }}</div>
             <p-button
               styleClass="card-button"
               [label]="t('openObject')"
