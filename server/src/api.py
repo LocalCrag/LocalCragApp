@@ -97,6 +97,7 @@ from resources.sector_resources import (
     UpdateSector,
     UpdateSectorOrder,
 )
+from resources.statistics_resources import GetCompletion
 from resources.todo_resources import (
     CreateTodo,
     DeleteTodo,
@@ -154,6 +155,11 @@ def configure_api(app):
     upload_bp = Blueprint("upload", __name__)
     upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_file"))
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
+
+    # Statistics API
+    statistics_bp = Blueprint("statistics", __name__)
+    statistics_bp.add_url_rule("completion", view_func=GetCompletion.as_view("get_completion"))
+    app.register_blueprint(statistics_bp, url_prefix="/api/statistics")
 
     # Search API
     search_bp = Blueprint("search", __name__)
