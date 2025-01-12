@@ -86,7 +86,7 @@ export class TodoListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
   public minGradeValue = -2;
-  public maxGradeValue = 20;
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;

@@ -58,13 +58,20 @@ export class LeveledGradeDistributionComponent implements OnInit {
         ]).pipe(map(([scale, gradeNameByValueMap]) => {
           const labels = Array(scale.gradeBrackets.length).fill("");
 
+          const nextGradeName = Object.fromEntries(
+            scale.grades.sort((a, b) => a.value - b.value)
+              .map((g, i, a) => {
+                return i != a.length - 1 ? [g.value, a[i + 1].name] : [g.value, ""];
+              })
+          );
+
           for (let i = 0; i < scale.gradeBrackets.length; i++) {
             if (i == 0) {
               labels[i] = `${this.translocoService.translate(marker("leveledGradeDistributionUntil"))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
             } else if (i == scale.gradeBrackets.length - 1) {
               labels[i] = `${this.translocoService.translate(marker("leveledGradeDistributionFrom"))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
             } else {
-              labels[i] = `${gradeNameByValueMap[scale.gradeBrackets[i-1] + 1]} - ${gradeNameByValueMap[scale.gradeBrackets[i]]}`; // todo here we assume that grade values are spaced by 1
+              labels[i] = `${nextGradeName[scale.gradeBrackets[i-1]]} - ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
             }
           }
 

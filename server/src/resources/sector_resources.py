@@ -65,7 +65,7 @@ class CreateSector(MethodView):
 
         valid, error = validate_default_scales(sector_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         new_sector: Sector = Sector()
         new_sector.name = sector_data["name"].strip()
@@ -105,7 +105,7 @@ class UpdateSector(MethodView):
 
         valid, error = validate_default_scales(sector_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         sector.name = sector_data["name"].strip()
         sector.description = add_bucket_placeholders(sector_data["description"])

@@ -93,10 +93,8 @@ export class AscentFormComponent implements OnInit {
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;
 
-    this.scalesService.getScale(this.line.type, this.line.gradeScale).subscribe({
-      next: (scale) => {
-        this.grades = scale.grades.filter((grade) => grade.value >= 0);
-      }
+    this.scalesService.getScale(this.line.type, this.line.gradeScale).subscribe((scale) => {
+      this.grades = scale.grades.filter((grade) => grade.value >= 0);
     });
   }
 

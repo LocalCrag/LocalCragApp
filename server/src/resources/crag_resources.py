@@ -60,7 +60,7 @@ class CreateCrag(MethodView):
 
         valid, error = validate_default_scales(crag_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
@@ -97,7 +97,7 @@ class UpdateCrag(MethodView):
 
         valid, error = validate_default_scales(crag_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         crag.name = crag_data["name"].strip()
         crag.description = add_bucket_placeholders(crag_data["description"])

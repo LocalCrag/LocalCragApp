@@ -64,7 +64,7 @@ class CreateArea(MethodView):
 
         valid, error = validate_default_scales(area_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         new_area: Area = Area()
         new_area.name = area_data["name"].strip()
@@ -104,7 +104,7 @@ class UpdateArea(MethodView):
 
         valid, error = validate_default_scales(area_data)
         if not valid:
-            return NotFound(error), 404
+            raise NotFound(error)
 
         area.name = area_data["name"].strip()
         area.description = add_bucket_placeholders(area_data["description"])

@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LineType } from '../../enums/line-type';
 import { FullScale, Scale } from '../../models/scale';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 // LineType -> scaleName -> [gradeNamesToValues, gradeValuesToNames, scale]
 const CACHE: Record<LineType,
@@ -114,5 +115,32 @@ export class ScalesService {
 
     CACHE[scale.lineType][scale.name] = [gradeValueByName, gradeNameByValue, scale];
     return scale;
+  }
+
+  public getFormScaleSelectors<T>(listInitializer: {label: string, value: T | string}[]) {
+    return this.getScales().pipe(map(scales => {
+      const boulderScales = listInitializer.slice();
+      const sportScales = listInitializer.slice();
+      const tradScales = listInitializer.slice();
+
+      scales.forEach(scale => {
+        switch (scale.lineType) {
+          case LineType.BOULDER:
+            boulderScales.push({label: scale.name, value: scale.name});
+            break;
+          case LineType.SPORT:
+            sportScales.push({label: scale.name, value: scale.name});
+            break;
+          case LineType.TRAD:
+            tradScales.push({label: scale.name, value: scale.name});
+        }
+      });
+
+      return {
+        [LineType.BOULDER]: boulderScales,
+        [LineType.SPORT]: sportScales,
+        [LineType.TRAD]: tradScales,
+      };
+    }));
   }
 }

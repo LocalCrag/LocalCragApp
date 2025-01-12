@@ -96,7 +96,7 @@ export class AscentListComponent implements OnInit {
   public currentPage = 0;
 
   public minGradeValue = 0; // Skip project grades
-  public maxGradeValue = 20;
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;

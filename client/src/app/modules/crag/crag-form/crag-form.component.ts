@@ -65,28 +65,12 @@ export class CragFormComponent implements OnInit {
    */
   ngOnInit() {
     this.buildForm();
-    const scalesPopulated = this.scalesService.getScales().pipe(map(scales => {
-      const boulderScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
-      const sportScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
-      const tradScales = [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}];
-
-      scales.forEach(scale => {
-        switch (scale.lineType) {
-          case LineType.BOULDER:
-            boulderScales.push({label: scale.name, value: scale.name});
-            break;
-          case LineType.SPORT:
-            sportScales.push({label: scale.name, value: scale.name});
-            break;
-          case LineType.TRAD:
-            tradScales.push({label: scale.name, value: scale.name});
-        }
-      });
-
-      this.boulderScales = boulderScales;
-      this.sportScales = sportScales;
-      this.tradScales = tradScales;
-
+    const scalesPopulated = this.scalesService.getFormScaleSelectors(
+      [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}]
+    ).pipe(map(groupedScales => {
+      this.boulderScales = groupedScales[LineType.BOULDER];
+      this.sportScales = groupedScales[LineType.SPORT];
+      this.tradScales = groupedScales[LineType.TRAD];
       return true;
     }));
 

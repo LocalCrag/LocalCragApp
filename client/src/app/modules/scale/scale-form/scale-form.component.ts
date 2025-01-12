@@ -217,8 +217,6 @@ export class ScaleFormComponent implements OnInit {
           },
         });
       }
-    } else {
-      console.log(this.scaleForm.status);
     }
   }
 

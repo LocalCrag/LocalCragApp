@@ -103,7 +103,7 @@ export class LineListComponent implements OnInit {
   public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
 
   public minGradeValue = -2;
-  public maxGradeValue = 9999;
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
