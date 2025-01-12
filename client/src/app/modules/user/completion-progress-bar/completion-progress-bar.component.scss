@@ -1,0 +1,18 @@
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  .progress-inner-container {
+    display: grid;
+    grid-template-columns: auto 3rem;
+
+    .percentage {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+}

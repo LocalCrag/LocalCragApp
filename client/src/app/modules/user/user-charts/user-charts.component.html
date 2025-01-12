@@ -1,7 +1,9 @@
 <ng-container *transloco="let t; read: 'user.charts'">
-  <h4>{{ t("gradeDistribution") }}:</h4>
+  <h3>{{ t("gradeDistribution") }}:</h3>
   <lc-grade-distribution-bar-chart
     [fetchingObservable]="fetchUserGrades"
     [excludeProjects]="true"
   ></lc-grade-distribution-bar-chart>
+  <h3>{{ t("completion") }}:</h3>
+  <lc-completion></lc-completion>
 </ng-container>

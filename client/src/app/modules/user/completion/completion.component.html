@@ -1,0 +1,94 @@
+<div
+  class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
+>
+  <div class="slider-container w-full">
+    <lc-slider-labels
+      [rangeMin]="gradeFilterRange[0]"
+      [rangeMax]="gradeFilterRange[1]"
+      [min]="minGradeValue"
+      [max]="maxGradeValue"
+      [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
+      [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"
+    ></lc-slider-labels>
+    <p-slider
+      [(ngModel)]="gradeFilterRange"
+      [min]="minGradeValue"
+      [max]="maxGradeValue"
+      [range]="true"
+      [step]="1"
+      (touchstart)="listenForSliderStop = true"
+      (mousedown)="listenForSliderStop = true"
+    />
+  </div>
+</div>
+
+<div *ngIf="completion">
+  <div class="progress-bar-wrapper">
+    <lc-completion-progress-bar
+      [completion]="completion"
+      [cragMap]="cragMap"
+      [sectorMap]="sectorMap"
+      [areaMap]="areaMap"
+    ></lc-completion-progress-bar>
+    <lc-expand-button
+      [expanded]="regionExpanded"
+      (expandedChange)="regionExpanded = !regionExpanded"
+    ></lc-expand-button>
+    <div></div>
+  </div>
+
+  <ng-container *ngIf="regionExpanded">
+    <div *ngFor="let crag of crags" class="ml-4">
+      <div class="progress-bar-wrapper">
+        <lc-completion-progress-bar
+          [completion]="completion"
+          [cragMap]="cragMap"
+          [sectorMap]="sectorMap"
+          [areaMap]="areaMap"
+          [level]="'crag'"
+          [id]="crag.id"
+        >
+        </lc-completion-progress-bar>
+        <lc-expand-button
+          [expanded]="expandedCrags.has(crag.id)"
+          (expandedChange)="addOrRemove(expandedCrags, crag.id)"
+        ></lc-expand-button>
+      </div>
+      <ng-container *ngIf="expandedCrags.has(crag.id)">
+        <div *ngFor="let sector of crag.sectors" class="ml-4">
+          <div class="progress-bar-wrapper">
+            <lc-completion-progress-bar
+              [completion]="completion"
+              [cragMap]="cragMap"
+              [sectorMap]="sectorMap"
+              [areaMap]="areaMap"
+              [level]="'sector'"
+              [id]="sector.id"
+            >
+            </lc-completion-progress-bar>
+            <lc-expand-button
+              [expanded]="expandedSectors.has(sector.id)"
+              (expandedChange)="addOrRemove(expandedSectors, sector.id)"
+            ></lc-expand-button>
+          </div>
+          <ng-container *ngIf="expandedSectors.has(sector.id)">
+            <div *ngFor="let area of sector.areas" class="ml-4">
+              <div class="progress-bar-wrapper">
+                <lc-completion-progress-bar
+                  [completion]="completion"
+                  [cragMap]="cragMap"
+                  [sectorMap]="sectorMap"
+                  [areaMap]="areaMap"
+                  [level]="'area'"
+                  [id]="area.id"
+                >
+                </lc-completion-progress-bar>
+                <div></div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
