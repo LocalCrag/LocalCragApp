@@ -57,8 +57,9 @@ class GetCompletion(MethodView):
 
         # Filter ascents for grades
         if min_grade_value is not None and max_grade_value is not None:
-            ascents_query = ascents_query.join(Ascent.line).filter(Line.grade_value >= min_grade_value,
-                                                                   Line.grade_value <= max_grade_value)
+            ascents_query = ascents_query.join(Ascent.line).filter(
+                Line.grade_value >= min_grade_value, Line.grade_value <= max_grade_value
+            )
 
         # Filter secret spots
         if not get_show_secret():
