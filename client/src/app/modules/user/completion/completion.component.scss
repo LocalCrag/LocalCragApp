@@ -1,0 +1,17 @@
+p-slider {
+  width: 100%;
+}
+
+.slider-container {
+  padding-left: 0.5715rem;
+  padding-right: 0.5715rem;
+}
+
+.progress-bar-wrapper {
+  display: grid;
+  grid-template-columns: auto 3rem;
+
+  lc-expand-button {
+    transform: translateY(1rem);
+  }
+}

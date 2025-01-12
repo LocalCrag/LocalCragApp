@@ -23,9 +23,6 @@ class GetCompletion(MethodView):
         # TODO @blobbybob Add filter for archived, update grade filter
 
         user_id = request.args.get("user_id")
-        crag_id = request.args.get("crag_id") or None
-        sector_id = request.args.get("sector_id") or None
-        area_id = request.args.get("area_id") or None
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
 
@@ -43,15 +40,9 @@ class GetCompletion(MethodView):
             .distinct(Line.id)
         )
 
+        # Filter lines for grades
         if min_grade_value is not None and max_grade_value is not None:
             lines_query = lines_query.filter(Line.grade_value >= min_grade_value, Line.grade_value <= max_grade_value)
-
-        if crag_id:
-            lines_query = lines_query.filter(Crag.id == crag_id)
-        if sector_id:
-            lines_query = lines_query.filter(Sector.id == sector_id)
-        if area_id:
-            lines_query = lines_query.filter(Area.id == area_id)
 
         # Filter secret spots
         if not get_show_secret():
@@ -63,6 +54,11 @@ class GetCompletion(MethodView):
         ascents_query = db.session.query(Ascent.area_id, Ascent.sector_id, Ascent.crag_id).filter(
             Ascent.created_by_id == user_id
         )
+
+        # Filter ascents for grades
+        if min_grade_value is not None and max_grade_value is not None:
+            ascents_query = ascents_query.join(Ascent.line).filter(Line.grade_value >= min_grade_value,
+                                                                   Line.grade_value <= max_grade_value)
 
         # Filter secret spots
         if not get_show_secret():
@@ -80,9 +76,9 @@ class GetCompletion(MethodView):
             crag_id = str(line[2])  # Crag.id
             sector_id = str(line[1])  # Sector.id
             area_id = str(line[0])  # Area.id
-            crag_counts.setdefault(crag_id, {"total_lines": 0, "ascents": 0})["total_lines"] += 1
-            sector_counts.setdefault(sector_id, {"total_lines": 0, "ascents": 0})["total_lines"] += 1
-            area_counts.setdefault(area_id, {"total_lines": 0, "ascents": 0})["total_lines"] += 1
+            crag_counts.setdefault(crag_id, {"totalLines": 0, "ascents": 0})["totalLines"] += 1
+            sector_counts.setdefault(sector_id, {"totalLines": 0, "ascents": 0})["totalLines"] += 1
+            area_counts.setdefault(area_id, {"totalLines": 0, "ascents": 0})["totalLines"] += 1
 
         # Count ascents for each crag, sector, and area
         for ascent in ascents:
