@@ -25,9 +25,9 @@ jobs:
           --health-retries 5
     steps:
       - name: Set up postgres 16
-        uses: ankane/setup-postgres@v1
+        uses: harmon758/postgresql-action@v1
         with:
-          postgres-version: 16
+          postgresql version: 16
 
       - name: Checkout
         uses: actions/checkout@v4
