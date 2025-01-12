@@ -20,7 +20,7 @@ class GetCompletion(MethodView):
         Is used to build a "crag completion" page for a user.
         """
 
-        # TODO @blobbybob Add filter for archived, update grade filter
+        # TODO @BlobbyBob Add filter for archived, update grade filter
 
         user_id = request.args.get("user_id")
         max_grade_value = request.args.get("max_grade") or None
