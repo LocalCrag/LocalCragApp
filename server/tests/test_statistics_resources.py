@@ -9,12 +9,12 @@ def test_successful_get_completion(client):
     rv = client.get(f"/api/statistics/completion?min_grade=0&max_grade=28&user_id={admin_id}")
     assert rv.status_code == 200
     res = rv.json
-    assert res['areas'][str(ascent.area_id)]['ascents'] == 1
-    assert res['areas'][str(ascent.area_id)]['totalLines'] == 2
-    assert res['sectors'][str(ascent.sector_id)]['ascents'] == 1
-    assert res['sectors'][str(ascent.sector_id)]['totalLines'] == 2
-    assert res['crags'][str(ascent.crag_id)]['ascents'] == 1
-    assert res['crags'][str(ascent.crag_id)]['totalLines'] == 2
+    assert res["areas"][str(ascent.area_id)]["ascents"] == 1
+    assert res["areas"][str(ascent.area_id)]["totalLines"] == 2
+    assert res["sectors"][str(ascent.sector_id)]["ascents"] == 1
+    assert res["sectors"][str(ascent.sector_id)]["totalLines"] == 2
+    assert res["crags"][str(ascent.crag_id)]["ascents"] == 1
+    assert res["crags"][str(ascent.crag_id)]["totalLines"] == 2
 
 
 def test_successful_get_empty_grade_filtered_completion(client):
@@ -23,9 +23,9 @@ def test_successful_get_empty_grade_filtered_completion(client):
     rv = client.get(f"/api/statistics/completion?min_grade=28&max_grade=28&user_id={admin_id}")
     assert rv.status_code == 200
     res = rv.json
-    assert not res['areas']
-    assert not res['sectors']
-    assert not res['crags']
+    assert not res["areas"]
+    assert not res["sectors"]
+    assert not res["crags"]
 
 
 def test_successful_get_empty_user_filtered_completion(client):
@@ -34,6 +34,6 @@ def test_successful_get_empty_user_filtered_completion(client):
     rv = client.get(f"/api/statistics/completion?min_grade=28&max_grade=28&user_id={member_id}")
     assert rv.status_code == 200
     res = rv.json
-    assert not res['areas']
-    assert not res['sectors']
-    assert not res['crags']
+    assert not res["areas"]
+    assert not res["sectors"]
+    assert not res["crags"]
