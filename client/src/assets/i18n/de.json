@@ -13,6 +13,7 @@
   "users.list.userListTitle": "Benutzer",
   "user.charts.gradeDistribution": "Gradverteilung",
   "user.charts.completion": "Fortschritt",
+  "user.charts.noLinesInThisGradeRange": "Keine Linien in diesem Schwierigkeitsbereich.",
   "todos.priorityButton.mediumPriority": "Normale Priorität",
   "todos.priorityButton.lowPriority": "Niedrige Priorität",
   "todos.priorityButton.highPriority": "Hohe Priorität",
