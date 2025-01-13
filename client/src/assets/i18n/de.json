@@ -297,6 +297,7 @@
   "ascentForm.flash": "Flash",
   "ascentForm.withKneepad": "Mit Kneepad",
   "ascentForm.fa": "Erstbegehung",
+  "ascentForm.firstAscentExplanation": "Erstbegegung: Das Feld ist nur anzukreuzen, wenn du die Person bist, die diese Linie zum allerersten Mal überhaupt geklettert hat. Es geht nicht um deine persönliche erste Begehung!",
   "ascentForm.addAscentButtonLabel": "Begehung loggen",
   "ascentForm.editAscentButtonLabel": "Änderungen speichern",
   "ascentCount.ascent": "geloggte Begehung",

@@ -22,11 +22,11 @@
           styleClass="w-full"
         ></p-calendar>
         <small class="p-error" *lcIfError="'dateInFuture'">{{
-          t("yearInFutureValidationError")
-        }}</small>
+            t("yearInFutureValidationError")
+          }}</small>
         <small class="p-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+            t("required")
+          }}</small>
       </div>
       <div
         class="flex flex-column gap-2 flex-grow-1"
@@ -45,11 +45,11 @@
           dateFormat="dd.mm.yy"
         ></p-calendar>
         <small class="p-error" *lcIfError="'dateInFuture'">{{
-          t("dateInFutureValidationError")
-        }}</small>
+            t("dateInFutureValidationError")
+          }}</small>
         <small class="p-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+            t("required")
+          }}</small>
       </div>
       <p-toggleButton
         formControlName="yearOnly"
@@ -125,7 +125,7 @@
     <p-message
       severity="warn"
       text="{{ t('unusualGradeDifferenceWarning') }}"
-      styleClass="grade-difference-warning mt-2"
+      styleClass="ascent-form-alert mt-2"
       *ngIf="gradeDifferenceWarning"
     ></p-message>
 
@@ -190,6 +190,13 @@
         styleClass="shrink-padding-on-mobile"
       ></p-toggleButton>
     </div>
+    <p-message
+      *ngIf="ascentForm.get('fa').value"
+      styleClass="mt-2 ascent-form-alert"
+      severity="info"
+      text="{{ t('firstAscentExplanation') }}"
+    >
+    </p-message>
   </form>
 
   <div class="form-actions">
