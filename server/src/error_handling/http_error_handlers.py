@@ -45,7 +45,7 @@ def setup_http_error_handlers(app):
         return response
 
     @app.errorhandler(Forbidden)
-    def handle_unauthorized(error):
+    def handle_forbidden(error):
         response = jsonify(error.to_dict())
         response.status_code = error.status_code
         return response

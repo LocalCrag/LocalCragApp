@@ -1,3 +1,4 @@
+from collections import Counter, defaultdict
 from typing import List
 
 from flask import jsonify, request
@@ -7,11 +8,13 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
@@ -21,7 +24,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload
+from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.sector_args import sector_args
 
 
@@ -60,6 +63,10 @@ class CreateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        valid, error = validate_default_scales(sector_data)
+        if not valid:
+            raise NotFound(error)
+
         new_sector: Sector = Sector()
         new_sector.name = sector_data["name"].strip()
         new_sector.description = add_bucket_placeholders(sector_data["description"])
@@ -71,6 +78,9 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
+        new_sector.default_boulder_scale = sector_data["defaultBoulderScale"]
+        new_sector.default_sport_scale = sector_data["defaultSportScale"]
+        new_sector.default_trad_scale = sector_data["defaultTradScale"]
 
         if not new_sector.secret:
             set_sector_parents_unsecret(new_sector)
@@ -93,12 +103,19 @@ class UpdateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         sector: Sector = Sector.find_by_slug(sector_slug)
 
+        valid, error = validate_default_scales(sector_data)
+        if not valid:
+            raise NotFound(error)
+
         sector.name = sector_data["name"].strip()
         sector.description = add_bucket_placeholders(sector_data["description"])
         sector.short_description = sector_data["shortDescription"]
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
         update_sector_secret_property(sector, sector_data["secret"])
+        sector.default_boulder_scale = sector_data["defaultBoulderScale"]
+        sector.default_sport_scale = sector_data["defaultSportScale"]
+        sector.default_trad_scale = sector_data["defaultTradScale"]
 
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
@@ -157,8 +174,21 @@ class GetSectorGrades(MethodView):
         Returns the grades of all lines of a sector.
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
-        query = db.session.query(Line.grade_name, Line.grade_scale).join(Area).filter(Area.sector_id == sector_id)
+        query = (
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
+            .join(Area)
+            .filter(Area.sector_id == sector_id, Line.archived.is_(False))
+        )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

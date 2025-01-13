@@ -308,6 +308,4 @@ def test_successful_get_user_grades(client):
     rv = client.get("/api/users/admin-admin/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 1
-    assert res[0]["gradeName"] == "8A"
-    assert res[0]["gradeScale"] == "FB"
+    assert res["BOULDER"]["FB"] == {"22": 1}

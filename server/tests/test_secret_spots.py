@@ -7,7 +7,7 @@ def test_create_secret_line_in_public_area(client, moderator_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -85,6 +85,9 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
             }
         ],
         "secret": True,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -120,7 +123,7 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -218,6 +221,9 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
             }
         ],
         "secret": True,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -260,6 +266,9 @@ def test_secret_property_doesnt_change(client, moderator_token):
             }
         ],
         "secret": True,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -270,7 +279,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,

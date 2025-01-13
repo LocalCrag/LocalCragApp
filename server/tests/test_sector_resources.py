@@ -22,6 +22,9 @@ def test_successful_create_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
+        "defaultBoulderScale": None,
+        "defaultSportScale": "UIAA",
+        "defaultTradScale": None,
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -38,6 +41,9 @@ def test_successful_create_sector(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["secret"] == False
     assert res["rules"] == "test rules"
+    assert res["defaultBoulderScale"] is None
+    assert res["defaultSportScale"] == "UIAA"
+    assert res["defaultTradScale"] is None
 
 
 def test_successful_get_sectors(client):
@@ -71,6 +77,9 @@ def test_successful_get_sector(client):
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
     assert res["secret"] == False
+    assert res["defaultBoulderScale"] is None
+    assert res["defaultSportScale"] is None
+    assert res["defaultTradScale"] is None
 
 
 def test_get_deleted_sector(client):
@@ -103,6 +112,9 @@ def test_successful_edit_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/sectors/schattental", token=moderator_token, json=sector_data)
@@ -119,6 +131,9 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["ascentCount"] == 1
     assert res["secret"] == False
     assert res["rules"] == "test rules"
+    assert res["defaultBoulderScale"] == "FB"
+    assert res["defaultSportScale"] is None
+    assert res["defaultTradScale"] is None
 
 
 def test_successful_order_sectors(client, moderator_token):
@@ -152,8 +167,4 @@ def test_successful_get_sector_grades(client):
     rv = client.get("/api/sectors/schattental/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert res[0]["gradeName"] == "1"
-    assert res[0]["gradeScale"] == "FB"
-    assert res[1]["gradeName"] == "8A"
-    assert res[1]["gradeScale"] == "FB"
+    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}

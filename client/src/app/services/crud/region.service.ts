@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Region } from '../../models/region';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { deserializeGrade, Grade } from '../../utility/misc/grades';
+import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 
 /**
  * CRUD service for regions.
@@ -46,9 +46,9 @@ export class RegionService {
    *
    * @return Observable of a list of Grades.
    */
-  public getRegionGrades(): Observable<Grade[]> {
+  public getRegionGrades(): Observable<GradeDistribution> {
     return this.http
       .get(this.api.region.getGrades())
-      .pipe(map((gradeListJson: any) => gradeListJson.map(deserializeGrade)));
+      .pipe(map(deserializeGradeList));
   }
 }
