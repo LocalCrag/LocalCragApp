@@ -161,7 +161,7 @@
                 >
                   <div>
                     <strong>{{ line.name }}</strong>
-                    {{ scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue) | async | translateSpecialGrades }}
+                    {{ line | lineGrade }}
                   </div>
                   <p-rating
                     [ngModel]="line.rating"

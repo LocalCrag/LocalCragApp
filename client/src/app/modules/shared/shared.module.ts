@@ -26,6 +26,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
 import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
+import { LineGradePipe } from './pipes/line-grade.pipe';
 
 /**
  * Module for shared components, pipes etc.
@@ -45,6 +46,7 @@ import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pip
     OrderItemsComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
+    LineGradePipe,
     SanitizeHtmlPipe,
     ToStringPipe,
     TranslateSpecialGradesPipe,
@@ -75,6 +77,7 @@ import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pip
     TopoImageComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
+    LineGradePipe,
     SanitizeHtmlPipe,
     TranslateSpecialGradesPipe,
   ],

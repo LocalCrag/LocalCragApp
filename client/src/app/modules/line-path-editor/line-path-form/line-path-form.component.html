@@ -24,12 +24,12 @@
               >
                 <div>
                   {{ line.name }}
-                  {{ scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue) | async | translateSpecialGrades }}
+                  {{ line | lineGrade }}
                 </div>
               </div>
             </ng-template>
             <ng-template let-selectedItem pTemplate="selectedItem">
-              {{ selectedItem.name }} {{ scalesService.gradeNameByValue(selectedItem.type, selectedItem.gradeScale, selectedItem.gradeValue) | async | translateSpecialGrades }}
+              {{ selectedItem.name }} {{ selectedItem | lineGrade }}
             </ng-template>
           </p-dropdown>
           <small class="p-error" *lcIfError="'required'">{{

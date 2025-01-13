@@ -17,7 +17,7 @@
         *ngIf="showLinePathLineName"
       >
         {{ item.line.name }}
-        {{ scalesService.gradeNameByValue(item.line.type, item.line.gradeScale, item.line.gradeValue) | async | translateSpecialGrades }}
+        {{ item.line | lineGrade }}
       </div>
       <div
         class="flex flex-wrap p-2 align-items-center gap-3"

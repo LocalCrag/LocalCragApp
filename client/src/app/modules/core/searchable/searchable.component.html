@@ -10,7 +10,7 @@
   >
     <div class="grade-circle">
       <ng-container *ngIf="searchable.line.gradeValue > 0">{{
-          scalesService.gradeNameByValue(searchable.line.type, searchable.line.gradeScale, searchable.line.gradeValue) | async
+          searchable.line | lineGrade
         }}</ng-container>
       <ng-container *ngIf="searchable.line.gradeValue === 0">{{
           t("gradeCircleNotGraded")

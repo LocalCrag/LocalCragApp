@@ -12,11 +12,12 @@ import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SearchService } from '../../../services/crud/search.service';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-searchable',
   standalone: true,
-  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, AsyncPipe],
+  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, AsyncPipe, SharedModule],
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
   encapsulation: ViewEncapsulation.None,
