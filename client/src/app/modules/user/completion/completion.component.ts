@@ -19,9 +19,9 @@ import { ExpandButtonComponent } from '../../shared/components/expand-button/exp
 import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
-import {TranslocoDirective, TranslocoPipe} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
-import {MessagesModule} from 'primeng/messages';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'lc-completion',
