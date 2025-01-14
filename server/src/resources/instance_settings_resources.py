@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import current_app, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
@@ -14,8 +14,8 @@ def add_fixed_instance_settings(payload):
     """
     Adds non-editable settings to the instance settings response.
     """
-    payload['maxFileSize'] = current_app.config['MAX_FILE_SIZE']
-    payload['maxImageSize'] = current_app.config['MAX_IMAGE_SIZE']
+    payload["maxFileSize"] = current_app.config["MAX_FILE_SIZE"]
+    payload["maxImageSize"] = current_app.config["MAX_IMAGE_SIZE"]
     return payload
 
 

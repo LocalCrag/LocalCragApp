@@ -22,8 +22,8 @@ import {
 import { File } from '../../../../../models/file';
 import { ApiService } from '../../../../../services/core/api.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import {selectInstanceSettingsState} from '../../../../../ngrx/selectors/instance-settings.selectors';
-import {Store} from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'lc-avatar-upload',

@@ -7,16 +7,16 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {ApiService} from '../../../../../services/core/api.service';
+import { ApiService } from '../../../../../services/core/api.service';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NgControl,
 } from '@angular/forms';
-import {File} from '../../../../../models/file';
-import {FileUpload} from 'primeng/fileupload';
-import {Store} from '@ngrx/store';
-import {selectInstanceSettingsState} from '../../../../../ngrx/selectors/instance-settings.selectors';
+import { File } from '../../../../../models/file';
+import { FileUpload } from 'primeng/fileupload';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A media upload component.
@@ -35,7 +35,8 @@ import {selectInstanceSettingsState} from '../../../../../ngrx/selectors/instanc
   encapsulation: ViewEncapsulation.None,
 })
 export class SingleImageUploadComponent
-  implements OnInit, ControlValueAccessor, OnDestroy {
+  implements OnInit, ControlValueAccessor, OnDestroy
+{
   @ViewChild(FileUpload) uploader: FileUpload;
 
   public uploadUrl: string;
@@ -53,8 +54,7 @@ export class SingleImageUploadComponent
     private api: ApiService,
     private inj: Injector,
     private store: Store,
-  ) {
-  }
+  ) {}
 
   /**
    * Initializes the uploader component.
@@ -88,14 +88,12 @@ export class SingleImageUploadComponent
   /**
    * Not implemented but needed for the interface.
    */
-  registerOnTouched(_fn: any): void {
-  }
+  registerOnTouched(_fn: any): void {}
 
   /**
    * Function is replaced in registerOnChange.
    */
-  propagateChange = (_: any) => {
-  };
+  propagateChange = (_: any) => {};
 
   /**
    * Emits internal value when it changes.
