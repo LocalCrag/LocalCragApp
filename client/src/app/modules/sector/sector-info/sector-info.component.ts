@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Sector} from '../../../models/sector';
-import {SectorsService} from '../../../services/crud/sectors.service';
-import {Observable} from 'rxjs';
-import {Grade} from '../../../utility/misc/grades';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {MapMarkerType} from '../../../enums/map-marker-type';
-import {Coordinates} from '../../../interfaces/coordinates.interface';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Sector } from '../../../models/sector';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../utility/misc/grades';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MapMarkerType } from '../../../enums/map-marker-type';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 @Component({
   selector: 'lc-sector-info',
@@ -22,8 +22,7 @@ export class SectorInfoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private sectorsService: SectorsService,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
