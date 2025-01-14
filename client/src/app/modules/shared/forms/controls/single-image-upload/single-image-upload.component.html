@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
   <p-fileUpload
     mode="basic"
-    *ngIf="!file && maxImageSize"
+    *ngIf="!file"
     [hidden]="showProgressBar"
     [name]="'upload'"
     [url]="uploadUrl"
