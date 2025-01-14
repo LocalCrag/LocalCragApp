@@ -18,7 +18,7 @@ This was all perfetly possible by just using Wordpress or some forum software li
 - **Ticklist:** Track your ascends and create todo lists
 - **Statistics:** Numerous statistics for lines and ascends
 - **News blog:** Publish news for your crags in a blog
-- **Multi language:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibilits to run your instances in multiple languages.
+- **Multi language:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibility to run your instances in multiple languages.
 - ... more to come! We have a lot of ideas. We are open to your ideas and accept pull requests.
 
 ## Current state
