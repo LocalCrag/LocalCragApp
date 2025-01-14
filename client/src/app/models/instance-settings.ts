@@ -18,6 +18,8 @@ export class InstanceSettings {
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
+  maxFileSize: number
+  maxImageSize: number
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -46,6 +48,8 @@ export class InstanceSettings {
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
+    instanceSettings.maxFileSize = payload.maxFileSize
+    instanceSettings.maxImageSize = payload.maxImageSize
     return instanceSettings;
   }
 

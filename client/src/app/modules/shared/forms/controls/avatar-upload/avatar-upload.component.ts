@@ -22,6 +22,8 @@ import {
 import { File } from '../../../../../models/file';
 import { ApiService } from '../../../../../services/core/api.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {selectInstanceSettingsState} from '../../../../../ngrx/selectors/instance-settings.selectors';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'lc-avatar-upload',
@@ -61,10 +63,12 @@ export class AvatarUploadComponent
   public progress: number = null;
   public progressMode = 'determinate';
   public showProgressBar = false;
+  public maxImageSize: number;
 
   constructor(
     private api: ApiService,
     private inj: Injector,
+    private store: Store,
   ) {}
 
   /**
@@ -73,6 +77,9 @@ export class AvatarUploadComponent
   ngOnInit() {
     this.uploadUrl = this.api.uploader.uploadFile();
     this.formControl = this.inj.get(NgControl);
+    this.store.select(selectInstanceSettingsState).subscribe((settings) => {
+      this.maxImageSize = settings?.maxImageSize * 1048576; // Convert to bytes
+    });
   }
 
   /**

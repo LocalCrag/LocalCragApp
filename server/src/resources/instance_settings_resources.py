@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
@@ -10,10 +10,21 @@ from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
 
 
+def add_fixed_instance_settings(payload):
+    """
+    Adds non-editable settings to the instance settings response.
+    """
+    payload['maxFileSize'] = current_app.config['MAX_FILE_SIZE']
+    payload['maxImageSize'] = current_app.config['MAX_IMAGE_SIZE']
+    return payload
+
+
 class GetInstanceSettings(MethodView):
     def get(self):
         instance_settings: InstanceSettings = InstanceSettings.return_it()
-        return instance_settings_schema.dump(instance_settings), 200
+        instance_settings_response = instance_settings_schema.dump(instance_settings)
+        instance_settings_response = add_fixed_instance_settings(instance_settings_response)
+        return instance_settings_response, 200
 
 
 class UpdateInstanceSettings(MethodView):
@@ -42,4 +53,6 @@ class UpdateInstanceSettings(MethodView):
         db.session.add(instance_settings)
         db.session.commit()
 
-        return instance_settings_schema.dump(instance_settings), 200
+        instance_settings_response = instance_settings_schema.dump(instance_settings)
+        instance_settings_response = add_fixed_instance_settings(instance_settings_response)
+        return instance_settings_response, 200

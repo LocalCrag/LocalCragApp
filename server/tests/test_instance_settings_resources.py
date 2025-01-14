@@ -24,6 +24,8 @@ def test_successful_get_instance_settings(client):
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
+    assert res["maxFileSize"] == 5
+    assert res["maxImageSize"] == 4
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -66,3 +68,5 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
+    assert res["maxFileSize"] == 5
+    assert res["maxImageSize"] == 4

@@ -1,6 +1,6 @@
-import { Action, createReducer, on } from '@ngrx/store';
-import { File } from '../../models/file';
-import { updateInstanceSettings } from '../actions/instance-settings.actions';
+import {Action, createReducer, on} from '@ngrx/store';
+import {File} from '../../models/file';
+import {updateInstanceSettings} from '../actions/instance-settings.actions';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -17,6 +17,8 @@ export interface InstanceSettingsState {
   arrowHighlightTextColor: string;
   barChartColor: string;
   maptilerApiKey: string;
+  maxFileSize: number;
+  maxImageSize: number;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -34,6 +36,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowHighlightTextColor: null,
   barChartColor: null,
   maptilerApiKey: null,
+  maxFileSize: 0,
+  maxImageSize: 0,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -54,6 +58,8 @@ const instanceSettingsReducer = createReducer(
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
     maptilerApiKey: action.settings.maptilerApiKey,
+    maxFileSize: action.settings.maxFileSize,
+    maxImageSize: action.settings.maxImageSize,
   })),
 );
 
