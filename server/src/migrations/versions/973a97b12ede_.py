@@ -59,17 +59,6 @@ def upgrade():
         batch_op.drop_column("instagram_url")
         batch_op.drop_column("youtube_url")
 
-    # Remove now invalid enum values
-    op.execute(
-        "CREATE TYPE menuitemtypeenum_new AS ENUM('MENU_PAGE', 'TOPO', 'ASCENTS', 'RANKING', 'NEWS', 'GALLERY', "
-        "'HISTORY', 'URL')"
-    )
-    op.execute(
-        "ALTER TABLE menu_items ALTER COLUMN type TYPE menuitemtypeenum_new USING type::text::menuitemtypeenum_new"
-    )
-    op.execute("DROP TYPE menuitemtypeenum")
-    op.execute("ALTER TYPE menuitemtypeenum_new RENAME TO menuitemtypeenum")
-
 
 def downgrade():
     with op.batch_alter_table("menu_items", schema=None) as batch_op:
