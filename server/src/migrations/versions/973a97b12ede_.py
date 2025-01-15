@@ -39,18 +39,19 @@ def upgrade():
         column("title", String),
         column("url", String),
     )
-    if settings[0]:
-        conn.execute(
-            menu_items.update()
-            .where(menu_items.c.type == "INSTAGRAM")
-            .values(url=settings[0], type="URL", icon="pi-instagram", title="Instagram")
-        )
-    if settings[1]:
-        conn.execute(
-            menu_items.update()
-            .where(menu_items.c.type == "YOUTUBE")
-            .values(url=settings[1], type="URL", icon="pi-youtube", title="YouTube")
-        )
+    if settings is not None:
+        if settings[0]:
+            conn.execute(
+                menu_items.update()
+                .where(menu_items.c.type == "INSTAGRAM")
+                .values(url=settings[0], type="URL", icon="pi-instagram", title="Instagram")
+            )
+        if settings[1]:
+            conn.execute(
+                menu_items.update()
+                .where(menu_items.c.type == "YOUTUBE")
+                .values(url=settings[1], type="URL", icon="pi-youtube", title="YouTube")
+            )
 
     conn.commit()
 
