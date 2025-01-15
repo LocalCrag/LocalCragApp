@@ -6,6 +6,7 @@ import { Area } from './area';
 import { Line } from './line';
 import { ObjectType } from './tag';
 import { deserializeObject } from './utils';
+import {User} from './user';
 
 export class HistoryItem extends AbstractModel {
   oldValue: string;
@@ -14,6 +15,7 @@ export class HistoryItem extends AbstractModel {
   type: HistoryItemType;
   object: Crag | Sector | Area | Line;
   objectType: ObjectType;
+  createdBy: User;
 
   public static deserialize(payload: any): HistoryItem {
     const historyItem = new HistoryItem();
@@ -30,6 +32,7 @@ export class HistoryItem extends AbstractModel {
           | Line)
       : null;
     historyItem.objectType = payload.objectType;
+    historyItem.createdBy = payload.createdBy ? User.deserialize(payload.createdBy) : null;
     return historyItem;
   }
 }
