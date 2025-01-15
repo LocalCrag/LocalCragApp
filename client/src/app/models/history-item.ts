@@ -6,7 +6,7 @@ import { Area } from './area';
 import { Line } from './line';
 import { ObjectType } from './tag';
 import { deserializeObject } from './utils';
-import {User} from './user';
+import { User } from './user';
 
 export class HistoryItem extends AbstractModel {
   oldValue: string;
@@ -32,7 +32,9 @@ export class HistoryItem extends AbstractModel {
           | Line)
       : null;
     historyItem.objectType = payload.objectType;
-    historyItem.createdBy = payload.createdBy ? User.deserialize(payload.createdBy) : null;
+    historyItem.createdBy = payload.createdBy
+      ? User.deserialize(payload.createdBy)
+      : null;
     return historyItem;
   }
 }
