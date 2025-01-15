@@ -1,8 +1,8 @@
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from extensions import db
 from models.base_entity import BaseEntity
-from sqlalchemy import UniqueConstraint
 
 
 class Ascent(BaseEntity):
