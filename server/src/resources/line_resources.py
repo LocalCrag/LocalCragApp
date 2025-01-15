@@ -57,8 +57,6 @@ class GetLines(MethodView):
         line_type = request.args.get("line_type", None, type=LineTypeEnum)
         grade_scale = request.args.get("grade_scale", None)
 
-        # todo add filter options for linetype+gradescale
-
         if order_by not in ["grade_value", "name", "rating", None] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
 

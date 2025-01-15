@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { DatePipe } from './pipes/date.pipe';
 import { FormDirective } from './forms/form.directive';
 import { IfNoErrorDirective } from './forms/if-no-error.directive';
@@ -81,5 +81,6 @@ import { LineGradePipe } from './pipes/line-grade.pipe';
     SanitizeHtmlPipe,
     TranslateSpecialGradesPipe,
   ],
+  providers: [ AsyncPipe, TranslateSpecialGradesPipe ]
 })
 export class SharedModule {}

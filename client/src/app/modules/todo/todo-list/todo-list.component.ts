@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import {
   TranslocoDirective,
-  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -44,6 +43,7 @@ import { NotificationIdentifier } from '../../../utility/notifications/notificat
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { SharedModule } from '../../shared/shared.module';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-todo-list',
@@ -85,6 +85,10 @@ export class TodoListComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
+
+  public availableScales: SelectItem<{lineType: LineType, gradeScale: string} | undefined>[] = [];
+  public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
+
   public minGradeValue = -2;
   public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
@@ -109,16 +113,35 @@ export class TodoListComponent implements OnInit {
     private menuItemsService: MenuItemsService,
     private actions$: Actions,
     private translocoService: TranslocoService,
+    private regionService: RegionService,
     protected scalesService: ScalesService,
-  ) {
-    // todo hardcoded values
-    this.scalesService.getScale(LineType.BOULDER, "FB").subscribe((scale) => {
-      this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-      this.gradeFilterRange[1] = this.maxGradeValue;
-    });
-  }
+  ) {}
 
   ngOnInit() {
+    // Only offer lineType/gradeScales for filtering that are indeed available
+    this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
+      this.availableScales.push({
+        label: this.translocoService.translate("ALL"),
+        value: undefined,
+      });
+      for (const lineType in gradeDistribution) {
+        for (const gradeScale in gradeDistribution[lineType]) {
+          if (gradeDistribution[lineType][gradeScale]) {
+            this.availableScales.push({
+              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+              value: { lineType: lineType as LineType, gradeScale }
+            });
+          }
+        }
+      }
+      if (this.availableScales.length <= 2) {
+        this.scaleKey = this.availableScales[1];  // Default: Select first scale, so range slider is available
+      } else {
+        this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
+      }
+      this.selectScale();
+    });
+
     this.orderOptions = [
       {
         label: this.translocoService.translate(marker('orderByGrade')),
@@ -243,6 +266,16 @@ export class TodoListComponent implements OnInit {
     });
   }
 
+  selectScale() {
+    if (this.scaleKey?.value) {
+      this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
+        this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+        this.gradeFilterRange = [-2, this.maxGradeValue];
+      });
+    }
+    this.loadFirstPage();
+  }
+
   loadFirstPage() {
     this.listenForSliderStop = false;
     this.currentPage = 0;
@@ -263,25 +296,32 @@ export class TodoListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = [`page=${this.currentPage}`];
-      filters.push(`min_grade=${this.gradeFilterRange[0]}`);
-      filters.push(`max_grade=${this.gradeFilterRange[1]}`);
-      filters.push(`order_by=${this.orderKey.value}`);
-      filters.push(`order_direction=${this.orderDirectionKey.value}`);
-      filters.push(`per_page=10`);
+      const filters = new URLSearchParams();
+      filters.set("page", this.currentPage.toString());
+      if (this.gradeFilterRange[1] !== null) {
+        filters.set("min_grade", this.gradeFilterRange[0].toString());
+        filters.set("max_grade", this.gradeFilterRange[1].toString());
+      }
+      if (this.scaleKey?.value) {
+        filters.set("line_type", this.scaleKey.value.lineType);
+        filters.set("grade_scale", this.scaleKey.value.gradeScale);
+      }
+      filters.set("order_by", this.orderKey.value);
+      filters.set("order_direction", this.orderDirectionKey.value);
+      filters.set("per_page", "10");
       if (this.cragFilterKey?.value) {
-        filters.push(`crag_id=${this.cragFilterKey.value}`);
+        filters.set("crag_id", this.cragFilterKey.value);
       }
       if (this.sectorFilterKey?.value) {
-        filters.push(`sector_id=${this.sectorFilterKey.value}`);
+        filters.set("sector_id", this.sectorFilterKey.value);
       }
       if (this.areaFilterKey?.value) {
-        filters.push(`area_id=${this.areaFilterKey.value}`);
+        filters.set("area_id", this.areaFilterKey.value);
       }
       if (this.priorityFilterKey.value !== null) {
-        filters.push(`priority=${this.priorityFilterKey.value}`);
+        filters.set("priority", this.priorityFilterKey.value);
       }
-      const filterString = `?${filters.join('&')}`;
+      const filterString = `?${filters.toString()}`;
       this.todosService.getTodos(filterString).subscribe((todos) => {
         this.todos.push(...todos.items);
         this.hasNextPage = todos.hasNext;

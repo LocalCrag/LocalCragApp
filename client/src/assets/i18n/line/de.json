@@ -1,6 +1,5 @@
 {
   "lineList.newLineButtonLabel": "Neue Linie",
-  "lineList.lineType": "Linientyp",
   "lineList.orderByLabel": "Sortieren nach:",
   "lineList.hideArchive": "Archiv verstecken",
   "lineList.showArchive": "Archiv anzeigen",
@@ -100,6 +99,7 @@
   "lineBoolPropList.crimps": "Leisten",
   "lineBoolPropList.pockets": "Taschen",
   "lineBoolPropList.pinches": "Zangen",
+  "lineList.lineType": "Linientyp",
   "lineList.ascentCount": "Begehungen",
   "lineList.videobeta": "Videobeta",
   "lineForm.lineVideoLabel": "Video",

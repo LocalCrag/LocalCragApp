@@ -13,6 +13,7 @@ from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
+from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -44,6 +45,8 @@ class GetAscents(MethodView):
         order_direction = request.args.get("order_direction") or "desc"
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
+        line_type = request.args.get("line_type", None, type=LineTypeEnum)
+        grade_scale = request.args.get("grade_scale", None)
 
         if order_by not in ["time_created", "ascent_date", "grade_value"] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -64,6 +67,10 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.created_by_id == user_id)
         if line_id:
             query = query.filter(Ascent.line_id == line_id)
+        if line_type:
+            query = query.filter(Line.type == line_type)
+        if grade_scale:
+            query = query.filter(Line.grade_scale == grade_scale)
 
         # Filter by grades
         if min_grade_value and max_grade_value:

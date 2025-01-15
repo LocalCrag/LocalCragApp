@@ -146,14 +146,14 @@ export class LineListComponent implements OnInit {
     }
     gradeDistributionObserver.subscribe((gradeDistribution) => {
       this.availableScales.push({
-        label: `ALL`,  // todo translations
+        label: this.translocoService.translate("ALL"),
         value: undefined,
       });
       for (const lineType in gradeDistribution) {
         for (const gradeScale in gradeDistribution[lineType]) {
           if (gradeDistribution[lineType][gradeScale]) {
             this.availableScales.push({
-              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,  // todo translations
+              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
               value: { lineType: lineType as LineType, gradeScale }
             });
           }
@@ -164,6 +164,7 @@ export class LineListComponent implements OnInit {
       } else {
         this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
       }
+      this.selectScale();
     });
 
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
@@ -223,7 +224,7 @@ export class LineListComponent implements OnInit {
     if (this.scaleKey?.value) {
       this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
         this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-        this.gradeFilterRange[1] = this.maxGradeValue;
+        this.gradeFilterRange = [-2, this.maxGradeValue];
       });
     }
     this.loadFirstPage();
@@ -267,8 +268,10 @@ export class LineListComponent implements OnInit {
         filters.set("line_type", this.scaleKey.value.lineType);
         filters.set("grade_scale", this.scaleKey.value.gradeScale);
       }
-      filters.set("min_grade", this.gradeFilterRange[0].toString());
-      filters.set("max_grade", this.gradeFilterRange[1].toString());
+      if (this.gradeFilterRange[1] !== null) {
+        filters.set("min_grade", this.gradeFilterRange[0].toString());
+        filters.set("max_grade", this.gradeFilterRange[1].toString());
+      }
       filters.set("order_by", this.orderKey.value);
       filters.set("order_direction", this.orderDirectionKey.value);
       filters.set("per_page", "10");
