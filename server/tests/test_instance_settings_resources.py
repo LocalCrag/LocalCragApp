@@ -10,8 +10,6 @@ def test_successful_get_instance_settings(client):
     res = rv.json
     assert res["instanceName"] == instance_settings.instance_name
     assert res["copyrightOwner"] == instance_settings.copyright_owner
-    assert res["youtubeUrl"] == instance_settings.youtube_url
-    assert res["instagramUrl"] == instance_settings.instagram_url
     assert res["logoImage"] is None or res["logoImage"] == str(instance_settings.logo_image_id)
     assert res["faviconImage"] is None or res["faviconImage"] == str(instance_settings.favicon_image_id)
     assert res["mainBgImage"] is None or res["mainBgImage"] == str(instance_settings.main_bg_image_id)
@@ -34,8 +32,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "youtubeUrl": "https://youtube.com",
-        "instagramUrl": "https://instagram.com",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
@@ -54,8 +50,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     res = rv.json
     assert res["instanceName"] == "Gleesbouldering"
     assert res["copyrightOwner"] == "Die Gleesards e.V."
-    assert res["youtubeUrl"] == "https://youtube.com"
-    assert res["instagramUrl"] == "https://instagram.com"
     assert res["logoImage"]["id"] == any_file_id
     assert res["faviconImage"]["id"] == any_file_id
     assert res["mainBgImage"]["id"] == any_file_id

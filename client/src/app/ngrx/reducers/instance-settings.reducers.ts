@@ -5,8 +5,6 @@ import { updateInstanceSettings } from '../actions/instance-settings.actions';
 export interface InstanceSettingsState {
   instanceName: string;
   copyrightOwner: string;
-  youtubeUrl: string;
-  instagramUrl: string;
   logoImage: File;
   faviconImage: File;
   mainBgImage: File;
@@ -24,8 +22,6 @@ export interface InstanceSettingsState {
 export const initialInstanceSettingsState: InstanceSettingsState = {
   instanceName: 'Loading...',
   copyrightOwner: 'Loading...',
-  youtubeUrl: null,
-  instagramUrl: null,
   logoImage: null,
   faviconImage: null,
   mainBgImage: null,
@@ -46,8 +42,6 @@ const instanceSettingsReducer = createReducer(
     ...state,
     instanceName: action.settings.instanceName,
     copyrightOwner: action.settings.copyrightOwner,
-    youtubeUrl: action.settings.youtubeUrl,
-    instagramUrl: action.settings.instagramUrl,
     logoImage: action.settings.logoImage,
     faviconImage: action.settings.faviconImage,
     mainBgImage: action.settings.mainBgImage,

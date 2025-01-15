@@ -22,10 +22,8 @@ import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
 import { Crag } from '../../../models/crag';
 import {
-  selectInstagramUrl,
   selectInstanceName,
   selectLogoImage,
-  selectYoutubeUrl,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { File } from '../../../models/file';
 import { User } from '../../../models/user';
@@ -165,9 +163,7 @@ export class MenuComponent implements OnInit {
     forkJoin([
       this.menuItemsService.getMenuItems(),
       this.menuItemsService.getCragMenuStructure(),
-      this.store.select(selectYoutubeUrl).pipe(take(1)),
-      this.store.select(selectInstagramUrl).pipe(take(1)),
-    ]).subscribe(([menuItems, crags, youtubeUrl, instagramUrl]) => {
+    ]).subscribe(([menuItems, crags]) => {
       this.items = [];
       const menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
@@ -188,18 +184,11 @@ export class MenuComponent implements OnInit {
               routerLink: '/news',
             });
             break;
-          case MenuItemType.INSTAGRAM:
+          case MenuItemType.URL:
             this.items.push({
-              label: this.translocoService.translate(marker('menu.instagram')),
-              url: instagramUrl,
-              icon: 'pi pi-fw pi-instagram',
-            });
-            break;
-          case MenuItemType.YOUTUBE:
-            this.items.push({
-              label: this.translocoService.translate(marker('menu.youtube')),
-              url: youtubeUrl,
-              icon: 'pi pi-fw pi-youtube',
+              label: this.translocoService.translate(menuItem.title),
+              url: menuItem.url,
+              icon: `pi pi-fw ${menuItem.icon}`,
             });
             break;
           case MenuItemType.TOPO:

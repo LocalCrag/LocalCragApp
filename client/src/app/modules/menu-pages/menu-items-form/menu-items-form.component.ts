@@ -38,6 +38,8 @@ import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { getInstanceEquivalentFromList } from '../../../utility/array-operations';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { InputTextModule } from 'primeng/inputtext';
+import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -53,6 +55,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
     ButtonModule,
     ConfirmPopupModule,
     NgClass,
+    InputTextModule,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',
@@ -75,9 +78,8 @@ export class MenuItemsFormComponent implements OnInit {
     MenuItemType.RANKING,
     MenuItemType.GALLERY,
     MenuItemType.NEWS,
-    MenuItemType.YOUTUBE,
-    MenuItemType.INSTAGRAM,
     MenuItemType.HISTORY,
+    MenuItemType.URL,
   ];
   public positions = [MenuItemPosition.TOP, MenuItemPosition.BOTTOM];
   public icons = [
@@ -93,6 +95,9 @@ export class MenuItemsFormComponent implements OnInit {
     marker('pi-shield'),
     marker('pi-wallet'),
     marker('pi-clock'),
+    marker('pi-shopping-bag'),
+    marker('pi-instagram'),
+    marker('pi-youtube'),
   ];
 
   constructor(
@@ -162,6 +167,8 @@ export class MenuItemsFormComponent implements OnInit {
       position: [position, [Validators.required]],
       menuPage: [null],
       icon: [null],
+      url: [null],
+      title: [null],
     });
     this.menuItemForm
       .get('type')
@@ -182,6 +189,25 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm.get('icon').setValidators([Validators.required]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
+      this.menuItemForm.get('url').setValidators([]);
+      this.menuItemForm.get('url').disable();
+      this.menuItemForm.get('url').setValue(null);
+      this.menuItemForm.get('title').setValidators([]);
+      this.menuItemForm.get('title').disable();
+      this.menuItemForm.get('title').setValue(null);
+    } else if (this.menuItemForm.get('type').value === MenuItemType.URL) {
+      this.menuItemForm
+        .get('url')
+        .setValidators([Validators.required, httpUrlValidator()]);
+      this.menuItemForm.get('url').enable();
+      this.menuItemForm.get('title').setValidators([Validators.required]);
+      this.menuItemForm.get('title').enable();
+      this.menuItemForm.get('icon').setValidators([Validators.required]);
+      this.menuItemForm.get('icon').enable();
+      this.menuItemForm.get('icon').setValue(this.icons[0]);
+      this.menuItemForm.get('menuPage').setValidators([]);
+      this.menuItemForm.get('menuPage').disable();
+      this.menuItemForm.get('menuPage').setValue(null);
     } else {
       this.menuItemForm.get('menuPage').setValidators([]);
       this.menuItemForm.get('menuPage').disable();
@@ -189,6 +215,12 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm.get('icon').setValidators([]);
       this.menuItemForm.get('icon').disable();
       this.menuItemForm.get('icon').setValue(null);
+      this.menuItemForm.get('url').setValidators([]);
+      this.menuItemForm.get('url').disable();
+      this.menuItemForm.get('url').setValue(null);
+      this.menuItemForm.get('title').setValidators([]);
+      this.menuItemForm.get('title').disable();
+      this.menuItemForm.get('title').setValue(null);
     }
   }
 
@@ -201,6 +233,8 @@ export class MenuItemsFormComponent implements OnInit {
       type: this.menuItem.type,
       position: this.menuItem.position,
       icon: this.menuItem.icon,
+      url: this.menuItem.url,
+      title: this.menuItem.title,
       menuPage: getInstanceEquivalentFromList(
         this.menuItem.menuPage,
         this.menuPages,
@@ -226,6 +260,9 @@ export class MenuItemsFormComponent implements OnInit {
       menuItem.position = this.menuItemForm.get('position').value;
       menuItem.menuPage = this.menuItemForm.get('menuPage').value;
       menuItem.icon = this.menuItemForm.get('icon').value;
+      console.log(menuItem.icon);
+      menuItem.url = this.menuItemForm.get('url').value;
+      menuItem.title = this.menuItemForm.get('title').value;
       if (this.menuItem) {
         menuItem.id = this.menuItem.id;
         this.menuItemsService.updateMenuItem(menuItem).subscribe(() => {

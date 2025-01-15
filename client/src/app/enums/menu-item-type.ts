@@ -4,8 +4,7 @@ export enum MenuItemType {
   ASCENTS = 'ASCENTS' /** t(ASCENTS) **/,
   RANKING = 'RANKING' /** t(RANKING) **/,
   NEWS = 'NEWS' /** t(NEWS) **/,
-  YOUTUBE = 'YOUTUBE' /** t(YOUTUBE) **/,
-  INSTAGRAM = 'INSTAGRAM' /** t(INSTAGRAM) **/,
   GALLERY = 'GALLERY' /** t(GALLERY) **/,
   HISTORY = 'HISTORY' /** t(HISTORY) **/,
+  URL = 'URL' /** t(URL) **/,
 }

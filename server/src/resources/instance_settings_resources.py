@@ -36,8 +36,6 @@ class UpdateInstanceSettings(MethodView):
 
         instance_settings.instance_name = instance_settings_data["instanceName"]
         instance_settings.copyright_owner = instance_settings_data["copyrightOwner"]
-        instance_settings.youtube_url = instance_settings_data["youtubeUrl"]
-        instance_settings.instagram_url = instance_settings_data["instagramUrl"]
         instance_settings.logo_image_id = instance_settings_data["logoImage"]
         instance_settings.favicon_image_id = instance_settings_data["faviconImage"]
         instance_settings.auth_bg_image_id = instance_settings_data["authBgImage"]

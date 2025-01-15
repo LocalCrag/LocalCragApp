@@ -4,8 +4,6 @@ export class InstanceSettings {
   timeUpdated: Date;
   instanceName: string;
   copyrightOwner: string;
-  youtubeUrl: string;
-  instagramUrl: string;
   logoImage: File;
   faviconImage: File;
   mainBgImage: File;
@@ -26,8 +24,6 @@ export class InstanceSettings {
     instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z');
     instanceSettings.instanceName = payload.instanceName;
     instanceSettings.copyrightOwner = payload.copyrightOwner;
-    instanceSettings.youtubeUrl = payload.youtubeUrl;
-    instanceSettings.instagramUrl = payload.instagramUrl;
     instanceSettings.logoImage = payload.logoImage
       ? File.deserialize(payload.logoImage)
       : null;
@@ -57,8 +53,6 @@ export class InstanceSettings {
     return {
       instanceName: instanceSettings.instanceName,
       copyrightOwner: instanceSettings.copyrightOwner,
-      youtubeUrl: instanceSettings.youtubeUrl,
-      instagramUrl: instanceSettings.instagramUrl,
       logoImage: instanceSettings.logoImage
         ? instanceSettings.logoImage.id
         : null,
