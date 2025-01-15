@@ -5,8 +5,6 @@ import { updateInstanceSettings } from '../actions/instance-settings.actions';
 export interface InstanceSettingsState {
   instanceName: string;
   copyrightOwner: string;
-  youtubeUrl: string;
-  instagramUrl: string;
   logoImage: File;
   faviconImage: File;
   mainBgImage: File;
@@ -17,13 +15,13 @@ export interface InstanceSettingsState {
   arrowHighlightTextColor: string;
   barChartColor: string;
   maptilerApiKey: string;
+  maxFileSize: number;
+  maxImageSize: number;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
   instanceName: 'Loading...',
   copyrightOwner: 'Loading...',
-  youtubeUrl: null,
-  instagramUrl: null,
   logoImage: null,
   faviconImage: null,
   mainBgImage: null,
@@ -34,6 +32,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowHighlightTextColor: null,
   barChartColor: null,
   maptilerApiKey: null,
+  maxFileSize: 0,
+  maxImageSize: 0,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -42,8 +42,6 @@ const instanceSettingsReducer = createReducer(
     ...state,
     instanceName: action.settings.instanceName,
     copyrightOwner: action.settings.copyrightOwner,
-    youtubeUrl: action.settings.youtubeUrl,
-    instagramUrl: action.settings.instagramUrl,
     logoImage: action.settings.logoImage,
     faviconImage: action.settings.faviconImage,
     mainBgImage: action.settings.mainBgImage,
@@ -54,6 +52,8 @@ const instanceSettingsReducer = createReducer(
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
     maptilerApiKey: action.settings.maptilerApiKey,
+    maxFileSize: action.settings.maxFileSize,
+    maxImageSize: action.settings.maxImageSize,
   })),
 );
 

@@ -11,7 +11,6 @@ class MenuItemTypeEnum(Enum):
     ASCENTS = "ASCENTS"
     RANKING = "RANKING"
     NEWS = "NEWS"
-    YOUTUBE = "YOUTUBE"
-    INSTAGRAM = "INSTAGRAM"
     GALLERY = "GALLERY"
     HISTORY = "HISTORY"
+    URL = "URL"

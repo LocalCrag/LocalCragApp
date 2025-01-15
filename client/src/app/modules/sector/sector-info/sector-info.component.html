@@ -14,6 +14,11 @@
       ></section>
     </ng-container>
 
+    <lc-coordinates-button
+      [coordinates]="sectorCoordinates"
+      *ngIf="sectorCoordinates"
+    ></lc-coordinates-button>
+
     <lc-map [target]="sector"></lc-map>
   </ng-container>
 

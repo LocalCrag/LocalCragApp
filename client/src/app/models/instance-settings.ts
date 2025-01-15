@@ -4,8 +4,6 @@ export class InstanceSettings {
   timeUpdated: Date;
   instanceName: string;
   copyrightOwner: string;
-  youtubeUrl: string;
-  instagramUrl: string;
   logoImage: File;
   faviconImage: File;
   mainBgImage: File;
@@ -18,14 +16,14 @@ export class InstanceSettings {
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
+  maxFileSize: number;
+  maxImageSize: number;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
     instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z');
     instanceSettings.instanceName = payload.instanceName;
     instanceSettings.copyrightOwner = payload.copyrightOwner;
-    instanceSettings.youtubeUrl = payload.youtubeUrl;
-    instanceSettings.instagramUrl = payload.instagramUrl;
     instanceSettings.logoImage = payload.logoImage
       ? File.deserialize(payload.logoImage)
       : null;
@@ -46,6 +44,8 @@ export class InstanceSettings {
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
+    instanceSettings.maxFileSize = payload.maxFileSize;
+    instanceSettings.maxImageSize = payload.maxImageSize;
     return instanceSettings;
   }
 
@@ -53,8 +53,6 @@ export class InstanceSettings {
     return {
       instanceName: instanceSettings.instanceName,
       copyrightOwner: instanceSettings.copyrightOwner,
-      youtubeUrl: instanceSettings.youtubeUrl,
-      instagramUrl: instanceSettings.instagramUrl,
       logoImage: instanceSettings.logoImage
         ? instanceSettings.logoImage.id
         : null,

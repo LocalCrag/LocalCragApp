@@ -6,7 +6,7 @@
   [url]="uploadUrl"
   accept=".jpg, .jpeg, .png, .gif, .bmp"
   [multiple]="false"
-  [maxFileSize]="15000000"
+  [maxFileSize]="maxImageSize"
   (onError)="showProgressBar = false"
   (onBeforeUpload)="startProgress()"
   (onProgress)="setProgress($event)"

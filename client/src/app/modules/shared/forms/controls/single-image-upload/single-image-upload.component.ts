@@ -15,6 +15,8 @@ import {
 } from '@angular/forms';
 import { File } from '../../../../../models/file';
 import { FileUpload } from 'primeng/fileupload';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * A media upload component.
@@ -43,14 +45,15 @@ export class SingleImageUploadComponent
   public file: File;
   public imageLoading = true;
   public imageLoadingError = false;
-  public uploadInProgress = false;
   public progress: number = null;
   public progressMode = 'determinate';
   public showProgressBar = false;
+  public maxImageSize: number;
 
   constructor(
     private api: ApiService,
     private inj: Injector,
+    private store: Store,
   ) {}
 
   /**
@@ -59,6 +62,9 @@ export class SingleImageUploadComponent
   ngOnInit() {
     this.uploadUrl = this.api.uploader.uploadFile();
     this.formControl = this.inj.get(NgControl);
+    this.store.select(selectInstanceSettingsState).subscribe((settings) => {
+      this.maxImageSize = settings?.maxImageSize * 1048576; // Convert to bytes
+    });
   }
 
   /**

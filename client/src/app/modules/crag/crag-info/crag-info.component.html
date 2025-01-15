@@ -13,6 +13,11 @@
       ></section>
     </ng-container>
 
+    <lc-coordinates-button
+      [coordinates]="cragCoordinates"
+      *ngIf="cragCoordinates"
+    ></lc-coordinates-button>
+
     <lc-map [target]="crag"></lc-map>
 
     <ng-container *ngIf="!crag">

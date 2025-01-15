@@ -19,8 +19,9 @@ import { ExpandButtonComponent } from '../../shared/components/expand-button/exp
 import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'lc-completion',
@@ -37,6 +38,8 @@ import { FormsModule } from '@angular/forms';
     SliderModule,
     TranslocoPipe,
     FormsModule,
+    MessagesModule,
+    TranslocoDirective,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',
@@ -121,4 +124,5 @@ export class CompletionComponent implements OnInit {
   }
 
   protected readonly gradeNameByValue = gradeNameByValue;
+  protected readonly Object = Object;
 }

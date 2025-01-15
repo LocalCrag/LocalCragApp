@@ -23,7 +23,7 @@ class DefaultConfig(object):
     SUPERADMIN_EMAIL = ""
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
-    MAX_IMAGE_SIZE = 20
+    MAX_IMAGE_SIZE = 50
     REGION = "Tessin"
     SPACES_SECRET_KEY = "test"
     SPACES_ACCESS_KEY = "test"

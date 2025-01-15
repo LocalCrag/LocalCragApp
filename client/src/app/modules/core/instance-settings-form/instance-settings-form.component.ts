@@ -17,7 +17,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
-import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -95,8 +94,6 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm = this.fb.group({
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
-      youtubeUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
-      instagramUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -117,8 +114,6 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm.patchValue({
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
-      youtubeUrl: this.instanceSettings.youtubeUrl,
-      instagramUrl: this.instanceSettings.instagramUrl,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -142,10 +137,6 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('instanceName').value;
       instanceSettings.copyrightOwner =
         this.instanceSettingsForm.get('copyrightOwner').value;
-      instanceSettings.youtubeUrl =
-        this.instanceSettingsForm.get('youtubeUrl').value;
-      instanceSettings.instagramUrl =
-        this.instanceSettingsForm.get('instagramUrl').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

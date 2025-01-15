@@ -53,6 +53,10 @@ class CreateMenuItem(MethodView):
         new_menu_item.menu_page_id = menu_item_data["menuPage"]
         if new_menu_item.type == MenuItemTypeEnum.MENU_PAGE:
             new_menu_item.icon = menu_item_data["icon"]
+        if new_menu_item.type == MenuItemTypeEnum.URL:
+            new_menu_item.url = menu_item_data["url"]
+            new_menu_item.icon = menu_item_data["icon"]
+            new_menu_item.title = menu_item_data["title"]
         new_menu_item.created_by_id = created_by.id
         new_menu_item.order_index = MenuItem.find_max_order_index_at_position(new_menu_item.position) + 1
 
@@ -77,6 +81,10 @@ class UpdateMenuItem(MethodView):
             menu_item.order_index = MenuItem.find_max_order_index_at_position(menu_item_data["position"]) + 1
         if menu_item.type == MenuItemTypeEnum.MENU_PAGE:
             menu_item.icon = menu_item_data["icon"]
+        if menu_item.type == MenuItemTypeEnum.URL:
+            menu_item.url = menu_item_data["url"]
+            menu_item.icon = menu_item_data["icon"]
+            menu_item.title = menu_item_data["title"]
 
         menu_item.type = menu_item_data["type"]
         menu_item.position = menu_item_data["position"]

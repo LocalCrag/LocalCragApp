@@ -16,8 +16,6 @@ class InstanceSettings(db.Model):
     time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.utcnow)
     instance_name = db.Column(db.String(120), nullable=False)
     copyright_owner = db.Column(db.String(120), nullable=False)
-    youtube_url = db.Column(db.String(120), nullable=True)
-    instagram_url = db.Column(db.String(120), nullable=True)
     logo_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     logo_image = db.relationship("File", lazy="joined", foreign_keys=[logo_image_id])
     favicon_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)

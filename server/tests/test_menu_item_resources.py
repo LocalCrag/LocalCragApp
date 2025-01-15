@@ -7,7 +7,14 @@ from models.menu_page import MenuPage
 def test_successful_create_menu_item(client, moderator_token):
     menu_page = MenuPage.find_by_slug("impressum")
 
-    menu_item_data = {"type": "MENU_PAGE", "position": "BOTTOM", "menuPage": str(menu_page.id), "icon": "test"}
+    menu_item_data = {
+        "type": "MENU_PAGE",
+        "position": "BOTTOM",
+        "menuPage": str(menu_page.id),
+        "icon": "test",
+        "title": None,
+        "url": None,
+    }
 
     rv = client.post("/api/menu-items", token=moderator_token, json=menu_item_data)
     assert rv.status_code == 201
@@ -17,6 +24,30 @@ def test_successful_create_menu_item(client, moderator_token):
     assert res["orderIndex"] == 2
     assert res["icon"] == "test"
     assert res["menuPage"]["title"] == menu_page.title
+    assert res["id"] is not None
+
+
+def test_successful_create_url_menu_item(client, moderator_token):
+
+    menu_item_data = {
+        "type": "URL",
+        "position": "TOP",
+        "menuPage": None,
+        "url": "test-url",
+        "title": "title test",
+        "icon": "test",
+    }
+
+    rv = client.post("/api/menu-items", token=moderator_token, json=menu_item_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["type"] == "URL"
+    assert res["position"] == "TOP"
+    assert res["orderIndex"] == 4
+    assert res["icon"] == "test"
+    assert res["title"] == "title test"
+    assert res["url"] == "test-url"
+    assert res["menuPage"] is None
     assert res["id"] is not None
 
 
@@ -65,7 +96,14 @@ def test_successful_edit_menu_item(client, moderator_token):
     menu_page = MenuPage.find_by_slug("impressum")
     menu_item = MenuItem.query.filter_by(menu_page_id=menu_page.id).first()
 
-    menu_item_data = {"type": "MENU_PAGE", "position": "BOTTOM", "menuPage": str(menu_page.id), "icon": None}
+    menu_item_data = {
+        "type": "MENU_PAGE",
+        "position": "BOTTOM",
+        "menuPage": str(menu_page.id),
+        "icon": None,
+        "title": None,
+        "url": None,
+    }
 
     rv = client.put(f"/api/menu-items/{menu_item.id}", token=moderator_token, json=menu_item_data)
     assert rv.status_code == 200
