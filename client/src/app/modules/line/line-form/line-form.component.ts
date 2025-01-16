@@ -54,7 +54,7 @@ export class LineFormComponent implements OnInit {
 
   public line: Line;
   public editMode = false;
-  public grades = [];
+  public grades = null;
   public startingPositions = [
     StartingPosition.STAND,
     StartingPosition.SIT,
@@ -128,9 +128,9 @@ export class LineFormComponent implements OnInit {
             this.grades = this.grades.filter((grade) => grade.value >= 0);
           }
           if (!this.line || this.line.type != item) {
-            this.lineForm.get("grade").reset(); // todo these have no UI effect :/
+            this.lineForm.get("grade").reset();
           } else {
-            this.lineForm.get("grade").setValue(this.line.gradeValue); // todo these have no UI effect :/
+            this.lineForm.get("grade").setValue(this.grades.filter(g => g.value == this.line.gradeValue)[0]);
           }
         });
       });
