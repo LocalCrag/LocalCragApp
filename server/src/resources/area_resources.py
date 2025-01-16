@@ -69,6 +69,8 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
+        new_area.closed = area_data["closed"]
+        new_area.closed_reason = area_data["closedReason"]
 
         if not new_area.secret:
             set_area_parents_unsecret(new_area)
@@ -98,6 +100,8 @@ class UpdateArea(MethodView):
         area.portrait_image_id = area_data["portraitImage"]
         update_area_secret_property(area, area_data["secret"])
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
+        area.closed = area_data["closed"]
+        area.closed_reason = area_data["closedReason"]
         db.session.add(area)
         db.session.commit()
 

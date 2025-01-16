@@ -170,6 +170,9 @@ class CreateLine(MethodView):
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
 
+        new_line.closed = line_data["closed"]
+        new_line.closed_reason = line_data["closedReason"]
+
         if not new_line.secret:
             set_line_parents_unsecret(new_line)
         db.session.add(new_line)
@@ -254,6 +257,9 @@ class UpdateLine(MethodView):
         line.compression = line_data["compression"]
         line.arete = line_data["arete"]
         line.mantle = line_data["mantle"]
+
+        line.closed = line_data["closed"]
+        line.closed_reason = line_data["closedReason"]
 
         db.session.add(line)
         db.session.commit()

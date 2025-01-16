@@ -1,6 +1,9 @@
 <div class="content">
   <p-card header="{{ sector?.name }}">
-    <lc-secret-spot-tag *ngIf="sector?.secret"></lc-secret-spot-tag>
+    <div class="flex gap-1">
+      <lc-closed-spot-tag *ngIf="sector?.closed"></lc-closed-spot-tag>
+      <lc-secret-spot-tag *ngIf="sector?.secret"></lc-secret-spot-tag>
+    </div>
 
     <p-breadcrumb
       class="max-w-full"

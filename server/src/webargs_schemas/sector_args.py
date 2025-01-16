@@ -1,14 +1,16 @@
-from marshmallow import validate
+from marshmallow import validate, Schema
 from webargs import fields
-
 from webargs_schemas.map_marker_args import map_marker_args
+from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
-sector_args = {
-    "name": fields.Str(required=True, validate=validate.Length(max=120)),
-    "description": fields.Str(required=True, allow_none=True),
-    "shortDescription": fields.Str(required=True, allow_none=True),
-    "portraitImage": fields.String(required=True, allow_none=True),
-    "rules": fields.Str(required=True, allow_none=True),
-    "secret": fields.Boolean(required=True, allow_none=False),
-    "mapMarkers": fields.List(fields.Nested(map_marker_args), required=True, allow_none=False),
-}
+
+class SectorArgsSchema(Schema, IsClosableWebargsMixin):
+    name = fields.Str(required=True, validate=validate.Length(max=120))
+    description = fields.Str(required=True, allow_none=True)
+    shortDescription = fields.Str(required=True, allow_none=True)
+    portraitImage = fields.String(required=True, allow_none=True)
+    rules = fields.Str(required=True, allow_none=True)
+    secret = fields.Boolean(required=True, allow_none=False)
+    mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)
+
+sector_args = SectorArgsSchema()

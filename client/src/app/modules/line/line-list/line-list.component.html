@@ -171,6 +171,7 @@
                     *isLoggedIn="true"
                   ></lc-tick-button>
                 </div>
+                <lc-closed-spot-tag *ngIf="line.closed"></lc-closed-spot-tag>
                 <lc-secret-spot-tag *ngIf="line.secret"></lc-secret-spot-tag>
               </div>
             </div>

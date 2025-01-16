@@ -64,6 +64,8 @@ class CreateCrag(MethodView):
         new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
+        new_crag.closed = crag_data["closed"]
+        new_crag.closed_reason = crag_data["closedReason"]
 
         db.session.add(new_crag)
         db.session.commit()
@@ -91,6 +93,8 @@ class UpdateCrag(MethodView):
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_secret_property(crag, crag_data["secret"])
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
+        crag.closed = crag_data["closed"]
+        crag.closed_reason = crag_data["closedReason"]
         db.session.add(crag)
         db.session.commit()
 

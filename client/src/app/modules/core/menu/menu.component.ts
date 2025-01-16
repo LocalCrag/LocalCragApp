@@ -186,7 +186,7 @@ export class MenuComponent implements OnInit {
             break;
           case MenuItemType.URL:
             this.items.push({
-              label: this.translocoService.translate(menuItem.title),
+              label: menuItem.title,
               url: menuItem.url,
               icon: `pi pi-fw ${menuItem.icon}`,
             });

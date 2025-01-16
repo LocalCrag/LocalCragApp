@@ -91,6 +91,7 @@
                 <lc-ascent-count
                   [ascentCount]="area.ascentCount"
                 ></lc-ascent-count>
+                <lc-closed-spot-tag *ngIf="area.closed"></lc-closed-spot-tag>
                 <lc-secret-spot-tag *ngIf="area.secret"></lc-secret-spot-tag>
               </div>
             </div>

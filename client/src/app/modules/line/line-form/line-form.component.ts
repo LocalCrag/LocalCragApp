@@ -53,6 +53,7 @@ export class LineFormComponent implements OnInit {
   ];
   public today = new Date();
   public parentSecret = false;
+  public parentClosed = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -80,6 +81,7 @@ export class LineFormComponent implements OnInit {
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
     this.areasService.getArea(this.areaSlug).subscribe((area) => {
       this.parentSecret = area.secret;
+      this.parentClosed = area.closed;
       this.buildForm();
       if (lineSlug) {
         this.editMode = true;
@@ -158,12 +160,22 @@ export class LineFormComponent implements OnInit {
       arete: [false],
       mantle: [false],
       secret: [false],
+      closed: [false],
+      closedReason: [null],
     });
     this.lineForm
       .get('grade')
       .valueChanges.pipe(untilDestroyed(this))
       .subscribe(() => {
         this.setFormDisabledState();
+      });
+    this.lineForm
+      .get('closed')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((closed) => {
+        if (!closed) {
+          this.lineForm.get('closedReason').setValue(null);
+        }
       });
   }
 
@@ -239,6 +251,8 @@ export class LineFormComponent implements OnInit {
       arete: this.line.arete,
       mantle: this.line.mantle,
       secret: this.line.secret,
+      closed: this.line.closed,
+      closedReason: this.line.closedReason,
     });
     this.lineForm.enable();
     this.setFormDisabledState();
@@ -312,6 +326,8 @@ export class LineFormComponent implements OnInit {
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
       line.secret = this.lineForm.get('secret').value;
+      line.closed = this.lineForm.get('closed').value;
+      line.closedReason = this.lineForm.get('closedReason').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {

@@ -1,0 +1,14 @@
+<ng-container *transloco="let t; read: 'closedSpotAlert'">
+  <p-message
+    severity="error"
+    [text]="t('closedWithReason', { reason })"
+    *ngIf="reason"
+    styleClass="w-full"
+  ></p-message>
+  <p-message
+    severity="error"
+    [text]="t('closedWithoutReason')"
+    *ngIf="!reason"
+    styleClass="w-full"
+  ></p-message>
+</ng-container>

@@ -32,6 +32,8 @@ import { AscentCountComponent } from '../ascent/ascent-count/ascent-count.compon
 import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
+import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +73,8 @@ import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
     SecretSpotTagComponent,
     FormSkeletonComponent,
     TodoButtonComponent,
+    ClosedSpotTagComponent,
+    ClosedSpotAlertComponent,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],

@@ -168,11 +168,19 @@
               t("secretOptionsLabel")
             }}</label>
             <p-checkbox
-              label="{{ t('secretSecretLabel') }}"
+              label="{{ t('secretLabel') }}"
               name="secret"
               [binary]="true"
               id="secret"
               formControlName="secret"
+              lcFormControl
+            ></p-checkbox>
+            <p-checkbox
+              label="{{ t('closedLabel') }}"
+              name="closed"
+              [binary]="true"
+              id="closed"
+              formControlName="closed"
               lcFormControl
             ></p-checkbox>
           </div>
@@ -188,6 +196,36 @@
               </div>
             </ng-template>
           </p-messages>
+
+          <p-messages
+            severity="warn"
+            *ngIf="parentClosed && !areaForm.get('closed').value"
+          >
+            <ng-template pTemplate>
+              <i class="pi pi-info-circle"></i>
+              <div class="ml-2">
+                {{ t("openingAClosedAreaWillSetParentsToOpen") }}
+              </div>
+            </ng-template>
+          </p-messages>
+
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="areaForm.get('closed').value"
+          >
+            <label class="form-label" for="closedReason">{{
+              t("closedReasonLabel")
+            }}</label>
+            <input
+              id="closedReason"
+              type="text"
+              pInputText
+              formControlName="closedReason"
+              placeholder="{{ t('closedReasonPlaceholder') }}"
+              lcFormControl
+            />
+          </div>
         </form>
 
         <div class="form-actions">

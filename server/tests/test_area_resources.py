@@ -21,6 +21,8 @@ def test_successful_create_area(client, moderator_token):
         ],
         "portraitImage": str(any_file.id),
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -37,6 +39,8 @@ def test_successful_create_area(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_create_area_invalid_lat(client, moderator_token):
@@ -103,6 +107,8 @@ def test_successful_get_areas(client):
             assert r["portraitImage"]["id"] == a.portrait_image_id
         else:
             assert r["portraitImage"] is None
+        assert r["closed"] == a.closed
+        assert r["closedReason"] == a.closed_reason
 
 
 def test_successful_get_area(client):
@@ -120,6 +126,8 @@ def test_successful_get_area(client):
     assert res["mapMarkers"][0]["lng"] == area.map_markers[0].lng
     assert res["secret"] == area.secret
     assert res["portraitImage"] is None or res["portraitImage"]["id"] == area.portrait_image_id
+    assert res["closed"] == area.closed
+    assert res["closedReason"] == area.closed_reason
 
 
 def test_get_deleted_area(client):
@@ -150,6 +158,8 @@ def test_successful_edit_area(client, moderator_token):
         ],
         "portraitImage": None,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.put("/api/areas/dritter-block-von-links", token=moderator_token, json=area_data)
@@ -166,6 +176,8 @@ def test_successful_edit_area(client, moderator_token):
     assert res["portraitImage"] == None
     assert res["secret"] == False
     assert res["id"] is not None
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_successful_order_areas(client, moderator_token):

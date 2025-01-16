@@ -28,6 +28,7 @@ import {
   disabledMarkerTypesCrag,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
+import { untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * A component for creating and editing crags.
@@ -112,7 +113,17 @@ export class CragFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
+      closed: [false],
+      closedReason: [null],
     });
+    this.cragForm
+      .get('closed')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((closed) => {
+        if (!closed) {
+          this.cragForm.get('closedReason').setValue(null);
+        }
+      });
   }
 
   /**
@@ -128,6 +139,8 @@ export class CragFormComponent implements OnInit {
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
+      closed: this.crag.closed,
+      closedReason: this.crag.closedReason,
     });
   }
 
@@ -156,6 +169,8 @@ export class CragFormComponent implements OnInit {
       crag.portraitImage = this.cragForm.get('portraitImage').value;
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;
+      crag.closed = this.cragForm.get('closed').value;
+      crag.closedReason = this.cragForm.get('closedReason').value;
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe((crag) => {
