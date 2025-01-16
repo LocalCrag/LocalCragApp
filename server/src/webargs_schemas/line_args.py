@@ -1,7 +1,9 @@
-from marshmallow import validate, Schema
-from webargs import fields
 import datetime
+
 import validators
+from marshmallow import Schema, validate
+from webargs import fields
+
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
@@ -11,6 +13,7 @@ class VideosArgsSchema(Schema):
     url = fields.Str(required=True, allow_none=False, validate=lambda x: validators.url(x) is True)
     title = fields.Str(required=True, allow_none=False)
 
+
 class LineArgsSchema(Schema, IsClosableWebargsMixin):
     name = fields.Str(required=True, validate=validate.Length(max=120))
     description = fields.Str(required=True, allow_none=True)
@@ -19,9 +22,7 @@ class LineArgsSchema(Schema, IsClosableWebargsMixin):
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
     type = fields.Enum(LineTypeEnum, required=True, allow_none=False)
     rating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
-    faYear = fields.Integer(
-        required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year
-    )
+    faYear = fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year)
     faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
     startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)
     secret = fields.Boolean(required=True, allow_none=False)
@@ -52,5 +53,6 @@ class LineArgsSchema(Schema, IsClosableWebargsMixin):
     compression = fields.Boolean(required=True, allow_none=False)
     arete = fields.Boolean(required=True, allow_none=False)
     mantle = fields.Boolean(required=True, allow_none=False)
+
 
 line_args = LineArgsSchema()

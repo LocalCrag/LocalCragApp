@@ -187,6 +187,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["closed"] == False
     assert res["closedReason"] is None
 
+
 def test_create_line_invalid_fa_year(client, moderator_token):
     line_data = {
         "name": "Es",

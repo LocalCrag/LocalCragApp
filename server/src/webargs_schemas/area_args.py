@@ -1,6 +1,7 @@
 from flask_marshmallow import Schema
 from marshmallow import validate
 from webargs import fields
+
 from webargs_schemas.map_marker_args import map_marker_args
 from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
@@ -12,5 +13,6 @@ class AreaArgsSchema(Schema, IsClosableWebargsMixin):
     portraitImage = fields.String(required=True, allow_none=True)
     secret = fields.Boolean(required=True, allow_none=False)
     mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)
+
 
 area_args = AreaArgsSchema()
