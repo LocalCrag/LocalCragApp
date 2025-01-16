@@ -142,7 +142,6 @@ export class ScaleFormComponent implements OnInit {
   }
 
   reorderByValue() {
-    this.scaleForm.disable();
     const data = this.gradeControls().value;
     data.sort((a, b) => a.value - b.value);
     this.gradeControls().clear();
@@ -150,7 +149,6 @@ export class ScaleFormComponent implements OnInit {
       name: [g.name],
       value: [g.value],
     })).forEach((ctl) => this.gradeControls().push(ctl));
-    this.scaleForm.enable();
   }
 
   addGrade() {
@@ -158,9 +156,7 @@ export class ScaleFormComponent implements OnInit {
   }
 
   deleteGrade(index: number) {
-    this.scaleForm.disable();
     this.gradeControls().removeAt(index);
-    this.scaleForm.enable();
   }
 
   addBracket() {
@@ -168,9 +164,7 @@ export class ScaleFormComponent implements OnInit {
   }
 
   deleteBracket(index: number) {
-    this.scaleForm.disable();
     this.gradeBracketsControls().removeAt(index);
-    this.scaleForm.enable();
   }
 
   saveScale() {
