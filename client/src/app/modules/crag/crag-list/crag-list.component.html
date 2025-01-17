@@ -89,7 +89,10 @@
                 <lc-ascent-count
                   [ascentCount]="crag.ascentCount"
                 ></lc-ascent-count>
-                <lc-secret-spot-tag *ngIf="crag.secret"></lc-secret-spot-tag>
+                <div class="flex gap-1">
+                  <lc-closed-spot-tag *ngIf="crag?.closed"></lc-closed-spot-tag>
+                  <lc-secret-spot-tag *ngIf="crag?.secret"></lc-secret-spot-tag>
+                </div>
               </div>
             </div>
           </div>

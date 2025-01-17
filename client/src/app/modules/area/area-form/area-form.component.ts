@@ -29,6 +29,7 @@ import {
   disabledMarkerTypesArea,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Form component for creating and editing areas.
@@ -39,6 +40,7 @@ import {
   styleUrls: ['./area-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class AreaFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -50,6 +52,7 @@ export class AreaFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
   public parentSecret = false;
+  public parentClosed = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -78,6 +81,7 @@ export class AreaFormComponent implements OnInit {
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
     this.sectorsService.getSector(this.sectorSlug).subscribe((sector) => {
       this.parentSecret = sector.secret;
+      this.parentClosed = sector.closed;
       this.buildForm();
       if (areaSlug) {
         this.editMode = true;
@@ -123,7 +127,17 @@ export class AreaFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
+      closed: [false],
+      closedReason: [null],
     });
+    this.areaForm
+      .get('closed')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((closed) => {
+        if (!closed) {
+          this.areaForm.get('closedReason').setValue(null);
+        }
+      });
   }
 
   /**
@@ -138,6 +152,8 @@ export class AreaFormComponent implements OnInit {
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
       mapMarkers: this.area.mapMarkers,
+      closed: this.area.closed,
+      closedReason: this.area.closedReason,
     });
   }
 
@@ -170,6 +186,8 @@ export class AreaFormComponent implements OnInit {
       area.portraitImage = this.areaForm.get('portraitImage').value;
       area.secret = this.areaForm.get('secret').value;
       area.mapMarkers = this.areaForm.get('mapMarkers').value;
+      area.closed = this.areaForm.get('closed').value;
+      area.closedReason = this.areaForm.get('closedReason').value;
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea(area).subscribe((area) => {

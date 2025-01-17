@@ -22,6 +22,8 @@ def test_successful_create_crag(client, moderator_token):
             }
         ],
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
@@ -38,6 +40,8 @@ def test_successful_create_crag(client, moderator_token):
     assert res["id"] is not None
     assert res["ascentCount"] == 0
     assert res["secret"] == False
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_successful_get_crags(client):
@@ -55,6 +59,8 @@ def test_successful_get_crags(client):
         assert r["secret"] == crag.secret
         assert r["shortDescription"] == crag.short_description
         assert r["portraitImage"] is None or r["portraitImage"]["id"] == crag.portrait_image_id
+        assert r["closed"] == crag.closed
+        assert r["closedReason"] == crag.closed_reason
 
 
 def test_successful_get_crag(client):
@@ -73,6 +79,8 @@ def test_successful_get_crag(client):
     assert res["rules"] == crag.rules
     assert len(res["mapMarkers"]) == len(crag.map_markers)
     assert res["secret"] == crag.secret
+    assert res["closed"] == crag.closed
+    assert res["closedReason"] == crag.closed_reason
 
 
 def test_get_deleted_crag(client):
@@ -106,6 +114,8 @@ def test_successful_edit_crag(client, moderator_token):
             }
         ],
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -122,6 +132,8 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["ascentCount"] == 1
     assert res["secret"] == False
     assert res["id"] is not None
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_successful_order_crags(client, moderator_token):

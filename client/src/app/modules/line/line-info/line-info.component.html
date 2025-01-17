@@ -1,4 +1,9 @@
 <ng-container *transloco="let t; read: 'line.line'">
+  <lc-closed-spot-alert
+    *ngIf="line?.closed"
+    [reason]="line.closedReason"
+  ></lc-closed-spot-alert>
+
   <div
     class="flex flex-column xl:flex-row xl:align-items-start gap-4"
     *ngIf="line && ticks"

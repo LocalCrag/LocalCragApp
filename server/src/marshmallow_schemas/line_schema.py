@@ -3,6 +3,7 @@ from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
+from marshmallow_schemas.mixins.is_closable import IsClosableSchemaMixin
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -23,7 +24,7 @@ class LineSchemaMin(BaseEntityMinSchema):
     gradeScale = fields.String(attribute="grade_scale")
 
 
-class LineSchema(BaseEntityMinSchema):
+class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     name = fields.String()
     description = fields.String()
     slug = fields.String()

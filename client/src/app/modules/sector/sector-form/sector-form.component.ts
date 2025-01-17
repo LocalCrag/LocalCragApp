@@ -30,6 +30,7 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Form component for creating and editing sectors.
@@ -40,6 +41,7 @@ import {
   styleUrls: ['./sector-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class SectorFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -51,6 +53,7 @@ export class SectorFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
   public parentSecret = false;
+  public parentClosed = false;
 
   private cragSlug: string;
 
@@ -77,6 +80,7 @@ export class SectorFormComponent implements OnInit {
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
       this.parentSecret = crag.secret;
+      this.parentClosed = crag.closed;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
@@ -123,7 +127,17 @@ export class SectorFormComponent implements OnInit {
       rules: [null],
       secret: [false],
       mapMarkers: [[]],
+      closed: [false],
+      closedReason: [null],
     });
+    this.sectorForm
+      .get('closed')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((closed) => {
+        if (!closed) {
+          this.sectorForm.get('closedReason').setValue(null);
+        }
+      });
   }
 
   /**
@@ -139,6 +153,8 @@ export class SectorFormComponent implements OnInit {
       rules: this.sector.rules,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
+      closed: this.sector.closed,
+      closedReason: this.sector.closedReason,
     });
   }
 
@@ -167,6 +183,8 @@ export class SectorFormComponent implements OnInit {
       sector.portraitImage = this.sectorForm.get('portraitImage').value;
       sector.secret = this.sectorForm.get('secret').value;
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
+      sector.closed = this.sectorForm.get('closed').value;
+      sector.closedReason = this.sectorForm.get('closedReason').value;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(sector).subscribe((sector) => {
