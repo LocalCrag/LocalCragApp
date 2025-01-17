@@ -16,7 +16,7 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import update_crag_secret_property
+from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
@@ -91,10 +91,9 @@ class UpdateCrag(MethodView):
         crag.short_description = crag_data["shortDescription"]
         crag.rules = add_bucket_placeholders(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
-        update_crag_secret_property(crag, crag_data["secret"])
+        update_crag_propagating_boolean_attr(crag, crag_data["secret"], 'secret')
+        update_crag_propagating_boolean_attr(crag, crag_data["closed"], 'closed', set_additionally={"closed_reason": crag_data["closedReason"]})
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
-        crag.closed = crag_data["closed"]
-        crag.closed_reason = crag_data["closedReason"]
         db.session.add(crag)
         db.session.commit()
 

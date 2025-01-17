@@ -19,7 +19,7 @@ from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
 from models.user import User
-from util.secret_spots import set_line_parents_unsecret, update_line_secret_property
+from util.propagating_boolean_attrs import set_line_parents_false, update_line_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
@@ -174,7 +174,7 @@ class CreateLine(MethodView):
         new_line.closed_reason = line_data["closedReason"]
 
         if not new_line.secret:
-            set_line_parents_unsecret(new_line)
+            set_line_parents_false(new_line)
         db.session.add(new_line)
         db.session.commit()
 
@@ -215,7 +215,8 @@ class UpdateLine(MethodView):
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]
-        update_line_secret_property(line, line_data["secret"])
+        update_line_propagating_boolean_attr(line, line_data["secret"], 'secret')
+        update_line_propagating_boolean_attr(line, line_data["closed"], 'closed', set_additionally={"closed_reason": line_data["closedReason"]})
 
         if line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
             line.fa_year = line_data["faYear"]
@@ -257,9 +258,6 @@ class UpdateLine(MethodView):
         line.compression = line_data["compression"]
         line.arete = line_data["arete"]
         line.mantle = line_data["mantle"]
-
-        line.closed = line_data["closed"]
-        line.closed_reason = line_data["closedReason"]
 
         db.session.add(line)
         db.session.commit()

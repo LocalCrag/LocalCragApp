@@ -29,7 +29,7 @@ import {
   disabledMarkerTypesArea,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Form component for creating and editing areas.
@@ -40,6 +40,7 @@ import { untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['./area-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class AreaFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;

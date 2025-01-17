@@ -17,7 +17,7 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import set_area_parents_unsecret, update_area_secret_property
+from util.propagating_boolean_attrs import set_area_parents_false, update_area_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
@@ -73,7 +73,7 @@ class CreateArea(MethodView):
         new_area.closed_reason = area_data["closedReason"]
 
         if not new_area.secret:
-            set_area_parents_unsecret(new_area)
+            set_area_parents_false(new_area)
 
         db.session.add(new_area)
         db.session.commit()
@@ -98,10 +98,9 @@ class UpdateArea(MethodView):
         area.description = add_bucket_placeholders(area_data["description"])
         area.short_description = area_data["shortDescription"]
         area.portrait_image_id = area_data["portraitImage"]
-        update_area_secret_property(area, area_data["secret"])
+        update_area_propagating_boolean_attr(area, area_data["secret"], 'secret')
+        update_area_propagating_boolean_attr(area, area_data["closed"], 'closed', set_additionally={"closed_reason": area_data["closedReason"]})
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
-        area.closed = area_data["closed"]
-        area.closed_reason = area_data["closedReason"]
         db.session.add(area)
         db.session.commit()
 

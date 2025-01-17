@@ -30,7 +30,7 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * Form component for creating and editing sectors.
@@ -41,6 +41,7 @@ import { untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['./sector-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class SectorFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;

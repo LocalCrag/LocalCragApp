@@ -18,7 +18,7 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
+from util.propagating_boolean_attrs import set_sector_parents_false, update_sector_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
@@ -75,7 +75,7 @@ class CreateSector(MethodView):
         new_sector.closed_reason = sector_data["closedReason"]
 
         if not new_sector.secret:
-            set_sector_parents_unsecret(new_sector)
+            set_sector_parents_false(new_sector)
         db.session.add(new_sector)
         db.session.commit()
 
@@ -100,10 +100,9 @@ class UpdateSector(MethodView):
         sector.short_description = sector_data["shortDescription"]
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
-        update_sector_secret_property(sector, sector_data["secret"])
+        update_sector_propagating_boolean_attr(sector, sector_data["secret"], 'secret')
+        update_sector_propagating_boolean_attr(sector, sector_data["closed"], 'closed', set_additionally={"closed_reason": sector_data["closedReason"]})
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
-        sector.closed = sector_data["closed"]
-        sector.closed_reason = sector_data["closedReason"]
         db.session.add(sector)
         db.session.commit()
 

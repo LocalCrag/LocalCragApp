@@ -28,7 +28,7 @@ import {
   disabledMarkerTypesCrag,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 /**
  * A component for creating and editing crags.
@@ -39,6 +39,7 @@ import { untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['./crag-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class CragFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
