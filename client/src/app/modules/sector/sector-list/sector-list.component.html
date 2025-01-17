@@ -76,8 +76,8 @@
                 class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
               >
                 <span class="text-2xl font-bold black-font">{{
-                    sector.name
-                  }}</span>
+                  sector.name
+                }}</span>
                 <div
                   [innerHTML]="sector.shortDescription | sanitizeHtml"
                   *ngIf="sector.shortDescription"
@@ -93,8 +93,12 @@
                   [ascentCount]="sector.ascentCount"
                 ></lc-ascent-count>
                 <div class="flex gap-1">
-                  <lc-closed-spot-tag *ngIf="sector.closed"></lc-closed-spot-tag>
-                  <lc-secret-spot-tag *ngIf="sector.secret"></lc-secret-spot-tag>
+                  <lc-closed-spot-tag
+                    *ngIf="sector.closed"
+                  ></lc-closed-spot-tag>
+                  <lc-secret-spot-tag
+                    *ngIf="sector.secret"
+                  ></lc-secret-spot-tag>
                 </div>
               </div>
             </div>
