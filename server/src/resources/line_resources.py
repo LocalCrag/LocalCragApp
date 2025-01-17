@@ -177,9 +177,9 @@ class CreateLine(MethodView):
         new_line.closed_reason = line_data["closedReason"]
 
         if not new_line.secret:
-            set_line_parents_false(new_line, 'secret')
+            set_line_parents_false(new_line, "secret")
         if not new_line.closed:
-            set_line_parents_false(new_line, 'closed')
+            set_line_parents_false(new_line, "closed")
         db.session.add(new_line)
         db.session.commit()
 

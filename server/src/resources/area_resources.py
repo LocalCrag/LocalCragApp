@@ -76,9 +76,9 @@ class CreateArea(MethodView):
         new_area.closed_reason = area_data["closedReason"]
 
         if not new_area.secret:
-            set_area_parents_false(new_area, 'secret')
+            set_area_parents_false(new_area, "secret")
         if not new_area.closed:
-            set_area_parents_false(new_area, 'closed')
+            set_area_parents_false(new_area, "closed")
 
         db.session.add(new_area)
         db.session.commit()
