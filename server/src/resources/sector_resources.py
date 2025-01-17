@@ -78,7 +78,9 @@ class CreateSector(MethodView):
         new_sector.closed_reason = sector_data["closedReason"]
 
         if not new_sector.secret:
-            set_sector_parents_false(new_sector)
+            set_sector_parents_false(new_sector, 'secret')
+        if not new_sector.closed:
+            set_sector_parents_false(new_sector, 'closed')
         db.session.add(new_sector)
         db.session.commit()
 
