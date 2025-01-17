@@ -18,10 +18,18 @@
           </span>
         </ng-template>
         <ng-template pTemplate="content" let-event>
-          <p-card
-            [header]="getHeader(event) + ': ' + event.object.name"
-            [subheader]="event.timeCreated | date: 'dd.MM.yyyy'"
-          >
+          <p-card>
+            <ng-template pTemplate="title">
+              {{ getHeader(event) + ": " + event.object.name }}
+            </ng-template>
+            <ng-template pTemplate="subtitle">
+              {{ event.timeCreated | date: "dd.MM.yyyy" }},
+              <a class="username" routerLink="{{ event.createdBy.routerLink }}"
+                >{{ event.createdBy.firstname }}
+                {{ event.createdBy.lastname }}</a
+              >
+            </ng-template>
+
             <div>{{ getDescription(event) }}</div>
             <p-button
               styleClass="card-button"
@@ -43,6 +51,13 @@
           [loading]="loadingAdditionalPage === loadingStates.LOADING"
         ></p-button>
       </div>
+      <p-message
+        *ngIf="historyItems.length === 0"
+        severity="info"
+        styleClass="w-full"
+        [text]="t('noHistory')"
+      >
+      </p-message>
     </p-card>
   </div>
 </ng-container>

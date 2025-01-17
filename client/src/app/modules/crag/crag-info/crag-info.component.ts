@@ -5,6 +5,8 @@ import { Crag } from '../../../models/crag';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { Grade } from '../../../utility/misc/grades';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
+import { MapMarkerType } from '../../../enums/map-marker-type';
 
 /**
  * Component that shows information about a crag.
@@ -18,6 +20,7 @@ import { Grade } from '../../../utility/misc/grades';
 export class CragInfoComponent implements OnInit {
   public crag: Crag;
   public fetchCragGrades: Observable<Grade[]>;
+  public cragCoordinates: Coordinates;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +33,11 @@ export class CragInfoComponent implements OnInit {
       const cragSlug = params.get('crag-slug');
       this.cragsService.getCrag(cragSlug).subscribe((crag) => {
         this.crag = crag;
+        this.crag.mapMarkers.map((marker) => {
+          if (marker.type === MapMarkerType.CRAG) {
+            this.cragCoordinates = marker.coordinates;
+          }
+        });
       });
       this.fetchCragGrades = this.cragsService.getCragGrades(cragSlug);
     });

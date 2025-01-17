@@ -32,7 +32,10 @@ import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/sec
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { MapComponent } from '../maps/map/map.component';
 import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-marker-form-array.component';
+import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
+
 @NgModule({
   declarations: [
     SectorListComponent,
@@ -72,6 +75,8 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
     FormSkeletonComponent,
     MapComponent,
     MapMarkerFormArrayComponent,
+    ClosedSpotTagComponent,
+    ClosedSpotAlertComponent,
     ArchiveButtonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],

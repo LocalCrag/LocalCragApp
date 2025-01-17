@@ -35,6 +35,7 @@
 - Now you are ready to setup the database of your local dev instance:
   - Set your config env var `LOCALCRAG_CONFIG=config/dev.cfg`
   - Add the postgres uuid extension `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+  - Add the postgres fuzzystrmatch extension `CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;`
   - Run initial database migrations `pipenv run flask db upgrade`
   - Run the database setup script `src/util/scripts/database_setup.py`
   - The setup script will add some initial data and create your superadmin user. You should receive an email at the configured superadmin mail containing your password.

@@ -21,16 +21,6 @@ export const selectGymMode = createSelector(
   (instanceSettingsState) => instanceSettingsState.gymMode,
 );
 
-export const selectYoutubeUrl = createSelector(
-  selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.youtubeUrl,
-);
-
-export const selectInstagramUrl = createSelector(
-  selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.instagramUrl,
-);
-
 export const selectMainBgImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.mainBgImage,

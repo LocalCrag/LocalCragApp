@@ -177,8 +177,12 @@
                         </div>
                         <div class="line-table-info-style">
                           <lc-line-bool-prop-list
+                            *ngIf="!linePath.line.closed"
                             [line]="linePath.line"
                           ></lc-line-bool-prop-list>
+                          <lc-closed-spot-tag
+                            *ngIf="linePath.line.closed"
+                          ></lc-closed-spot-tag>
                         </div>
                       </div>
                       <div class="line-table-column-info-bottom-row">

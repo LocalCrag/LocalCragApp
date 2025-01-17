@@ -1,5 +1,10 @@
 <ng-container *transloco="let t; read: 'sector.sector'">
   <ng-container *ngIf="sector">
+    <lc-closed-spot-alert
+      *ngIf="sector.closed"
+      [reason]="sector.closedReason"
+    ></lc-closed-spot-alert>
+
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
       [fetchingObservable]="fetchSectorGrades"
@@ -13,6 +18,11 @@
         class="quill-content"
       ></section>
     </ng-container>
+
+    <lc-coordinates-button
+      [coordinates]="sectorCoordinates"
+      *ngIf="sectorCoordinates"
+    ></lc-coordinates-button>
 
     <lc-map [target]="sector"></lc-map>
   </ng-container>

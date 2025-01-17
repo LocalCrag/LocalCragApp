@@ -23,6 +23,7 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Observable } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'lc-history-list',
@@ -41,6 +42,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     AsyncPipe,
     NgClass,
     InfiniteScrollModule,
+    MessageModule,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
@@ -139,7 +141,26 @@ export class HistoryListComponent implements OnInit {
         const newGrade = this.transloco.translate(
           gradeNameByValue['FB'][Number(event.newValue)],
         );
-        if (Number(event.oldValue) < Number(event.newValue)) {
+        // TODO @BlobbyBob added some more cases here which may need the grade service
+        if (
+          Number(event.oldValue) < 0 &&
+          Number(event.oldValue) < Number(event.newValue)
+        ) {
+          /** t(history.projectClimbed) */
+          return this.transloco.translate('history.projectClimbed', {
+            line: event.object.name,
+            newGrade,
+          });
+        } else if (
+          Number(event.oldValue) === 0 &&
+          Number(event.oldValue) < Number(event.newValue)
+        ) {
+          /** t(history.lineGraded) */
+          return this.transloco.translate('history.lineGraded', {
+            line: event.object.name,
+            newGrade,
+          });
+        } else if (Number(event.oldValue) < Number(event.newValue)) {
           /** t(history.upgrade) */
           return this.transloco.translate('history.upgrade', {
             line: event.object.name,
@@ -183,6 +204,11 @@ export class HistoryListComponent implements OnInit {
       return 'pi pi-plus';
     }
     if (event.type === HistoryItemType.UPDATED) {
+      if (Number(event.oldValue) < Number(event.newValue)) {
+        return 'pi pi-arrow-up';
+      } else if (Number(event.oldValue) > Number(event.newValue)) {
+        return 'pi pi-arrow-down';
+      }
       return 'pi pi-cog';
     }
     return '';

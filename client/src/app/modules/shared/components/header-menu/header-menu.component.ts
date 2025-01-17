@@ -97,6 +97,10 @@ export class HeaderMenuComponent
 
   ngAfterViewInit() {
     this.setOverflowDetected();
+    if (!window.ResizeObserver) {
+      // We do not support the auto resize feature on legacy browsers. Fail silently instead.
+      return;
+    }
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const _entry of entries) {
         this.setOverflowDetected();

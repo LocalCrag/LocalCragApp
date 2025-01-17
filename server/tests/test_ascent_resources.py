@@ -266,6 +266,8 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)

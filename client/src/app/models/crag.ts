@@ -2,11 +2,16 @@ import { AbstractModel } from './abstract-model';
 import { File } from './file';
 import { Sector } from './sector';
 import { MapMarker } from './map-marker';
+import {
+  deserializeClosableAttributes,
+  IsClosable,
+  serializeClosableAttributes,
+} from './mixins/is-closable';
 
 /**
  * Model of a climbing crag.
  */
-export class Crag extends AbstractModel {
+export class Crag extends IsClosable(AbstractModel) {
   name: string;
   description: string;
   shortDescription: string;
@@ -29,6 +34,7 @@ export class Crag extends AbstractModel {
   public static deserialize(payload: any): Crag {
     const crag = new Crag();
     AbstractModel.deserializeAbstractAttributes(crag, payload);
+    deserializeClosableAttributes(crag, payload);
     crag.name = payload.name;
     crag.description = payload.description;
     crag.shortDescription = payload.shortDescription;
@@ -58,15 +64,18 @@ export class Crag extends AbstractModel {
    */
   public static serialize(crag: Crag): any {
     return {
-      name: crag.name,
-      description: crag.description,
-      shortDescription: crag.shortDescription,
-      rules: crag.rules,
-      secret: crag.secret,
-      portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
-      mapMarkers: crag.mapMarkers
-        ? crag.mapMarkers.map(MapMarker.serialize)
-        : null,
+      ...serializeClosableAttributes(crag),
+      ...{
+        name: crag.name,
+        description: crag.description,
+        shortDescription: crag.shortDescription,
+        rules: crag.rules,
+        secret: crag.secret,
+        portraitImage: crag.portraitImage ? crag.portraitImage.id : null,
+        mapMarkers: crag.mapMarkers
+          ? crag.mapMarkers.map(MapMarker.serialize)
+          : null,
+      },
     };
   }
 }

@@ -17,7 +17,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
-import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -104,8 +103,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
       skippedHierarchicalLayers: [null],
-      youtubeUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
-      instagramUrl: [null, [httpUrlValidator(), Validators.maxLength(120)]],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -128,8 +125,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       copyrightOwner: this.instanceSettings.copyrightOwner,
       gymMode: this.instanceSettings.gymMode,
       skippedHierarchicalLayers: this.instanceSettings.skippedHierarchicalLayers,
-      youtubeUrl: this.instanceSettings.youtubeUrl,
-      instagramUrl: this.instanceSettings.instagramUrl,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -157,10 +152,6 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
-      instanceSettings.youtubeUrl =
-        this.instanceSettingsForm.get('youtubeUrl').value;
-      instanceSettings.instagramUrl =
-        this.instanceSettingsForm.get('instagramUrl').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

@@ -45,6 +45,9 @@
                     <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE"
                       >&nbsp;({{ menuItem.menuPage.title }})</span
                     >
+                    <span *ngIf="menuItem.type === menuItemTypes.URL"
+                      >&nbsp;({{ menuItem.title }})</span
+                    >
                   </div>
                   <div class="flex flex-grow-0 gap-3">
                     <p-button

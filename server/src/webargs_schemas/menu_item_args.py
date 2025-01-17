@@ -9,4 +9,6 @@ menu_item_args = {
     "position": fields.Enum(MenuItemPositionEnum, required=True, allow_none=False),
     "menuPage": fields.String(required=True, allow_none=True),
     "icon": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "url": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "title": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
 }

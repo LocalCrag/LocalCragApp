@@ -125,7 +125,7 @@
     <p-message
       severity="warn"
       text="{{ t('unusualGradeDifferenceWarning') }}"
-      styleClass="grade-difference-warning mt-2"
+      styleClass="ascent-form-alert mt-2"
       *ngIf="gradeDifferenceWarning"
     ></p-message>
 
@@ -190,6 +190,13 @@
         styleClass="shrink-padding-on-mobile"
       ></p-toggleButton>
     </div>
+    <p-message
+      *ngIf="ascentForm.get('fa').value"
+      styleClass="mt-2 ascent-form-alert"
+      severity="info"
+      text="{{ t('firstAscentExplanation') }}"
+    >
+    </p-message>
   </form>
 
   <div class="form-actions">
