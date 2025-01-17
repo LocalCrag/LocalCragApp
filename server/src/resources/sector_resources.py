@@ -18,7 +18,10 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.propagating_boolean_attrs import set_sector_parents_false, update_sector_propagating_boolean_attr
+from util.propagating_boolean_attrs import (
+    set_sector_parents_false,
+    update_sector_propagating_boolean_attr,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_order_payload
@@ -100,8 +103,10 @@ class UpdateSector(MethodView):
         sector.short_description = sector_data["shortDescription"]
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
-        update_sector_propagating_boolean_attr(sector, sector_data["secret"], 'secret')
-        update_sector_propagating_boolean_attr(sector, sector_data["closed"], 'closed', set_additionally={"closed_reason": sector_data["closedReason"]})
+        update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
+        update_sector_propagating_boolean_attr(
+            sector, sector_data["closed"], "closed", set_additionally={"closed_reason": sector_data["closedReason"]}
+        )
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()

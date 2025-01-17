@@ -28,7 +28,7 @@ import {
   disabledMarkerTypesCrag,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * A component for creating and editing crags.

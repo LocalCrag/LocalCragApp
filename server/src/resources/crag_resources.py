@@ -91,8 +91,10 @@ class UpdateCrag(MethodView):
         crag.short_description = crag_data["shortDescription"]
         crag.rules = add_bucket_placeholders(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
-        update_crag_propagating_boolean_attr(crag, crag_data["secret"], 'secret')
-        update_crag_propagating_boolean_attr(crag, crag_data["closed"], 'closed', set_additionally={"closed_reason": crag_data["closedReason"]})
+        update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
+        update_crag_propagating_boolean_attr(
+            crag, crag_data["closed"], "closed", set_additionally={"closed_reason": crag_data["closedReason"]}
+        )
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()

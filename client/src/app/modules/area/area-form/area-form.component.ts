@@ -29,7 +29,7 @@ import {
   disabledMarkerTypesArea,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 /**
  * Form component for creating and editing areas.
