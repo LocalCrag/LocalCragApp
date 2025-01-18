@@ -64,6 +64,7 @@ export class LineFormComponent implements OnInit {
   ];
   public today = new Date();
   public parentSecret = false;
+  public parentClosed = false;
 
   public defaultScales: Record<LineType, string | null> = {
     [LineType.BOULDER]: null,
@@ -108,6 +109,7 @@ export class LineFormComponent implements OnInit {
     ])
     .subscribe(([crag, sector, area]) => {
       this.parentSecret = area.secret;
+      this.parentClosed = area.closed;
 
       this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale ?? "FB";
       this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? "UIAA";
@@ -216,6 +218,8 @@ export class LineFormComponent implements OnInit {
         arete: [false],
         mantle: [false],
         secret: [false],
+        closed: [false],
+        closedReason: [null],
       });
 
       this.lineForm
@@ -223,6 +227,14 @@ export class LineFormComponent implements OnInit {
         .valueChanges.pipe(untilDestroyed(this))
         .subscribe(() => {
           this.setFormDisabledState();
+        });
+      this.lineForm
+        .get('closed')
+        .valueChanges.pipe(untilDestroyed(this))
+        .subscribe((closed) => {
+          if (!closed) {
+            this.lineForm.get('closedReason').setValue(null);
+          }
         });
     })
   }
@@ -302,6 +314,8 @@ export class LineFormComponent implements OnInit {
       arete: this.line.arete,
       mantle: this.line.mantle,
       secret: this.line.secret,
+      closed: this.line.closed,
+      closedReason: this.line.closedReason,
     });
     this.lineForm.enable();
     this.setFormDisabledState();
@@ -378,6 +392,8 @@ export class LineFormComponent implements OnInit {
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
       line.secret = this.lineForm.get('secret').value;
+      line.closed = this.lineForm.get('closed').value;
+      line.closedReason = this.lineForm.get('closedReason').value;
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {

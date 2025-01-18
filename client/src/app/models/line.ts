@@ -4,6 +4,11 @@ import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
 import { Area } from './area';
+import {
+  deserializeClosableAttributes,
+  IsClosable,
+  serializeClosableAttributes,
+} from './mixins/is-closable';
 
 export interface LineVideo {
   url: string;
@@ -13,7 +18,7 @@ export interface LineVideo {
 /**
  * Model of a climbing area's line.
  */
-export class Line extends AbstractModel {
+export class Line extends IsClosable(AbstractModel) {
   name: string;
   description: string;
   slug: string;
@@ -88,6 +93,7 @@ export class Line extends AbstractModel {
   public static deserialize(payload: any): Line {
     const line = new Line();
     AbstractModel.deserializeAbstractAttributes(line, payload);
+    deserializeClosableAttributes(line, payload);
     line.name = payload.name;
     line.description = payload.description;
     line.videos = payload.videos ? payload.videos : [];
@@ -165,9 +171,11 @@ export class Line extends AbstractModel {
    */
   public static serialize(line: Line): any {
     return {
-      name: line.name,
-      description: line.description,
-      color: line.color,
+      ...serializeClosableAttributes(line),
+      ...{
+        name: line.name,
+        description: line.description,
+        color: line.color,
       videos: line.videos ? line.videos : null,
       gradeScale: line.gradeScale,
       gradeValue: line.gradeValue,
@@ -178,37 +186,38 @@ export class Line extends AbstractModel {
       startingPosition: line.startingPosition,
       secret: line.secret,
 
-      eliminate: line.eliminate,
-      traverse: line.traverse,
-      highball: line.highball,
-      lowball: line.lowball,
-      morpho: line.morpho,
-      noTopout: line.noTopout,
-      badDropzone: line.badDropzone,
-      childFriendly: line.childFriendly,
+        eliminate: line.eliminate,
+        traverse: line.traverse,
+        highball: line.highball,
+        lowball: line.lowball,
+        morpho: line.morpho,
+        noTopout: line.noTopout,
+        badDropzone: line.badDropzone,
+        childFriendly: line.childFriendly,
 
-      roof: line.roof,
-      slab: line.slab,
-      vertical: line.vertical,
-      overhang: line.overhang,
+        roof: line.roof,
+        slab: line.slab,
+        vertical: line.vertical,
+        overhang: line.overhang,
 
-      athletic: line.athletic,
-      technical: line.technical,
-      endurance: line.endurance,
-      cruxy: line.cruxy,
-      dyno: line.dyno,
+        athletic: line.athletic,
+        technical: line.technical,
+        endurance: line.endurance,
+        cruxy: line.cruxy,
+        dyno: line.dyno,
 
-      jugs: line.jugs,
-      sloper: line.sloper,
-      crimps: line.crimps,
-      pockets: line.pockets,
-      pinches: line.pinches,
+        jugs: line.jugs,
+        sloper: line.sloper,
+        crimps: line.crimps,
+        pockets: line.pockets,
+        pinches: line.pinches,
 
-      crack: line.crack,
-      dihedral: line.dihedral,
-      compression: line.compression,
-      arete: line.arete,
-      mantle: line.mantle,
+        crack: line.crack,
+        dihedral: line.dihedral,
+        compression: line.compression,
+        arete: line.arete,
+        mantle: line.mantle,
+      },
     };
   }
 }

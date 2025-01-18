@@ -4,6 +4,8 @@ import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Observable } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MapMarkerType } from '../../../enums/map-marker-type';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
 
 @Component({
@@ -15,6 +17,7 @@ import { GradeDistribution } from '../../../models/scale';
 export class SectorInfoComponent implements OnInit {
   public sector: Sector;
   public fetchSectorGrades: Observable<GradeDistribution>;
+  public sectorCoordinates: Coordinates;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +29,11 @@ export class SectorInfoComponent implements OnInit {
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       this.sectorsService.getSector(sectorSlug).subscribe((sector) => {
         this.sector = sector;
+        this.sector.mapMarkers.map((marker) => {
+          if (marker.type === MapMarkerType.SECTOR) {
+            this.sectorCoordinates = marker.coordinates;
+          }
+        });
       });
       this.fetchSectorGrades = this.sectorsService.getSectorGrades(sectorSlug);
     });

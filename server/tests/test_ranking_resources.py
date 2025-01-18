@@ -53,8 +53,7 @@ def test_successful_get_ranking_sport(client):
     assert len(res) == 0
 
 
-def test_successful_update_ranking(client):
-    access_headers, refresh_headers = get_login_headers(client)
+def test_successful_update_ranking(client, admin_token):
     ascent_data = {
         "flash": True,
         "fa": False,

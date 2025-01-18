@@ -216,7 +216,7 @@ export class AscentListComponent implements OnInit {
     if (this.scaleKey?.value) {
       this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
         this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-        this.gradeFilterRange = [-2, this.maxGradeValue];
+        this.gradeFilterRange = [0, this.maxGradeValue];
       });
     }
     this.loadFirstPage();

@@ -22,6 +22,8 @@ class MenuItem(BaseEntity):
     order_index = db.Column(db.Integer, nullable=False, server_default="0")
     menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
     menu_page: Mapped[MenuPage] = relationship()
+    url = db.Column(db.String(120), nullable=True)
+    title = db.Column(db.String(120), nullable=True)
 
     @classmethod
     def find_max_order_index_at_position(cls, position) -> int:

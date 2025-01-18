@@ -10,10 +10,11 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
+from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 
 
-class Line(HasSlug, IsSearchable, BaseEntity):
+class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """

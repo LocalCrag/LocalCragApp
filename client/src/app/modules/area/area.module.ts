@@ -35,7 +35,11 @@ import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/sec
 import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-skeleton.component';
 import { MapComponent } from '../maps/map/map.component';
 import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-marker-form-array.component';
+import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { MessageModule } from 'primeng/message';
+import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
+
 @NgModule({
   declarations: [
     AreaComponent,
@@ -77,6 +81,9 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
     FormSkeletonComponent,
     MapComponent,
     MapMarkerFormArrayComponent,
+    ClosedSpotTagComponent,
+    MessageModule,
+    ClosedSpotAlertComponent,
     ArchiveButtonComponent,
   ],
   exports: [AreaListComponent],

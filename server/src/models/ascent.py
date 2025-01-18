@@ -1,3 +1,4 @@
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from extensions import db
@@ -28,3 +29,5 @@ class Ascent(BaseEntity):
     created_by_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=False)
 
     ascent_date = db.Column(db.Date(), nullable=False)
+
+    __table_args__ = (UniqueConstraint("created_by_id", "line_id", name="_user_line_uc"),)

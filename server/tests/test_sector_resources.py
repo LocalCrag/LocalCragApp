@@ -22,6 +22,8 @@ def test_successful_create_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
@@ -41,6 +43,8 @@ def test_successful_create_sector(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["secret"] == False
     assert res["rules"] == "test rules"
+    assert res["closed"] == False
+    assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -61,6 +65,8 @@ def test_successful_get_sectors(client):
         assert r["portraitImage"] is None or r["portraitImage"]["id"] == s.portrait_image_id
         assert r["orderIndex"] == s.order_index
         assert r["secret"] == s.secret
+        assert r["closed"] == s.closed
+        assert r["closedReason"] == s.closed_reason
 
 
 def test_successful_get_sector(client):
@@ -77,6 +83,8 @@ def test_successful_get_sector(client):
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
     assert res["secret"] == False
+    assert res["closed"] == False
+    assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
@@ -112,6 +120,8 @@ def test_successful_edit_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -131,6 +141,8 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["ascentCount"] == 1
     assert res["secret"] == False
     assert res["rules"] == "test rules"
+    assert res["closed"] == False
+    assert res["closedReason"] is None
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

@@ -5,12 +5,17 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
+import { CompletionComponent } from '../completion/completion.component';
 import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-user-charts',
   standalone: true,
-  imports: [GradeDistributionBarChartComponent, TranslocoDirective],
+  imports: [
+    GradeDistributionBarChartComponent,
+    TranslocoDirective,
+    CompletionComponent,
+  ],
   templateUrl: './user-charts.component.html',
   styleUrl: './user-charts.component.scss',
 })

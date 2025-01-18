@@ -3,11 +3,16 @@ import { File } from './file';
 import { Area } from './area';
 import { Crag } from './crag';
 import { MapMarker } from './map-marker';
+import {
+  deserializeClosableAttributes,
+  IsClosable,
+  serializeClosableAttributes,
+} from './mixins/is-closable';
 
 /**
  * Model of a climbing crag's sector.
  */
-export class Sector extends AbstractModel {
+export class Sector extends IsClosable(AbstractModel) {
   name: string;
   description: string;
   shortDescription: string;
@@ -34,6 +39,7 @@ export class Sector extends AbstractModel {
   public static deserialize(payload: any): Sector {
     const sector = new Sector();
     AbstractModel.deserializeAbstractAttributes(sector, payload);
+    deserializeClosableAttributes(sector, payload);
     sector.name = payload.name;
     sector.description = payload.description;
     sector.secret = payload.secret;
@@ -67,18 +73,21 @@ export class Sector extends AbstractModel {
    */
   public static serialize(sector: Sector): any {
     return {
-      name: sector.name,
-      description: sector.description,
-      shortDescription: sector.shortDescription,
-      secret: sector.secret,
-      portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
-      rules: sector.rules,
-      mapMarkers: sector.mapMarkers
-        ? sector.mapMarkers.map(MapMarker.serialize)
-        : null,
-      defaultBoulderScale: sector.defaultBoulderScale,
-      defaultSportScale: sector.defaultSportScale,
-      defaultTradScale: sector.defaultTradScale,
+      ...serializeClosableAttributes(sector),
+      ...{
+        name: sector.name,
+        description: sector.description,
+        shortDescription: sector.shortDescription,
+        secret: sector.secret,
+        portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
+        rules: sector.rules,
+        mapMarkers: sector.mapMarkers
+          ? sector.mapMarkers.map(MapMarker.serialize)
+          : null,
+        defaultBoulderScale: sector.defaultBoulderScale,
+        defaultSportScale: sector.defaultSportScale,
+        defaultTradScale: sector.defaultTradScale,
+      },
     };
   }
 }

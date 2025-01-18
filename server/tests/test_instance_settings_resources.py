@@ -13,8 +13,6 @@ def test_successful_get_instance_settings(client):
     res = rv.json
     assert res["instanceName"] == instance_settings.instance_name
     assert res["copyrightOwner"] == instance_settings.copyright_owner
-    assert res["youtubeUrl"] == instance_settings.youtube_url
-    assert res["instagramUrl"] == instance_settings.instagram_url
     assert res["logoImage"] is None or res["logoImage"] == str(instance_settings.logo_image_id)
     assert res["faviconImage"] is None or res["faviconImage"] == str(instance_settings.favicon_image_id)
     assert res["mainBgImage"] is None or res["mainBgImage"] == str(instance_settings.main_bg_image_id)
@@ -27,6 +25,8 @@ def test_successful_get_instance_settings(client):
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
+    assert res["maxFileSize"] == 5
+    assert res["maxImageSize"] == 4
     assert res["gymMode"] == instance_settings.gym_mode
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
 
@@ -37,8 +37,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "youtubeUrl": "https://youtube.com",
-        "instagramUrl": "https://instagram.com",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
@@ -53,15 +51,13 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "maptilerApiKey": "maptiler",
         "gymMode": True,
         # Can only change the value with a "clean" database
-        "skippedHierarchicalLayers": 2,
+        "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
     res = rv.json
     assert res["instanceName"] == "Gleesbouldering"
     assert res["copyrightOwner"] == "Die Gleesards e.V."
-    assert res["youtubeUrl"] == "https://youtube.com"
-    assert res["instagramUrl"] == "https://instagram.com"
     assert res["logoImage"]["id"] == any_file_id
     assert res["faviconImage"]["id"] == any_file_id
     assert res["mainBgImage"]["id"] == any_file_id
@@ -74,6 +70,8 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
+    assert res["maxFileSize"] == 5
+    assert res["maxImageSize"] == 4
     assert res["gymMode"] == True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
 
@@ -88,8 +86,6 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "youtubeUrl": "https://youtube.com",
-        "instagramUrl": "https://instagram.com",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
@@ -121,8 +117,6 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "youtubeUrl": "https://youtube.com",
-        "instagramUrl": "https://instagram.com",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
@@ -139,4 +133,4 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "skippedHierarchicalLayers": 2,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
-    assert rv.status_code == 409
+    assert rv.status_code == 409, rv.json

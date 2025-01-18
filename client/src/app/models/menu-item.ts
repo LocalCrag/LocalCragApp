@@ -11,6 +11,8 @@ export class MenuItem extends AbstractModel {
   position: MenuItemPosition;
   menuPage: MenuPage;
   icon: string;
+  url: string;
+  title: string;
 
   /**
    * Parses a menu item.
@@ -27,6 +29,8 @@ export class MenuItem extends AbstractModel {
     menuItem.menuPage = payload.menuPage
       ? MenuPage.deserialize(payload.menuPage)
       : null;
+    menuItem.url = payload.url;
+    menuItem.title = payload.title;
     return menuItem;
   }
 
@@ -42,6 +46,8 @@ export class MenuItem extends AbstractModel {
       position: menuItem.position,
       icon: menuItem.icon,
       menuPage: menuItem.menuPage ? menuItem.menuPage.id : null,
+      url: menuItem.url,
+      title: menuItem.title,
     };
   }
 }

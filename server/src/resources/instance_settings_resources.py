@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
@@ -15,10 +15,21 @@ from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
 
 
+def add_fixed_instance_settings(payload):
+    """
+    Adds non-editable settings to the instance settings response.
+    """
+    payload["maxFileSize"] = current_app.config["MAX_FILE_SIZE"]
+    payload["maxImageSize"] = current_app.config["MAX_IMAGE_SIZE"]
+    return payload
+
+
 class GetInstanceSettings(MethodView):
     def get(self):
         instance_settings: InstanceSettings = InstanceSettings.return_it()
-        return instance_settings_schema.dump(instance_settings), 200
+        instance_settings_response = instance_settings_schema.dump(instance_settings)
+        instance_settings_response = add_fixed_instance_settings(instance_settings_response)
+        return instance_settings_response, 200
 
 
 class UpdateInstanceSettings(MethodView):
@@ -30,8 +41,6 @@ class UpdateInstanceSettings(MethodView):
 
         instance_settings.instance_name = instance_settings_data["instanceName"]
         instance_settings.copyright_owner = instance_settings_data["copyrightOwner"]
-        instance_settings.youtube_url = instance_settings_data["youtubeUrl"]
-        instance_settings.instagram_url = instance_settings_data["instagramUrl"]
         instance_settings.logo_image_id = instance_settings_data["logoImage"]
         instance_settings.favicon_image_id = instance_settings_data["faviconImage"]
         instance_settings.auth_bg_image_id = instance_settings_data["authBgImage"]
@@ -86,4 +95,6 @@ class UpdateInstanceSettings(MethodView):
         db.session.add(instance_settings)
         db.session.commit()
 
-        return instance_settings_schema.dump(instance_settings), 200
+        instance_settings_response = instance_settings_schema.dump(instance_settings)
+        instance_settings_response = add_fixed_instance_settings(instance_settings_response)
+        return instance_settings_response, 200

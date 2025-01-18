@@ -78,50 +78,6 @@
           ></p-dropdown>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block">
-          <b>{{ t("menuSettings") }}</b>
-        </p-divider>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="youtube-url">{{
-            t("youtubeUrlLabel")
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="youtube-url"
-            formControlName="youtubeUrl"
-            placeholder="{{ t('youtubeUrlPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
-            t("invalidHttpUrl")
-          }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="instagram-url">{{
-            t("instagramUrlLabel")
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="instagram-url"
-            formControlName="instagramUrl"
-            placeholder="{{ t('instagramUrlPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
-            t("invalidHttpUrl")
-          }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
         <p-divider align="center" type="solid" class="mt-6 mb-2 block"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

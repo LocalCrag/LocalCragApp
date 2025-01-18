@@ -42,6 +42,8 @@ def test_create_secret_line_in_public_area(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": True,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -85,6 +87,8 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
             }
         ],
         "secret": True,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -158,6 +162,8 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -221,6 +227,8 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
             }
         ],
         "secret": True,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -266,6 +274,8 @@ def test_secret_property_doesnt_change(client, moderator_token):
             }
         ],
         "secret": True,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -314,6 +324,8 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": True,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -345,7 +357,7 @@ def test_gallery_secret(client, moderator_token, member_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 20,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -380,6 +392,8 @@ def test_gallery_secret(client, moderator_token, member_token):
         "arete": True,
         "mantle": True,
         "secret": True,
+        "closed": False,
+        "closedReason": None,
     }
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201

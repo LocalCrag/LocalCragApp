@@ -42,6 +42,8 @@ def test_successful_create_line(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -90,6 +92,8 @@ def test_successful_create_line(client, moderator_token):
     assert res["secret"] == False
     assert res["id"] is not None
     assert len(res["linePaths"]) == 0
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_successful_create_line_with_project_status(client, moderator_token):
@@ -132,6 +136,8 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -180,6 +186,8 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["secret"] == False
     assert res["id"] is not None
     assert len(res["linePaths"]) == 0
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_create_line_invalid_fa_year(client, moderator_token):
@@ -222,6 +230,8 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -268,6 +278,8 @@ def test_create_line_invalid_rating(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -314,6 +326,8 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -360,6 +374,8 @@ def test_create_line_invalid_grade_value(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -406,6 +422,8 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -452,6 +470,8 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -498,6 +518,8 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -544,6 +566,8 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -594,6 +618,8 @@ def test_create_line_invalid_video_payload(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -662,6 +688,8 @@ def test_successful_get_lines(client):
         assert r["secret"] == line.secret
         assert r["color"] == line.color
         assert len(r["linePaths"]) == len(line.line_paths)
+        assert r["closed"] == line.closed
+        assert r["closedReason"] == line.closed_reason
 
 
 def test_successful_get_line(client):
@@ -714,6 +742,8 @@ def test_successful_get_line(client):
     assert isinstance(res["linePaths"][0]["topoImage"]["id"], str)
     assert res["linePaths"][0]["orderIndex"] == 0
     assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_get_deleted_line(client):
@@ -769,6 +799,8 @@ def test_successful_edit_line(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
@@ -820,6 +852,8 @@ def test_successful_edit_line(client, moderator_token):
     assert isinstance(res["linePaths"][0]["topoImage"]["id"], str)
     assert res["linePaths"][0]["orderIndex"] == 1
     assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
+    assert res["closed"] == False
+    assert res["closedReason"] is None
 
 
 def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator_token):
@@ -862,6 +896,8 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
     }
 
     rv = client.put("/api/lines/super-spreader", token=moderator_token, json=line_data)

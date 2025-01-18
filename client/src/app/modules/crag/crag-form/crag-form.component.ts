@@ -18,7 +18,11 @@ import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { disabledMarkerTypesCrag, MapMarkerType, } from '../../../enums/map-marker-type';
+import {
+  disabledMarkerTypesCrag,
+  MapMarkerType,
+} from '../../../enums/map-marker-type';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 
@@ -31,6 +35,7 @@ import { LineType } from '../../../enums/line-type';
   styleUrls: ['./crag-form.component.scss'],
   providers: [ConfirmationService],
 })
+@UntilDestroy()
 export class CragFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -125,10 +130,20 @@ export class CragFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
+      closed: [false],
+      closedReason: [null],
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
     });
+    this.cragForm
+      .get('closed')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((closed) => {
+        if (!closed) {
+          this.cragForm.get('closedReason').setValue(null);
+        }
+      });
   }
 
   /**
@@ -144,6 +159,8 @@ export class CragFormComponent implements OnInit {
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
+      closed: this.crag.closed,
+      closedReason: this.crag.closedReason,
       defaultBoulderScale: this.crag.defaultBoulderScale,
       defaultSportScale: this.crag.defaultSportScale,
       defaultTradScale: this.crag.defaultTradScale,
@@ -175,6 +192,8 @@ export class CragFormComponent implements OnInit {
       crag.portraitImage = this.cragForm.get('portraitImage').value;
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;
+      crag.closed = this.cragForm.get('closed').value;
+      crag.closedReason = this.cragForm.get('closedReason').value;
       crag.defaultBoulderScale = this.cragForm.get('defaultBoulderScale').value;
       crag.defaultSportScale = this.cragForm.get('defaultSportScale').value;
       crag.defaultTradScale = this.cragForm.get('defaultTradScale').value;

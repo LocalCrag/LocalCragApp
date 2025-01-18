@@ -2,11 +2,16 @@ import { AbstractModel } from './abstract-model';
 import { File } from './file';
 import { Sector } from './sector';
 import { MapMarker } from './map-marker';
+import {
+  deserializeClosableAttributes,
+  IsClosable,
+  serializeClosableAttributes,
+} from './mixins/is-closable';
 
 /**
  * Model of a climbing sector's area.
  */
-export class Area extends AbstractModel {
+export class Area extends IsClosable(AbstractModel) {
   name: string;
   description: string;
   shortDescription: string;
@@ -32,6 +37,7 @@ export class Area extends AbstractModel {
   public static deserialize(payload: any): Area {
     const area = new Area();
     AbstractModel.deserializeAbstractAttributes(area, payload);
+    deserializeClosableAttributes(area, payload);
     area.name = payload.name;
     area.description = payload.description;
     area.shortDescription = payload.shortDescription;
@@ -63,17 +69,20 @@ export class Area extends AbstractModel {
    */
   public static serialize(area: Area): any {
     return {
-      name: area.name,
-      description: area.description,
-      shortDescription: area.shortDescription,
-      secret: area.secret,
-      portraitImage: area.portraitImage ? area.portraitImage.id : null,
-      mapMarkers: area.mapMarkers
-        ? area.mapMarkers.map(MapMarker.serialize)
-        : null,
-      defaultBoulderScale: area.defaultBoulderScale,
-      defaultSportScale: area.defaultSportScale,
-      defaultTradScale: area.defaultTradScale,
+      ...serializeClosableAttributes(area),
+      ...{
+        name: area.name,
+        description: area.description,
+        shortDescription: area.shortDescription,
+        secret: area.secret,
+        portraitImage: area.portraitImage ? area.portraitImage.id : null,
+        mapMarkers: area.mapMarkers
+          ? area.mapMarkers.map(MapMarker.serialize)
+          : null,
+        defaultBoulderScale: area.defaultBoulderScale,
+        defaultSportScale: area.defaultSportScale,
+        defaultTradScale: area.defaultTradScale,
+      },
     };
   }
 }

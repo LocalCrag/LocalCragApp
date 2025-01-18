@@ -21,7 +21,10 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import set_sector_parents_unsecret, update_sector_secret_property
+from util.propagating_boolean_attrs import (
+    set_sector_parents_false,
+    update_sector_propagating_boolean_attr,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
@@ -78,12 +81,16 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
+        new_sector.closed = sector_data["closed"]
+        new_sector.closed_reason = sector_data["closedReason"]
         new_sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         new_sector.default_sport_scale = sector_data["defaultSportScale"]
         new_sector.default_trad_scale = sector_data["defaultTradScale"]
 
         if not new_sector.secret:
-            set_sector_parents_unsecret(new_sector)
+            set_sector_parents_false(new_sector, "secret")
+        if not new_sector.closed:
+            set_sector_parents_false(new_sector, "closed")
         db.session.add(new_sector)
         db.session.commit()
 
@@ -112,7 +119,10 @@ class UpdateSector(MethodView):
         sector.short_description = sector_data["shortDescription"]
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
-        update_sector_secret_property(sector, sector_data["secret"])
+        update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
+        update_sector_propagating_boolean_attr(
+            sector, sector_data["closed"], "closed", set_additionally={"closed_reason": sector_data["closedReason"]}
+        )
         sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         sector.default_sport_scale = sector_data["defaultSportScale"]
         sector.default_trad_scale = sector_data["defaultTradScale"]

@@ -32,7 +32,10 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { SecretSpotTagComponent } from '../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-marker-form-array.component';
 import { MapComponent } from '../maps/map/map.component';
+import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
+
 /**
  * Module for crags.
  */
@@ -74,6 +77,8 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
     SecretSpotTagComponent,
     MapMarkerFormArrayComponent,
     MapComponent,
+    ClosedSpotTagComponent,
+    ClosedSpotAlertComponent,
     ArchiveButtonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],

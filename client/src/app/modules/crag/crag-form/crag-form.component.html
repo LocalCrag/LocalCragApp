@@ -228,12 +228,38 @@
           }}</label>
           <p-checkbox
             id="secret"
-            label="{{ t('cragSecretLabel') }}"
+            label="{{ t('secretLabel') }}"
             name="secret"
             [binary]="true"
             formControlName="secret"
             lcFormControl
           ></p-checkbox>
+          <p-checkbox
+            label="{{ t('closedLabel') }}"
+            name="closed"
+            [binary]="true"
+            id="closed"
+            formControlName="closed"
+            lcFormControl
+          ></p-checkbox>
+        </div>
+
+        <div
+          class="flex flex-column gap-2"
+          lcControlGroup
+          *ngIf="cragForm.get('closed').value"
+        >
+          <label class="form-label" for="closedReason">{{
+            t("closedReasonLabel")
+          }}</label>
+          <input
+            id="closedReason"
+            type="text"
+            pInputText
+            formControlName="closedReason"
+            placeholder="{{ t('closedReasonPlaceholder') }}"
+            lcFormControl
+          />
         </div>
 
         <div class="grid align-items-center">

@@ -41,6 +41,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ArchiveButtonComponent } from "../../archive/archive-button/archive-button.component";
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -76,6 +77,7 @@ import { GradeDistribution } from '../../../models/scale';
     SliderLabelsComponent,
     AccordionModule,
     TodoButtonComponent,
+    ClosedSpotTagComponent,
     ArchiveButtonComponent,
     GymModeDirective,
     AsyncPipe,

@@ -21,6 +21,8 @@ def test_successful_create_area(client, moderator_token):
         ],
         "portraitImage": str(any_file.id),
         "secret": False,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
@@ -40,6 +42,8 @@ def test_successful_create_area(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
+    assert res["closed"] == False
+    assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -115,6 +119,8 @@ def test_successful_get_areas(client):
             assert r["portraitImage"]["id"] == a.portrait_image_id
         else:
             assert r["portraitImage"] is None
+        assert r["closed"] == a.closed
+        assert r["closedReason"] == a.closed_reason
 
 
 def test_successful_get_area(client):
@@ -132,6 +138,8 @@ def test_successful_get_area(client):
     assert res["mapMarkers"][0]["lng"] == area.map_markers[0].lng
     assert res["secret"] == area.secret
     assert res["portraitImage"] is None or res["portraitImage"]["id"] == area.portrait_image_id
+    assert res["closed"] == area.closed
+    assert res["closedReason"] == area.closed_reason
 
 
 def test_get_deleted_area(client):
@@ -162,6 +170,8 @@ def test_successful_edit_area(client, moderator_token):
         ],
         "portraitImage": None,
         "secret": False,
+        "closed": False,
+        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -181,6 +191,8 @@ def test_successful_edit_area(client, moderator_token):
     assert res["portraitImage"] == None
     assert res["secret"] == False
     assert res["id"] is not None
+    assert res["closed"] == False
+    assert res["closedReason"] is None
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

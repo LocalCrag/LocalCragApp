@@ -24,6 +24,11 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public statistics = {
+    completion: (query: string): string =>
+      `${this.apiHost}statistics/completion${query}`,
+  };
+
   public search = {
     search: (query: string): string => `${this.apiHost}search/${query}`,
   };

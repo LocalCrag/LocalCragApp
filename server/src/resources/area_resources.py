@@ -20,7 +20,10 @@ from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots import set_area_parents_unsecret, update_area_secret_property
+from util.propagating_boolean_attrs import (
+    set_area_parents_false,
+    update_area_propagating_boolean_attr,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
@@ -76,12 +79,16 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
+        new_area.closed = area_data["closed"]
+        new_area.closed_reason = area_data["closedReason"]
         new_area.default_boulder_scale = area_data["defaultBoulderScale"]
         new_area.default_sport_scale = area_data["defaultSportScale"]
         new_area.default_trad_scale = area_data["defaultTradScale"]
 
         if not new_area.secret:
-            set_area_parents_unsecret(new_area)
+            set_area_parents_false(new_area, "secret")
+        if not new_area.closed:
+            set_area_parents_false(new_area, "closed")
 
         db.session.add(new_area)
         db.session.commit()
@@ -110,7 +117,10 @@ class UpdateArea(MethodView):
         area.description = add_bucket_placeholders(area_data["description"])
         area.short_description = area_data["shortDescription"]
         area.portrait_image_id = area_data["portraitImage"]
-        update_area_secret_property(area, area_data["secret"])
+        update_area_propagating_boolean_attr(area, area_data["secret"], "secret")
+        update_area_propagating_boolean_attr(
+            area, area_data["closed"], "closed", set_additionally={"closed_reason": area_data["closedReason"]}
+        )
         area.default_boulder_scale = area_data["defaultBoulderScale"]
         area.default_sport_scale = area_data["defaultSportScale"]
         area.default_trad_scale = area_data["defaultTradScale"]

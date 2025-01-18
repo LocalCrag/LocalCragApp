@@ -604,15 +604,19 @@ def fill_db_with_sample_data():
     db.session.add(menu_item)
 
     menu_item = MenuItem()
-    menu_item.type = MenuItemTypeEnum.YOUTUBE
+    menu_item.type = MenuItemTypeEnum.URL
     menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.title = "Random URL"
+    menu_item.url = "https://www.google.com"
     menu_item.order_index = 2
     menu_item.created_by_id = admin_id
     db.session.add(menu_item)
 
     menu_item = MenuItem()
-    menu_item.type = MenuItemTypeEnum.INSTAGRAM
+    menu_item.type = MenuItemTypeEnum.URL
     menu_item.position = MenuItemPositionEnum.TOP
+    menu_item.title = "Random URL 2"
+    menu_item.url = "https://www.google.com"
     menu_item.order_index = 3
     menu_item.created_by_id = admin_id
     db.session.add(menu_item)

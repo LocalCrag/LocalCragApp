@@ -22,6 +22,7 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
 
@@ -42,6 +43,7 @@ import { map } from 'rxjs/operators';
     AsyncPipe,
     NgClass,
     InfiniteScrollModule,
+    MessageModule,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
@@ -141,7 +143,25 @@ export class HistoryListComponent implements OnInit {
           this.scalesService.gradeNameByValue(line.type, line.gradeScale, Number(event.oldValue)),
           this.scalesService.gradeNameByValue(line.type, line.gradeScale, Number(event.newValue)),
         ]).pipe(map((oldGrade, newGrade) => {
-          if (Number(event.oldValue) < Number(event.newValue)) {
+          if (
+            Number(event.oldValue) < 0 &&
+            Number(event.oldValue) < Number(event.newValue)
+          ) {
+            /** t(history.projectClimbed) */
+            return this.transloco.translate('history.projectClimbed', {
+              line: line.name,
+              newGrade,
+            });
+          } else if (
+            Number(event.oldValue) === 0 &&
+            Number(event.oldValue) < Number(event.newValue)
+          ) {
+            /** t(history.lineGraded) */
+            return this.transloco.translate('history.lineGraded', {
+              line: line.name,
+              newGrade,
+            });
+          } else if (Number(event.oldValue) < Number(event.newValue)) {
             /** t(history.upgrade) */
             return this.transloco.translate('history.upgrade', {
               line: line.name,
@@ -186,6 +206,11 @@ export class HistoryListComponent implements OnInit {
       return 'pi pi-plus';
     }
     if (event.type === HistoryItemType.UPDATED) {
+      if (Number(event.oldValue) < Number(event.newValue)) {
+        return 'pi pi-arrow-up';
+      } else if (Number(event.oldValue) > Number(event.newValue)) {
+        return 'pi pi-arrow-down';
+      }
       return 'pi pi-cog';
     }
     return '';
