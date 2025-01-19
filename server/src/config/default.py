@@ -24,7 +24,7 @@ class DefaultConfig(object):
     CLIENT_MAX_BODY_SIZE = 200
     MAX_FILE_SIZE = 200
     MAX_IMAGE_SIZE = 50
-    REGION = "Tessin"
+    REGION = "Your Climbing Region"
     SPACES_SECRET_KEY = "test"
     SPACES_ACCESS_KEY = "test"
     SPACES_ENDPOINT = "http://0.0.0.0:4566"
