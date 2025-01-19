@@ -12,7 +12,6 @@ def overwrite_config_by_env_vars(app):
         "SMTP_PASSWORD",
         "SMTP_PORT",
         "SMTP_TYPE",
-        "REGION",
         "SPACES_SECRET_KEY",
         "SPACES_ACCESS_KEY",
         "SPACES_ENDPOINT",
