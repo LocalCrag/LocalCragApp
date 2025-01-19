@@ -1,5 +1,5 @@
-from util.scripts.add_initial_instance_settings import add_initial_instance_settings
 from util.scripts.add_initial_data import add_initial_data
+from util.scripts.add_initial_instance_settings import add_initial_instance_settings
 from util.scripts.add_superadmin import add_superadmin
 
 
