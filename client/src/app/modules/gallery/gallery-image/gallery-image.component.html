@@ -1,3 +1,5 @@
+<ng-container *transloco="let t; read: 'gallery.galleryImage'">
+
 <p-card styleClass="gallery-image-card">
   <ng-template pTemplate="header">
     <div class="image-container">
@@ -9,6 +11,15 @@
     </div>
   </ng-template>
   <div class="tags">
+    <div class="info-icon">
+      <i class="pi pi-info-circle"
+         (click)="infoIcon.focus()"
+         #infoIcon
+         tabindex="0"
+         tooltipEvent="focus"
+         pTooltip="{{ t('createdBy', { createdBy: image.createdBy.fullname }) }}"
+         tooltipPosition="top"></i>
+    </div>
     <lc-tag [tag]="tag" *ngFor="let tag of image.tags"></lc-tag>
     <div
       class="speed-dial-container"
@@ -23,3 +34,5 @@
     </div>
   </div>
 </p-card>
+
+</ng-container>

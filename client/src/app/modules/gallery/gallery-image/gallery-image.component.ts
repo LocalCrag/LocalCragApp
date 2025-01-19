@@ -15,7 +15,7 @@ import { ButtonModule } from 'primeng/button';
 import { Store } from '@ngrx/store';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TranslocoService } from '@jsverse/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -36,6 +36,7 @@ import { take } from 'rxjs/operators';
     SpeedDialModule,
     HasPermissionDirective,
     NgIf,
+    TranslocoDirective,
   ],
   templateUrl: './gallery-image.component.html',
   styleUrl: './gallery-image.component.scss',
