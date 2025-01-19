@@ -28,6 +28,9 @@ import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
 import { MessagesModule } from 'primeng/messages';
 import { NgIf } from '@angular/common';
+import { emailsValidator } from '../../../utility/validators/emails.validator';
+import { MessageModule } from 'primeng/message';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-account-form',
@@ -41,10 +44,12 @@ import { NgIf } from '@angular/common';
     AvatarUploadComponent,
     MessagesModule,
     NgIf,
+    MessageModule,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',
 })
+@UntilDestroy()
 export class AccountFormComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
@@ -53,9 +58,10 @@ export class AccountFormComponent implements OnInit {
   public accountForm: FormGroup;
   public loadingStates = LoadingState;
   public loadingState: LoadingState = LoadingState.DEFAULT;
-  public emailChanged = false;
-
-  private currentUser: User;
+  public emailChangedPreSave = false;
+  public emailChangedPostSave = false;
+  public savePressed = false;
+  public currentUser: User;
 
   constructor(
     private usersService: UsersService,
@@ -76,14 +82,15 @@ export class AccountFormComponent implements OnInit {
   }
 
   public save() {
+    this.savePressed = true;
     if (this.accountForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const user = new User();
       const emailChanged =
-        this.currentUser.email !== this.accountForm.get('email').value;
+        this.currentUser.email !== this.accountForm.get('emails.email').value;
       user.firstname = this.accountForm.get('firstname').value;
       user.lastname = this.accountForm.get('lastname').value;
-      user.email = this.accountForm.get('email').value;
+      user.email = this.accountForm.get('emails.email').value;
       user.avatar = this.accountForm.get('avatar').value;
       this.usersService.updateAccount(user).subscribe((updatedUser) => {
         this.store.dispatch(updateAccountSettings({ user: updatedUser }));
@@ -91,7 +98,7 @@ export class AccountFormComponent implements OnInit {
           toastNotification(NotificationIdentifier.ACCOUNT_SETTINGS_UPDATED),
         );
         this.loadingState = LoadingState.DEFAULT;
-        this.emailChanged = emailChanged;
+        this.emailChangedPostSave = emailChanged;
       });
     } else {
       this.formDirective.markAsTouched();
@@ -114,21 +121,64 @@ export class AccountFormComponent implements OnInit {
             currentUser.lastname,
             [Validators.required, Validators.maxLength(120)],
           ],
-          email: [
-            currentUser.email,
+          emails: this.fb.group(
             {
-              validators: [
-                Validators.required,
-                Validators.pattern(emailRegex),
-                Validators.maxLength(120),
+              email: [
+                currentUser.email,
+                {
+                  validators: [
+                    Validators.required,
+                    Validators.pattern(emailRegex),
+                    Validators.maxLength(120),
+                  ],
+                  asyncValidators: [
+                    this.userValidators.emailValidator([currentUser.email]),
+                  ],
+                  updateOn: 'blur',
+                },
               ],
-              asyncValidators: [
-                this.userValidators.emailValidator([currentUser.email]),
+              emailConfirm: [
+                currentUser.email,
+                {
+                  validators: [
+                    Validators.required,
+                    Validators.pattern(emailRegex),
+                    Validators.maxLength(120),
+                  ],
+                  asyncValidators: [
+                    this.userValidators.emailValidator([currentUser.email]),
+                  ],
+                  updateOn: 'blur',
+                },
               ],
-              updateOn: 'blur',
             },
-          ],
+            {
+              validators: emailsValidator(),
+            },
+          ),
         });
       });
+    this.accountForm
+      .get('emails.email')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe(() => {
+        if (!this.emailChangedPreSave) {
+          this.accountForm.get('emails.emailConfirm').setValue('');
+        }
+        this.emailChangedPreSave = true;
+      });
+  }
+
+  public emailsDontMatch(): boolean {
+    if (
+      this.accountForm.get('emails.email').pristine ||
+      this.accountForm.get('emails.emailConfirm').pristine
+    ) {
+      return false;
+    }
+    return (
+      this.accountForm.get('emails').errors &&
+      this.accountForm.get('emails').errors['emailsMatch']
+    );
   }
 }
