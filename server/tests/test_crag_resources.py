@@ -196,6 +196,7 @@ def test_successful_get_crag_grades(client):
     assert res[1]["gradeName"] == "8A"
     assert res[1]["gradeScale"] == "FB"
 
+
 def test_crag_season(client):
     rv = client.get("/api/crags/brione/season")
     assert rv.status_code == 200
