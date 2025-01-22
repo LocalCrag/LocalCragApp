@@ -195,3 +195,14 @@ def test_successful_get_crag_grades(client):
     assert res[0]["gradeScale"] == "FB"
     assert res[1]["gradeName"] == "8A"
     assert res[1]["gradeScale"] == "FB"
+
+def test_crag_season(client):
+    rv = client.get("/api/crags/brione/season")
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 12
+    for month, percentage in res.items():
+        assert 0 <= percentage <= 1
+        assert month in map(str, range(1, 13))
+    # All percentages have to add up to 1
+    assert sum(res.values()) == 1

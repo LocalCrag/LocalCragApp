@@ -11,7 +11,6 @@ from models.line import Line
 from models.sector import Sector
 from util.secret_spots_auth import get_show_secret
 
-
 class GetCompletion(MethodView):
 
     def get(self):

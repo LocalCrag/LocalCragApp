@@ -32,7 +32,7 @@ from resources.crag_resources import (
     GetCragGrades,
     GetCrags,
     UpdateCrag,
-    UpdateCragOrder,
+    UpdateCragOrder, GetCragSeason,
 )
 from resources.gallery_resources import (
     CreateGalleryImage,
@@ -318,6 +318,7 @@ def configure_api(app):
     crag_bp.add_url_rule("/<string:crag_slug>/grades", view_func=GetCragGrades.as_view("get_crag_grades"))
     crag_bp.add_url_rule("/<string:crag_slug>/sectors", view_func=GetSectors.as_view("get_sectors"))
     crag_bp.add_url_rule("/<string:crag_slug>/sectors", view_func=CreateSector.as_view("create_sector"))
+    crag_bp.add_url_rule("/<string:crag_slug>/season", view_func=GetCragSeason.as_view("crag_season"))
     crag_bp.add_url_rule(
         "/<string:crag_slug>/sectors/update-order", view_func=UpdateSectorOrder.as_view("update_sector_order")
     )
