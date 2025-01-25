@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { Grade } from '../../../utility/misc/grades';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { MapMarkerType } from '../../../enums/map-marker-type';
-import {Season} from '../../../models/season';
+import { Season } from '../../../models/season';
 
 /**
  * Component that shows information about a crag.

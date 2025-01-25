@@ -1,33 +1,30 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Season} from '../../../../models/season';
-import {ChartModule} from 'primeng/chart';
-import {TranslocoService} from '@jsverse/transloco';
-import {marker} from '@jsverse/transloco-keys-manager/marker';
-import {Store} from '@ngrx/store';
-import {selectBarChartColor} from '../../../../ngrx/selectors/instance-settings.selectors';
-import {take} from 'rxjs/operators';
-import {getRgbObject} from '../../../../utility/misc/color';
+import { Component, Input, OnInit } from '@angular/core';
+import { Season } from '../../../../models/season';
+import { ChartModule } from 'primeng/chart';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { Store } from '@ngrx/store';
+import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
+import { take } from 'rxjs/operators';
+import { getRgbObject } from '../../../../utility/misc/color';
 
 @Component({
   selector: 'lc-season-chart',
   standalone: true,
-  imports: [
-    ChartModule
-  ],
+  imports: [ChartModule],
   templateUrl: './season-chart.component.html',
-  styleUrl: './season-chart.component.scss'
+  styleUrl: './season-chart.component.scss',
 })
 export class SeasonChartComponent implements OnInit {
-
   @Input() season: Season;
 
   data: any;
   options: any;
 
-  constructor(private translocoService: TranslocoService,
-              private store: Store,
-  ) {
-  }
+  constructor(
+    private translocoService: TranslocoService,
+    private store: Store,
+  ) {}
 
   ngOnInit() {
     this.store
@@ -49,7 +46,7 @@ export class SeasonChartComponent implements OnInit {
             this.translocoService.translate(marker('September')),
             this.translocoService.translate(marker('October')),
             this.translocoService.translate(marker('November')),
-            this.translocoService.translate(marker('December'))
+            this.translocoService.translate(marker('December')),
           ],
           datasets: [
             {
@@ -65,43 +62,41 @@ export class SeasonChartComponent implements OnInit {
                 this.season['9'],
                 this.season['10'],
                 this.season['11'],
-                this.season['12']
+                this.season['12'],
               ],
               fill: true,
               tension: 0.4,
               pointRadius: 0,
               pointHoverRadius: 0,
               borderColor: barChartColor,
-              backgroundColor: bgColor
-            }
-          ]
+              backgroundColor: bgColor,
+            },
+          ],
         };
         this.options = {
           scales: {
             y: {
               ticks: {
-                display: false
+                display: false,
               },
               grid: {
                 drawTicks: false,
-                display: false
-
-              }
+                display: false,
+              },
             },
           },
           plugins: {
             tooltip: {
-              enabled: false
+              enabled: false,
             },
             datalabels: {
-              display: false
+              display: false,
             },
             legend: {
-              display: false
-            }
-          }
-        }
+              display: false,
+            },
+          },
+        };
       });
   }
-
 }

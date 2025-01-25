@@ -8,7 +8,7 @@ import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { deserializeGrade, Grade } from '../../utility/misc/grades';
-import {Season} from '../../models/season';
+import { Season } from '../../models/season';
 
 /**
  * CRUD service for crags.
@@ -123,5 +123,4 @@ export class CragsService {
   public getSeason(cragSlug: string): Observable<Season> {
     return this.http.get<Season>(this.api.sectors.getSeason(cragSlug));
   }
-
 }
