@@ -5,6 +5,7 @@
       [reason]="crag.closedReason"
     ></lc-closed-spot-alert>
 
+
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
       [fetchingObservable]="fetchCragGrades"
@@ -25,7 +26,11 @@
 
     <lc-map [target]="crag"></lc-map>
 
-    <ng-container *ngIf="!crag">
+    <h4>{{ t("season") }}:</h4>
+    <lc-season-chart [season]="season" *ngIf="season"></lc-season-chart>
+
+
+    <ng-container *ngIf="!crag && !season">
       <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
       <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
       <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
