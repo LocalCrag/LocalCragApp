@@ -4,6 +4,7 @@
   "cragList.noCragsFoundEmptyMessage": "Keine Gebiete gefunden",
   "crag.gradeDistribution": "Gradverteilung",
   "crag.description": "Beschreibung",
+  "crag.season": "Saison",
   "cragForm.createCragDescription": "Hier kannst du ein neues Gebiet anlegen. In LocalCrag sind Gebiete zusammenhängende Areale in denen Boulder zu finden sind, wie z.B. Chironico. Tessin wäre im Sinne unserer Datenbank kein Gebiet, sondern eine Region.",
   "cragForm.cragNameLabel": "Gebietsname",
   "cragForm.cragNamePlaceholder": "z.B. Brione",

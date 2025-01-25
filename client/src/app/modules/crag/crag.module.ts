@@ -34,6 +34,7 @@ import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-m
 import { MapComponent } from '../maps/map/map.component';
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { SeasonChartComponent } from '../shared/components/season-chart/season-chart.component';
 
 /**
  * Module for crags.
@@ -78,6 +79,7 @@ import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert
     MapComponent,
     ClosedSpotTagComponent,
     ClosedSpotAlertComponent,
+    SeasonChartComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
   exports: [CragFormComponent],

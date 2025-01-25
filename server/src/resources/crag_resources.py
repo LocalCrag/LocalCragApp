@@ -8,6 +8,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.area import Area
+from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.history_item import HistoryItem
@@ -159,3 +160,31 @@ class GetCragGrades(MethodView):
             query = query.filter(Line.secret.is_(False))
         result = query.all()
         return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+
+class GetCragSeason(MethodView):
+
+    def get(self, crag_slug):
+        """
+        Get the number of ascents for a crag for each month of the year.
+        """
+        crag_id = Crag.get_id_by_slug(crag_slug)
+
+        # Query for all ascent dates for the crag
+        ascents = db.session.query(Ascent.date).filter(Ascent.date.isnot(None)).filter(Ascent.crag_id == crag_id).all()
+
+        # Initialize dictionary to store counts
+        season_counts = {i: 0 for i in range(1, 13)}
+
+        # Count ascents for each month
+        for ascent in ascents:
+            month = ascent.date.month
+            if month in season_counts:
+                season_counts[month] += 1
+
+        # Normalize the counts to a percentage of the total ascents
+        total_ascents = sum(season_counts.values())
+        if total_ascents > 0:
+            season_counts = {k: v / total_ascents for k, v in season_counts.items()}
+
+        return season_counts

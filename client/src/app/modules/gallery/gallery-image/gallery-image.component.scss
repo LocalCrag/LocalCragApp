@@ -1,4 +1,15 @@
 lc-gallery-image {
+  .info-icon {
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i {
+      color: var(--gray-500);
+    }
+  }
+
   .speed-dial-container {
     position: relative;
     width: 2rem;
