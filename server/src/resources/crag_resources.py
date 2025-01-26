@@ -1,3 +1,5 @@
+from collections import Counter, defaultdict
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -5,11 +7,13 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from models.area import Area
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
@@ -19,7 +23,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload
+from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
 
@@ -54,6 +58,10 @@ class CreateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        valid, error = validate_default_scales(crag_data)
+        if not valid:
+            raise NotFound(error)
+
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
         new_crag.description = add_bucket_placeholders(crag_data["description"])
@@ -66,6 +74,9 @@ class CreateCrag(MethodView):
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
         new_crag.closed = crag_data["closed"]
         new_crag.closed_reason = crag_data["closedReason"]
+        new_crag.default_boulder_scale = crag_data["defaultBoulderScale"]
+        new_crag.default_sport_scale = crag_data["defaultSportScale"]
+        new_crag.default_trad_scale = crag_data["defaultTradScale"]
 
         db.session.add(new_crag)
         db.session.commit()
@@ -86,6 +97,10 @@ class UpdateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         crag: Crag = Crag.find_by_slug(crag_slug)
 
+        valid, error = validate_default_scales(crag_data)
+        if not valid:
+            raise NotFound(error)
+
         crag.name = crag_data["name"].strip()
         crag.description = add_bucket_placeholders(crag_data["description"])
         crag.short_description = crag_data["shortDescription"]
@@ -95,6 +110,10 @@ class UpdateCrag(MethodView):
         update_crag_propagating_boolean_attr(
             crag, crag_data["closed"], "closed", set_additionally={"closed_reason": crag_data["closedReason"]}
         )
+        crag.default_boulder_scale = crag_data["defaultBoulderScale"]
+        crag.default_sport_scale = crag_data["defaultSportScale"]
+        crag.default_trad_scale = crag_data["defaultTradScale"]
+
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()
@@ -150,12 +169,21 @@ class GetCragGrades(MethodView):
         """
         crag_id = Crag.get_id_by_slug(crag_slug)
         query = (
-            db.session.query(Line.grade_name, Line.grade_scale)
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
             .join(Area)
             .join(Sector)
-            .filter(Sector.crag_id == crag_id)
+            .filter(Sector.crag_id == crag_id, Line.archived.is_(False))
         )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

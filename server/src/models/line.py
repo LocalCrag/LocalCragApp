@@ -27,9 +27,7 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
     description = db.Column(db.Text, nullable=True)
     color = db.Column(db.String(7), nullable=True)
     videos = db.Column(JSON, nullable=True)
-    grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)
-    # grade_value could be inferred from name and scale, but value is needed for ordering at db level
     grade_value = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     rating = db.Column(db.Integer, nullable=True)

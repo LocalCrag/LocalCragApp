@@ -7,7 +7,7 @@ def test_successful_create_line(client, moderator_token):
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "color": "#334433",
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -54,7 +54,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["description"] == "Super Boulder"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res["color"] == "#334433"
-    assert res["gradeName"] == "7B+"
+    assert res["gradeValue"] == 19
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
     assert res["rating"] == 5
@@ -101,7 +101,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "OPEN_PROJECT",
+        "gradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -148,7 +148,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["description"] == "Super Boulder"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res["videos"][0]["title"] == "Video"
-    assert res["gradeName"] == "OPEN_PROJECT"
+    assert res["gradeValue"] == -1
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
     assert res["rating"] == 5
@@ -195,7 +195,7 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -243,7 +243,7 @@ def test_create_line_invalid_rating(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 6,
@@ -291,7 +291,7 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "sdfsdfsdf", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -334,12 +334,12 @@ def test_create_line_invalid_video_url(client, moderator_token):
     assert rv.status_code == 400
 
 
-def test_create_line_invalid_grade_name(client, moderator_token):
+def test_create_line_invalid_grade_value(client, moderator_token):
     line_data = {
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "dfgdf",
+        "gradeValue": 42,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -387,7 +387,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "TRAD",
         "rating": 5,
@@ -435,7 +435,7 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "TRESGDFGD",
         "type": "BOULDER",
         "rating": 5,
@@ -483,7 +483,7 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "WEIRD",
         "rating": 5,
@@ -531,9 +531,9 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
-        "type": "WEIRD",
+        "type": "BOULDER",
         "rating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
@@ -583,7 +583,7 @@ def test_create_line_invalid_video_payload(client, moderator_token):
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             }
         ],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "WEIRD",
         "rating": 5,
@@ -632,7 +632,7 @@ def test_create_line_invalid_color(client, moderator_token):
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "color": "#0x3120",
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -701,7 +701,7 @@ def test_successful_get_line(client):
     assert res["description"] == "<p>Geiler Kühlschrankboulder!</p>"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
     assert res["color"] is None
-    assert res["gradeName"] == "8A"
+    assert res["gradeValue"] == 22
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
     assert res["rating"] == 5
@@ -764,7 +764,7 @@ def test_successful_edit_line(client, moderator_token):
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "color": "#123456",
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -811,7 +811,7 @@ def test_successful_edit_line(client, moderator_token):
     assert res["description"] == "Super Boulder"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res["color"] == "#123456"
-    assert res["gradeName"] == "7B+"
+    assert res["gradeValue"] == 19
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
     assert res["rating"] == 5
@@ -861,7 +861,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "OPEN_PROJECT",
+        "gradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,

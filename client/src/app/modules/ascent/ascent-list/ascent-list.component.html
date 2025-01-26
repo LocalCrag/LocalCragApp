@@ -57,16 +57,42 @@
         </div>
 
         <div
+          class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+        >
+          <div *ngIf="availableScales.length > 2">
+            {{ t("lineType") }}
+            <p-dropdown
+              [options]="availableScales"
+              [(ngModel)]="scaleKey"
+              optionLabel="label"
+              (onChange)="selectScale()"
+              styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
+            >
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="scaleKey">
+                  <div>{{ scaleKey.label }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div
           class="slider-container mt-1"
-          *ngIf="!disableGradeOrderAndFiltering"
+          *ngIf="!disableGradeOrderAndFiltering && scaleKey?.value"
         >
           <lc-slider-labels
             [rangeMin]="gradeFilterRange[0]"
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
-            [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"
+            [minLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[0]) | async | translateSpecialGrades"
+            [maxLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[1]) | async | translateSpecialGrades"
           ></lc-slider-labels>
           <p-slider
             [(ngModel)]="gradeFilterRange"
@@ -117,7 +143,7 @@
                     ascent.line.name
                   }}</a>
                   <div class="grade">
-                    {{ ascent.line.grade.name | transloco }}
+                    {{ ascent.line | lineGrade }}
                   </div>
                 </div>
                 <div class="ascent-table-line-location mt-1">
@@ -158,7 +184,7 @@
                     *ngIf="ascent | downgrade"
                   ></i>
                   <div class="ml-1 grade-name">
-                    {{ ascent.grade.name | transloco }}
+                    {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
                     <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                     <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                   </div>
@@ -238,7 +264,7 @@
                       ascent.line.name
                     }}</a>
                     <div class="grade">
-                      {{ ascent.line.grade.name | transloco }}
+                      {{ ascent.line | lineGrade }}
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">
@@ -280,7 +306,7 @@
                     *ngIf="ascent | downgrade"
                   ></i>
                   <div class="ml-1 grade-name">
-                    {{ ascent.grade.name | transloco }}
+                    {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
                     <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                     <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                   </div>
@@ -358,7 +384,7 @@
                       ascent.line.name
                     }}</a>
                     <div class="grade">
-                      {{ ascent.line.grade.name | transloco }}
+                      {{ ascent.line | lineGrade }}
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">
@@ -430,7 +456,7 @@
                       *ngIf="ascent | downgrade"
                     ></i>
                     <div class="ml-1 grade-name">
-                      {{ ascent.grade.name | transloco }}
+                      {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
                       <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                       <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                     </div>

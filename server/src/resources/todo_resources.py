@@ -9,6 +9,7 @@ from extensions import db
 from marshmallow_schemas.todo_schema import paginated_todos_schema, todo_schema
 from models.area import Area
 from models.ascent import Ascent
+from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -69,6 +70,8 @@ class GetTodos(MethodView):
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
         priority = request.args.get("priority") or None
+        line_type = request.args.get("line_type", None, type=LineTypeEnum)
+        grade_scale = request.args.get("grade_scale", None)
 
         if order_by not in ["grade_value", "time_created"] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -86,6 +89,10 @@ class GetTodos(MethodView):
             query = query.filter(Todo.sector_id == sector_id)
         if area_id:
             query = query.filter(Todo.area_id == area_id)
+        if line_type:
+            query = query.filter(Line.type == line_type)
+        if grade_scale:
+            query = query.filter(Line.grade_scale == grade_scale)
 
         # Filter by grades
         if min_grade_value and max_grade_value:

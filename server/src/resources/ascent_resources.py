@@ -13,7 +13,7 @@ from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
-from models.grades import get_grade_value
+from models.enums.line_type_enum import LineTypeEnum
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -45,6 +45,8 @@ class GetAscents(MethodView):
         order_direction = request.args.get("order_direction") or "desc"
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
+        line_type = request.args.get("line_type", None, type=LineTypeEnum)
+        grade_scale = request.args.get("grade_scale", None)
 
         if order_by not in ["time_created", "ascent_date", "grade_value"] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -65,6 +67,10 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.created_by_id == user_id)
         if line_id:
             query = query.filter(Ascent.line_id == line_id)
+        if line_type:
+            query = query.filter(Line.type == line_type)
+        if grade_scale:
+            query = query.filter(Line.grade_scale == grade_scale)
 
         # Filter by grades
         if min_grade_value and max_grade_value:
@@ -119,11 +125,11 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
-        if get_grade_value(ascent_data["gradeName"], ascent_data["gradeScale"], line.type) < 0:
+        if line.grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
-        if ascent_data["gradeScale"] != line.grade_scale:
-            raise BadRequest("Cannot change grade scale of the climbed line.")
-        if not cross_validate_grade(ascent_data["gradeName"], ascent_data["gradeScale"], line.type):
+        if ascent_data["gradeValue"] < 0:
+            raise BadRequest("Cannot propose project status.")
+        if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
         if (
             db.session.query(Ascent.line_id)
@@ -140,8 +146,7 @@ class CreateAscent(MethodView):
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
-        ascent.grade_name = ascent_data["gradeName"]
-        ascent.grade_scale = ascent_data["gradeScale"]
+        ascent.grade_value = ascent_data["gradeValue"]
         ascent.rating = ascent_data["rating"]
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]
@@ -179,9 +184,9 @@ class UpdateAscent(MethodView):
             raise Unauthorized("Ascents can only be edited by users themselves.")
 
         line: Line = Line.find_by_id(ascent.line_id)
-        if ascent_data["gradeScale"] != line.grade_scale:
-            raise BadRequest("Cannot change grade scale of the climbed line.")
-        if not cross_validate_grade(ascent_data["gradeName"], ascent_data["gradeScale"], line.type):
+        if ascent_data["gradeValue"] < 0:
+            raise BadRequest("Cannot propose project status.")
+        if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
 
         ascent.flash = ascent_data["flash"]
@@ -189,8 +194,7 @@ class UpdateAscent(MethodView):
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
-        ascent.grade_name = ascent_data["gradeName"]
-        ascent.grade_scale = ascent_data["gradeScale"]
+        ascent.grade_value = ascent_data["gradeValue"]
         ascent.rating = ascent_data["rating"]
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]

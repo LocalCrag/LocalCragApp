@@ -12,6 +12,9 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "secret": False,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
@@ -33,7 +36,7 @@ def test_successful_change_value_history(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -90,6 +93,9 @@ def test_history_respects_secret_flag(client, moderator_token):
         "secret": True,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201

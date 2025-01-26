@@ -88,6 +88,13 @@ from resources.post_resources import (
 )
 from resources.ranking_resources import GetRanking, UpdateRanking
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
+from resources.scale_resources import (
+    CreateScale,
+    DeleteScale,
+    GetScale,
+    GetScales,
+    UpdateScale,
+)
 from resources.search_resources import Search
 from resources.sector_resources import (
     CreateSector,
@@ -369,3 +376,12 @@ def configure_api(app):
     archive_bp = Blueprint("archive", __name__)
     archive_bp.add_url_rule("", view_func=SetArchived.as_view("set_archived"))
     app.register_blueprint(archive_bp, url_prefix="/api/archive")
+
+    # Scale API
+    scale_bp = Blueprint("scales", __name__)
+    scale_bp.add_url_rule("", view_func=GetScales.as_view("get_scales"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=GetScale.as_view("get_scale"))
+    scale_bp.add_url_rule("", view_func=CreateScale.as_view("create_scale"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateScale.as_view("update_scale"))
+    scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=DeleteScale.as_view("delete_scale"))
+    app.register_blueprint(scale_bp, url_prefix="/api/scales")

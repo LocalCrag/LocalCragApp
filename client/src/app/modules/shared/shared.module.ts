@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { DatePipe } from './pipes/date.pipe';
 import { FormDirective } from './forms/form.directive';
 import { IfNoErrorDirective } from './forms/if-no-error.directive';
@@ -25,6 +25,8 @@ import { ToStringPipe } from './pipes/to-string.pipe';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
+import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
+import { LineGradePipe } from './pipes/line-grade.pipe';
 
 /**
  * Module for shared components, pipes etc.
@@ -44,8 +46,10 @@ import { ChipModule } from 'primeng/chip';
     OrderItemsComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
+    LineGradePipe,
     SanitizeHtmlPipe,
     ToStringPipe,
+    TranslateSpecialGradesPipe,
   ],
   imports: [
     CommonModule,
@@ -73,7 +77,10 @@ import { ChipModule } from 'primeng/chip';
     TopoImageComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
+    LineGradePipe,
     SanitizeHtmlPipe,
+    TranslateSpecialGradesPipe,
   ],
+  providers: [ AsyncPipe, TranslateSpecialGradesPipe ]
 })
 export class SharedModule {}

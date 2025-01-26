@@ -12,7 +12,8 @@ class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
-    gradeName = fields.String(attribute="grade_name")
+    type = EnumField(LineTypeEnum, by_value=True)
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
 
 
@@ -21,7 +22,7 @@ class LineSchemaMin(BaseEntityMinSchema):
     slug = fields.String()
     color = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
-    gradeName = fields.String(attribute="grade_name")
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
     archived = fields.Boolean()
 
@@ -37,7 +38,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     videos = fields.List(fields.Dict)
     type = EnumField(LineTypeEnum, by_value=True)
     rating = fields.Integer()
-    gradeName = fields.String(attribute="grade_name")
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
     faYear = fields.Integer(attribute="fa_year")
     faName = fields.String(attribute="fa_name")

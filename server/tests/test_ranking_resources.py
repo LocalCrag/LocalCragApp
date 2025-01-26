@@ -63,8 +63,7 @@ def test_successful_update_ranking(client, admin_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 10,
         "line": str(Line.get_id_by_slug("treppe")),
         "date": "2024-04-13",
     }

@@ -1,6 +1,5 @@
 import { AbstractModel } from './abstract-model';
 import { LineType } from '../enums/line-type';
-import { deserializeGrade, Grade } from '../utility/misc/grades';
 import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
@@ -25,7 +24,8 @@ export class Line extends IsClosable(AbstractModel) {
   slug: string;
   color?: string;
   videos: LineVideo[];
-  grade: Grade;
+  gradeScale: string;
+  gradeValue: number;
   rating: number;
   type: LineType;
   faYear: number;
@@ -100,7 +100,8 @@ export class Line extends IsClosable(AbstractModel) {
     line.slug = payload.slug;
     line.color = payload.color;
 
-    line.grade = deserializeGrade(payload);
+    line.gradeScale = payload.gradeScale;
+    line.gradeValue = payload.gradeValue;
     line.rating = payload.rating;
     line.type = payload.type;
     line.faYear = payload.faYear;
@@ -176,8 +177,8 @@ export class Line extends IsClosable(AbstractModel) {
         description: line.description,
         color: line.color,
       videos: line.videos ? line.videos : null,
-      gradeScale: 'FB',
-      gradeName: line.grade.name,
+      gradeScale: line.gradeScale,
+      gradeValue: line.gradeValue,
       rating: line.rating,
       type: line.type,
       faYear: line.faYear,

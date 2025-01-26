@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-sector-info',
@@ -16,7 +16,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
 @UntilDestroy()
 export class SectorInfoComponent implements OnInit {
   public sector: Sector;
-  public fetchSectorGrades: Observable<Grade[]>;
+  public fetchSectorGrades: Observable<GradeDistribution>;
   public sectorCoordinates: Coordinates;
 
   constructor(

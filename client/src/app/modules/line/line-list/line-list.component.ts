@@ -11,7 +11,6 @@ import { TicksService } from '../../../services/crud/ticks.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   TranslocoDirective,
-  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
@@ -20,7 +19,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { LineModule } from '../line.module';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -32,7 +31,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -46,6 +44,13 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ArchiveButtonComponent } from "../../archive/archive-button/archive-button.component";
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
+import { AreasService } from '../../../services/crud/areas.service';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { CragsService } from '../../../services/crud/crags.service';
+import { RegionService } from '../../../services/crud/region.service';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-line-list',
@@ -65,7 +70,6 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
     SharedModule,
     TickButtonComponent,
     TranslocoDirective,
-    TranslocoPipe,
     InfiniteScrollModule,
     NgClass,
     FormsModule,
@@ -76,6 +80,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
     ClosedSpotTagComponent,
     ArchiveButtonComponent,
     GymModeDirective,
+    AsyncPipe,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -96,8 +101,11 @@ export class LineListComponent implements OnInit {
   public ticks: Set<string> = new Set();
   public isTodo: Set<string> = new Set();
 
-  public minGradeValue = GRADES['FB'][0].value;
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public availableScales: SelectItem<{lineType: LineType, gradeScale: string} | undefined>[] = [];
+  public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
+
+  public minGradeValue = -2;
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -108,12 +116,17 @@ export class LineListComponent implements OnInit {
 
   constructor(
     private linesService: LinesService,
+    private areasService: AreasService,
+    private sectorsService: SectorsService,
+    private cragsService: CragsService,
+    private regionService: RegionService,
     private store: Store,
     private ticksService: TicksService,
     private isTodoService: IsTodoService,
     private route: ActivatedRoute,
     private actions$: Actions,
     private translocoService: TranslocoService,
+    protected scalesService: ScalesService,
   ) {}
 
   ngOnInit() {
@@ -121,6 +134,41 @@ export class LineListComponent implements OnInit {
     this.sectorSlug =
       this.route.parent.parent.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
+
+    // Only offer lineType/gradeScales for filtering that are indeed available
+    let gradeDistributionObserver: Observable<GradeDistribution>;
+    if (this.areaSlug) {
+      gradeDistributionObserver = this.areasService.getAreaGrades(this.areaSlug);
+    } else if (this.sectorSlug) {
+      gradeDistributionObserver = this.sectorsService.getSectorGrades(this.sectorSlug);
+    } else if (this.cragSlug) {
+      gradeDistributionObserver = this.cragsService.getCragGrades(this.cragSlug);
+    } else {
+      gradeDistributionObserver = this.regionService.getRegionGrades();
+    }
+    gradeDistributionObserver.subscribe((gradeDistribution) => {
+      this.availableScales.push({
+        label: this.translocoService.translate("ALL"),
+        value: undefined,
+      });
+      for (const lineType in gradeDistribution) {
+        for (const gradeScale in gradeDistribution[lineType]) {
+          if (gradeDistribution[lineType][gradeScale]) {
+            this.availableScales.push({
+              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+              value: { lineType: lineType as LineType, gradeScale }
+            });
+          }
+        }
+      }
+      if (this.availableScales.length <= 2) {
+        this.scaleKey = this.availableScales[1];  // Default: Select first scale, so range slider is available
+      } else {
+        this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
+      }
+      this.selectScale();
+    });
+
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.orderOptions = [
       {
@@ -174,6 +222,16 @@ export class LineListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  selectScale() {
+    if (this.scaleKey?.value) {
+      this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
+        this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+        this.gradeFilterRange = [-2, this.maxGradeValue];
+      });
+    }
+    this.loadFirstPage();
+  }
+
   loadFirstPage() {
     this.listenForSliderStop = false;
     this.currentPage = 0;
@@ -208,8 +266,14 @@ export class LineListComponent implements OnInit {
       if (this.areaSlug) {
         filters.set("area_slug", this.areaSlug);
       }
-      filters.set("min_grade", this.gradeFilterRange[0].toString());
-      filters.set("max_grade", this.gradeFilterRange[1].toString());
+      if (this.scaleKey?.value) {
+        filters.set("line_type", this.scaleKey.value.lineType);
+        filters.set("grade_scale", this.scaleKey.value.gradeScale);
+      }
+      if (this.gradeFilterRange[1] !== null) {
+        filters.set("min_grade", this.gradeFilterRange[0].toString());
+        filters.set("max_grade", this.gradeFilterRange[1].toString());
+      }
       filters.set("order_by", this.orderKey.value);
       filters.set("order_direction", this.orderDirectionKey.value);
       filters.set("per_page", "10");
@@ -251,5 +315,5 @@ export class LineListComponent implements OnInit {
     }
   }
 
-  protected readonly gradeNameByValue = gradeNameByValue;
+  protected readonly LineType = LineType;
 }
