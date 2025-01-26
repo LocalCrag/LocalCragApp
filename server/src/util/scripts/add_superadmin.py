@@ -12,8 +12,14 @@ def add_superadmin():
     """
     with app.app_context():
         if not User.find_by_email(current_app.config["SUPERADMIN_EMAIL"]):
-            if not current_app.config["SUPERADMIN_FIRSTNAME"] or not current_app.config["SUPERADMIN_LASTNAME"] or not current_app.config["SUPERADMIN_EMAIL"]:
-                raise ValueError("SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, and SUPERADMIN_EMAIL must be set in the environment.")
+            if (
+                not current_app.config["SUPERADMIN_FIRSTNAME"]
+                or not current_app.config["SUPERADMIN_LASTNAME"]
+                or not current_app.config["SUPERADMIN_EMAIL"]
+            ):
+                raise ValueError(
+                    "SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, and SUPERADMIN_EMAIL must be set in the environment."
+                )
             user_data = {
                 "firstname": current_app.config["SUPERADMIN_FIRSTNAME"],
                 "lastname": current_app.config["SUPERADMIN_LASTNAME"],

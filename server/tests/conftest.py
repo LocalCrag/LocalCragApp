@@ -8,7 +8,7 @@ import moto
 import pytest
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
-from sqlalchemy import URL, create_engine, text, inspect
+from sqlalchemy import URL, create_engine, inspect, text
 from sqlalchemy.event import listen
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -91,6 +91,7 @@ def db_session():
         connection.close()
         db.session.remove()
         db.session = saved_session
+
 
 @pytest.fixture
 def clean_db():
