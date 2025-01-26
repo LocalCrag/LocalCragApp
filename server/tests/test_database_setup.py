@@ -48,4 +48,3 @@ def test_database_setup_with_missing_env_vars(client, clean_db):
     current_app.config["SUPERADMIN_EMAIL"] = None
     with pytest.raises(ValueError):
         setup_database()
-
