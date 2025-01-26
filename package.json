@@ -12,9 +12,7 @@
       "cd client && eslint"
     ],
     "server/**/*.py": [
-      "cd server && pipenv run black",
-      "cd server && pipenv run flake8",
-      "cd server && pipenv run isort"
+      "cd server && pipenv run black && pipenv run flake8 && pipenv run isort"
     ]
   }
 }
