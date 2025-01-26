@@ -1,8 +1,1 @@
-cd client
-npx prettier --write .
-npm run lint
-cd ..
-cd server
-pipenv run black .
-pipenv run flake8 .
-pipenv run isort .
+npx lint-staged
