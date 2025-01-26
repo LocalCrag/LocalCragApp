@@ -100,9 +100,13 @@ def clean_db():
     We cannot use drop_all + create_all as we still want to leverage the rollback feature of the db_session fixture.
     """
     table_names = inspect(db.engine).get_table_names()
+    print(f"Truncating tables: {table_names}")
     with db.session.begin():  # Use transaction
+        print('session begin')
         for table_name in table_names:
+            print(f"Truncating table: {table_name}")
             db.session.execute(text(f"TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE"))
+    print('commit')
     db.session.commit()
 
 
