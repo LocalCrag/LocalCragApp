@@ -11,7 +11,7 @@
       "cd client && prettier --write",
       "cd client && eslint"
     ],
-    "server/**/*.{py}": [
+    "server/**/*.py": [
       "cd server && pipenv run black",
       "cd server && pipenv run flake8",
       "cd server && pipenv run isort"
