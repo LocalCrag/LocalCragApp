@@ -49,5 +49,3 @@ def test_database_setup_with_missing_env_vars(client, clean_db):
     with pytest.raises(ValueError):
         setup_database()
 
-
-# add test when superadmin config is empty
