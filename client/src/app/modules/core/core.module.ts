@@ -66,20 +66,24 @@ import {
   MatomoRouterModule,
 } from 'ngx-matomo-client';
 import { Router } from '@angular/router';
+import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors';
 
-export function preloadTranslations(transloco: TranslocoService) {
+export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
+    store.select(selectGymMode).subscribe((gymMode) => {
+      if (gymMode && !transloco.getActiveLang().endsWith("-gym")) {
+        transloco.setActiveLang(environment.language + "-gym");
+        transloco.setFallbackLangForMissingTranslation({ fallbackLang: environment.language });
+      } else if (!gymMode && transloco.getActiveLang().endsWith("-gym")) {
+        transloco.setActiveLang(environment.language);
+      }
+    });
+
     transloco.setActiveLang(environment.language);
-    return forkJoin([
-      transloco.load(environment.language),
-      transloco.load('crag/' + environment.language),
-      transloco.load('sector/' + environment.language),
-      transloco.load('area/' + environment.language),
-      transloco.load('line/' + environment.language),
-      transloco.load('topoImage/' + environment.language),
-      transloco.load('linePath/' + environment.language),
-      transloco.load('maps/' + environment.language),
-    ]);
+    return forkJoin(["", "crag/", "sector/", "area/", "line/", "topoImage/", "linePath/", "maps/"].flatMap(path => [
+      transloco.load(path + environment.language),
+      transloco.load(path + environment.language + "-gym"),
+    ]));
   };
 }
 
@@ -203,7 +207,7 @@ export function preloadInstanceSettings(
     {
       provide: APP_INITIALIZER,
       multi: true,
-      deps: [TranslocoService],
+      deps: [TranslocoService, Store],
       useFactory: preloadTranslations,
     },
     {

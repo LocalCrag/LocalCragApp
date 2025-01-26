@@ -492,7 +492,7 @@
   "ascents": "Begehungen",
   "sortAscending": "Aufsteigend",
   "sortDescending": "Absteigend",
-  "topoImage.askReallyWantToDeleteTopoImage": "Bist Du Dir sicher? Dies ist eine extrem destruktive Aktion und kann nicht rückgängig gemacht werden. Das Topo Bild und alle Linienverknüpfungen werden gelöscht. Die eigentlichen Linien samt Begehungebn etc. bleiben aber bestehen.",
+  "topoImage.askReallyWantToDeleteTopoImage": "Bist Du Dir sicher? Dies ist eine extrem destruktive Aktion und kann nicht rückgängig gemacht werden. Das Topo Bild und alle Linienverknüpfungen werden gelöscht. Die eigentlichen Linien samt Begehungen etc. bleiben aber bestehen.",
   "topoImage.yesDelete": "Ja, alles löschen!",
   "topoImage.noDontDelete": "Nee, doch nicht.",
   "topoImage.askReallyWantToDeleteLinePath": "Bist Du Dir sicher? Der Verlauf der Linie und die Zuordnung zum Bild werden gelöscht. Die Linie samt Begehungen und das Bild an sich bleiben erhalten.",
