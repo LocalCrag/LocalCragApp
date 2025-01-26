@@ -6,6 +6,7 @@ import { TranslateSpecialGradesPipe } from './translate-special-grades.pipe';
 
 @Pipe({
   name: 'lineGrade',
+  pure: false,
 })
 export class LineGradePipe implements PipeTransform {
   constructor(private scalesService: ScalesService,
@@ -14,10 +15,7 @@ export class LineGradePipe implements PipeTransform {
   {}
 
   transform(line?: Line): string {
-    // todo for some reason this does not work with the same reliability as piping these components individually
-    // mainly, it does not work if the scale is not yet cached
     const observable = this.scalesService.gradeNameByValue(line?.type, line?.gradeScale, line?.gradeValue);
-    observable.subscribe((value) => {console.log(value)})
     return this.translate.transform(this.asyncPipe.transform(observable));
   }
 }
