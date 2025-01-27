@@ -1,7 +1,5 @@
 import pytest
 from flask import current_app
-from sqlalchemy import inspect, text
-
 
 from extensions import db
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
@@ -11,19 +9,6 @@ from models.menu_item import MenuItem
 from models.region import Region
 from models.user import User
 from util.scripts.database_setup import setup_database
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def test_database_setup(client, clean_db, mocker):

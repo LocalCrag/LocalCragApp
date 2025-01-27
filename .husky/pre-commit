@@ -1,1 +1,1 @@
-npx lint-staged
+cd ./server && npx lint-staged

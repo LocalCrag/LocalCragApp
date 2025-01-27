@@ -9,3 +9,4 @@ uploads/*
 .coverage
 __pycache__/
 /src/config/alembic.cfg
+node_modules
