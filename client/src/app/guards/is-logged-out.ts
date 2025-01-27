@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, max } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../ngrx/reducers';
 import { selectIsLoggedOut } from '../ngrx/selectors/auth.selectors';
