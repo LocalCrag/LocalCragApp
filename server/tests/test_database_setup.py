@@ -24,6 +24,8 @@ from util.scripts.database_setup import setup_database
 
 
 
+
+
 def test_database_setup(client, clean_db, mocker):
     mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
     mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
