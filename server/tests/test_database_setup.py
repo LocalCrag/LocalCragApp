@@ -33,7 +33,7 @@ def test_database_setup(client, clean_db, mocker):
     regions = db.session.query(Region).all()
     assert len(regions) == 1
     region = regions[0]
-    assert region.name == "Your climbing region 2"
+    assert region.name == "Your climbing region"
 
     menu_items = db.session.query(MenuItem).all()
     assert len(menu_items) == 1
