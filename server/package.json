@@ -3,7 +3,7 @@
     "lint-staged": "^15.4.3"
   },
   "lint-staged": {
-  "**/*.py": [
+    "**/*.py": [
       "pipenv run black .",
       "pipenv run flake8 .",
       "pipenv run isort ."

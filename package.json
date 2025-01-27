@@ -1,18 +1,8 @@
 {
   "devDependencies": {
-    "husky": "^9.1.6",
-    "lint-staged": "^15.4.3"
+    "husky": "^9.1.6"
   },
   "scripts": {
     "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*": [
-      "cd client && prettier --write .",
-      "cd client && eslint",
-      "cd server && pipenv run black .",
-      "cd server && pipenv run flake8 .",
-      "cd server && pipenv run isort ."
-    ]
   }
 }
