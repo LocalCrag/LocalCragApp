@@ -14,9 +14,6 @@ from models.mixins.is_searchable import IsSearchable
 from util.secret_spots_auth import get_show_secret
 
 
-
-
-
 class Area(HasSlug, IsSearchable, IsClosable, BaseEntity):
     """
     Model of a sector's area. Could be e.g. "Black Gate". Contains one or more lines.

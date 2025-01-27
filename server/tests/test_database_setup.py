@@ -3,14 +3,6 @@ from flask import current_app
 from sqlalchemy import inspect, text
 
 
-
-
-
-
-
-
-
-
 from extensions import db
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
@@ -19,6 +11,12 @@ from models.menu_item import MenuItem
 from models.region import Region
 from models.user import User
 from util.scripts.database_setup import setup_database
+
+
+
+
+
+
 
 
 def test_database_setup(client, clean_db, mocker):
@@ -39,7 +37,6 @@ def test_database_setup(client, clean_db, mocker):
     assert superadmin.lastname == current_app.config["SUPERADMIN_LASTNAME"]
     assert superadmin.email == current_app.config["SUPERADMIN_EMAIL"]
     assert superadmin.slug and isinstance(superadmin.slug, str) and superadmin.slug.strip()
-
 
     regions = db.session.query(Region).all()
     assert len(regions) == 1
