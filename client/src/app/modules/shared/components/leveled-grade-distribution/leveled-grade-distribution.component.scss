@@ -11,10 +11,11 @@
 }
 
 .grade-distribution-stack {
-  border-radius: 6px;
   overflow: hidden;
   display: flex;
-  height: 2rem;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+  padding-left: 6px;
 
   div {
     padding: 0.25rem;
@@ -27,12 +28,17 @@
     justify-content: center;
     align-items: center;
 
+    &.level-total {
+      margin-left: -6px;
+      border-radius: 6px 0 0 6px;
+    }
+
     &.level-max {
       border-radius: 0 6px 6px 0;
     }
 
     &.level-projects {
-      border-radius: 6px 0 0 6px;
+      border-radius: 6px;
       margin-left: 0.5rem;
     }
   }

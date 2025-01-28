@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LineType } from '../../enums/line-type';
 import { FullScale, Scale } from '../../models/scale';
@@ -53,6 +53,7 @@ export class ScalesService {
           delete OPEN_REQUESTS[lineType][name];
           return scale;
         }),
+        shareReplay(1),
       );
 
     OPEN_REQUESTS[lineType][name] = req;

@@ -108,7 +108,8 @@ export class ScaleFormComponent implements OnInit {
         (ctl) => ctl.value.length >= 2
           && ctl.value.reduce((p, c) => p && c.value > 0, true)
           && ctl.value.at(-2).value + 1 === ctl.value.at(-1).value
-          ? null : {'semantic_error': true}
+          ? null : {'semantic_error': true},
+        (ctl) => ctl.value.length >= 2 && ctl.value.length <= 8 ? null : {'invalid_length': true},
       ]),
     });
   }
@@ -152,7 +153,8 @@ export class ScaleFormComponent implements OnInit {
   }
 
   addGrade() {
-    this.gradeControls().push(this.fb.group({name: [], value: [42]}));
+    const max = this.gradeControls().value.reduce((acc, v) => v.value > acc ? v.value : acc, 0);
+    this.gradeControls().push(this.fb.group({name: [], value: [max + 1]}));
   }
 
   deleteGrade(index: number) {
@@ -160,7 +162,8 @@ export class ScaleFormComponent implements OnInit {
   }
 
   addBracket() {
-    this.gradeBracketsControls().push(this.fb.group({name: [], value: [42]}));
+    const max = this.gradeBracketsControls().value.reduce((acc, v) => v.value > acc ? v.value : acc, 0);
+    this.gradeBracketsControls().push(this.fb.group({name: [], value: [max + 1]}));
   }
 
   deleteBracket(index: number) {

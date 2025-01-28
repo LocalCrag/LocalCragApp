@@ -84,12 +84,18 @@
           <hr/>
           <h4>{{ t('gradeBracketsLabel') }}</h4>
           <div class="mb-2">
-            <em>{{ t('gradeBracketsDescription') }}</em>
+            <em>{{ t('gradeBracketsDescription', {min: 2, max: 8}) }}</em>
           </div>
           <p-message
-            *ngIf="gradeBracketsControls().invalid"
+            *ngIf="gradeBracketsControls().hasError('semantic_error')"
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full"
+          />
+          <p-message
+            *ngIf="gradeBracketsControls().hasError('invalid_length')"
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', {min: 2, max: 8}) }}"
             styleClass="min-w-full"
           />
           <div class="col-12" formArrayName="gradeBrackets" *ngFor="let bracket of gradeBracketsControls().controls; let i = index">
