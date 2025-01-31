@@ -29,6 +29,7 @@ import { Sector } from '../../../models/sector';
 import { Area } from '../../../models/area';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
+import { Scale } from '../../../models/scale';
 
 /**
  * Form component for lines.
@@ -66,6 +67,8 @@ export class LineFormComponent implements OnInit {
   public parentSecret = false;
   public parentClosed = false;
 
+  public groupedScales: Record<LineType, Scale[]> = null;
+
   public defaultScales: Record<LineType, string | null> = {
     [LineType.BOULDER]: null,
     [LineType.SPORT]: null,
@@ -73,6 +76,7 @@ export class LineFormComponent implements OnInit {
   };
 
   public typeOptions = null;
+  public scaleOptions = null;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -112,18 +116,18 @@ export class LineFormComponent implements OnInit {
       this.parentSecret = area.secret;
       this.parentClosed = area.closed;
 
-      const groupedScales: Record<LineType, (string | null)[]> = {
-        [LineType.BOULDER]: [null],
-        [LineType.SPORT]: [null],
-        [LineType.TRAD]: [null],
+      this.groupedScales = {
+        [LineType.BOULDER]: [],
+        [LineType.SPORT]: [],
+        [LineType.TRAD]: [],
       };
-      scales.sort((a, b) => a.name.localeCompare(b.name)).forEach(scale => groupedScales[scale.lineType].push(scale.name));
+      scales.sort((a, b) => a.name.localeCompare(b.name)).forEach(scale => this.groupedScales[scale.lineType].push(scale));
 
-      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale ?? groupedScales[LineType.BOULDER].at(-1);
-      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? groupedScales[LineType.SPORT].at(-1);
-      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale ?? groupedScales[LineType.TRAD].at(-1);
+      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale;
+      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale;
+      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
 
-      this.typeOptions = Object.entries(this.defaultScales)
+      this.typeOptions = Object.entries(this.groupedScales)
         .filter(([_, v]) => !!v)
         .map(([k]) => ({
           label: this.translocoService.translate(k),
@@ -132,7 +136,13 @@ export class LineFormComponent implements OnInit {
 
       this.buildForm();
       this.lineForm.get("type").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
-        this.scalesService.getScale(item, this.defaultScales[item]).subscribe((scale) => {
+        this.scaleOptions = this.groupedScales[item].map(scale => ({ label: scale.name, value: scale.name }));
+        this.lineForm.get("scale").setValue(this.defaultScales[item] ?? this.scaleOptions[0].value)
+      });
+      this.lineForm.get("scale").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
+        if (this.editMode) return;
+
+        this.scalesService.getScale(this.lineForm.get("type").value, item).subscribe((scale) => {
           this.grades = scale.grades;
           if (this.line?.ascentCount > 0) {
             this.grades = this.grades.filter((grade) => grade.value >= 0);
@@ -193,6 +203,7 @@ export class LineFormComponent implements OnInit {
         color: [instanceSettings.gymMode ? instanceSettings.arrowColor : null],
         videos: this.fb.array([]),
         type: [LineType.BOULDER, [Validators.required]],
+        scale: [this.groupedScales[LineType.BOULDER][0], [Validators.required]],
         grade: [null, [Validators.required]],
         rating: [null],
         faYear: [null, [yearOfDateNotInFutureValidator()]],
@@ -287,7 +298,7 @@ export class LineFormComponent implements OnInit {
       description: this.line.description,
       videos: this.line.videos,
       type: this.line.type,
-      gradeScale: this.defaultScales[this.line.type],
+      gradeScale: this.line.gradeScale,
       gradeValue: this.line.gradeValue,
       color: this.line.color,
       rating: this.line.rating,
@@ -365,7 +376,7 @@ export class LineFormComponent implements OnInit {
       line.videos = this.lineForm.get('videos').value;
       line.type = this.lineForm.get('type').value;
       line.gradeValue = this.lineForm.get('grade').value.value;
-      line.gradeScale = this.defaultScales[line.type];
+      line.gradeScale = this.lineForm.get('scale').value;
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
