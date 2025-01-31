@@ -1,16 +1,16 @@
 <ng-container *transloco="let t">
-  <div *ngFor="let chartData of chartData">
-    <h6>{{ chartData.lineType }} {{ chartData.gradeScale }}</h6><!-- TODO how should we present these labels? -->
+  <div *ngFor="let chartDataElement of chartData">
+    <h6 *ngIf="chartData.length > 1">{{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}</h6>
     <p-chart
       type="bar"
-      [data]="chartData.data"
+      [data]="chartDataElement.data"
       [options]="options"
       *ngIf="gradeDistribution"
     ></p-chart>
     <div class="total">
-      {{ t("totalLines") }}: {{ chartData.totalCount - chartData.projectCount }}
+      {{ t("totalLines") }}: {{ chartDataElement.totalCount - chartDataElement.projectCount }}
       <span *ngIf="!excludeProjects">
-        ({{ t("plusXProjects", { projects: chartData.projectCount }) }})
+        ({{ t("plusXProjects", { projects: chartDataElement.projectCount }) }})
       </span>
     </div>
   </div>
