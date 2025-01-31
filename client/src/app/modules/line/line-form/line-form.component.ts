@@ -106,14 +106,22 @@ export class LineFormComponent implements OnInit {
       this.cragsService.getCrag(this.cragSlug),
       this.sectorsService.getSector(this.sectorSlug),
       this.areasService.getArea(this.areaSlug),
+      this.scalesService.getScales(),
     ])
-    .subscribe(([crag, sector, area]) => {
+    .subscribe(([crag, sector, area, scales]) => {
       this.parentSecret = area.secret;
       this.parentClosed = area.closed;
 
-      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale ?? "FB";
-      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? "UIAA";
-      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
+      const groupedScales: Record<LineType, (string | null)[]> = {
+        [LineType.BOULDER]: [null],
+        [LineType.SPORT]: [null],
+        [LineType.TRAD]: [null],
+      };
+      scales.sort((a, b) => a.name.localeCompare(b.name)).forEach(scale => groupedScales[scale.lineType].push(scale.name));
+
+      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale ?? groupedScales[LineType.BOULDER].at(-1);
+      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale ?? groupedScales[LineType.SPORT].at(-1);
+      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale ?? groupedScales[LineType.TRAD].at(-1);
 
       this.typeOptions = Object.entries(this.defaultScales)
         .filter(([_, v]) => !!v)
