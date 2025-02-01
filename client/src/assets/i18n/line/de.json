@@ -19,6 +19,7 @@
   "lineForm.lineDescriptionPlaceholder": "Beschreibe hier generelle Aspekte der Linie und anderes worauf es zu achten gilt. Braucht man viele Pads? Bleibt sie lange nass? Sind evtl Griffe brüchig?",
   "lineForm.colorLabel": "Farbe wählen",
   "lineForm.lineTypeLabel": "Linientyp",
+  "lineForm.lineScaleLabel": "Skala",
   "lineForm.lineGradeLabel": "Schwierigkeitsgrad",
   "lineForm.gradePlaceholder": "Wähle den Grad...",
   "lineForm.startingPositionLabel": "Startposition",
