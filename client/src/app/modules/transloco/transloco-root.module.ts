@@ -38,6 +38,9 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         fallbackLang: 'de',
         prodMode: environment.production,
         reRenderOnLangChange: true,
+        missingHandler: {
+          useFallbackTranslation: true,
+        },
       },
       loader: TranslocoHttpLoader,
     }),

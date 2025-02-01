@@ -51,7 +51,7 @@ import { DeviceEffects } from '../../ngrx/effects/device.effects';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { TranslocoService } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { BackgroundImageComponent } from './background-image/background-image.component';
 import { MenuItemsService } from '../../services/crud/menu-items.service';
 import { InstanceSettingsService } from '../../services/crud/instance-settings.service';
@@ -79,7 +79,6 @@ export function preloadTranslations(transloco: TranslocoService, store: Store) {
       }
     });
 
-    transloco.setActiveLang(environment.language);
     return forkJoin(["", "crag/", "sector/", "area/", "line/", "topoImage/", "linePath/", "maps/"].flatMap(path => [
       transloco.load(path + environment.language),
       transloco.load(path + environment.language + "-gym"),
