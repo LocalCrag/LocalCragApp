@@ -65,15 +65,12 @@ class GetGalleryImages(MethodView):
             )
         else:
             images_query = (
-                db.session.query(GalleryImage)
-                .join(GalleryImage.tags)
-                .order_by(GalleryImage.time_created.desc())
-                .distinct()
+                select(GalleryImage).join(GalleryImage.tags).order_by(GalleryImage.time_created.desc()).distinct()
             )
 
         if not get_show_secret():
             secret_images_subquery = (
-                db.session.query(gallery_image_tags.c.gallery_image_id)
+                select(gallery_image_tags.c.gallery_image_id)
                 .join(Tag, gallery_image_tags.c.tag_id == Tag.id)
                 .filter(Tag.secret == true())
             )
