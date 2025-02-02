@@ -7,6 +7,7 @@ from models.tag import update_tag_secret_property
 
 
 def set_line_parents_false(line: Line, attr: str):
+    db.session.add(line)
     area = Area.find_by_id(line.area_id)
     setattr(area, attr, False)
     db.session.add(area)
@@ -16,6 +17,7 @@ def set_line_parents_false(line: Line, attr: str):
 
 
 def set_area_parents_false(area: Area, attr: str):
+    db.session.add(area)
     sector = Sector.find_by_id(area.sector_id)
     setattr(sector, attr, False)
     db.session.add(sector)
@@ -25,6 +27,7 @@ def set_area_parents_false(area: Area, attr: str):
 
 
 def set_sector_parents_false(sector: Sector, attr: str):
+    db.session.add(sector)
     crag = Crag.find_by_id(sector.crag_id)
     setattr(crag, attr, False)
     db.session.add(crag)

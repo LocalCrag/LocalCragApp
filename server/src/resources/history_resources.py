@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from sqlalchemy import false
+from sqlalchemy import false, select
 
 from extensions import db
 from marshmallow_schemas.history_schema import paginated_history_schema
@@ -23,7 +23,7 @@ class GetHistory(MethodView):
         if per_page is not None:
             per_page = int(per_page)
 
-        query = HistoryItem.query
+        query = select(HistoryItem)
 
         # Filter secret spots
         if not get_show_secret():

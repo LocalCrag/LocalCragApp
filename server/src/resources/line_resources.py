@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import func, nullslast
+from sqlalchemy import func, nullslast, select
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -67,7 +67,7 @@ class GetLines(MethodView):
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
         # Filter for crag, sector or area
-        query = Line.query.filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
+        query = select(Line).filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
         if crag_slug:
             query = query.filter(Crag.slug == crag_slug)
         if sector_slug:
