@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
@@ -76,7 +77,7 @@ class GetTodos(MethodView):
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
-        query = db.session.query(Todo).join(Line).options(joinedload(Todo.line))
+        query = select(Todo).join(Line).options(joinedload(Todo.line))
 
         # Filter for user, crag, sector or area
         query = query.filter(Todo.created_by_id == user.id)

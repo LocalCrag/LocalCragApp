@@ -8,7 +8,7 @@ import moto
 import pytest
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
-from sqlalchemy import URL, create_engine, text
+from sqlalchemy import URL, create_engine, inspect, text
 from sqlalchemy.event import listen
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -91,6 +91,19 @@ def db_session():
         connection.close()
         db.session.remove()
         db.session = saved_session
+
+
+@pytest.fixture
+def clean_db():
+    """
+    Fixture to run test with a clean database.
+    We cannot use drop_all + create_all as we still want to leverage the rollback feature of the db_session fixture.
+    """
+    table_names = inspect(db.engine).get_table_names()
+    with db.session.begin():  # Use transaction
+        for table_name in table_names:
+            db.session.execute(text(f"TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE"))
+    db.session.commit()
 
 
 @pytest.fixture

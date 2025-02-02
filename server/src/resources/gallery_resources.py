@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from sqlalchemy import true
+from sqlalchemy import select, true
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.not_found import NotFound
@@ -57,7 +57,7 @@ class GetGalleryImages(MethodView):
 
             # Get all images that have at least one of the tags
             images_query = (
-                db.session.query(GalleryImage)
+                select(GalleryImage)
                 .join(GalleryImage.tags)
                 .filter(GalleryImage.tags.any(Tag.id.in_([t.id for t in tags])))
                 .order_by(GalleryImage.time_created.desc())
@@ -65,15 +65,12 @@ class GetGalleryImages(MethodView):
             )
         else:
             images_query = (
-                db.session.query(GalleryImage)
-                .join(GalleryImage.tags)
-                .order_by(GalleryImage.time_created.desc())
-                .distinct()
+                select(GalleryImage).join(GalleryImage.tags).order_by(GalleryImage.time_created.desc()).distinct()
             )
 
         if not get_show_secret():
             secret_images_subquery = (
-                db.session.query(gallery_image_tags.c.gallery_image_id)
+                select(gallery_image_tags.c.gallery_image_id)
                 .join(Tag, gallery_image_tags.c.tag_id == Tag.id)
                 .filter(Tag.secret == true())
             )

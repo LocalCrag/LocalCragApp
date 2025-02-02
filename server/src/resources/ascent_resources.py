@@ -3,6 +3,7 @@ import datetime
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
@@ -52,7 +53,7 @@ class GetAscents(MethodView):
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
-        query = db.session.query(Ascent).join(Line).options(joinedload(Ascent.line))
+        query = select(Ascent).join(Line).options(joinedload(Ascent.line))
 
         # Filter for user, crag, sector, area or line
         if crag_id:
