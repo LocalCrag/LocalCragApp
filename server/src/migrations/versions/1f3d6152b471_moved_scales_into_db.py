@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
-from models.scale import GRADES, GRADE_BRACKETS
+from models.scale import GRADE_BRACKETS, GRADES
 
 # revision identifiers, used by Alembic.
 revision = "1f3d6152b471"
@@ -33,12 +33,14 @@ def upgrade():
 
     for line_type, lt_grades in GRADES.items():
         for name, grades in lt_grades.items():
-            scales.append({
-                "name": name,
-                "type": line_type.value,
-                "grades": grades,
-                "grade_brackets": GRADE_BRACKETS[line_type][name],
-            })
+            scales.append(
+                {
+                    "name": name,
+                    "type": line_type.value,
+                    "grades": grades,
+                    "grade_brackets": GRADE_BRACKETS[line_type][name],
+                }
+            )
 
     op.bulk_insert(scalesTable, scales)
 

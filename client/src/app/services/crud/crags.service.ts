@@ -8,7 +8,7 @@ import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { Season } from '../../models/season';
-import { deserializeGradeList, Grade, GradeDistribution } from '../../models/scale';
+import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 
 /**
  * CRUD service for crags.

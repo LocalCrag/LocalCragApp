@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { DatePipe } from './pipes/date.pipe';
 import { FormDirective } from './forms/form.directive';

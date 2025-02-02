@@ -5,7 +5,6 @@ import { Observable, of, shareReplay } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LineType } from '../../enums/line-type';
 import { FullScale, Scale } from '../../models/scale';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 // LineType -> scaleName -> [gradeNamesToValues, gradeValuesToNames, scale]
 const CACHE: Record<LineType,

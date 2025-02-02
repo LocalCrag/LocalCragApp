@@ -10,7 +10,7 @@
       </div>
       <ng-container *ngFor="let count of data.brackets; index as i">
         <div
-          class="level-{{ i == data.brackets.length - 1 ? 'max' : i+1 }}"
+          class="level-{{ i === data.brackets.length - 1 ? 'max' : i+1 }}"
           [style.width]="(1 + data.brackets[i]) / (data.total + data.brackets.length) * (100 - 8 * (data.brackets.length - 1)) + '%'"
         >
           <p-badge [value]="count | toString" styleClass="neutral-badge"></p-badge>
@@ -39,7 +39,7 @@
         {{ t("lines") }}:
       </p-tag>
       <ng-container *ngFor="let count of data.brackets; index as i">
-        <p-tag *ngIf="data.brackets[i] > 0" styleClass="level-{{ i == data.brackets.length - 1 ? 'max' : i}}">
+        <p-tag *ngIf="data.brackets[i] > 0" styleClass="level-{{ i === data.brackets.length - 1 ? 'max' : i}}">
           <p-badge [value]="data.brackets[i] | toString" styleClass="neutral-badge"></p-badge>
           {{ data.bracketLabels[i] }}
         </p-tag>

@@ -65,12 +65,14 @@
                 </ng-container>
                 <ng-container *ngIf="grade.get('value').value > 0 || ! ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(grade.get('name').value)">
                   <div>
+                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                     <label>
                       {{ t('gradeNameLabel') }}
                       <input type="text" class="ml-2" pInputText formControlName="name" />
                     </label>
                   </div>
                   <div>
+                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                     <label>
                       {{ t('gradeValueLabel') }}
                       <p-inputNumber styleClass="ml-2" formControlName="value" [min]="1" />
@@ -100,6 +102,7 @@
           />
           <div class="col-12" formArrayName="gradeBrackets" *ngFor="let bracket of gradeBracketsControls().controls; let i = index">
             <div [formGroupName]="i" class="flex gap-4 mb-2">
+              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label>
                 {{ t('gradeBracketsInputLabel') }}
                 <p-inputNumber formControlName="value" [min]="1" />

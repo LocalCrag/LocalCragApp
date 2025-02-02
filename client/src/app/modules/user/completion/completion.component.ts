@@ -3,7 +3,7 @@ import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { Crag } from '../../../models/crag';

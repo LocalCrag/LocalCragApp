@@ -6,12 +6,14 @@ from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
-from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 from util.validators import color_validator
+from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
+
 
 class VideosArgsSchema(Schema):
     url = fields.Str(required=True, allow_none=False, validate=lambda x: validators.url(x) is True)
     title = fields.Str(required=True, allow_none=False)
+
 
 class LineArgsSchema(Schema, IsClosableWebargsMixin):
     name = fields.Str(required=True, validate=validate.Length(max=120))

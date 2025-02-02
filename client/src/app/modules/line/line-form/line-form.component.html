@@ -83,7 +83,7 @@
             </div>
           </ng-container>
 
-          <div class="flex flex-column gap-2" lcControlGroup *ngIf="!editMode || line?.ascentCount == 0">
+          <div class="flex flex-column gap-2" lcControlGroup *ngIf="!editMode || line?.ascentCount === 0">
             <label class="form-label" for="type">
               {{ t("lineTypeLabel") }}
             </label>
@@ -101,7 +101,7 @@
             </p-dropdown>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup *ngIf="scaleOptions.length > 1 && (!editMode || line?.ascentCount == 0)">
+          <div class="flex flex-column gap-2" lcControlGroup *ngIf="scaleOptions.length > 1 && (!editMode || line?.ascentCount === 0)">
             <label class="form-label" for="scale">
               {{ t("lineScaleLabel") }}
             </label>

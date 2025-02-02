@@ -10,7 +10,6 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
-import { SearchService } from '../../../services/crud/search.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { SharedModule } from '../../shared/shared.module';
 
