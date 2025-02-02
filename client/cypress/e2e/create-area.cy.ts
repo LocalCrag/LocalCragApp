@@ -2,7 +2,7 @@ describe('Create area', () => {
   it('creates an area', () => {
     cy.login();
     cy.visit('localhost:4200/topo/brione/schattental/create-area');
-    cy.get('[data-cy="area-form-name"]').focus().type('Oben');
+    cy.get('[data-cy="area-form-name"]').type('Oben');
     cy.get('[data-cy="area-form-shortDescription"] .ql-editor')
       .focus()
       .type('Oben ist toll.');
