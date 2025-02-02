@@ -11,13 +11,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
-import { Grade, GRADES } from '../../../utility/misc/grades';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
 import { Store } from '@ngrx/store';
@@ -36,6 +35,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -47,7 +47,6 @@ import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
     ReactiveFormsModule,
     SharedModule,
     SharedModule,
-    TranslocoPipe,
     CheckboxModule,
     SharedModule,
     ButtonModule,
@@ -77,7 +76,7 @@ export class AscentFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public line: Line;
   public ascent: Ascent;
-  public grades = GRADES.FB.filter((grade) => grade.value >= 0);
+  public grades = [];
   public today = new Date();
   public gradeDifferenceWarning = false;
   public editMode = false;
@@ -88,10 +87,15 @@ export class AscentFormComponent implements OnInit {
     private store: Store,
     private ref: DynamicDialogRef,
     private ascentsService: AscentsService,
+    private scalesService: ScalesService,
   ) {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;
+
+    this.scalesService.getScale(this.line.type, this.line.gradeScale).subscribe((scale) => {
+      this.grades = scale.grades.filter((grade) => grade.value >= 0);
+    });
   }
 
   ngOnInit() {
@@ -106,7 +110,7 @@ export class AscentFormComponent implements OnInit {
 
   private buildForm() {
     this.ascentForm = this.fb.group({
-      grade: [this.line.grade, [Validators.required]],
+      grade: [this.line.gradeValue, [Validators.required]],
       rating: [null, [Validators.required]],
       year: [
         new Date(),
@@ -142,38 +146,44 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('grade')
       .valueChanges.pipe(untilDestroyed(this))
-      .subscribe((newGrade: Grade) => {
+      .subscribe((newGrade: number) => {
         this.gradeDifferenceWarning =
-          Math.abs(this.line.grade.value - newGrade.value) >= 3;
+          Math.abs(this.line.gradeValue - newGrade) >= 3;
       });
   }
 
   private setFormValue() {
-    this.ascentForm.patchValue({
-      grade: this.ascent.grade,
-      rating: this.ascent.rating,
-      hard: this.ascent.hard,
-      soft: this.ascent.soft,
-      fa: this.ascent.fa,
-      flash: this.ascent.flash,
-      withKneepad: this.ascent.withKneepad,
-      comment: this.ascent.comment,
-      year: this.ascent.year
-        ? new Date(this.ascent.year, 1, 1)
-        : this.ascent.date,
-      date: this.ascent.date
-        ? this.ascent.date
-        : new Date(this.ascent.year, 1, 1),
-      yearOnly: this.ascent.year !== null,
-    });
-    this.ascentForm.enable();
+    this.scalesService.gradeNameByValue(this.line.type, this.line.gradeScale, this.ascent.gradeValue)
+      .subscribe((gradeName) => {
+        this.ascentForm.patchValue({
+          grade: {
+            name: gradeName,
+            value: this.ascent.gradeValue,
+          },
+          rating: this.ascent.rating,
+          hard: this.ascent.hard,
+          soft: this.ascent.soft,
+          fa: this.ascent.fa,
+          flash: this.ascent.flash,
+          withKneepad: this.ascent.withKneepad,
+          comment: this.ascent.comment,
+          year: this.ascent.year
+            ? new Date(this.ascent.year, 1, 1)
+            : this.ascent.date,
+          date: this.ascent.date
+            ? this.ascent.date
+            : new Date(this.ascent.year, 1, 1),
+          yearOnly: this.ascent.year !== null,
+        });
+        this.ascentForm.enable();
+      });
   }
 
   public saveAscent() {
     if (this.ascentForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const ascent = new Ascent();
-      ascent.grade = this.ascentForm.get('grade').value;
+      ascent.gradeValue = this.ascentForm.get('grade').value.value;
       ascent.rating = this.ascentForm.get('rating').value;
       ascent.year = this.ascentForm.get('yearOnly').value
         ? this.ascentForm.get('year').value.getFullYear()

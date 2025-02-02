@@ -2,6 +2,7 @@ from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
 from models.line import Line
+from models.scale import GRADES
 from models.user import User
 
 
@@ -15,8 +16,7 @@ def test_successful_create_ascent(client, member_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 11,
         "line": str(Line.get_id_by_slug("treppe")),
         "date": "2024-04-13",
     }
@@ -32,8 +32,7 @@ def test_successful_create_ascent(client, member_token):
     assert res["rating"] == 2
     assert res["comment"] == "Hahahahaha"
     assert res["year"] == None
-    assert res["gradeScale"] == "FB"
-    assert res["gradeName"] == "6A"
+    assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
     assert res["line"]["slug"] == "treppe"
     assert res["area"]["slug"] == "dritter-block-von-links"
@@ -79,8 +78,7 @@ def test_successful_update_ascent(client, admin_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 11,
         "line": str(Line.get_id_by_slug("super-spreader")),
         "date": "2024-04-13",
     }
@@ -96,8 +94,7 @@ def test_successful_update_ascent(client, admin_token):
     assert res["rating"] == 2
     assert res["comment"] == "Hahahahaha"
     assert res["year"] == None
-    assert res["gradeScale"] == "FB"
-    assert res["gradeName"] == "6A"
+    assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
     assert res["line"]["slug"] == "super-spreader"
     assert res["area"]["slug"] == "dritter-block-von-links"
@@ -115,8 +112,7 @@ def test_log_twice(client, admin_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 11,
         "line": str(Line.get_id_by_slug("super-spreader")),
         "date": "2024-04-13",
     }
@@ -135,8 +131,7 @@ def test_create_ascent_non_existing_line(client, member_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 11,
         "line": "8d64b102-95cd-4123-a2d1-4bb1f7c77ba0",
         "date": "2024-04-13",
     }
@@ -161,8 +156,7 @@ def test_successful_get_ascents(client):
     assert res["items"][0]["rating"] == 3
     assert res["items"][0]["comment"] == "Yeeha!"
     assert res["items"][0]["year"] == None
-    assert res["items"][0]["gradeScale"] == "FB"
-    assert res["items"][0]["gradeName"] == "8A"
+    assert res["items"][0]["gradeValue"] == 22
     assert res["items"][0]["date"] == "2024-04-16"
     assert res["items"][0]["line"]["slug"] == "super-spreader"
     assert res["items"][0]["area"]["slug"] == "dritter-block-von-links"
@@ -231,7 +225,7 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "OPEN_PROJECT",
+        "gradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,

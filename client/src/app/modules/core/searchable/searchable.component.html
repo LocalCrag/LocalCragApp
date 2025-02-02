@@ -9,15 +9,15 @@
     [routerLink]="searchable.line.routerLink"
   >
     <div class="grade-circle">
-      <ng-container *ngIf="searchable.line.grade.value > 0">{{
-        searchable.line.grade.name
-      }}</ng-container>
-      <ng-container *ngIf="searchable.line.grade.value === 0">{{
-        t("gradeCircleNotGraded")
-      }}</ng-container>
-      <ng-container *ngIf="searchable.line.grade.value < 0">{{
-        t("gradeCircleProject")
-      }}</ng-container>
+      <ng-container *ngIf="searchable.line.gradeValue > 0">{{
+          searchable.line | lineGrade
+        }}</ng-container>
+      <ng-container *ngIf="searchable.line.gradeValue === 0">{{
+          t("gradeCircleNotGraded")
+        }}</ng-container>
+      <ng-container *ngIf="searchable.line.gradeValue < 0">{{
+          t("gradeCircleProject")
+        }}</ng-container>
     </div>
     <div class="search-result-description">
       <div class="search-result-name">{{ searchable.line.name }}</div>

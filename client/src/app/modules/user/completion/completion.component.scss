@@ -5,6 +5,10 @@ p-slider {
 .slider-container {
   padding-left: 0.5715rem;
   padding-right: 0.5715rem;
+
+  lc-slider-labels {
+    margin-bottom: 2rem;
+  }
 }
 
 .progress-bar-wrapper {

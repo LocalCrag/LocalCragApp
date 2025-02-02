@@ -5,23 +5,27 @@ import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
 import { map, switchMap } from 'rxjs/operators';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
+import { ScalesService } from '../../../services/crud/scales.service';
 import { Crag } from '../../../models/crag';
 import { forkJoin } from 'rxjs';
 import { Completion } from '../../../models/statistics';
 import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { SharedModule } from 'primeng/api';
-import { NgForOf, NgIf } from '@angular/common';
+import { SelectItem } from 'primeng/api';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { MessagesModule } from 'primeng/messages';
+import { LineType } from '../../../enums/line-type';
+import { RegionService } from '../../../services/crud/region.service';
+import { DropdownModule } from 'primeng/dropdown';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-completion',
@@ -36,17 +40,16 @@ import { MessagesModule } from 'primeng/messages';
     ExpandButtonComponent,
     SliderLabelsComponent,
     SliderModule,
-    TranslocoPipe,
     FormsModule,
     MessagesModule,
     TranslocoDirective,
+    AsyncPipe,
+    DropdownModule,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',
 })
 export class CompletionComponent implements OnInit {
-  // TODO @BlobbyBob Update grade slider
-
   private user: User;
 
   public crags: Crag[];
@@ -59,8 +62,10 @@ export class CompletionComponent implements OnInit {
   public expandedSectors: Set<string> = new Set<string>();
 
   public listenForSliderStop = false;
-  public minGradeValue = GRADES['FB'][2].value;
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public availableScales: SelectItem<{lineType: LineType, gradeScale: string} | undefined>[] = [];
+  public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
+  public minGradeValue = 0;  // Skip project grades
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
   constructor(
@@ -68,13 +73,16 @@ export class CompletionComponent implements OnInit {
     private usersService: UsersService,
     private route: ActivatedRoute,
     private menuItemsService: MenuItemsService,
+    private regionService: RegionService,
+    private translocoService: TranslocoService,
+    protected scalesService: ScalesService,
   ) {}
 
   @HostListener('document:touchend')
   @HostListener('document:mouseup')
   reloadAfterSliderStop() {
     if (this.listenForSliderStop) {
-      this.loadCompletion().subscribe();
+      this.loadCompletion();
     }
   }
 
@@ -88,11 +96,11 @@ export class CompletionComponent implements OnInit {
           this.user = user;
           return forkJoin({
             menuItems: this.menuItemsService.getCragMenuStructure(),
-            completion: this.loadCompletion(),
+            gradeDistribution: this.regionService.getRegionGrades(),
           });
         }),
       )
-      .subscribe(({ menuItems }) => {
+      .subscribe(({ menuItems, gradeDistribution }) => {
         this.crags = menuItems;
         this.crags.map((crag) => {
           this.cragMap.set(crag.id, crag);
@@ -103,16 +111,55 @@ export class CompletionComponent implements OnInit {
             });
           });
         });
+
+        this.availableScales.push({
+          label: this.translocoService.translate("ALL"),
+          value: undefined,
+        });
+        for (const lineType in gradeDistribution) {
+          for (const gradeScale in gradeDistribution[lineType]) {
+            if (gradeDistribution[lineType][gradeScale]) {
+              this.availableScales.push({
+                label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+                value: { lineType: lineType as LineType, gradeScale }
+              });
+            }
+          }
+        }
+        if (this.availableScales.length <= 2) {
+          this.scaleKey = this.availableScales[1];  // Default: Select first scale, so range slider is available
+        } else {
+          this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
+        }
+        this.selectScale();
       });
   }
 
+  selectScale() {
+    if (this.scaleKey?.value) {
+      this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
+        this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
+        this.gradeFilterRange = [0, this.maxGradeValue];
+      });
+    }
+    this.loadCompletion();
+  }
+
   private loadCompletion() {
-    const query = `?user_id=${this.user.id}&min_grade=${this.gradeFilterRange[0]}&max_grade=${this.gradeFilterRange[1]}`;
-    return this.statisticsService.getCompletion(query).pipe(
-      map((completion) => {
-        this.completion = completion;
-      }),
-    );
+    const filters = new URLSearchParams({
+      user_id: this.user.id,
+    });
+    if (this.gradeFilterRange[1] !== null) {
+      filters.set("min_grade", this.gradeFilterRange[0]);
+      filters.set("max_grade", this.gradeFilterRange[1]);
+    }
+    if (this.scaleKey?.value) {
+      filters.set("line_type", this.scaleKey.value.lineType);
+      filters.set("grade_scale", this.scaleKey.value.gradeScale);
+    }
+    return this.statisticsService.getCompletion(`?${filters.toString()}`).subscribe((completion) => {
+      this.completion = completion;
+    });
   }
 
   public addOrRemove(set: Set<string>, id: string) {
@@ -123,6 +170,5 @@ export class CompletionComponent implements OnInit {
     }
   }
 
-  protected readonly gradeNameByValue = gradeNameByValue;
   protected readonly Object = Object;
 }

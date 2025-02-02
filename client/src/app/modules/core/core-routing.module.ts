@@ -68,6 +68,9 @@ import { ObjectType } from '../../models/tag';
 import { HistoryListComponent } from '../history/history-list/history-list.component';
 import { skipHierarchy } from '../../guards/skip-hierarchy';
 import { environment } from '../../../environments/environment';
+import { isAdmin } from '../../guards/is-admin';
+import { ScaleListComponent } from '../scale/scale-list/scale-list.component';
+import { ScaleFormComponent } from '../scale/scale-form/scale-form.component';
 
 const routes: Routes = [
   {
@@ -251,6 +254,30 @@ const routes: Routes = [
     path: 'instance-settings',
     component: InstanceSettingsFormComponent,
     canActivate: [isModerator],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
+    path: 'scales',
+    component: ScaleListComponent,
+    canActivate: [isAdmin],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
+    path: 'scales/create',
+    component: ScaleFormComponent,
+    canActivate: [isAdmin],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
+    path: 'scales/:lineType/:name',
+    component: ScaleFormComponent,
+    canActivate: [isAdmin],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH,
     },

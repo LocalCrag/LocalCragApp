@@ -20,14 +20,22 @@ class GetCompletion(MethodView):
         Is used to build a "crag completion" page for a user.
         """
 
-        # TODO @BlobbyBob Add filter for archived, update grade filter
-
         user_id = request.args.get("user_id")
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
+        line_type = request.args.get("line_type") or None
+        grade_scale = request.args.get("grade_scale") or None
 
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
+
+        try:
+            if min_grade_value is not None:
+                min_grade_value = int(min_grade_value)
+            if max_grade_value is not None:
+                max_grade_value  = int(max_grade_value)
+        except ValueError:
+            raise BadRequest("Min and max grade must be valid integers.")
 
         # Query for all lines and their associated crag, sector, and area
         lines_query = (
@@ -36,7 +44,7 @@ class GetCompletion(MethodView):
             .join(Area, Line.area_id == Area.id)
             .join(Sector, Area.sector_id == Sector.id)
             .join(Crag, Sector.crag_id == Crag.id)
-            .filter(Line.grade_value >= 0)  # Don't include projects in progress
+            .filter(Line.grade_value >= 0, Line.archived.is_(False))  # Don't include projects in progress or archived lines
             .distinct(Line.id)
         )
 
@@ -47,6 +55,11 @@ class GetCompletion(MethodView):
         # Filter secret spots
         if not get_show_secret():
             lines_query = lines_query.filter(Line.secret == false())
+
+        if line_type is not None:
+            lines_query = lines_query.filter(Line.type == line_type)
+        if grade_scale is not None:
+            lines_query = lines_query.filter(Line.grade_scale == grade_scale)
 
         lines = lines_query.all()
 
@@ -60,6 +73,7 @@ class GetCompletion(MethodView):
             ascents_query = ascents_query.join(Ascent.line).filter(
                 Line.grade_value >= min_grade_value, Line.grade_value <= max_grade_value
             )
+
 
         # Filter secret spots
         if not get_show_secret():
