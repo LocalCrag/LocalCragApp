@@ -64,7 +64,11 @@
         {{ t("FA") }} <span *ngIf="line.faYear">{{ line.faYear }}</span
         ><span *ngIf="line.faName">{{ line.faName }}</span>
       </div>
-      <lc-archive-button [line]="line" [showLabel]="true" *isModerator="true"></lc-archive-button>
+      <lc-archive-button
+        [line]="line"
+        [showLabel]="true"
+        *isModerator="true"
+      ></lc-archive-button>
       <ng-container *ngIf="!ticks.has(line.id)">
         <lc-todo-button
           [line]="line"

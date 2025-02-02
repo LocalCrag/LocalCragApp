@@ -120,15 +120,17 @@ export class TopoImageListComponent implements OnInit {
   refreshData() {
     this.loading = LoadingState.LOADING;
     const filters = new URLSearchParams();
-    if (this.showArchive)
-      filters.set("archived", "1");
+    if (this.showArchive) filters.set('archived', '1');
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           this.area = area;
           return forkJoin([
-            this.topoImagesService.getTopoImages(this.areaSlug, "?" + filters.toString()),
+            this.topoImagesService.getTopoImages(
+              this.areaSlug,
+              '?' + filters.toString(),
+            ),
             this.ticksService.getTicks(null, null, area.id),
             this.translocoService.load(`${environment.language}`),
           ]);
@@ -320,17 +322,21 @@ export class TopoImageListComponent implements OnInit {
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
           linePath.konvaLine.fill(
-            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
           );
           linePath.konvaLine.stroke(
-            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
           );
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
           linePath.konvaRect.fill(
-            highlightColor(linePath.line?.color) ?? instanceSettingsState.arrowHighlightColor
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
           );
           linePath.konvaText.fill(
-            textColor(highlightColor(linePath.line?.color)) ?? instanceSettingsState.arrowHighlightTextColor
+            textColor(highlightColor(linePath.line?.color)) ??
+              instanceSettingsState.arrowHighlightTextColor,
           );
         });
     }
@@ -346,11 +352,20 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(linePath.line?.color ?? instanceSettingsState.arrowColor);
-          linePath.konvaLine.stroke(linePath.line?.color ?? instanceSettingsState.arrowColor);
+          linePath.konvaLine.fill(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
+          linePath.konvaLine.stroke(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
           linePath.konvaLine.zIndex(1); // 0 is the BG image
-          linePath.konvaRect.fill(linePath.line?.color ?? instanceSettingsState.arrowColor);
-          linePath.konvaText.fill(textColor(linePath.line?.color) ?? instanceSettingsState.arrowTextColor);
+          linePath.konvaRect.fill(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
+          linePath.konvaText.fill(
+            textColor(linePath.line?.color) ??
+              instanceSettingsState.arrowTextColor,
+          );
         });
     }
   }

@@ -366,7 +366,14 @@ const routes: Routes = [
       },
       {
         path: 'crags',
-        canActivate: [skipHierarchy(1, ['/topo', environment.skippedSlug], ['sectors'], false)],
+        canActivate: [
+          skipHierarchy(
+            1,
+            ['/topo', environment.skippedSlug],
+            ['sectors'],
+            false,
+          ),
+        ],
         children: [
           {
             path: '',
@@ -388,7 +395,7 @@ const routes: Routes = [
       },
       {
         path: 'map',
-        canActivate: [skipHierarchy(1, ['/topo'])],  // No level below corresponding to map
+        canActivate: [skipHierarchy(1, ['/topo'])], // No level below corresponding to map
         children: [
           {
             path: '',
@@ -453,7 +460,15 @@ const routes: Routes = [
   {
     path: 'topo/create-crag',
     component: CragFormComponent,
-    canActivate: [isModerator, skipHierarchy(1, ['/topo', environment.skippedSlug], ['create-sector'], false)],
+    canActivate: [
+      isModerator,
+      skipHierarchy(
+        1,
+        ['/topo', environment.skippedSlug],
+        ['create-sector'],
+        false,
+      ),
+    ],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },
@@ -482,7 +497,14 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            canActivate: [skipHierarchy(2, ['/topo', environment.skippedSlug, environment.skippedSlug], ['areas'], false)],
+            canActivate: [
+              skipHierarchy(
+                2,
+                ['/topo', environment.skippedSlug, environment.skippedSlug],
+                ['areas'],
+                false,
+              ),
+            ],
             component: SectorListComponent,
             outlet: 'cragContent',
           },
@@ -558,7 +580,15 @@ const routes: Routes = [
   {
     path: 'topo/:crag-slug/create-sector',
     component: SectorFormComponent,
-    canActivate: [isModerator, skipHierarchy(2, ['/topo', environment.skippedSlug, environment.skippedSlug], ['create-area'], false)],
+    canActivate: [
+      isModerator,
+      skipHierarchy(
+        2,
+        ['/topo', environment.skippedSlug, environment.skippedSlug],
+        ['create-area'],
+        false,
+      ),
+    ],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
     },

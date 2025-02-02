@@ -9,10 +9,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import {
-  TranslocoDirective,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -86,8 +83,12 @@ export class TodoListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
 
-  public availableScales: SelectItem<{lineType: LineType, gradeScale: string} | undefined>[] = [];
-  public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
+  public availableScales: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >[] = [];
+  public scaleKey: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >;
 
   public minGradeValue = -2;
   public maxGradeValue = null;
@@ -121,7 +122,7 @@ export class TodoListComponent implements OnInit {
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
       this.availableScales.push({
-        label: this.translocoService.translate("ALL"),
+        label: this.translocoService.translate('ALL'),
         value: undefined,
       });
       for (const lineType in gradeDistribution) {
@@ -129,15 +130,15 @@ export class TodoListComponent implements OnInit {
           if (gradeDistribution[lineType][gradeScale]) {
             this.availableScales.push({
               label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-              value: { lineType: lineType as LineType, gradeScale }
+              value: { lineType: lineType as LineType, gradeScale },
             });
           }
         }
       }
       if (this.availableScales.length <= 2) {
-        this.scaleKey = this.availableScales[1];  // Default: Select first scale, so range slider is available
+        this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
       } else {
-        this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
+        this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
       }
       this.selectScale();
     });
@@ -268,10 +269,14 @@ export class TodoListComponent implements OnInit {
 
   selectScale() {
     if (this.scaleKey?.value) {
-      this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
-        this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-        this.gradeFilterRange = [-2, this.maxGradeValue];
-      });
+      this.scalesService
+        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+        .subscribe((scale) => {
+          this.maxGradeValue = Math.max(
+            ...scale.grades.map((grade) => grade.value),
+          );
+          this.gradeFilterRange = [-2, this.maxGradeValue];
+        });
     }
     this.loadFirstPage();
   }
@@ -297,29 +302,29 @@ export class TodoListComponent implements OnInit {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
       const filters = new URLSearchParams();
-      filters.set("page", this.currentPage.toString());
+      filters.set('page', this.currentPage.toString());
       if (this.gradeFilterRange[1] !== null) {
-        filters.set("min_grade", this.gradeFilterRange[0].toString());
-        filters.set("max_grade", this.gradeFilterRange[1].toString());
+        filters.set('min_grade', this.gradeFilterRange[0].toString());
+        filters.set('max_grade', this.gradeFilterRange[1].toString());
       }
       if (this.scaleKey?.value) {
-        filters.set("line_type", this.scaleKey.value.lineType);
-        filters.set("grade_scale", this.scaleKey.value.gradeScale);
+        filters.set('line_type', this.scaleKey.value.lineType);
+        filters.set('grade_scale', this.scaleKey.value.gradeScale);
       }
-      filters.set("order_by", this.orderKey.value);
-      filters.set("order_direction", this.orderDirectionKey.value);
-      filters.set("per_page", "10");
+      filters.set('order_by', this.orderKey.value);
+      filters.set('order_direction', this.orderDirectionKey.value);
+      filters.set('per_page', '10');
       if (this.cragFilterKey?.value) {
-        filters.set("crag_id", this.cragFilterKey.value);
+        filters.set('crag_id', this.cragFilterKey.value);
       }
       if (this.sectorFilterKey?.value) {
-        filters.set("sector_id", this.sectorFilterKey.value);
+        filters.set('sector_id', this.sectorFilterKey.value);
       }
       if (this.areaFilterKey?.value) {
-        filters.set("area_id", this.areaFilterKey.value);
+        filters.set('area_id', this.areaFilterKey.value);
       }
       if (this.priorityFilterKey.value !== null) {
-        filters.set("priority", this.priorityFilterKey.value);
+        filters.set('priority', this.priorityFilterKey.value);
       }
       const filterString = `?${filters.toString()}`;
       this.todosService.getTodos(filterString).subscribe((todos) => {

@@ -49,7 +49,8 @@ export class InstanceSettings {
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.gymMode = payload.gymMode;
-    instanceSettings.skippedHierarchicalLayers = payload.skippedHierarchicalLayers;
+    instanceSettings.skippedHierarchicalLayers =
+      payload.skippedHierarchicalLayers;
     return instanceSettings;
   }
 

@@ -96,31 +96,33 @@ export class LineComponent implements OnInit {
         this.sector = sector;
         this.area = area;
         this.line = line;
-        this.scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue).subscribe((gradeName) => {
-          this.breadcrumbs = [
-            {
-              label: crag.name,
-              routerLink: `/topo/${crag.slug}/sectors`,
-            },
-            {
-              label: sector.name,
-              routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
-            },
-            {
-              label: area.name,
-              routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
-            },
-            {
-              label: `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
-            },
-          ];
+        this.scalesService
+          .gradeNameByValue(line.type, line.gradeScale, line.gradeValue)
+          .subscribe((gradeName) => {
+            this.breadcrumbs = [
+              {
+                label: crag.name,
+                routerLink: `/topo/${crag.slug}/sectors`,
+              },
+              {
+                label: sector.name,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+              },
+              {
+                label: area.name,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
+              },
+              {
+                label: `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
+              },
+            ];
 
-          this.store.select(selectInstanceName).subscribe((instanceName) => {
-            this.title.setTitle(
-              `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
-            );
-          })
-        });
+            this.store.select(selectInstanceName).subscribe((instanceName) => {
+              this.title.setTitle(
+                `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
+              );
+            });
+          });
 
         this.items = [
           {

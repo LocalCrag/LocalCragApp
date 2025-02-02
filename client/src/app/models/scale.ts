@@ -5,7 +5,10 @@ export interface Grade {
   value: number;
 }
 
-export type GradeDistribution = Record<LineType, Record<string, Record<number, number>>>;
+export type GradeDistribution = Record<
+  LineType,
+  Record<string, Record<number, number>>
+>;
 
 export function deserializeGradeList(payload: any): GradeDistribution {
   return payload;

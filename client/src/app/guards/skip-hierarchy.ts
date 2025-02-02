@@ -14,7 +14,12 @@ import { environment } from '../../environments/environment';
  * @param routingPostfix postfixes of the target route
  * @param dynamicRoute If true (default), adds skippedHierarchyLayers amount of environment.skippedSlug between prefix and postfix
  */
-export function skipHierarchy(threshold: number, routingPrefix: string[], routingPostfix: string[] = [], dynamicRoute = true): CanActivateFn {
+export function skipHierarchy(
+  threshold: number,
+  routingPrefix: string[],
+  routingPostfix: string[] = [],
+  dynamicRoute = true,
+): CanActivateFn {
   return () => {
     const store = inject(Store<AppState>);
     const router = inject(Router);
@@ -36,5 +41,5 @@ export function skipHierarchy(threshold: number, routingPrefix: string[], routin
         return true;
       }),
     );
-  }
+  };
 }

@@ -82,14 +82,21 @@ export class AreaFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    const scalesPopulated = this.scalesService.getFormScaleSelectors(
-      [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}]
-    ).pipe(map(groupedScales => {
-      this.boulderScales = groupedScales[LineType.BOULDER];
-      this.sportScales = groupedScales[LineType.SPORT];
-      this.tradScales = groupedScales[LineType.TRAD];
-      return true;
-    }));
+    const scalesPopulated = this.scalesService
+      .getFormScaleSelectors([
+        {
+          label: this.translocoService.translate(marker('defaultScalesLabel')),
+          value: null,
+        },
+      ])
+      .pipe(
+        map((groupedScales) => {
+          this.boulderScales = groupedScales[LineType.BOULDER];
+          this.sportScales = groupedScales[LineType.SPORT];
+          this.tradScales = groupedScales[LineType.TRAD];
+          return true;
+        }),
+      );
 
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
@@ -103,25 +110,23 @@ export class AreaFormComponent implements OnInit {
         this.editMode = true;
         this.areaForm.disable();
         forkJoin([
-          this.areasService
-            .getArea(areaSlug)
-            .pipe(
-              catchError((e) => {
-                if (e.status === 404) {
-                  this.router.navigate(['/not-found']);
-                }
-                return of(e);
-              }),
-            ),
-            scalesPopulated
-          ]).subscribe(([area, _]) => {
-            this.area = area;
-            this.setFormValue();
-            this.loadingState = LoadingState.DEFAULT;
-            this.editors?.map((editor) => {
-              editor.getQuill().enable();
-            });
+          this.areasService.getArea(areaSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+          scalesPopulated,
+        ]).subscribe(([area, _]) => {
+          this.area = area;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          this.editors?.map((editor) => {
+            editor.getQuill().enable();
           });
+        });
       } else {
         this.store.select(selectInstanceName).subscribe((instanceName) => {
           this.title.setTitle(

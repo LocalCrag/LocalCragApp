@@ -111,8 +111,24 @@
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [minLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[0]) | async | translateSpecialGrades"
-            [maxLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[1]) | async | translateSpecialGrades"
+            [minLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[0]
+              )
+                | async
+                | translateSpecialGrades
+            "
+            [maxLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[1]
+              )
+                | async
+                | translateSpecialGrades
+            "
           ></lc-slider-labels>
           <p-slider
             [(ngModel)]="gradeFilterRange"
@@ -136,10 +152,13 @@
           }}/{{ line.slug }}"
           *ngFor="let line of lines; let first = first"
           data-cy="line-list-item"
-
-        >  <div
+        >
+          <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first, 'archived': line.archived }"
+            [ngClass]="{
+              'border-top-1 surface-border': !first,
+              archived: line.archived,
+            }"
           >
             <lc-topo-image
               class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
@@ -193,7 +212,12 @@
                   >
                   </p-button>
                   <div class="flex-grow-1"></div>
-                  <lc-archive-button [line]="line" [showLabel]="false" [style]="'plain'" *isModerator="true"></lc-archive-button>
+                  <lc-archive-button
+                    [line]="line"
+                    [showLabel]="false"
+                    [style]="'plain'"
+                    *isModerator="true"
+                  ></lc-archive-button>
                   <ng-container *ngIf="!ticks.has(line.id)">
                     <lc-todo-button
                       [line]="line"

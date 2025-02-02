@@ -58,7 +58,11 @@ export class LineAscentsComponent implements OnInit {
         this.line = line;
         forkJoin([
           this.store.select(selectInstanceName),
-          this.scalesService.gradeNameByValue(line.type, line.gradeScale, line.gradeValue),
+          this.scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            line.gradeValue,
+          ),
         ]).subscribe(([instanceName, gradeName]) => {
           this.title.setTitle(
             `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,

@@ -326,82 +326,52 @@ export class AppNotificationsService {
        * t(notifications.LOG_OUT_TO_USE_THIS_FUNCTION_TITLE)
        * t(notifications.LOG_OUT_TO_USE_THIS_FUNCTION_MESSAGE)
        **/
-      [
-        NotificationIdentifier.ARCHIVED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.ARCHIVED, NotificationType.SUCCESS],
       /**
        * t(notifications.ARCHIVED_TITLE)
        * t(notifications.ARCHIVED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.UNARCHIVED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.UNARCHIVED, NotificationType.SUCCESS],
       /**
        * t(notifications.UNARCHIVED_TITLE)
        * t(notifications.UNARCHIVED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.ARCHIVED_ERROR,
-        NotificationType.ERROR,
-      ],
+      [NotificationIdentifier.ARCHIVED_ERROR, NotificationType.ERROR],
       /**
        * t(notifications.ARCHIVED_ERROR_TITLE)
        * t(notifications.ARCHIVED_ERROR_MESSAGE)
        **/
-      [
-        NotificationIdentifier.UNARCHIVED_ERROR,
-        NotificationType.ERROR,
-      ],
+      [NotificationIdentifier.UNARCHIVED_ERROR, NotificationType.ERROR],
       /**
        * t(notifications.UNARCHIVED_ERROR_TITLE)
        * t(notifications.UNARCHIVED_ERROR_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_CREATED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.SCALE_CREATED, NotificationType.SUCCESS],
       /**
        * t(notifications.SCALE_CREATED_TITLE)
        * t(notifications.SCALE_CREATED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_CREATED_ERROR,
-        NotificationType.ERROR,
-      ],
+      [NotificationIdentifier.SCALE_CREATED_ERROR, NotificationType.ERROR],
       /**
        * t(notifications.SCALE_CREATED_ERROR_TITLE)
        * t(notifications.SCALE_CREATED_ERROR_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_UPDATED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.SCALE_UPDATED, NotificationType.SUCCESS],
       /**
        * t(notifications.SCALE_UPDATED_TITLE)
        * t(notifications.SCALE_UPDATED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_UPDATED_ERROR,
-        NotificationType.ERROR,
-      ],
+      [NotificationIdentifier.SCALE_UPDATED_ERROR, NotificationType.ERROR],
       /**
        * t(notifications.SCALE_UPDATED_ERROR_TITLE)
        * t(notifications.SCALE_UPDATED_ERROR_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_DELETED,
-        NotificationType.SUCCESS,
-      ],
+      [NotificationIdentifier.SCALE_DELETED, NotificationType.SUCCESS],
       /**
        * t(notifications.SCALE_DELETED_TITLE)
        * t(notifications.SCALE_DELETED_MESSAGE)
        **/
-      [
-        NotificationIdentifier.SCALE_DELETED_ERROR,
-        NotificationType.ERROR,
-      ],
+      [NotificationIdentifier.SCALE_DELETED_ERROR, NotificationType.ERROR],
       /**
        * t(notifications.SCALE_DELETED_ERROR_TITLE)
        * t(notifications.SCALE_DELETED_ERROR_MESSAGE)

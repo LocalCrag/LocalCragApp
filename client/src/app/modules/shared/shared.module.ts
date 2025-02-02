@@ -81,6 +81,6 @@ import { LineGradePipe } from './pipes/line-grade.pipe';
     SanitizeHtmlPipe,
     TranslateSpecialGradesPipe,
   ],
-  providers: [ AsyncPipe, TranslateSpecialGradesPipe ]
+  providers: [AsyncPipe, TranslateSpecialGradesPipe],
 })
 export class SharedModule {}

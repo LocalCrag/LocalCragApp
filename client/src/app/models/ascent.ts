@@ -33,7 +33,7 @@ export class Ascent extends AbstractModel {
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
     AbstractModel.deserializeAbstractAttributes(ascent, payload);
-    ascent.gradeValue = payload.gradeValue
+    ascent.gradeValue = payload.gradeValue;
     ascent.flash = payload.flash;
     ascent.fa = payload.fa;
     ascent.soft = payload.soft;

@@ -1,9 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -47,7 +58,7 @@ import { MessageModule } from 'primeng/message';
     FormsModule,
     ConfirmPopupModule,
     DropdownModule,
-    MessageModule
+    MessageModule,
   ],
   providers: [ConfirmationService],
 })
@@ -81,16 +92,21 @@ export class ScaleFormComponent implements OnInit {
     this.buildForm();
     this.scaleForm.disable();
     if (this.editMode) {
-      this.scalesService.getScale(lineType, name).pipe(catchError((e) => {
-        if (e.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        return of(e);
-      })).subscribe((scale) => {
-        this.scale = scale;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-      });
+      this.scalesService
+        .getScale(lineType, name)
+        .pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        )
+        .subscribe((scale) => {
+          this.scale = scale;
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+        });
     } else {
       this.setFormValue();
       this.loadingState = LoadingState.DEFAULT;
@@ -99,36 +115,66 @@ export class ScaleFormComponent implements OnInit {
 
   buildForm() {
     this.scaleForm = this.fb.group({
-      lineType: this.editMode ? undefined : [LineType.BOULDER, [Validators.required]],
+      lineType: this.editMode
+        ? undefined
+        : [LineType.BOULDER, [Validators.required]],
       name: this.editMode ? undefined : ['', Validators.required],
-      grades: this.fb.array([], [
-        (ctl) => ctl.value.length === (new Set(ctl.value.map(v => v.value))).size ? null : {'not_unique': true}
-      ]),
-      gradeBrackets: this.fb.array([], [
-        (ctl) => ctl.value.length >= 2
-          && ctl.value.reduce((p, c) => p && c.value > 0, true)
-          && ctl.value.at(-2).value + 1 === ctl.value.at(-1).value
-          ? null : {'semantic_error': true},
-        (ctl) => ctl.value.length >= 2 && ctl.value.length <= 8 ? null : {'invalid_length': true},
-      ]),
+      grades: this.fb.array(
+        [],
+        [
+          (ctl) =>
+            ctl.value.length === new Set(ctl.value.map((v) => v.value)).size
+              ? null
+              : { not_unique: true },
+        ],
+      ),
+      gradeBrackets: this.fb.array(
+        [],
+        [
+          (ctl) =>
+            ctl.value.length >= 2 &&
+            ctl.value.reduce((p, c) => p && c.value > 0, true) &&
+            ctl.value.at(-2).value + 1 === ctl.value.at(-1).value
+              ? null
+              : { semantic_error: true },
+          (ctl) =>
+            ctl.value.length >= 2 && ctl.value.length <= 8
+              ? null
+              : { invalid_length: true },
+        ],
+      ),
     });
   }
 
   setFormValue() {
     if (this.editMode) {
-      this.scale.grades.map((g) => this.fb.group({
-        name: [g.name],
-        value: [g.value],
-      })).forEach((ctl) => this.gradeControls().push(ctl));
-      this.scale.gradeBrackets.map((value) => this.fb.group({
-        value: [value]
-      })).forEach((ctl) => this.gradeBracketsControls().push(ctl));
+      this.scale.grades
+        .map((g) =>
+          this.fb.group({
+            name: [g.name],
+            value: [g.value],
+          }),
+        )
+        .forEach((ctl) => this.gradeControls().push(ctl));
+      this.scale.gradeBrackets
+        .map((value) =>
+          this.fb.group({
+            value: [value],
+          }),
+        )
+        .forEach((ctl) => this.gradeBracketsControls().push(ctl));
     } else {
-      this.gradeControls().push(this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }));
-      this.gradeControls().push(this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }));
-      this.gradeControls().push(this.fb.group({ name: marker('UNGRADED'), value: 0 }));
-      this.gradeBracketsControls().push(this.fb.group({value: 1}));
-      this.gradeBracketsControls().push(this.fb.group({value: 2}));
+      this.gradeControls().push(
+        this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }),
+      );
+      this.gradeControls().push(
+        this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }),
+      );
+      this.gradeControls().push(
+        this.fb.group({ name: marker('UNGRADED'), value: 0 }),
+      );
+      this.gradeBracketsControls().push(this.fb.group({ value: 1 }));
+      this.gradeBracketsControls().push(this.fb.group({ value: 2 }));
       this.addGrade();
     }
     this.scaleForm.enable();
@@ -146,15 +192,23 @@ export class ScaleFormComponent implements OnInit {
     const data = this.gradeControls().value;
     data.sort((a, b) => a.value - b.value);
     this.gradeControls().clear();
-    data.filter((g) => Number.isInteger(g.value)).map((g) => this.fb.group({
-      name: [g.name],
-      value: [g.value],
-    })).forEach((ctl) => this.gradeControls().push(ctl));
+    data
+      .filter((g) => Number.isInteger(g.value))
+      .map((g) =>
+        this.fb.group({
+          name: [g.name],
+          value: [g.value],
+        }),
+      )
+      .forEach((ctl) => this.gradeControls().push(ctl));
   }
 
   addGrade() {
-    const max = this.gradeControls().value.reduce((acc, v) => v.value > acc ? v.value : acc, 0);
-    this.gradeControls().push(this.fb.group({name: [], value: [max + 1]}));
+    const max = this.gradeControls().value.reduce(
+      (acc, v) => (v.value > acc ? v.value : acc),
+      0,
+    );
+    this.gradeControls().push(this.fb.group({ name: [], value: [max + 1] }));
   }
 
   deleteGrade(index: number) {
@@ -162,8 +216,13 @@ export class ScaleFormComponent implements OnInit {
   }
 
   addBracket() {
-    const max = this.gradeBracketsControls().value.reduce((acc, v) => v.value > acc ? v.value : acc, 0);
-    this.gradeBracketsControls().push(this.fb.group({name: [], value: [max + 1]}));
+    const max = this.gradeBracketsControls().value.reduce(
+      (acc, v) => (v.value > acc ? v.value : acc),
+      0,
+    );
+    this.gradeBracketsControls().push(
+      this.fb.group({ name: [], value: [max + 1] }),
+    );
   }
 
   deleteBracket(index: number) {
@@ -176,20 +235,22 @@ export class ScaleFormComponent implements OnInit {
 
       if (this.editMode) {
         this.scale.grades = this.gradeControls().value;
-        this.scale.gradeBrackets = this.gradeBracketsControls().value.map((gb) => gb.value);
+        this.scale.gradeBrackets = this.gradeBracketsControls().value.map(
+          (gb) => gb.value,
+        );
 
         this.scalesService.updateScale(this.scale).subscribe({
           next: () => {
             this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED)
+              toastNotification(NotificationIdentifier.SCALE_UPDATED),
             );
-            this.loadingState = LoadingState.DEFAULT
+            this.loadingState = LoadingState.DEFAULT;
           },
           error: () => {
             this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED_ERROR)
+              toastNotification(NotificationIdentifier.SCALE_UPDATED_ERROR),
             );
-            this.loadingState = LoadingState.DEFAULT
+            this.loadingState = LoadingState.DEFAULT;
           },
         });
       } else {
@@ -197,20 +258,22 @@ export class ScaleFormComponent implements OnInit {
         scale.lineType = this.scaleForm.get('lineType').value.value;
         scale.name = this.scaleForm.get('name').value;
         scale.grades = this.gradeControls().value;
-        scale.gradeBrackets = this.gradeBracketsControls().value.map((gb) => gb.value);
+        scale.gradeBrackets = this.gradeBracketsControls().value.map(
+          (gb) => gb.value,
+        );
         this.scalesService.createScale(scale).subscribe({
           next: () => {
             this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED)
+              toastNotification(NotificationIdentifier.SCALE_CREATED),
             );
-            this.loadingState = LoadingState.DEFAULT
-            this.router.navigate(['/scales'])
+            this.loadingState = LoadingState.DEFAULT;
+            this.router.navigate(['/scales']);
           },
           error: () => {
             this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED_ERROR)
+              toastNotification(NotificationIdentifier.SCALE_CREATED_ERROR),
             );
-            this.loadingState = LoadingState.DEFAULT
+            this.loadingState = LoadingState.DEFAULT;
           },
         });
       }
@@ -221,10 +284,16 @@ export class ScaleFormComponent implements OnInit {
     this.translocoService.load(environment.language).subscribe(() => {
       this.confirmationService.confirm({
         target: event.target,
-        message: this.translocoService.translate(marker('scale.scaleForm.confirmDeleteMessage')),
-        acceptLabel: this.translocoService.translate(marker('scale.scaleForm.acceptConfirmDelete')),
+        message: this.translocoService.translate(
+          marker('scale.scaleForm.confirmDeleteMessage'),
+        ),
+        acceptLabel: this.translocoService.translate(
+          marker('scale.scaleForm.acceptConfirmDelete'),
+        ),
         acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(marker('scale.scaleForm.cancel')),
+        rejectLabel: this.translocoService.translate(
+          marker('scale.scaleForm.cancel'),
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: this.deleteScale.bind(this),
       });

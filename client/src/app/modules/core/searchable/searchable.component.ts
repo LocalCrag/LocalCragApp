@@ -16,7 +16,14 @@ import { SharedModule } from '../../shared/shared.module';
 @Component({
   selector: 'lc-searchable',
   standalone: true,
-  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, AsyncPipe, SharedModule],
+  imports: [
+    AvatarModule,
+    NgIf,
+    TranslocoDirective,
+    RouterLink,
+    AsyncPipe,
+    SharedModule,
+  ],
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -31,8 +38,5 @@ export class SearchableComponent {
   ellipsis = false;
   protected readonly environment = environment;
 
-
-  constructor(
-    protected scalesService: ScalesService,
-  ) {}
+  constructor(protected scalesService: ScalesService) {}
 }

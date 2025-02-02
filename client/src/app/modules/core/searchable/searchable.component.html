@@ -10,26 +10,31 @@
   >
     <div class="grade-circle">
       <ng-container *ngIf="searchable.line.gradeValue > 0">{{
-          searchable.line | lineGrade
-        }}</ng-container>
+        searchable.line | lineGrade
+      }}</ng-container>
       <ng-container *ngIf="searchable.line.gradeValue === 0">{{
-          t("gradeCircleNotGraded")
-        }}</ng-container>
+        t("gradeCircleNotGraded")
+      }}</ng-container>
       <ng-container *ngIf="searchable.line.gradeValue < 0">{{
-          t("gradeCircleProject")
-        }}</ng-container>
+        t("gradeCircleProject")
+      }}</ng-container>
     </div>
     <div class="search-result-description">
       <div class="search-result-name">{{ searchable.line.name }}</div>
       <div class="search-result-meta">
-        <b>{{ t(searchable.line.type) }}</b>,
-        {{ searchable.line.area.name }}<!--
-          --><ng-container *ngIf="searchable.line.area.sector.slug !== environment.skippedSlug">, {{
-          searchable.line.area.sector.name
-        }}</ng-container><!--
-          --><ng-container *ngIf="searchable.line.area.sector.crag.slug !== environment.skippedSlug">, {{
-          searchable.line.area.sector.crag.name
-        }}</ng-container>
+        <b>{{ t(searchable.line.type) }}</b
+        >, {{ searchable.line.area.name
+        }}<!--
+          --><ng-container
+          *ngIf="searchable.line.area.sector.slug !== environment.skippedSlug"
+          >, {{ searchable.line.area.sector.name }}</ng-container
+        ><!--
+          --><ng-container
+          *ngIf="
+            searchable.line.area.sector.crag.slug !== environment.skippedSlug
+          "
+          >, {{ searchable.line.area.sector.crag.name }}</ng-container
+        >
       </div>
     </div>
   </div>
@@ -51,13 +56,16 @@
     <div class="search-result-description">
       <div class="search-result-name">{{ searchable.area.name }}</div>
       <div class="search-result-meta">
-        <b>{{ t("area") }}</b><!--
-          --><ng-container *ngIf="searchable.area.sector.slug !== environment.skippedSlug">, {{
-          searchable.area.sector.name
-        }}</ng-container><!--
-          --><ng-container *ngIf="searchable.area.sector.crag.slug !== environment.skippedSlug">, {{
-          searchable.area.sector.crag.name
-        }}</ng-container>
+        <b>{{ t("area") }}</b
+        ><!--
+          --><ng-container
+          *ngIf="searchable.area.sector.slug !== environment.skippedSlug"
+          >, {{ searchable.area.sector.name }}</ng-container
+        ><!--
+          --><ng-container
+          *ngIf="searchable.area.sector.crag.slug !== environment.skippedSlug"
+          >, {{ searchable.area.sector.crag.name }}</ng-container
+        >
       </div>
     </div>
   </div>
@@ -79,10 +87,12 @@
     <div class="search-result-description">
       <div class="search-result-name">{{ searchable.sector.name }}</div>
       <div class="search-result-meta">
-        <b>{{ t("sector") }}</b><!--
-          --><ng-container *ngIf="searchable.sector.crag.slug !== environment.skippedSlug">, {{
-          searchable.sector.crag.name
-        }}</ng-container>
+        <b>{{ t("sector") }}</b
+        ><!--
+          --><ng-container
+          *ngIf="searchable.sector.crag.slug !== environment.skippedSlug"
+          >, {{ searchable.sector.crag.name }}</ng-container
+        >
       </div>
     </div>
   </div>

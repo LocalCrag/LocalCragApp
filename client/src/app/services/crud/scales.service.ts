@@ -7,12 +7,10 @@ import { LineType } from '../../enums/line-type';
 import { FullScale, Scale } from '../../models/scale';
 
 // LineType -> scaleName -> [gradeNamesToValues, gradeValuesToNames, scale]
-const CACHE: Record<LineType,
-                    Record<string, [
-                      Record<string, number>,
-                      Record<number, string>,
-                      FullScale
-                    ]>> = {
+const CACHE: Record<
+  LineType,
+  Record<string, [Record<string, number>, Record<number, string>, FullScale]>
+> = {
   [LineType.BOULDER]: {},
   [LineType.SPORT]: {},
   [LineType.TRAD]: {},
@@ -43,17 +41,15 @@ export class ScalesService {
       return OPEN_REQUESTS[lineType][name];
     }
 
-    const req = this.http
-      .get(this.api.scales.get(lineType, name))
-      .pipe(
-        map((payload) => Scale.deserializeFull(payload)),
-        map((scale) => this.updateCache(scale)),
-        map((scale) => {
-          delete OPEN_REQUESTS[lineType][name];
-          return scale;
-        }),
-        shareReplay(1),
-      );
+    const req = this.http.get(this.api.scales.get(lineType, name)).pipe(
+      map((payload) => Scale.deserializeFull(payload)),
+      map((scale) => this.updateCache(scale)),
+      map((scale) => {
+        delete OPEN_REQUESTS[lineType][name];
+        return scale;
+      }),
+      shareReplay(1),
+    );
 
     OPEN_REQUESTS[lineType][name] = req;
     return req;
@@ -63,45 +59,70 @@ export class ScalesService {
     return this.http
       .get(this.api.scales.getList())
       .pipe(
-        map((payload) => (payload as Array<any>).map((p) => Scale.deserialize(p))),
+        map((payload) =>
+          (payload as Array<any>).map((p) => Scale.deserialize(p)),
+        ),
       );
   }
 
   public createScale(scale: Scale): Observable<FullScale> {
     return this.http
       .post(this.api.scales.create(), Scale.serialize(scale))
-      .pipe(map(Scale.deserializeFull), map((scale) => this.updateCache(scale)),);
+      .pipe(
+        map(Scale.deserializeFull),
+        map((scale) => this.updateCache(scale)),
+      );
   }
 
   public updateScale(scale: Scale): Observable<FullScale> {
     return this.http
-      .put(this.api.scales.update(scale.lineType, scale.name), Scale.serialize(scale))
-      .pipe(map(Scale.deserializeFull), map((scale) => this.updateCache(scale)),);
+      .put(
+        this.api.scales.update(scale.lineType, scale.name),
+        Scale.serialize(scale),
+      )
+      .pipe(
+        map(Scale.deserializeFull),
+        map((scale) => this.updateCache(scale)),
+      );
   }
 
   public deleteScale(scale: Scale): Observable<null> {
     return this.http
       .delete(this.api.scales.delete(scale.lineType, scale.name))
-      .pipe(map(() => delete CACHE[scale.lineType][scale.name]), map(() => null));
+      .pipe(
+        map(() => delete CACHE[scale.lineType][scale.name]),
+        map(() => null),
+      );
   }
 
-  public gradeNameByValue(lineType?: LineType, name?: string, value?: number): Observable<string> {
-    if (!lineType || !name || typeof value !== "number") {
+  public gradeNameByValue(
+    lineType?: LineType,
+    name?: string,
+    value?: number,
+  ): Observable<string> {
+    if (!lineType || !name || typeof value !== 'number') {
       // Convenience case to allow use of function in eventually-initialized locations
-      return of("");
+      return of('');
     }
 
     if (CACHE[lineType][name]) {
       return of(CACHE[lineType][name][1][value]);
     }
-    return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1][value]));
+    return this.getScale(lineType, name).pipe(
+      map(() => CACHE[lineType][name][1][value]),
+    );
   }
 
-  public gradeNameByValueMap(lineType: LineType, name: string): Observable<Record<number, string>> {
+  public gradeNameByValueMap(
+    lineType: LineType,
+    name: string,
+  ): Observable<Record<number, string>> {
     if (CACHE[lineType][name]) {
       return of(CACHE[lineType][name][1]);
     }
-    return this.getScale(lineType, name).pipe(map(() => CACHE[lineType][name][1]));
+    return this.getScale(lineType, name).pipe(
+      map(() => CACHE[lineType][name][1]),
+    );
   }
 
   private updateCache(scale: FullScale) {
@@ -113,34 +134,42 @@ export class ScalesService {
       gradeNameByValue[grade.value] = grade.name;
     }
 
-    CACHE[scale.lineType][scale.name] = [gradeValueByName, gradeNameByValue, scale];
+    CACHE[scale.lineType][scale.name] = [
+      gradeValueByName,
+      gradeNameByValue,
+      scale,
+    ];
     return scale;
   }
 
-  public getFormScaleSelectors<T>(listInitializer: {label: string, value: T | string}[]) {
-    return this.getScales().pipe(map(scales => {
-      const boulderScales = listInitializer.slice();
-      const sportScales = listInitializer.slice();
-      const tradScales = listInitializer.slice();
+  public getFormScaleSelectors<T>(
+    listInitializer: { label: string; value: T | string }[],
+  ) {
+    return this.getScales().pipe(
+      map((scales) => {
+        const boulderScales = listInitializer.slice();
+        const sportScales = listInitializer.slice();
+        const tradScales = listInitializer.slice();
 
-      scales.forEach(scale => {
-        switch (scale.lineType) {
-          case LineType.BOULDER:
-            boulderScales.push({label: scale.name, value: scale.name});
-            break;
-          case LineType.SPORT:
-            sportScales.push({label: scale.name, value: scale.name});
-            break;
-          case LineType.TRAD:
-            tradScales.push({label: scale.name, value: scale.name});
-        }
-      });
+        scales.forEach((scale) => {
+          switch (scale.lineType) {
+            case LineType.BOULDER:
+              boulderScales.push({ label: scale.name, value: scale.name });
+              break;
+            case LineType.SPORT:
+              sportScales.push({ label: scale.name, value: scale.name });
+              break;
+            case LineType.TRAD:
+              tradScales.push({ label: scale.name, value: scale.name });
+          }
+        });
 
-      return {
-        [LineType.BOULDER]: boulderScales,
-        [LineType.SPORT]: sportScales,
-        [LineType.TRAD]: tradScales,
-      };
-    }));
+        return {
+          [LineType.BOULDER]: boulderScales,
+          [LineType.SPORT]: sportScales,
+          [LineType.TRAD]: tradScales,
+        };
+      }),
+    );
   }
 }

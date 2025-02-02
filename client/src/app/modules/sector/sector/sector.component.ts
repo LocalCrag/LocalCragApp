@@ -65,13 +65,23 @@ export class SectorComponent implements OnInit {
       ]).subscribe(([crag, sector, isLoggedIn]) => {
         this.crag = crag;
         this.sector = sector;
-        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
-          this.title.setTitle(cragSlug != environment.skippedSlug
-            ? `${sector.name} / ${crag.name} - ${instanceSettings.instanceName}`
-            : `${sector.name} - ${instanceSettings.instanceName}`,
-          );
-          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
-        });
+        this.store
+          .select(selectInstanceSettingsState)
+          .subscribe((instanceSettings) => {
+            this.title.setTitle(
+              cragSlug != environment.skippedSlug
+                ? `${sector.name} / ${crag.name} - ${instanceSettings.instanceName}`
+                : `${sector.name} - ${instanceSettings.instanceName}`,
+            );
+            this.breadcrumbHome = {
+              icon: 'pi pi-map',
+              routerLink:
+                '/topo' +
+                `/${environment.skippedSlug}`.repeat(
+                  instanceSettings.skippedHierarchyLayers,
+                ),
+            };
+          });
         this.items = [
           {
             label: this.translocoService.translate(marker('sector.infos')),
@@ -127,7 +137,7 @@ export class SectorComponent implements OnInit {
             label: sector.name,
             slug: sector.slug,
           },
-        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
+        ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
       });
     });
   }

@@ -9,13 +9,18 @@ import { TranslateSpecialGradesPipe } from './translate-special-grades.pipe';
   pure: false,
 })
 export class LineGradePipe implements PipeTransform {
-  constructor(private scalesService: ScalesService,
-              private asyncPipe: AsyncPipe,
-              private translate: TranslateSpecialGradesPipe)
-  {}
+  constructor(
+    private scalesService: ScalesService,
+    private asyncPipe: AsyncPipe,
+    private translate: TranslateSpecialGradesPipe,
+  ) {}
 
   transform(line?: Line): string {
-    const observable = this.scalesService.gradeNameByValue(line?.type, line?.gradeScale, line?.gradeValue);
+    const observable = this.scalesService.gradeNameByValue(
+      line?.type,
+      line?.gradeScale,
+      line?.gradeValue,
+    );
     return this.translate.transform(this.asyncPipe.transform(observable));
   }
 }

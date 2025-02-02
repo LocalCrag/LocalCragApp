@@ -124,7 +124,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
       gymMode: this.instanceSettings.gymMode,
-      skippedHierarchicalLayers: this.instanceSettings.skippedHierarchicalLayers,
+      skippedHierarchicalLayers:
+        this.instanceSettings.skippedHierarchicalLayers,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -148,8 +149,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('instanceName').value;
       instanceSettings.copyrightOwner =
         this.instanceSettingsForm.get('copyrightOwner').value;
-      instanceSettings.gymMode =
-        this.instanceSettingsForm.get('gymMode').value;
+      instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
       instanceSettings.logoImage =
@@ -184,26 +184,29 @@ export class InstanceSettingsFormComponent implements OnInit {
         .subscribe({
           next: (instanceSettings) => {
             this.store.dispatch(
-              toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED),
+              toastNotification(
+                NotificationIdentifier.INSTANCE_SETTINGS_UPDATED,
+              ),
             );
             this.loadingState = LoadingState.DEFAULT;
             this.store.dispatch(
-              updateInstanceSettings({settings: instanceSettings}),
+              updateInstanceSettings({ settings: instanceSettings }),
             );
           },
           error: (e) => {
             this.loadingState = LoadingState.DEFAULT;
-            if (e.error?.message == "MIGRATION_IMPOSSIBLE") {
+            if (e.error?.message == 'MIGRATION_IMPOSSIBLE') {
               this.store.dispatch(
-                toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE),
+                toastNotification(
+                  NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE,
+                ),
               );
             } else {
               this.store.dispatch(
                 toastNotification(NotificationIdentifier.UNKNOWN_ERROR),
               );
-
             }
-          }
+          },
         });
     } else {
       this.formDirective.markAsTouched();

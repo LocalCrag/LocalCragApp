@@ -1,4 +1,11 @@
-import { Component, forwardRef, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Injector,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import {
@@ -7,7 +14,7 @@ import {
   FormGroup,
   NG_VALUE_ACCESSOR,
   NgControl,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -41,7 +48,9 @@ import { NgIf } from '@angular/common';
   ],
 })
 @UntilDestroy()
-export class AdvancedColorPickerComponent implements OnInit, ControlValueAccessor {
+export class AdvancedColorPickerComponent
+  implements OnInit, ControlValueAccessor
+{
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   @Input() public id?: string;
@@ -55,17 +64,16 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
   private changeHandlers = [];
   private color: string | null = null;
 
-
   constructor(
     private fb: FormBuilder,
     private inj: Injector,
-    private store: Store
-  ) {
-  }
+    private store: Store,
+  ) {}
 
   ngOnInit() {
     this.formControl = this.inj.get(NgControl);
-    this.store.select(selectInstanceSettingsState)
+    this.store
+      .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.colorForm = this.fb.group({
           customColor: [instanceSettings.gymMode],
@@ -101,8 +109,7 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
     this.changeHandlers.push(fn);
   }
 
-  registerOnTouched(_fn: any) {
-  }
+  registerOnTouched(_fn: any) {}
 
   onChange() {
     if (!this.isInitalized) {
@@ -110,8 +117,8 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
       return;
     }
 
-    this.color = this.colorForm.get("customColor").value
-      ? this.colorForm.get("color").value
+    this.color = this.colorForm.get('customColor').value
+      ? this.colorForm.get('color').value
       : null;
 
     for (const handler of this.changeHandlers) {
@@ -126,9 +133,7 @@ export class AdvancedColorPickerComponent implements OnInit, ControlValueAccesso
     }
 
     this.isDisabled = isDisabled;
-    if (this.isDisabled)
-      this.colorForm.disable();
-    else
-      this.colorForm.enable();
+    if (this.isDisabled) this.colorForm.disable();
+    else this.colorForm.enable();
   }
 }

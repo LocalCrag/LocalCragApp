@@ -91,8 +91,24 @@
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [minLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[0]) | async | translateSpecialGrades"
-            [maxLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[1]) | async | translateSpecialGrades"
+            [minLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[0]
+              )
+                | async
+                | translateSpecialGrades
+            "
+            [maxLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[1]
+              )
+                | async
+                | translateSpecialGrades
+            "
           ></lc-slider-labels>
           <p-slider
             [(ngModel)]="gradeFilterRange"
@@ -184,7 +200,15 @@
                     *ngIf="ascent | downgrade"
                   ></i>
                   <div class="ml-1 grade-name">
-                    {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
+                    {{
+                      scalesService.gradeNameByValue(
+                        ascent.line.type,
+                        ascent.line.gradeScale,
+                        ascent.gradeValue
+                      )
+                        | async
+                        | translateSpecialGrades
+                    }}
                     <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                     <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                   </div>
@@ -306,7 +330,15 @@
                     *ngIf="ascent | downgrade"
                   ></i>
                   <div class="ml-1 grade-name">
-                    {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
+                    {{
+                      scalesService.gradeNameByValue(
+                        ascent.line.type,
+                        ascent.line.gradeScale,
+                        ascent.gradeValue
+                      )
+                        | async
+                        | translateSpecialGrades
+                    }}
                     <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                     <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                   </div>
@@ -456,7 +488,15 @@
                       *ngIf="ascent | downgrade"
                     ></i>
                     <div class="ml-1 grade-name">
-                      {{ scalesService.gradeNameByValue(ascent.line.type, ascent.line.gradeScale, ascent.gradeValue) | async | translateSpecialGrades }}
+                      {{
+                        scalesService.gradeNameByValue(
+                          ascent.line.type,
+                          ascent.line.gradeScale,
+                          ascent.gradeValue
+                        )
+                          | async
+                          | translateSpecialGrades
+                      }}
                       <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
                       <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
                     </div>

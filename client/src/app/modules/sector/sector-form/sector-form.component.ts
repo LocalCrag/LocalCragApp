@@ -82,14 +82,21 @@ export class SectorFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    const scalesPopulated = this.scalesService.getFormScaleSelectors(
-      [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}]
-    ).pipe(map(groupedScales => {
-      this.boulderScales = groupedScales[LineType.BOULDER];
-      this.sportScales = groupedScales[LineType.SPORT];
-      this.tradScales = groupedScales[LineType.TRAD];
-      return true;
-    }));
+    const scalesPopulated = this.scalesService
+      .getFormScaleSelectors([
+        {
+          label: this.translocoService.translate(marker('defaultScalesLabel')),
+          value: null,
+        },
+      ])
+      .pipe(
+        map((groupedScales) => {
+          this.boulderScales = groupedScales[LineType.BOULDER];
+          this.sportScales = groupedScales[LineType.SPORT];
+          this.tradScales = groupedScales[LineType.TRAD];
+          return true;
+        }),
+      );
 
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
@@ -102,17 +109,15 @@ export class SectorFormComponent implements OnInit {
         this.editMode = true;
         this.sectorForm.disable();
         forkJoin([
-          this.sectorsService
-            .getSector(sectorSlug)
-            .pipe(
-              catchError((e) => {
-                if (e.status === 404) {
-                  this.router.navigate(['/not-found']);
-                }
-                return of(e);
-              }),
-            ),
-          scalesPopulated
+          this.sectorsService.getSector(sectorSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+          scalesPopulated,
         ]).subscribe(([sector, _]) => {
           this.sector = sector;
           this.setFormValue();
@@ -213,7 +218,9 @@ export class SectorFormComponent implements OnInit {
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
       sector.closed = this.sectorForm.get('closed').value;
       sector.closedReason = this.sectorForm.get('closedReason').value;
-      sector.defaultBoulderScale = this.sectorForm.get('defaultBoulderScale').value;
+      sector.defaultBoulderScale = this.sectorForm.get(
+        'defaultBoulderScale',
+      ).value;
       sector.defaultSportScale = this.sectorForm.get('defaultSportScale').value;
       sector.defaultTradScale = this.sectorForm.get('defaultTradScale').value;
       if (this.sector) {

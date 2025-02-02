@@ -79,13 +79,24 @@ export class AreaComponent implements OnInit {
         this.crag = crag;
         this.sector = sector;
         this.area = area;
-        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
-          const components = [area, sector, crag].filter(e => e.slug != environment.skippedSlug).map(e => e.name);
-          this.title.setTitle(
-            `${components.join(" / ")} - ${instanceSettings.instanceName}`,
-          );
-          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
-        });
+        this.store
+          .select(selectInstanceSettingsState)
+          .subscribe((instanceSettings) => {
+            const components = [area, sector, crag]
+              .filter((e) => e.slug != environment.skippedSlug)
+              .map((e) => e.name);
+            this.title.setTitle(
+              `${components.join(' / ')} - ${instanceSettings.instanceName}`,
+            );
+            this.breadcrumbHome = {
+              icon: 'pi pi-map',
+              routerLink:
+                '/topo' +
+                `/${environment.skippedSlug}`.repeat(
+                  instanceSettings.skippedHierarchyLayers,
+                ),
+            };
+          });
         this.items = [
           {
             label: this.translocoService.translate(marker('area.infos')),
@@ -135,7 +146,7 @@ export class AreaComponent implements OnInit {
             label: area.name,
             slug: area.slug,
           },
-        ].filter(menuItem => menuItem.slug != environment.skippedSlug);
+        ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
       });
     });
   }

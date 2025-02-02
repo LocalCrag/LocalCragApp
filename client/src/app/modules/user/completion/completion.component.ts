@@ -62,9 +62,13 @@ export class CompletionComponent implements OnInit {
   public expandedSectors: Set<string> = new Set<string>();
 
   public listenForSliderStop = false;
-  public availableScales: SelectItem<{lineType: LineType, gradeScale: string} | undefined>[] = [];
-  public scaleKey: SelectItem<{lineType: LineType, gradeScale: string} | undefined>;
-  public minGradeValue = 0;  // Skip project grades
+  public availableScales: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >[] = [];
+  public scaleKey: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >;
+  public minGradeValue = 0; // Skip project grades
   public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
@@ -113,7 +117,7 @@ export class CompletionComponent implements OnInit {
         });
 
         this.availableScales.push({
-          label: this.translocoService.translate("ALL"),
+          label: this.translocoService.translate('ALL'),
           value: undefined,
         });
         for (const lineType in gradeDistribution) {
@@ -121,15 +125,15 @@ export class CompletionComponent implements OnInit {
             if (gradeDistribution[lineType][gradeScale]) {
               this.availableScales.push({
                 label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-                value: { lineType: lineType as LineType, gradeScale }
+                value: { lineType: lineType as LineType, gradeScale },
               });
             }
           }
         }
         if (this.availableScales.length <= 2) {
-          this.scaleKey = this.availableScales[1];  // Default: Select first scale, so range slider is available
+          this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
         } else {
-          this.scaleKey = this.availableScales[0];  // Default: Select "ALL" if multiple scales are available
+          this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
         }
         this.selectScale();
       });
@@ -137,10 +141,14 @@ export class CompletionComponent implements OnInit {
 
   selectScale() {
     if (this.scaleKey?.value) {
-      this.scalesService.getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale).subscribe((scale) => {
-        this.maxGradeValue = Math.max(...scale.grades.map(grade => grade.value));
-        this.gradeFilterRange = [0, this.maxGradeValue];
-      });
+      this.scalesService
+        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+        .subscribe((scale) => {
+          this.maxGradeValue = Math.max(
+            ...scale.grades.map((grade) => grade.value),
+          );
+          this.gradeFilterRange = [0, this.maxGradeValue];
+        });
     }
     this.loadCompletion();
   }
@@ -150,16 +158,18 @@ export class CompletionComponent implements OnInit {
       user_id: this.user.id,
     });
     if (this.gradeFilterRange[1] !== null) {
-      filters.set("min_grade", this.gradeFilterRange[0]);
-      filters.set("max_grade", this.gradeFilterRange[1]);
+      filters.set('min_grade', this.gradeFilterRange[0]);
+      filters.set('max_grade', this.gradeFilterRange[1]);
     }
     if (this.scaleKey?.value) {
-      filters.set("line_type", this.scaleKey.value.lineType);
-      filters.set("grade_scale", this.scaleKey.value.gradeScale);
+      filters.set('line_type', this.scaleKey.value.lineType);
+      filters.set('grade_scale', this.scaleKey.value.gradeScale);
     }
-    return this.statisticsService.getCompletion(`?${filters.toString()}`).subscribe((completion) => {
-      this.completion = completion;
-    });
+    return this.statisticsService
+      .getCompletion(`?${filters.toString()}`)
+      .subscribe((completion) => {
+        this.completion = completion;
+      });
   }
 
   public addOrRemove(set: Set<string>, id: string) {

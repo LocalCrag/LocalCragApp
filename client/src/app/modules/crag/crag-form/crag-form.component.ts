@@ -1,4 +1,10 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren, } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
@@ -70,14 +76,21 @@ export class CragFormComponent implements OnInit {
    */
   ngOnInit() {
     this.buildForm();
-    const scalesPopulated = this.scalesService.getFormScaleSelectors(
-      [{label: this.translocoService.translate(marker("defaultScalesLabel")), value: null}]
-    ).pipe(map(groupedScales => {
-      this.boulderScales = groupedScales[LineType.BOULDER];
-      this.sportScales = groupedScales[LineType.SPORT];
-      this.tradScales = groupedScales[LineType.TRAD];
-      return true;
-    }));
+    const scalesPopulated = this.scalesService
+      .getFormScaleSelectors([
+        {
+          label: this.translocoService.translate(marker('defaultScalesLabel')),
+          value: null,
+        },
+      ])
+      .pipe(
+        map((groupedScales) => {
+          this.boulderScales = groupedScales[LineType.BOULDER];
+          this.sportScales = groupedScales[LineType.SPORT];
+          this.tradScales = groupedScales[LineType.TRAD];
+          return true;
+        }),
+      );
 
     const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
 
@@ -85,16 +98,14 @@ export class CragFormComponent implements OnInit {
       this.editMode = true;
       this.cragForm.disable();
       forkJoin([
-        this.cragsService
-          .getCrag(cragSlug)
-          .pipe(
-            catchError((e) => {
-              if (e.status === 404) {
-                this.router.navigate(['/not-found']);
-              }
-              return of(e);
-            }),
-          ),
+        this.cragsService.getCrag(cragSlug).pipe(
+          catchError((e) => {
+            if (e.status === 404) {
+              this.router.navigate(['/not-found']);
+            }
+            return of(e);
+          }),
+        ),
         scalesPopulated,
       ]).subscribe(([crag, _]) => {
         this.crag = crag;

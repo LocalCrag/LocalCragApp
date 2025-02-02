@@ -71,18 +71,31 @@ import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors'
 export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
     store.select(selectGymMode).subscribe((gymMode) => {
-      if (gymMode && !transloco.getActiveLang().endsWith("-gym")) {
-        transloco.setActiveLang(environment.language + "-gym");
-        transloco.setFallbackLangForMissingTranslation({ fallbackLang: environment.language });
-      } else if (!gymMode && transloco.getActiveLang().endsWith("-gym")) {
+      if (gymMode && !transloco.getActiveLang().endsWith('-gym')) {
+        transloco.setActiveLang(environment.language + '-gym');
+        transloco.setFallbackLangForMissingTranslation({
+          fallbackLang: environment.language,
+        });
+      } else if (!gymMode && transloco.getActiveLang().endsWith('-gym')) {
         transloco.setActiveLang(environment.language);
       }
     });
 
-    return forkJoin(["", "crag/", "sector/", "area/", "line/", "topoImage/", "linePath/", "maps/"].flatMap(path => [
-      transloco.load(path + environment.language),
-      transloco.load(path + environment.language + "-gym"),
-    ]));
+    return forkJoin(
+      [
+        '',
+        'crag/',
+        'sector/',
+        'area/',
+        'line/',
+        'topoImage/',
+        'linePath/',
+        'maps/',
+      ].flatMap((path) => [
+        transloco.load(path + environment.language),
+        transloco.load(path + environment.language + '-gym'),
+      ]),
+    );
   };
 }
 

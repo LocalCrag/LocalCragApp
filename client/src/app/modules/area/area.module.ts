@@ -38,7 +38,7 @@ import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-m
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { MessageModule } from 'primeng/message';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
-import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 
 @NgModule({
   declarations: [

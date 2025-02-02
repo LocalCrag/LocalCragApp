@@ -50,9 +50,16 @@
           <label class="form-label" for="gym-mode">
             {{ t("gymModeLabel") }}
           </label>
-          <div class="flex align-items-center justify-content-center sm:justify-content-start">
+          <div
+            class="flex align-items-center justify-content-center sm:justify-content-start"
+          >
             {{ t("gymModeLabelFalse") }}
-            <p-inputSwitch id="gym-mode" class="mx-2" formControlName="gymMode" lcFormControl />
+            <p-inputSwitch
+              id="gym-mode"
+              class="mx-2"
+              formControlName="gymMode"
+              lcFormControl
+            />
             {{ t("gymModeLabelTrue") }}
           </div>
         </div>
@@ -62,15 +69,19 @@
             <label for="skippedHierarchicalLayers">
               {{ t("skippedHierarchicalLayersLabel") }}
             </label>
-            <span class="pi pi-question-circle ml-2" [pTooltip]="t('skippedHierarchicalLayersDescription')" tooltipPosition="right"></span>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('skippedHierarchicalLayersDescription')"
+              tooltipPosition="right"
+            ></span>
           </div>
           <p-dropdown
             id="skippedHierarchicalLayers"
             [options]="[
-            { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
-            { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
-            { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
-          ]"
+              { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
+              { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
+              { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
+            ]"
             optionLabel="label"
             optionValue="value"
             formControlName="skippedHierarchicalLayers"

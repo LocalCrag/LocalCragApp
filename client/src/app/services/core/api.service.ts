@@ -210,12 +210,15 @@ export class ApiService {
   };
 
   public scales = {
-    get: (lineType: LineType, name: string) => `${this.apiHost}scales/${lineType}/${name}`,
+    get: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
     getList: () => `${this.apiHost}scales`,
     create: () => `${this.apiHost}scales`,
-    update: (lineType: LineType, name: string) => `${this.apiHost}scales/${lineType}/${name}`,
-    delete: (lineType: LineType, name: string) => `${this.apiHost}scales/${lineType}/${name}`,
-  }
+    update: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
+    delete: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
+  };
 
   private apiHost = `${environment.apiHost}/api/`;
 }

@@ -1,6 +1,8 @@
 <ng-container *transloco="let t">
   <div *ngFor="let chartDataElement of chartData">
-    <h6 *ngIf="chartData.length > 1">{{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}</h6>
+    <h6 *ngIf="chartData.length > 1">
+      {{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}
+    </h6>
     <p-chart
       type="bar"
       [data]="chartDataElement.data"
@@ -8,7 +10,8 @@
       *ngIf="gradeDistribution"
     ></p-chart>
     <div class="total">
-      {{ t("totalLines") }}: {{ chartDataElement.totalCount - chartDataElement.projectCount }}
+      {{ t("totalLines") }}:
+      {{ chartDataElement.totalCount - chartDataElement.projectCount }}
       <span *ngIf="!excludeProjects">
         ({{ t("plusXProjects", { projects: chartDataElement.projectCount }) }})
       </span>

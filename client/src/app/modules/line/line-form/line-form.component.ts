@@ -20,7 +20,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
-import { selectInstanceName, selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectInstanceName,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { AreasService } from '../../../services/crud/areas.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -111,8 +114,7 @@ export class LineFormComponent implements OnInit {
       this.sectorsService.getSector(this.sectorSlug),
       this.areasService.getArea(this.areaSlug),
       this.scalesService.getScales(),
-    ])
-    .subscribe(([crag, sector, area, scales]) => {
+    ]).subscribe(([crag, sector, area, scales]) => {
       this.parentSecret = area.secret;
       this.parentClosed = area.closed;
 
@@ -121,11 +123,22 @@ export class LineFormComponent implements OnInit {
         [LineType.SPORT]: [],
         [LineType.TRAD]: [],
       };
-      scales.sort((a, b) => a.name.localeCompare(b.name)).forEach(scale => this.groupedScales[scale.lineType].push(scale));
+      scales
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach((scale) => this.groupedScales[scale.lineType].push(scale));
 
-      this.defaultScales[LineType.BOULDER] = area.defaultBoulderScale ?? sector.defaultBoulderScale ?? crag.defaultBoulderScale;
-      this.defaultScales[LineType.SPORT] = area.defaultSportScale ?? sector.defaultSportScale ?? crag.defaultSportScale;
-      this.defaultScales[LineType.TRAD] = area.defaultTradScale ?? sector.defaultTradScale ?? crag.defaultTradScale;
+      this.defaultScales[LineType.BOULDER] =
+        area.defaultBoulderScale ??
+        sector.defaultBoulderScale ??
+        crag.defaultBoulderScale;
+      this.defaultScales[LineType.SPORT] =
+        area.defaultSportScale ??
+        sector.defaultSportScale ??
+        crag.defaultSportScale;
+      this.defaultScales[LineType.TRAD] =
+        area.defaultTradScale ??
+        sector.defaultTradScale ??
+        crag.defaultTradScale;
 
       this.typeOptions = Object.entries(this.groupedScales)
         .filter(([_, v]) => !!v)
@@ -135,25 +148,44 @@ export class LineFormComponent implements OnInit {
         }));
 
       this.buildForm();
-      this.lineForm.get("type").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
-        this.scaleOptions = this.groupedScales[item].map(scale => ({ label: scale.name, value: scale.name }));
-        this.lineForm.get("scale").setValue(this.defaultScales[item] ?? this.scaleOptions[0].value)
-      });
-      this.lineForm.get("scale").valueChanges.pipe(untilDestroyed(this)).subscribe((item) => {
-        if (this.editMode) return;
-
-        this.scalesService.getScale(this.lineForm.get("type").value, item).subscribe((scale) => {
-          this.grades = scale.grades;
-          if (this.line?.ascentCount > 0) {
-            this.grades = this.grades.filter((grade) => grade.value >= 0);
-          }
-          if (!this.line || this.line.type != item) {
-            this.lineForm.get("grade").reset();
-          } else {
-            this.lineForm.get("grade").setValue(this.grades.filter(g => g.value == this.line.gradeValue)[0]);
-          }
+      this.lineForm
+        .get('type')
+        .valueChanges.pipe(untilDestroyed(this))
+        .subscribe((item) => {
+          this.scaleOptions = this.groupedScales[item].map((scale) => ({
+            label: scale.name,
+            value: scale.name,
+          }));
+          this.lineForm
+            .get('scale')
+            .setValue(this.defaultScales[item] ?? this.scaleOptions[0].value);
         });
-      });
+      this.lineForm
+        .get('scale')
+        .valueChanges.pipe(untilDestroyed(this))
+        .subscribe((item) => {
+          if (this.editMode) return;
+
+          this.scalesService
+            .getScale(this.lineForm.get('type').value, item)
+            .subscribe((scale) => {
+              this.grades = scale.grades;
+              if (this.line?.ascentCount > 0) {
+                this.grades = this.grades.filter((grade) => grade.value >= 0);
+              }
+              if (!this.line || this.line.type != item) {
+                this.lineForm.get('grade').reset();
+              } else {
+                this.lineForm
+                  .get('grade')
+                  .setValue(
+                    this.grades.filter(
+                      (g) => g.value == this.line.gradeValue,
+                    )[0],
+                  );
+              }
+            });
+        });
 
       if (lineSlug) {
         this.editMode = true;
@@ -196,66 +228,73 @@ export class LineFormComponent implements OnInit {
    * Builds the line form.
    */
   private buildForm() {
-    this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
-      this.lineForm = this.fb.group({
-        name: ['', [Validators.required, Validators.maxLength(120)]],
-        description: [null],
-        color: [instanceSettings.gymMode ? instanceSettings.arrowColor : null],
-        videos: this.fb.array([]),
-        type: [LineType.BOULDER, [Validators.required]],
-        scale: [this.groupedScales[LineType.BOULDER][0], [Validators.required]],
-        grade: [null, [Validators.required]],
-        rating: [null],
-        faYear: [null, [yearOfDateNotInFutureValidator()]],
-        faName: [null, [Validators.maxLength(120)]],
-        startingPosition: [StartingPosition.STAND, [Validators.required]],
-        eliminate: [false],
-        traverse: [false],
-        highball: [false],
-        lowball: [false],
-        morpho: [false],
-        noTopout: [false],
-        badDropzone: [false],
-        childFriendly: [false],
-        roof: [false],
-        slab: [false],
-        vertical: [false],
-        overhang: [false],
-        athletic: [false],
-        technical: [false],
-        endurance: [false],
-        cruxy: [false],
-        dyno: [false],
-        jugs: [false],
-        sloper: [false],
-        crimps: [false],
-        pockets: [false],
-        pinches: [false],
-        crack: [false],
-        dihedral: [false],
-        compression: [false],
-        arete: [false],
-        mantle: [false],
-        secret: [false],
-        closed: [false],
-        closedReason: [null],
-      });
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        this.lineForm = this.fb.group({
+          name: ['', [Validators.required, Validators.maxLength(120)]],
+          description: [null],
+          color: [
+            instanceSettings.gymMode ? instanceSettings.arrowColor : null,
+          ],
+          videos: this.fb.array([]),
+          type: [LineType.BOULDER, [Validators.required]],
+          scale: [
+            this.groupedScales[LineType.BOULDER][0],
+            [Validators.required],
+          ],
+          grade: [null, [Validators.required]],
+          rating: [null],
+          faYear: [null, [yearOfDateNotInFutureValidator()]],
+          faName: [null, [Validators.maxLength(120)]],
+          startingPosition: [StartingPosition.STAND, [Validators.required]],
+          eliminate: [false],
+          traverse: [false],
+          highball: [false],
+          lowball: [false],
+          morpho: [false],
+          noTopout: [false],
+          badDropzone: [false],
+          childFriendly: [false],
+          roof: [false],
+          slab: [false],
+          vertical: [false],
+          overhang: [false],
+          athletic: [false],
+          technical: [false],
+          endurance: [false],
+          cruxy: [false],
+          dyno: [false],
+          jugs: [false],
+          sloper: [false],
+          crimps: [false],
+          pockets: [false],
+          pinches: [false],
+          crack: [false],
+          dihedral: [false],
+          compression: [false],
+          arete: [false],
+          mantle: [false],
+          secret: [false],
+          closed: [false],
+          closedReason: [null],
+        });
 
-      this.lineForm
-        .get('grade')
-        .valueChanges.pipe(untilDestroyed(this))
-        .subscribe(() => {
-          this.setFormDisabledState();
-        });
-      this.lineForm
-        .get('closed')
-        .valueChanges.pipe(untilDestroyed(this))
-        .subscribe((closed) => {
-          if (!closed) {
-            this.lineForm.get('closedReason').setValue(null);
-          }
-        });
-    })
+        this.lineForm
+          .get('grade')
+          .valueChanges.pipe(untilDestroyed(this))
+          .subscribe(() => {
+            this.setFormDisabledState();
+          });
+        this.lineForm
+          .get('closed')
+          .valueChanges.pipe(untilDestroyed(this))
+          .subscribe((closed) => {
+            if (!closed) {
+              this.lineForm.get('closedReason').setValue(null);
+            }
+          });
+      });
   }
 
   setFormDisabledState() {

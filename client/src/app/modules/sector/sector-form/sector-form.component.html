@@ -207,7 +207,11 @@
             ></lc-map-marker-form-array>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup *ngIf="sector?.slug !== environment.skippedSlug">
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="sector?.slug !== environment.skippedSlug"
+          >
             <label class="form-label" for="secret">{{
               t("sectorOptionsLabel")
             }}</label>
@@ -232,7 +236,10 @@
           <div class="grid align-items-center">
             <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
 
-            <label for="defaultBoulderScale" class="xl:col-1 md:col-2 sm:col-3 col-4">
+            <label
+              for="defaultBoulderScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
               {{ "BOULDER" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -246,7 +253,10 @@
               ></p-dropdown>
             </div>
 
-            <label for="defaultSportScale" class="xl:col-1 md:col-2 sm:col-3 col-4">
+            <label
+              for="defaultSportScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
               {{ "SPORT" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -260,7 +270,10 @@
               ></p-dropdown>
             </div>
 
-            <label for="defaultTradScale" class="xl:col-1 md:col-2 sm:col-3 col-4">
+            <label
+              for="defaultTradScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
               {{ "TRAD" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -273,7 +286,6 @@
                 lcFormControl
               ></p-dropdown>
             </div>
-
           </div>
 
           <p-messages

@@ -1,6 +1,6 @@
-import {Directive, Input, TemplateRef, ViewContainerRef} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {selectGymMode} from '../../../ngrx/selectors/instance-settings.selectors';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { selectGymMode } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Directive({
   selector:
@@ -17,9 +17,9 @@ export class GymModeDirective {
 
   @Input()
   set isGymMode(value: boolean) {
-      this.store.select(selectGymMode).subscribe((gymMode) => {
-        this.decideView(gymMode == value);
-      });
+    this.store.select(selectGymMode).subscribe((gymMode) => {
+      this.decideView(gymMode == value);
+    });
   }
 
   decideView(show: boolean) {

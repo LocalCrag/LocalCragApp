@@ -55,10 +55,21 @@ export class CragComponent implements OnInit {
         this.translocoService.load(`${environment.language}`),
       ]).subscribe(([crag, isModerator]) => {
         this.crag = crag;
-        this.store.select(selectInstanceSettingsState).subscribe((instanceSettings) => {
-          this.title.setTitle(`${crag.name} - ${instanceSettings.instanceName}`);
-          this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' + `/${environment.skippedSlug}`.repeat(instanceSettings.skippedHierarchyLayers) };
-        });
+        this.store
+          .select(selectInstanceSettingsState)
+          .subscribe((instanceSettings) => {
+            this.title.setTitle(
+              `${crag.name} - ${instanceSettings.instanceName}`,
+            );
+            this.breadcrumbHome = {
+              icon: 'pi pi-map',
+              routerLink:
+                '/topo' +
+                `/${environment.skippedSlug}`.repeat(
+                  instanceSettings.skippedHierarchyLayers,
+                ),
+            };
+          });
         this.items = [
           {
             label: this.translocoService.translate(marker('crag.infos')),

@@ -71,7 +71,10 @@
         >
           <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first, 'archived': topoImage.archived }"
+            [ngClass]="{
+              'border-top-1 surface-border': !first,
+              archived: topoImage.archived,
+            }"
           >
             <div class="w-12 sm:w-9 xl:w-5 align-self-center">
               <lc-topo-image
@@ -132,8 +135,13 @@
                       }}/topo-images/{{ topoImage.id }}/edit"
                       styleClass="p-button-sm"
                     ></p-button>
-                    <lc-archive-button *isModerator="true" [showLabel]="false" [topoImage]="topoImage" [style]="'plain'"
-                              class="ml-2 responsive-button"></lc-archive-button>
+                    <lc-archive-button
+                      *isModerator="true"
+                      [showLabel]="false"
+                      [topoImage]="topoImage"
+                      [style]="'plain'"
+                      class="ml-2 responsive-button"
+                    ></lc-archive-button>
                     <p-button
                       icon="pi pi-trash"
                       class="ml-2"
@@ -159,7 +167,12 @@
                     data-cy="line-row"
                   >
                     <div class="line-table-column-number">
-                      <div class="line-number" [style]="{'background-color': linePath.line.color ?? undefined}">
+                      <div
+                        class="line-number"
+                        [style]="{
+                          'background-color': linePath.line.color ?? undefined,
+                        }"
+                      >
                         {{ i + 1 }}
                       </div>
                     </div>

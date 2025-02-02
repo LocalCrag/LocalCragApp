@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from '../core/api.service';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Area} from '../../models/area';
-import {ArchiveType} from '../../enums/archive-type';
-import {Line} from '../../models/line';
-import {TopoImage} from '../../models/topo-image';
-import {Sector} from '../../models/sector';
-import {Crag} from '../../models/crag';
+import { Injectable } from '@angular/core';
+import { ApiService } from '../core/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Area } from '../../models/area';
+import { ArchiveType } from '../../enums/archive-type';
+import { Line } from '../../models/line';
+import { TopoImage } from '../../models/topo-image';
+import { Sector } from '../../models/sector';
+import { Crag } from '../../models/crag';
 
 @Injectable({
   providedIn: 'root',
@@ -25,12 +25,11 @@ export class ArchiveService {
    * @return Observable of null
    */
   public changeLineArchived(line: Line): Observable<object> {
-    return this.http
-      .put(this.api.archive.setArchived(), {
-        type: ArchiveType.LINE,
-        slug: line.slug,
-        value: Boolean(line.archived),
-      });
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.LINE,
+      slug: line.slug,
+      value: Boolean(line.archived),
+    });
   }
 
   /**
@@ -40,12 +39,11 @@ export class ArchiveService {
    * @return Observable of null
    */
   public changeTopoImageArchived(topoImage: TopoImage): Observable<object> {
-    return this.http
-      .put(this.api.archive.setArchived(), {
-        type: ArchiveType.TOPO_IMAGE  ,
-        slug: topoImage.id,
-        value: Boolean(topoImage.archived),
-      });
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.TOPO_IMAGE,
+      slug: topoImage.id,
+      value: Boolean(topoImage.archived),
+    });
   }
 
   /**
@@ -55,12 +53,11 @@ export class ArchiveService {
    * @return Observable of null
    */
   public setAreaArchived(area: Area): Observable<object> {
-    return this.http
-      .put(this.api.archive.setArchived(), {
-        type: ArchiveType.AREA,
-        slug: area.slug,
-        value: true,
-      });
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.AREA,
+      slug: area.slug,
+      value: true,
+    });
   }
 
   /**
@@ -70,12 +67,11 @@ export class ArchiveService {
    * @return Observable of null
    */
   public setSectorArchived(sector: Sector): Observable<object> {
-    return this.http
-      .put(this.api.archive.setArchived(), {
-        type: ArchiveType.SECTOR,
-        slug: sector.slug,
-        value: true,
-      });
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.SECTOR,
+      slug: sector.slug,
+      value: true,
+    });
   }
 
   /**
@@ -85,11 +81,10 @@ export class ArchiveService {
    * @return Observable of null
    */
   public setCragArchived(crag: Crag): Observable<object> {
-    return this.http
-      .put(this.api.archive.setArchived(), {
-        type: ArchiveType.CRAG,
-        slug: crag.slug,
-        value: true,
-      });
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.CRAG,
+      slug: crag.slug,
+      value: true,
+    });
   }
 }

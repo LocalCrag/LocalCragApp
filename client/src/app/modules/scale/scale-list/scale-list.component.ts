@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -33,8 +37,8 @@ import { CardModule } from 'primeng/card';
     TagModule,
     NgClass,
     CardModule,
-    TranslocoPipe
-  ]
+    TranslocoPipe,
+  ],
 })
 @UntilDestroy()
 export class ScaleListComponent implements OnInit {
@@ -49,9 +53,11 @@ export class ScaleListComponent implements OnInit {
 
   ngOnInit() {
     this.loadingState = LoadingState.LOADING;
-    this.scalesService.getScales().subscribe(scales => {
+    this.scalesService.getScales().subscribe((scales) => {
       this.scales = scales.sort((a, b) =>
-        a.lineType.localeCompare(b.lineType) ? a.lineType.localeCompare(b.lineType) : a.name.localeCompare(b.name)
+        a.lineType.localeCompare(b.lineType)
+          ? a.lineType.localeCompare(b.lineType)
+          : a.name.localeCompare(b.name),
       );
       this.loadingState = LoadingState.DEFAULT;
     });

@@ -7,9 +7,25 @@ span {
 
   &.transparent {
     background-color: transparent !important;
-    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),
-    linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+    background-image: linear-gradient(
+        45deg,
+        #ccc 25%,
+        transparent 25%,
+        transparent 75%,
+        #ccc 75%,
+        #ccc
+      ),
+      linear-gradient(
+        45deg,
+        #ccc 25%,
+        transparent 25%,
+        transparent 75%,
+        #ccc 75%,
+        #ccc
+      );
     background-size: 14px 14px;
-    background-position: 4px 4px, 11px 11px;
+    background-position:
+      4px 4px,
+      11px 11px;
   }
 }

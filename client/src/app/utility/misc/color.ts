@@ -33,14 +33,14 @@ function extractColor(color: string) {
  */
 export function highlightColor(color?: string): string | undefined {
   if (color) {
-    const {r, g, b, brightness} = extractColor(color);
+    const { r, g, b, brightness } = extractColor(color);
 
     const adjust = brightness < 128 ? 60 : -60;
     const lighten = (value) => Math.min(255, Math.max(0, value + adjust));
 
     return `#${[lighten(r), lighten(g), lighten(b)]
-      .map((c) => c.toString(16).padStart(2, "0"))
-      .join("")}`;
+      .map((c) => c.toString(16).padStart(2, '0'))
+      .join('')}`;
   }
   return undefined;
 }
@@ -53,8 +53,8 @@ export function highlightColor(color?: string): string | undefined {
  */
 export function textColor(color?: string): string | undefined {
   if (color) {
-    const {brightness} = extractColor(color);
-    return brightness < 128 ? "#ffffff" : "#000000";
+    const { brightness } = extractColor(color);
+    return brightness < 128 ? '#ffffff' : '#000000';
   }
   return undefined;
 }

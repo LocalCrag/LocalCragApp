@@ -5,7 +5,10 @@
     <div
       class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
     >
-      <div *ngIf="availableScales.length > 2" class="w-full flex align-items-center">
+      <div
+        *ngIf="availableScales.length > 2"
+        class="w-full flex align-items-center"
+      >
         <strong class="mr-2">
           {{ t("lineType") }}
         </strong>
@@ -36,8 +39,24 @@
           [rangeMax]="gradeFilterRange[1]"
           [min]="minGradeValue"
           [max]="maxGradeValue"
-          [minLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[0]) | async | translateSpecialGrades"
-          [maxLabel]="scalesService.gradeNameByValue(scaleKey.value.lineType, scaleKey.value.gradeScale, gradeFilterRange[1]) | async | translateSpecialGrades"
+          [minLabel]="
+            scalesService.gradeNameByValue(
+              scaleKey.value.lineType,
+              scaleKey.value.gradeScale,
+              gradeFilterRange[0]
+            )
+              | async
+              | translateSpecialGrades
+          "
+          [maxLabel]="
+            scalesService.gradeNameByValue(
+              scaleKey.value.lineType,
+              scaleKey.value.gradeScale,
+              gradeFilterRange[1]
+            )
+              | async
+              | translateSpecialGrades
+          "
         ></lc-slider-labels>
         <p-slider
           [(ngModel)]="gradeFilterRange"

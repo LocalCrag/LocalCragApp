@@ -110,9 +110,7 @@ export class MenuComponent implements OnInit {
                 },
                 {
                   icon: 'pi pi-fw pi-sliders-h',
-                  label: this.translocoService.translate(
-                    marker('menu.scales'),
-                  ),
+                  label: this.translocoService.translate(marker('menu.scales')),
                   routerLink: '/scales',
                 },
                 {
@@ -263,7 +261,10 @@ export class MenuComponent implements OnInit {
         }),
       });
     });
-    while (cragItems.length > 0 && cragItems[0].slug == environment.skippedSlug) {
+    while (
+      cragItems.length > 0 &&
+      cragItems[0].slug == environment.skippedSlug
+    ) {
       // Pop skippedSlug items
       cragItems = cragItems[0].items;
     }

@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation, } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
 import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
@@ -20,7 +27,7 @@ type BarChartData = {
   data: any;
   totalCount: number;
   projectCount: number;
-}
+};
 
 /**
  * Component that shows grades in a bar chart.
@@ -147,77 +154,82 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
       for (const gradeScale in this.gradeDistribution[lineType]) {
         scaleObservers.push(
           forkJoin([
-            this.store
-              .select(selectBarChartColor)
-              .pipe(take(1)),
+            this.store.select(selectBarChartColor).pipe(take(1)),
             this.scalesService.getScale(lineType as LineType, gradeScale),
-          ]).pipe(map(([barChartColor, scale]) => {
-            const genericProjectGrade: Grade = {
-              name: marker('GENERIC_PROJECT'),
-              value: 0,
-            };
+          ]).pipe(
+            map(([barChartColor, scale]) => {
+              const genericProjectGrade: Grade = {
+                name: marker('GENERIC_PROJECT'),
+                value: 0,
+              };
 
-            // Condensed scale is needed if screen is too small to host all grades
-            let gradesInUsedScale = scale.grades.sort((a, b) => a.value - b.value);
-            gradesInUsedScale = gradesInUsedScale.filter(
-              (grade) => grade.value > 0,
-            );
-            gradesInUsedScale.unshift(genericProjectGrade);
+              // Condensed scale is needed if screen is too small to host all grades
+              let gradesInUsedScale = scale.grades.sort(
+                (a, b) => a.value - b.value,
+              );
+              gradesInUsedScale = gradesInUsedScale.filter(
+                (grade) => grade.value > 0,
+              );
+              gradesInUsedScale.unshift(genericProjectGrade);
 
-            // Init a counting map
-            const gradeValues = gradesInUsedScale.map((grade) => grade.value);
-            const gradeValueCount = {};
-            gradeValues.map((gradeValue) => {
-              gradeValueCount[gradeValue] = 0;
-            });
+              // Init a counting map
+              const gradeValues = gradesInUsedScale.map((grade) => grade.value);
+              const gradeValueCount = {};
+              gradeValues.map((gradeValue) => {
+                gradeValueCount[gradeValue] = 0;
+              });
 
-            // Map keys from the full scale to keys of the used scale
-            const condensedSortingMap = {};
-            const gradesInFullScale = scale.grades;
-            gradesInFullScale.map((grade) => {
-              for (const usedGrade of gradesInUsedScale) {
-                if (usedGrade.value >= grade.value) {
-                  condensedSortingMap[grade.value] = usedGrade.value;
-                  break;
+              // Map keys from the full scale to keys of the used scale
+              const condensedSortingMap = {};
+              const gradesInFullScale = scale.grades;
+              gradesInFullScale.map((grade) => {
+                for (const usedGrade of gradesInUsedScale) {
+                  if (usedGrade.value >= grade.value) {
+                    condensedSortingMap[grade.value] = usedGrade.value;
+                    break;
+                  }
                 }
-              }
-            });
+              });
 
-            // Build chart data
-            const labels = gradesInUsedScale.map((grade) =>
-              grade.value > 0 ? grade.name : this.translocoService.translate(grade.name),
-            );
-            const counts = gradeValues.map(
-              (gradeValue) => this.gradeDistribution[lineType][gradeScale][gradeValue] ?? 0,
-            );
-            const maxCount = Math.max(...counts);
-            const backgroundColors = counts.map((count) => {
-              const rgbObject = getRgbObject(barChartColor);
-              return `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, ${(count / maxCount) * 0.5 + 0.5})`;
-            });
-            const includeProjectsInChart = false;
-            if (!includeProjectsInChart) {
-              labels.shift();
-              counts.shift();
-              backgroundColors.shift();
-            }
-            return {
-              lineType: lineType as LineType,
-              gradeScale,
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    data: counts,
-                    borderWidth: 0,
-                    backgroundColor: backgroundColors,
-                  },
-                ],
-              },
-              projectCount: counts[0],
-              totalCount: counts.reduce((a, b) => a + b, 0),
-            };
-          }))
+              // Build chart data
+              const labels = gradesInUsedScale.map((grade) =>
+                grade.value > 0
+                  ? grade.name
+                  : this.translocoService.translate(grade.name),
+              );
+              const counts = gradeValues.map(
+                (gradeValue) =>
+                  this.gradeDistribution[lineType][gradeScale][gradeValue] ?? 0,
+              );
+              const maxCount = Math.max(...counts);
+              const backgroundColors = counts.map((count) => {
+                const rgbObject = getRgbObject(barChartColor);
+                return `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, ${(count / maxCount) * 0.5 + 0.5})`;
+              });
+              const includeProjectsInChart = false;
+              if (!includeProjectsInChart) {
+                labels.shift();
+                counts.shift();
+                backgroundColors.shift();
+              }
+              return {
+                lineType: lineType as LineType,
+                gradeScale,
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      data: counts,
+                      borderWidth: 0,
+                      backgroundColor: backgroundColors,
+                    },
+                  ],
+                },
+                projectCount: counts[0],
+                totalCount: counts.reduce((a, b) => a + b, 0),
+              };
+            }),
+          ),
         );
       }
     }
@@ -225,6 +237,5 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
     forkJoin(scaleObservers).subscribe((chartData) => {
       this.chartData = chartData.sort((a, b) => a.totalCount - b.totalCount);
     });
-
   }
 }

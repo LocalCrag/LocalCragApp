@@ -140,43 +140,53 @@ export class HistoryListComponent implements OnInit {
         const line = event.object as Line;
 
         return forkJoin([
-          this.scalesService.gradeNameByValue(line.type, line.gradeScale, Number(event.oldValue)),
-          this.scalesService.gradeNameByValue(line.type, line.gradeScale, Number(event.newValue)),
-        ]).pipe(map((oldGrade, newGrade) => {
-          if (
-            Number(event.oldValue) < 0 &&
-            Number(event.oldValue) < Number(event.newValue)
-          ) {
-            /** t(history.projectClimbed) */
-            return this.transloco.translate('history.projectClimbed', {
-              line: line.name,
-              newGrade,
-            });
-          } else if (
-            Number(event.oldValue) === 0 &&
-            Number(event.oldValue) < Number(event.newValue)
-          ) {
-            /** t(history.lineGraded) */
-            return this.transloco.translate('history.lineGraded', {
-              line: line.name,
-              newGrade,
-            });
-          } else if (Number(event.oldValue) < Number(event.newValue)) {
-            /** t(history.upgrade) */
-            return this.transloco.translate('history.upgrade', {
-              line: line.name,
-              oldGrade,
-              newGrade,
-            });
-          } else {
-            /** t(history.downgrade) */
-            return this.transloco.translate('history.downgrade', {
-              line: line.name,
-              oldGrade,
-              newGrade,
-            });
-          }
-        }));
+          this.scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            Number(event.oldValue),
+          ),
+          this.scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            Number(event.newValue),
+          ),
+        ]).pipe(
+          map((oldGrade, newGrade) => {
+            if (
+              Number(event.oldValue) < 0 &&
+              Number(event.oldValue) < Number(event.newValue)
+            ) {
+              /** t(history.projectClimbed) */
+              return this.transloco.translate('history.projectClimbed', {
+                line: line.name,
+                newGrade,
+              });
+            } else if (
+              Number(event.oldValue) === 0 &&
+              Number(event.oldValue) < Number(event.newValue)
+            ) {
+              /** t(history.lineGraded) */
+              return this.transloco.translate('history.lineGraded', {
+                line: line.name,
+                newGrade,
+              });
+            } else if (Number(event.oldValue) < Number(event.newValue)) {
+              /** t(history.upgrade) */
+              return this.transloco.translate('history.upgrade', {
+                line: line.name,
+                oldGrade,
+                newGrade,
+              });
+            } else {
+              /** t(history.downgrade) */
+              return this.transloco.translate('history.downgrade', {
+                line: line.name,
+                oldGrade,
+                newGrade,
+              });
+            }
+          }),
+        );
       }
     }
     return of('');
