@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -25,6 +25,8 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
 import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
+import { MessageModule } from 'primeng/message';
+import { emailsValidator } from '../../../utility/validators/emails.validator';
 
 @Component({
   selector: 'lc-register',
@@ -38,6 +40,8 @@ import { UserValidatorsService } from '../../../services/core/user-validators.se
     SharedModule,
     TranslocoDirective,
     RouterLink,
+    MessageModule,
+    NgIf,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -50,6 +54,7 @@ export class RegisterComponent implements OnInit {
   public registrationForm: FormGroup;
   public loadingStates = LoadingState;
   public loadingState: LoadingState = LoadingState.DEFAULT;
+  public registerPressed = false;
 
   constructor(
     private router: Router,
@@ -71,13 +76,14 @@ export class RegisterComponent implements OnInit {
   }
 
   public register() {
+    this.registerPressed = true;
     if (this.registrationForm.valid) {
       this.loadingState = LoadingState.LOADING;
       const user = new User();
       user.firstname = this.registrationForm.get('firstname').value;
       user.lastname = this.registrationForm.get('lastname').value;
       user.email = (
-        this.registrationForm.get('email').value as string
+        this.registrationForm.get('emails.email').value as string
       ).toLowerCase();
       this.usersService.registerUser(user).subscribe(() => {
         this.store.dispatch(
@@ -95,18 +101,50 @@ export class RegisterComponent implements OnInit {
     this.registrationForm = this.fb.group({
       firstname: [null, [Validators.required, Validators.maxLength(120)]],
       lastname: [null, [Validators.required, Validators.maxLength(120)]],
-      email: [
-        null,
+      emails: this.fb.group(
         {
-          validators: [
-            Validators.required,
-            Validators.pattern(emailRegex),
-            Validators.maxLength(120),
+          email: [
+            null,
+            {
+              validators: [
+                Validators.required,
+                Validators.pattern(emailRegex),
+                Validators.maxLength(120),
+              ],
+              asyncValidators: [this.userValidators.emailValidator([])],
+              updateOn: 'blur',
+            },
           ],
-          asyncValidators: [this.userValidators.emailValidator([])],
-          updateOn: 'blur',
+          emailConfirm: [
+            null,
+            {
+              validators: [
+                Validators.required,
+                Validators.pattern(emailRegex),
+                Validators.maxLength(120),
+              ],
+              asyncValidators: [this.userValidators.emailValidator([])],
+              updateOn: 'blur',
+            },
+          ],
         },
-      ],
+        {
+          validators: emailsValidator(),
+        },
+      ),
     });
+  }
+
+  public emailsDontMatch(): boolean {
+    if (
+      this.registrationForm.get('emails.email').pristine ||
+      this.registrationForm.get('emails.emailConfirm').pristine
+    ) {
+      return false;
+    }
+    return (
+      this.registrationForm.get('emails').errors &&
+      this.registrationForm.get('emails').errors['emailsMatch']
+    );
   }
 }

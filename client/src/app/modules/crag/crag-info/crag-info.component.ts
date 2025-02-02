@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { GradeDistribution } from '../../../models/scale';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { MapMarkerType } from '../../../enums/map-marker-type';
+import { Season } from '../../../models/season';
 
 /**
  * Component that shows information about a crag.
@@ -21,6 +22,7 @@ export class CragInfoComponent implements OnInit {
   public crag: Crag;
   public fetchCragGrades: Observable<GradeDistribution>;
   public cragCoordinates: Coordinates;
+  public season: Season;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +42,9 @@ export class CragInfoComponent implements OnInit {
         });
       });
       this.fetchCragGrades = this.cragsService.getCragGrades(cragSlug);
+      this.cragsService.getSeason(cragSlug).subscribe((season) => {
+        this.season = season;
+      });
     });
   }
 }

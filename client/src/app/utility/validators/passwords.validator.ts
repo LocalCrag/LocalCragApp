@@ -1,7 +1,7 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 /**
- * Validator for passwords. Fails if password and passwordMath don't match.
+ * Validator for passwords. Fails if password and passwordMatch don't match.
  *
  * @return Validator function for passwords.
  */

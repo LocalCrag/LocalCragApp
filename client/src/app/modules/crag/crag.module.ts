@@ -34,7 +34,8 @@ import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-m
 import { MapComponent } from '../maps/map/map.component';
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
-import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.component';
+import { SeasonChartComponent } from '../shared/components/season-chart/season-chart.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 
 /**
  * Module for crags.
@@ -79,6 +80,7 @@ import {ArchiveButtonComponent} from '../archive/archive-button/archive-button.c
     MapComponent,
     ClosedSpotTagComponent,
     ClosedSpotAlertComponent,
+    SeasonChartComponent,
     ArchiveButtonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],

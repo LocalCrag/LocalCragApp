@@ -46,29 +46,66 @@
           }}</small>
         </div>
 
-        <div class="card-container block" lcControlGroup>
-          <input
-            type="text"
-            pInputText
-            formControlName="email"
-            placeholder="{{ t('emailPlaceholder') }}"
-            lcFormControl
-            data-cy="register-form-email"
-          />
-          <small class="p-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="p-error" *lcIfError="'pattern'">{{
-            t("invalidEmailHint")
-          }}</small>
-          <small class="p-error" *lcIfError="'emailTaken'">{{
-            t("emailTaken")
-          }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+        <div formGroupName="emails">
+          <div class="card-container block" lcControlGroup>
+            <input
+              type="text"
+              pInputText
+              formControlName="email"
+              placeholder="{{ t('emailPlaceholder') }}"
+              lcFormControl
+              data-cy="register-form-email"
+            />
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+            <small class="p-error" *lcIfError="'pattern'">{{
+              t("invalidEmailHint")
+            }}</small>
+            <small class="p-error" *lcIfError="'emailTaken'">{{
+              t("emailTaken")
+            }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+          </div>
+
+          <div
+            class="card-container block"
+            lcControlGroup
+            *ngIf="accountForm.get('emails.email').value !== currentUser.email"
+          >
+            <input
+              type="text"
+              pInputText
+              formControlName="emailConfirm"
+              placeholder="{{ t('emailConfirmPlaceholder') }}"
+              lcFormControl
+              data-cy="register-form-email-confirm"
+            />
+            <small class="p-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+            <small class="p-error" *lcIfError="'pattern'">{{
+              t("invalidEmailHint")
+            }}</small>
+            <small class="p-error" *lcIfError="'emailTaken'">{{
+              t("emailTaken")
+            }}</small>
+            <small class="p-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+          </div>
         </div>
       </form>
+
+      <p-message
+        severity="error"
+        text="{{ t('emailsDontMatchAlertText') }}"
+        class="mt-4"
+        *ngIf="savePressed && emailsDontMatch()"
+      >
+      </p-message>
 
       <p-button
         label="{{ t('saveAccountSettingsButtonLabel') }}"
@@ -79,7 +116,7 @@
       <p-messages
         severity="info"
         class="w-full max-w-35rem"
-        *ngIf="emailChanged"
+        *ngIf="emailChangedPostSave"
       >
         <ng-template pTemplate>
           {{ t("emailAddressChangeInfoText") }}

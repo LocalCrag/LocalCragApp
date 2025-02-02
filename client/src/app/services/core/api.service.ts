@@ -142,6 +142,8 @@ export class ApiService {
       `${this.apiHost}sectors/${slug}/grades`,
     updateOrder: (cragSlug: string): string =>
       `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
+    getSeason: (cragSlug: string): string =>
+      `${this.apiHost}crags/${cragSlug}/season`,
   };
 
   public areas = {

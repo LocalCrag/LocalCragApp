@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
+import { Season } from '../../models/season';
 import { deserializeGradeList, Grade, GradeDistribution } from '../../models/scale';
 
 /**
@@ -117,5 +118,9 @@ export class CragsService {
     return this.http
       .get(this.api.crags.getGrades(cragSlug))
       .pipe(map(deserializeGradeList));
+  }
+
+  public getSeason(cragSlug: string): Observable<Season> {
+    return this.http.get<Season>(this.api.sectors.getSeason(cragSlug));
   }
 }
