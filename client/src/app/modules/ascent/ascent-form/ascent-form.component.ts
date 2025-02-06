@@ -103,16 +103,32 @@ export class AscentFormComponent implements OnInit {
   ngOnInit() {
     this.buildForm();
     this.ascent = this.dialogConfig.data.ascent;
+    this.ascentForm.disable();
     if (this.ascent) {
       this.editMode = true;
-      this.ascentForm.disable();
       this.setFormValue();
+    } else {
+      this.scalesService
+        .gradeNameByValue(
+          this.line.type,
+          this.line.gradeScale,
+          this.line.gradeValue,
+        )
+        .subscribe((gradeName) => {
+          this.ascentForm.patchValue({
+            grade: {
+              name: gradeName,
+              value: this.line.gradeValue,
+            },
+          });
+          this.ascentForm.enable();
+        });
     }
   }
 
   private buildForm() {
     this.ascentForm = this.fb.group({
-      grade: [this.line.gradeValue, [Validators.required]],
+      grade: [null, [Validators.required]],
       rating: [null, [Validators.required]],
       year: [
         new Date(),
