@@ -20,7 +20,7 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     __tablename__ = "crags"
 
-    slug_blocklist = ["create-crag", "edit-region", "areas", "gallery", "ascents", "rules", "gallery"]
+    slug_blocklist = ["create-crag", "edit-region", "areas", "gallery", "ascents", "rules"]
     searchable_type = SearchableItemTypeEnum.CRAG
     name = db.Column(db.String(120), nullable=False)
     short_description = db.Column(db.Text, nullable=True)
@@ -35,6 +35,9 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default="0")
     map_markers = db.relationship("MapMarker", back_populates="crag")
+    default_boulder_scale = db.Column(db.String(32), nullable=True)
+    default_sport_scale = db.Column(db.String(32), nullable=True)
+    default_trad_scale = db.Column(db.String(32), nullable=True)
 
     @hybrid_property
     def ascent_count(self):

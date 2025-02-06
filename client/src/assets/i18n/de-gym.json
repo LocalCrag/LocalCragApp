@@ -1,0 +1,16 @@
+{
+  "region.regionForm.regionNamePlaceholder": "z.B. Organisationsname",
+  "region.regionForm.regionDescriptionPlaceholder": "Allgemeine Informationen über die Organisation.",
+  "region.regionForm.regionRulesPlaceholder": "Regeln",
+  "region.regionForm.editRegionTitle": "Organisation bearbeiten",
+  "notFound.title": "Error 404 - Kein Griff in Sicht!",
+  "projectClimbedForm.projectClimbedInfoMessage": "Du hast ein Projekt geklettert? Glückwunsch! Es wäre super, wenn Du uns ein paar Infos zusenden würdest, damit wie die neue Linie ins Topo mit aufnehmen können. Am wichtigsten sind der Name der Linie und Deine Schwierigkeitsbewertung. Wenn Du ein Video hast, schick es uns gerne. Wenn Du als Erstbegeher:in im Topo stehen willst, schick uns noch Deinen Namen und das Datum der Begehung. Wir melden uns dann bei Dir - Danke!",
+  "ascentForm.firstAscentExplanation": "Erstbegegung: Das Feld ist nur anzukreuzen, wenn du die Person bist, die diese Linie zum allerersten Mal überhaupt geklettert hat. Es geht nicht um deine persönliche erste Begehung!",
+  "top25Ranking": "Top 25 Begehungen",
+  "top10FaRanking": "Top 10 Erstbegehungen",
+  "totalFaCountRanking": "Anzahl Erstbegehungen",
+  "top10FaExponentialRanking": "Top 10 Erstbegehungen (exponentielle Gewichtung)",
+  "totalFaRanking": "Alle Erstbegehungen",
+  "totalFaExponentialRanking": "Alle Erstbegehungen (exponentielle Gewichtung)",
+  "searchDialog.infoMessage": "Die Qualität der Suchfunktion gerade noch nicht sehr gut."
+}

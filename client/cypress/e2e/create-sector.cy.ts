@@ -2,7 +2,7 @@ describe('Create sector', () => {
   it('creates a sector', () => {
     cy.login();
     cy.visit('localhost:4200/topo/brione/create-sector');
-    cy.get('[data-cy="sector-form-name"]').focus().type('Düsterwald');
+    cy.get('[data-cy="sector-form-name"]').type('Düsterwald');
     cy.get('[data-cy="sector-form-shortDescription"] .ql-editor')
       .focus()
       .type('Düsterwald ist toll.');

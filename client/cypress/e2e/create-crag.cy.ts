@@ -2,7 +2,7 @@ describe('Create crag', () => {
   it('creates a crag', () => {
     cy.login();
     cy.visit('localhost:4200/topo/create-crag');
-    cy.get('[data-cy="crag-form-name"]').focus().type('Ferschweiler');
+    cy.get('[data-cy="crag-form-name"]').type('Ferschweiler');
     cy.get('[data-cy="crag-form-shortDescription"] .ql-editor')
       .focus()
       .type('Ferschweiler ist toll.');

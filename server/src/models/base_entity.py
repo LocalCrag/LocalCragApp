@@ -31,12 +31,16 @@ class BaseEntity(db.Model):
         return db.relationship("User", foreign_keys="[%s.created_by_id]" % self.__name__)
 
     @classmethod
-    def return_all(cls, order_by=None, options=None, filter=None):
+    def return_all(cls, order_by=None, options=None, filter=None) -> list[Self]:
         query = cls.query
         if options:
             query = query.options(options)
         if filter:
-            query = query.filter(filter())
+            f = filter()
+            if isinstance(f, list):
+                query = query.filter(*f)
+            else:
+                query = query.filter(f)
         if order_by is not None:
             if not type(order_by) is list:
                 order_by = [order_by]

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { LineType } from '../../enums/line-type';
 
 /**
  * Simple container service holding api route definitions.
@@ -55,6 +56,10 @@ export class ApiService {
 
   public isTodo = {
     getList: (): string => `${this.apiHost}is-todo`,
+  };
+
+  public archive = {
+    setArchived: (): string => `${this.apiHost}archive`,
   };
 
   public users = {
@@ -170,8 +175,8 @@ export class ApiService {
   public topoImages = {
     add: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/topo-images`,
-    getList: (areaSlug: string): string =>
-      `${this.apiHost}areas/${areaSlug}/topo-images`,
+    getList: (areaSlug: string, filters?: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images${filters ?? ''}`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,
@@ -202,6 +207,17 @@ export class ApiService {
 
   public uploader = {
     uploadFile: (): string => `${this.apiHost}upload`,
+  };
+
+  public scales = {
+    get: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
+    getList: () => `${this.apiHost}scales`,
+    create: () => `${this.apiHost}scales`,
+    update: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
+    delete: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${name}`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;

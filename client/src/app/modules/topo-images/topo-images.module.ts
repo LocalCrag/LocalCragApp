@@ -25,6 +25,8 @@ import { TickButtonComponent } from '../ascent/tick-button/tick-button.component
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
 import { CoordinatesComponent } from '../shared/forms/controls/coordinates/coordinates.component';
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import { GymModeDirective } from '../shared/directives/gym-mode.directive';
 
 @NgModule({
   declarations: [TopoImageListComponent, TopoImageFormComponent],
@@ -55,6 +57,8 @@ import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/clo
     TodoButtonComponent,
     CoordinatesComponent,
     ClosedSpotTagComponent,
+    ArchiveButtonComponent,
+    GymModeDirective,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
   exports: [TopoImageListComponent],

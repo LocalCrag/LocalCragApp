@@ -12,34 +12,39 @@ class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     id = fields.String()
-    gradeName = fields.String(attribute="grade_name")
+    type = EnumField(LineTypeEnum, by_value=True)
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
 
 
 class LineSchemaMin(BaseEntityMinSchema):
     name = fields.String()
     slug = fields.String()
+    color = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
-    gradeName = fields.String(attribute="grade_name")
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
+    archived = fields.Boolean()
 
 
 class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
+    color = fields.String()
     areaSlug = fields.String(attribute="area_slug")
     sectorSlug = fields.String(attribute="sector_slug")
     cragSlug = fields.String(attribute="crag_slug")
     videos = fields.List(fields.Dict)
     type = EnumField(LineTypeEnum, by_value=True)
     rating = fields.Integer()
-    gradeName = fields.String(attribute="grade_name")
+    gradeValue = fields.Integer(attribute="grade_value")
     gradeScale = fields.String(attribute="grade_scale")
     faYear = fields.Integer(attribute="fa_year")
     faName = fields.String(attribute="fa_name")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     secret = fields.Boolean()
+    archived = fields.Boolean()
 
     eliminate = fields.Boolean()
     traverse = fields.Boolean()

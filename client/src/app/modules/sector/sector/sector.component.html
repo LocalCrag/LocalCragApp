@@ -9,6 +9,7 @@
       class="max-w-full"
       [model]="breadcrumbs"
       [home]="breadcrumbHome"
+      *ngIf="sector?.slug !== environment.skippedSlug"
     ></p-breadcrumb>
 
     <p-tabMenu [model]="items" [scrollable]="true" *ngIf="sector"></p-tabMenu>

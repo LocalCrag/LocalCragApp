@@ -16,6 +16,11 @@ export const selectInstanceName = createSelector(
   (instanceSettingsState) => instanceSettingsState.instanceName,
 );
 
+export const selectGymMode = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.gymMode,
+);
+
 export const selectMainBgImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.mainBgImage,

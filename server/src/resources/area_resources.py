@@ -1,3 +1,4 @@
+from collections import Counter, defaultdict
 from typing import List
 
 from flask import jsonify, request
@@ -7,10 +8,12 @@ from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from models.area import Area
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
@@ -23,7 +26,7 @@ from util.propagating_boolean_attrs import (
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
-from util.validators import validate_order_payload
+from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.area_args import area_args
 
 
@@ -62,6 +65,10 @@ class CreateArea(MethodView):
         area_data = parser.parse(area_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        valid, error = validate_default_scales(area_data)
+        if not valid:
+            raise NotFound(error)
+
         new_area: Area = Area()
         new_area.name = area_data["name"].strip()
         new_area.description = add_bucket_placeholders(area_data["description"])
@@ -74,6 +81,9 @@ class CreateArea(MethodView):
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
         new_area.closed = area_data["closed"]
         new_area.closed_reason = area_data["closedReason"]
+        new_area.default_boulder_scale = area_data["defaultBoulderScale"]
+        new_area.default_sport_scale = area_data["defaultSportScale"]
+        new_area.default_trad_scale = area_data["defaultTradScale"]
 
         if not new_area.secret:
             set_area_parents_false(new_area, "secret")
@@ -99,6 +109,10 @@ class UpdateArea(MethodView):
         area_data = parser.parse(area_args, request)
         area: Area = Area.find_by_slug(area_slug)
 
+        valid, error = validate_default_scales(area_data)
+        if not valid:
+            raise NotFound(error)
+
         area.name = area_data["name"].strip()
         area.description = add_bucket_placeholders(area_data["description"])
         area.short_description = area_data["shortDescription"]
@@ -107,6 +121,10 @@ class UpdateArea(MethodView):
         update_area_propagating_boolean_attr(
             area, area_data["closed"], "closed", set_additionally={"closed_reason": area_data["closedReason"]}
         )
+        area.default_boulder_scale = area_data["defaultBoulderScale"]
+        area.default_sport_scale = area_data["defaultSportScale"]
+        area.default_trad_scale = area_data["defaultTradScale"]
+
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()
@@ -164,8 +182,19 @@ class GetAreaGrades(MethodView):
         Returns the grades of all lines of an area.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        query = db.session.query(Line.grade_name, Line.grade_scale).filter(Line.area_id == area_id)
+        query = db.session.query(Line.type, Line.grade_scale, Line.grade_value).filter(
+            Line.area_id == area_id, Line.archived.is_(False)
+        )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

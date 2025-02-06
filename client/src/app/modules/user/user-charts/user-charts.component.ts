@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
 import { CompletionComponent } from '../completion/completion.component';
+import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-user-charts',
@@ -21,7 +21,7 @@ import { CompletionComponent } from '../completion/completion.component';
 })
 export class UserChartsComponent implements OnInit {
   public user: User;
-  public fetchUserGrades: Observable<Grade[]>;
+  public fetchUserGrades: Observable<GradeDistribution>;
 
   constructor(
     private route: ActivatedRoute,

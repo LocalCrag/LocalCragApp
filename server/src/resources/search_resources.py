@@ -14,6 +14,7 @@ from marshmallow_schemas.search_schema import (
 from models.area import Area
 from models.crag import Crag
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.searchable import Searchable
 from models.sector import Sector
@@ -25,9 +26,14 @@ class Search(MethodView):
     def get(self, query):
         if not query:
             raise BadRequest("A search query is required.")
+        instance_settings = InstanceSettings.return_it()
         db_query = db.session.query(Searchable)
         if not get_show_secret():
             db_query = db_query.filter(Searchable.secret.is_(False))
+        if instance_settings.skipped_hierarchical_layers > 0:
+            db_query = db_query.filter(Searchable.type != SearchableItemTypeEnum.CRAG.value)
+        if instance_settings.skipped_hierarchical_layers > 1:
+            db_query = db_query.filter(Searchable.type != SearchableItemTypeEnum.SECTOR.value)
         searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
         result = []
         for searchable in searchables:

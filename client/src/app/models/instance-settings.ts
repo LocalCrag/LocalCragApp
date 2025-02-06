@@ -18,6 +18,8 @@ export class InstanceSettings {
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
+  gymMode: boolean;
+  skippedHierarchicalLayers: number;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -46,6 +48,9 @@ export class InstanceSettings {
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
+    instanceSettings.gymMode = payload.gymMode;
+    instanceSettings.skippedHierarchicalLayers =
+      payload.skippedHierarchicalLayers;
     return instanceSettings;
   }
 
@@ -73,6 +78,8 @@ export class InstanceSettings {
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
+      gymMode: instanceSettings.gymMode,
+      skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
     };
   }
 }

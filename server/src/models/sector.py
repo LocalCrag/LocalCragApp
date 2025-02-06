@@ -21,7 +21,7 @@ class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     __tablename__ = "sectors"
 
-    slug_blocklist = ["edit", "create-sector", "sectors", "gallery", "ascents", "rules", "gallery"]
+    slug_blocklist = ["edit", "create-sector", "sectors", "gallery", "ascents", "rules"]
     searchable_type = SearchableItemTypeEnum.SECTOR
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
@@ -38,6 +38,9 @@ class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
     secret = db.Column(db.Boolean, default=False, server_default="0")
     crag_slug = association_proxy("crag", "slug")
     map_markers = db.relationship("MapMarker", back_populates="sector")
+    default_boulder_scale = db.Column(db.String(32), nullable=True)
+    default_sport_scale = db.Column(db.String(32), nullable=True)
+    default_trad_scale = db.Column(db.String(32), nullable=True)
 
     @hybrid_property
     def ascent_count(self):

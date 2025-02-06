@@ -1,5 +1,4 @@
 import time
-from time import sleep
 
 from models.crag import Crag
 from models.line import Line
@@ -54,16 +53,6 @@ def test_successful_get_ranking_sport(client):
     assert len(res) == 0
 
 
-def test_update_ranking_with_wrong_token(client, admin_token):
-    rv = client.get("/api/ranking/update", headers={"Authorization": f"Bearer wrongToken"})
-    assert rv.status_code == 401
-
-
-def test_update_ranking_without_token(client, admin_token):
-    rv = client.get("/api/ranking/update")
-    assert rv.status_code == 401
-
-
 def test_successful_update_ranking(client, admin_token):
     ascent_data = {
         "flash": True,
@@ -74,8 +63,7 @@ def test_successful_update_ranking(client, admin_token):
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 10,
         "line": str(Line.get_id_by_slug("treppe")),
         "date": "2024-04-13",
     }
@@ -106,7 +94,6 @@ def test_successful_update_ranking(client, admin_token):
         time.sleep(wait_time)
         total_wait_time += wait_time
         wait_time *= 2
-
     assert rv.status_code == 200
     assert len(res) == 1
     assert res[0]["user"]["slug"] == "admin-admin"

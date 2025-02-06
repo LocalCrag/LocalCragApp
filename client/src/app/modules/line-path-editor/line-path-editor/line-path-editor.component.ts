@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   forwardRef,
+  Input,
   OnInit,
   ViewChild,
   ViewEncapsulation,
@@ -31,6 +32,8 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
 })
 export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;
+
+  @Input() color?: string; // Line color for currently drawn line
 
   public topoImage: TopoImage;
   public linePath: LinePath;

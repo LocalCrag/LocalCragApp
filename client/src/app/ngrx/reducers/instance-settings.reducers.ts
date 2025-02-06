@@ -17,6 +17,8 @@ export interface InstanceSettingsState {
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
+  gymMode: boolean;
+  skippedHierarchyLayers: number;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -34,6 +36,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   maptilerApiKey: null,
   maxFileSize: 0,
   maxImageSize: 0,
+  gymMode: false,
+  skippedHierarchyLayers: 0,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -54,6 +58,8 @@ const instanceSettingsReducer = createReducer(
     maptilerApiKey: action.settings.maptilerApiKey,
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,
+    gymMode: action.settings.gymMode,
+    skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
   })),
 );
 

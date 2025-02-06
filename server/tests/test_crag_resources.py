@@ -24,6 +24,9 @@ def test_successful_create_crag(client, moderator_token):
         "secret": False,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": "UIAA",
+        "defaultTradScale": None,
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
@@ -42,6 +45,9 @@ def test_successful_create_crag(client, moderator_token):
     assert res["secret"] == False
     assert res["closed"] == False
     assert res["closedReason"] is None
+    assert res["defaultBoulderScale"] is None
+    assert res["defaultSportScale"] == "UIAA"
+    assert res["defaultTradScale"] is None
 
 
 def test_successful_get_crags(client):
@@ -81,6 +87,9 @@ def test_successful_get_crag(client):
     assert res["secret"] == crag.secret
     assert res["closed"] == crag.closed
     assert res["closedReason"] == crag.closed_reason
+    assert res["defaultBoulderScale"] is None
+    assert res["defaultSportScale"] is None
+    assert res["defaultTradScale"] is None
 
 
 def test_get_deleted_crag(client):
@@ -116,6 +125,9 @@ def test_successful_edit_crag(client, moderator_token):
         "secret": False,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -134,6 +146,9 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["id"] is not None
     assert res["closed"] == False
     assert res["closedReason"] is None
+    assert res["defaultBoulderScale"] == "FB"
+    assert res["defaultSportScale"] is None
+    assert res["defaultTradScale"] is None
 
 
 def test_successful_order_crags(client, moderator_token):
@@ -190,11 +205,7 @@ def test_successful_get_crag_grades(client):
     rv = client.get("/api/crags/brione/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert res[0]["gradeName"] == "1"
-    assert res[0]["gradeScale"] == "FB"
-    assert res[1]["gradeName"] == "8A"
-    assert res[1]["gradeScale"] == "FB"
+    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}
 
 
 def test_crag_season(client):

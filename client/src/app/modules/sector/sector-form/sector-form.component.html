@@ -207,7 +207,11 @@
             ></lc-map-marker-form-array>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="sector?.slug !== environment.skippedSlug"
+          >
             <label class="form-label" for="secret">{{
               t("sectorOptionsLabel")
             }}</label>
@@ -227,6 +231,61 @@
               formControlName="closed"
               lcFormControl
             ></p-checkbox>
+          </div>
+
+          <div class="grid align-items-center">
+            <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
+
+            <label
+              for="defaultBoulderScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
+              {{ "BOULDER" | transloco }}:
+            </label>
+            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+              <p-dropdown
+                id="defaultBoulderScale"
+                [options]="boulderScales"
+                optionLabel="label"
+                optionValue="value"
+                formControlName="defaultBoulderScale"
+                lcFormControl
+              ></p-dropdown>
+            </div>
+
+            <label
+              for="defaultSportScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
+              {{ "SPORT" | transloco }}:
+            </label>
+            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+              <p-dropdown
+                id="defaultSportScale"
+                [options]="sportScales"
+                optionLabel="label"
+                optionValue="value"
+                formControlName="defaultSportScale"
+                lcFormControl
+              ></p-dropdown>
+            </div>
+
+            <label
+              for="defaultTradScale"
+              class="xl:col-1 md:col-2 sm:col-3 col-4"
+            >
+              {{ "TRAD" | transloco }}:
+            </label>
+            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+              <p-dropdown
+                id="defaultTradScale"
+                [options]="tradScales"
+                optionLabel="label"
+                optionValue="value"
+                formControlName="defaultTradScale"
+                lcFormControl
+              ></p-dropdown>
+            </div>
           </div>
 
           <p-messages
@@ -304,7 +363,7 @@
             styleClass="p-button-danger"
             class="ml-3 responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
+            *ngIf="editMode && sector?.slug !== environment.skippedSlug"
           ></p-button>
           <p-confirmPopup></p-confirmPopup>
         </div>

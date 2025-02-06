@@ -1,4 +1,6 @@
 {
+  "topoImageList.hideArchive": "Archiv verstecken",
+  "topoImageList.showArchive": "Archiv anzeigen",
   "topoImageList.newTopoImageButtonLabel": "Neues Topo Bild",
   "topoImageList.reorderTopoImagesButtonLabel": "Topo Bilder ordnen",
   "topoImageList.noLineAssignedToTopoImage": "Diesem Bild ist bisher keine Linie zugeordnet worden.",

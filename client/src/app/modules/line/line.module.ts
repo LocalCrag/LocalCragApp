@@ -23,6 +23,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RatingModule } from 'primeng/rating';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ColorPickerModule } from 'primeng/colorpicker';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 import { LineInfoComponent } from './line-info/line-info.component';
 import { TopoImageDetailsComponent } from '../topo-images/topo-image-details/topo-image-details.component';
@@ -34,6 +35,11 @@ import { FormSkeletonComponent } from '../shared/components/form-skeleton/form-s
 import { TodoButtonComponent } from '../todo/todo-button/todo-button.component';
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { GymModeDirective } from '../shared/directives/gym-mode.directive';
+import { ColorSquareComponent } from '../shared/components/color-square/color-square.component';
+import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { AdvancedColorPickerComponent } from '../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +72,7 @@ import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert
     RatingModule,
     CalendarModule,
     CheckboxModule,
+    ColorPickerModule,
     TopoImageDetailsComponent,
     HasPermissionDirective,
     TickButtonComponent,
@@ -75,6 +82,11 @@ import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert
     TodoButtonComponent,
     ClosedSpotTagComponent,
     ClosedSpotAlertComponent,
+    GymModeDirective,
+    ColorSquareComponent,
+    ArchiveButtonComponent,
+    SelectButtonModule,
+    AdvancedColorPickerComponent,
   ],
   exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],

@@ -26,8 +26,4 @@ def test_successful_get_region_grades(client):
     rv = client.get("/api/region/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert res[1]["gradeName"] == "1"
-    assert res[1]["gradeScale"] == "FB"
-    assert res[0]["gradeName"] == "8A"
-    assert res[0]["gradeScale"] == "FB"
+    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}

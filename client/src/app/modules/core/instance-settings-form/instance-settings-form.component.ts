@@ -30,6 +30,9 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
 import { PasswordModule } from 'primeng/password';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { TooltipModule } from 'primeng/tooltip';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -50,6 +53,10 @@ import { PasswordModule } from 'primeng/password';
     ColorPickerModule,
     DividerModule,
     PasswordModule,
+    DividerModule,
+    InputSwitchModule,
+    GymModeDirective,
+    TooltipModule,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -94,6 +101,8 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm = this.fb.group({
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
+      gymMode: [null],
+      skippedHierarchicalLayers: [null],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -114,6 +123,9 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm.patchValue({
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
+      gymMode: this.instanceSettings.gymMode,
+      skippedHierarchicalLayers:
+        this.instanceSettings.skippedHierarchicalLayers,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -137,6 +149,9 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('instanceName').value;
       instanceSettings.copyrightOwner =
         this.instanceSettingsForm.get('copyrightOwner').value;
+      instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
+      instanceSettings.skippedHierarchicalLayers =
+        this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =
@@ -166,14 +181,32 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('maptilerApiKey').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
-        .subscribe((instanceSettings) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.INSTANCE_SETTINGS_UPDATED),
-          );
-          this.loadingState = LoadingState.DEFAULT;
-          this.store.dispatch(
-            updateInstanceSettings({ settings: instanceSettings }),
-          );
+        .subscribe({
+          next: (instanceSettings) => {
+            this.store.dispatch(
+              toastNotification(
+                NotificationIdentifier.INSTANCE_SETTINGS_UPDATED,
+              ),
+            );
+            this.loadingState = LoadingState.DEFAULT;
+            this.store.dispatch(
+              updateInstanceSettings({ settings: instanceSettings }),
+            );
+          },
+          error: (e) => {
+            this.loadingState = LoadingState.DEFAULT;
+            if (e.error?.message == 'MIGRATION_IMPOSSIBLE') {
+              this.store.dispatch(
+                toastNotification(
+                  NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE,
+                ),
+              );
+            } else {
+              this.store.dispatch(
+                toastNotification(NotificationIdentifier.UNKNOWN_ERROR),
+              );
+            }
+          },
         });
     } else {
       this.formDirective.markAsTouched();

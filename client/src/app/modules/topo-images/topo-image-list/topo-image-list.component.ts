@@ -26,6 +26,8 @@ import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Area } from '../../../models/area';
+import { highlightColor, textColor } from '../../../utility/misc/color';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 /**
  * Component that lists all topo images in an area.
@@ -52,6 +54,7 @@ export class TopoImageListComponent implements OnInit {
   public areaSlug: string;
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
+  public showArchive = false;
 
   private scrollTarget: Scroll;
   private area: Area;
@@ -69,6 +72,7 @@ export class TopoImageListComponent implements OnInit {
     private translocoService: TranslocoService,
     private router: Router,
     private viewportScroller: ViewportScroller,
+    protected scalesService: ScalesService,
   ) {
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
@@ -105,18 +109,28 @@ export class TopoImageListComponent implements OnInit {
       });
   }
 
+  toggleArchive() {
+    this.showArchive = !this.showArchive;
+    this.refreshData();
+  }
+
   /**
    * Loads new data.
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
+    const filters = new URLSearchParams();
+    if (this.showArchive) filters.set('archived', '1');
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           this.area = area;
           return forkJoin([
-            this.topoImagesService.getTopoImages(this.areaSlug),
+            this.topoImagesService.getTopoImages(
+              this.areaSlug,
+              '?' + filters.toString(),
+            ),
             this.ticksService.getTicks(null, null, area.id),
             this.translocoService.load(`${environment.language}`),
           ]);
@@ -307,12 +321,22 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(instanceSettingsState.arrowHighlightColor);
-          linePath.konvaLine.stroke(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaLine.fill(
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
+          );
+          linePath.konvaLine.stroke(
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
+          );
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
-          linePath.konvaRect.fill(instanceSettingsState.arrowHighlightColor);
+          linePath.konvaRect.fill(
+            highlightColor(linePath.line?.color) ??
+              instanceSettingsState.arrowHighlightColor,
+          );
           linePath.konvaText.fill(
-            instanceSettingsState.arrowHighlightTextColor,
+            textColor(highlightColor(linePath.line?.color)) ??
+              instanceSettingsState.arrowHighlightTextColor,
           );
         });
     }
@@ -328,11 +352,20 @@ export class TopoImageListComponent implements OnInit {
         .select(selectInstanceSettingsState)
         .pipe(take(1))
         .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(instanceSettingsState.arrowColor);
-          linePath.konvaLine.stroke(instanceSettingsState.arrowColor);
+          linePath.konvaLine.fill(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
+          linePath.konvaLine.stroke(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
           linePath.konvaLine.zIndex(1); // 0 is the BG image
-          linePath.konvaRect.fill(instanceSettingsState.arrowColor);
-          linePath.konvaText.fill(instanceSettingsState.arrowTextColor);
+          linePath.konvaRect.fill(
+            linePath.line?.color ?? instanceSettingsState.arrowColor,
+          );
+          linePath.konvaText.fill(
+            textColor(linePath.line?.color) ??
+              instanceSettingsState.arrowTextColor,
+          );
         });
     }
   }

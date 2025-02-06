@@ -52,11 +52,15 @@ export class TopoImagesService {
   /**
    * Returns a list of TopoImages for an area.
    * @param areaSlug Slug of the area to get the topo images for.
+   * @param filters Query parameters as string
    * @return Observable of a list of TopoImages.
    */
-  public getTopoImages(areaSlug: string): Observable<TopoImage[]> {
+  public getTopoImages(
+    areaSlug: string,
+    filters?: string,
+  ): Observable<TopoImage[]> {
     return this.http
-      .get(this.api.topoImages.getList(areaSlug))
+      .get(this.api.topoImages.getList(areaSlug, filters))
       .pipe(
         map((topoImageListJson: any) =>
           topoImageListJson.map(TopoImage.deserialize),

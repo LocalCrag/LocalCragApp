@@ -1,0 +1,4 @@
+{
+  "topoImageForm.addTopoImageDescription": "Lade ein neues Topo-Bild hoch. Im Anschluss können angelegte Linien im Bild verzeichnet werden. Die Wand sollte den größten Teil des Bildes einnehmen und die ganze Linie sollte gut zu sehen sein. In manchen Fällen ergibt es Sinn, die gleiche Linie auf mehreren Bildern einzuzeichnen. Dies ist z.B. bei Traversen oder Linien die um eine Kante herum verlaufen der Fall.",
+  "topoImageForm.topoImageDescriptionPlaceholder": "Interessantes über die Wand. Gibt es z.B einen typischen Linienstil? Hat er eine besondere Historie? ..."
+}

@@ -1,6 +1,5 @@
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.file import File
-from tests.conftest import member_token
 
 
 def test_create_secret_line_in_public_area(client, moderator_token):
@@ -8,7 +7,7 @@ def test_create_secret_line_in_public_area(client, moderator_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -90,6 +89,9 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "secret": True,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -125,7 +127,7 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -227,6 +229,9 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
         "secret": True,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -271,6 +276,9 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "secret": True,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -281,7 +289,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -349,7 +357,7 @@ def test_gallery_secret(client, moderator_token, member_token):
         "name": "Es geheim",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeName": "7B+",
+        "gradeValue": 20,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,

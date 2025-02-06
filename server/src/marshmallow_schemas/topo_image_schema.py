@@ -13,6 +13,7 @@ class TopoImageSchema(BaseEntityMinSchema):
     description = fields.String()
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
+    archived = fields.Boolean()
 
 
 class TopoImageSchemaForLines(BaseEntityMinSchema):
@@ -21,6 +22,7 @@ class TopoImageSchemaForLines(BaseEntityMinSchema):
     description = fields.String()
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
+    archived = fields.Boolean()
 
 
 topo_image_schema = TopoImageSchema()

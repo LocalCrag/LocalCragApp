@@ -4,7 +4,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
-import { Grade } from '../../../utility/misc/grades';
+import { GradeDistribution } from '../../../models/scale';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Season } from '../../../models/season';
@@ -20,7 +20,7 @@ import { Season } from '../../../models/season';
 @UntilDestroy()
 export class CragInfoComponent implements OnInit {
   public crag: Crag;
-  public fetchCragGrades: Observable<Grade[]>;
+  public fetchCragGrades: Observable<GradeDistribution>;
   public cragCoordinates: Coordinates;
   public season: Season;
 

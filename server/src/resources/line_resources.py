@@ -14,7 +14,7 @@ from marshmallow_schemas.line_schema import (
 from models.area import Area
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
-from models.grades import get_grade_value
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
@@ -35,7 +35,7 @@ class GetLinesForLineEditor(MethodView):
         """
         Returns all lines of an area which is needed for the line select in the line editor.
         """
-        lines = Line.query.join(Area).filter(Area.slug == area_slug).order_by(Line.name).all()
+        lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
 
 
@@ -56,6 +56,9 @@ class GetLines(MethodView):
         order_direction = request.args.get("order_direction") or "asc"
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
+        archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
+        line_type = request.args.get("line_type", None, type=LineTypeEnum)
+        grade_scale = request.args.get("grade_scale", None)
 
         if order_by not in ["grade_value", "name", "rating", None] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -64,13 +67,17 @@ class GetLines(MethodView):
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
         # Filter for crag, sector or area
-        query = select(Line).join(Area).join(Sector).join(Crag)
+        query = select(Line).filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
         if crag_slug:
             query = query.filter(Crag.slug == crag_slug)
         if sector_slug:
             query = query.filter(Sector.slug == sector_slug)
         if area_slug:
             query = query.filter(Area.slug == area_slug)
+        if line_type:
+            query = query.filter(Line.type == line_type)
+        if grade_scale:
+            query = query.filter(Line.grade_scale == grade_scale)
 
         # Filter by grades
         if min_grade_value and max_grade_value:
@@ -115,23 +122,23 @@ class CreateLine(MethodView):
         line_data = parser.parse(line_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        if not cross_validate_grade(line_data["gradeName"], line_data["gradeScale"], line_data["type"]):
-            raise BadRequest("Grade scale, name and line type do not match.")
+        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
+            raise BadRequest("Grade scale, value and line type do not match.")
 
         new_line: Line = Line()
 
         new_line.name = line_data["name"].strip()
         new_line.description = line_data["description"]
+        new_line.color = line_data.get("color", None)
         new_line.videos = line_data["videos"]
-        new_line.grade_name = line_data["gradeName"]
-        new_line.grade_scale = line_data["gradeScale"]
         new_line.type = line_data["type"]
-        new_line.grade_value = get_grade_value(new_line.grade_name, new_line.grade_scale, new_line.type)
+        new_line.grade_scale = line_data["gradeScale"]
+        new_line.grade_value = line_data["gradeValue"]
         new_line.starting_position = line_data["startingPosition"]
         new_line.rating = line_data["rating"]
         new_line.secret = line_data["secret"]
 
-        if new_line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
+        if new_line.grade_value >= 0:
             new_line.fa_year = line_data["faYear"]
             new_line.fa_name = line_data["faName"]
         else:
@@ -199,24 +206,24 @@ class UpdateLine(MethodView):
         line_data = parser.parse(line_args, request)
         line: Line = Line.find_by_slug(line_slug)
 
-        if not cross_validate_grade(line_data["gradeName"], line_data["gradeScale"], line_data["type"]):
-            raise BadRequest("Grade scale, name and line type do not match.")
+        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
+            raise BadRequest("Grade scale, value and line type do not match.")
 
         line.name = line_data["name"].strip()
         line.description = line_data["description"]
+        line.color = line_data.get("color", None)
         line.videos = line_data["videos"]
-        line.grade_name = line_data["gradeName"]
+        line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
-        new_grade_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
         HistoryItem.create_history_item(
             HistoryItemTypeEnum.UPDATED,
             line,
             User.find_by_email(get_jwt_identity()),
             old_value=line.grade_value,
-            new_value=new_grade_value,
+            new_value=line_data["gradeValue"],
             property_name="grade_value",
         )
-        line.grade_value = new_grade_value
+        line.grade_value = line_data["gradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.rating = line_data["rating"]
@@ -225,7 +232,7 @@ class UpdateLine(MethodView):
             line, line_data["closed"], "closed", set_additionally={"closed_reason": line_data["closedReason"]}
         )
 
-        if line.grade_name not in ["CLOSED_PROJECT", "OPEN_PROJECT"]:
+        if line.grade_value >= 0:
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
         else:
