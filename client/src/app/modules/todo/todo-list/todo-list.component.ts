@@ -140,7 +140,7 @@ export class TodoListComponent implements OnInit {
       } else {
         this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
       }
-      this.selectScale();
+      this.selectScale(); // Calls loadFirstPage()
     });
 
     this.orderOptions = [
@@ -184,7 +184,6 @@ export class TodoListComponent implements OnInit {
       },
     ];
     this.priorityFilterKey = this.priorityFilterOptions[0];
-    this.loadFirstPage();
     this.actions$
       .pipe(ofType(todoAdded, reloadAfterAscent), untilDestroyed(this))
       .subscribe(() => {

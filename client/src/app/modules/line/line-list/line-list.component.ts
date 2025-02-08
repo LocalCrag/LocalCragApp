@@ -173,7 +173,7 @@ export class LineListComponent implements OnInit {
       } else {
         this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
       }
-      this.selectScale();
+      this.selectScale(); // Calls loadFirstPage()
     });
 
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
@@ -203,7 +203,6 @@ export class LineListComponent implements OnInit {
       },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
-    this.loadFirstPage();
     this.actions$
       .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
       .subscribe((action) => {
