@@ -44,7 +44,7 @@ class LineSearchSchema(ma.SQLAlchemySchema):
     slug = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
     gradeScale = fields.String(attribute="grade_scale")
-    gradeValue = fields.String(attribute="grade_value")
+    gradeValue = fields.Integer(attribute="grade_value")
     area = fields.Nested(area_search_schema)
 
 
