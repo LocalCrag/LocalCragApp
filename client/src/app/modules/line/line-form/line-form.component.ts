@@ -141,7 +141,7 @@ export class LineFormComponent implements OnInit {
         crag.defaultTradScale;
 
       this.typeOptions = Object.entries(this.groupedScales)
-        .filter(([_, v]) => !!v)
+        .filter(([_, v]) => v.length > 0)
         .map(([k]) => ({
           label: this.translocoService.translate(k),
           value: k,
@@ -202,8 +202,14 @@ export class LineFormComponent implements OnInit {
           )
           .subscribe((line) => {
             this.line = line;
-
-            this.defaultScales[this.line.type] = this.line.gradeScale;
+            this.typeOptions = [{ label: this.translocoService.translate(this.line.type), value: this.line.type }];
+            // find() must always find a result if the backend state is not corrupted
+            const scale = this.groupedScales[this.line.type].find((scale) => scale.name == this.line.gradeScale);
+            this.scaleOptions = [{ label: scale.name, value: scale.name }];
+            this.grades = scale.grades;
+            if (this.line?.ascentCount > 0) {
+              this.grades = this.grades.filter((grade) => grade.value >= 0);
+            }
 
             this.setFormValue();
             this.loadingState = LoadingState.DEFAULT;
@@ -337,8 +343,8 @@ export class LineFormComponent implements OnInit {
       description: this.line.description,
       videos: this.line.videos,
       type: this.line.type,
-      gradeScale: this.line.gradeScale,
-      gradeValue: this.line.gradeValue,
+      scale: this.line.gradeScale,
+      grade: this.line.gradeValue,
       color: this.line.color,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
