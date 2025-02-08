@@ -420,7 +420,7 @@ export class LineFormComponent implements OnInit {
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
       line.type = this.lineForm.get('type').value;
-      line.gradeValue = this.lineForm.get('grade').value.value;
+      line.gradeValue = this.lineForm.get('grade').value;
       line.gradeScale = this.lineForm.get('scale').value;
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
