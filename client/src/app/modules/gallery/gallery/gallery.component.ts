@@ -121,10 +121,12 @@ export class GalleryComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams({page: this.currentPage.toString()});
+      const filters = new URLSearchParams({
+        page: this.currentPage.toString(),
+      });
       if (this.objectType) {
-        filters.set("tag-object-type", this.objectType);
-        filters.set("tag-object-slug", this.objectSlug);
+        filters.set('tag-object-type', this.objectType);
+        filters.set('tag-object-slug', this.objectSlug);
       }
       const filterString = `?${filters.toString()}`;
       this.galleryService

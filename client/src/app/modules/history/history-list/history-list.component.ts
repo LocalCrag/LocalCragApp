@@ -86,7 +86,10 @@ export class HistoryListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams({page: this.currentPage.toString(), per_page: "10"});
+      const filters = new URLSearchParams({
+        page: this.currentPage.toString(),
+        per_page: '10',
+      });
       const filterString = `?${filters.toString()}`;
       this.historyService.getHistory(filterString).subscribe((historyItems) => {
         this.historyItems = [...this.historyItems, ...historyItems.items];

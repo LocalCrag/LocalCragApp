@@ -202,9 +202,16 @@ export class LineFormComponent implements OnInit {
           )
           .subscribe((line) => {
             this.line = line;
-            this.typeOptions = [{ label: this.translocoService.translate(this.line.type), value: this.line.type }];
+            this.typeOptions = [
+              {
+                label: this.translocoService.translate(this.line.type),
+                value: this.line.type,
+              },
+            ];
             // find() must always find a result if the backend state is not corrupted
-            const scale = this.groupedScales[this.line.type].find((scale) => scale.name == this.line.gradeScale);
+            const scale = this.groupedScales[this.line.type].find(
+              (scale) => scale.name == this.line.gradeScale,
+            );
             this.scaleOptions = [{ label: scale.name, value: scale.name }];
             this.grades = scale.grades;
             if (this.line?.ascentCount > 0) {
