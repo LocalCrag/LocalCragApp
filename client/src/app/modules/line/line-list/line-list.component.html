@@ -70,15 +70,65 @@
             </p-dropdown>
           </div>
         </div>
+        <div
+          class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+        >
+          <div *ngIf="availableScales.length > 2">
+            {{ t("lineType") }}
+            <p-dropdown
+              [options]="availableScales"
+              [(ngModel)]="scaleKey"
+              optionLabel="label"
+              (onChange)="selectScale()"
+              styleClass="md:mb-0"
+            >
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="scaleKey">
+                  <div>{{ scaleKey.label }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div *isGymMode="true">
+            <p-button
+              label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
+              [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
+              *isModerator="true"
+              class="responsive-button"
+              (click)="toggleArchive()"
+            ></p-button>
+          </div>
+        </div>
 
-        <div class="slider-container mt-1">
+        <div class="slider-container mt-1" *ngIf="scaleKey?.value">
           <lc-slider-labels
             [rangeMin]="gradeFilterRange[0]"
             [rangeMax]="gradeFilterRange[1]"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
-            [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"
+            [minLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[0]
+              )
+                | async
+                | translateSpecialGrades
+            "
+            [maxLabel]="
+              scalesService.gradeNameByValue(
+                scaleKey.value.lineType,
+                scaleKey.value.gradeScale,
+                gradeFilterRange[1]
+              )
+                | async
+                | translateSpecialGrades
+            "
           ></lc-slider-labels>
           <p-slider
             [(ngModel)]="gradeFilterRange"
@@ -105,11 +155,15 @@
         >
           <div
             class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
+            [ngClass]="{
+              'border-top-1 surface-border': !first,
+              archived: line.archived,
+            }"
           >
             <lc-topo-image
               class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
               [topoImage]="line.topoImages[0]"
+              [color]="line.color ?? undefined"
               *ngIf="line.topoImages.length > 0"
             ></lc-topo-image>
             <img
@@ -129,7 +183,7 @@
                 >
                   <div>
                     <strong>{{ line.name }}</strong>
-                    {{ line.grade.name | transloco }}
+                    {{ line | lineGrade }}
                   </div>
                   <p-rating
                     [ngModel]="line.rating"
@@ -158,6 +212,12 @@
                   >
                   </p-button>
                   <div class="flex-grow-1"></div>
+                  <lc-archive-button
+                    [line]="line"
+                    [showLabel]="false"
+                    [style]="'plain'"
+                    *isModerator="true"
+                  ></lc-archive-button>
                   <ng-container *ngIf="!ticks.has(line.id)">
                     <lc-todo-button
                       [line]="line"

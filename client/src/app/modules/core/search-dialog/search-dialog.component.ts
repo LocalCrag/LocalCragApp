@@ -7,7 +7,7 @@ import { Searchable } from '../../../models/searchable';
 import { NgForOf, NgIf } from '@angular/common';
 import { debounceTime, Subject } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ButtonModule } from 'primeng/button';
@@ -25,7 +25,6 @@ import { SearchableComponent } from '../searchable/searchable.component';
     NgIf,
     NgForOf,
     AvatarModule,
-    RouterLink,
     ButtonModule,
     MessagesModule,
     MessageModule,

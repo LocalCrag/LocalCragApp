@@ -1,0 +1,235 @@
+<ng-container *transloco="let t; read: 'scale.scaleForm'">
+  <div class="content">
+    <p-card header="{{ editMode ? t('editScale') : t('createTitle') }}">
+      <form [formGroup]="scaleForm" lcForm>
+        <p-card>
+          <ng-template pTemplate="title">
+            <ng-container *ngIf="editMode"
+              >{{ scale?.lineType | transloco }} {{ scale?.name }}</ng-container
+            >
+          </ng-template>
+          <div class="grid grid-nogutter">
+            <ng-container *ngIf="!editMode">
+              <div class="col-12 flex gap-4 align-items-center mb-2">
+                <label for="linetype">
+                  {{ t("lineTypeLabel") }}
+                </label>
+                <p-dropdown
+                  id="linetype"
+                  formControlName="lineType"
+                  [options]="[
+                    { name: t('BOULDER'), value: LineType.BOULDER },
+                    { name: t('SPORT'), value: LineType.SPORT },
+                    { name: t('TRAD'), value: LineType.TRAD },
+                  ]"
+                  optionLabel="name"
+                />
+              </div>
+              <div
+                class="col-12 flex gap-4 align-items-center mb-2"
+                lcControlGroup
+              >
+                <label for="name">
+                  {{ t("nameInputLabel") }}
+                </label>
+                <input
+                  type="text"
+                  pInputText
+                  id="name"
+                  formControlName="name"
+                  lcFormControl
+                />
+                <small class="p-error" *lcIfError="'required'">
+                  {{ t("required") }}
+                </small>
+              </div>
+              <hr class="col-12" />
+            </ng-container>
+            <p-message
+              *ngIf="gradeControls().invalid"
+              severity="error"
+              text="{{ t('gradesErrorMsg') }}"
+              styleClass="min-w-full mt-2"
+            />
+            <div
+              class="col-12"
+              formArrayName="grades"
+              *ngFor="let grade of gradeControls().controls; let i = index"
+              lcControlGroup
+            >
+              <div [formGroupName]="i" class="flex gap-4 mb-2">
+                <ng-container
+                  *ngIf="
+                    grade.get('value').value <= 0 &&
+                    ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
+                      grade.get('name').value
+                    )
+                  "
+                >
+                  <div>
+                    <label>
+                      {{ t("gradeNameLabel") }}
+                      <input
+                        type="text"
+                        class="ml-2"
+                        pInputText
+                        disabled
+                        value="{{
+                          grade.get('name').value | translateSpecialGrades
+                        }}"
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      {{ t("gradeValueLabel") }}
+                      <input
+                        type="text"
+                        class="ml-2"
+                        pInputText
+                        disabled
+                        value="{{
+                          grade.get('value').value | translateSpecialGrades
+                        }}"
+                      />
+                    </label>
+                  </div>
+                  <p-button
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger"
+                    disabled
+                  />
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    grade.get('value').value > 0 ||
+                    !['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
+                      grade.get('name').value
+                    )
+                  "
+                >
+                  <div>
+                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+                    <label>
+                      {{ t("gradeNameLabel") }}
+                      <input
+                        type="text"
+                        class="ml-2"
+                        pInputText
+                        formControlName="name"
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+                    <label>
+                      {{ t("gradeValueLabel") }}
+                      <p-inputNumber
+                        styleClass="ml-2"
+                        formControlName="value"
+                        [min]="1"
+                      />
+                    </label>
+                  </div>
+                  <p-button
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger"
+                    (click)="deleteGrade(i)"
+                  />
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <h4>{{ t("gradeBracketsLabel") }}</h4>
+          <div class="mb-2">
+            <em>{{ t("gradeBracketsDescription", { min: 2, max: 8 }) }}</em>
+          </div>
+          <p-message
+            *ngIf="gradeBracketsControls().hasError('semantic_error')"
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full"
+          />
+          <p-message
+            *ngIf="gradeBracketsControls().hasError('invalid_length')"
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
+            styleClass="min-w-full"
+          />
+          <div
+            class="col-12"
+            formArrayName="gradeBrackets"
+            *ngFor="
+              let bracket of gradeBracketsControls().controls;
+              let i = index
+            "
+          >
+            <div [formGroupName]="i" class="flex gap-4 mb-2">
+              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+              <label>
+                {{ t("gradeBracketsInputLabel") }}
+                <p-inputNumber formControlName="value" [min]="1" />
+                <p-button
+                  icon="pi pi-trash"
+                  styleClass="p-button-danger ml-2"
+                  (click)="deleteBracket(i)"
+                />
+              </label>
+            </div>
+          </div>
+        </p-card>
+        <p-toolbar>
+          <div class="p-toolbar-group-start">
+            <p-button
+              label="{{ t('addGrade') }}"
+              (click)="addGrade()"
+              icon="pi pi-plus-circle"
+              class="responsive-button"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('addBracket') }}"
+              (click)="addBracket()"
+              icon="pi pi-plus-circle"
+              class="responsive-button ml-2"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('reorderGrades') }}"
+              (click)="reorderByValue()"
+              icon="pi pi-sort-amount-down-alt"
+              class="responsive-button ml-2"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+          </div>
+          <div class="p-toolbar-group-end">
+            <p-button
+              label="{{ t('saveScale') }}"
+              (click)="saveScale()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('deleteScale') }}"
+              (click)="confirmDeleteScale($event)"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              class="responsive-button ml-2"
+              [loading]="loadingState === LoadingState.LOADING"
+            />
+            <p-button
+              label="{{ t('cancel') }}"
+              (click)="router.navigate(['/scales'])"
+              icon="pi pi-ban"
+              severity="secondary"
+              class="responsive-button ml-2"
+            />
+            <p-confirmPopup></p-confirmPopup>
+          </div>
+        </p-toolbar>
+      </form>
+    </p-card>
+  </div>
+</ng-container>

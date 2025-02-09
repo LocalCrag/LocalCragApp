@@ -33,10 +33,14 @@ export class TranslocoHttpLoader implements TranslocoLoader {
   providers: [
     provideTransloco({
       config: {
-        availableLangs: ['de'],
+        availableLangs: ['de', 'de-gym'],
         defaultLang: environment.language,
         fallbackLang: 'de',
         prodMode: environment.production,
+        reRenderOnLangChange: true,
+        missingHandler: {
+          useFallbackTranslation: true,
+        },
       },
       loader: TranslocoHttpLoader,
     }),

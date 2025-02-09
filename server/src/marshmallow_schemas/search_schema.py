@@ -43,8 +43,8 @@ class LineSearchSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
-    gradeName = fields.String(attribute="grade_name")
     gradeScale = fields.String(attribute="grade_scale")
+    gradeValue = fields.Integer(attribute="grade_value")
     area = fields.Nested(area_search_schema)
 
 

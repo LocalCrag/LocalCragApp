@@ -21,14 +21,13 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     __tablename__ = "lines"
 
-    slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image", "gallery"]
+    slug_blocklist = ["edit", "create-line", "gallery", "ascents", "add-topo-image"]
     searchable_type = SearchableItemTypeEnum.LINE
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    color = db.Column(db.String(7), nullable=True)
     videos = db.Column(JSON, nullable=True)
-    grade_name = db.Column(db.String(120), nullable=False)
     grade_scale = db.Column(db.String(120), nullable=False)
-    # grade_value could be inferred from name and scale, but value is needed for ordering at db level
     grade_value = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     rating = db.Column(db.Integer, nullable=True)
@@ -36,6 +35,7 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
     fa_year = db.Column(db.Integer, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
+    archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     eliminate = db.Column(db.Boolean, nullable=False, default=False)
     traverse = db.Column(db.Boolean, nullable=False, default=False)

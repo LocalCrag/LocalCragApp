@@ -3,7 +3,7 @@
     <ng-template pTemplate="header">
       <div class="card-header p-card-title">
         {{ line?.name }}
-        <span class="grade-font">{{ line?.grade.name | transloco }}</span>
+        <span class="grade-font">{{ line | lineGrade }}</span>
       </div>
     </ng-template>
 

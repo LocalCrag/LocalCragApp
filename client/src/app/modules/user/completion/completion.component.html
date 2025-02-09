@@ -2,24 +2,72 @@
   <div
     class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
   >
-    <div class="slider-container w-full">
-      <lc-slider-labels
-        [rangeMin]="gradeFilterRange[0]"
-        [rangeMax]="gradeFilterRange[1]"
-        [min]="minGradeValue"
-        [max]="maxGradeValue"
-        [minLabel]="gradeNameByValue['FB'][gradeFilterRange[0]] | transloco"
-        [maxLabel]="gradeNameByValue['FB'][gradeFilterRange[1]] | transloco"
-      ></lc-slider-labels>
-      <p-slider
-        [(ngModel)]="gradeFilterRange"
-        [min]="minGradeValue"
-        [max]="maxGradeValue"
-        [range]="true"
-        [step]="1"
-        (touchstart)="listenForSliderStop = true"
-        (mousedown)="listenForSliderStop = true"
-      />
+    <div
+      class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
+    >
+      <div
+        *ngIf="availableScales.length > 2"
+        class="w-full flex align-items-center"
+      >
+        <strong class="mr-2">
+          {{ t("lineType") }}
+        </strong>
+
+        <p-dropdown
+          [options]="availableScales"
+          [(ngModel)]="scaleKey"
+          optionLabel="label"
+          (onChange)="selectScale()"
+          styleClass="md:mb-0"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="scaleKey">
+              <div>{{ scaleKey.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+
+      <div class="slider-container w-full" *ngIf="scaleKey?.value">
+        <lc-slider-labels
+          [rangeMin]="gradeFilterRange[0]"
+          [rangeMax]="gradeFilterRange[1]"
+          [min]="minGradeValue"
+          [max]="maxGradeValue"
+          [minLabel]="
+            scalesService.gradeNameByValue(
+              scaleKey.value.lineType,
+              scaleKey.value.gradeScale,
+              gradeFilterRange[0]
+            )
+              | async
+              | translateSpecialGrades
+          "
+          [maxLabel]="
+            scalesService.gradeNameByValue(
+              scaleKey.value.lineType,
+              scaleKey.value.gradeScale,
+              gradeFilterRange[1]
+            )
+              | async
+              | translateSpecialGrades
+          "
+        ></lc-slider-labels>
+        <p-slider
+          [(ngModel)]="gradeFilterRange"
+          [min]="minGradeValue"
+          [max]="maxGradeValue"
+          [range]="true"
+          [step]="1"
+          (touchstart)="listenForSliderStop = true"
+          (mousedown)="listenForSliderStop = true"
+        />
+      </div>
     </div>
   </div>
 

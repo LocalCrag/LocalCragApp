@@ -2,6 +2,7 @@ from flask import jsonify
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.conflict import Conflict
+from error_handling.http_exceptions.forbidden import Forbidden
 from error_handling.http_exceptions.internal_server_error import InternalServerError
 from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
@@ -39,6 +40,12 @@ def setup_http_error_handlers(app):
 
     @app.errorhandler(Unauthorized)
     def handle_unauthorized(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
+
+    @app.errorhandler(Forbidden)
+    def handle_forbidden(error):
         response = jsonify(error.to_dict())
         response.status_code = error.status_code
         return response

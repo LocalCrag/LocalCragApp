@@ -6,6 +6,7 @@ from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from util.validators import color_validator
 from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
 
@@ -17,9 +18,10 @@ class VideosArgsSchema(Schema):
 class LineArgsSchema(Schema, IsClosableWebargsMixin):
     name = fields.Str(required=True, validate=validate.Length(max=120))
     description = fields.Str(required=True, allow_none=True)
+    color = fields.Str(required=False, allow_none=True, validate=color_validator)
     videos = fields.List(fields.Nested(VideosArgsSchema()), required=True, allow_none=True)
-    gradeName = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
+    gradeValue = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2))
     type = fields.Enum(LineTypeEnum, required=True, allow_none=False)
     rating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
     faYear = fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year)

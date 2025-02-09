@@ -2,23 +2,20 @@
   background-color: var(--gray-500) !important;
 }
 
-.level-1 {
-  background-color: var(--yellow-500) !important;
+$colors: var(--yellow-500), var(--blue-500), var(--red-500), var(--green-500),
+  var(--orange-500), var(--teal-500), var(--indigo-500), var(--bluegray-500);
+
+@for $i from 1 to length($colors) {
+  .level-#{$i} {
+    background-color: nth($colors, $i) !important;
+  }
 }
 
-.level-2 {
-  background-color: var(--blue-500) !important;
-}
-
-.level-3 {
-  background-color: var(--red-500) !important;
-}
-
-.level-4 {
+.level-max {
   background-color: var(--gray-900) !important;
 }
 
-.level-5 {
+.level-projects {
   background-color: var(--gray-500) !important;
 }
 

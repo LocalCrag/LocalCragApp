@@ -4,7 +4,6 @@ from sqlalchemy.orm.attributes import flag_modified
 from extensions import db
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
-from models.grades import get_grade_value
 from models.line import Line
 from models.ranking import Ranking
 from models.user import User
@@ -76,7 +75,7 @@ def build_rankings():
         page = 1
         has_next_page = True
         while has_next_page:
-            query = select(Ascent).filter(Ascent.created_by_id == user.id)
+            query = select(Ascent).join(Line).filter(Ascent.created_by_id == user.id, Line.archived == False)
             paginated_ascents = db.paginate(query, page=page, per_page=50)
             has_next_page = paginated_ascents.has_next
             if paginated_ascents.has_next:
@@ -86,7 +85,7 @@ def build_rankings():
                     line: Line = ascent.line
                     if not secret and line.secret:
                         continue
-                    ascent_value = get_grade_value(line.grade_name, line.grade_scale, line.type)
+                    ascent_value = line.grade_value
                     global_ranking = ranking_map.get_global(line.type, secret)
                     crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id, secret)
                     sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id, secret)

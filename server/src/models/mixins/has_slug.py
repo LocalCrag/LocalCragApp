@@ -48,6 +48,10 @@ def update_slugs(session, _flush_context, _instances):
         for item in all_items:
             table = item.__table__
 
+            if item.slug == "_default":
+                # Skip special slug
+                continue
+
             if table not in slugs_map:
                 slugs_map[table] = set(c[0] for c in session.execute(db.select(table.c.slug)))
 

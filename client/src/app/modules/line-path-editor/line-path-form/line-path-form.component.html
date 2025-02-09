@@ -22,11 +22,14 @@
                 class="flex align-items-center gap-2"
                 data-cy="line-dropdown-item"
               >
-                <div>{{ line.name }} {{ line.grade.name | transloco }}</div>
+                <div>
+                  {{ line.name }}
+                  {{ line | lineGrade }}
+                </div>
               </div>
             </ng-template>
             <ng-template let-selectedItem pTemplate="selectedItem">
-              {{ selectedItem.name }} {{ selectedItem.grade.name | transloco }}
+              {{ selectedItem.name }} {{ selectedItem | lineGrade }}
             </ng-template>
           </p-dropdown>
           <small class="p-error" *lcIfError="'required'">{{
@@ -42,6 +45,7 @@
             formControlName="path"
             lcFormControl
             id="path-editor"
+            [color]="linePathForm.get('line').value?.color"
           >
           </lc-line-path-editor>
           <small class="p-error" *lcIfError="'required'">{{

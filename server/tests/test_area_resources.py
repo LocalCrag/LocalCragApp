@@ -23,6 +23,9 @@ def test_successful_create_area(client, moderator_token):
         "secret": False,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": "UIAA",
+        "defaultTradScale": None,
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -41,6 +44,9 @@ def test_successful_create_area(client, moderator_token):
     assert res["id"] is not None
     assert res["closed"] == False
     assert res["closedReason"] is None
+    assert res["defaultBoulderScale"] is None
+    assert res["defaultSportScale"] == "UIAA"
+    assert res["defaultTradScale"] is None
 
 
 def test_create_area_invalid_lat(client, moderator_token):
@@ -58,6 +64,9 @@ def test_create_area_invalid_lat(client, moderator_token):
             }
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
+        "defaultBoulderScale": None,
+        "defaultSportScale": "UIAA",
+        "defaultTradScale": None,
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -79,6 +88,9 @@ def test_create_area_invalid_lng(client, moderator_token):
             }
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
+        "defaultBoulderScale": None,
+        "defaultSportScale": "UIAA",
+        "defaultTradScale": None,
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -160,6 +172,9 @@ def test_successful_edit_area(client, moderator_token):
         "secret": False,
         "closed": False,
         "closedReason": None,
+        "defaultBoulderScale": "FB",
+        "defaultSportScale": None,
+        "defaultTradScale": None,
     }
 
     rv = client.put("/api/areas/dritter-block-von-links", token=moderator_token, json=area_data)
@@ -178,6 +193,9 @@ def test_successful_edit_area(client, moderator_token):
     assert res["id"] is not None
     assert res["closed"] == False
     assert res["closedReason"] is None
+    assert res["defaultBoulderScale"] == "FB"
+    assert res["defaultSportScale"] is None
+    assert res["defaultTradScale"] is None
 
 
 def test_successful_order_areas(client, moderator_token):
@@ -211,8 +229,4 @@ def test_successful_get_area_grades(client):
     rv = client.get("/api/areas/dritter-block-von-links/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert len(res) == 2
-    assert res[0]["gradeName"] == "1"
-    assert res[0]["gradeScale"] == "FB"
-    assert res[1]["gradeName"] == "8A"
-    assert res[1]["gradeScale"] == "FB"
+    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}

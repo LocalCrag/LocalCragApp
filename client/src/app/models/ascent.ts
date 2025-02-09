@@ -1,5 +1,4 @@
 import { AbstractModel } from './abstract-model';
-import { deserializeGrade, Grade } from '../utility/misc/grades';
 import { Line } from './line';
 import { formatISO, parseISO } from 'date-fns';
 import { User } from './user';
@@ -13,7 +12,7 @@ export class Ascent extends AbstractModel {
   soft: boolean;
   hard: boolean;
   withKneepad: boolean;
-  grade: Grade;
+  gradeValue: number;
   rating: number;
   comment: string;
   year: number;
@@ -34,7 +33,7 @@ export class Ascent extends AbstractModel {
   public static deserialize(payload: any): Ascent {
     const ascent = new Ascent();
     AbstractModel.deserializeAbstractAttributes(ascent, payload);
-    ascent.grade = deserializeGrade(payload);
+    ascent.gradeValue = payload.gradeValue;
     ascent.flash = payload.flash;
     ascent.fa = payload.fa;
     ascent.soft = payload.soft;
@@ -69,8 +68,7 @@ export class Ascent extends AbstractModel {
       rating: ascent.rating,
       comment: ascent.comment,
       year: ascent.year,
-      gradeScale: 'FB',
-      gradeName: ascent.grade.name,
+      gradeValue: ascent.gradeValue,
       line: ascent.line.id,
       date: ascent.date
         ? formatISO(ascent.date, { representation: 'date' })

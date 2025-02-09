@@ -1,4 +1,5 @@
 import re
+from collections import Counter, defaultdict
 from datetime import datetime
 from uuid import uuid4
 
@@ -24,6 +25,7 @@ from marshmallow_schemas.user_schema import user_list_schema, user_schema
 from messages.marshalling_objects import AuthResponse, SimpleMessage
 from messages.messages import ResponseMessage
 from models.ascent import Ascent
+from models.enums.line_type_enum import LineTypeEnum
 from models.enums.user_promotion_enum import UserPromotionEnum
 from models.line import Line
 from models.user import User
@@ -259,8 +261,16 @@ class GetUserGrades(MethodView):
     def get(self, user_slug):
         user_id = User.get_id_by_slug(user_slug)
         result = (
-            db.session.query(Line.grade_name, Line.grade_scale, Ascent.line_id, Ascent.created_by_id)
-            .filter(Line.id == Ascent.line_id, Ascent.created_by_id == user_id)
+            db.session.query(Line.type, Line.grade_scale, Line.grade_value, Ascent.line_id, Ascent.created_by_id)
+            .filter(Line.id == Ascent.line_id, Ascent.created_by_id == user_id, Line.archived.is_(False))
             .all()
         )
-        return jsonify([{"gradeName": r[0], "gradeScale": r[1]} for r in result]), 200
+        response_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue, _id, _created_by in result:
+            response_data[lineType.value][gradeScale].update({gradeValue: 1})
+
+        return jsonify(response_data), 200

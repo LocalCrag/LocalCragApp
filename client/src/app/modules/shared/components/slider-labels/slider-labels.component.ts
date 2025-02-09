@@ -7,12 +7,11 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-slider-labels',
   standalone: true,
-  imports: [TranslocoPipe],
+  imports: [],
   templateUrl: './slider-labels.component.html',
   styleUrl: './slider-labels.component.scss',
 })

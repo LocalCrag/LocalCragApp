@@ -1,17 +1,16 @@
-from models.grades import GRADES
+from models.enums.line_type_enum import LineTypeEnum
+from models.scale import Scale
 
 
-def cross_validate_grade(grade_name, grade_scale, line_type):
+def cross_validate_grade(grade_value, grade_scale, line_type):
     """
     Tests if the given grade name exists in the scale for the line type.
     """
-    if line_type not in GRADES:
+    scale = Scale.query.filter(Scale.type == line_type, Scale.name == grade_scale).first()
+    if scale is None:
         return False
-    if grade_scale not in GRADES[line_type]:
-        return False
-    if grade_name not in [g["name"] for g in GRADES[line_type][grade_scale]]:
-        return False
-    return True
+
+    return grade_value in [grade["value"] for grade in scale.grades]
 
 
 def validate_order_payload(new_order, items):
@@ -28,3 +27,35 @@ def validate_order_payload(new_order, items):
     if not (correct_length and all_integer and correct_start and correct_end and no_duplicates):
         return False
     return True
+
+
+def color_validator(color: str):
+    try:
+        return len(color) == 7 and color[0] == "#" and int(color[1:], 16) >= 0 and "x" not in color.lower()
+    except ValueError:
+        return False
+
+
+def validate_default_scales(args: dict) -> tuple[bool, str]:
+    """
+    Validates that the requested scales exist for the spcific line types
+    """
+    if args["defaultBoulderScale"] is not None:
+        if (
+            Scale.query.filter(Scale.type == LineTypeEnum.BOULDER, Scale.name == args["defaultBoulderScale"]).first()
+            is None
+        ):
+            return False, f"Scale Boulder/{args['defaultBoulderScale']} does not exist."
+
+    if args["defaultSportScale"] is not None:
+        if (
+            Scale.query.filter(Scale.type == LineTypeEnum.SPORT, Scale.name == args["defaultSportScale"]).first()
+            is None
+        ):
+            return False, f"Scale Sport/{args['defaultSportScale']} does not exist."
+
+    if args["defaultTradScale"] is not None:
+        if Scale.query.filter(Scale.type == LineTypeEnum.TRAD, Scale.name == args["defaultTradScale"]).first() is None:
+            return False, f"Scale Trad/{args['defaultTradScale']} does not exist."
+
+    return True, ""

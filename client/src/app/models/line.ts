@@ -1,6 +1,5 @@
 import { AbstractModel } from './abstract-model';
 import { LineType } from '../enums/line-type';
-import { deserializeGrade, Grade } from '../utility/misc/grades';
 import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
@@ -23,14 +22,17 @@ export class Line extends IsClosable(AbstractModel) {
   name: string;
   description: string;
   slug: string;
+  color?: string;
   videos: LineVideo[];
-  grade: Grade;
+  gradeScale: string;
+  gradeValue: number;
   rating: number;
   type: LineType;
   faYear: number;
   faName: string;
   startingPosition: StartingPosition;
   secret: boolean;
+  archived?: boolean;
 
   eliminate: boolean;
   traverse: boolean;
@@ -96,14 +98,17 @@ export class Line extends IsClosable(AbstractModel) {
     line.description = payload.description;
     line.videos = payload.videos ? payload.videos : [];
     line.slug = payload.slug;
+    line.color = payload.color;
 
-    line.grade = deserializeGrade(payload);
+    line.gradeScale = payload.gradeScale;
+    line.gradeValue = payload.gradeValue;
     line.rating = payload.rating;
     line.type = payload.type;
     line.faYear = payload.faYear;
     line.faName = payload.faName;
     line.startingPosition = payload.startingPosition;
     line.secret = payload.secret;
+    line.archived = payload.archived;
 
     line.eliminate = payload.eliminate;
     line.traverse = payload.traverse;
@@ -170,9 +175,10 @@ export class Line extends IsClosable(AbstractModel) {
       ...{
         name: line.name,
         description: line.description,
+        color: line.color,
         videos: line.videos ? line.videos : null,
-        gradeScale: 'FB',
-        gradeName: line.grade.name,
+        gradeScale: line.gradeScale,
+        gradeValue: line.gradeValue,
         rating: line.rating,
         type: line.type,
         faYear: line.faYear,

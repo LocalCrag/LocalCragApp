@@ -41,6 +41,7 @@ from models.sector import Sector
 from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
+from util.scripts.add_scales import add_scales
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -122,6 +123,13 @@ def client():
 
     client.open = open_wrapper.__get__(client, client.__class__)
     return client
+
+
+@pytest.fixture()
+def gym_mode():
+    instance_settings = InstanceSettings.return_it()
+    instance_settings.gym_mode = True
+    db.session.add(instance_settings)
 
 
 @pytest.fixture(scope="session")
@@ -236,6 +244,8 @@ def clean_uploads_after_all_tests():
 
 
 def fill_db_with_sample_data():
+    add_scales()
+
     user = User()
     user.email = "admin@localcrag.invalid.org"
     user.password = User.generate_hash("admin")
@@ -374,8 +384,7 @@ def fill_db_with_sample_data():
     ascent = Ascent()
     ascent.fa = True
     ascent.hard = True
-    ascent.grade_name = "8A"
-    ascent.grade_scale = "FB"
+    ascent.grade_value = 22
     ascent.rating = 3
     ascent.comment = "Yeeha!"
     ascent.date = "2024-04-16"
@@ -494,6 +503,7 @@ def fill_db_with_sample_data():
     instance_settings.bar_chart_color = "rgb(213, 30, 38)"
     instance_settings.matomo_tracker_url = "https://matomo-example.localcrag.cloud/"
     instance_settings.matomo_site_id = 1
+    instance_settings.gym_mode = False
     db.session.add(instance_settings)
 
     topo_image = TopoImage()

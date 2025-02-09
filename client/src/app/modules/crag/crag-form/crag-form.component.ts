@@ -15,9 +15,9 @@ import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { ConfirmationService } from 'primeng/api';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
@@ -29,6 +29,8 @@ import {
   MapMarkerType,
 } from '../../../enums/map-marker-type';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
 
 /**
  * A component for creating and editing crags.
@@ -49,6 +51,9 @@ export class CragFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public crag: Crag;
   public editMode = false;
+  public boulderScales: SelectItem<string | null>[] = null;
+  public sportScales: SelectItem<string | null>[] = null;
+  public tradScales: SelectItem<string | null>[] = null;
   public quillModules: any;
 
   constructor(
@@ -61,6 +66,7 @@ export class CragFormComponent implements OnInit {
     private cragsService: CragsService,
     private translocoService: TranslocoService,
     private confirmationService: ConfirmationService,
+    private scalesService: ScalesService,
   ) {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
@@ -70,35 +76,56 @@ export class CragFormComponent implements OnInit {
    */
   ngOnInit() {
     this.buildForm();
+    const scalesPopulated = this.scalesService
+      .getFormScaleSelectors([
+        {
+          label: this.translocoService.translate(marker('defaultScalesLabel')),
+          value: null,
+        },
+      ])
+      .pipe(
+        map((groupedScales) => {
+          this.boulderScales = groupedScales[LineType.BOULDER];
+          this.sportScales = groupedScales[LineType.SPORT];
+          this.tradScales = groupedScales[LineType.TRAD];
+          return true;
+        }),
+      );
+
     const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
+
     if (cragSlug) {
       this.editMode = true;
       this.cragForm.disable();
-      this.cragsService
-        .getCrag(cragSlug)
-        .pipe(
+      forkJoin([
+        this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
           }),
-        )
-        .subscribe((crag) => {
-          this.crag = crag;
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-          this.editors?.map((editor) => {
-            editor.getQuill().enable();
-          });
+        ),
+        scalesPopulated,
+      ]).subscribe(([crag, _]) => {
+        this.crag = crag;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+        this.editors?.map((editor) => {
+          editor.getQuill().enable();
         });
+      });
     } else {
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`,
         );
       });
-      this.loadingState = LoadingState.DEFAULT;
+      this.cragForm.disable();
+      scalesPopulated.subscribe(() => {
+        this.cragForm.enable();
+        this.loadingState = LoadingState.DEFAULT;
+      });
     }
   }
 
@@ -116,6 +143,9 @@ export class CragFormComponent implements OnInit {
       mapMarkers: [[]],
       closed: [false],
       closedReason: [null],
+      defaultBoulderScale: [null],
+      defaultSportScale: [null],
+      defaultTradScale: [null],
     });
     this.cragForm
       .get('closed')
@@ -142,6 +172,9 @@ export class CragFormComponent implements OnInit {
       mapMarkers: this.crag.mapMarkers,
       closed: this.crag.closed,
       closedReason: this.crag.closedReason,
+      defaultBoulderScale: this.crag.defaultBoulderScale,
+      defaultSportScale: this.crag.defaultSportScale,
+      defaultTradScale: this.crag.defaultTradScale,
     });
   }
 
@@ -172,6 +205,9 @@ export class CragFormComponent implements OnInit {
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;
       crag.closed = this.cragForm.get('closed').value;
       crag.closedReason = this.cragForm.get('closedReason').value;
+      crag.defaultBoulderScale = this.cragForm.get('defaultBoulderScale').value;
+      crag.defaultSportScale = this.cragForm.get('defaultSportScale').value;
+      crag.defaultTradScale = this.cragForm.get('defaultTradScale').value;
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe((crag) => {
@@ -234,4 +270,5 @@ export class CragFormComponent implements OnInit {
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
   protected readonly MapMarkerType = MapMarkerType;
+  protected readonly environment = environment;
 }

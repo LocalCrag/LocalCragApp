@@ -19,6 +19,7 @@ import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line',
@@ -46,6 +47,7 @@ export class LineComponent implements OnInit {
     private store: Store,
     private title: Title,
     private route: ActivatedRoute,
+    protected scalesService: ScalesService,
   ) {}
 
   ngOnInit() {
@@ -94,11 +96,34 @@ export class LineComponent implements OnInit {
         this.sector = sector;
         this.area = area;
         this.line = line;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(
-            `${line.name} ${this.translocoService.translate(line.grade.name)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
-          );
-        });
+        this.scalesService
+          .gradeNameByValue(line.type, line.gradeScale, line.gradeValue)
+          .subscribe((gradeName) => {
+            this.breadcrumbs = [
+              {
+                label: crag.name,
+                routerLink: `/topo/${crag.slug}/sectors`,
+              },
+              {
+                label: sector.name,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+              },
+              {
+                label: area.name,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
+              },
+              {
+                label: `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
+              },
+            ];
+
+            this.store.select(selectInstanceName).subscribe((instanceName) => {
+              this.title.setTitle(
+                `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
+              );
+            });
+          });
+
         this.items = [
           {
             label: this.translocoService.translate(marker('line.infos')),
@@ -121,23 +146,6 @@ export class LineComponent implements OnInit {
             icon: 'pi pi-fw pi-file-edit',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
             visible: isModerator,
-          },
-        ];
-        this.breadcrumbs = [
-          {
-            label: crag.name,
-            routerLink: `/topo/${crag.slug}/sectors`,
-          },
-          {
-            label: sector.name,
-            routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
-          },
-          {
-            label: area.name,
-            routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
-          },
-          {
-            label: `${line.name} ${this.translocoService.translate(line.grade.name)}`,
           },
         ];
         this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };

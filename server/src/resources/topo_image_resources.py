@@ -88,9 +88,12 @@ class GetTopoImages(MethodView):
         """
         Returns all topo images of an area.
         """
+        archived = request.args.get("archived", False, type=bool)  # default: hide archived topo images
+
         area_id = Area.get_id_by_slug(area_slug)
         topo_images: List[TopoImage] = TopoImage.return_all(
-            filter=lambda: TopoImage.area_id == area_id, order_by=lambda: TopoImage.order_index.asc()
+            filter=lambda: [TopoImage.archived == archived, TopoImage.area_id == area_id],
+            order_by=lambda: TopoImage.order_index.asc(),
         )
         include_secret = True
         if not get_show_secret():
@@ -99,6 +102,8 @@ class GetTopoImages(MethodView):
         if not include_secret:
             for ti in unfiltered_response:
                 ti["linePaths"] = [lp for lp in ti["linePaths"] if not lp["line"]["secret"]]
+        for ti in unfiltered_response:
+            ti["linePaths"] = [lp for lp in ti["linePaths"] if ti["archived"] or not lp["line"]["archived"]]
         return jsonify(unfiltered_response), 200
 
 

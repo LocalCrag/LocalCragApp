@@ -13,17 +13,18 @@ import { HistoryItem } from '../../../models/history-item';
 import { SharedModule } from '../../shared/shared.module';
 import { HistoryItemType } from '../../../enums/history-item-type';
 import { ObjectType } from '../../../models/tag';
-import { gradeNameByValue } from '../../../utility/misc/grades';
 import { Line } from '../../../models/line';
 import { Area } from '../../../models/area';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { select, Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MessageModule } from 'primeng/message';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-history-list',
@@ -63,6 +64,7 @@ export class HistoryListComponent implements OnInit {
     private router: Router,
     private store: Store,
     private transloco: TranslocoService,
+    private scalesService: ScalesService,
   ) {}
 
   loadFirstPage() {
@@ -84,9 +86,11 @@ export class HistoryListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = [`page=${this.currentPage}`];
-      filters.push(`per_page=10`);
-      const filterString = `?${filters.join('&')}`;
+      const filters = new URLSearchParams({
+        page: this.currentPage.toString(),
+        per_page: '10',
+      });
+      const filterString = `?${filters.toString()}`;
       this.historyService.getHistory(filterString).subscribe((historyItems) => {
         this.historyItems = [...this.historyItems, ...historyItems.items];
         this.hasNextPage = historyItems.hasNext;
@@ -132,52 +136,62 @@ export class HistoryListComponent implements OnInit {
     return '';
   }
 
-  getDescription(event: HistoryItem): string {
+  getDescription(event: HistoryItem): Observable<string> {
     if (event.type === HistoryItemType.UPDATED) {
       if (event.objectType === ObjectType.Line) {
-        const oldGrade = this.transloco.translate(
-          gradeNameByValue['FB'][Number(event.oldValue)],
+        const line = event.object as Line;
+
+        return forkJoin([
+          this.scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            Number(event.oldValue),
+          ),
+          this.scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            Number(event.newValue),
+          ),
+        ]).pipe(
+          map((oldGrade, newGrade) => {
+            if (
+              Number(event.oldValue) < 0 &&
+              Number(event.oldValue) < Number(event.newValue)
+            ) {
+              /** t(history.projectClimbed) */
+              return this.transloco.translate('history.projectClimbed', {
+                line: line.name,
+                newGrade,
+              });
+            } else if (
+              Number(event.oldValue) === 0 &&
+              Number(event.oldValue) < Number(event.newValue)
+            ) {
+              /** t(history.lineGraded) */
+              return this.transloco.translate('history.lineGraded', {
+                line: line.name,
+                newGrade,
+              });
+            } else if (Number(event.oldValue) < Number(event.newValue)) {
+              /** t(history.upgrade) */
+              return this.transloco.translate('history.upgrade', {
+                line: line.name,
+                oldGrade,
+                newGrade,
+              });
+            } else {
+              /** t(history.downgrade) */
+              return this.transloco.translate('history.downgrade', {
+                line: line.name,
+                oldGrade,
+                newGrade,
+              });
+            }
+          }),
         );
-        const newGrade = this.transloco.translate(
-          gradeNameByValue['FB'][Number(event.newValue)],
-        );
-        // TODO @BlobbyBob added some more cases here which may need the grade service
-        if (
-          Number(event.oldValue) < 0 &&
-          Number(event.oldValue) < Number(event.newValue)
-        ) {
-          /** t(history.projectClimbed) */
-          return this.transloco.translate('history.projectClimbed', {
-            line: event.object.name,
-            newGrade,
-          });
-        } else if (
-          Number(event.oldValue) === 0 &&
-          Number(event.oldValue) < Number(event.newValue)
-        ) {
-          /** t(history.lineGraded) */
-          return this.transloco.translate('history.lineGraded', {
-            line: event.object.name,
-            newGrade,
-          });
-        } else if (Number(event.oldValue) < Number(event.newValue)) {
-          /** t(history.upgrade) */
-          return this.transloco.translate('history.upgrade', {
-            line: event.object.name,
-            oldGrade,
-            newGrade,
-          });
-        } else {
-          /** t(history.downgrade) */
-          return this.transloco.translate('history.downgrade', {
-            line: event.object.name,
-            oldGrade,
-            newGrade,
-          });
-        }
       }
     }
-    return '';
+    return of('');
   }
 
   openObject(event: HistoryItem): void {

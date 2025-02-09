@@ -8,7 +8,6 @@ import {
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { TabMenuModule } from 'primeng/tabmenu';
 import {
   TranslocoDirective,
@@ -46,10 +45,12 @@ import { Actions, ofType } from '@ngrx/effects';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { User } from '../../../models/user';
-import { gradeNameByValue, GRADES } from '../../../utility/misc/grades';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
 import { MenuModule } from 'primeng/menu';
+import { ScalesService } from '../../../services/crud/scales.service';
+import { LineType } from '../../../enums/line-type';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -58,7 +59,6 @@ import { MenuModule } from 'primeng/menu';
     BreadcrumbModule,
     CardModule,
     NgIf,
-    RouterOutlet,
     TabMenuModule,
     TranslocoDirective,
     ButtonModule,
@@ -106,8 +106,15 @@ export class AscentListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
 
-  public minGradeValue = GRADES['FB'][2].value; // Skip project grades
-  public maxGradeValue = GRADES['FB'].at(-1).value;
+  public availableScales: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >[] = [];
+  public scaleKey: SelectItem<
+    { lineType: LineType; gradeScale: string } | undefined
+  >;
+
+  public minGradeValue = 0; // Skip project grades
+  public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
@@ -124,9 +131,35 @@ export class AscentListComponent implements OnInit {
     private actions$: Actions,
     private confirmationService: ConfirmationService,
     private translocoService: TranslocoService,
+    protected scalesService: ScalesService,
+    private regionService: RegionService,
   ) {}
 
   ngOnInit() {
+    // Only offer lineType/gradeScales for filtering that are indeed available
+    this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
+      this.availableScales.push({
+        label: this.translocoService.translate('ALL'),
+        value: undefined,
+      });
+      for (const lineType in gradeDistribution) {
+        for (const gradeScale in gradeDistribution[lineType]) {
+          if (gradeDistribution[lineType][gradeScale]) {
+            this.availableScales.push({
+              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+              value: { lineType: lineType as LineType, gradeScale },
+            });
+          }
+        }
+      }
+      if (this.availableScales.length <= 2) {
+        this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
+      } else {
+        this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
+      }
+      this.selectScale(); // Calls loadFirstPage()
+    });
+
     this.orderOptions = [
       {
         label: this.translocoService.translate(marker('orderByTimeCreated')),
@@ -155,7 +188,6 @@ export class AscentListComponent implements OnInit {
       },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
-    this.loadFirstPage();
     this.actions$
       .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
       .subscribe(() => {
@@ -192,6 +224,20 @@ export class AscentListComponent implements OnInit {
     }
   }
 
+  selectScale() {
+    if (this.scaleKey?.value) {
+      this.scalesService
+        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+        .subscribe((scale) => {
+          this.maxGradeValue = Math.max(
+            ...scale.grades.map((grade) => grade.value),
+          );
+          this.gradeFilterRange = [0, this.maxGradeValue];
+        });
+    }
+    this.loadFirstPage();
+  }
+
   loadFirstPage() {
     this.listenForSliderStop = false;
     this.currentPage = 0;
@@ -212,28 +258,35 @@ export class AscentListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = [`page=${this.currentPage}`];
-      filters.push(`min_grade=${this.gradeFilterRange[0]}`);
-      filters.push(`max_grade=${this.gradeFilterRange[1]}`);
-      filters.push(`order_by=${this.orderKey.value}`);
-      filters.push(`order_direction=${this.orderDirectionKey.value}`);
-      filters.push(`per_page=10`);
+      const filters = new URLSearchParams();
+      filters.set('page', this.currentPage.toString());
+      if (this.gradeFilterRange[1] !== null) {
+        filters.set('min_grade', this.gradeFilterRange[0].toString());
+        filters.set('max_grade', this.gradeFilterRange[1].toString());
+      }
+      if (this.scaleKey?.value) {
+        filters.set('line_type', this.scaleKey.value.lineType);
+        filters.set('grade_scale', this.scaleKey.value.gradeScale);
+      }
+      filters.set('order_by', this.orderKey.value);
+      filters.set('order_direction', this.orderDirectionKey.value);
+      filters.set('per_page', '10');
       if (this.user) {
-        filters.push(`user_id=${this.user.id}`);
+        filters.set('user_id', this.user.id);
       }
       if (this.cragId) {
-        filters.push(`crag_id=${this.cragId}`);
+        filters.set('crag_id', this.cragId);
       }
       if (this.sectorId) {
-        filters.push(`sector_id=${this.sectorId}`);
+        filters.set('sector_id', this.sectorId);
       }
       if (this.areaId) {
-        filters.push(`area_id=${this.areaId}`);
+        filters.set('area_id', this.areaId);
       }
       if (this.lineId) {
-        filters.push(`line_id=${this.lineId}`);
+        filters.set('line_id', this.lineId);
       }
-      const filterString = `?${filters.join('&')}`;
+      const filterString = `?${filters.toString()}`;
       this.ascentsService.getAscents(filterString).subscribe((ascents) => {
         this.ascents.push(...ascents.items);
         this.hasNextPage = ascents.hasNext;
@@ -288,5 +341,5 @@ export class AscentListComponent implements OnInit {
     });
   }
 
-  protected readonly gradeNameByValue = gradeNameByValue;
+  protected readonly LineType = LineType;
 }

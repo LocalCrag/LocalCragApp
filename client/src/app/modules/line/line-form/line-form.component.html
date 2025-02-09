@@ -70,6 +70,62 @@
             </p-editor>
           </div>
 
+          <ng-container *isGymMode="true">
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label" for="color">
+                {{ t("colorLabel") }}
+              </label>
+              <lc-advanced-color-picker
+                id="color"
+                formControlName="color"
+                lcFormControl
+              />
+            </div>
+          </ng-container>
+
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="!editMode || line?.ascentCount === 0"
+          >
+            <label class="form-label" for="type">
+              {{ t("lineTypeLabel") }}
+            </label>
+            <p-dropdown
+              formControlName="type"
+              id="type"
+              [options]="typeOptions"
+              optionLabel="label"
+              optionValue="value"
+              lcFormControl
+            >
+              <ng-template let-selectedType pTemplate="selectedItem">
+                {{ selectedType.label }}
+              </ng-template>
+            </p-dropdown>
+          </div>
+
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="
+              scaleOptions.length > 1 && (!editMode || line?.ascentCount === 0)
+            "
+          >
+            <label class="form-label" for="scale">
+              {{ t("lineScaleLabel") }}
+            </label>
+            <p-dropdown
+              formControlName="scale"
+              id="scale"
+              [options]="scaleOptions"
+              optionLabel="label"
+              optionValue="value"
+              lcFormControl
+            >
+            </p-dropdown>
+          </div>
+
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")
@@ -80,6 +136,7 @@
               [options]="grades"
               data-cy="grade-dropdown"
               optionLabel="name"
+              optionValue="value"
               placeholder="{{ t('gradePlaceholder') }}"
               lcFormControl
             >
@@ -88,11 +145,11 @@
                   class="flex align-items-center gap-2"
                   data-cy="grade-dropdown-item"
                 >
-                  <div>{{ grade.name | transloco }}</div>
+                  <div>{{ grade.name | translateSpecialGrades }}</div>
                 </div>
               </ng-template>
               <ng-template let-selectedGrade pTemplate="selectedItem">
-                {{ selectedGrade.name | transloco }}
+                {{ selectedGrade.name | translateSpecialGrades }}
               </ng-template>
             </p-dropdown>
             <small class="p-error" *lcIfError="'required'">{{

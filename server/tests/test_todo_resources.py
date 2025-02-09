@@ -294,8 +294,7 @@ def test_creating_an_ascent_for_a_line_that_is_todo_removed_the_todo(client, use
         "rating": 2,
         "comment": "Hahahahaha",
         "year": None,
-        "gradeScale": "FB",
-        "gradeName": "6A",
+        "gradeValue": 11,
         "line": str(line_id),
         "date": "2024-04-13",
     }
