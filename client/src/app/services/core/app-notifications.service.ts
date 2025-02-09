@@ -20,6 +20,14 @@ export class AppNotificationsService {
 
   private notificationTypeMap: Map<NotificationIdentifier, NotificationType> =
     new Map<NotificationIdentifier, NotificationType>([
+      [
+        NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE,
+        NotificationType.ERROR,
+      ],
+      /**
+       * t(notifications.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE_TITLE)
+       * t(notifications.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE_MESSAGE)
+       **/
       [NotificationIdentifier.MAP_MARKER_ADDED, NotificationType.SUCCESS],
       /**
        * t(notifications.MAP_MARKER_ADDED_TITLE)
