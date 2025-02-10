@@ -212,6 +212,10 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 counts.shift();
                 backgroundColors.shift();
               }
+              const projectCount =
+                this.gradeDistribution[lineType][gradeScale]['-2'] +
+                this.gradeDistribution[lineType][gradeScale]['-1'] +
+                this.gradeDistribution[lineType][gradeScale]['0'];
               return {
                 lineType: lineType as LineType,
                 gradeScale,
@@ -225,7 +229,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                     },
                   ],
                 },
-                projectCount: counts[0],
+                projectCount: projectCount,
                 totalCount: counts.reduce((a, b) => a + b, 0),
               };
             }),
