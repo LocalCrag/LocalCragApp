@@ -10,13 +10,12 @@ import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
 import { NgForOf, NgIf } from '@angular/common';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
 import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { map, take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
-import { Grade, GradeDistribution } from '../../../../models/scale';
+import { GradeDistribution } from '../../../../models/scale';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { LineType } from '../../../../enums/line-type';
 import { SharedModule } from 'primeng/api';
@@ -158,11 +157,6 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
             this.scalesService.getScale(lineType as LineType, gradeScale),
           ]).pipe(
             map(([barChartColor, scale]) => {
-              const genericProjectGrade: Grade = {
-                name: marker('GENERIC_PROJECT'),
-                value: 0,
-              };
-
               // Condensed scale is needed if screen is too small to host all grades
               let gradesInUsedScale = scale.grades.sort(
                 (a, b) => a.value - b.value,
@@ -170,7 +164,6 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
               gradesInUsedScale = gradesInUsedScale.filter(
                 (grade) => grade.value > 0,
               );
-              gradesInUsedScale.unshift(genericProjectGrade);
 
               // Init a counting map
               const gradeValues = gradesInUsedScale.map((grade) => grade.value);
@@ -206,12 +199,6 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 const rgbObject = getRgbObject(barChartColor);
                 return `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, ${(count / maxCount) * 0.5 + 0.5})`;
               });
-              const includeProjectsInChart = false;
-              if (!includeProjectsInChart) {
-                labels.shift();
-                counts.shift();
-                backgroundColors.shift();
-              }
               const projectCount =
                 this.gradeDistribution[lineType][gradeScale]['-2'] +
                 this.gradeDistribution[lineType][gradeScale]['-1'] +

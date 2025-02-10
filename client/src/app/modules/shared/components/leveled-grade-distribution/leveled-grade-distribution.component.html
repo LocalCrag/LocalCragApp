@@ -62,7 +62,9 @@
       <ng-container *ngFor="let count of data.brackets; index as i">
         <p-tag
           *ngIf="data.brackets[i] > 0"
-          styleClass="level-{{ i === data.brackets.length - 1 ? 'max' : i + 1 }}"
+          styleClass="level-{{
+            i === data.brackets.length - 1 ? 'max' : i + 1
+          }}"
         >
           <p-badge
             [value]="data.brackets[i] | toString"
