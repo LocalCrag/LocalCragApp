@@ -5,9 +5,8 @@
         <p-card>
           <ng-template pTemplate="title">
             <ng-container *ngIf="editMode"
-            >{{ scale?.lineType | transloco }} {{ scale?.name }}
-            </ng-container
-            >
+              >{{ scale?.lineType | transloco }} {{ scale?.name }}
+            </ng-container>
           </ng-template>
           <div class="grid grid-nogutter">
             <ng-container *ngIf="!editMode">
@@ -44,7 +43,7 @@
                   {{ t("required") }}
                 </small>
               </div>
-              <hr class="col-12"/>
+              <hr class="col-12" />
             </ng-container>
             <div
               class="col-12"
@@ -136,18 +135,18 @@
               </div>
             </div>
             <div class="col-12 mt-2">
-            <p-message
-              *ngIf="gradeControls().hasError('not_unique')"
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-3"
-            />
-            <p-message
-              *ngIf="gradeControls().hasError('names_not_filled')"
-              severity="error"
-              text="{{ t('namesNotFilled') }}"
-              styleClass="min-w-full mb-3"
-            />
+              <p-message
+                *ngIf="gradeControls().hasError('not_unique')"
+                severity="error"
+                text="{{ t('valuesNotUnique') }}"
+                styleClass="min-w-full mb-3"
+              />
+              <p-message
+                *ngIf="gradeControls().hasError('names_not_filled')"
+                severity="error"
+                text="{{ t('namesNotFilled') }}"
+                styleClass="min-w-full mb-3"
+              />
             </div>
             <div class="button-container">
               <p-button
@@ -167,11 +166,15 @@
             </div>
           </div>
 
-          <hr class="mt-4"/>
+          <hr class="mt-4" />
 
-          <h4>{{ t("gradeBracketsLabel") }} - {{ t('stackedChartBrackets') }}</h4>
+          <h4>
+            {{ t("gradeBracketsLabel") }} - {{ t("stackedChartBrackets") }}
+          </h4>
           <div class="mb-2">
-            <em>{{ t("gradeBracketsDescriptionStackedChart", {min: 2, max: 8}) }}</em>
+            <em>{{
+              t("gradeBracketsDescriptionStackedChart", { min: 2, max: 8 })
+            }}</em>
           </div>
           <div
             class="col-12"
@@ -185,8 +188,7 @@
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label>
                 {{ t("gradeBracketsInputLabel") }}
-                <p-inputNumber formControlName="value" [min]="1" class="ml-2"
-                />
+                <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
                 <p-button
                   [disabled]="loadingState === LoadingState.LOADING"
                   icon="pi pi-trash"
@@ -233,11 +235,13 @@
             />
           </div>
 
-          <hr class="mt-4"/>
+          <hr class="mt-4" />
 
-          <h4>{{ t("gradeBracketsLabel") }} - {{ t('barChartBrackets') }}</h4>
+          <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
           <div class="mb-2">
-            <em>{{ t("gradeBracketsDescriptionBarChart", {min: 2, max: 12}) }}</em>
+            <em>{{
+              t("gradeBracketsDescriptionBarChart", { min: 2, max: 12 })
+            }}</em>
           </div>
 
           <div
@@ -252,8 +256,7 @@
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label>
                 {{ t("gradeBracketsInputLabel") }}
-                <p-inputNumber formControlName="value" [min]="1" class="ml-2"
-                />
+                <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
                 <label class="ml-3">
                   {{ t("barChartBracketNameLabel") }}
                   <input
@@ -314,7 +317,6 @@
               [disabled]="loadingState === LoadingState.LOADING"
             />
           </div>
-
         </p-card>
 
         <p-toolbar styleClass="mt-3 justify-content-end">
