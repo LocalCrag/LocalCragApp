@@ -240,7 +240,7 @@
           <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
           <div class="mb-2">
             <em>{{
-              t("gradeBracketsDescriptionBarChart", { min: 2, max: 12 })
+              t("gradeBracketsDescriptionBarChart", { min: 2, max: 14 })
             }}</em>
           </div>
 
@@ -291,7 +291,7 @@
           <p-message
             *ngIf="barChartBracketsControls().hasError('invalid_length')"
             severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 12 }) }}"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
             styleClass="min-w-full mb-3"
           />
           <p-message

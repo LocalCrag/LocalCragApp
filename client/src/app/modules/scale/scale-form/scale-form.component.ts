@@ -180,7 +180,7 @@ export class ScaleFormComponent implements OnInit {
         [
           notUniqueValidator,
           semanticBracketErrorValidator,
-          invalidLengthValidator(2, 8),
+          invalidLengthValidator(2, 14),
           allNamesFilled,
         ],
       ),

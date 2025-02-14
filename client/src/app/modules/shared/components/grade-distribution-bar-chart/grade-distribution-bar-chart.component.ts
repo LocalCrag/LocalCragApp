@@ -230,9 +230,9 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 return `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, ${(count / maxCount) * 0.5 + 0.5})`;
               });
               const projectCount =
-                this.gradeDistribution[lineType][gradeScale]['-2'] +
-                this.gradeDistribution[lineType][gradeScale]['-1'] +
-                this.gradeDistribution[lineType][gradeScale]['0'];
+                (this.gradeDistribution[lineType][gradeScale]['-2'] ?? 0) +
+                (this.gradeDistribution[lineType][gradeScale]['-1'] ?? 0) +
+                (this.gradeDistribution[lineType][gradeScale]['0'] ?? 0);
               return {
                 lineType: lineType as LineType,
                 gradeScale,
