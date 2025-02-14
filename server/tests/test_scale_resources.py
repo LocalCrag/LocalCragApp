@@ -32,7 +32,14 @@ def test_successful_create_scale(client, admin_token):
             {"name": "hard", "value": 3},
             {"name": "insane", "value": 4},
         ],
-        "gradeBrackets": [1, 3, 4],
+        "gradeBrackets": {
+            "barChartBrackets": [
+                {"name": "easy", "value": 1},
+                {"name": "hard", "value": 3},
+                {"name": "insane", "value": 4},
+            ],
+            "stackedChartBrackets": [1, 3, 4],
+        },
     }
 
     rv = client.post("/api/scales", token=admin_token, json=scale_data)
@@ -52,10 +59,10 @@ def test_successful_update_scale(client, admin_token):
         "gradeBrackets": GRADE_BRACKETS[LineTypeEnum.BOULDER]["FB"],
     }
 
-    rv = client.put(f"/api/scales/BOULDER/FB", token=admin_token, json=scale_data)
+    rv = client.put("/api/scales/BOULDER/FB", token=admin_token, json=scale_data)
     assert rv.status_code == 200
 
-    rv = client.get(f"/api/lines/treppe")
+    rv = client.get("/api/lines/treppe")
     assert rv.status_code == 200
     res = rv.json
     assert res["gradeScale"] == "FBnew"
@@ -69,7 +76,7 @@ def test_unsuccessful_update_scale_changed_type(client, admin_token):
         "gradeBrackets": GRADE_BRACKETS[LineTypeEnum.BOULDER]["FB"],
     }
 
-    rv = client.put(f"/api/scales/BOULDER/FB", token=admin_token, json=scale_data)
+    rv = client.put("/api/scales/BOULDER/FB", token=admin_token, json=scale_data)
     assert rv.status_code == 409
 
 
@@ -81,15 +88,15 @@ def test_unsuccessful_update_scale_missing_values(client, admin_token):
         "gradeBrackets": GRADE_BRACKETS[LineTypeEnum.BOULDER]["FB"],
     }
 
-    rv = client.put(f"/api/scales/BOULDER/FB", token=admin_token, json=grades_data)
+    rv = client.put("/api/scales/BOULDER/FB", token=admin_token, json=grades_data)
     assert rv.status_code == 409
 
 
 def test_successful_delete_scale(client, admin_token):
-    rv = client.delete(f"/api/scales/SPORT/UIAA", token=admin_token)
+    rv = client.delete("/api/scales/SPORT/UIAA", token=admin_token)
     assert rv.status_code == 204
 
 
 def test_unsuccessful_delete_scale(client, admin_token):
-    rv = client.delete(f"/api/scales/BOULDER/FB", token=admin_token)
+    rv = client.delete("/api/scales/BOULDER/FB", token=admin_token)
     assert rv.status_code == 409

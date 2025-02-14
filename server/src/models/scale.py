@@ -78,8 +78,28 @@ GRADES = {
 }
 
 GRADE_BRACKETS = {
-    LineTypeEnum.BOULDER: {"FB": [9, 15, 21, 22]},
-    LineTypeEnum.SPORT: {"UIAA": [9, 15, 21, 22]},
+    LineTypeEnum.BOULDER: {
+        "FB": {
+            "barChartBrackets": [
+                {"name": "1-4", "value": 9},
+                {"name": "5-6", "value": 15},
+                {"name": "7-8", "value": 21},
+                {"name": "9-12", "value": 22},
+            ],
+            "stackedChartBrackets": [9, 15, 21, 22],
+        }
+    },
+    LineTypeEnum.SPORT: {
+        "UIAA": {
+            "barChartBrackets": [
+                {"name": "I-IV", "value": 9},
+                {"name": "V-VI", "value": 15},
+                {"name": "VII-VIII", "value": 21},
+                {"name": "IX-XII", "value": 22},
+            ],
+            "stackedChartBrackets": [9, 15, 21, 22],
+        }
+    },
 }
 
 
