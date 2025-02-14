@@ -61,7 +61,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
             ),
           ]).pipe(
             map(([scale, gradeNameByValueMap]) => {
-              const labels = Array(scale.gradeBrackets.length).fill('');
+              const labels = Array(
+                scale.gradeBrackets.stackedChartBrackets.length,
+              ).fill('');
 
               const nextGradeName = Object.fromEntries(
                 scale.grades
@@ -73,16 +75,23 @@ export class LeveledGradeDistributionComponent implements OnInit {
                   }),
               );
 
-              for (let i = 0; i < scale.gradeBrackets.length; i++) {
+              for (
+                let i = 0;
+                i < scale.gradeBrackets.stackedChartBrackets.length;
+                i++
+              ) {
                 if (i == 0) {
                   labels[i] =
-                    `${this.translocoService.translate(marker('leveledGradeDistributionUntil'))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
-                } else if (i == scale.gradeBrackets.length - 1) {
+                    `${this.translocoService.translate(marker('leveledGradeDistributionUntil'))} ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
+                } else if (
+                  i ==
+                  scale.gradeBrackets.stackedChartBrackets.length - 1
+                ) {
                   labels[i] =
-                    `${this.translocoService.translate(marker('leveledGradeDistributionFrom'))} ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
+                    `${this.translocoService.translate(marker('leveledGradeDistributionFrom'))} ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
                 } else {
                   labels[i] =
-                    `${nextGradeName[scale.gradeBrackets[i - 1]]} - ${gradeNameByValueMap[scale.gradeBrackets[i]]}`;
+                    `${nextGradeName[scale.gradeBrackets.stackedChartBrackets[i - 1]]} - ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
                 }
               }
 
@@ -90,7 +99,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 lineType: lineType as LineType,
                 gradeScale,
                 projects: 0,
-                brackets: Array(scale.gradeBrackets.length).fill(0),
+                brackets: Array(
+                  scale.gradeBrackets.stackedChartBrackets.length,
+                ).fill(0),
                 bracketLabels: labels,
                 total: 0,
               };
@@ -103,9 +114,16 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 if (gradeValue <= 0) {
                   data.projects += count;
                 } else {
-                  for (let i = 0; i < scale.gradeBrackets.length; i++) {
-                    const bracket = scale.gradeBrackets[i];
-                    if (i == scale.gradeBrackets.length - 1) {
+                  for (
+                    let i = 0;
+                    i < scale.gradeBrackets.stackedChartBrackets.length;
+                    i++
+                  ) {
+                    const bracket = scale.gradeBrackets.stackedChartBrackets[i];
+                    if (
+                      i ==
+                      scale.gradeBrackets.stackedChartBrackets.length - 1
+                    ) {
                       data.brackets[i] += count;
                     } else if (gradeValue <= bracket) {
                       data.brackets[i] += count;
@@ -126,6 +144,7 @@ export class LeveledGradeDistributionComponent implements OnInit {
     } else {
       forkJoin(observables).subscribe(() => {
         this.stackChartData = stackChartData.sort((a, b) => a.total - b.total);
+        console.log(this.stackChartData);
         this.gradeDistributionEmpty = false;
       });
     }

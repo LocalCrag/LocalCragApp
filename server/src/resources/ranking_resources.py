@@ -2,6 +2,7 @@ import threading
 
 from flask import copy_current_request_context, jsonify, request
 from flask.views import MethodView
+from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.unauthorized import Unauthorized
@@ -33,6 +34,7 @@ class GetRanking(MethodView):
             raise BadRequest("Can either fetch crag OR sector OR global ranking.")
 
         query = db.session.query(Ranking)
+        query = query.options(joinedload(Ranking.user))
         query = query.filter(Ranking.type == line_type)
         query = query.filter(Ranking.crag_id == crag_id)
         query = query.filter(Ranking.sector_id == sector_id)

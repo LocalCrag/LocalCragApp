@@ -158,9 +158,22 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
           ]).pipe(
             map(([barChartColor, scale]) => {
               // Condensed scale is needed if screen is too small to host all grades
-              let gradesInUsedScale = scale.grades.sort(
+              const usedScale = condensed
+                ? scale.gradeBrackets.barChartBrackets
+                : scale.grades;
+
+              // Because of the way the condensed scale is built, we need to replace the last grade value
+              // with the maximum grade value of the full scale (if not condensed, this has no effect)
+              usedScale[usedScale.length - 1].value = Math.max(
+                ...scale.grades.map((grade) => grade.value),
+              );
+
+              // Sort grades in ascending order
+              let gradesInUsedScale = usedScale.sort(
                 (a, b) => a.value - b.value,
               );
+
+              // Filter out projects
               gradesInUsedScale = gradesInUsedScale.filter(
                 (grade) => grade.value > 0,
               );
@@ -184,6 +197,24 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 }
               });
 
+              // Apply condensedSortingMap to gradeDistribution
+              const mappedGradeDistribution = {};
+              for (const gradeValue in this.gradeDistribution[lineType][
+                gradeScale
+              ]) {
+                if (Number(gradeValue) <= 0) {
+                  continue;
+                }
+                const condensedGradeValue = condensedSortingMap[gradeValue];
+                if (condensedGradeValue) {
+                  if (!mappedGradeDistribution[condensedGradeValue]) {
+                    mappedGradeDistribution[condensedGradeValue] = 0;
+                  }
+                  mappedGradeDistribution[condensedGradeValue] +=
+                    this.gradeDistribution[lineType][gradeScale][gradeValue];
+                }
+              }
+
               // Build chart data
               const labels = gradesInUsedScale.map((grade) =>
                 grade.value > 0
@@ -191,8 +222,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                   : this.translocoService.translate(grade.name),
               );
               const counts = gradeValues.map(
-                (gradeValue) =>
-                  this.gradeDistribution[lineType][gradeScale][gradeValue] ?? 0,
+                (gradeValue) => mappedGradeDistribution[gradeValue] ?? 0,
               );
               const maxCount = Math.max(...counts);
               const backgroundColors = counts.map((count) => {

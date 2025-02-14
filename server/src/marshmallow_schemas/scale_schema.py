@@ -9,7 +9,7 @@ class ScaleSchema(ma.SQLAlchemySchema):
     name = fields.String()
     type = EnumField(LineTypeEnum, by_value=True)
     grades = fields.List(fields.Dict)
-    gradeBrackets = fields.List(fields.Integer, attribute="grade_brackets")
+    gradeBrackets = fields.Dict(attribute="grade_brackets")
 
 
 scale_schema = ScaleSchema()

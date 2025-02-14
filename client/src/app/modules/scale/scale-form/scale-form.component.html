@@ -5,7 +5,8 @@
         <p-card>
           <ng-template pTemplate="title">
             <ng-container *ngIf="editMode"
-              >{{ scale?.lineType | transloco }} {{ scale?.name }}</ng-container
+            >{{ scale?.lineType | transloco }} {{ scale?.name }}
+            </ng-container
             >
           </ng-template>
           <div class="grid grid-nogutter">
@@ -43,14 +44,8 @@
                   {{ t("required") }}
                 </small>
               </div>
-              <hr class="col-12" />
+              <hr class="col-12"/>
             </ng-container>
-            <p-message
-              *ngIf="gradeControls().invalid"
-              severity="error"
-              text="{{ t('gradesErrorMsg') }}"
-              styleClass="min-w-full mt-2"
-            />
             <div
               class="col-12"
               formArrayName="grades"
@@ -132,6 +127,7 @@
                     </label>
                   </div>
                   <p-button
+                    [disabled]="loadingState === LoadingState.LOADING"
                     icon="pi pi-trash"
                     styleClass="p-button-danger"
                     (click)="deleteGrade(i)"
@@ -139,29 +135,49 @@
                 </ng-container>
               </div>
             </div>
+            <div class="col-12 mt-2">
+            <p-message
+              *ngIf="gradeControls().hasError('not_unique')"
+              severity="error"
+              text="{{ t('valuesNotUnique') }}"
+              styleClass="min-w-full mb-3"
+            />
+            <p-message
+              *ngIf="gradeControls().hasError('names_not_filled')"
+              severity="error"
+              text="{{ t('namesNotFilled') }}"
+              styleClass="min-w-full mb-3"
+            />
+            </div>
+            <div class="button-container">
+              <p-button
+                label="{{ t('addGrade') }}"
+                (click)="addGrade()"
+                icon="pi pi-plus-circle"
+                class="responsive-button"
+                [disabled]="loadingState === LoadingState.LOADING"
+              />
+              <p-button
+                label="{{ t('reorderGrades') }}"
+                (click)="reorderGradesByValue()"
+                icon="pi pi-sort-amount-down-alt"
+                class="responsive-button ml-2"
+                [disabled]="loadingState === LoadingState.LOADING"
+              />
+            </div>
           </div>
-          <hr />
-          <h4>{{ t("gradeBracketsLabel") }}</h4>
+
+          <hr class="mt-4"/>
+
+          <h4>{{ t("gradeBracketsLabel") }} - {{ t('stackedChartBrackets') }}</h4>
           <div class="mb-2">
-            <em>{{ t("gradeBracketsDescription", { min: 2, max: 8 }) }}</em>
+            <em>{{ t("gradeBracketsDescriptionStackedChart", {min: 2, max: 8}) }}</em>
           </div>
-          <p-message
-            *ngIf="gradeBracketsControls().hasError('semantic_error')"
-            severity="error"
-            text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full"
-          />
-          <p-message
-            *ngIf="gradeBracketsControls().hasError('invalid_length')"
-            severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
-            styleClass="min-w-full"
-          />
           <div
             class="col-12"
-            formArrayName="gradeBrackets"
+            formArrayName="stackedChartBrackets"
             *ngFor="
-              let bracket of gradeBracketsControls().controls;
+              let bracket of stackedChartBracketsControls().controls;
               let i = index
             "
           >
@@ -169,65 +185,163 @@
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label>
                 {{ t("gradeBracketsInputLabel") }}
-                <p-inputNumber formControlName="value" [min]="1" />
+                <p-inputNumber formControlName="value" [min]="1" class="ml-2"
+                />
                 <p-button
+                  [disabled]="loadingState === LoadingState.LOADING"
                   icon="pi pi-trash"
-                  styleClass="p-button-danger ml-2"
-                  (click)="deleteBracket(i)"
+                  styleClass="p-button-danger ml-4"
+                  (click)="deleteStackedChartBracket(i)"
                 />
               </label>
             </div>
           </div>
-        </p-card>
-        <p-toolbar>
-          <div class="p-toolbar-group-start">
-            <p-button
-              label="{{ t('addGrade') }}"
-              (click)="addGrade()"
-              icon="pi pi-plus-circle"
-              class="responsive-button"
-              [loading]="loadingState === LoadingState.LOADING"
-            />
+
+          <p-message
+            *ngIf="gradeControls().hasError('not_unique')"
+            severity="error"
+            text="{{ t('valuesNotUnique') }}"
+            styleClass="min-w-full mb-3"
+          />
+          <p-message
+            *ngIf="stackedChartBracketsControls().hasError('semantic_error')"
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full mb-3"
+          />
+          <p-message
+            *ngIf="stackedChartBracketsControls().hasError('invalid_length')"
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
+            styleClass="min-w-full mb-3"
+          />
+
+          <div class="button-container">
             <p-button
               label="{{ t('addBracket') }}"
-              (click)="addBracket()"
+              (click)="addStackedChartBracket()"
               icon="pi pi-plus-circle"
-              class="responsive-button ml-2"
-              [loading]="loadingState === LoadingState.LOADING"
+              class="responsive-button"
+              [disabled]="loadingState === LoadingState.LOADING"
             />
             <p-button
               label="{{ t('reorderGrades') }}"
-              (click)="reorderByValue()"
+              (click)="reorderStackedChartBracketsByValue()"
               icon="pi pi-sort-amount-down-alt"
               class="responsive-button ml-2"
-              [loading]="loadingState === LoadingState.LOADING"
+              [disabled]="loadingState === LoadingState.LOADING"
             />
           </div>
-          <div class="p-toolbar-group-end">
+
+          <hr class="mt-4"/>
+
+          <h4>{{ t("gradeBracketsLabel") }} - {{ t('barChartBrackets') }}</h4>
+          <div class="mb-2">
+            <em>{{ t("gradeBracketsDescriptionBarChart", {min: 2, max: 12}) }}</em>
+          </div>
+
+          <div
+            class="col-12"
+            formArrayName="barChartBrackets"
+            *ngFor="
+              let bracket of barChartBracketsControls().controls;
+              let i = index
+            "
+          >
+            <div [formGroupName]="i" class="flex gap-4 mb-2">
+              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+              <label>
+                {{ t("gradeBracketsInputLabel") }}
+                <p-inputNumber formControlName="value" [min]="1" class="ml-2"
+                />
+                <label class="ml-3">
+                  {{ t("barChartBracketNameLabel") }}
+                  <input
+                    type="text"
+                    class="ml-2"
+                    pInputText
+                    formControlName="name"
+                  />
+                </label>
+                <p-button
+                  icon="pi pi-trash"
+                  [disabled]="loadingState === LoadingState.LOADING"
+                  styleClass="p-button-danger ml-4"
+                  (click)="deleteBarChartBracket(i)"
+                />
+              </label>
+            </div>
+          </div>
+
+          <p-message
+            *ngIf="barChartBracketsControls().hasError('not_unique')"
+            severity="error"
+            text="{{ t('valuesNotUnique') }}"
+            styleClass="min-w-full mb-3"
+          />
+          <p-message
+            *ngIf="barChartBracketsControls().hasError('semantic_error')"
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full mb-3"
+          />
+          <p-message
+            *ngIf="barChartBracketsControls().hasError('invalid_length')"
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 12 }) }}"
+            styleClass="min-w-full mb-3"
+          />
+          <p-message
+            *ngIf="barChartBracketsControls().hasError('names_not_filled')"
+            severity="error"
+            text="{{ t('namesNotFilled') }}"
+            styleClass="min-w-full mb-3"
+          />
+
+          <div class="button-container">
             <p-button
-              label="{{ t('saveScale') }}"
-              (click)="saveScale()"
-              icon="pi pi-save"
+              label="{{ t('addBracket') }}"
+              (click)="addBarChartBracket()"
+              icon="pi pi-plus-circle"
               class="responsive-button"
-              [loading]="loadingState === LoadingState.LOADING"
+              [disabled]="loadingState === LoadingState.LOADING"
             />
             <p-button
-              label="{{ t('deleteScale') }}"
-              (click)="confirmDeleteScale($event)"
-              icon="pi pi-trash"
-              styleClass="p-button-danger"
+              label="{{ t('reorderGrades') }}"
+              (click)="reorderBarChartBracketsByValue()"
+              icon="pi pi-sort-amount-down-alt"
               class="responsive-button ml-2"
-              [loading]="loadingState === LoadingState.LOADING"
+              [disabled]="loadingState === LoadingState.LOADING"
             />
-            <p-button
-              label="{{ t('cancel') }}"
-              (click)="router.navigate(['/scales'])"
-              icon="pi pi-ban"
-              severity="secondary"
-              class="responsive-button ml-2"
-            />
-            <p-confirmPopup></p-confirmPopup>
           </div>
+
+        </p-card>
+
+        <p-toolbar styleClass="mt-3 justify-content-end">
+          <p-button
+            label="{{ t('saveScale') }}"
+            (click)="saveScale()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('deleteScale') }}"
+            (click)="confirmDeleteScale($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="responsive-button ml-2"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('cancel') }}"
+            (click)="router.navigate(['/scales'])"
+            icon="pi pi-ban"
+            severity="secondary"
+            class="responsive-button ml-2"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-confirmPopup></p-confirmPopup>
         </p-toolbar>
       </form>
     </p-card>
