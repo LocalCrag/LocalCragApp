@@ -37,6 +37,11 @@ def upgrade():
     scales = session.query(Scale).all()
     for scale in scales:
 
+        # Don't do anything if the grade_brackets are already in the correct format (e.g. for new instances)
+        if isinstance(scale.grade_brackets, dict):
+            # They have been a list before, so if they are already a dict, we can assume they are in the correct format
+            continue
+
         bar_chart_brackets = []
 
         for i in range(0, len(scale.grade_brackets)):
