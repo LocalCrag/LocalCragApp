@@ -6,34 +6,45 @@
   ></p-skeleton>
 
   <ng-container *ngIf="!gradeDistributionEmpty">
-
-    <div
-      class="mb-3"
-      *ngFor="let data of stackChartData"
-    >
+    <div class="mb-3" *ngFor="let data of stackChartData">
       <p-meterGroup [value]="data.meterValues" [min]="0" [max]="data.total">
         <ng-template pTemplate="label">
-          <ol class="p-metergroup-labels p-component p-metergroup-labels-horizontal">
-            <li class="p-metergroup-label font-bold" *ngIf="data.total - data.projects > 0">
+          <ol
+            class="p-metergroup-labels p-component p-metergroup-labels-horizontal"
+          >
+            <li
+              class="p-metergroup-label font-bold"
+              *ngIf="data.total - data.projects > 0"
+            >
               {{ data.total - data.projects }}
               {{ stackChartData.length > 1 ? data.gradeScale : "" }}
               {{ t("lines") }}:
             </li>
-            <li class="p-metergroup-label" *ngFor="let meterValue of data.meterValues">
-              <span class="p-metergroup-label-marker ng-star-inserted"
-                    [style.background-color]="meterValue.color"></span>
-              <span class="p-metergroup-label-text">{{ meterValue.value }} {{ meterValue.label }}</span>
+            <li
+              class="p-metergroup-label"
+              *ngFor="let meterValue of data.meterValues"
+            >
+              <span
+                class="p-metergroup-label-marker ng-star-inserted"
+                [style.background-color]="meterValue.color"
+              ></span>
+              <span class="p-metergroup-label-text"
+                >{{ meterValue.value }} {{ meterValue.label }}</span
+              >
             </li>
             <li class="p-metergroup-label" *ngIf="data.projects > 0">
-              <span class="p-metergroup-label-marker ng-star-inserted"
-                    [style.background-color]="'#e5e7eb'"></span>
-              <span class="p-metergroup-label-text">{{ data.projects }} {{ t('leveledGradeDistributionProjects') }}</span>
+              <span
+                class="p-metergroup-label-marker ng-star-inserted"
+                [style.background-color]="'#e5e7eb'"
+              ></span>
+              <span class="p-metergroup-label-text"
+                >{{ data.projects }}
+                {{ t("leveledGradeDistributionProjects") }}</span
+              >
             </li>
           </ol>
         </ng-template>
       </p-meterGroup>
-
     </div>
-
   </ng-container>
 </ng-container>
