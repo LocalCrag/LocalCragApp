@@ -1,45 +1,5 @@
 :host {
   width: 100%;
-  display: block;
 }
 
-.grade-distribution-tags {
-  flex-wrap: wrap;
-  p-tag {
-    white-space: nowrap;
-  }
-}
 
-.grade-distribution-stack {
-  overflow: hidden;
-  display: flex;
-  flex-wrap: wrap;
-  row-gap: 1rem;
-  padding-left: 6px;
-
-  div {
-    padding: 0.25rem;
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    white-space: nowrap;
-    min-width: fit-content;
-    justify-content: center;
-    align-items: center;
-
-    &.level-total {
-      margin-left: -6px;
-      border-radius: 6px 0 0 6px;
-    }
-
-    &.level-max {
-      border-radius: 0 6px 6px 0;
-    }
-
-    &.level-projects {
-      border-radius: 6px;
-      margin-left: 0.5rem;
-    }
-  }
-}

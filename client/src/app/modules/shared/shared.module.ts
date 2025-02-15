@@ -27,6 +27,7 @@ import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
 import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
 import { LineGradePipe } from './pipes/line-grade.pipe';
+import { MeterGroupModule } from 'primeng/metergroup';
 
 /**
  * Module for shared components, pipes etc.
@@ -63,6 +64,7 @@ import { LineGradePipe } from './pipes/line-grade.pipe';
     SkeletonModule,
     ChartModule,
     ChipModule,
+    MeterGroupModule,
   ],
   exports: [
     DatePipe,

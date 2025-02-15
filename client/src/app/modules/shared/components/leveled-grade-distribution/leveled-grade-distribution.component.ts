@@ -11,9 +11,8 @@ type StackChartData = {
   lineType: LineType;
   gradeScale: string;
   projects: number;
-  brackets: number[];
-  bracketLabels: string[];
   total: number;
+  meterValues: { color: string; value: number; label: string }[];
 };
 
 /**
@@ -30,6 +29,12 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public stackChartData = null;
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
+  value = [
+    { label: 'Apps', color: '#34d399', value: 16 },
+    { label: 'Messages', color: '#fbbf24', value: 8 },
+    { label: 'Media', color: '#60a5fa', value: 24 },
+    { label: 'System', color: '#c084fc', value: 10 },
+  ];
 
   constructor(
     private scalesService: ScalesService,
@@ -47,6 +52,16 @@ export class LeveledGradeDistributionComponent implements OnInit {
    * Sorts the grades in buckets and calculates the total count for each bucket.
    */
   buildGradeDistribution() {
+    const colors = [
+      'var(--yellow-500)',
+      'var(--blue-500)',
+      'var(--red-500)',
+      'var(--green-500)',
+      'var(--orange-500)',
+      'var(--teal-500)',
+      'var(--indigo-500)',
+      'var(--bluegray-500)',
+    ];
     const stackChartData: StackChartData[] = [];
     const observables: Observable<any>[] = [];
 
@@ -99,11 +114,15 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 lineType: lineType as LineType,
                 gradeScale,
                 projects: 0,
-                brackets: Array(
-                  scale.gradeBrackets.stackedChartBrackets.length,
-                ).fill(0),
-                bracketLabels: labels,
                 total: 0,
+                meterValues: Array.from(
+                  { length: scale.gradeBrackets.stackedChartBrackets.length },
+                  (_, i) => ({
+                    color: colors[i % colors.length],
+                    value: 0,
+                    label: null,
+                  }),
+                ),
               };
               for (const gradeValue of Object.keys(
                 this.gradeDistribution[lineType][gradeScale],
@@ -124,15 +143,24 @@ export class LeveledGradeDistributionComponent implements OnInit {
                       i ==
                       scale.gradeBrackets.stackedChartBrackets.length - 1
                     ) {
-                      data.brackets[i] += count;
+                      data.meterValues[i].value += count;
                     } else if (gradeValue <= bracket) {
-                      data.brackets[i] += count;
+                      data.meterValues[i].value += count;
                       break;
                     }
                   }
                 }
               }
+              // Add the labels to the data
+              data.meterValues.forEach((meterValue, i) => {
+                meterValue.label = labels[i];
+              });
+              // Drop all meter values that are zero
+              data.meterValues = data.meterValues.filter(
+                (meterValue) => meterValue.value > 0,
+              );
               stackChartData.push(data);
+              console.log(data);
             }),
           ),
         );
@@ -144,7 +172,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
     } else {
       forkJoin(observables).subscribe(() => {
         this.stackChartData = stackChartData.sort((a, b) => a.total - b.total);
-        console.log(this.stackChartData);
         this.gradeDistributionEmpty = false;
       });
     }
