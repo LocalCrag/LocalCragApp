@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostListener,
   OnInit,
@@ -72,6 +74,7 @@ import { RegionService } from '../../../services/crud/region.service';
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
 export class TodoListComponent implements OnInit {
@@ -116,6 +119,7 @@ export class TodoListComponent implements OnInit {
     private translocoService: TranslocoService,
     private regionService: RegionService,
     protected scalesService: ScalesService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -263,6 +267,7 @@ export class TodoListComponent implements OnInit {
         toastNotification(NotificationIdentifier.TODO_DELETED),
       );
       this.todos = this.todos.filter((t) => t.id !== todo.id);
+      this.cdr.detectChanges();
     });
   }
 
@@ -331,6 +336,7 @@ export class TodoListComponent implements OnInit {
         this.hasNextPage = todos.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
         this.loadingAdditionalPage = LoadingState.DEFAULT;
+        this.cdr.detectChanges();
       });
     }
   }

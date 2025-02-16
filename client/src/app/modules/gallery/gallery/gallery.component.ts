@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { ObjectType } from '../../../models/tag';
@@ -45,6 +50,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
   providers: [DialogService, ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
 export class GalleryComponent implements OnInit {
@@ -66,6 +72,7 @@ export class GalleryComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private route: ActivatedRoute,
     private translocoService: TranslocoService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -137,6 +144,7 @@ export class GalleryComponent implements OnInit {
             this.hasNextPage = images.hasNext;
             this.loadingFirstPage = LoadingState.DEFAULT;
             this.loadingAdditionalPage = LoadingState.DEFAULT;
+            this.cdr.detectChanges();
           }),
         )
         .subscribe();
@@ -159,6 +167,7 @@ export class GalleryComponent implements OnInit {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
             this.images.unshift(galleryImage);
+            this.cdr.detectChanges();
           }
         }
       });
@@ -192,6 +201,7 @@ export class GalleryComponent implements OnInit {
       this.store.dispatch(
         toastNotification(NotificationIdentifier.GALLERY_IMAGE_DELETED),
       );
+      this.cdr.detectChanges();
     });
   }
 
@@ -210,6 +220,7 @@ export class GalleryComponent implements OnInit {
           this.images = this.images.map((i) =>
             i.id === galleryImage.id ? galleryImage : i,
           );
+          this.cdr.detectChanges();
         }
       });
   }

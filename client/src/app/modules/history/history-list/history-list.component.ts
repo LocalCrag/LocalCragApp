@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
@@ -49,6 +55,7 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryListComponent implements OnInit {
   public loadingStates = LoadingState;
@@ -67,6 +74,7 @@ export class HistoryListComponent implements OnInit {
     private store: Store,
     private transloco: TranslocoService,
     private scalesService: ScalesService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   loadFirstPage() {
@@ -98,6 +106,7 @@ export class HistoryListComponent implements OnInit {
         this.hasNextPage = historyItems.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
         this.loadingAdditionalPage = LoadingState.DEFAULT;
+        this.cdr.detectChanges();
       });
     }
   }

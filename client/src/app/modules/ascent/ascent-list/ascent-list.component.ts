@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -88,6 +90,7 @@ import { RegionService } from '../../../services/crud/region.service';
   styleUrl: './ascent-list.component.scss',
   encapsulation: ViewEncapsulation.None,
   providers: [DialogService, ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
 export class AscentListComponent implements OnInit {
@@ -133,6 +136,7 @@ export class AscentListComponent implements OnInit {
     private translocoService: TranslocoService,
     protected scalesService: ScalesService,
     private regionService: RegionService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -292,6 +296,7 @@ export class AscentListComponent implements OnInit {
         this.hasNextPage = ascents.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
         this.loadingAdditionalPage = LoadingState.DEFAULT;
+        this.cdr.detectChanges();
       });
     }
   }
