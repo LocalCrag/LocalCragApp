@@ -85,7 +85,7 @@
       "prettier --write .",
       "eslint"
     ],
-    "**/*.{json}": [
+    "src/assets/i18n/**/*.{json}": [
       "prettier --write ."
     ]
   }
