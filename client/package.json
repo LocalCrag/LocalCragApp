@@ -84,6 +84,9 @@
     "**/*.{js,ts}": [
       "prettier --write .",
       "eslint"
+    ],
+    "**/*.{json}": [
+      "prettier --write ."
     ]
   }
 }
