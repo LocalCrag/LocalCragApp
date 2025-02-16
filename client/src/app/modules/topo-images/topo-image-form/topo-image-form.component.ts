@@ -14,7 +14,6 @@ import { TranslocoService } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TopoImage } from '../../../models/topo-image';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
@@ -149,9 +148,7 @@ export class TopoImageFormComponent implements OnInit {
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
         this.topoImagesService.updateTopoImage(topoImage).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.TOPO_IMAGE_UPDATED),
-          );
+          this.store.dispatch(toastNotification('TOPO_IMAGE_UPDATED'));
           this.router.navigate([
             '/topo',
             this.cragSlug,
@@ -165,9 +162,7 @@ export class TopoImageFormComponent implements OnInit {
         this.topoImagesService
           .addTopoImage(topoImage, this.areaSlug)
           .subscribe(() => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.TOPO_IMAGE_ADDED),
-            );
+            this.store.dispatch(toastNotification('TOPO_IMAGE_ADDED'));
             this.router.navigate([
               '/topo',
               this.cragSlug,

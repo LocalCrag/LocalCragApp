@@ -1,5 +1,3 @@
-// noinspection JSUnusedGlobalSymbols
-
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -11,7 +9,6 @@ import {
   showCookieAlert,
 } from '../actions/app-level-alerts.actions';
 import { toastNotification } from '../actions/notifications.actions';
-import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
 
 /**
  * Declares effects for the app level alerts.
@@ -47,9 +44,7 @@ export class AppLevelAlertsEffects {
         ofType(cookiesAccepted),
         tap(() => {
           localStorage.setItem('cookiesAccepted', JSON.stringify(true));
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.COOKIES_ALLOWED),
-          );
+          this.store.dispatch(toastNotification('COOKIES_ALLOWED'));
         }),
       ),
     { dispatch: false },

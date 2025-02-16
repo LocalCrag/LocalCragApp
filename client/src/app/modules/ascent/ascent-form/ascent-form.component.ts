@@ -22,7 +22,6 @@ import { Line } from '../../../models/line';
 import { Store } from '@ngrx/store';
 import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -223,9 +222,7 @@ export class AscentFormComponent implements OnInit {
       ascent.line = this.line;
       if (!this.editMode) {
         this.ascentsService.createAscent(ascent).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.ASCENT_ADDED),
-          );
+          this.store.dispatch(toastNotification('ASCENT_ADDED'));
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(
             reloadAfterAscent({ ascendedLineId: this.line.id }),
@@ -235,9 +232,7 @@ export class AscentFormComponent implements OnInit {
       } else {
         ascent.id = this.ascent.id;
         this.ascentsService.updateAscent(ascent).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.ASCENT_UPDATED),
-          );
+          this.store.dispatch(toastNotification('ASCENT_UPDATED'));
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(
             reloadAfterAscent({ ascendedLineId: this.line.id }),

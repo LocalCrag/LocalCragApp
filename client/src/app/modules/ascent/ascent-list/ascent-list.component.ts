@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -39,7 +41,6 @@ import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
 import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -88,6 +89,7 @@ import { RegionService } from '../../../services/crud/region.service';
   styleUrl: './ascent-list.component.scss',
   encapsulation: ViewEncapsulation.None,
   providers: [DialogService, ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
 export class AscentListComponent implements OnInit {
@@ -133,6 +135,7 @@ export class AscentListComponent implements OnInit {
     private translocoService: TranslocoService,
     protected scalesService: ScalesService,
     private regionService: RegionService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -292,6 +295,7 @@ export class AscentListComponent implements OnInit {
         this.hasNextPage = ascents.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
         this.loadingAdditionalPage = LoadingState.DEFAULT;
+        this.cdr.detectChanges();
       });
     }
   }
@@ -332,9 +336,7 @@ export class AscentListComponent implements OnInit {
 
   public deleteAscent(ascent: Ascent) {
     this.ascentsService.deleteAscent(ascent).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.ASCENT_DELETED),
-      );
+      this.store.dispatch(toastNotification('ASCENT_DELETED'));
       this.store.dispatch(
         reloadAfterAscent({ ascendedLineId: ascent.line.id }),
       );

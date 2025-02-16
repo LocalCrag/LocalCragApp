@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
@@ -25,6 +31,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 
 @Component({
   selector: 'lc-history-list',
@@ -48,6 +55,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryListComponent implements OnInit {
   public loadingStates = LoadingState;
@@ -61,10 +69,12 @@ export class HistoryListComponent implements OnInit {
 
   constructor(
     private historyService: HistoryService,
+    private translateSpecialGradesPipe: TranslateSpecialGradesPipe,
     private router: Router,
     private store: Store,
     private transloco: TranslocoService,
     private scalesService: ScalesService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   loadFirstPage() {
@@ -96,6 +106,7 @@ export class HistoryListComponent implements OnInit {
         this.hasNextPage = historyItems.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
         this.loadingAdditionalPage = LoadingState.DEFAULT;
+        this.cdr.detectChanges();
       });
     }
   }
@@ -127,8 +138,13 @@ export class HistoryListComponent implements OnInit {
     if (event.type === HistoryItemType.UPDATED) {
       switch (event.objectType) {
         case ObjectType.Line:
-          /** t(history.grading_changed) */
-          return this.transloco.translate('history.grading_changed');
+          if (Number(event.newValue) >= 0) {
+            /** t(history.grading_changed) */
+            return this.transloco.translate('history.grading_changed');
+          } else {
+            /** t(history.project_status_changed) */
+            return this.transloco.translate('history.project_status_changed');
+          }
         default:
           return '';
       }
@@ -153,14 +169,31 @@ export class HistoryListComponent implements OnInit {
             Number(event.newValue),
           ),
         ]).pipe(
-          map((oldGrade, newGrade) => {
+          map(([oldGrade, newGrade]) => {
+            return [
+              this.translateSpecialGradesPipe.transform(oldGrade),
+              this.translateSpecialGradesPipe.transform(newGrade),
+            ];
+          }),
+          map(([oldGrade, newGrade]) => {
             if (
               Number(event.oldValue) < 0 &&
-              Number(event.oldValue) < Number(event.newValue)
+              Number(event.oldValue) < Number(event.newValue) &&
+              Number(event.newValue) >= 0
             ) {
               /** t(history.projectClimbed) */
               return this.transloco.translate('history.projectClimbed', {
                 line: line.name,
+                newGrade,
+              });
+            } else if (
+              Number(event.oldValue) < 0 &&
+              Number(event.newValue) < 0
+            ) {
+              /** t(history.projectStatusChanged) */
+              return this.transloco.translate('history.projectStatusChanged', {
+                line: line.name,
+                oldGrade,
                 newGrade,
               });
             } else if (
@@ -218,10 +251,12 @@ export class HistoryListComponent implements OnInit {
       return 'pi pi-plus';
     }
     if (event.type === HistoryItemType.UPDATED) {
-      if (Number(event.oldValue) < Number(event.newValue)) {
-        return 'pi pi-arrow-up';
-      } else if (Number(event.oldValue) > Number(event.newValue)) {
-        return 'pi pi-arrow-down';
+      if (Number(event.newValue) >= 0) {
+        if (Number(event.oldValue) < Number(event.newValue)) {
+          return 'pi pi-arrow-up';
+        } else if (Number(event.oldValue) > Number(event.newValue)) {
+          return 'pi pi-arrow-down';
+        }
       }
       return 'pi pi-cog';
     }

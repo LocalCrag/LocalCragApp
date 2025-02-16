@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --no-watch --no-progress --code-coverage --browsers=ChromeHeadless",
-    "i18n:extract": "transloco-keys-manager extract -d \"\"",
+    "i18n:extract": "transloco-keys-manager extract -d \"\" -l de",
     "i18n:find": "transloco-keys-manager find",
     "cypress": "cypress open",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org localcrag --project localcrag-client ./dist/client && sentry-cli sourcemaps upload --org localcrag --project localcrag-client ./dist/client",
@@ -84,6 +84,9 @@
     "**/*.{js,ts}": [
       "prettier --write .",
       "eslint"
+    ],
+    "src/assets/i18n/**/*.{json}": [
+      "prettier --write ."
     ]
   }
 }

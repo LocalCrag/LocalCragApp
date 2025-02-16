@@ -18,7 +18,6 @@ import {
 } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
 import { passwordsValidator } from '../../../utility/validators/passwords.validator';
 import { Title } from '@angular/platform-browser';
@@ -64,9 +63,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         if (isLoggedIn) {
           this.router.navigate(['/']);
           this.store.dispatch(
-            toastNotification(
-              NotificationIdentifier.LOG_OUT_TO_USE_THIS_FUNCTION,
-            ),
+            toastNotification('LOG_OUT_TO_USE_THIS_FUNCTION'),
           );
         }
       });

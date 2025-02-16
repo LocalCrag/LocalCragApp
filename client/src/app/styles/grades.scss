@@ -1,24 +1,3 @@
-.level-total {
-  background-color: var(--gray-500) !important;
-}
-
-$colors: var(--yellow-500), var(--blue-500), var(--red-500), var(--green-500),
-  var(--orange-500), var(--teal-500), var(--indigo-500), var(--bluegray-500);
-
-@for $i from 1 to length($colors) {
-  .level-#{$i} {
-    background-color: nth($colors, $i) !important;
-  }
-}
-
-.level-max {
-  background-color: var(--gray-900) !important;
-}
-
-.level-projects {
-  background-color: var(--gray-500) !important;
-}
-
 .neutral-badge {
   background-color: var(--gray-50) !important;
   color: #000 !important;

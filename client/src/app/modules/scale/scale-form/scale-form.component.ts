@@ -8,11 +8,14 @@ import {
 } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { FormDirective } from '../../shared/forms/form.directive';
@@ -33,7 +36,6 @@ import { ConfirmationService } from 'primeng/api';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
@@ -114,33 +116,71 @@ export class ScaleFormComponent implements OnInit {
   }
 
   buildForm() {
+    const allNamesFilled: ValidatorFn = (
+      control: AbstractControl,
+    ): ValidationErrors | null => {
+      const formArray = control as FormArray;
+      return formArray.value.every(
+        (item: any) => item.name && item.name.trim() !== '',
+      )
+        ? null
+        : { names_not_filled: true };
+    };
+
+    const notUniqueValidator: ValidatorFn = (
+      ctl: AbstractControl,
+    ): ValidationErrors | null => {
+      const formArray = ctl as FormArray;
+      return formArray.value.length ===
+        new Set(formArray.value.map((v: any) => v.value)).size
+        ? null
+        : { not_unique: true };
+    };
+
+    const semanticBracketErrorValidator: ValidatorFn = (
+      ctl: AbstractControl,
+    ): ValidationErrors | null => {
+      const formArray = ctl as FormArray;
+      return formArray.value.length >= 2 &&
+        formArray.value.reduce(
+          (p: boolean, c: any) => p && c.value > 0,
+          true,
+        ) &&
+        formArray.value.at(-2).value + 1 === formArray.value.at(-1).value
+        ? null
+        : { semantic_error: true };
+    };
+
+    const invalidLengthValidator = (min: number, max: number): ValidatorFn => {
+      return (ctl: AbstractControl): ValidationErrors | null => {
+        const formArray = ctl as FormArray;
+        return formArray.value.length >= min && formArray.value.length <= max
+          ? null
+          : { invalid_length: true };
+      };
+    };
+
     this.scaleForm = this.fb.group({
       lineType: this.editMode
         ? undefined
         : [LineType.BOULDER, [Validators.required]],
       name: this.editMode ? undefined : ['', Validators.required],
-      grades: this.fb.array(
+      grades: this.fb.array([], [notUniqueValidator, allNamesFilled]),
+      stackedChartBrackets: this.fb.array(
         [],
         [
-          (ctl) =>
-            ctl.value.length === new Set(ctl.value.map((v) => v.value)).size
-              ? null
-              : { not_unique: true },
+          notUniqueValidator,
+          semanticBracketErrorValidator,
+          invalidLengthValidator(2, 8),
         ],
       ),
-      gradeBrackets: this.fb.array(
+      barChartBrackets: this.fb.array(
         [],
         [
-          (ctl) =>
-            ctl.value.length >= 2 &&
-            ctl.value.reduce((p, c) => p && c.value > 0, true) &&
-            ctl.value.at(-2).value + 1 === ctl.value.at(-1).value
-              ? null
-              : { semantic_error: true },
-          (ctl) =>
-            ctl.value.length >= 2 && ctl.value.length <= 8
-              ? null
-              : { invalid_length: true },
+          notUniqueValidator,
+          semanticBracketErrorValidator,
+          invalidLengthValidator(2, 14),
+          allNamesFilled,
         ],
       ),
     });
@@ -156,13 +196,21 @@ export class ScaleFormComponent implements OnInit {
           }),
         )
         .forEach((ctl) => this.gradeControls().push(ctl));
-      this.scale.gradeBrackets
+      this.scale.gradeBrackets.stackedChartBrackets
         .map((value) =>
           this.fb.group({
             value: [value],
           }),
         )
-        .forEach((ctl) => this.gradeBracketsControls().push(ctl));
+        .forEach((ctl) => this.stackedChartBracketsControls().push(ctl));
+      this.scale.gradeBrackets.barChartBrackets
+        .map((bracket) =>
+          this.fb.group({
+            value: [bracket.value],
+            name: [bracket.name],
+          }),
+        )
+        .forEach((ctl) => this.barChartBracketsControls().push(ctl));
     } else {
       this.gradeControls().push(
         this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }),
@@ -173,8 +221,14 @@ export class ScaleFormComponent implements OnInit {
       this.gradeControls().push(
         this.fb.group({ name: marker('UNGRADED'), value: 0 }),
       );
-      this.gradeBracketsControls().push(this.fb.group({ value: 1 }));
-      this.gradeBracketsControls().push(this.fb.group({ value: 2 }));
+      this.stackedChartBracketsControls().push(this.fb.group({ value: 1 }));
+      this.stackedChartBracketsControls().push(this.fb.group({ value: 2 }));
+      this.barChartBracketsControls().push(
+        this.fb.group({ value: 1, name: marker('FIRST_BAR_CHART_BRACKET') }),
+      );
+      this.barChartBracketsControls().push(
+        this.fb.group({ value: 2, name: marker('SECOND_BAR_CHART_BRACKET') }),
+      );
       this.addGrade();
     }
     this.scaleForm.enable();
@@ -184,23 +238,45 @@ export class ScaleFormComponent implements OnInit {
     return this.scaleForm.controls.grades as FormArray;
   }
 
-  gradeBracketsControls() {
-    return this.scaleForm.controls.gradeBrackets as FormArray;
+  stackedChartBracketsControls() {
+    return this.scaleForm.controls.stackedChartBrackets as FormArray;
   }
 
-  reorderByValue() {
-    const data = this.gradeControls().value;
+  barChartBracketsControls() {
+    return this.scaleForm.controls.barChartBrackets as FormArray;
+  }
+
+  private reorderControlsByValue(
+    controls: FormArray,
+    includeName: boolean = true,
+  ) {
+    const data = controls.value;
     data.sort((a, b) => a.value - b.value);
-    this.gradeControls().clear();
+    controls.clear();
     data
       .filter((g) => Number.isInteger(g.value))
-      .map((g) =>
-        this.fb.group({
-          name: [g.name],
+      .map((g) => {
+        const controls = {
           value: [g.value],
-        }),
-      )
-      .forEach((ctl) => this.gradeControls().push(ctl));
+        };
+        if (includeName) {
+          controls['name'] = [g.name];
+        }
+        return this.fb.group(controls);
+      })
+      .forEach((ctl) => controls.push(ctl));
+  }
+
+  reorderGradesByValue() {
+    this.reorderControlsByValue(this.gradeControls());
+  }
+
+  reorderBarChartBracketsByValue() {
+    this.reorderControlsByValue(this.barChartBracketsControls());
+  }
+
+  reorderStackedChartBracketsByValue() {
+    this.reorderControlsByValue(this.stackedChartBracketsControls(), false);
   }
 
   addGrade() {
@@ -215,42 +291,64 @@ export class ScaleFormComponent implements OnInit {
     this.gradeControls().removeAt(index);
   }
 
-  addBracket() {
-    const max = this.gradeBracketsControls().value.reduce(
+  private addBracket(controls: FormArray, includeName: boolean = true) {
+    const max = controls.value.reduce(
       (acc, v) => (v.value > acc ? v.value : acc),
       0,
     );
-    this.gradeBracketsControls().push(
-      this.fb.group({ name: [], value: [max + 1] }),
-    );
+    const group = {
+      value: [max + 1],
+    };
+    if (includeName) {
+      group['name'] = [];
+    }
+    controls.push(this.fb.group(group));
   }
 
-  deleteBracket(index: number) {
-    this.gradeBracketsControls().removeAt(index);
+  addStackedChartBracket() {
+    this.addBracket(this.stackedChartBracketsControls(), false);
+  }
+
+  addBarChartBracket() {
+    this.addBracket(this.barChartBracketsControls());
+  }
+
+  deleteStackedChartBracket(index: number) {
+    this.stackedChartBracketsControls().removeAt(index);
+  }
+
+  deleteBarChartBracket(index: number) {
+    this.barChartBracketsControls().removeAt(index);
   }
 
   saveScale() {
     if (this.scaleForm.valid) {
       this.loadingState = LoadingState.LOADING;
+      this.scaleForm.disable();
 
       if (this.editMode) {
         this.scale.grades = this.gradeControls().value;
-        this.scale.gradeBrackets = this.gradeBracketsControls().value.map(
-          (gb) => gb.value,
-        );
-
+        this.scale.gradeBrackets = {
+          stackedChartBrackets: this.stackedChartBracketsControls().value.map(
+            (gb) => gb.value,
+          ),
+          barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
+            return {
+              value: gb.value,
+              name: gb.name,
+            };
+          }),
+        };
         this.scalesService.updateScale(this.scale).subscribe({
           next: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED),
-            );
+            this.store.dispatch(toastNotification('SCALE_UPDATED'));
             this.loadingState = LoadingState.DEFAULT;
+            this.scaleForm.enable();
           },
           error: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED_ERROR),
-            );
+            this.store.dispatch(toastNotification('SCALE_UPDATED_ERROR'));
             this.loadingState = LoadingState.DEFAULT;
+            this.scaleForm.enable();
           },
         });
       } else {
@@ -258,22 +356,20 @@ export class ScaleFormComponent implements OnInit {
         scale.lineType = this.scaleForm.get('lineType').value.value;
         scale.name = this.scaleForm.get('name').value;
         scale.grades = this.gradeControls().value;
-        scale.gradeBrackets = this.gradeBracketsControls().value.map(
+        scale.gradeBrackets = this.stackedChartBracketsControls().value.map(
           (gb) => gb.value,
         );
         this.scalesService.createScale(scale).subscribe({
           next: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED),
-            );
+            this.store.dispatch(toastNotification('SCALE_CREATED'));
             this.loadingState = LoadingState.DEFAULT;
+            this.scaleForm.enable();
             this.router.navigate(['/scales']);
           },
           error: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED_ERROR),
-            );
+            this.store.dispatch(toastNotification('SCALE_CREATED_ERROR'));
             this.loadingState = LoadingState.DEFAULT;
+            this.scaleForm.enable();
           },
         });
       }
@@ -305,15 +401,11 @@ export class ScaleFormComponent implements OnInit {
     this.scalesService.deleteScale(this.scale).subscribe({
       next: () => {
         this.router.navigate(['/scales']);
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.SCALE_DELETED),
-        );
+        this.store.dispatch(toastNotification('SCALE_DELETED'));
         this.loadingState = LoadingState.DEFAULT;
       },
       error: () => {
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.SCALE_DELETED_ERROR),
-        );
+        this.store.dispatch(toastNotification('SCALE_DELETED_ERROR'));
         this.loadingState = LoadingState.DEFAULT;
       },
     });

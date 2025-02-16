@@ -36,7 +36,6 @@ import { ChipModule } from 'primeng/chip';
 import { MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -210,9 +209,7 @@ export class UserListComponent implements OnInit {
 
   resendUserCreatedMail(user: User) {
     this.usersService.resendUserCreateMail(user).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.CREATE_USER_MAIL_SENT),
-      );
+      this.store.dispatch(toastNotification('CREATE_USER_MAIL_SENT'));
     });
   }
 
@@ -241,18 +238,14 @@ export class UserListComponent implements OnInit {
 
   deleteUser(user: User) {
     this.usersService.deleteUser(user).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.USER_DELETED),
-      );
+      this.store.dispatch(toastNotification('USER_DELETED'));
       this.refreshData();
     });
   }
 
   promoteUser(user: User, promotionTarget: UserPromotionTargets) {
     this.usersService.promoteUser(user.id, promotionTarget).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.USER_PROMOTED),
-      );
+      this.store.dispatch(toastNotification('USER_PROMOTED'));
       this.refreshData();
     });
   }

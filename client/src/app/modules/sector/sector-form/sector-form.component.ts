@@ -15,7 +15,6 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
@@ -226,9 +225,7 @@ export class SectorFormComponent implements OnInit {
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(sector).subscribe((sector) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.SECTOR_UPDATED),
-          );
+          this.store.dispatch(toastNotification('SECTOR_UPDATED'));
           this.router.navigate(['/topo', this.cragSlug, sector.slug]);
           this.loadingState = LoadingState.DEFAULT;
         });
@@ -236,9 +233,7 @@ export class SectorFormComponent implements OnInit {
         this.sectorsService
           .createSector(sector, this.cragSlug)
           .subscribe(() => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SECTOR_CREATED),
-            );
+            this.store.dispatch(toastNotification('SECTOR_CREATED'));
             this.router.navigate(['/topo', this.cragSlug, 'sectors']);
             this.loadingState = LoadingState.DEFAULT;
           });
@@ -279,9 +274,7 @@ export class SectorFormComponent implements OnInit {
    */
   public deleteSector() {
     this.sectorsService.deleteSector(this.sector).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.SECTOR_DELETED),
-      );
+      this.store.dispatch(toastNotification('SECTOR_DELETED'));
       this.router.navigate(['/topo', this.cragSlug, 'sectors']);
       this.loadingState = LoadingState.DEFAULT;
     });

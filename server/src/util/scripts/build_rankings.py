@@ -75,7 +75,12 @@ def build_rankings():
         page = 1
         has_next_page = True
         while has_next_page:
-            query = select(Ascent).join(Line).filter(Ascent.created_by_id == user.id, Line.archived == False)
+            query = (
+                select(Ascent)
+                .join(Line)
+                .filter(Ascent.created_by_id == user.id, Line.archived.is_(False))
+                .distinct(Line.id)
+            )
             paginated_ascents = db.paginate(query, page=page, per_page=50)
             has_next_page = paginated_ascents.has_next
             if paginated_ascents.has_next:

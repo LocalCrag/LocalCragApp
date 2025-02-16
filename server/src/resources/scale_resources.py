@@ -37,9 +37,12 @@ class CreateScale(MethodView):
     def post(self):
         scale_data = parser.parse(scale_args, request)
 
+        # All values used in the grade brackets must be in the grades
         all_grades = set(g["value"] for g in scale_data["grades"])
-        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]):
-            raise BadRequest(ResponseMessage.INVALID_SCALES_GRADE_BRACKETS)
+        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_STACKED_CHART_BRACKETS)
+        if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["barChartBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_BAR_CHART_BRACKETS)
 
         scale = Scale()
         scale.name = scale_data["name"]
@@ -74,9 +77,12 @@ class UpdateScale(MethodView):
             if line.grade_value not in values:
                 raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
+        # All values used in the grade brackets must be in the grades
         all_grades = set(g["value"] for g in scale_data["grades"])
-        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]):
-            raise BadRequest(ResponseMessage.INVALID_SCALES_GRADE_BRACKETS)
+        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_STACKED_CHART_BRACKETS)
+        if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["barChartBrackets"]):
+            raise BadRequest(ResponseMessage.INVALID_BAR_CHART_BRACKETS)
 
         scale.name = scale_data["name"]
         scale.type = scale_data["type"]

@@ -20,7 +20,7 @@ export class NotificationsEffects {
         ofType(toastNotification),
         tap((action) => {
           this.notificationsService.toast(
-            action.identifier,
+            action.notificationKey,
             action.titleParams,
             action.messageParams,
           );

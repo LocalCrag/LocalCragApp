@@ -5,6 +5,13 @@ export interface Grade {
   value: number;
 }
 
+export type StackedChartBrackets = number[];
+export type BarChartBracket = {
+  name: string;
+  value: number;
+};
+export type BarChartBrackets = BarChartBracket[];
+
 export type GradeDistribution = Record<
   LineType,
   Record<string, Record<number, number>>
@@ -18,7 +25,10 @@ export class Scale {
   lineType: LineType;
   name: string;
   grades?: Grade[];
-  gradeBrackets: number[];
+  gradeBrackets: {
+    stackedChartBrackets: StackedChartBrackets;
+    barChartBrackets: BarChartBrackets;
+  };
 
   public static deserialize(payload: any): Scale {
     const scale = new Scale();

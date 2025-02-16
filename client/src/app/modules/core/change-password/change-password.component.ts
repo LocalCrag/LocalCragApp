@@ -10,7 +10,6 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { AuthCrudService } from '../../../services/crud/auth-crud.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { passwordsValidator } from '../../../utility/validators/passwords.validator';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Router } from '@angular/router';
@@ -73,9 +72,7 @@ export class ChangePasswordComponent implements OnInit {
         .subscribe(
           () => {
             this.loading = false;
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.CHANGE_PASSWORD_SUCCESS),
-            );
+            this.store.dispatch(toastNotification('CHANGE_PASSWORD_SUCCESS'));
             this.router.navigate(['']);
           },
           () => {

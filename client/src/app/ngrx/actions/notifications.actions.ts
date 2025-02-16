@@ -1,15 +1,15 @@
 import { createAction } from '@ngrx/store';
-import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
 import { HashMap } from '@jsverse/transloco';
+import { NotificationKey } from '../../utility/notifications';
 
 export const toastNotification = createAction(
   '[Notifications] Toast Notification',
   (
-    identifier: NotificationIdentifier,
+    notificationKey: NotificationKey,
     titleParams: HashMap = {},
     messageParams: HashMap = {},
   ) => ({
-    identifier,
+    notificationKey,
     titleParams,
     messageParams,
   }),

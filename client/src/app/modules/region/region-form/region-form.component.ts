@@ -21,7 +21,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
 import { CardModule } from 'primeng/card';
@@ -138,9 +137,7 @@ export class RegionFormComponent implements OnInit {
       region.description = this.regionForm.get('description').value;
       region.rules = this.regionForm.get('rules').value;
       this.regionsService.updateRegion(region).subscribe(() => {
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.REGION_UPDATED),
-        );
+        this.store.dispatch(toastNotification('REGION_UPDATED'));
         this.router.navigate(['/topo']);
         this.loadingState = LoadingState.DEFAULT;
       });

@@ -14,7 +14,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { ButtonModule } from 'primeng/button';
@@ -183,11 +182,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         .updateInstanceSettings(instanceSettings)
         .subscribe({
           next: (instanceSettings) => {
-            this.store.dispatch(
-              toastNotification(
-                NotificationIdentifier.INSTANCE_SETTINGS_UPDATED,
-              ),
-            );
+            this.store.dispatch(toastNotification('INSTANCE_SETTINGS_UPDATED'));
             this.loadingState = LoadingState.DEFAULT;
             this.store.dispatch(
               updateInstanceSettings({ settings: instanceSettings }),
@@ -198,13 +193,11 @@ export class InstanceSettingsFormComponent implements OnInit {
             if (e.error?.message == 'MIGRATION_IMPOSSIBLE') {
               this.store.dispatch(
                 toastNotification(
-                  NotificationIdentifier.INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE,
+                  'INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE',
                 ),
               );
             } else {
-              this.store.dispatch(
-                toastNotification(NotificationIdentifier.UNKNOWN_ERROR),
-              );
+              this.store.dispatch(toastNotification('UNKNOWN_ERROR'));
             }
           },
         });

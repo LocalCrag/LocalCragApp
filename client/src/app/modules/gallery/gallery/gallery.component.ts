@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { ObjectType } from '../../../models/tag';
@@ -17,7 +22,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
@@ -45,6 +49,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
   providers: [DialogService, ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
 export class GalleryComponent implements OnInit {
@@ -66,6 +71,7 @@ export class GalleryComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private route: ActivatedRoute,
     private translocoService: TranslocoService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -137,6 +143,7 @@ export class GalleryComponent implements OnInit {
             this.hasNextPage = images.hasNext;
             this.loadingFirstPage = LoadingState.DEFAULT;
             this.loadingAdditionalPage = LoadingState.DEFAULT;
+            this.cdr.detectChanges();
           }),
         )
         .subscribe();
@@ -159,6 +166,7 @@ export class GalleryComponent implements OnInit {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
             this.images.unshift(galleryImage);
+            this.cdr.detectChanges();
           }
         }
       });
@@ -189,9 +197,8 @@ export class GalleryComponent implements OnInit {
   deleteImage(image: GalleryImage) {
     this.galleryService.deleteGalleryImage(image.id).subscribe(() => {
       this.images = this.images.filter((i) => i.id !== image.id);
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.GALLERY_IMAGE_DELETED),
-      );
+      this.store.dispatch(toastNotification('GALLERY_IMAGE_DELETED'));
+      this.cdr.detectChanges();
     });
   }
 
@@ -210,6 +217,7 @@ export class GalleryComponent implements OnInit {
           this.images = this.images.map((i) =>
             i.id === galleryImage.id ? galleryImage : i,
           );
+          this.cdr.detectChanges();
         }
       });
   }

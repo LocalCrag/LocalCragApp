@@ -6,78 +6,45 @@
   ></p-skeleton>
 
   <ng-container *ngIf="!gradeDistributionEmpty">
-    <div
-      class="grade-distribution-stack hidden md:flex mb-3"
-      *ngFor="let data of stackChartData"
-    >
-      <div class="level-total">
-        {{ data.total - data.projects }}
-        {{ stackChartData.length > 1 ? data.gradeScale : "" }}
-        {{ t("lines") }}:
-      </div>
-      <ng-container *ngFor="let count of data.brackets; index as i">
-        <div
-          class="level-{{ i === data.brackets.length - 1 ? 'max' : i + 1 }}"
-          [style.width]="
-            ((1 + data.brackets[i]) / (data.total + data.brackets.length)) *
-              (100 - 8 * (data.brackets.length - 1)) +
-            '%'
-          "
-        >
-          <p-badge
-            [value]="count | toString"
-            styleClass="neutral-badge"
-          ></p-badge>
-          {{ data.bracketLabels[i] }}
-        </div>
-      </ng-container>
-      <div
-        class="level-projects"
-        [style.width]="
-          ((data.projects + 1) / (data.total + data.brackets.length)) *
-            (100 - 8 * (data.brackets.length - 1)) +
-          '%'
-        "
-      >
-        <p-badge
-          [value]="data.projects | toString"
-          styleClass="neutral-badge"
-        ></p-badge>
-        {{ t("leveledGradeDistributionProjects") }}
-      </div>
-    </div>
-
-    <div
-      class="grade-distribution-tags flex align-items-center gap-2 md:hidden mb-5"
-      *ngFor="let data of stackChartData"
-    >
-      <p-tag styleClass="level-total">
-        <p-badge
-          [value]="data.total - data.projects"
-          styleClass="neutral-badge"
-        ></p-badge>
-        {{ stackChartData.length > 1 ? data.gradeScale : "" }}
-        {{ t("lines") }}:
-      </p-tag>
-      <ng-container *ngFor="let count of data.brackets; index as i">
-        <p-tag
-          *ngIf="data.brackets[i] > 0"
-          styleClass="level-{{ i === data.brackets.length - 1 ? 'max' : i }}"
-        >
-          <p-badge
-            [value]="data.brackets[i] | toString"
-            styleClass="neutral-badge"
-          ></p-badge>
-          {{ data.bracketLabels[i] }}
-        </p-tag>
-      </ng-container>
-      <p-tag styleClass="level-projects">
-        <p-badge
-          [value]="data.projects | toString"
-          styleClass="neutral-badge"
-        ></p-badge>
-        {{ t("leveledGradeDistributionProjects") }}
-      </p-tag>
+    <div class="mb-3" *ngFor="let data of stackChartData">
+      <p-meterGroup [value]="data.meterValues" [min]="0" [max]="data.total">
+        <ng-template pTemplate="label">
+          <ol
+            class="p-metergroup-labels p-component p-metergroup-labels-horizontal"
+          >
+            <li
+              class="p-metergroup-label font-bold"
+              *ngIf="data.total - data.projects > 0"
+            >
+              {{ data.total - data.projects }}
+              {{ stackChartData.length > 1 ? data.gradeScale : "" }}
+              {{ t("lines") }}:
+            </li>
+            <li
+              class="p-metergroup-label"
+              *ngFor="let meterValue of data.meterValues"
+            >
+              <span
+                class="p-metergroup-label-marker ng-star-inserted"
+                [style.background-color]="meterValue.color"
+              ></span>
+              <span class="p-metergroup-label-text"
+                >{{ meterValue.value }} {{ meterValue.label }}</span
+              >
+            </li>
+            <li class="p-metergroup-label" *ngIf="data.projects > 0">
+              <span
+                class="p-metergroup-label-marker ng-star-inserted"
+                [style.background-color]="'#e5e7eb'"
+              ></span>
+              <span class="p-metergroup-label-text"
+                >{{ data.projects }}
+                {{ t("leveledGradeDistributionProjects") }}</span
+              >
+            </li>
+          </ol>
+        </ng-template>
+      </p-meterGroup>
     </div>
   </ng-container>
 </ng-container>

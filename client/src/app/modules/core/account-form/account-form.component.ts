@@ -19,7 +19,6 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { User } from '../../../models/user';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { AvatarUploadComponent } from '../../shared/forms/controls/avatar-upload/avatar-upload.component';
@@ -94,9 +93,7 @@ export class AccountFormComponent implements OnInit {
       user.avatar = this.accountForm.get('avatar').value;
       this.usersService.updateAccount(user).subscribe((updatedUser) => {
         this.store.dispatch(updateAccountSettings({ user: updatedUser }));
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.ACCOUNT_SETTINGS_UPDATED),
-        );
+        this.store.dispatch(toastNotification('ACCOUNT_SETTINGS_UPDATED'));
         this.loadingState = LoadingState.DEFAULT;
         this.emailChangedPostSave = emailChanged;
       });
