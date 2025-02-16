@@ -10,7 +10,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TodosService } from '../../../services/crud/todos.service';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-todo-priority-button',
@@ -37,9 +36,7 @@ export class TodoPriorityButtonComponent implements OnInit {
       .updateTodoPriority(this.todo, priority)
       .subscribe((todo) => {
         this.todo.priority = todo.priority;
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.TODO_PRIORITY_UPDATED),
-        );
+        this.store.dispatch(toastNotification('TODO_PRIORITY_UPDATED'));
       });
   }
 

@@ -16,7 +16,6 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
@@ -227,9 +226,7 @@ export class AreaFormComponent implements OnInit {
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea(area).subscribe((area) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.AREA_UPDATED),
-          );
+          this.store.dispatch(toastNotification('AREA_UPDATED'));
           this.router.navigate([
             '/topo',
             this.cragSlug,
@@ -240,9 +237,7 @@ export class AreaFormComponent implements OnInit {
         });
       } else {
         this.areasService.createArea(area, this.sectorSlug).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.AREA_CREATED),
-          );
+          this.store.dispatch(toastNotification('AREA_CREATED'));
           this.router.navigate([
             '/topo',
             this.cragSlug,
@@ -286,9 +281,7 @@ export class AreaFormComponent implements OnInit {
    */
   public deleteArea() {
     this.areasService.deleteArea(this.area).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.AREA_DELETED),
-      );
+      this.store.dispatch(toastNotification('AREA_DELETED'));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
       this.loadingState = LoadingState.DEFAULT;
     });

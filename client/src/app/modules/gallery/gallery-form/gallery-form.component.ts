@@ -24,7 +24,6 @@ import { SearchService } from '../../../services/crud/search.service';
 import { ObjectType, Tag } from '../../../models/tag';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { EMPTY, Observable } from 'rxjs';
 import { LinesService } from '../../../services/crud/lines.service';
@@ -172,9 +171,7 @@ export class GalleryFormComponent implements OnInit {
           .subscribe((galleryImage) => {
             this.loadingState = LoadingState.DEFAULT;
             this.ref.close(galleryImage);
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.GALLERY_IMAGE_UPDATED),
-            );
+            this.store.dispatch(toastNotification('GALLERY_IMAGE_UPDATED'));
           });
       } else {
         this.galleryService
@@ -182,9 +179,7 @@ export class GalleryFormComponent implements OnInit {
           .subscribe((galleryImage) => {
             this.loadingState = LoadingState.DEFAULT;
             this.ref.close(galleryImage);
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.GALLERY_IMAGE_CREATED),
-            );
+            this.store.dispatch(toastNotification('GALLERY_IMAGE_CREATED'));
           });
       }
     } else {

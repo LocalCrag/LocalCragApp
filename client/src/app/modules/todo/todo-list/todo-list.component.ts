@@ -38,7 +38,6 @@ import { TickButtonComponent } from '../../ascent/tick-button/tick-button.compon
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { Crag } from '../../../models/crag';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { SharedModule } from '../../shared/shared.module';
@@ -263,9 +262,7 @@ export class TodoListComponent implements OnInit {
 
   deleteTodo(todo: Todo) {
     this.todosService.deleteTodo(todo).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.TODO_DELETED),
-      );
+      this.store.dispatch(toastNotification('TODO_DELETED'));
       this.todos = this.todos.filter((t) => t.id !== todo.id);
       this.cdr.detectChanges();
     });

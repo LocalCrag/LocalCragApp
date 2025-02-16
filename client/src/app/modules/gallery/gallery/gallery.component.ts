@@ -22,7 +22,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
@@ -198,9 +197,7 @@ export class GalleryComponent implements OnInit {
   deleteImage(image: GalleryImage) {
     this.galleryService.deleteGalleryImage(image.id).subscribe(() => {
       this.images = this.images.filter((i) => i.id !== image.id);
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.GALLERY_IMAGE_DELETED),
-      );
+      this.store.dispatch(toastNotification('GALLERY_IMAGE_DELETED'));
       this.cdr.detectChanges();
     });
   }

@@ -26,7 +26,7 @@ type StackChartData = {
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
 
-  public stackChartData = null;
+  public stackChartData: any = null;
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
   value = [

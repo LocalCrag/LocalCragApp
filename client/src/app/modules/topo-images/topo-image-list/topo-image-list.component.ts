@@ -11,7 +11,6 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { TopoImage } from '../../../models/topo-image';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { LinePath } from '../../../models/line-path';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -248,9 +247,7 @@ export class TopoImageListComponent implements OnInit {
     this.topoImagesService
       .deleteTopoImage(this.areaSlug, topoImage)
       .subscribe(() => {
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.TOPO_IMAGE_DELETED),
-        );
+        this.store.dispatch(toastNotification('TOPO_IMAGE_DELETED'));
         this.topoImages.splice(this.topoImages.indexOf(topoImage), 1);
         this.topoImages = [...this.topoImages];
         topoImage.loadingState = LoadingState.DEFAULT;
@@ -299,9 +296,7 @@ export class TopoImageListComponent implements OnInit {
   public deleteLinePath(linePath: LinePath, topoImage: TopoImage) {
     linePath.loadingState = LoadingState.LOADING;
     this.linePathsService.deleteLinePath(linePath).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.LINE_PATH_DELETED),
-      );
+      this.store.dispatch(toastNotification('LINE_PATH_DELETED'));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1);
       linePath.konvaLine.destroy();
       linePath.konvaRect.destroy();

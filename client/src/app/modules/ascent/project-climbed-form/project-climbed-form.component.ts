@@ -18,7 +18,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Store } from '@ngrx/store';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
@@ -75,9 +74,7 @@ export class ProjectClimbedFormComponent implements OnInit {
         .sendProjectClimbedMessage(message, this.line.id)
         .subscribe(() => {
           this.store.dispatch(
-            toastNotification(
-              NotificationIdentifier.PROJECT_CLIMBED_MESSAGE_SENT,
-            ),
+            toastNotification('PROJECT_CLIMBED_MESSAGE_SENT'),
           );
           this.loadingState = LoadingState.DEFAULT;
           this.ref.close();

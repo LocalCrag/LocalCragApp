@@ -18,7 +18,6 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { User } from '../../../models/user';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { UsersService } from '../../../services/crud/users.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -86,9 +85,7 @@ export class RegisterComponent implements OnInit {
         this.registrationForm.get('emails.email').value as string
       ).toLowerCase();
       this.usersService.registerUser(user).subscribe(() => {
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.USER_REGISTERED),
-        );
+        this.store.dispatch(toastNotification('USER_REGISTERED'));
         this.router.navigate(['/register-check-mailbox']);
         this.loadingState = LoadingState.DEFAULT;
       });

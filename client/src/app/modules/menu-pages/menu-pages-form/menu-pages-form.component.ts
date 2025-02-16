@@ -19,7 +19,6 @@ import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { ButtonModule } from 'primeng/button';
@@ -158,18 +157,14 @@ export class MenuPagesFormComponent implements OnInit {
       if (this.menuPage) {
         menuPage.slug = this.menuPage.slug;
         this.menuPagesService.updateMenuPage(menuPage).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.MENU_PAGE_UPDATED),
-          );
+          this.store.dispatch(toastNotification('MENU_PAGE_UPDATED'));
           this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
         });
       } else {
         this.menuPagesService.createMenuPage(menuPage).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.MENU_PAGE_CREATED),
-          );
+          this.store.dispatch(toastNotification('MENU_PAGE_CREATED'));
           this.router.navigate(['/pages']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
@@ -211,9 +206,7 @@ export class MenuPagesFormComponent implements OnInit {
    */
   public deleteMenuPage() {
     this.menuPagesService.deleteMenuPage(this.menuPage).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.MENU_PAGE_DELETED),
-      );
+      this.store.dispatch(toastNotification('MENU_PAGE_DELETED'));
       this.store.dispatch(reloadMenus());
       this.router.navigate(['/pages']);
       this.loadingState = LoadingState.DEFAULT;

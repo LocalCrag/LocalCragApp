@@ -4,7 +4,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { TodosService } from '../../../services/crud/todos.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
 import { SharedModule } from 'primeng/api';
@@ -37,14 +36,10 @@ export class TodoButtonComponent {
       this.todosService.createTodo(this.line).subscribe(
         () => {
           this.store.dispatch(todoAdded({ todoLineId: this.line.id }));
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.TODO_ADDED),
-          );
+          this.store.dispatch(toastNotification('TODO_ADDED'));
         },
         () => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.TODO_ADD_ERROR),
-          );
+          this.store.dispatch(toastNotification('TODO_ADD_ERROR'));
         },
       );
     } else {

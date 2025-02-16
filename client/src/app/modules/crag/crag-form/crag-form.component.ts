@@ -13,7 +13,6 @@ import { Crag } from '../../../models/crag';
 import { environment } from '../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -211,17 +210,13 @@ export class CragFormComponent implements OnInit {
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe((crag) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.CRAG_UPDATED),
-          );
+          this.store.dispatch(toastNotification('CRAG_UPDATED'));
           this.router.navigate(['/topo', crag.slug]);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
         this.cragsService.createCrag(crag).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.CRAG_CREATED),
-          );
+          this.store.dispatch(toastNotification('CRAG_CREATED'));
           this.router.navigate(['/topo']);
           this.loadingState = LoadingState.DEFAULT;
         });
@@ -260,9 +255,7 @@ export class CragFormComponent implements OnInit {
    */
   public deleteCrag() {
     this.cragsService.deleteCrag(this.crag).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.CRAG_DELETED),
-      );
+      this.store.dispatch(toastNotification('CRAG_DELETED'));
       this.router.navigate(['/topo']);
       this.loadingState = LoadingState.DEFAULT;
     });

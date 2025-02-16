@@ -5,7 +5,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { LinePath } from '../../../models/line-path';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { LinesService } from '../../../services/crud/lines.service';
@@ -128,9 +127,7 @@ export class LinePathFormComponent implements OnInit {
       this.linePathsService
         .addLinePath(linePath, this.topoImageId)
         .subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.LINE_PATH_ADDED),
-          );
+          this.store.dispatch(toastNotification('LINE_PATH_ADDED'));
           // this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
           this.loadingState = LoadingState.DEFAULT;
           this.refreshData();

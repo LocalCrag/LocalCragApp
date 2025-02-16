@@ -23,7 +23,6 @@ import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemType } from '../../../enums/menu-item-type';
@@ -266,18 +265,14 @@ export class MenuItemsFormComponent implements OnInit {
       if (this.menuItem) {
         menuItem.id = this.menuItem.id;
         this.menuItemsService.updateMenuItem(menuItem).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.MENU_ITEM_UPDATED),
-          );
+          this.store.dispatch(toastNotification('MENU_ITEM_UPDATED'));
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
         });
       } else {
         this.menuItemsService.createMenuItem(menuItem).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.MENU_ITEM_CREATED),
-          );
+          this.store.dispatch(toastNotification('MENU_ITEM_CREATED'));
           this.router.navigate(['/menu-items']);
           this.loadingState = LoadingState.DEFAULT;
           this.store.dispatch(reloadMenus());
@@ -319,9 +314,7 @@ export class MenuItemsFormComponent implements OnInit {
    */
   public deleteMenuItem() {
     this.menuItemsService.deleteMenuItem(this.menuItem).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.MENU_ITEM_DELETED),
-      );
+      this.store.dispatch(toastNotification('MENU_ITEM_DELETED'));
       this.store.dispatch(reloadMenus());
       this.router.navigate(['/menu-items']);
       this.loadingState = LoadingState.DEFAULT;

@@ -9,7 +9,6 @@ import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -468,9 +467,7 @@ export class LineFormComponent implements OnInit {
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.LINE_UPDATED),
-          );
+          this.store.dispatch(toastNotification('LINE_UPDATED'));
           this.router.navigate([
             '/topo',
             this.cragSlug,
@@ -482,9 +479,7 @@ export class LineFormComponent implements OnInit {
         });
       } else {
         this.linesService.createLine(line, this.areaSlug).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.LINE_CREATED),
-          );
+          this.store.dispatch(toastNotification('LINE_CREATED'));
           this.router.navigate([
             '/topo',
             this.cragSlug,
@@ -529,9 +524,7 @@ export class LineFormComponent implements OnInit {
    */
   public deleteLine() {
     this.linesService.deleteLine(this.line).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.LINE_DELETED),
-      );
+      this.store.dispatch(toastNotification('LINE_DELETED'));
       this.router.navigate([
         '/topo',
         this.cragSlug,

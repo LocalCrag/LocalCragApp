@@ -5,7 +5,6 @@ import { SharedModule } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Line } from '../../../models/line';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
@@ -57,19 +56,13 @@ export class ArchiveButtonComponent {
     const resultHandler = {
       next: (_) => {
         this.store.dispatch(
-          toastNotification(
-            this.getCurrentState()
-              ? NotificationIdentifier.ARCHIVED
-              : NotificationIdentifier.UNARCHIVED,
-          ),
+          toastNotification(this.getCurrentState() ? 'ARCHIVED' : 'UNARCHIVED'),
         );
       },
       error: () => {
         this.store.dispatch(
           toastNotification(
-            this.getCurrentState()
-              ? NotificationIdentifier.ARCHIVED_ERROR
-              : NotificationIdentifier.UNARCHIVED_ERROR,
+            this.getCurrentState() ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
           ),
         );
       },

@@ -36,7 +36,6 @@ import { ConfirmationService } from 'primeng/api';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Store } from '@ngrx/store';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
@@ -342,16 +341,12 @@ export class ScaleFormComponent implements OnInit {
         };
         this.scalesService.updateScale(this.scale).subscribe({
           next: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED),
-            );
+            this.store.dispatch(toastNotification('SCALE_UPDATED'));
             this.loadingState = LoadingState.DEFAULT;
             this.scaleForm.enable();
           },
           error: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_UPDATED_ERROR),
-            );
+            this.store.dispatch(toastNotification('SCALE_UPDATED_ERROR'));
             this.loadingState = LoadingState.DEFAULT;
             this.scaleForm.enable();
           },
@@ -366,17 +361,13 @@ export class ScaleFormComponent implements OnInit {
         );
         this.scalesService.createScale(scale).subscribe({
           next: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED),
-            );
+            this.store.dispatch(toastNotification('SCALE_CREATED'));
             this.loadingState = LoadingState.DEFAULT;
             this.scaleForm.enable();
             this.router.navigate(['/scales']);
           },
           error: () => {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.SCALE_CREATED_ERROR),
-            );
+            this.store.dispatch(toastNotification('SCALE_CREATED_ERROR'));
             this.loadingState = LoadingState.DEFAULT;
             this.scaleForm.enable();
           },
@@ -410,15 +401,11 @@ export class ScaleFormComponent implements OnInit {
     this.scalesService.deleteScale(this.scale).subscribe({
       next: () => {
         this.router.navigate(['/scales']);
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.SCALE_DELETED),
-        );
+        this.store.dispatch(toastNotification('SCALE_DELETED'));
         this.loadingState = LoadingState.DEFAULT;
       },
       error: () => {
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.SCALE_DELETED_ERROR),
-        );
+        this.store.dispatch(toastNotification('SCALE_DELETED_ERROR'));
         this.loadingState = LoadingState.DEFAULT;
       },
     });

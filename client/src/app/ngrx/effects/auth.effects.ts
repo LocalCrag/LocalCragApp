@@ -36,7 +36,6 @@ import { bigIntTimer } from '../../utility/observables/bigint-timer';
 import { showRefreshTokenAboutToExpireAlert } from '../actions/app-level-alerts.actions';
 import { unixToDate } from '../../utility/operators/unix-to-date';
 import { toastNotification } from '../actions/notifications.actions';
-import { NotificationIdentifier } from '../../utility/notifications/notification-identifier.enum';
 import { LoginResponse } from '../../models/login-response';
 import { differenceInMilliseconds, isAfter, subMilliseconds } from 'date-fns';
 
@@ -67,9 +66,7 @@ export class AuthEffects {
           map(() => AuthActions.forgotPasswordSuccess()),
           catchError((err) => {
             if (err === 'USER_NOT_ACTIVATED') {
-              this.store.dispatch(
-                toastNotification(NotificationIdentifier.USER_NOT_ACTIVATED),
-              );
+              this.store.dispatch(toastNotification('USER_NOT_ACTIVATED'));
             }
             return of(AuthActions.forgotPasswordError());
           }),
@@ -87,9 +84,7 @@ export class AuthEffects {
         ofType(AuthActions.forgotPasswordSuccess),
         tap(() => {
           this.router.navigate(['/', 'forgot-password-check-mailbox']);
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.FORGOT_PASSWORD_SUCCESS),
-          );
+          this.store.dispatch(toastNotification('FORGOT_PASSWORD_SUCCESS'));
         }),
       ),
     { dispatch: false },
@@ -117,9 +112,7 @@ export class AuthEffects {
             }),
             catchError((err) => {
               if (err === 'USER_NOT_ACTIVATED') {
-                this.store.dispatch(
-                  toastNotification(NotificationIdentifier.USER_NOT_ACTIVATED),
-                );
+                this.store.dispatch(toastNotification('USER_NOT_ACTIVATED'));
               }
               return of(AuthActions.resetPasswordError());
             }),
@@ -137,9 +130,7 @@ export class AuthEffects {
         ofType(AuthActions.resetPasswordSuccess),
         tap(() => {
           this.router.navigate(['']);
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.RESET_PASSWORD_SUCCESS),
-          );
+          this.store.dispatch(toastNotification('RESET_PASSWORD_SUCCESS'));
         }),
       ),
     { dispatch: false },
@@ -168,9 +159,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.loginError),
         map(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.LOGIN_ERROR),
-          );
+          this.store.dispatch(toastNotification('LOGIN_ERROR'));
         }),
       ),
     { dispatch: false },
@@ -185,9 +174,7 @@ export class AuthEffects {
       ofType(AuthActions.loginSuccess),
       map((action) => {
         this.router.navigate(['']);
-        this.store.dispatch(
-          toastNotification(NotificationIdentifier.LOGIN_SUCCESS),
-        );
+        this.store.dispatch(toastNotification('LOGIN_SUCCESS'));
         return newAuthCredentials({
           loginResponse: action.loginResponse,
           fromAutoLogin: false,
@@ -327,9 +314,7 @@ export class AuthEffects {
             if (err.status === 0) {
               // We just notify here and don't force logout the user as there might be some unsaved work and the server might recover.
               this.store.dispatch(
-                toastNotification(
-                  NotificationIdentifier.UNKNOWN_AUTHENTICATION_ERROR,
-                ),
+                toastNotification('UNKNOWN_AUTHENTICATION_ERROR'),
               );
             }
             return of(AuthActions.refreshAccessTokenFailed());
@@ -380,13 +365,9 @@ export class AuthEffects {
       map((action) => {
         if (!action.silent) {
           if (!action.isAutoLogout) {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.LOGOUT_SUCCESS),
-            );
+            this.store.dispatch(toastNotification('LOGOUT_SUCCESS'));
           } else {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.AUTO_LOGOUT_SUCCESS),
-            );
+            this.store.dispatch(toastNotification('AUTO_LOGOUT_SUCCESS'));
           }
         }
         return AuthActions.cleanupCredentials({
@@ -485,13 +466,9 @@ export class AuthEffects {
         if (!action.silent) {
           // We notify about a successful logout, although it wasn't successful as we throw away the token locally.
           if (!action.isAutoLogout) {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.LOGOUT_SUCCESS),
-            );
+            this.store.dispatch(toastNotification('LOGOUT_SUCCESS'));
           } else {
-            this.store.dispatch(
-              toastNotification(NotificationIdentifier.AUTO_LOGOUT_SUCCESS),
-            );
+            this.store.dispatch(toastNotification('AUTO_LOGOUT_SUCCESS'));
           }
         }
         return AuthActions.cleanupCredentials({

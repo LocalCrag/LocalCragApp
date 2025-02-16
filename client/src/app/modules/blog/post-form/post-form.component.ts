@@ -17,7 +17,6 @@ import { of } from 'rxjs';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
 import { ButtonModule } from 'primeng/button';
@@ -158,17 +157,13 @@ export class PostFormComponent implements OnInit {
       if (this.post) {
         post.slug = this.post.slug;
         this.postsService.updatePost(post).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.POST_UPDATED),
-          );
+          this.store.dispatch(toastNotification('POST_UPDATED'));
           this.router.navigate(['/news']);
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
         this.postsService.createPost(post).subscribe(() => {
-          this.store.dispatch(
-            toastNotification(NotificationIdentifier.POST_CREATED),
-          );
+          this.store.dispatch(toastNotification('POST_CREATED'));
           this.router.navigate(['/news']);
           this.loadingState = LoadingState.DEFAULT;
         });
@@ -207,9 +202,7 @@ export class PostFormComponent implements OnInit {
    */
   public deletePost() {
     this.postsService.deletePost(this.post).subscribe(() => {
-      this.store.dispatch(
-        toastNotification(NotificationIdentifier.POST_DELETED),
-      );
+      this.store.dispatch(toastNotification('POST_DELETED'));
       this.router.navigate(['/news']);
       this.loadingState = LoadingState.DEFAULT;
     });

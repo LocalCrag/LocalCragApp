@@ -16,7 +16,6 @@ import { marker as translocoMarker } from '@jsverse/transloco-keys-manager/marke
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { NotificationIdentifier } from '../../../utility/notifications/notification-identifier.enum';
 
 @Component({
   selector: 'lc-map-marker-form-array',
@@ -75,17 +74,13 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
   addMarker(marker: MapMarker) {
     this.markers.push(marker);
     this.onChange();
-    this.store.dispatch(
-      toastNotification(NotificationIdentifier.MAP_MARKER_ADDED),
-    );
+    this.store.dispatch(toastNotification('MAP_MARKER_ADDED'));
   }
 
   removeMarker(marker: MapMarker) {
     this.markers.splice(this.markers.indexOf(marker), 1);
     this.onChange();
-    this.store.dispatch(
-      toastNotification(NotificationIdentifier.MAP_MARKER_REMOVED),
-    );
+    this.store.dispatch(toastNotification('MAP_MARKER_REMOVED'));
   }
 
   setDisabledState(isDisabled: boolean) {
