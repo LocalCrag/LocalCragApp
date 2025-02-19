@@ -1,0 +1,14 @@
+name: Auto-approve PR
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  auto-approve:
+    if: github.actor == 'dorthrithil'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-approve
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
