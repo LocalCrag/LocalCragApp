@@ -1,12 +1,14 @@
 name: Auto-approve PR
 on:
   pull_request_target:
-    types: [opened, synchronize]
+    types: [ opened, synchronize ]
 
 jobs:
   auto-approve:
     if: github.actor == 'dorthrithil'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Auto-approve
         uses: hmarr/auto-approve-action@v3
