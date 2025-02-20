@@ -15,4 +15,4 @@ jobs:
       - name: Auto-approve
         uses: hmarr/auto-approve-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.LC_BOT_PAT }}
