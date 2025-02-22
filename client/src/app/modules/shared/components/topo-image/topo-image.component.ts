@@ -206,29 +206,30 @@ export class TopoImageComponent implements OnInit {
     });
     background.fillPatternImage(this.backgroundImage);
     if (this.editorMode) {
-      background.on('click', (event) => {
-        event.cancelBubble = true;
-        this.imageClick.emit([
-          event.evt.offsetX * (1 / this.scale),
-          event.evt.offsetY * (1 / this.scale),
-        ]);
-      });
-      background.on('touchstart', (event) => {
-        event.cancelBubble = true;
-        const rect = (event.evt.target as HTMLElement).getBoundingClientRect();
-        const offsetX = event.evt.targetTouches[0].clientX - rect.left;
-        const offsetY = event.evt.targetTouches[0].clientY - rect.top;
-        this.imageClick.emit([
-          offsetX * (1 / this.scale),
-          offsetY * (1 / this.scale),
-        ]);
-      });
-      background.on('mouseenter', () => {
-        this.stage.container().style.cursor = 'pointer';
-      });
-      background.on('mouseleave', () => {
-        this.stage.container().style.cursor = 'default';
-      });
+      for (const layer of [background, this.lineLayer]) {
+        layer.on('click', (event) => {
+          event.cancelBubble = true;
+          this.imageClick.emit([
+            event.evt.offsetX * (1 / this.scale),
+            event.evt.offsetY * (1 / this.scale),
+          ]);
+        });
+        layer.on('touchstart', (event) => {
+          event.cancelBubble = true;
+          const rect = (
+            event.evt.target as HTMLElement
+          ).getBoundingClientRect();
+          const offsetX = event.evt.targetTouches[0].clientX - rect.left;
+          const offsetY = event.evt.targetTouches[0].clientY - rect.top;
+          this.imageClick.emit([
+            offsetX * (1 / this.scale),
+            offsetY * (1 / this.scale),
+          ]);
+        });
+        layer.on('mouseenter', () => {
+          this.stage.container().style.cursor = 'pointer';
+        });
+      }
     }
     this.fitStageIntoParentContainer();
     this.lineLayer.add(background);
