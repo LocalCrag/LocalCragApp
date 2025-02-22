@@ -15,7 +15,7 @@ on:
       - ready_for_review
 
 jobs:
-  check_squash_commit:
+  conventional_commit_pr_title:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
