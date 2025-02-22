@@ -14,8 +14,11 @@ jobs:
         with:
           fetch-depth: 0  # This ensures that all tags are fetched
 
-      - name: Fetch main branch
-        run: git fetch origin main
+      - name: Fetch tags
+        run: git fetch origin --tags
+
+      - name: List all tags
+        run: git tag
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
