@@ -3,7 +3,7 @@ name: Release dry-run
 on:
   push:
     branches:
-      - semantic-release
+      - next
 
 jobs:
   release-dry-run:
