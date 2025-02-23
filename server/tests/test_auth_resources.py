@@ -8,7 +8,6 @@ from messages.messages import ResponseMessage
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.file import File
 from models.user import User
-from tests.conftest import admin_token
 
 
 def test_successful_login(client):
@@ -203,7 +202,6 @@ def test_revoked_access_token_behaviour(client, member_token):
 
 
 def test_revoked_refresh_token_behaviour(client, admin_refresh_token):
-    refresh_token = ""
     rv = client.post("/api/logout/refresh", token=admin_refresh_token)
     assert rv.status_code == 200
     res = rv.json
@@ -305,3 +303,12 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
     assert rv.status_code == 201
+
+
+def test_passlib_compatibility():
+    # passlib.hash.pbkdf2_sha256.hash("abc")
+    hash1 = "$pbkdf2-sha256$29000$2HtPiVGKEcKYU2pt7R1jTA$wXMP6Wpr6FdM2Pnb.bMG0nVBmBmaX6WzPm2g0.GVHIU"
+    # passlib.hash.pbkdf2_sha256.hash("⚡🏜️🦥")
+    hash2 = "$pbkdf2-sha256$29000$bo3xvtc6pzTm/F9L6V2LMQ$9voplTQmhlXiJakG38j/e5QMOGZmfA5xbQtE2Xf5XKE"
+    assert User.verify_hash("abc", hash1), "Hashing compatilibity error"
+    assert User.verify_hash("⚡🏜️🦥", hash2), "Unicode hashing compatibility error"
