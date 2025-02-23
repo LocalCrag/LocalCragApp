@@ -1,22 +1,22 @@
 <ng-container *transloco="let t; read: 'menu'">
   <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template pTemplate="start">
-      <img
-        alt="{{ t('logoImageAlt') }}"
-        [src]="(logoImage$ | async).thumbnailM"
-        height="40"
-        class="mr-2 flex cursor-pointer"
-        *ngIf="logoImage$ | async"
-        routerLink="/"
-      />
-      <strong
-        *ngIf="
-          (logoImage$ | async) === null || (logoImage$ | async) === undefined
-        "
-        routerLink="/"
-        class="cursor-pointer white-space-nowrap"
-        >{{ instanceName$ | async }}</strong
-      >
+      <a class="main-link" routerLink="/">
+        <img
+          alt="{{ t('logoImageAlt') }}"
+          [src]="(logoImage$ | async).thumbnailM"
+          height="40"
+          class="mr-2 flex cursor-pointer"
+          *ngIf="logoImage$ | async"
+        />
+        <strong
+          *ngIf="
+            (logoImage$ | async) === null || (logoImage$ | async) === undefined
+          "
+          class="cursor-pointer white-space-nowrap"
+          >{{ instanceName$ | async }}</strong
+        >
+      </a>
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex justify-content-center gap-2">
