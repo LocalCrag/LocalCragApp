@@ -17,7 +17,7 @@ jobs:
 
       - name: Debug Git Tags
         run: |
-          git tag -l
+          git tag -n -list
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,4 +28,4 @@ jobs:
       - name: Dry-run Semantic Release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: git fetch --tags --force && npx semantic-release --dry-run
+        run: git fetch --tags --force && npx semantic-release --dry-run  --debug
