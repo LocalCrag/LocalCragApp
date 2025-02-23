@@ -356,9 +356,17 @@ export class ScaleFormComponent implements OnInit {
         scale.lineType = this.scaleForm.get('lineType').value.value;
         scale.name = this.scaleForm.get('name').value;
         scale.grades = this.gradeControls().value;
-        scale.gradeBrackets = this.stackedChartBracketsControls().value.map(
-          (gb) => gb.value,
-        );
+        scale.gradeBrackets = {
+          stackedChartBrackets: this.stackedChartBracketsControls().value.map(
+            (gb) => gb.value,
+          ),
+          barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
+            return {
+              value: gb.value,
+              name: gb.name,
+            };
+          }),
+        };
         this.scalesService.createScale(scale).subscribe({
           next: () => {
             this.store.dispatch(toastNotification('SCALE_CREATED'));
