@@ -4,9 +4,6 @@
       "name": "main"
     },
     {
-      "name": "semantic-release"
-    },
-    {
       "name": "next",
       "prerelease": true
     }
