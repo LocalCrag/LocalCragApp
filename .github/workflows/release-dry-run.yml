@@ -21,4 +21,4 @@ jobs:
       - name: Dry-run Semantic Release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: git fetch origin --tags && npx semantic-release --dry-run
+        run: npx semantic-release --dry-run
