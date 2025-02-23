@@ -16,9 +16,7 @@ jobs:
 
       - name: Debug Git Tags
         run: |
-          git fetch --tags --unshallow
           git tag -l
-          git log --oneline --decorate
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
