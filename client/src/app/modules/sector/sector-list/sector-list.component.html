@@ -50,7 +50,7 @@
     </ng-template>
     <ng-template let-sectors pTemplate="list">
       <div class="grid grid-nogutter">
-        <div
+        <a
           class="col-12 clickable-data-item"
           routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
           *ngFor="let sector of sectors; let first = first"
@@ -110,7 +110,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </ng-template>
   </p-dataView>
