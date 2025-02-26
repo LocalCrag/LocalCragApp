@@ -8,6 +8,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { forkJoin, Observable } from 'rxjs';
 import { selectCopyrightOwner } from '../../../ngrx/selectors/instance-settings.selectors';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'lc-footer',
@@ -19,6 +20,7 @@ export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
+  public version = environment.version;
 
   constructor(
     private menuItemsService: MenuItemsService,

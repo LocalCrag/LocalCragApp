@@ -1,0 +1,34 @@
+# Enforces that the PR title follows the Conventional Commits specification
+# https://www.conventionalcommits.org/en/v1.0.0/
+# The PR title is used as the commit message when squashing PRs (requires specific GitHub settings)
+
+name: "Conventional Commits PR Title"
+
+on:
+  pull_request:
+    branches:
+      - next
+    types:
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+
+jobs:
+  conventional_commit_pr_title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Extract PR title as squash commit message
+        run: echo "${{ github.event.pull_request.title }}" > squash_commit_message.txt
+
+      - name: Install commitlint
+        run: npm install @commitlint/{config-conventional,cli}
+
+      - name: Validate PR title as squash commit message
+        run: |
+          echo "${{ github.event.pull_request.title }}" | npx commitlint --verbose

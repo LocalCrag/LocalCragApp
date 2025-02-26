@@ -23,7 +23,8 @@
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
     "useDefineForClassFields": false,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

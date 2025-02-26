@@ -8,6 +8,10 @@ lc-footer {
   flex-direction: column;
   background-color: var(--surface-300);
 
+  .version {
+    color: var(--surface-500);
+  }
+
   .p-button-label {
     color: var(--surface-700);
     font-weight: normal;

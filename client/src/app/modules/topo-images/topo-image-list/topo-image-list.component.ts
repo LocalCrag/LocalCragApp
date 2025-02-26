@@ -416,4 +416,7 @@ export class TopoImageListComponent implements OnInit {
       this.refreshData();
     });
   }
+
+  protected readonly textColor = textColor;
+  protected readonly highlightColor = highlightColor;
 }

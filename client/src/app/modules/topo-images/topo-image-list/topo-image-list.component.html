@@ -170,7 +170,14 @@
                       <div
                         class="line-number"
                         [style]="{
-                          'background-color': linePath.line.color ?? undefined,
+                          '--arrow-color': linePath.line.color ?? undefined,
+                          '--arrow-text-color': textColor(linePath.line.color),
+                          '--arrow-highlight-color': highlightColor(
+                            linePath.line.color
+                          ),
+                          '--arrow-highlight-text-color': highlightColor(
+                            textColor(linePath.line.color)
+                          ),
                         }"
                       >
                         {{ i + 1 }}
