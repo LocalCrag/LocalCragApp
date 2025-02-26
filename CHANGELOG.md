@@ -1,3 +1,10 @@
+## [1.14.6](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.5...v1.14.6) (2025-02-26)
+
+
+### Bug Fixes
+
+* **core:** delete unused translation ([#634](https://github.com/LocalCrag/LocalCragApp/issues/634)) ([8881e40](https://github.com/LocalCrag/LocalCragApp/commit/8881e4083e0e46a5790b6eab9948977eb8610497))
+
 ## [1.14.5](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.4...v1.14.5) (2025-02-26)
 
 
