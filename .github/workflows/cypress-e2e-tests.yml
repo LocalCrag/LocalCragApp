@@ -1,6 +1,6 @@
 name: Cypress Tests
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
       - next
@@ -33,6 +33,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v1
