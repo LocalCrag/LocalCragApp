@@ -1,3 +1,10 @@
+## [1.14.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.3...v1.14.4) (2025-02-26)
+
+
+### Bug Fixes
+
+* **topo:** fix typo ([#629](https://github.com/LocalCrag/LocalCragApp/issues/629)) ([a23afee](https://github.com/LocalCrag/LocalCragApp/commit/a23afeed68ff6011814f474b442e923e007cbe34))
+
 ## [1.14.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.2...v1.14.3) (2025-02-26)
 
 
