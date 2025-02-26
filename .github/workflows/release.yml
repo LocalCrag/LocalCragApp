@@ -24,6 +24,8 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
 
       - name: Fetch and merge next into main
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           git fetch origin next  
           git merge --no-ff origin/next -m "Merge branch 'next' into main" 
