@@ -1,6 +1,6 @@
 # LocalCrag
 
-Deploy your local alternative to the well known online climbing guide platforms with LocalCrag to keep control over all data in the crags you are developing!
+Deploy your local alternative to the well known online climbing guide platforms with LocalCrag to keep control over all data in the crags you are developing! test
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
