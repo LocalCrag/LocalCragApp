@@ -79,7 +79,7 @@
   "scale.scaleForm.gradeBracketsInvalidLength": "Es sind müssen mindestens {{min}} und maximal {{max}} Abschnitte konfiguriert werden.",
   "scale.scaleForm.addBracket": "Abschnitt hinzufügen",
   "scale.scaleForm.barChartBrackets": "Balkendiagramm",
-  "scale.scaleForm.gradeBracketsDescriptionBarChart": "Hier werden die Grad-Abschnitte für Balkendiagramme definiert. Sie verhalten sich genau wie die Abschnitte der gestapelten Diagramme, haben aber zusätzloich eine frei wählbare Bezeichnung (z.B. \"> 8A\"). Hier dürfen maximal {{max}} Abschnitte gesetzt werden.",
+  "scale.scaleForm.gradeBracketsDescriptionBarChart": "Hier werden die Grad-Abschnitte für Balkendiagramme definiert. Sie verhalten sich genau wie die Abschnitte der gestapelten Diagramme, haben aber zusätzlich eine frei wählbare Bezeichnung (z.B. \"> 8A\"). Hier dürfen maximal {{max}} Abschnitte gesetzt werden.",
   "scale.scaleForm.barChartBracketNameLabel": "Name",
   "scale.scaleForm.saveScale": "Skala speichern",
   "scale.scaleForm.deleteScale": "Skala löschen",
