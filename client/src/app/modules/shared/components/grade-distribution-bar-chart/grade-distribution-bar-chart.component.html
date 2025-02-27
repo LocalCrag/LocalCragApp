@@ -11,7 +11,7 @@
     ></p-chart>
     <div class="total">
       {{ t("totalLines") }}:
-      {{ chartDataElement.totalCount - chartDataElement.projectCount }}
+      {{ chartDataElement.totalCount }}
       <span *ngIf="!excludeProjects">
         ({{ t("plusXProjects", { projects: chartDataElement.projectCount }) }})
       </span>
