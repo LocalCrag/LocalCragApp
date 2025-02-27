@@ -6,11 +6,12 @@
   #menuItem
 >
   <div class="item-wrapper">
-    <div
+    <a
       tabindex="0"
       class="item-content"
-      (click)="onItemClick(item)"
+      (click)="$event.preventDefault(); onItemClick(item)"
       [ngClass]="{ 'no-sub-menu': !item.items }"
+      [href]="item.item.routerLink || item.item.url || '#'"
     >
       <span
         class="p-menuitem-icon menu-icon"
@@ -19,7 +20,7 @@
       >
       </span>
       <span>{{ item.item.label }}</span>
-    </div>
+    </a>
     <div
       tabindex="0"
       class="item-angle"
@@ -29,12 +30,14 @@
       <AngleDownIcon *ngIf="root" class="ml-2" />
       <AngleRightIcon *ngIf="!root" class="ml-2" />
     </div>
-    <div
+    <!-- eslint-disable-next-line @angular-eslint/template/elements-content -->
+    <a
       tabindex="0"
       class="item-angle-placeholder"
       *ngIf="!item.items"
-      (click)="onItemClick(item)"
-    ></div>
+      (click)="$event.preventDefault(); onItemClick(item)"
+      [href]="item.item.routerLink || item.item.url || '#'"
+    ></a>
   </div>
   <lc-header-menu-sub
     *ngIf="item.items?.length > 0"
