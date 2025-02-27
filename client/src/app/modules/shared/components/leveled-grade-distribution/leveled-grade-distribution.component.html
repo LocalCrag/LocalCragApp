@@ -7,7 +7,11 @@
 
   <ng-container *ngIf="!gradeDistributionEmpty">
     <div class="mb-3" *ngFor="let data of stackChartData">
-      <p-meterGroup [value]="data.meterValues" [min]="0" [max]="data.total - data.projects">
+      <p-meterGroup
+        [value]="data.meterValues"
+        [min]="0"
+        [max]="data.total - data.projects"
+      >
         <ng-template pTemplate="label">
           <ol
             class="p-metergroup-labels p-component p-metergroup-labels-horizontal"
@@ -24,12 +28,24 @@
               class="p-metergroup-label"
               *ngFor="let meterValue of data.meterValues"
             >
-              <p-tag value="{{ meterValue.value }} {{ meterValue.label }}"
-                     [style]="{'backgroundColor': meterValue.color, 'color': textColor(meterValue.color, '#2e3132')}"/>
+              <p-tag
+                value="{{ meterValue.value }} {{ meterValue.label }}"
+                [style]="{
+                  backgroundColor: meterValue.color,
+                  color: textColor(meterValue.color, '#2e3132'),
+                }"
+              />
             </li>
             <li class="p-metergroup-label" *ngIf="data.projects > 0">
-              <p-tag value="{{ data.projects }} {{ t('leveledGradeDistributionProjects') }}"
-                     [style]="{'backgroundColor': '#e5e7eb', 'color': textColor('#e5e7eb', '#2e3132')}"/>
+              <p-tag
+                value="{{ data.projects }} {{
+                  t('leveledGradeDistributionProjects')
+                }}"
+                [style]="{
+                  backgroundColor: '#e5e7eb',
+                  color: textColor('#e5e7eb', '#2e3132'),
+                }"
+              />
             </li>
           </ol>
         </ng-template>
