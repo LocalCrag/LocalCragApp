@@ -6,6 +6,7 @@ import { ScalesService } from '../../../../services/crud/scales.service';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { map } from 'rxjs/operators';
+import { textColor } from '../../../../utility/misc/color';
 
 type StackChartData = {
   lineType: LineType;
@@ -160,7 +161,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 (meterValue) => meterValue.value > 0,
               );
               stackChartData.push(data);
-              console.log(data);
             }),
           ),
         );
@@ -176,4 +176,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
       });
     }
   }
+
+  protected readonly textColor = textColor;
 }
