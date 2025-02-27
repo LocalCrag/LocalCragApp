@@ -1,6 +1,11 @@
 lc-menu {
   width: 100%;
 
+  .main-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
   .p-menubar {
     border-radius: 0;
     border-right: none;
