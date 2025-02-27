@@ -49,12 +49,20 @@ export function highlightColor(color?: string): string | undefined {
  * Given a color, return black or white as text color, depending on what has the better contrast
  *
  * @param color Color as hex string, e.g., #abba42. May be undefined
+ * @param blackOverwrite Optional color to use as black (#000000 if not given)
+ * @param whiteOverwrite Optional color to use as white (#ffffff if not given)
  * @return Hex color string, or undefined if color is undefined
  */
-export function textColor(color?: string): string | undefined {
+export function textColor(
+  color?: string,
+  blackOverwrite?: string,
+  whiteOverwrite?: string,
+): string | undefined {
+  const black = blackOverwrite || '#000000';
+  const white = whiteOverwrite || '#ffffff';
   if (color) {
     const { brightness } = extractColor(color);
-    return brightness < 128 ? '#ffffff' : '#000000';
+    return brightness < 128 ? white : black;
   }
   return undefined;
 }
