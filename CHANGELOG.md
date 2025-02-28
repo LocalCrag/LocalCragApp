@@ -1,3 +1,17 @@
+# [1.15.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.6...v1.15.0) (2025-02-28)
+
+
+### Bug Fixes
+
+* **topo:** fix grade distribution bar chart displayed total count ([#636](https://github.com/LocalCrag/LocalCragApp/issues/636)) ([ec34686](https://github.com/LocalCrag/LocalCragApp/commit/ec346865f52d94869937771414c1ace74f58299d))
+* **ui:** colorpicker is no longer partially hidden ([#620](https://github.com/LocalCrag/LocalCragApp/issues/620)) ([c7dd715](https://github.com/LocalCrag/LocalCragApp/commit/c7dd7154c23696a6ef6d241b7205a698265efed2))
+* **ux:** drawn lines are clickable when adding new lines ([#609](https://github.com/LocalCrag/LocalCragApp/issues/609)) ([f3fd943](https://github.com/LocalCrag/LocalCragApp/commit/f3fd943741eb368da88f29d2e8ab600516cf496c))
+
+
+### Features
+
+* **ui:** logo, header menu entries and crag/sector/area lists have real <a> links ([#616](https://github.com/LocalCrag/LocalCragApp/issues/616)) ([7909fc2](https://github.com/LocalCrag/LocalCragApp/commit/7909fc216cc97c988ff41c4a923f78dc5bafd5d6)), closes [#490](https://github.com/LocalCrag/LocalCragApp/issues/490)
+
 ## [1.14.6](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.5...v1.14.6) (2025-02-26)
 
 
