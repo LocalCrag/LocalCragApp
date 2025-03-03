@@ -79,7 +79,6 @@ services:
     command:
       - sh
       - "-c"
-#      - "while true; do sleep 60; done"
       - "pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && pipenv run flask run --host=0.0.0.0"
 
   client:
@@ -87,12 +86,13 @@ services:
       target: localcragapp-client
     volumes:
       - ./client/src:/localcragapp/src
+      - ./client/package.json:/localcragapp/package.json
     ports:
       - "127.0.0.1:4200:4200"  # Web Frontend
     command:
       - sh
       - "-c"
-      - "npx ng serve --host 0.0.0.0"
+      - "npx ng serve --host 0.0.0.0 --hmr"
 
 volumes:
   database:
