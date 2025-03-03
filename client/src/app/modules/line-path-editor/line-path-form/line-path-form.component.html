@@ -23,6 +23,11 @@
                 data-cy="line-dropdown-item"
               >
                 <div>
+                  <span
+                    *isGymMode="true"
+                    class="color-indicator mr-3"
+                    [style]="{ '--arrow-color': line.color }"
+                  ></span>
                   {{ line.name }}
                   {{ line | lineGrade }}
                 </div>
