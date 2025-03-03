@@ -6,4 +6,5 @@ Cypress.Commands.add('login' as any, () => {
     .type('admin@localcrag.invalid.org');
   cy.get('[data-cy="login-form-password"] input').focus().type('admin');
   cy.get('[data-cy="login-form-submit"]').click();
+  cy.url().should('not.eq', 'http://localhost:4200/login');
 });
