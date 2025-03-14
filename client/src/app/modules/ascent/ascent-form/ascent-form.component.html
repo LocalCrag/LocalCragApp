@@ -10,7 +10,7 @@
         lcControlGroup
         *ngIf="ascentForm.get('yearOnly').value"
       >
-        <p-calendar
+        <p-date-picker
           formControlName="year"
           view="year"
           dateFormat="yy"
@@ -20,11 +20,11 @@
           [maxDate]="today"
           [readonlyInput]="true"
           styleClass="w-full"
-        ></p-calendar>
-        <small class="p-error" *lcIfError="'dateInFuture'">{{
+        ></p-date-picker>
+        <small class="lc-error" *lcIfError="'dateInFuture'">{{
           t("yearInFutureValidationError")
         }}</small>
-        <small class="p-error" *lcIfError="'required'">{{
+        <small class="lc-error" *lcIfError="'required'">{{
           t("required")
         }}</small>
       </div>
@@ -33,7 +33,7 @@
         lcControlGroup
         *ngIf="!ascentForm.get('yearOnly').value"
       >
-        <p-calendar
+        <p-date-picker
           formControlName="date"
           view="date"
           inputId="date"
@@ -43,11 +43,11 @@
           [maxDate]="today"
           [readonlyInput]="true"
           dateFormat="dd.mm.yy"
-        ></p-calendar>
-        <small class="p-error" *lcIfError="'dateInFuture'">{{
+        ></p-date-picker>
+        <small class="lc-error" *lcIfError="'dateInFuture'">{{
           t("dateInFutureValidationError")
         }}</small>
-        <small class="p-error" *lcIfError="'required'">{{
+        <small class="lc-error" *lcIfError="'required'">{{
           t("required")
         }}</small>
       </div>
@@ -95,7 +95,7 @@
         [onLabel]="t('soft')"
         [offLabel]="t('soft')"
       ></p-toggleButton>
-      <p-dropdown
+      <p-select
         formControlName="grade"
         [options]="grades"
         data-cy="grade-dropdown"
@@ -103,7 +103,7 @@
         placeholder="{{ t('gradePlaceholder') }}"
         lcFormControl
       >
-        <ng-template let-grade pTemplate="item">
+        <ng-template let-grade #item>
           <div
             class="flex align-items-center gap-2"
             data-cy="grade-dropdown-item"
@@ -111,16 +111,16 @@
             <div>{{ grade.name | translateSpecialGrades }}</div>
           </div>
         </ng-template>
-        <ng-template let-selectedGrade pTemplate="selectedItem">
+        <ng-template let-selectedGrade #selectedItem>
           {{ selectedGrade.name | translateSpecialGrades }}
         </ng-template>
-      </p-dropdown>
+      </p-select>
       <p-toggleButton
         formControlName="hard"
         [onLabel]="t('hard')"
         [offLabel]="t('hard')"
       ></p-toggleButton>
-      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{ t("required") }}</small>
     </div>
     <p-message
       severity="warn"
@@ -140,10 +140,9 @@
       <p-rating
         formControlName="rating"
         lcFormControl
-        [cancel]="false"
         data-cy="rating"
       ></p-rating>
-      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{ t("required") }}</small>
     </div>
 
     <p-divider align="center" type="dotted">
@@ -154,7 +153,7 @@
       <textarea
         rows="2"
         cols="30"
-        pInputTextarea
+        pTextarea
         lcFormControl
         formControlName="comment"
         class="w-full"

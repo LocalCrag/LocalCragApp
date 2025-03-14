@@ -3,23 +3,19 @@ import { CommonModule } from '@angular/common';
 import { SectorListComponent } from './sector-list/sector-list.component';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from '../shared/shared.module';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { SectorInfoComponent } from './sector-info/sector-info.component';
 import { SectorComponent } from './sector/sector.component';
 import { SectorFormComponent } from './sector-form/sector-form.component';
-import { TabMenuModule } from 'primeng/tabmenu';
 import { SkeletonModule } from 'primeng/skeleton';
-import { MessagesModule } from 'primeng/messages';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EditorModule } from 'primeng/editor';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { AreaModule } from '../area/area.module';
 import { GradeDistributionBarChartComponent } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { ChipModule } from 'primeng/chip';
@@ -35,6 +31,10 @@ import { MapMarkerFormArrayComponent } from '../maps/map-marker-form-array/map-m
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import { Select } from 'primeng/select';
+import { Message } from 'primeng/message';
+import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 @NgModule({
   declarations: [
@@ -51,15 +51,11 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     TranslocoModule,
     DataViewModule,
     InputTextModule,
-    InputTextareaModule,
     ButtonModule,
     SharedModule,
-    DropdownModule,
     FormsModule,
     ReactiveFormsModule,
-    TabMenuModule,
     SkeletonModule,
-    MessagesModule,
     BreadcrumbModule,
     EditorModule,
     ConfirmPopupModule,
@@ -78,6 +74,13 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     ClosedSpotTagComponent,
     ClosedSpotAlertComponent,
     ArchiveButtonComponent,
+    RouterOutlet,
+    Select,
+    Message,
+    SetActiveTabDirective,
+    Tab,
+    TabList,
+    Tabs,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })

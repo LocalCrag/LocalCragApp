@@ -7,7 +7,7 @@
         [loading]="loadingState === LoadingState.LOADING"
         class="p-5"
       >
-        <ng-template let-scales pTemplate="list">
+        <ng-template let-scales #list>
           <div class="grid gap-4">
             <a
               class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"

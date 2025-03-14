@@ -26,7 +26,6 @@ import {
 import { Editor, EditorModule } from 'primeng/editor';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { ColorPickerModule } from 'primeng/colorpicker';
-import { DropdownModule } from 'primeng/dropdown';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import {
   MAP_MARKER_TYPES,
@@ -38,6 +37,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
@@ -50,12 +50,12 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     EditorModule,
     CoordinatesComponent,
     ColorPickerModule,
-    DropdownModule,
     ToggleButtonModule,
     TranslocoPipe,
     DialogModule,
     ButtonModule,
     NgIf,
+    Select,
   ],
   templateUrl: './map-marker-config-dialog.component.html',
   styleUrl: './map-marker-config-dialog.component.scss',

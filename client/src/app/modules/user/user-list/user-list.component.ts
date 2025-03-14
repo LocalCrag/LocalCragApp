@@ -9,7 +9,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { LineModule } from '../../line/line.module';
 import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
@@ -40,6 +39,7 @@ import { environment } from '../../../../environments/environment';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-user-list',
@@ -50,7 +50,6 @@ import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
     AsyncPipe,
     ButtonModule,
     DataViewModule,
-    DropdownModule,
     LineModule,
     NgForOf,
     NgIf,
@@ -66,6 +65,7 @@ import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
     MenuModule,
     ConfirmPopupModule,
     ConfirmDialogModule,
+    Select,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',

@@ -11,7 +11,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { SearchableComponent } from '../searchable/searchable.component';
 
@@ -26,7 +25,6 @@ import { SearchableComponent } from '../searchable/searchable.component';
     NgForOf,
     AvatarModule,
     ButtonModule,
-    MessagesModule,
     MessageModule,
     SearchableComponent,
   ],

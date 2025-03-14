@@ -5,7 +5,7 @@
     [emptyMessage]="t('noAscentsFoundMessage')"
     [loading]="loadingFirstPage === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #heder>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
       >
@@ -14,32 +14,32 @@
         >
           {{ t("orderByLabel") }}
           <div>
-            <p-dropdown
+            <p-select
               [options]="orderOptions"
               [(ngModel)]="orderKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="orderKey">
                   <div>{{ orderKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
-            <p-dropdown
+            </p-select>
+            <p-select
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div
                   class="flex align-items-center gap-2"
                   *ngIf="orderDirectionKey"
@@ -47,12 +47,12 @@
                   <div>{{ orderDirectionKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
         </div>
 
@@ -61,24 +61,24 @@
         >
           <div *ngIf="availableScales.length > 2">
             {{ t("lineType") }}
-            <p-dropdown
+            <p-select
               [options]="availableScales"
               [(ngModel)]="scaleKey"
               optionLabel="label"
               (onChange)="selectScale()"
               styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="scaleKey">
                   <div>{{ scaleKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
         </div>
 
@@ -122,7 +122,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-ascents pTemplate="list">
+    <ng-template let-ascents #list>
       <div class="grid grid-nogutter">
         <div
           class="col-12"
@@ -183,7 +183,6 @@
                 <p-rating
                   [ngModel]="ascent.rating"
                   [readonly]="true"
-                  [cancel]="false"
                 ></p-rating>
               </div>
               <div class="ascent-table-grade">
@@ -216,19 +215,16 @@
               </div>
               <div class="ascent-table-properties">
                 <p-tag
-                  severity="primary"
                   value="{{ t('fa') }}"
                   *ngIf="ascent.fa"
                   icon="pi pi-star"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('flash') }}"
                   *ngIf="ascent.flash"
                   icon="pi pi-bolt"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('withKneepad') }}"
                   *ngIf="ascent.withKneepad"
                   icon="pi pi-ticket"
@@ -313,7 +309,6 @@
                 <p-rating
                   [ngModel]="ascent.rating"
                   [readonly]="true"
-                  [cancel]="false"
                 ></p-rating>
               </div>
               <div class="ascent-table-grade">
@@ -346,19 +341,16 @@
               </div>
               <div class="ascent-table-properties">
                 <p-tag
-                  severity="primary"
                   value="{{ t('fa') }}"
                   *ngIf="ascent.fa"
                   icon="pi pi-star"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('flash') }}"
                   *ngIf="ascent.flash"
                   icon="pi pi-bolt"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('withKneepad') }}"
                   *ngIf="ascent.withKneepad"
                   icon="pi pi-ticket"
@@ -455,19 +447,16 @@
               </div>
               <div class="property-row-very-small">
                 <p-tag
-                  severity="primary"
                   value="{{ t('fa') }}"
                   *ngIf="ascent.fa"
                   icon="pi pi-star"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('flash') }}"
                   *ngIf="ascent.flash"
                   icon="pi pi-bolt"
                 ></p-tag>
                 <p-tag
-                  severity="primary"
                   value="{{ t('withKneepad') }}"
                   *ngIf="ascent.withKneepad"
                   icon="pi pi-ticket"
@@ -503,21 +492,18 @@
                   </div>
                   <p-tag
                     class="property-small"
-                    severity="primary"
                     value="{{ t('fa') }}"
                     *ngIf="ascent.fa"
                     icon="pi pi-star"
                   ></p-tag>
                   <p-tag
                     class="property-small"
-                    severity="primary"
                     value="{{ t('flash') }}"
                     *ngIf="ascent.flash"
                     icon="pi pi-bolt"
                   ></p-tag>
                   <p-tag
                     class="property-small"
-                    severity="primary"
                     value="{{ t('withKneepad') }}"
                     *ngIf="ascent.withKneepad"
                     icon="pi pi-ticket"
@@ -527,7 +513,6 @@
                   <p-rating
                     [ngModel]="ascent.rating"
                     [readonly]="true"
-                    [cancel]="false"
                   ></p-rating>
                 </div>
                 <div class="ascent-table-date">

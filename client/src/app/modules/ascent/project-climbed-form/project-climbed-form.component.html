@@ -9,14 +9,14 @@
       <textarea
         rows="5"
         cols="30"
-        pInputTextarea
+        pTextarea
         lcFormControl
         formControlName="message"
         class="w-full mt-3"
         data-cy="message"
         [placeholder]="t('message')"
       ></textarea>
-      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{ t("required") }}</small>
     </div>
   </form>
 

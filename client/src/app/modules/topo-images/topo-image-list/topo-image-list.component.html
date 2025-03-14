@@ -7,29 +7,29 @@
     [emptyMessage]="t('noTopoImagesFoundEmptyMessage')"
     [loading]="loading === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
         <div class="flex flex-column sm:flex-row gap-2">
-          <p-dropdown
+          <p-select
             [options]="sortOptions"
             [(ngModel)]="sortKey"
             optionLabel="label"
             (onChange)="onSortChange($event)"
             styleClass="md:mb-0"
           >
-            <ng-template pTemplate="selectedItem">
+            <ng-template #selectedItem>
               <div class="flex align-items-center gap-2" *ngIf="sortKey">
                 <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
                 <div>{{ sortKey.label }}</div>
               </div>
             </ng-template>
-            <ng-template let-option pTemplate="item">
+            <ng-template let-option #item>
               <div class="flex align-items-center gap-2">
                 <i [class]="option.icon" *ngIf="option.icon"></i>
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
-          </p-dropdown>
+          </p-select>
           <div *isGymMode="true">
             <p-button
               label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
@@ -61,7 +61,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-topoImages pTemplate="list">
+    <ng-template let-topoImages #list>
       <div class="grid grid-nogutter">
         <div
           class="col-12"
@@ -210,7 +210,6 @@
                           <p-rating
                             [ngModel]="linePath.line.rating"
                             [readonly]="true"
-                            [cancel]="false"
                           ></p-rating>
                         </div>
                         <div class="line-table-info-actions">

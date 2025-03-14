@@ -13,7 +13,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuComponent } from './menu/menu.component';
 import { MenubarModule } from 'primeng/menubar';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
 import { LoginComponent } from './login/login.component';
 import { PasswordModule } from 'primeng/password';
@@ -36,7 +40,6 @@ import { MenuModule } from 'primeng/menu';
 import { FooterComponent } from './footer/footer.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { SharedModule } from '../shared/shared.module';
-import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -67,6 +70,9 @@ import {
 } from 'ngx-matomo-client';
 import { Router } from '@angular/router';
 import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import { LocalCragTheme } from './theme/theme';
 
 export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
@@ -132,6 +138,7 @@ export function preloadInstanceSettings(
     ForgotPasswordCheckMailboxComponent,
     NotFoundComponent,
   ],
+  bootstrap: [CoreComponent],
   imports: [
     SharedModule,
     BrowserModule,
@@ -139,7 +146,6 @@ export function preloadInstanceSettings(
     CoreRoutingModule,
     InputTextModule,
     MenubarModule,
-    HttpClientModule,
     ButtonModule,
     PasswordModule,
     StoreModule.forRoot(reducers, {
@@ -160,7 +166,6 @@ export function preloadInstanceSettings(
     ReactiveFormsModule,
     CardModule,
     MenuModule,
-    MessagesModule,
     MessageModule,
     DialogModule,
     ToastModule,
@@ -234,8 +239,18 @@ export function preloadInstanceSettings(
       deps: [MenuItemsService],
       useFactory: preloadMenus,
     },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG({
+      ripple: true,
+      theme: {
+        preset: LocalCragTheme,
+        options: {
+          darkModeSelector: false,
+        },
+      },
+    }),
   ],
-  bootstrap: [CoreComponent],
 })
 export class CoreModule {
   constructor(

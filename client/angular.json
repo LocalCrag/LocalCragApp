@@ -52,8 +52,6 @@
             "styles": [
               "src/styles.scss",
               "node_modules/maplibre-gl/dist/maplibre-gl.css",
-              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/quill-image-uploader/dist/quill.imageUploader.min.css"

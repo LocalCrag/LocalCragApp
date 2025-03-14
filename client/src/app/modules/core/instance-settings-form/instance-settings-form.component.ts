@@ -31,7 +31,8 @@ import { getRgbObject } from '../../../utility/misc/color';
 import { PasswordModule } from 'primeng/password';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -53,9 +54,10 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     DividerModule,
     PasswordModule,
     DividerModule,
-    InputSwitchModule,
     GymModeDirective,
     TooltipModule,
+    ToggleSwitch,
+    Select,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',

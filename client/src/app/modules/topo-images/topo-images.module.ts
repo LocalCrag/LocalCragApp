@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TopoImageListComponent } from './topo-image-list/topo-image-list.component';
 import { TopoImageFormComponent } from './topo-image-form/topo-image-form.component';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink } from '@angular/router';
@@ -14,7 +13,6 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TableModule } from 'primeng/table';
 import { RatingModule } from 'primeng/rating';
 import { LineModule } from '../line/line.module';
-import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
@@ -27,6 +25,7 @@ import { CoordinatesComponent } from '../shared/forms/controls/coordinates/coord
 import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 import { GymModeDirective } from '../shared/directives/gym-mode.directive';
+import { Select } from 'primeng/select';
 
 @NgModule({
   declarations: [TopoImageListComponent, TopoImageFormComponent],
@@ -34,7 +33,6 @@ import { GymModeDirective } from '../shared/directives/gym-mode.directive';
     CommonModule,
     CardModule,
     DataViewModule,
-    DropdownModule,
     FormsModule,
     ButtonModule,
     RouterLink,
@@ -45,7 +43,6 @@ import { GymModeDirective } from '../shared/directives/gym-mode.directive';
     TableModule,
     RatingModule,
     LineModule,
-    MessagesModule,
     MessageModule,
     TagModule,
     InputTextModule,
@@ -59,6 +56,7 @@ import { GymModeDirective } from '../shared/directives/gym-mode.directive';
     ClosedSpotTagComponent,
     ArchiveButtonComponent,
     GymModeDirective,
+    Select,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
   exports: [TopoImageListComponent],

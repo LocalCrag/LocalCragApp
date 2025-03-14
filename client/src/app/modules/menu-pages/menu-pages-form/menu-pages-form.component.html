@@ -18,10 +18,10 @@
             placeholder="{{ t('menuPageTitlePlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -38,7 +38,7 @@
             [style]="{ height: '500px' }"
             [readonly]="loadingState === loadingStates.LOADING"
           >
-            <ng-template pTemplate="header">
+            <ng-template #header>
               <span class="ql-formats">
                 <button
                   type="button"
@@ -89,7 +89,7 @@
               </span>
             </ng-template>
           </p-editor>
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>

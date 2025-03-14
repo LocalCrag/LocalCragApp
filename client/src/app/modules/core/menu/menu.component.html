@@ -1,6 +1,6 @@
 <ng-container *transloco="let t; read: 'menu'">
   <lc-header-menu [model]="items" data-cy="main-menu">
-    <ng-template pTemplate="start">
+    <ng-template #start>
       <a class="main-link" routerLink="/">
         <img
           alt="{{ t('logoImageAlt') }}"
@@ -18,7 +18,7 @@
         >
       </a>
     </ng-template>
-    <ng-template pTemplate="end">
+    <ng-template #end>
       <div class="flex justify-content-center gap-2">
         <div class="search-fake-input" (click)="openSearch()" tabindex="0">
           <i class="pi pi-search mr-2"></i>

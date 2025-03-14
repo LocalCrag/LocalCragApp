@@ -39,6 +39,7 @@ import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { InputTextModule } from 'primeng/inputtext';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -55,6 +56,7 @@ import { httpUrlValidator } from '../../../utility/validators/http-url.validator
     ConfirmPopupModule,
     NgClass,
     InputTextModule,
+    Select,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',

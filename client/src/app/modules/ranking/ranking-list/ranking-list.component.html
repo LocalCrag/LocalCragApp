@@ -7,28 +7,28 @@
     [emptyMessage]="t('noRankingsFoundMessage')"
     [loading]="loading === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
-        <p-dropdown
+        <p-select
           [options]="rankingTypes"
           [(ngModel)]="rankingType"
           (ngModelChange)="sortField = rankingType.value"
           optionLabel="label"
           styleClass="md:mb-0 md:mr-2"
         >
-          <ng-template pTemplate="selectedItem">
+          <ng-template #selectedItem>
             <div class="flex align-items-center gap-2" *ngIf="rankingType">
               <div>{{ rankingType.label }}</div>
             </div>
           </ng-template>
-          <ng-template let-option pTemplate="item">
+          <ng-template let-option #item>
             <div class="flex align-items-center gap-2">
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
-        </p-dropdown>
+        </p-select>
         <div class="secret-switch-container" *isMember="true">
-          <p-inputSwitch
+          <p-toggleswitch
             [(ngModel)]="secretRankings"
             (ngModelChange)="loadRanking()"
           />
@@ -54,7 +54,7 @@
         </p-dialog>
       </div>
     </ng-template>
-    <ng-template let-ascents pTemplate="list">
+    <ng-template #list>
       <div class="grid grid-nogutter">
         <div
           class="col-12"

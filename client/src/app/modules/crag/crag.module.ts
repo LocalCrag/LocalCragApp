@@ -6,18 +6,14 @@ import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { SharedModule } from '../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { CragListComponent } from './crag-list/crag-list.component';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
-import { RouterLink } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { CragComponent } from './crag/crag.component';
-import { MessagesModule } from 'primeng/messages';
 import { EditorModule } from 'primeng/editor';
-import { TabMenuModule } from 'primeng/tabmenu';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { SectorModule } from '../sector/sector.module';
 import { CragInfoComponent } from './crag-info/crag-info.component';
@@ -36,6 +32,9 @@ import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/clo
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { SeasonChartComponent } from '../shared/components/season-chart/season-chart.component';
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import { Select } from 'primeng/select';
+import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 /**
  * Module for crags.
@@ -55,16 +54,12 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,
-    InputTextareaModule,
     ButtonModule,
     DataViewModule,
     TagModule,
     BadgeModule,
     RouterLink,
-    DropdownModule,
-    MessagesModule,
     EditorModule,
-    TabMenuModule,
     ConfirmPopupModule,
     SectorModule,
     SkeletonModule,
@@ -82,6 +77,12 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     ClosedSpotAlertComponent,
     SeasonChartComponent,
     ArchiveButtonComponent,
+    Select,
+    RouterOutlet,
+    SetActiveTabDirective,
+    Tab,
+    TabList,
+    Tabs,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
   exports: [CragFormComponent],

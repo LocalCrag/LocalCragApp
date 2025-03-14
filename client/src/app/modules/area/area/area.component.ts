@@ -103,26 +103,31 @@ export class AreaComponent implements OnInit {
             icon: 'pi pi-fw pi-info-circle',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}`,
             routerLinkActiveOptions: { exact: true },
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('area.topoImages')),
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('area.lines')),
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('area.ascents')),
             icon: 'pi pi-fw pi-check-square',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('area.gallery')),
             icon: 'pi pi-fw pi-images',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('area.edit')),

@@ -21,11 +21,11 @@ import { SliderLabelsComponent } from '../../shared/components/slider-labels/sli
 import { SliderModule } from 'primeng/slider';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
-import { MessagesModule } from 'primeng/messages';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { DropdownModule } from 'primeng/dropdown';
 import { SharedModule } from '../../shared/shared.module';
+import { Select } from 'primeng/select';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-completion',
@@ -41,10 +41,10 @@ import { SharedModule } from '../../shared/shared.module';
     SliderLabelsComponent,
     SliderModule,
     FormsModule,
-    MessagesModule,
     TranslocoDirective,
     AsyncPipe,
-    DropdownModule,
+    Select,
+    Message,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',

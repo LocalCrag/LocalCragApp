@@ -37,8 +37,8 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
-import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-scale-form',
@@ -59,8 +59,8 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     FormsModule,
     ConfirmPopupModule,
-    DropdownModule,
     MessageModule,
+    Select,
   ],
   providers: [ConfirmationService],
 })

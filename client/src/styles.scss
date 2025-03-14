@@ -19,7 +19,7 @@ body {
 html {
   height: 100vh;
   --ticked-bg-color: #eafeee;
-  --ticked-color: var(--green-600);
+  --ticked-color: var(--p-green-600);
 }
 
 body {
@@ -58,4 +58,8 @@ body {
 
 p-avatar img {
   object-fit: cover;
+}
+
+.lc-error{
+  color: var(--p-form-field-invalid-placeholder-color);
 }

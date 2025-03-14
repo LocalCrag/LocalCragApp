@@ -7,28 +7,28 @@
     [emptyMessage]="t('noSectorsFoundEmptyMessage')"
     [loading]="loading === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <p-dropdown
+        <p-select
           [options]="sortOptions"
           [(ngModel)]="sortKey"
           optionLabel="label"
           (onChange)="onSortChange($event)"
           styleClass="md:mb-0"
         >
-          <ng-template pTemplate="selectedItem">
+          <ng-template #selectedItem>
             <div class="flex align-items-center gap-2" *ngIf="sortKey">
               <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
               <div>{{ sortKey.label }}</div>
             </div>
           </ng-template>
-          <ng-template let-option pTemplate="item">
+          <ng-template let-option #item>
             <div class="flex align-items-center gap-2">
               <i [class]="option.icon" *ngIf="option.icon"></i>
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
-        </p-dropdown>
+        </p-select>
         <div class="flex justify-content-start sm:justify-content-end gap-3">
           <p-button
             label="{{ t('newSectorButtonLabel') }}"
@@ -48,7 +48,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-sectors pTemplate="list">
+    <ng-template let-sectors #list>
       <div class="grid grid-nogutter">
         <a
           class="col-12 clickable-data-item"
@@ -91,7 +91,6 @@
                   class="quill-content"
                 ></div>
                 <lc-leveled-grade-distribution
-                  #gradeDistribution
                   [fetchingObservable]="
                     sectorsService.getSectorGrades(sector.slug)
                   "

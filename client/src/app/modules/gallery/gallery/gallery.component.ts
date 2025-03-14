@@ -25,9 +25,9 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
-import { MessagesModule } from 'primeng/messages';
 import { LoadingState } from '../../../enums/loading-state';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-gallery',
@@ -42,9 +42,9 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     HasPermissionDirective,
     ConfirmPopupModule,
     GalleryImageSkeletonComponent,
-    MessagesModule,
     NgIf,
     InfiniteScrollModule,
+    Message,
   ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',

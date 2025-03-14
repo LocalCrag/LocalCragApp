@@ -130,16 +130,19 @@ export class LineComponent implements OnInit {
             icon: 'pi pi-fw pi-info-circle',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}`,
             routerLinkActiveOptions: { exact: true },
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.ascents')),
             icon: 'pi pi-fw pi-check-square',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.gallery')),
             icon: 'pi pi-fw pi-images',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.edit')),

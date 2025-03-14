@@ -1,5 +1,4 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
 import { tryAutoLogin } from '../../ngrx/actions/auth.actions';
@@ -19,7 +18,6 @@ import { take } from 'rxjs/operators';
 })
 export class CoreComponent implements OnInit {
   constructor(
-    private primengConfig: PrimeNGConfig,
     private title: Title,
     public store: Store<AppState>,
   ) {
@@ -63,7 +61,6 @@ export class CoreComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
     this.store.dispatch(tryAutoLogin());
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());

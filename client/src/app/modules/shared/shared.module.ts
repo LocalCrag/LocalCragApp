@@ -28,6 +28,8 @@ import { ChipModule } from 'primeng/chip';
 import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
 import { LineGradePipe } from './pipes/line-grade.pipe';
 import { MeterGroupModule } from 'primeng/metergroup';
+import { ProgressBar } from 'primeng/progressbar';
+import { Button } from 'primeng/button';
 
 /**
  * Module for shared components, pipes etc.
@@ -65,6 +67,8 @@ import { MeterGroupModule } from 'primeng/metergroup';
     ChartModule,
     ChipModule,
     MeterGroupModule,
+    ProgressBar,
+    Button,
   ],
   exports: [
     DatePipe,

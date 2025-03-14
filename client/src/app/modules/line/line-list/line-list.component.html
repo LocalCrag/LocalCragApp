@@ -5,7 +5,7 @@
     [emptyMessage]="t('noLinesFoundEmptyMessage')"
     [loading]="loadingFirstPage === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
       >
@@ -29,32 +29,32 @@
         >
           {{ t("orderByLabel") }}
           <div>
-            <p-dropdown
+            <p-select
               [options]="orderOptions"
               [(ngModel)]="orderKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="orderKey">
                   <div>{{ orderKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
-            <p-dropdown
+            </p-select>
+            <p-select
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0 ml-2"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div
                   class="flex align-items-center gap-2"
                   *ngIf="orderDirectionKey"
@@ -62,12 +62,12 @@
                   <div>{{ orderDirectionKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
         </div>
         <div
@@ -75,24 +75,24 @@
         >
           <div *ngIf="availableScales.length > 2">
             {{ t("lineType") }}
-            <p-dropdown
+            <p-select
               [options]="availableScales"
               [(ngModel)]="scaleKey"
               optionLabel="label"
               (onChange)="selectScale()"
               styleClass="md:mb-0"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="scaleKey">
                   <div>{{ scaleKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
           <div *isGymMode="true">
             <p-button
@@ -142,7 +142,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-lines pTemplate="list">
+    <ng-template let-lines #list>
       <div class="grid grid-nogutter">
         <a
           class="col-12 clickable-data-item line-link"
@@ -187,7 +187,6 @@
                   </div>
                   <p-rating
                     [ngModel]="line.rating"
-                    [cancel]="false"
                     [readonly]="true"
                     class="align-self-center md:align-self-end"
                   ></p-rating>

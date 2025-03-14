@@ -54,14 +54,14 @@ export class LeveledGradeDistributionComponent implements OnInit {
    */
   buildGradeDistribution() {
     const colors = [
-      'var(--yellow-500)',
-      'var(--blue-500)',
-      'var(--red-500)',
-      'var(--green-500)',
-      'var(--orange-500)',
-      'var(--teal-500)',
-      'var(--indigo-500)',
-      'var(--bluegray-500)',
+      'var(--p-yellow-500)',
+      'var(--p-blue-500)',
+      'var(--p-red-500)',
+      'var(--p-green-500)',
+      'var(--p-orange-500)',
+      'var(--p-teal-500)',
+      'var(--p-indigo-500)',
+      'var(--p-bluegray-500)',
     ];
     const stackChartData: StackChartData[] = [];
     const observables: Observable<any>[] = [];

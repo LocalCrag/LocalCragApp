@@ -17,18 +17,18 @@
             lcFormControl
             data-cy="crag-form-name"
           />
-          <small class="p-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="short-description">{{
-            t("cragShortDescriptionLabel")
-          }}</label>
+              t("cragShortDescriptionLabel")
+            }}</label>
           <p-editor
             id="short-description"
             formControlName="shortDescription"
@@ -38,7 +38,7 @@
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="crag-form-shortDescription"
           >
-            <ng-template pTemplate="header">
+            <ng-template #header>
               <span class="ql-formats">
                 <button
                   type="button"
@@ -69,8 +69,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
-            t("cragDescriptionLabel")
-          }}</label>
+              t("cragDescriptionLabel")
+            }}</label>
           <p-editor
             id="description"
             formControlName="description"
@@ -81,7 +81,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
           >
-            <ng-template pTemplate="header">
+            <ng-template #header>
               <span class="ql-formats">
                 <button
                   type="button"
@@ -136,8 +136,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="rules">{{
-            t("cragRulesLabel")
-          }}</label>
+              t("cragRulesLabel")
+            }}</label>
           <p-editor
             formControlName="rules"
             id="rules"
@@ -148,7 +148,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
           >
-            <ng-template pTemplate="header">
+            <ng-template #header>
               <span class="ql-formats">
                 <button
                   type="button"
@@ -198,8 +198,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="portrait-image">{{
-            t("cragPortraitImageLabel")
-          }}</label>
+              t("cragPortraitImageLabel")
+            }}</label>
           <lc-single-image-upload
             lcFormControl
             id="portrait-image"
@@ -211,8 +211,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="map-markers">{{
-            t("mapMarkersLabel")
-          }}</label>
+              t("mapMarkersLabel")
+            }}</label>
           <lc-map-marker-form-array
             id="map-markers"
             formControlName="mapMarkers"
@@ -227,25 +227,31 @@
           lcControlGroup
           *ngIf="crag?.slug !== environment.skippedSlug"
         >
-          <label class="form-label" for="secret">{{
-            t("cragOptionsLabel")
-          }}</label>
-          <p-checkbox
-            id="secret"
-            label="{{ t('secretLabel') }}"
-            name="secret"
-            [binary]="true"
-            formControlName="secret"
-            lcFormControl
-          ></p-checkbox>
-          <p-checkbox
-            label="{{ t('closedLabel') }}"
-            name="closed"
-            [binary]="true"
-            id="closed"
-            formControlName="closed"
-            lcFormControl
-          ></p-checkbox>
+          <label class="form-label">{{
+              t("cragOptionsLabel")
+            }}</label>
+          <div class="flex flex-col gap-4">
+            <div class="flex">
+              <p-checkbox
+                inputId="secret"
+                name="secret"
+                [binary]="true"
+                formControlName="secret"
+                lcFormControl
+              ></p-checkbox>
+              <label [for]="'secret'" class="ml-2">{{ t('secretLabel') }}</label>
+            </div>
+            <div class="flex">
+              <p-checkbox
+                inputId="closed"
+                name="closed"
+                [binary]="true"
+                formControlName="closed"
+                lcFormControl
+              ></p-checkbox>
+              <label [for]="'closed'" class="ml-2">{{ t('closedLabel') }}</label>
+            </div>
+          </div>
         </div>
 
         <div
@@ -254,8 +260,8 @@
           *ngIf="cragForm.get('closed').value"
         >
           <label class="form-label" for="closedReason">{{
-            t("closedReasonLabel")
-          }}</label>
+              t("closedReasonLabel")
+            }}</label>
           <input
             id="closedReason"
             type="text"
@@ -276,14 +282,14 @@
             {{ "BOULDER" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-dropdown
+            <p-select
               id="defaultBoulderScale"
               [options]="boulderScales"
               optionLabel="label"
               optionValue="value"
               formControlName="defaultBoulderScale"
               lcFormControl
-            ></p-dropdown>
+            ></p-select>
           </div>
 
           <label
@@ -293,14 +299,14 @@
             {{ "SPORT" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-dropdown
+            <p-select
               id="defaultSportScale"
               [options]="sportScales"
               optionLabel="label"
               optionValue="value"
               formControlName="defaultSportScale"
               lcFormControl
-            ></p-dropdown>
+            ></p-select>
           </div>
 
           <label
@@ -310,14 +316,14 @@
             {{ "TRAD" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-dropdown
+            <p-select
               id="defaultTradScale"
               [options]="tradScales"
               optionLabel="label"
               optionValue="value"
               formControlName="defaultTradScale"
               lcFormControl
-            ></p-dropdown>
+            ></p-select>
           </div>
         </div>
       </form>

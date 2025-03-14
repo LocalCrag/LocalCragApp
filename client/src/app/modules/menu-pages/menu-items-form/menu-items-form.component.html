@@ -12,22 +12,22 @@
       <form [formGroup]="menuItemForm" lcForm *ngIf="menuPages">
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-          <p-dropdown
+          <p-select
             formControlName="type"
             [options]="types"
             lcFormControl
             id="type"
           >
-            <ng-template let-type pTemplate="item">
+            <ng-template let-type #item>
               <div class="flex align-items-center gap-2">
                 <div>{{ type | transloco }}</div>
               </div>
             </ng-template>
-            <ng-template let-selectedItem pTemplate="selectedItem">
+            <ng-template let-selectedItem #selectedItem>
               {{ selectedItem | transloco }}
             </ng-template>
-          </p-dropdown>
-          <small class="p-error" *lcIfError="'required'">{{
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
@@ -36,22 +36,22 @@
           <label class="form-label" for="position">{{
             t("positionLabel")
           }}</label>
-          <p-dropdown
+          <p-select
             id="position"
             formControlName="position"
             [options]="positions"
             lcFormControl
           >
-            <ng-template let-position pTemplate="item">
+            <ng-template let-position #item>
               <div class="flex align-items-center gap-2">
                 <div>{{ position | transloco }}</div>
               </div>
             </ng-template>
-            <ng-template let-selectedItem pTemplate="selectedItem">
+            <ng-template let-selectedItem #selectedItem>
               {{ selectedItem | transloco }}
             </ng-template>
-          </p-dropdown>
-          <small class="p-error" *lcIfError="'required'">{{
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
@@ -60,46 +60,46 @@
           <label class="form-label" for="menu-page">{{
             t("menuPageLabel")
           }}</label>
-          <p-dropdown
+          <p-select
             id="menu-page"
             formControlName="menuPage"
             [options]="menuPages"
             lcFormControl
           >
-            <ng-template let-menuPage pTemplate="item">
+            <ng-template let-menuPage #item>
               <div class="flex align-items-center gap-2">
                 <div>{{ menuPage.title }}</div>
               </div>
             </ng-template>
-            <ng-template let-selectedItem pTemplate="selectedItem">
+            <ng-template let-selectedItem #selectedItem>
               {{ selectedItem.title }}
             </ng-template>
-          </p-dropdown>
-          <small class="p-error" *lcIfError="'required'">{{
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="icon">{{ t("iconLabel") }}</label>
-          <p-dropdown
+          <p-select
             formControlName="icon"
             id="icon"
             [options]="icons"
             lcFormControl
           >
-            <ng-template let-icon pTemplate="item">
+            <ng-template let-icon #item>
               <div class="flex align-items-center gap-2">
                 <i class="pi" [ngClass]="icon"></i>
                 <div>{{ icon | transloco }}</div>
               </div>
             </ng-template>
-            <ng-template let-selectedIcon pTemplate="selectedItem">
+            <ng-template let-selectedIcon #selectedItem>
               <i class="pi" [ngClass]="selectedIcon"></i>
               {{ selectedIcon | transloco }}
             </ng-template>
-          </p-dropdown>
-          <small class="p-error" *lcIfError="'required'">{{
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
@@ -114,10 +114,10 @@
             placeholder="{{ t('titlePlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -132,13 +132,13 @@
             placeholder="{{ t('urlPlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'invalidHttpUrl'">{{
+          <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
             t("invalidHttpUrl")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>

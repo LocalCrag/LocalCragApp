@@ -8,9 +8,7 @@ import {
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
-import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
@@ -40,9 +38,6 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
     BreadcrumbModule,
     CardModule,
     NgIf,
-    RouterOutlet,
-    SecretSpotTagComponent,
-    TabMenuModule,
     TranslocoDirective,
     TimelineModule,
     ButtonModule,
@@ -51,6 +46,7 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
     NgClass,
     InfiniteScrollModule,
     MessageModule,
+    RouterLink,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',

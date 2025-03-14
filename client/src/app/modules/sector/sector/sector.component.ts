@@ -88,6 +88,7 @@ export class SectorComponent implements OnInit {
             icon: 'pi pi-fw pi-info-circle',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}`,
             routerLinkActiveOptions: { exact: true },
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.rules')),
@@ -99,26 +100,31 @@ export class SectorComponent implements OnInit {
             label: this.translocoService.translate(marker('sector.areas')),
             icon: 'pi pi-fw pi-sitemap',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.lines')),
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.ascents')),
             icon: 'pi pi-fw pi-check-square',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.ranking')),
             icon: 'pi pi-fw pi-trophy',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ranking`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.gallery')),
             icon: 'pi pi-fw pi-images',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('sector.edit')),

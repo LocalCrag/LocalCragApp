@@ -133,7 +133,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                   const img = new Image(100, 100);
                   img.onload = () => {
                     this.map.addImage(image.name, img);
-                    observer.next();
+                    observer.next(null);
                     observer.complete();
                   };
                   img.src = image.path;

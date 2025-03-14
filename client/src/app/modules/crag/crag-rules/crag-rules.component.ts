@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { MessagesModule } from 'primeng/messages';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -18,7 +17,6 @@ import { SharedModule } from '../../shared/shared.module';
   standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
-    MessagesModule,
     NgIf,
     SharedModule,
     SkeletonModule,

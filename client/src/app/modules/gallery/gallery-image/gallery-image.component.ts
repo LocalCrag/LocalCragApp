@@ -22,6 +22,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { User } from '../../../models/user';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'lc-gallery-image',
@@ -37,6 +38,7 @@ import { take } from 'rxjs/operators';
     HasPermissionDirective,
     NgIf,
     TranslocoDirective,
+    Tooltip,
   ],
   templateUrl: './gallery-image.component.html',
   styleUrl: './gallery-image.component.scss',

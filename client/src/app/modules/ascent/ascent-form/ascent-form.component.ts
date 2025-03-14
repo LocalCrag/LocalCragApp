@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 import {
@@ -25,8 +24,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { DividerModule } from 'primeng/divider';
@@ -35,12 +32,15 @@ import { filter } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { DatePickerModule } from 'primeng/datepicker';
+import { Select } from 'primeng/select';
+import { InputTextarea } from 'primeng/inputtextarea';
+import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'lc-ascent-form',
   standalone: true,
   imports: [
-    DropdownModule,
     EditorModule,
     InputTextModule,
     ReactiveFormsModule,
@@ -55,12 +55,14 @@ import { ScalesService } from '../../../services/crud/scales.service';
     SharedModule,
     SharedModule,
     RatingModule,
-    InputTextareaModule,
-    CalendarModule,
+    DatePickerModule,
     ToggleButtonModule,
     FormsModule,
     DividerModule,
     MessageModule,
+    Select,
+    InputTextarea,
+    Textarea,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',

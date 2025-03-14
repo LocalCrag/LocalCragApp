@@ -1,20 +1,18 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChildren,
+  ContentChild,
   ElementRef,
   HostListener,
   Input,
   OnChanges,
   OnInit,
-  QueryList,
   SimpleChanges,
   TemplateRef,
 } from '@angular/core';
-import { MenuItem, PrimeTemplate } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
@@ -31,18 +29,13 @@ import { BarsIcon } from 'primeng/icons/bars';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [HeaderMenuService],
 })
-export class HeaderMenuComponent
-  implements AfterContentInit, OnChanges, OnInit, AfterViewInit
-{
+export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() model: MenuItem[];
 
-  @ContentChildren(PrimeTemplate) templates:
-    | QueryList<PrimeTemplate>
-    | undefined;
+  @ContentChild('start', { static: true }) startTemplate: TemplateRef<any>;
+  @ContentChild('end', { static: true }) endTemplate: TemplateRef<any>;
 
   public processedModel: ProcessedMenuItem[];
-  public startTemplate: TemplateRef<any> | undefined;
-  public endTemplate: TemplateRef<any> | undefined;
   public isMobile = false;
   public mobileExpanded = false;
   public overflowDetected = false;
@@ -54,19 +47,6 @@ export class HeaderMenuComponent
     private cdr: ChangeDetectorRef,
     private el: ElementRef,
   ) {}
-
-  ngAfterContentInit() {
-    this.templates?.forEach((item) => {
-      switch (item.getType()) {
-        case 'start':
-          this.startTemplate = item.template;
-          break;
-        case 'end':
-          this.endTemplate = item.template;
-          break;
-      }
-    });
-  }
 
   ngOnInit() {
     this.onResize(Number(window.innerWidth));

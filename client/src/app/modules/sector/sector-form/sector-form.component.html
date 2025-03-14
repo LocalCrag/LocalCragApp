@@ -11,8 +11,8 @@
         <form [formGroup]="sectorForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-              t("sectorNameLabel")
-            }}</label>
+                t("sectorNameLabel")
+              }}</label>
             <input
               id="name"
               type="text"
@@ -22,18 +22,18 @@
               lcFormControl
               data-cy="sector-form-name"
             />
-            <small class="p-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
+            <small class="lc-error" *lcIfError="'required'">{{
+                t("required")
+              }}</small>
+            <small class="lc-error" *lcIfError="'maxlength'">{{
+                t("maxlength120")
+              }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="shortDescription">{{
-              t("sectorShortDescriptionLabel")
-            }}</label>
+                t("sectorShortDescriptionLabel")
+              }}</label>
             <p-editor
               id="shortDescription"
               formControlName="shortDescription"
@@ -43,7 +43,7 @@
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
               data-cy="sector-form-shortDescription"
             >
-              <ng-template pTemplate="header">
+              <ng-template #header>
                 <span class="ql-formats">
                   <button
                     type="button"
@@ -74,8 +74,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-              t("sectorDescriptionLabel")
-            }}</label>
+                t("sectorDescriptionLabel")
+              }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -86,7 +86,7 @@
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             >
-              <ng-template pTemplate="header">
+              <ng-template #header>
                 <span class="ql-formats">
                   <button
                     type="button"
@@ -141,8 +141,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rules">{{
-              t("sectorRulesLabel")
-            }}</label>
+                t("sectorRulesLabel")
+              }}</label>
             <p-editor
               id="rules"
               formControlName="rules"
@@ -152,7 +152,7 @@
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
               data-cy="sector-form-rules"
             >
-              <ng-template pTemplate="header">
+              <ng-template #header>
                 <span class="ql-formats">
                   <button
                     type="button"
@@ -183,8 +183,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
-              t("sectorPortraitImageLabel")
-            }}</label>
+                t("sectorPortraitImageLabel")
+              }}</label>
             <lc-single-image-upload
               id="portrait-image"
               lcFormControl
@@ -196,8 +196,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
-              t("mapMarkersLabel")
-            }}</label>
+                t("mapMarkersLabel")
+              }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -212,25 +212,31 @@
             lcControlGroup
             *ngIf="sector?.slug !== environment.skippedSlug"
           >
-            <label class="form-label" for="secret">{{
-              t("sectorOptionsLabel")
-            }}</label>
-            <p-checkbox
-              label="{{ t('secretLabel') }}"
-              name="secret"
-              id="secret"
-              [binary]="true"
-              formControlName="secret"
-              lcFormControl
-            ></p-checkbox>
-            <p-checkbox
-              label="{{ t('closedLabel') }}"
-              name="closed"
-              [binary]="true"
-              id="closed"
-              formControlName="closed"
-              lcFormControl
-            ></p-checkbox>
+            <label class="form-label">{{
+                t("sectorOptionsLabel")
+              }}</label>
+            <div class="flex flex-col gap-4">
+              <div class="flex">
+                <p-checkbox
+                  inputId="secret"
+                  name="secret"
+                  [binary]="true"
+                  formControlName="secret"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'secret'" class="ml-2">{{ t('secretLabel') }}</label>
+              </div>
+              <div class="flex">
+                <p-checkbox
+                  inputId="closed"
+                  name="closed"
+                  [binary]="true"
+                  formControlName="closed"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'closed'" class="ml-2">{{ t('closedLabel') }}</label>
+              </div>
+            </div>
           </div>
 
           <div class="grid align-items-center">
@@ -243,14 +249,14 @@
               {{ "BOULDER" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-              <p-dropdown
+              <p-select
                 id="defaultBoulderScale"
                 [options]="boulderScales"
                 optionLabel="label"
                 optionValue="value"
                 formControlName="defaultBoulderScale"
                 lcFormControl
-              ></p-dropdown>
+              ></p-select>
             </div>
 
             <label
@@ -260,14 +266,14 @@
               {{ "SPORT" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-              <p-dropdown
+              <p-select
                 id="defaultSportScale"
                 [options]="sportScales"
                 optionLabel="label"
                 optionValue="value"
                 formControlName="defaultSportScale"
                 lcFormControl
-              ></p-dropdown>
+              ></p-select>
             </div>
 
             <label
@@ -277,40 +283,32 @@
               {{ "TRAD" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-              <p-dropdown
+              <p-select
                 id="defaultTradScale"
                 [options]="tradScales"
                 optionLabel="label"
                 optionValue="value"
                 formControlName="defaultTradScale"
                 lcFormControl
-              ></p-dropdown>
+              ></p-select>
             </div>
           </div>
 
-          <p-messages
+          <p-message
             severity="warn"
+            icon="pi pi-info-circle"
             *ngIf="parentSecret && !sectorForm.get('secret').value"
           >
-            <ng-template pTemplate>
-              <i class="pi pi-info-circle"></i>
-              <div class="ml-2">
                 {{ t("aPublicSectorWillSetParentsToPublic") }}
-              </div>
-            </ng-template>
-          </p-messages>
+          </p-message>
 
-          <p-messages
+          <p-message
             severity="warn"
+            icon="pi pi-info-circle"
             *ngIf="parentClosed && !sectorForm.get('closed').value"
           >
-            <ng-template pTemplate>
-              <i class="pi pi-info-circle"></i>
-              <div class="ml-2">
                 {{ t("openingAClosedSectorWillSetParentsToOpen") }}
-              </div>
-            </ng-template>
-          </p-messages>
+          </p-message>
 
           <div
             class="flex flex-column gap-2"
@@ -318,8 +316,8 @@
             *ngIf="sectorForm.get('closed').value"
           >
             <label class="form-label" for="closedReason">{{
-              t("closedReasonLabel")
-            }}</label>
+                t("closedReasonLabel")
+              }}</label>
             <input
               id="closedReason"
               type="text"
