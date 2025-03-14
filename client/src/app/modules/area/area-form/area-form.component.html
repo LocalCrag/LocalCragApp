@@ -9,8 +9,8 @@
         <form [formGroup]="areaForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-                t("areaNameLabel")
-              }}</label>
+              t("areaNameLabel")
+            }}</label>
             <input
               id="name"
               type="text"
@@ -21,17 +21,17 @@
               data-cy="area-form-name"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
+              t("required")
+            }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="short-description">{{
-                t("areaShortDescriptionLabel")
-              }}</label>
+              t("areaShortDescriptionLabel")
+            }}</label>
             <p-editor
               id="short-description"
               formControlName="shortDescription"
@@ -72,8 +72,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-                t("areaDescriptionLabel")
-              }}</label>
+              t("areaDescriptionLabel")
+            }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -139,8 +139,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
-                t("areaPortraitImageLabel")
-              }}</label>
+              t("areaPortraitImageLabel")
+            }}</label>
             <lc-single-image-upload
               id="portrait-image"
               lcFormControl
@@ -152,8 +152,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
-                t("mapMarkersLabel")
-              }}</label>
+              t("mapMarkersLabel")
+            }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -164,9 +164,7 @@
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
-                t("secretOptionsLabel")
-              }}</label>
+            <label class="form-label">{{ t("secretOptionsLabel") }}</label>
             <div class="flex flex-col gap-4">
               <div class="flex">
                 <p-checkbox
@@ -176,7 +174,9 @@
                   formControlName="secret"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'secret'" class="ml-2">{{ t('secretLabel') }}</label>
+                <label [for]="'secret'" class="ml-2">{{
+                  t("secretLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -186,7 +186,9 @@
                   formControlName="closed"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'closed'" class="ml-2">{{ t('closedLabel') }}</label>
+                <label [for]="'closed'" class="ml-2">{{
+                  t("closedLabel")
+                }}</label>
               </div>
             </div>
           </div>
@@ -251,7 +253,7 @@
             icon="pi pi-info-circle"
             *ngIf="parentSecret && !areaForm.get('secret').value"
           >
-              {{ t("aPublicAreaWillSetParentsToPublic") }}
+            {{ t("aPublicAreaWillSetParentsToPublic") }}
           </p-message>
 
           <p-message
@@ -259,7 +261,7 @@
             icon="pi pi-info-circle"
             *ngIf="parentClosed && !areaForm.get('closed').value"
           >
-              {{ t("openingAClosedAreaWillSetParentsToOpen") }}
+            {{ t("openingAClosedAreaWillSetParentsToOpen") }}
           </p-message>
 
           <div
@@ -268,8 +270,8 @@
             *ngIf="areaForm.get('closed').value"
           >
             <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
+              t("closedReasonLabel")
+            }}</label>
             <input
               id="closedReason"
               type="text"

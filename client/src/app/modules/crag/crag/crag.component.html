@@ -11,14 +11,21 @@
       *ngIf="crag?.slug !== environment.skippedSlug"
     ></p-breadcrumb>
 
-    <p-tabs [value]="tabsDirective.activeTabIndex()"
-            scrollable lcSetActiveTab
-            #tabsDirective="lcSetActiveTab"
-            [items]="items"
-            *ngIf="crag">
+    <p-tabs
+      [value]="tabsDirective.activeTabIndex()"
+      scrollable
+      lcSetActiveTab
+      #tabsDirective="lcSetActiveTab"
+      [items]="items"
+      *ngIf="crag"
+    >
       <p-tablist>
         @for (tab of items; track $index) {
-          <p-tab [value]="$index" [routerLink]="tab.routerLink" *ngIf="tab.visible">
+          <p-tab
+            [value]="$index"
+            [routerLink]="tab.routerLink"
+            *ngIf="tab.visible"
+          >
             <i [class]="tab.icon" style="font-size: 1rem"></i>
             {{ tab.label }}
           </p-tab>

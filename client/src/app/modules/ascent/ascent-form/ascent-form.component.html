@@ -120,7 +120,9 @@
         [onLabel]="t('hard')"
         [offLabel]="t('hard')"
       ></p-toggleButton>
-      <small class="lc-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{
+        t("required")
+      }}</small>
     </div>
     <p-message
       severity="warn"
@@ -142,7 +144,9 @@
         lcFormControl
         data-cy="rating"
       ></p-rating>
-      <small class="lc-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{
+        t("required")
+      }}</small>
     </div>
 
     <p-divider align="center" type="dotted">

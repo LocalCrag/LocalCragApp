@@ -247,10 +247,7 @@
           <div
             class="col-12"
             formArrayName="barChartBrackets"
-            *ngFor="
-              let _ of barChartBracketsControls().controls;
-              let i = index
-            "
+            *ngFor="let _ of barChartBracketsControls().controls; let i = index"
           >
             <div [formGroupName]="i" class="flex gap-4 mb-2">
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->

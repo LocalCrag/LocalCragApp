@@ -22,11 +22,11 @@
             data-cy="register-form-firstname"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
+            t("required")
+          }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
@@ -39,11 +39,11 @@
             data-cy="register-form-lastname"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
+            t("required")
+          }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div formGroupName="emails">
@@ -57,17 +57,17 @@
               data-cy="register-form-email"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
-            <small  class="lc-error" *lcIfError="'pattern'">{{
-                t("invalidEmailHint")
-              }}</small>
+              t("required")
+            }}</small>
+            <small class="lc-error" *lcIfError="'pattern'">{{
+              t("invalidEmailHint")
+            }}</small>
             <small class="lc-error" *lcIfError="'emailTaken'">{{
-                t("emailTaken")
-              }}</small>
+              t("emailTaken")
+            }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div
@@ -84,17 +84,17 @@
               data-cy="register-form-email-confirm"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
+              t("required")
+            }}</small>
             <small class="lc-error" *lcIfError="'pattern'">{{
-                t("invalidEmailHint")
-              }}</small>
+              t("invalidEmailHint")
+            }}</small>
             <small class="lc-error" *lcIfError="'emailTaken'">{{
-                t("emailTaken")
-              }}</small>
+              t("emailTaken")
+            }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
         </div>
       </form>
@@ -104,7 +104,7 @@
         class="mt-4"
         *ngIf="savePressed && emailsDontMatch()"
       >
-        {{ t('emailsDontMatchAlertText') }}
+        {{ t("emailsDontMatchAlertText") }}
       </p-message>
 
       <p-button

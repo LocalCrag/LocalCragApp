@@ -9,8 +9,8 @@
         <form [formGroup]="lineForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-                t("lineNameLabel")
-              }}</label>
+              t("lineNameLabel")
+            }}</label>
             <input
               type="text"
               pInputText
@@ -21,17 +21,17 @@
               data-cy="line-form-name"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
+              t("required")
+            }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-                t("lineDescriptionLabel")
-              }}</label>
+              t("lineDescriptionLabel")
+            }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -128,8 +128,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
-                t("lineGradeLabel")
-              }}</label>
+              t("lineGradeLabel")
+            }}</label>
             <p-select
               formControlName="grade"
               id="grade"
@@ -153,14 +153,14 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
+              t("required")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="starting-position">{{
-                t("startingPositionLabel")
-              }}</label>
+              t("startingPositionLabel")
+            }}</label>
             <p-select
               id="starting-position"
               formControlName="startingPosition"
@@ -181,14 +181,14 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
+              t("required")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rating">{{
-                t("lineRatingLabel")
-              }}</label>
+              t("lineRatingLabel")
+            }}</label>
             <p-rating
               id="rating"
               formControlName="rating"
@@ -223,8 +223,8 @@
                 />
                 <div>
                   <small class="lc-error" *lcIfError="'required'">{{
-                      t("requiredValidationError")
-                    }}</small>
+                    t("requiredValidationError")
+                  }}</small>
                 </div>
               </div>
               <div
@@ -240,11 +240,11 @@
                 />
                 <div>
                   <small class="lc-error" *lcIfError="'required'">{{
-                      t("requiredValidationError")
-                    }}</small>
+                    t("requiredValidationError")
+                  }}</small>
                   <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
-                      t("invalidHttpUrlValidationError")
-                    }}</small>
+                    t("invalidHttpUrlValidationError")
+                  }}</small>
                 </div>
               </div>
               <p-button
@@ -267,8 +267,8 @@
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="fa-name">{{
-                t("lineFANameLabel")
-              }}</label>
+              t("lineFANameLabel")
+            }}</label>
             <input
               id="fa-name"
               type="text"
@@ -279,14 +279,14 @@
               data-cy="line-form-faName"
             />
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="fa-year">{{
-                t("lineFAYearLabel")
-              }}</label>
+              t("lineFAYearLabel")
+            }}</label>
             <p-date-picker
               id="fa-year"
               formControlName="faYear"
@@ -299,8 +299,8 @@
               data-cy="line-form-faYear"
             ></p-date-picker>
             <small class="lc-error" *lcIfError="'dateInFuture'">{{
-                t("yearInFutureValidationError")
-              }}</small>
+              t("yearInFutureValidationError")
+            }}</small>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -314,7 +314,9 @@
                   formControlName="eliminate"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'eliminate'" class="ml-2">{{ t('lineEliminateLabel') }}</label>
+                <label [for]="'eliminate'" class="ml-2">{{
+                  t("lineEliminateLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -325,7 +327,9 @@
                   lcFormControl
                   data-cy="line-form-highball"
                 ></p-checkbox>
-                <label [for]="'highball'" class="ml-2">{{ t('lineHighballLabel') }}</label>
+                <label [for]="'highball'" class="ml-2">{{
+                  t("lineHighballLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -335,7 +339,9 @@
                   formControlName="lowball"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'lowball'" class="ml-2">{{ t('lineLowballLabel') }}</label>
+                <label [for]="'lowball'" class="ml-2">{{
+                  t("lineLowballLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -345,7 +351,9 @@
                   formControlName="morpho"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'morpho'" class="ml-2">{{ t('lineMorphoLabel') }}</label>
+                <label [for]="'morpho'" class="ml-2">{{
+                  t("lineMorphoLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -355,7 +363,9 @@
                   formControlName="noTopout"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'noTopout'" class="ml-2">{{ t('lineNoTopoutLabel') }}</label>
+                <label [for]="'noTopout'" class="ml-2">{{
+                  t("lineNoTopoutLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -365,7 +375,9 @@
                   formControlName="badDropzone"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'badDropzone'" class="ml-2">{{ t('lineBadDropzoneLabel') }}</label>
+                <label [for]="'badDropzone'" class="ml-2">{{
+                  t("lineBadDropzoneLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -375,15 +387,15 @@
                   formControlName="childFriendly"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'childFriendly'" class="ml-2">{{ t('lineChildFriendlyLabel') }}</label>
+                <label [for]="'childFriendly'" class="ml-2">{{
+                  t("lineChildFriendlyLabel")
+                }}</label>
               </div>
             </div>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
-                t("lineTypeLabel")
-              }}</label>
+            <label class="form-label">{{ t("lineTypeLabel") }}</label>
             <div class="flex flex-col gap-4">
               <div class="flex">
                 <p-checkbox
@@ -393,7 +405,9 @@
                   formControlName="roof"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'roof'" class="ml-2">{{ t('lineRoofLabel') }}</label>
+                <label [for]="'roof'" class="ml-2">{{
+                  t("lineRoofLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -403,7 +417,9 @@
                   formControlName="overhang"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'overhang'" class="ml-2">{{ t('lineOverhangLabel') }}</label>
+                <label [for]="'overhang'" class="ml-2">{{
+                  t("lineOverhangLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -413,7 +429,9 @@
                   formControlName="vertical"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'vertical'" class="ml-2">{{ t('lineVerticalLabel') }}</label>
+                <label [for]="'vertical'" class="ml-2">{{
+                  t("lineVerticalLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -423,7 +441,9 @@
                   formControlName="slab"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'slab'" class="ml-2">{{ t('lineSlabLabel') }}</label>
+                <label [for]="'slab'" class="ml-2">{{
+                  t("lineSlabLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -433,7 +453,9 @@
                   formControlName="traverse"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'traverse'" class="ml-2">{{ t('lineTraverseLabel') }}</label>
+                <label [for]="'traverse'" class="ml-2">{{
+                  t("lineTraverseLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -443,7 +465,9 @@
                   formControlName="dihedral"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'dihedral'" class="ml-2">{{ t('lineDihedralLabel') }}</label>
+                <label [for]="'dihedral'" class="ml-2">{{
+                  t("lineDihedralLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -453,7 +477,9 @@
                   formControlName="compression"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'compression'" class="ml-2">{{ t('lineCompressionLabel') }}</label>
+                <label [for]="'compression'" class="ml-2">{{
+                  t("lineCompressionLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -463,7 +489,9 @@
                   formControlName="arete"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'arete'" class="ml-2">{{ t('lineAreteLabel') }}</label>
+                <label [for]="'arete'" class="ml-2">{{
+                  t("lineAreteLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -473,7 +501,9 @@
                   formControlName="crack"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'crack'" class="ml-2">{{ t('lineCrackLabel') }}</label>
+                <label [for]="'crack'" class="ml-2">{{
+                  t("lineCrackLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -483,7 +513,9 @@
                   formControlName="dyno"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'dyno'" class="ml-2">{{ t('lineDynoLabel') }}</label>
+                <label [for]="'dyno'" class="ml-2">{{
+                  t("lineDynoLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -493,15 +525,15 @@
                   formControlName="mantle"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'mantle'" class="ml-2">{{ t('lineMantleLabel') }}</label>
+                <label [for]="'mantle'" class="ml-2">{{
+                  t("lineMantleLabel")
+                }}</label>
               </div>
             </div>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
-                t("lineKeyAspectsLabel")
-              }}</label>
+            <label class="form-label">{{ t("lineKeyAspectsLabel") }}</label>
             <div class="flex flex-col gap-4">
               <div class="flex">
                 <p-checkbox
@@ -511,7 +543,9 @@
                   formControlName="athletic"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'athletic'" class="ml-2">{{ t('lineAthleticLabel') }}</label>
+                <label [for]="'athletic'" class="ml-2">{{
+                  t("lineAthleticLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -521,7 +555,9 @@
                   formControlName="technical"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'technical'" class="ml-2">{{ t('lineTechnicalLabel') }}</label>
+                <label [for]="'technical'" class="ml-2">{{
+                  t("lineTechnicalLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -531,7 +567,9 @@
                   formControlName="endurance"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'endurance'" class="ml-2">{{ t('lineEnduranceLabel') }}</label>
+                <label [for]="'endurance'" class="ml-2">{{
+                  t("lineEnduranceLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -541,15 +579,17 @@
                   formControlName="cruxy"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'cruxy'" class="ml-2">{{ t('lineCruxyLabel') }}</label>
+                <label [for]="'cruxy'" class="ml-2">{{
+                  t("lineCruxyLabel")
+                }}</label>
               </div>
             </div>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{
-                t("linePrimaryHoldTypesLabel")
-              }}</label>
+              t("linePrimaryHoldTypesLabel")
+            }}</label>
             <div class="flex flex-col gap-4">
               <div class="flex">
                 <p-checkbox
@@ -559,7 +599,9 @@
                   formControlName="jugs"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'jugs'" class="ml-2">{{ t('lineJugsLabel') }}</label>
+                <label [for]="'jugs'" class="ml-2">{{
+                  t("lineJugsLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -569,7 +611,9 @@
                   formControlName="sloper"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'sloper'" class="ml-2">{{ t('lineSloperLabel') }}</label>
+                <label [for]="'sloper'" class="ml-2">{{
+                  t("lineSloperLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -579,7 +623,9 @@
                   formControlName="crimps"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'crimps'" class="ml-2">{{ t('lineCrimpsLabel') }}</label>
+                <label [for]="'crimps'" class="ml-2">{{
+                  t("lineCrimpsLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -589,7 +635,9 @@
                   formControlName="pockets"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'pockets'" class="ml-2">{{ t('linePocketsLabel') }}</label>
+                <label [for]="'pockets'" class="ml-2">{{
+                  t("linePocketsLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -599,15 +647,15 @@
                   formControlName="pinches"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'pinches'" class="ml-2">{{ t('linePinchesLabel') }}</label>
+                <label [for]="'pinches'" class="ml-2">{{
+                  t("linePinchesLabel")
+                }}</label>
               </div>
             </div>
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{
-                t("lineOptionsLabel")
-              }}</label>
+            <label class="form-label">{{ t("lineOptionsLabel") }}</label>
             <div class="flex flex-col gap-4">
               <div class="flex">
                 <p-checkbox
@@ -617,7 +665,9 @@
                   formControlName="secret"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'secret'" class="ml-2">{{ t('secretLabel') }}</label>
+                <label [for]="'secret'" class="ml-2">{{
+                  t("secretLabel")
+                }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -627,7 +677,9 @@
                   formControlName="closed"
                   lcFormControl
                 ></p-checkbox>
-                <label [for]="'closed'" class="ml-2">{{ t('closedLabel') }}</label>
+                <label [for]="'closed'" class="ml-2">{{
+                  t("closedLabel")
+                }}</label>
               </div>
             </div>
           </div>
@@ -654,8 +706,8 @@
             *ngIf="lineForm.get('closed').value"
           >
             <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
+              t("closedReasonLabel")
+            }}</label>
             <input
               id="closedReason"
               type="text"
