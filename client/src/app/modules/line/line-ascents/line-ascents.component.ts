@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +19,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
   selector: 'lc-line-ascents',
   imports: [
     AscentListComponent,
-    NgForOf,
     NgIf,
     SkeletonModule,
     AscentListSkeletonComponent,

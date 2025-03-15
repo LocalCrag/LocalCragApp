@@ -192,8 +192,8 @@ export function preloadInstanceSettings(
       deps: [Router],
     },
     provideAppInitializer(() => {
-      const initializerFn = (() => () => {})(inject(Sentry.TraceService));
-      return initializerFn();
+      inject(Sentry.TraceService);
+      return Promise.resolve();
     }),
     {
       provide: LOCALE_ID,

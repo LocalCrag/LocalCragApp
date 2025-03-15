@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Searchable } from '../../../models/searchable';
 import { AvatarModule } from 'primeng/avatar';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -15,14 +15,7 @@ import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-searchable',
-  imports: [
-    AvatarModule,
-    NgIf,
-    TranslocoDirective,
-    RouterLink,
-    AsyncPipe,
-    SharedModule,
-  ],
+  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, SharedModule],
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
   encapsulation: ViewEncapsulation.None,

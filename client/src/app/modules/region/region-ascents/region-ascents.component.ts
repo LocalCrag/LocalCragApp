@@ -8,7 +8,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
@@ -16,7 +16,6 @@ import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/a
   selector: 'lc-region-ascents',
   imports: [
     AscentListComponent,
-    NgForOf,
     SkeletonModule,
     NgIf,
     AscentListSkeletonComponent,

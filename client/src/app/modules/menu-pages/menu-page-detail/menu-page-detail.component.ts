@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { TranslocoDirective } from '@jsverse/transloco';
 import { MenuPage } from '../../../models/menu-page';
 import { SharedModule } from '../../shared/shared.module';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
@@ -12,7 +11,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-menu-page-detail',
-  imports: [CardModule, TranslocoDirective, SharedModule, NgIf, SkeletonModule],
+  imports: [CardModule, SharedModule, NgIf, SkeletonModule],
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss',
 })

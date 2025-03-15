@@ -18,7 +18,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { User } from '../../../models/user';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
@@ -34,7 +33,6 @@ import { Tooltip } from 'primeng/tooltip';
     ButtonModule,
     ConfirmPopupModule,
     SpeedDialModule,
-    HasPermissionDirective,
     NgIf,
     TranslocoDirective,
     Tooltip,

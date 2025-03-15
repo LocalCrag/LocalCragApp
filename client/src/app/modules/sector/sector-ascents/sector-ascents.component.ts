@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,6 @@ import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/a
     AscentListComponent,
     NgIf,
     SkeletonModule,
-    NgForOf,
     AscentListSkeletonComponent,
   ],
   templateUrl: './sector-ascents.component.html',

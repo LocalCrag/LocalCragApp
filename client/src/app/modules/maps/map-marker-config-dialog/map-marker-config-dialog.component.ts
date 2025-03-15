@@ -18,11 +18,7 @@ import {
 } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
-import {
-  TRANSLOCO_SCOPE,
-  TranslocoDirective,
-  TranslocoPipe,
-} from '@jsverse/transloco';
+import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
 import { Editor, EditorModule } from 'primeng/editor';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { ColorPickerModule } from 'primeng/colorpicker';
@@ -50,7 +46,6 @@ import { Select } from 'primeng/select';
     CoordinatesComponent,
     ColorPickerModule,
     ToggleButtonModule,
-    TranslocoPipe,
     DialogModule,
     ButtonModule,
     NgIf,

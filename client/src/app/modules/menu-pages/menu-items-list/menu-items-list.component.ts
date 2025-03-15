@@ -17,7 +17,7 @@ import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenuItemType } from '../../../enums/menu-item-type';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
@@ -25,7 +25,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -33,14 +32,12 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
     CardModule,
     DataViewModule,
     ButtonModule,
-    AsyncPipe,
     NgClass,
     RouterLink,
     TranslocoDirective,
     NgIf,
     NgForOf,
     TranslocoPipe,
-    HasPermissionDirective,
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
@@ -23,12 +23,10 @@ import { Select } from 'primeng/select';
 @Component({
   selector: 'lc-menu-pages-list',
   imports: [
-    AsyncPipe,
     ButtonModule,
     CardModule,
     DataViewModule,
     NgForOf,
-    NgIf,
     RouterLink,
     SharedModule,
     TranslocoDirective,

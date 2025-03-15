@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -31,7 +31,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
     Tab,
     RouterLink,
     SetActiveTabDirective,
-    AsyncPipe,
   ],
   templateUrl: './region.component.html',
   styleUrl: './region.component.scss',

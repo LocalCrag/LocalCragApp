@@ -9,7 +9,6 @@ import {
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { NgIf } from '@angular/common';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Line } from '../../../models/line';
@@ -28,7 +27,6 @@ import { Textarea } from 'primeng/textarea';
     DividerModule,
     ButtonModule,
     MessageModule,
-    NgIf,
     TranslocoDirective,
     Textarea,
   ],

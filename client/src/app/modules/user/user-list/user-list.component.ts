@@ -1,17 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { LineModule } from '../../line/line.module';
 import { RatingModule } from 'primeng/rating';
-import { RouterLink } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import {
   ConfirmationService,
@@ -53,9 +48,7 @@ import { Select } from 'primeng/select';
     NgForOf,
     NgIf,
     RatingModule,
-    RouterLink,
     SharedModule,
-    TranslocoPipe,
     NgClass,
     FormsModule,
     AvatarModule,

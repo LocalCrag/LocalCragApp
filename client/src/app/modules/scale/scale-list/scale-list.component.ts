@@ -9,7 +9,7 @@ import {
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
-import { NgClass, NgForOf } from '@angular/common';
+import { NgForOf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -34,7 +34,6 @@ import { CardModule } from 'primeng/card';
     RatingModule,
     SharedModule,
     TagModule,
-    NgClass,
     CardModule,
     TranslocoPipe,
   ],

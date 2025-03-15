@@ -34,7 +34,6 @@ import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
-import { InputTextarea } from 'primeng/inputtextarea';
 import { Textarea } from 'primeng/textarea';
 
 @Component({
@@ -44,15 +43,11 @@ import { Textarea } from 'primeng/textarea';
     InputTextModule,
     ReactiveFormsModule,
     SharedModule,
-    SharedModule,
     CheckboxModule,
-    SharedModule,
     ButtonModule,
     ConfirmPopupModule,
     NgIf,
     TranslocoDirective,
-    SharedModule,
-    SharedModule,
     RatingModule,
     DatePickerModule,
     ToggleButtonModule,
@@ -60,7 +55,6 @@ import { Textarea } from 'primeng/textarea';
     DividerModule,
     MessageModule,
     Select,
-    InputTextarea,
     Textarea,
   ],
   templateUrl: './ascent-form.component.html',

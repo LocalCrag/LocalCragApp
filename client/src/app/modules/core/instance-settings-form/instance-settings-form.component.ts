@@ -19,9 +19,7 @@ import { InstanceSettingsService } from '../../../services/crud/instance-setting
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { SharedModule } from '../../shared/shared.module';
 import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
@@ -29,7 +27,6 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
 import { PasswordModule } from 'primeng/password';
-import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Select } from 'primeng/select';
@@ -41,19 +38,15 @@ import { Select } from 'primeng/select';
     CardModule,
     ConfirmPopupModule,
     EditorModule,
-    CoordinatesComponent,
     InputTextModule,
-    NgIf,
     PaginatorModule,
     ReactiveFormsModule,
-    SharedModule,
     SharedModule,
     TranslocoDirective,
     ColorPickerModule,
     DividerModule,
     PasswordModule,
     DividerModule,
-    GymModeDirective,
     TooltipModule,
     ToggleSwitch,
     Select,

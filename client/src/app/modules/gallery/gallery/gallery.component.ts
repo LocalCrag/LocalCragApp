@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ImageModule } from 'primeng/image';
-import { NgForOf, NgIf, NgStyle } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
@@ -34,7 +34,6 @@ import { Message } from 'primeng/message';
   imports: [
     ImageModule,
     NgForOf,
-    NgStyle,
     GalleryImageComponent,
     ButtonModule,
     TranslocoDirective,

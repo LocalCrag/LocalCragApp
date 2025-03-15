@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { Tag } from '../../../../models/tag';
 import { TagModule } from 'primeng/tag';
-import { NgIf } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
 import { EntityLinkPipe } from '../../pipes/entity-link.pipe';
@@ -18,7 +17,6 @@ import { Searchable } from '../../../../models/searchable';
   selector: 'lc-tag',
   imports: [
     TagModule,
-    NgIf,
     AvatarModule,
     EntityLinkPipe,
     RouterLink,

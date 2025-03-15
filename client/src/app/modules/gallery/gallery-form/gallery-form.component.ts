@@ -10,7 +10,7 @@ import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { JsonPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -44,7 +44,6 @@ import { Message } from 'primeng/message';
     ButtonModule,
     MultiSelectModule,
     AutoCompleteModule,
-    JsonPipe,
     SearchableComponent,
     Message,
   ],

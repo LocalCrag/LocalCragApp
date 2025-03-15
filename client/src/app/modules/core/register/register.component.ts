@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -30,7 +30,6 @@ import { emailsValidator } from '../../../utility/validators/emails.validator';
 @Component({
   selector: 'lc-register',
   imports: [
-    AsyncPipe,
     ButtonModule,
     InputTextModule,
     PasswordModule,
