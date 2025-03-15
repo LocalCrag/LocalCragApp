@@ -9,7 +9,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-gallery-image-skeleton',
-  standalone: true,
   imports: [
     CardModule,
     ImageModule,

@@ -31,7 +31,6 @@ import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-gallery',
-  standalone: true,
   imports: [
     ImageModule,
     NgForOf,

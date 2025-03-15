@@ -39,7 +39,6 @@ import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'lc-ascent-form',
-  standalone: true,
   imports: [
     EditorModule,
     InputTextModule,

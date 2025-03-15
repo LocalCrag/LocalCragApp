@@ -41,6 +41,7 @@ import { LineType } from '../../../enums/line-type';
   templateUrl: './sector-form.component.html',
   styleUrls: ['./sector-form.component.scss'],
   providers: [ConfirmationService],
+  standalone: false,
 })
 @UntilDestroy()
 export class SectorFormComponent implements OnInit {

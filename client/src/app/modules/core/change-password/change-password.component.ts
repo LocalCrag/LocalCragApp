@@ -26,6 +26,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ChangePasswordComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

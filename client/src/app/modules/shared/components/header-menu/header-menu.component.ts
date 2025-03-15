@@ -22,7 +22,6 @@ import { BarsIcon } from 'primeng/icons/bars';
 
 @Component({
   selector: 'lc-header-menu',
-  standalone: true,
   imports: [NgIf, NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',

@@ -41,7 +41,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     SharedModule,

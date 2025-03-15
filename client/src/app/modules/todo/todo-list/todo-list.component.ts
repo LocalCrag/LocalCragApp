@@ -45,7 +45,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-todo-list',
-  standalone: true,
   imports: [
     AvatarModule,
     ButtonModule,

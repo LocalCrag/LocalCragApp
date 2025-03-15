@@ -13,7 +13,6 @@ import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/
 
 @Component({
   selector: 'lc-tick-button',
-  standalone: true,
   imports: [ButtonModule, NgIf, SharedModule, NgClass, TranslocoDirective],
   templateUrl: './tick-button.component.html',
   styleUrl: './tick-button.component.scss',

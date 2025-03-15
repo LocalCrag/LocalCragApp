@@ -13,7 +13,6 @@ import { SectorsService } from '../../../services/crud/sectors.service';
  */
 @Component({
   selector: 'lc-sector-rules',
-  standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
     NgIf,

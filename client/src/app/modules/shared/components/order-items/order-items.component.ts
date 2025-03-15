@@ -16,6 +16,7 @@ import { ScalesService } from '../../../../services/crud/scales.service';
   selector: 'lc-order-items',
   templateUrl: './order-items.component.html',
   styleUrls: ['./order-items.component.scss'],
+  standalone: false,
 })
 export class OrderItemsComponent {
   public items: AbstractModel[];

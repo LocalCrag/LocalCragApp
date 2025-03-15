@@ -22,6 +22,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
   templateUrl: './sector-list.component.html',
   styleUrls: ['./sector-list.component.scss'],
   providers: [DialogService],
+  standalone: false,
 })
 @UntilDestroy()
 export class SectorListComponent implements OnInit {

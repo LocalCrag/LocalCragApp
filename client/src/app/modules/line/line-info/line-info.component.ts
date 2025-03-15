@@ -24,6 +24,7 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
   providers: [DialogService],
+  standalone: false,
 })
 @UntilDestroy()
 export class LineInfoComponent implements OnInit {

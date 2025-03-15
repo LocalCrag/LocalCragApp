@@ -36,7 +36,6 @@ import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-gallery-form',
-  standalone: true,
   imports: [
     TranslocoDirective,
     NgIf,

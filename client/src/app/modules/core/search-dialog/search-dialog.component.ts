@@ -16,7 +16,6 @@ import { SearchableComponent } from '../searchable/searchable.component';
 
 @Component({
   selector: 'lc-search-dialog',
-  standalone: true,
   imports: [
     InputTextModule,
     FormsModule,

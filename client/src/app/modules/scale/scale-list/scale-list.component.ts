@@ -21,7 +21,6 @@ import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'lc-scale-list',
-  standalone: true,
   templateUrl: './scale-list.component.html',
   styleUrl: './scale-list.component.scss',
   imports: [

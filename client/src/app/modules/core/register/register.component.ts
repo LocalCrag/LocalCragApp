@@ -29,7 +29,6 @@ import { emailsValidator } from '../../../utility/validators/emails.validator';
 
 @Component({
   selector: 'lc-register',
-  standalone: true,
   imports: [
     AsyncPipe,
     ButtonModule,

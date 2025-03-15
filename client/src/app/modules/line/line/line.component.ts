@@ -26,6 +26,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 @UntilDestroy()
 export class LineComponent implements OnInit {

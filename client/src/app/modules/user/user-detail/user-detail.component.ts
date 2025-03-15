@@ -22,7 +22,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 @Component({
   selector: 'lc-user-detail',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,

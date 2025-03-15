@@ -15,6 +15,7 @@ import { take } from 'rxjs/operators';
   selector: 'lc-root',
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
+  standalone: false,
 })
 export class CoreComponent implements OnInit {
   constructor(

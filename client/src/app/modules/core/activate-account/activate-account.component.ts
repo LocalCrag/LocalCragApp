@@ -17,7 +17,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
  */
 @Component({
   selector: 'lc-activate-account',
-  standalone: true,
   imports: [
     ButtonModule,
     InputTextModule,

@@ -1,8 +1,9 @@
 import {
-  APP_INITIALIZER,
   ErrorHandler,
   LOCALE_ID,
   NgModule,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import * as Sentry from '@sentry/angular';
@@ -190,12 +191,10 @@ export function preloadInstanceSettings(
       provide: Sentry.TraceService,
       deps: [Router],
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [Sentry.TraceService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (() => () => {})(inject(Sentry.TraceService));
+      return initializerFn();
+    }),
     {
       provide: LOCALE_ID,
       useValue: environment.language,
@@ -221,24 +220,24 @@ export function preloadInstanceSettings(
       multi: true,
     },
     MessageService,
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [TranslocoService, Store],
-      useFactory: preloadTranslations,
-    },
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [InstanceSettingsService, Store],
-      useFactory: preloadInstanceSettings,
-    },
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [MenuItemsService],
-      useFactory: preloadMenus,
-    },
+    provideAppInitializer(() => {
+      const initializerFn = preloadTranslations(
+        inject(TranslocoService),
+        inject(Store),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = preloadInstanceSettings(
+        inject(InstanceSettingsService),
+        inject(Store),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = preloadMenus(inject(MenuItemsService));
+      return initializerFn();
+    }),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
     providePrimeNG({

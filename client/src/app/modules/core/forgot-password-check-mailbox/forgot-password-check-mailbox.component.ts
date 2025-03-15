@@ -12,6 +12,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-forgot-password-check-mailbox',
   templateUrl: './forgot-password-check-mailbox.component.html',
   styleUrls: ['./forgot-password-check-mailbox.component.scss'],
+  standalone: false,
 })
 export class ForgotPasswordCheckMailboxComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

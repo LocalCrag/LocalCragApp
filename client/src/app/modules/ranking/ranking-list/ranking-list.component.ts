@@ -21,7 +21,6 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'lc-ranking-list',
-  standalone: true,
   imports: [
     DataViewModule,
     NgForOf,

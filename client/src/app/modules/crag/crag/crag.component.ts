@@ -18,6 +18,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class CragComponent implements OnInit {

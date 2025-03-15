@@ -15,7 +15,6 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-archive-button',
-  standalone: true,
   imports: [
     ButtonModule,
     NgIf,

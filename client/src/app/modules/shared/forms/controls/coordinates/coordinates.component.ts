@@ -28,7 +28,6 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-coordinates',
-  standalone: true,
   imports: [
     TranslocoDirective,
     SharedModule,

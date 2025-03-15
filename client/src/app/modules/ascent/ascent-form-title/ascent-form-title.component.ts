@@ -7,7 +7,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-ascent-form-title',
-  standalone: true,
   imports: [AsyncPipe, SharedModule],
   templateUrl: './ascent-form-title.component.html',
   styleUrl: './ascent-form-title.component.scss',

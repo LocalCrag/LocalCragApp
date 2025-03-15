@@ -12,7 +12,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-menu-page-detail',
-  standalone: true,
   imports: [CardModule, TranslocoDirective, SharedModule, NgIf, SkeletonModule],
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss',

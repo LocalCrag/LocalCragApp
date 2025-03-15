@@ -12,6 +12,7 @@ import { GradeDistribution } from '../../../models/scale';
   selector: 'lc-sector-info',
   templateUrl: './sector-info.component.html',
   styleUrls: ['./sector-info.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class SectorInfoComponent implements OnInit {

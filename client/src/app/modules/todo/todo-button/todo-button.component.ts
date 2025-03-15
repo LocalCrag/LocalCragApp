@@ -12,7 +12,6 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 
 @Component({
   selector: 'lc-todo-button',
-  standalone: true,
   imports: [ButtonModule, NgIf, SharedModule, TranslocoDirective, NgClass],
   templateUrl: './todo-button.component.html',
   styleUrl: './todo-button.component.scss',

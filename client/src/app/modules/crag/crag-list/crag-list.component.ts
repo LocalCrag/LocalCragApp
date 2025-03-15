@@ -21,6 +21,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './crag-list.component.html',
   styleUrls: ['./crag-list.component.scss'],
   providers: [DialogService],
+  standalone: false,
 })
 @UntilDestroy()
 export class CragListComponent implements OnInit {

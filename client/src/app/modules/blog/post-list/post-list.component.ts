@@ -26,7 +26,6 @@ import { DataView } from 'primeng/dataview';
  */
 @Component({
   selector: 'lc-post-list',
-  standalone: true,
   imports: [
     DataView,
     ButtonModule,

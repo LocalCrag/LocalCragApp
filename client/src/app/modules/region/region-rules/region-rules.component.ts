@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
  */
 @Component({
   selector: 'lc-region-rules',
-  standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
     NgIf,

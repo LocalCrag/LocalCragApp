@@ -26,7 +26,6 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'lc-gallery-image',
-  standalone: true,
   imports: [
     CardModule,
     ImageModule,

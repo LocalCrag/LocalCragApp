@@ -51,7 +51,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lc-ascent-list',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,

@@ -14,7 +14,6 @@ import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/a
 
 @Component({
   selector: 'lc-region-ascents',
-  standalone: true,
   imports: [
     AscentListComponent,
     NgForOf,

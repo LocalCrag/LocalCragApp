@@ -19,6 +19,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss'],
+  standalone: false,
 })
 export class ForgotPasswordComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

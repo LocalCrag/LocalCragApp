@@ -6,6 +6,7 @@ import { format } from 'date-fns';
  */
 @Pipe({
   name: 'date',
+  standalone: false,
 })
 export class DatePipe implements PipeTransform {
   /**

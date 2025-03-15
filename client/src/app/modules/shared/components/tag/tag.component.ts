@@ -16,7 +16,6 @@ import { Searchable } from '../../../../models/searchable';
 
 @Component({
   selector: 'lc-tag',
-  standalone: true,
   imports: [
     TagModule,
     NgIf,

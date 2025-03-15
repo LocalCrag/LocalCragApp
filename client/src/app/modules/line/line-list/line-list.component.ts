@@ -51,7 +51,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-line-list',
-  standalone: true,
   imports: [
     AscentCountComponent,
     ButtonModule,

@@ -22,7 +22,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-menu-pages-list',
-  standalone: true,
   imports: [
     AsyncPipe,
     ButtonModule,

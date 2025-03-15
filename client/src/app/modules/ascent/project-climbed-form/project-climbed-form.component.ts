@@ -22,7 +22,6 @@ import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'lc-project-climbed-form',
-  standalone: true,
   imports: [
     SharedModule,
     ReactiveFormsModule,

@@ -14,7 +14,6 @@ import { SharedModule } from '../../shared/shared.module';
  */
 @Component({
   selector: 'lc-crag-rules',
-  standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
     NgIf,

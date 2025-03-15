@@ -17,7 +17,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line-ascents',
-  standalone: true,
   imports: [
     AscentListComponent,
     NgForOf,

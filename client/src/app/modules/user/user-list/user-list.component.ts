@@ -43,7 +43,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-user-list',
-  standalone: true,
   imports: [
     CardModule,
     TranslocoDirective,

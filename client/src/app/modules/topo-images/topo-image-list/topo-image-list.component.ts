@@ -37,6 +37,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
   styleUrls: ['./topo-image-list.component.scss'],
   providers: [ConfirmationService, DialogService],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 @UntilDestroy()
 export class TopoImageListComponent implements OnInit {

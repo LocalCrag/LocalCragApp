@@ -15,7 +15,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-user-ascents',
-  standalone: true,
   imports: [AscentListComponent, NgIf, SkeletonModule, NgForOf],
   templateUrl: './user-ascents.component.html',
   styleUrl: './user-ascents.component.scss',

@@ -27,7 +27,6 @@ import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'lc-avatar-upload',
-  standalone: true,
   imports: [
     ButtonModule,
     FileUploadModule,

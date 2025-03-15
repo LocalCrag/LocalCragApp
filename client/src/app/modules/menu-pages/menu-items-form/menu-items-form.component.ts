@@ -43,7 +43,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-menu-items-form',
-  standalone: true,
   imports: [
     CardModule,
     NgIf,

@@ -34,7 +34,6 @@ import { MapStyles } from '../../../enums/map-styles';
 
 @Component({
   selector: 'lc-map',
-  standalone: true,
   imports: [MapItemInfoDialogComponent, TranslocoDirective, NgIf],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',

@@ -7,7 +7,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-register-check-mailbox',
-  standalone: true,
   imports: [TranslocoDirective],
   templateUrl: './register-check-mailbox.component.html',
   styleUrl: './register-check-mailbox.component.scss',

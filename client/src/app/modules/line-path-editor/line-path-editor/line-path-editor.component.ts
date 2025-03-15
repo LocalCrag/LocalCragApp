@@ -29,6 +29,7 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     },
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;

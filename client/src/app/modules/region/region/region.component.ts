@@ -20,7 +20,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
 
 @Component({
   selector: 'lc-region',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,

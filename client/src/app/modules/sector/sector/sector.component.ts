@@ -20,6 +20,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   selector: 'lc-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class SectorComponent implements OnInit {

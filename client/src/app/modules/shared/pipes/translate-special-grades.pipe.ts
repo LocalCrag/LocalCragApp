@@ -4,6 +4,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Pipe({
   name: 'translateSpecialGrades',
+  standalone: false,
 })
 export class TranslateSpecialGradesPipe
   extends TranslocoPipe

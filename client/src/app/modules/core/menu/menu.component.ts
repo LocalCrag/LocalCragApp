@@ -37,6 +37,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [DialogService],
+  standalone: false,
 })
 export class MenuComponent implements OnInit {
   items: MenuItem[] = [];

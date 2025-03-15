@@ -36,7 +36,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-instance-settings-form',
-  standalone: true,
   imports: [
     ButtonModule,
     CardModule,

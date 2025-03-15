@@ -32,7 +32,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-account-form',
-  standalone: true,
   imports: [
     SharedModule,
     ReactiveFormsModule,

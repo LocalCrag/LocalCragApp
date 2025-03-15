@@ -29,7 +29,6 @@ import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-completion',
-  standalone: true,
   imports: [
     ProgressBarModule,
     SharedModule,

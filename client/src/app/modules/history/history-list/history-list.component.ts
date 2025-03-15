@@ -33,7 +33,6 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
 
 @Component({
   selector: 'lc-history-list',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,

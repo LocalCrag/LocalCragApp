@@ -7,7 +7,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-project-climbed-form-title',
-  standalone: true,
   imports: [AsyncPipe, SharedModule],
   templateUrl: './project-climbed-form-title.component.html',
   styleUrl: './project-climbed-form-title.component.scss',

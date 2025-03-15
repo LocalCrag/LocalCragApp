@@ -29,7 +29,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 
 @Component({
   selector: 'lc-menu-items-list',
-  standalone: true,
   imports: [
     CardModule,
     DataViewModule,

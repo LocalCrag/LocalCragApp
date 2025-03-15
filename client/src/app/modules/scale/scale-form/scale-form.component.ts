@@ -42,7 +42,6 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-scale-form',
-  standalone: true,
   templateUrl: './scale-form.component.html',
   styleUrl: './scale-form.component.scss',
   imports: [

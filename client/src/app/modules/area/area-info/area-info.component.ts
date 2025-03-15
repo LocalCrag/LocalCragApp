@@ -12,6 +12,7 @@ import { GradeDistribution } from '../../../models/scale';
   selector: 'lc-area-info',
   templateUrl: './area-info.component.html',
   styleUrls: ['./area-info.component.scss'],
+  standalone: false,
 })
 export class AreaInfoComponent implements OnInit {
   public area: Area;

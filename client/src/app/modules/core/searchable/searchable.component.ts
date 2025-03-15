@@ -15,7 +15,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-searchable',
-  standalone: true,
   imports: [
     AvatarModule,
     NgIf,

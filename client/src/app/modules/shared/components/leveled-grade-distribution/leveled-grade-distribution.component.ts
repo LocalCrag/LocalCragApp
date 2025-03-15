@@ -23,6 +23,7 @@ type StackChartData = {
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
+  standalone: false,
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;

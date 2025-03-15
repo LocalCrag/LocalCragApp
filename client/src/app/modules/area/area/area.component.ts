@@ -22,6 +22,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   selector: 'lc-area',
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class AreaComponent implements OnInit {

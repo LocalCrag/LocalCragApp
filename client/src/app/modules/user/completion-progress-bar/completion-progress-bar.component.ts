@@ -23,7 +23,6 @@ type ItemProgress = {
 
 @Component({
   selector: 'lc-completion-progress-bar',
-  standalone: true,
   imports: [NgIf, ProgressBarModule, AsyncPipe],
   templateUrl: './completion-progress-bar.component.html',
   styleUrl: './completion-progress-bar.component.scss',

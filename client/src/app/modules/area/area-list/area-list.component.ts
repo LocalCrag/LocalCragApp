@@ -22,6 +22,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './area-list.component.html',
   styleUrls: ['./area-list.component.scss'],
   providers: [DialogService],
+  standalone: false,
 })
 @UntilDestroy()
 export class AreaListComponent implements OnInit {
