@@ -32,15 +32,15 @@ export class TodoButtonComponent {
     event.preventDefault();
     event.stopPropagation();
     if (!this.isTodo) {
-      this.todosService.createTodo(this.line).subscribe(
-        () => {
+      this.todosService.createTodo(this.line).subscribe({
+        next: () => {
           this.store.dispatch(todoAdded({ todoLineId: this.line.id }));
           this.store.dispatch(toastNotification('TODO_ADDED'));
         },
-        () => {
+        error: () => {
           this.store.dispatch(toastNotification('TODO_ADD_ERROR'));
         },
-      );
+      });
     } else {
       this.router.navigate(['/todos']);
     }

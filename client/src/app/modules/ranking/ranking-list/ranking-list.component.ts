@@ -9,7 +9,6 @@ import { SelectItem, SharedModule } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -30,7 +29,6 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
     NgClass,
     ButtonModule,
     ConfirmPopupModule,
-    InfiniteScrollModule,
     AvatarModule,
     RouterLink,
     FormsModule,

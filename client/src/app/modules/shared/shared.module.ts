@@ -16,7 +16,6 @@ import { ImageModule } from 'primeng/image';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TopoImageComponent } from './components/topo-image/topo-image.component';
-import { OrderItemsComponent } from './components/order-items/order-items.component';
 import { OrderListModule } from 'primeng/orderlist';
 import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
 import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
@@ -46,7 +45,6 @@ import { Button } from 'primeng/button';
     LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
     TopoImageComponent,
-    OrderItemsComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
     LineGradePipe,

@@ -24,7 +24,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { SharedModule } from '../../shared/shared.module';
 import { Line } from '../../../models/line';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
@@ -48,6 +47,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { GradeDistribution } from '../../../models/scale';
 import { Select } from 'primeng/select';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-line-list',
@@ -65,7 +65,6 @@ import { Select } from 'primeng/select';
     SharedModule,
     TickButtonComponent,
     TranslocoDirective,
-    InfiniteScrollModule,
     NgClass,
     FormsModule,
     SliderModule,
@@ -77,6 +76,7 @@ import { Select } from 'primeng/select';
     GymModeDirective,
     AsyncPipe,
     Select,
+    InfiniteScrollDirective,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

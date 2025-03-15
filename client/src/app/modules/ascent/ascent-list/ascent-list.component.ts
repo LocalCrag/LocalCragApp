@@ -38,7 +38,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { User } from '../../../models/user';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
@@ -48,6 +47,7 @@ import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { RouterLink } from '@angular/router';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -72,12 +72,12 @@ import { RouterLink } from '@angular/router';
     DowngradePipe,
     ConsensusGradePipe,
     TagModule,
-    InfiniteScrollModule,
     SliderLabelsComponent,
     SliderModule,
     MenuModule,
     Select,
     RouterLink,
+    InfiniteScrollDirective,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',

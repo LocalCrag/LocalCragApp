@@ -25,11 +25,11 @@ import { select, Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-history-list',
@@ -43,9 +43,9 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
     SharedModule,
     AsyncPipe,
     NgClass,
-    InfiniteScrollModule,
     MessageModule,
     RouterLink,
+    InfiniteScrollDirective,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',

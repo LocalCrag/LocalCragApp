@@ -29,15 +29,15 @@ export class MenuPageDetailComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
-      this.menuPagesService.getMenuPage(menuPageSlug).subscribe(
-        (menuPage) => {
+      this.menuPagesService.getMenuPage(menuPageSlug).subscribe({
+        next: (menuPage) => {
           this.menuPage = menuPage;
           this.loadingState = LoadingState.DEFAULT;
         },
-        () => {
+        error: () => {
           this.router.navigate(['not-found']);
         },
-      );
+      });
     });
   }
 }

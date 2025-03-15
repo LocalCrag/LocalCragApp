@@ -26,8 +26,8 @@ import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Message } from 'primeng/message';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-gallery',
@@ -41,8 +41,8 @@ import { Message } from 'primeng/message';
     ConfirmPopupModule,
     GalleryImageSkeletonComponent,
     NgIf,
-    InfiniteScrollModule,
     Message,
+    InfiniteScrollDirective,
   ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',

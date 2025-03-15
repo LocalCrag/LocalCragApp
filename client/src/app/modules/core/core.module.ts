@@ -39,7 +39,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { FooterComponent } from './footer/footer.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 import { SharedModule } from '../shared/shared.module';
 import { MessageModule } from 'primeng/message';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -64,7 +63,6 @@ import { HeaderMenuComponent } from '../shared/components/header-menu/header-men
 import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 import { AvatarModule } from 'primeng/avatar';
 import {
-  MatomoInitializationMode,
   MatomoInitializerService,
   MatomoModule,
   MatomoRouterModule,
@@ -131,7 +129,6 @@ export function preloadInstanceSettings(
     MenuComponent,
     LoginComponent,
     FooterComponent,
-    ChangePasswordComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
     RefreshLoginModalComponent,
@@ -176,7 +173,7 @@ export function preloadInstanceSettings(
     HasPermissionDirective,
     AvatarModule,
     MatomoModule.forRoot({
-      mode: MatomoInitializationMode.AUTO_DEFERRED,
+      mode: 'deferred',
     }),
     MatomoRouterModule,
   ],
