@@ -261,7 +261,6 @@ export class MenuItemsFormComponent implements OnInit {
       menuItem.position = this.menuItemForm.get('position').value;
       menuItem.menuPage = this.menuItemForm.get('menuPage').value;
       menuItem.icon = this.menuItemForm.get('icon').value;
-      console.log(menuItem.icon);
       menuItem.url = this.menuItemForm.get('url').value;
       menuItem.title = this.menuItemForm.get('title').value;
       if (this.menuItem) {
