@@ -50,7 +50,9 @@
       </div>
     </ng-template>
     <ng-template let-areas #list>
-      <lc-topo-dataview-skeleton *ngIf="loading === loadingStates.LOADING"></lc-topo-dataview-skeleton>
+      <lc-topo-dataview-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-dataview-skeleton>
       <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <a
           class="col-12 clickable-data-item"
