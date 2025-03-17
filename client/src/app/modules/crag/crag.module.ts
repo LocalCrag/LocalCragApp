@@ -7,7 +7,6 @@ import { SharedModule } from '../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CragListComponent } from './crag-list/crag-list.component';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
@@ -35,17 +34,13 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
 import { Select } from 'primeng/select';
 import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 /**
  * Module for crags.
  */
 @NgModule({
-  declarations: [
-    CragFormComponent,
-    CragListComponent,
-    CragComponent,
-    CragInfoComponent,
-  ],
+  declarations: [CragFormComponent, CragComponent, CragInfoComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -83,6 +78,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
     Tab,
     TabList,
     Tabs,
+    TopoDataviewSkeletonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
   exports: [CragFormComponent],

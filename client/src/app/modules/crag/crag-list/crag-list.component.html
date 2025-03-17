@@ -5,7 +5,6 @@
     [sortField]="sortField"
     [sortOrder]="sortOrder"
     [emptyMessage]="t('noCragsFoundEmptyMessage')"
-    [loading]="loading === loadingStates.LOADING"
   >
     <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
@@ -13,6 +12,7 @@
           [options]="sortOptions"
           [(ngModel)]="sortKey"
           optionLabel="label"
+          [disabled]="loading === loadingStates.LOADING"
           (onChange)="onSortChange($event)"
           styleClass="md:mb-0"
         >
@@ -34,6 +34,7 @@
             label="{{ t('newCragButtonLabel') }}"
             icon="pi pi-plus"
             routerLink="/topo/create-crag"
+            [disabled]="loading === loadingStates.LOADING"
             *isModerator="true"
             class="responsive-button"
           ></p-button>
@@ -41,7 +42,7 @@
             label="{{ t('reorderCragsButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderCrags()"
-            [disabled]="crags?.length < 2"
+            [disabled]="crags?.length < 2 || loading === loadingStates.LOADING"
             class="responsive-button"
             *isModerator="true"
           ></p-button>
@@ -49,7 +50,10 @@
       </div>
     </ng-template>
     <ng-template let-crags #list>
-      <div class="grid grid-nogutter">
+      <lc-topo-dataview-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-dataview-skeleton>
+      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <a
           class="col-12 clickable-data-item"
           routerLink="/topo/{{ crag.slug }}/sectors"
