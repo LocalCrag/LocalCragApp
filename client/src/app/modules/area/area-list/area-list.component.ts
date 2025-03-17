@@ -3,16 +3,28 @@ import { LoadingState } from '../../../enums/loading-state';
 import { PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DataView } from 'primeng/dataview';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
+import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
+import { SharedModule } from '../../shared/shared.module';
+import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 
 /**
  * Component that lists all areas in a sector.
@@ -22,7 +34,24 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './area-list.component.html',
   styleUrls: ['./area-list.component.scss'],
   providers: [DialogService],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    DataView,
+    Select,
+    FormsModule,
+    Button,
+    RouterLink,
+    HasPermissionDirective,
+    NgIf,
+    TopoDataviewSkeletonComponent,
+    NgForOf,
+    NgClass,
+    ArchiveButtonComponent,
+    SharedModule,
+    AscentCountComponent,
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+  ],
 })
 @UntilDestroy()
 export class AreaListComponent implements OnInit {

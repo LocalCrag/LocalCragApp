@@ -18,3 +18,11 @@
 .p-dialog-content {
   max-width: 100vw;
 }
+
+// Fixes in v19
+// TODO check above fixes
+
+// Makes the skeleton full width actually display
+.lc-p-full-width-skeleton{
+  display: contents;
+}

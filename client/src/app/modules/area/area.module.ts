@@ -4,7 +4,6 @@ import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { AreaComponent } from './area/area.component';
 import { AreaFormComponent } from './area-form/area-form.component';
 import { AreaInfoComponent } from './area-info/area-info.component';
-import { AreaListComponent } from './area-list/area-list.component';
 import { DataViewModule } from 'primeng/dataview';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -38,14 +37,10 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
 import { Select } from 'primeng/select';
 import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [
-    AreaComponent,
-    AreaFormComponent,
-    AreaInfoComponent,
-    AreaListComponent,
-  ],
+  declarations: [AreaComponent, AreaFormComponent, AreaInfoComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -86,8 +81,8 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
     Tab,
     TabList,
     Tabs,
+    TopoDataviewSkeletonComponent,
   ],
-  exports: [AreaListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaModule {}
