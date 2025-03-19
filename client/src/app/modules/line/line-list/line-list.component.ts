@@ -48,6 +48,7 @@ import { RegionService } from '../../../services/crud/region.service';
 import { GradeDistribution } from '../../../models/scale';
 import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @Component({
   selector: 'lc-line-list',
@@ -77,6 +78,7 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
     AsyncPipe,
     Select,
     InfiniteScrollDirective,
+    TopoDataviewSkeletonComponent,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

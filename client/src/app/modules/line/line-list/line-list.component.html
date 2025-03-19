@@ -3,7 +3,6 @@
     #dv
     [value]="lines"
     [emptyMessage]="t('noLinesFoundEmptyMessage')"
-    [loading]="loadingFirstPage === loadingStates.LOADING"
   >
     <ng-template #header>
       <div
@@ -35,6 +34,7 @@
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
             >
               <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="orderKey">
@@ -51,6 +51,7 @@
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0 ml-2"
             >
@@ -78,6 +79,7 @@
             <p-select
               [options]="availableScales"
               [(ngModel)]="scaleKey"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               optionLabel="label"
               (onChange)="selectScale()"
               styleClass="md:mb-0"
@@ -96,6 +98,7 @@
           </div>
           <div *isGymMode="true">
             <p-button
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
               [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
               *isModerator="true"
@@ -133,6 +136,7 @@
           <p-slider
             [(ngModel)]="gradeFilterRange"
             [min]="minGradeValue"
+            [disabled]="loadingFirstPage === loadingStates.LOADING"
             [max]="maxGradeValue"
             [range]="true"
             [step]="1"
@@ -143,7 +147,13 @@
       </div>
     </ng-template>
     <ng-template let-lines #list>
-      <div class="grid grid-nogutter">
+      <lc-topo-dataview-skeleton
+        *ngIf="loadingFirstPage === loadingStates.LOADING"
+      ></lc-topo-dataview-skeleton>
+      <div
+        class="grid grid-nogutter"
+        *ngIf="loadingFirstPage !== loadingStates.LOADING"
+      >
         <a
           class="col-12 clickable-data-item line-link"
           [ngClass]="{ ticked: ticks.has(line.id) }"

@@ -31,8 +31,13 @@
           </div>
         </ng-template>
         <ng-template let-posts #list>
-          <lc-post-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-post-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
+          <lc-post-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-post-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div class="col-12" *ngFor="let post of posts; let first = first">
               <div
                 class="flex flex-column xl:align-items-start p-4 gap-2"
