@@ -5,7 +5,6 @@
     [sortField]="sortField"
     [sortOrder]="sortOrder"
     [emptyMessage]="t('noSectorsFoundEmptyMessage')"
-    [loading]="loading === loadingStates.LOADING"
   >
     <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
@@ -14,6 +13,7 @@
           [(ngModel)]="sortKey"
           optionLabel="label"
           (onChange)="onSortChange($event)"
+          [disabled]="loading === loadingStates.LOADING"
           styleClass="md:mb-0"
         >
           <ng-template #selectedItem>
@@ -34,6 +34,7 @@
             label="{{ t('newSectorButtonLabel') }}"
             icon="pi pi-plus"
             class="responsive-button"
+            [disabled]="loading === loadingStates.LOADING"
             routerLink="/topo/{{ cragSlug }}/create-sector"
             *isModerator="true"
           ></p-button>
@@ -41,7 +42,7 @@
             label="{{ t('reorderSectorsButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderSectors()"
-            [disabled]="sectors?.length < 2"
+            [disabled]="sectors?.length < 2 || loading === loadingStates.LOADING"
             class="responsive-button"
             *isModerator="true"
           ></p-button>
@@ -49,7 +50,10 @@
       </div>
     </ng-template>
     <ng-template let-sectors #list>
-      <div class="grid grid-nogutter">
+      <lc-topo-dataview-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-dataview-skeleton>
+      <div class="grid grid-nogutter"  *ngIf="loading !== loadingStates.LOADING">
         <a
           class="col-12 clickable-data-item"
           routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"

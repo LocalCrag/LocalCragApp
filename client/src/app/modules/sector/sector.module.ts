@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SectorListComponent } from './sector-list/sector-list.component';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
@@ -35,15 +34,10 @@ import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [
-    SectorListComponent,
-    SectorInfoComponent,
-    SectorComponent,
-    SectorFormComponent,
-  ],
-  exports: [SectorListComponent],
+  declarations: [SectorInfoComponent, SectorComponent, SectorFormComponent],
   imports: [
     RouterLink,
     CommonModule,
@@ -81,6 +75,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
     Tab,
     TabList,
     Tabs,
+    TopoDataviewSkeletonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
