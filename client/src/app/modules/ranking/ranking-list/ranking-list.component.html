@@ -56,7 +56,9 @@
       </div>
     </ng-template>
     <ng-template #list>
-      <lc-ranking-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-ranking-list-skeleton>
+      <lc-ranking-list-skeleton
+        *ngIf="loading !== loadingStates.LOADING"
+      ></lc-ranking-list-skeleton>
       <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <div
           class="col-12"
