@@ -5,7 +5,6 @@
         #dv
         [value]="menuItemsTop"
         [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
       >
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
@@ -14,6 +13,7 @@
             </div>
             <div class="flex justify-content-end gap-3">
               <p-button
+                [disabled]="loading === loadingStates.LOADING"
                 label="{{ t('newMenuItemButtonLabel') }}"
                 icon="pi pi-plus"
                 routerLink="/menu-items/create-menu-item/top"
@@ -23,14 +23,15 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.TOP)"
-                [disabled]="menuItemsTop?.length < 2"
+                [disabled]="menuItemsTop?.length < 2 || loading === loadingStates.LOADING"
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <div class="grid grid-nogutter">
+          <lc-menu-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-list-skeleton>
+          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"
@@ -69,7 +70,6 @@
       <p-dataView
         [value]="menuItemsBottom"
         [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
       >
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
@@ -80,6 +80,7 @@
               <p-button
                 label="{{ t('newMenuItemButtonLabel') }}"
                 icon="pi pi-plus"
+                [disabled]="loading === loadingStates.LOADING"
                 routerLink="/menu-items/create-menu-item/bottom"
                 class="responsive-button"
               ></p-button>
@@ -87,14 +88,15 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.BOTTOM)"
-                [disabled]="menuItemsTop?.length < 2"
+                [disabled]="menuItemsTop?.length < 2 || loading === loadingStates.LOADING"
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <div class="grid grid-nogutter">
+          <lc-menu-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-list-skeleton>
+          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"

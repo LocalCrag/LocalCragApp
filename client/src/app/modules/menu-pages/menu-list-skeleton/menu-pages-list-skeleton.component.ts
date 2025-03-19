@@ -3,9 +3,9 @@ import { NgForOf } from '@angular/common';
 import { Skeleton } from 'primeng/skeleton';
 
 @Component({
-  selector: 'lc-menu-pages-list-skeleton',
+  selector: 'lc-menu-list-skeleton',
   imports: [NgForOf, Skeleton],
-  templateUrl: './menu-pages-list-skeleton.component.html',
-  styleUrl: './menu-pages-list-skeleton.component.scss',
+  templateUrl: './menu-list-skeleton.component.html',
+  styleUrl: './menu-list-skeleton.component.scss',
 })
 export class MenuPagesListSkeletonComponent {}

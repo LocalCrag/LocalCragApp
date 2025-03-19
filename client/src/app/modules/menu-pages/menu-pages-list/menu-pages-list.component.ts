@@ -19,7 +19,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Select } from 'primeng/select';
-import { MenuPagesListSkeletonComponent } from '../menu-pages-list-skeleton/menu-pages-list-skeleton.component';
+import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
 
 @Component({
   selector: 'lc-menu-pages-list',

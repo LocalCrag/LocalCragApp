@@ -25,6 +25,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -38,6 +39,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
     NgIf,
     NgForOf,
     TranslocoPipe,
+    MenuPagesListSkeletonComponent,
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',

@@ -30,8 +30,13 @@
           </div>
         </ng-template>
         <ng-template let-menuPages #list>
-          <lc-menu-pages-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-pages-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
+          <lc-menu-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-menu-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let menuPage of menuPages; let first = first"
