@@ -23,15 +23,22 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.TOP)"
-                [disabled]="menuItemsTop?.length < 2 || loading === loadingStates.LOADING"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <lc-menu-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
+          <lc-menu-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-menu-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"
@@ -88,15 +95,22 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.BOTTOM)"
-                [disabled]="menuItemsTop?.length < 2 || loading === loadingStates.LOADING"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <lc-menu-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
+          <lc-menu-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-menu-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"
