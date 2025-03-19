@@ -3,9 +3,8 @@
     #dv
     [value]="ascents"
     [emptyMessage]="t('noAscentsFoundMessage')"
-    [loading]="loadingFirstPage === loadingStates.LOADING"
   >
-    <ng-template #heder>
+    <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
       >
@@ -17,6 +16,7 @@
             <p-select
               [options]="orderOptions"
               [(ngModel)]="orderKey"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
@@ -33,6 +33,7 @@
               </ng-template>
             </p-select>
             <p-select
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
@@ -63,6 +64,7 @@
             {{ t("lineType") }}
             <p-select
               [options]="availableScales"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               [(ngModel)]="scaleKey"
               optionLabel="label"
               (onChange)="selectScale()"
@@ -114,6 +116,7 @@
             [(ngModel)]="gradeFilterRange"
             [min]="minGradeValue"
             [max]="maxGradeValue"
+            [disabled]="loadingFirstPage === loadingStates.LOADING"
             [range]="true"
             [step]="1"
             (touchstart)="listenForSliderStop = true"
@@ -123,7 +126,8 @@
       </div>
     </ng-template>
     <ng-template let-ascents #list>
-      <div class="grid grid-nogutter">
+      <lc-ascent-list-skeleton *ngIf="loadingFirstPage === loadingStates.LOADING"></lc-ascent-list-skeleton>
+      <div class="grid grid-nogutter" *ngIf="loadingFirstPage !== loadingStates.LOADING">
         <div
           class="col-12"
           *ngFor="let ascent of ascents; let first = first"

@@ -10,18 +10,11 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
-import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 
 @Component({
   selector: 'lc-crag-ascents',
-  imports: [
-    AscentListComponent,
-    NgIf,
-    SkeletonModule,
-    AscentListSkeletonComponent,
-  ],
+  imports: [AscentListComponent, SkeletonModule],
   templateUrl: './crag-ascents.component.html',
   styleUrl: './crag-ascents.component.scss',
 })
