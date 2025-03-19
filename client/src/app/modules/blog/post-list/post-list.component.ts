@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
-import { NgClass, NgForOf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
@@ -20,6 +20,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Select } from 'primeng/select';
 import { DataView } from 'primeng/dataview';
+import { PostListSkeletonComponent } from '../post-list-skeleton/post-list-skeleton.component';
 
 /**
  * A component that shows a list of blog posts.
@@ -38,6 +39,8 @@ import { DataView } from 'primeng/dataview';
     SharedModule,
     HasPermissionDirective,
     Select,
+    NgIf,
+    PostListSkeletonComponent,
   ],
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.scss',

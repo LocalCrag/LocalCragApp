@@ -42,7 +42,9 @@
             label="{{ t('reorderSectorsButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderSectors()"
-            [disabled]="sectors?.length < 2 || loading === loadingStates.LOADING"
+            [disabled]="
+              sectors?.length < 2 || loading === loadingStates.LOADING
+            "
             class="responsive-button"
             *isModerator="true"
           ></p-button>
@@ -53,7 +55,7 @@
       <lc-topo-dataview-skeleton
         *ngIf="loading === loadingStates.LOADING"
       ></lc-topo-dataview-skeleton>
-      <div class="grid grid-nogutter"  *ngIf="loading !== loadingStates.LOADING">
+      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <a
           class="col-12 clickable-data-item"
           routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
