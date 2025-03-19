@@ -7,11 +7,11 @@
         [sortField]="sortField"
         [sortOrder]="sortOrder"
         [emptyMessage]="t('noMenuPagesFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
       >
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <p-select
+              [disabled]="loading === loadingStates.LOADING"
               [options]="sortOptions"
               [(ngModel)]="sortKey"
               optionLabel="label"
@@ -20,6 +20,7 @@
             ></p-select>
             <div class="flex justify-content-end gap-3">
               <p-button
+                [disabled]="loading === loadingStates.LOADING"
                 label="{{ t('newMenuPageButtonLabel') }}"
                 icon="pi pi-plus"
                 routerLink="/pages/create-menu-page"
@@ -29,7 +30,8 @@
           </div>
         </ng-template>
         <ng-template let-menuPages #list>
-          <div class="grid grid-nogutter">
+          <lc-menu-pages-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-menu-pages-list-skeleton>
+          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
             <div
               class="col-12"
               *ngFor="let menuPage of menuPages; let first = first"

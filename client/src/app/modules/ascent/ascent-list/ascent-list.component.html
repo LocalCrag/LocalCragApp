@@ -1,9 +1,5 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
-  <p-dataView
-    #dv
-    [value]="ascents"
-    [emptyMessage]="t('noAscentsFoundMessage')"
-  >
+  <p-dataView #dv [value]="ascents" [emptyMessage]="t('noAscentsFoundMessage')">
     <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
@@ -126,8 +122,13 @@
       </div>
     </ng-template>
     <ng-template let-ascents #list>
-      <lc-ascent-list-skeleton *ngIf="loadingFirstPage === loadingStates.LOADING"></lc-ascent-list-skeleton>
-      <div class="grid grid-nogutter" *ngIf="loadingFirstPage !== loadingStates.LOADING">
+      <lc-ascent-list-skeleton
+        *ngIf="loadingFirstPage === loadingStates.LOADING"
+      ></lc-ascent-list-skeleton>
+      <div
+        class="grid grid-nogutter"
+        *ngIf="loadingFirstPage !== loadingStates.LOADING"
+      >
         <div
           class="col-12"
           *ngFor="let ascent of ascents; let first = first"

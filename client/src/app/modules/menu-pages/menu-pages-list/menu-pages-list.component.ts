@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgClass, NgForOf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
@@ -19,6 +19,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Select } from 'primeng/select';
+import { MenuPagesListSkeletonComponent } from '../menu-pages-list-skeleton/menu-pages-list-skeleton.component';
 
 @Component({
   selector: 'lc-menu-pages-list',
@@ -33,6 +34,8 @@ import { Select } from 'primeng/select';
     FormsModule,
     NgClass,
     Select,
+    NgIf,
+    MenuPagesListSkeletonComponent,
   ],
   templateUrl: './menu-pages-list.component.html',
   styleUrl: './menu-pages-list.component.scss',
