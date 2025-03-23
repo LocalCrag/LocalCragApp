@@ -5,7 +5,6 @@
         #dv
         [value]="todos"
         [emptyMessage]="t('noTodosFoundMessage')"
-        [loading]="loadingFirstPage === loadingStates.LOADING"
       >
         <ng-template #header>
           <div
@@ -20,6 +19,7 @@
                   [options]="orderOptions"
                   [(ngModel)]="orderKey"
                   optionLabel="label"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   (onChange)="loadFirstPage()"
                 >
                   <ng-template #selectedItem>
@@ -38,6 +38,7 @@
                   [(ngModel)]="orderDirectionKey"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                 >
                   <ng-template #selectedItem>
                     <div
@@ -64,6 +65,7 @@
                 <p-select
                   [options]="priorityFilterOptions"
                   [(ngModel)]="priorityFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
                 >
@@ -84,6 +86,7 @@
                 <p-select
                   [options]="cragFilterOptions"
                   [(ngModel)]="cragFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="buildSectorFilterOptions(); loadFirstPage()"
                   *ngIf="cragFilterOptions"
@@ -105,6 +108,7 @@
                 <p-select
                   [options]="sectorFilterOptions"
                   [(ngModel)]="sectorFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="buildAreaFilterOptions(); loadFirstPage()"
                   *ngIf="sectorFilterOptions"
@@ -127,6 +131,7 @@
                   [options]="areaFilterOptions"
                   [(ngModel)]="areaFilterKey"
                   optionLabel="label"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   (onChange)="loadFirstPage()"
                   *ngIf="areaFilterOptions"
                 >
@@ -154,6 +159,7 @@
                 {{ t("lineType") }}
                 <p-select
                   [options]="availableScales"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   [(ngModel)]="scaleKey"
                   optionLabel="label"
                   (onChange)="selectScale()"
@@ -202,6 +208,7 @@
                 [(ngModel)]="gradeFilterRange"
                 [min]="minGradeValue"
                 [max]="maxGradeValue"
+                [disabled]="loadingFirstPage === loadingStates.LOADING"
                 [range]="true"
                 [step]="1"
                 (touchstart)="listenForSliderStop = true"
@@ -211,7 +218,10 @@
           </div>
         </ng-template>
         <ng-template let-todos #list>
-          <div class="grid grid-nogutter">
+          <lc-line-list-skeleton
+            *ngIf="loadingFirstPage === loadingStates.LOADING"
+          ></lc-line-list-skeleton>
+          <div class="grid grid-nogutter" *ngIf="loadingFirstPage !== loadingStates.LOADING">
             <div
               class="col-12"
               *ngFor="let todo of todos; let first = first"

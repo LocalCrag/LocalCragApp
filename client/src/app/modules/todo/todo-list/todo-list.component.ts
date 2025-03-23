@@ -42,6 +42,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
+import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 
 @Component({
   selector: 'lc-todo-list',
@@ -68,6 +70,8 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
     SharedModule,
     Select,
     InfiniteScrollDirective,
+    TopoDataviewSkeletonComponent,
+    LineListSkeletonComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

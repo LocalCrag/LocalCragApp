@@ -147,9 +147,9 @@
       </div>
     </ng-template>
     <ng-template let-lines #list>
-      <lc-topo-dataview-skeleton
+      <lc-line-list-skeleton
         *ngIf="loadingFirstPage === loadingStates.LOADING"
-      ></lc-topo-dataview-skeleton>
+      ></lc-line-list-skeleton>
       <div
         class="grid grid-nogutter"
         *ngIf="loadingFirstPage !== loadingStates.LOADING"

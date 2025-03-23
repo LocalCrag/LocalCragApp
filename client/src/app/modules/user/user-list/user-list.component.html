@@ -7,7 +7,6 @@
         [sortField]="sortField"
         [sortOrder]="sortOrder"
         [emptyMessage]="t('noUsersFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
       >
         <ng-template #header>
           <div
@@ -16,6 +15,7 @@
             <p-select
               [options]="sortOptions"
               [(ngModel)]="sortKey"
+              [disabled]="loading === loadingStates.LOADING"
               optionLabel="label"
               (onChange)="onSortChange($event)"
               styleClass="md:mb-0"
@@ -36,7 +36,8 @@
           </div>
         </ng-template>
         <ng-template let-users #list>
-          <div class="grid grid-nogutter">
+          <lc-user-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-user-list-skeleton>
+          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
             <div class="col-12" *ngFor="let user of users; let first = first">
               <div
                 class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
@@ -72,6 +73,7 @@
                   <small class="mb-3" *ngIf="!user.activated">{{
                     t("userNotActivatedYet")
                   }}</small>
+                  <div>
                   <p-tag
                     [value]="t('superadmin')"
                     severity="danger"
@@ -91,6 +93,7 @@
                     severity="info"
                     *ngIf="user.member && !user.moderator"
                   ></p-tag>
+                  </div>
                 </div>
                 <div>
                   <p-menu

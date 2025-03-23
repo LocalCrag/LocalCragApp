@@ -26,6 +26,7 @@ import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/clo
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
 import { GymModeDirective } from '../shared/directives/gym-mode.directive';
 import { Select } from 'primeng/select';
+import { TopoImageListSkeletonComponent } from './topo-image-list-skeleton/topo-image-list-skeleton.component';
 
 @NgModule({
   declarations: [TopoImageListComponent, TopoImageFormComponent],
@@ -57,6 +58,7 @@ import { Select } from 'primeng/select';
     ArchiveButtonComponent,
     GymModeDirective,
     Select,
+    TopoImageListSkeletonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
   exports: [TopoImageListComponent],

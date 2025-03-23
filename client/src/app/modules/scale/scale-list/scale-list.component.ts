@@ -9,7 +9,7 @@ import {
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
-import { NgForOf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -18,6 +18,7 @@ import { RatingModule } from 'primeng/rating';
 import { SharedModule } from '../../shared/shared.module';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
+import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
 
 @Component({
   selector: 'lc-scale-list',
@@ -36,6 +37,8 @@ import { CardModule } from 'primeng/card';
     TagModule,
     CardModule,
     TranslocoPipe,
+    NgIf,
+    ScaleListSkeletonComponent,
   ],
 })
 @UntilDestroy()
