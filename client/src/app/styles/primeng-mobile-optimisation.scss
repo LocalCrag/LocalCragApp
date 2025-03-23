@@ -1,6 +1,6 @@
 @use "media-queries" as m;
 
-.p-card {
+.content  .p-card {
   @include m.on-mobile {
     border-radius: 0;
     box-shadow: none;

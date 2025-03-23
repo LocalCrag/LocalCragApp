@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { SectorInfoComponent } from './sector-info/sector-info.component';
 import { SectorComponent } from './sector/sector.component';
-import { SectorFormComponent } from './sector-form/sector-form.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EditorModule } from 'primeng/editor';
@@ -37,7 +36,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [SectorInfoComponent, SectorComponent, SectorFormComponent],
+  declarations: [SectorInfoComponent, SectorComponent],
   imports: [
     RouterLink,
     CommonModule,

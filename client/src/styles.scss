@@ -45,12 +45,6 @@ body {
 
   @include m.on-mobile {
     padding: 0 0;
-
-    .p-card {
-      border-radius: 0;
-      box-shadow: none;
-      min-height: 100%;
-    }
   }
 
   .p-card-content {
@@ -58,8 +52,8 @@ body {
   }
 }
 
-.p-confirm-popup {
-  max-width: 500px;
+.p-confirmpopup {
+ max-width: 500px;
 }
 
 p-avatar img {

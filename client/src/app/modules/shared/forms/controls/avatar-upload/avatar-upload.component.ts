@@ -184,7 +184,7 @@ export class AvatarUploadComponent
    */
   clickFileUpload() {
     this.uploaderElementRef['el'].nativeElement
-      .querySelector('.p-fileupload-choose')
+      .querySelector('.p-fileupload-choose-button')
       .click();
   }
 }
