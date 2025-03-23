@@ -21,6 +21,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { Select } from 'primeng/select';
 import { DataView } from 'primeng/dataview';
 import { PostListSkeletonComponent } from '../post-list-skeleton/post-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 /**
  * A component that shows a list of blog posts.
@@ -41,6 +42,7 @@ import { PostListSkeletonComponent } from '../post-list-skeleton/post-list-skele
     Select,
     NgIf,
     PostListSkeletonComponent,
+    Message,
   ],
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.scss',

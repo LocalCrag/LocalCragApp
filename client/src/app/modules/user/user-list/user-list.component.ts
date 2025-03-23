@@ -36,6 +36,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 import { Select } from 'primeng/select';
 import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-user-list',
@@ -60,6 +61,7 @@ import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skele
     ConfirmDialogModule,
     Select,
     UserListSkeletonComponent,
+    Message,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',

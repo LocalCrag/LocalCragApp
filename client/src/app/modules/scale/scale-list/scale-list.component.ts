@@ -19,6 +19,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-scale-list',
@@ -39,6 +40,7 @@ import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-sk
     TranslocoPipe,
     NgIf,
     ScaleListSkeletonComponent,
+    Message,
   ],
 })
 @UntilDestroy()

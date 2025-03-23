@@ -25,6 +25,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { Message } from 'primeng/message';
 
 /**
  * Component that lists all crags in an area.
@@ -51,6 +52,7 @@ import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/
     AscentCountComponent,
     ClosedSpotTagComponent,
     SecretSpotTagComponent,
+    Message,
   ],
 })
 @UntilDestroy()

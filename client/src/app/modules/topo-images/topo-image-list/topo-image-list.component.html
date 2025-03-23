@@ -4,7 +4,6 @@
     [value]="topoImages"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    [emptyMessage]="t('noTopoImagesFoundEmptyMessage')"
   >
     <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
@@ -64,6 +63,9 @@
           ></p-button>
         </div>
       </div>
+    </ng-template>
+    <ng-template #emptymessage>
+      <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noTopoImagesFoundEmptyMessage')}}</p-message>
     </ng-template>
     <ng-template let-topoImages #list>
       <lc-topo-image-list-skeleton

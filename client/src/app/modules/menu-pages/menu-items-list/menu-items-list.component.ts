@@ -26,6 +26,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -40,6 +41,7 @@ import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages
     NgForOf,
     TranslocoPipe,
     MenuPagesListSkeletonComponent,
+    Message,
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',

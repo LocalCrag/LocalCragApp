@@ -6,8 +6,10 @@
         [value]="users"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-        [emptyMessage]="t('noUsersFoundEmptyMessage')"
       >
+        <ng-template #emptymessage>
+          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noUsersFoundEmptyMessage')}}</p-message>
+        </ng-template>
         <ng-template #header>
           <div
             class="flex flex-column sm:flex-row justify-content-between gap-2"

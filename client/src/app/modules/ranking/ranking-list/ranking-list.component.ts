@@ -18,6 +18,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { Select } from 'primeng/select';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -38,6 +39,7 @@ import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-l
     Select,
     ToggleSwitch,
     RankingListSkeletonComponent,
+    Message,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',

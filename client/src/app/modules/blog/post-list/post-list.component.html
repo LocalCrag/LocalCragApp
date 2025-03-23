@@ -6,8 +6,10 @@
         [value]="posts"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-        [emptyMessage]="t('noPostsFoundEmptyMessage')"
       >
+        <ng-template #emptymessage>
+          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noPostsFoundEmptyMessage')}}</p-message>
+        </ng-template>
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <p-select

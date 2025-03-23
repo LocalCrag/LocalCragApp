@@ -49,6 +49,7 @@ import { Select } from 'primeng/select';
 import { RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -80,6 +81,7 @@ import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list
     RouterLink,
     InfiniteScrollDirective,
     AscentListSkeletonComponent,
+    Message,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',

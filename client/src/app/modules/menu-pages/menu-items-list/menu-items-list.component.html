@@ -4,8 +4,10 @@
       <p-dataView
         #dv
         [value]="menuItemsTop"
-        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
       >
+        <ng-template #emptymessage>
+          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noMenuItemsFoundEmptyMessage')}}</p-message>
+        </ng-template>
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <div class="flex align-items-center">
@@ -76,8 +78,10 @@
 
       <p-dataView
         [value]="menuItemsBottom"
-        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
       >
+        <ng-template #emptymessage>
+          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noMenuItemsFoundEmptyMessage')}}</p-message>
+        </ng-template>
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <div class="flex align-items-center">

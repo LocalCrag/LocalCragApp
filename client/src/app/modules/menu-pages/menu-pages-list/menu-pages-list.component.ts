@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Select } from 'primeng/select';
 import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-menu-pages-list',
@@ -36,6 +37,7 @@ import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages
     Select,
     NgIf,
     MenuPagesListSkeletonComponent,
+    Message,
   ],
   templateUrl: './menu-pages-list.component.html',
   styleUrl: './menu-pages-list.component.scss',

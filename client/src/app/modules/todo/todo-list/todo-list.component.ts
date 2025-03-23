@@ -44,6 +44,7 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-todo-list',
@@ -72,6 +73,7 @@ import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-li
     InfiniteScrollDirective,
     TopoDataviewSkeletonComponent,
     LineListSkeletonComponent,
+    Message,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
