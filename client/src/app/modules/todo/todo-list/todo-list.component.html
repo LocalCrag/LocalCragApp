@@ -1,11 +1,7 @@
 <ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
     <p-card header="{{ t('todos') }}">
-      <p-dataView
-        #dv
-        [value]="todos"
-        [emptyMessage]="t('noTodosFoundMessage')"
-      >
+      <p-dataView #dv [value]="todos" [emptyMessage]="t('noTodosFoundMessage')">
         <ng-template #header>
           <div
             class="flex flex-column sm:flex-column justify-content-between gap-2"
@@ -221,7 +217,10 @@
           <lc-line-list-skeleton
             *ngIf="loadingFirstPage === loadingStates.LOADING"
           ></lc-line-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loadingFirstPage !== loadingStates.LOADING">
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loadingFirstPage !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let todo of todos; let first = first"

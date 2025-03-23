@@ -36,8 +36,13 @@
           </div>
         </ng-template>
         <ng-template let-users #list>
-          <lc-user-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-user-list-skeleton>
-          <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
+          <lc-user-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-user-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div class="col-12" *ngFor="let user of users; let first = first">
               <div
                 class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
@@ -74,25 +79,25 @@
                     t("userNotActivatedYet")
                   }}</small>
                   <div>
-                  <p-tag
-                    [value]="t('superadmin')"
-                    severity="danger"
-                    *ngIf="user.superadmin"
-                  ></p-tag>
-                  <p-tag
-                    [value]="t('admin')"
-                    severity="success"
-                    *ngIf="user.admin && !user.superadmin"
-                  ></p-tag>
-                  <p-tag
-                    [value]="t('moderator')"
-                    *ngIf="user.moderator && !user.admin"
-                  ></p-tag>
-                  <p-tag
-                    [value]="t('member')"
-                    severity="info"
-                    *ngIf="user.member && !user.moderator"
-                  ></p-tag>
+                    <p-tag
+                      [value]="t('superadmin')"
+                      severity="danger"
+                      *ngIf="user.superadmin"
+                    ></p-tag>
+                    <p-tag
+                      [value]="t('admin')"
+                      severity="success"
+                      *ngIf="user.admin && !user.superadmin"
+                    ></p-tag>
+                    <p-tag
+                      [value]="t('moderator')"
+                      *ngIf="user.moderator && !user.admin"
+                    ></p-tag>
+                    <p-tag
+                      [value]="t('member')"
+                      severity="info"
+                      *ngIf="user.member && !user.moderator"
+                    ></p-tag>
                   </div>
                 </div>
                 <div>

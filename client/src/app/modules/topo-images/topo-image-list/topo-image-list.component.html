@@ -56,7 +56,9 @@
             label="{{ t('reorderTopoImagesButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderTopoImages()"
-            [disabled]="topoImages?.length < 2 || loading === loadingStates.LOADING"
+            [disabled]="
+              topoImages?.length < 2 || loading === loadingStates.LOADING
+            "
             class="responsive-button"
             *isModerator="true"
           ></p-button>
@@ -64,7 +66,9 @@
       </div>
     </ng-template>
     <ng-template let-topoImages #list>
-      <lc-topo-image-list-skeleton *ngIf="loading === loadingStates.LOADING"></lc-topo-image-list-skeleton>
+      <lc-topo-image-list-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-image-list-skeleton>
       <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <div
           class="col-12"

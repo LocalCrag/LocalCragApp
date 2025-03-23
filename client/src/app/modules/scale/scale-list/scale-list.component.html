@@ -6,8 +6,10 @@
         [emptyMessage]="t('noScalesFoundEmptyMessage')"
         class="p-5"
       >
-        <ng-template let-scales #list >
-          <lc-scale-list-skeleton *ngIf="loadingState === LoadingState.LOADING"></lc-scale-list-skeleton>
+        <ng-template let-scales #list>
+          <lc-scale-list-skeleton
+            *ngIf="loadingState === LoadingState.LOADING"
+          ></lc-scale-list-skeleton>
           <div class="grid gap-4" *ngIf="loadingState !== LoadingState.LOADING">
             <a
               class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
