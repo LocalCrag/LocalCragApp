@@ -146,6 +146,7 @@ export class SectorListComponent implements OnInit {
    */
   reorderSectors() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderSectorsDialogTitle'),
       ),

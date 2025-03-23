@@ -149,6 +149,7 @@ export class AreaListComponent implements OnInit {
    */
   reorderAreas() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderAreasDialogTitle'),
       ),

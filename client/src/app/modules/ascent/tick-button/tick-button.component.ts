@@ -37,6 +37,7 @@ export class TickButtonComponent {
     event.stopPropagation();
     if (this.line.gradeValue >= 0) {
       this.ref = this.dialogService.open(AscentFormComponent, {
+        modal: true,
         focusOnShow: false,
         templates: {
           header: AscentFormTitleComponent,
@@ -47,6 +48,7 @@ export class TickButtonComponent {
       });
     } else {
       this.ref = this.dialogService.open(ProjectClimbedFormComponent, {
+        modal: true,
         focusOnShow: false,
         templates: {
           header: ProjectClimbedFormTitleComponent,

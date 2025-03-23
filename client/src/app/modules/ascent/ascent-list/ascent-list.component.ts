@@ -300,6 +300,7 @@ export class AscentListComponent implements OnInit {
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
+      modal: true,
       templates: {
         header: AscentFormTitleComponent,
       },

@@ -21,7 +21,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
-import { LineInfoComponent } from './line-info/line-info.component';
 import { TopoImageDetailsComponent } from '../topo-images/topo-image-details/topo-image-details.component';
 import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 import { TickButtonComponent } from '../ascent/tick-button/tick-button.component';
@@ -42,12 +41,7 @@ import { SetActiveTabDirective } from '../shared/directives/set-active-tab.direc
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 @NgModule({
-  declarations: [
-    LineComponent,
-    LineFormComponent,
-    LineBoolPropListComponent,
-    LineInfoComponent,
-  ],
+  declarations: [LineComponent, LineFormComponent, LineBoolPropListComponent],
   imports: [
     CommonModule,
     CardModule,

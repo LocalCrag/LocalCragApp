@@ -6,7 +6,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { TicksService } from '../../../services/crud/ticks.service';
 import { Actions, ofType } from '@ngrx/effects';
@@ -15,6 +15,19 @@ import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { SharedModule } from '../../shared/shared.module';
+import { NgForOf, NgIf } from '@angular/common';
+import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
+import { Button } from 'primeng/button';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { LineModule } from '../line.module';
+import { Rating } from 'primeng/rating';
+import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
+import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
+import { FormsModule } from '@angular/forms';
+import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
+import { Skeleton } from 'primeng/skeleton';
 
 /**
  * Component that shows detailed information about a line.
@@ -24,7 +37,23 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
   providers: [DialogService],
-  standalone: false,
+  imports: [
+    ClosedSpotAlertComponent,
+    TranslocoDirective,
+    SharedModule,
+    NgIf,
+    TopoImageDetailsComponent,
+    Button,
+    HasPermissionDirective,
+    NgForOf,
+    LineModule,
+    Rating,
+    ArchiveButtonComponent,
+    TodoButtonComponent,
+    FormsModule,
+    TickButtonComponent,
+    Skeleton,
+  ],
 })
 @UntilDestroy()
 export class LineInfoComponent implements OnInit {
@@ -85,6 +114,7 @@ export class LineInfoComponent implements OnInit {
    */
   reorderLinePaths() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderLinePathsForLineDialogTitle'),
       ),

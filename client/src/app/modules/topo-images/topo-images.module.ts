@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TopoImageListComponent } from './topo-image-list/topo-image-list.component';
 import { TopoImageFormComponent } from './topo-image-form/topo-image-form.component';
 import { DataViewModule } from 'primeng/dataview';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,7 +28,7 @@ import { Select } from 'primeng/select';
 import { TopoImageListSkeletonComponent } from './topo-image-list-skeleton/topo-image-list-skeleton.component';
 
 @NgModule({
-  declarations: [TopoImageListComponent, TopoImageFormComponent],
+  declarations: [TopoImageFormComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -61,6 +60,5 @@ import { TopoImageListSkeletonComponent } from './topo-image-list-skeleton/topo-
     TopoImageListSkeletonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
-  exports: [TopoImageListComponent],
 })
 export class TopoImagesModule {}

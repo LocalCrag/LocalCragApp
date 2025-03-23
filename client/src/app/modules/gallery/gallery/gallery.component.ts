@@ -150,6 +150,7 @@ export class GalleryComponent implements OnInit {
 
   addImage() {
     this.ref = this.dialogService.open(GalleryFormComponent, {
+      modal: true,
       header: this.translocoService.translate(marker('gallery.addImage')),
       focusOnShow: false,
       data: {
@@ -202,6 +203,7 @@ export class GalleryComponent implements OnInit {
 
   editImage(image: GalleryImage) {
     this.ref = this.dialogService.open(GalleryFormComponent, {
+      modal: true,
       header: this.translocoService.translate(marker('gallery.editImage')),
       focusOnShow: false,
       data: {
