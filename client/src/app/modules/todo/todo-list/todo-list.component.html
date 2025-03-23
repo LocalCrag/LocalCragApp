@@ -3,7 +3,12 @@
     <p-card header="{{ t('todos') }}">
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
-          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noTodosFoundMessage')}}</p-message>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noTodosFoundMessage") }}</p-message
+          >
         </ng-template>
         <ng-template #header>
           <div

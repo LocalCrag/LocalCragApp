@@ -1,12 +1,14 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
   <div class="content">
     <p-card header="{{ t('editScales') }}">
-      <p-dataView
-        [value]="scales"
-        class="p-5"
-      >
+      <p-dataView [value]="scales" class="p-5">
         <ng-template #emptymessage>
-          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noScalesFoundEmptyMessage')}}</p-message>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noScalesFoundEmptyMessage") }}</p-message
+          >
         </ng-template>
         <ng-template let-scales #list>
           <lc-scale-list-skeleton

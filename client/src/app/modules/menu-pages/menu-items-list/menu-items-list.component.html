@@ -1,12 +1,14 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
     <p-card header="{{ t('menuItemsListTitle') }}">
-      <p-dataView
-        #dv
-        [value]="menuItemsTop"
-      >
+      <p-dataView #dv [value]="menuItemsTop">
         <ng-template #emptymessage>
-          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noMenuItemsFoundEmptyMessage')}}</p-message>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
+          >
         </ng-template>
         <ng-template #header>
           <div class="flex flex-row justify-content-between">
@@ -76,11 +78,14 @@
         </ng-template>
       </p-dataView>
 
-      <p-dataView
-        [value]="menuItemsBottom"
-      >
+      <p-dataView [value]="menuItemsBottom">
         <ng-template #emptymessage>
-          <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noMenuItemsFoundEmptyMessage')}}</p-message>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
+          >
         </ng-template>
         <ng-template #header>
           <div class="flex flex-row justify-content-between">

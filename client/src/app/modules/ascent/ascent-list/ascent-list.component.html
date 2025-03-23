@@ -1,7 +1,12 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
   <p-dataView #dv [value]="ascents">
     <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">{{t('noAscentsFoundMessage')}}</p-message>
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        class="m-4 mb-1 block"
+        >{{ t("noAscentsFoundMessage") }}</p-message
+      >
     </ng-template>
     <ng-template #header>
       <div
