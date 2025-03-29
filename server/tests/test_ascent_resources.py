@@ -328,6 +328,8 @@ def test_grade_ranking_votes(client, user_token):
 
     time.sleep(0.1)  # wait for async update
 
+    current_app.config["MIN_VOTING_ASCENTS"] = 0
+
     line = Line.find_by_id(line_id)
     assert line.grade_value == 22
     assert line.rating == 5
