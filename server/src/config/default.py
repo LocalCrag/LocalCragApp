@@ -34,3 +34,4 @@ class DefaultConfig(object):
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
     CRON_ACCESS_TOKEN = "thisTokenIsNotSecretChangeIt"
+    MIN_VOTING_ASCENTS = 0

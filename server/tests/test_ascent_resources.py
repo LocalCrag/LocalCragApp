@@ -1,8 +1,11 @@
+import time
+
+from flask import current_app
+
 from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
 from models.line import Line
-from models.scale import GRADES
 from models.user import User
 
 
@@ -300,3 +303,31 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
 
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
     assert rv.status_code == 404
+
+
+def test_grade_ranking_votes(client, user_token):
+    current_app.config["MIN_VOTING_ASCENTS"] = 1
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": True,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 22,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    time.sleep(0.1)  # wait for async update
+
+    line = Line.find_by_id(line_id)
+    assert line.grade_value == 22
+    assert line.rating == 5

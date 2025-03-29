@@ -1,6 +1,7 @@
 import datetime
+import threading
 
-from flask import jsonify, request
+from flask import current_app, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import select
@@ -22,6 +23,7 @@ from models.user import User
 from util.email import send_project_climbed_email
 from util.secret_spots_auth import get_show_secret
 from util.validators import cross_validate_grade
+from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
     ascent_args,
     cross_validate_ascent_args,
@@ -172,6 +174,11 @@ class CreateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
+        thread = threading.Thread(
+            target=update_grades_and_rating, args=(line.id, current_app.config["MIN_VOTING_ASCENTS"])
+        )
+        thread.start()
+
         return ascent_schema.dump(ascent), 201
 
 
@@ -210,6 +217,11 @@ class UpdateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
+        thread = threading.Thread(
+            target=update_grades_and_rating, args=(line.id, current_app.config["MIN_VOTING_ASCENTS"])
+        )
+        thread.start()
+
         return ascent_schema.dump(ascent), 201
 
 
@@ -217,12 +229,18 @@ class DeleteAscent(MethodView):
     @jwt_required()
     def delete(self, ascent_id):
         ascent: Ascent = Ascent.find_by_id(ascent_id)
+        line_id = ascent.line_id
 
         if not ascent.created_by.email == get_jwt_identity():
             raise Unauthorized("Ascents can only be deleted by users themselves.")
 
         db.session.delete(ascent)
         db.session.commit()
+
+        thread = threading.Thread(
+            target=update_grades_and_rating, args=(line_id, current_app.config["MIN_VOTING_ASCENTS"])
+        )
+        thread.start()
 
         return jsonify(None), 204
 

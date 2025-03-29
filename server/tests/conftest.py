@@ -354,7 +354,6 @@ def fill_db_with_sample_data():
     line.type = LineTypeEnum.BOULDER
     line.area_id = Area.get_id_by_slug("dritter-block-von-links")
     line.rating = 1
-    line.grade_name = "1"
     line.grade_scale = "FB"
     line.grade_value = 1
     line.starting_position = StartingPositionEnum.STAND
@@ -368,7 +367,6 @@ def fill_db_with_sample_data():
     line.rating = 5
     line.fa_year = 2024
     line.fa_name = "Felix Engelmann"
-    line.grade_name = "8A"
     line.grade_scale = "FB"
     line.grade_value = 22
     line.starting_position = StartingPositionEnum.SIT

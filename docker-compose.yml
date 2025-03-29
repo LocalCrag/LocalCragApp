@@ -60,7 +60,7 @@ services:
     ports:
       - "127.0.0.1:5000:5000"  # API Server
     environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/localcrag"
+      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/glees"
       LOCALCRAG_CONFIG: /localcragapp/src/config/dev.cfg
       SPACES_ACCESS_KEY: localcrag
       SPACES_SECRET_KEY: password

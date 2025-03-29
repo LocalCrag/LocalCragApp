@@ -84,7 +84,7 @@ export class RankingListComponent implements OnInit {
 
   loadRanking() {
     this.loading = LoadingState.LOADING;
-    let query_params = `?line_type=${LineType.BOULDER}`;
+    let query_params = `?line_type=${LineType.SPORT}`;
     if (this.cragId) {
       query_params += `&crag_id=${this.cragId}`;
     }
