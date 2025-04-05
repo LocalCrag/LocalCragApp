@@ -9,6 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { TopoImagesModule } from '../topo-images/topo-images.module';
 import { Select } from 'primeng/select';
+import { GymModeDirective } from '../shared/directives/gym-mode.directive';
 
 @NgModule({
   declarations: [LinePathEditorComponent, LinePathFormComponent],
@@ -23,6 +24,7 @@ import { Select } from 'primeng/select';
     ReactiveFormsModule,
     TopoImagesModule,
     Select,
+    GymModeDirective,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })

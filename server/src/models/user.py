@@ -1,6 +1,8 @@
+import secrets
+from base64 import b64decode, b64encode
+from hashlib import pbkdf2_hmac
 from typing import Self
 
-from passlib.hash import pbkdf2_sha256
 from sqlalchemy.dialects.postgresql import UUID
 
 from extensions import db
@@ -43,11 +45,33 @@ class User(HasSlug, IsSearchable, BaseEntity):
 
     @staticmethod
     def generate_hash(password):
-        return pbkdf2_sha256.hash(password)
+        # recommended iteration count by OWASP cheat sheet
+        # https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2
+        iterations = 600_000
+        salt = secrets.token_bytes(16)
+        hash_value = pbkdf2_hmac("sha256", password.encode(), salt, iterations)
+
+        salt_encoded = b64encode(salt, altchars=b"./").decode().rstrip("=")
+        hash_encoded = b64encode(hash_value, altchars=b"./").decode().rstrip("=")
+
+        return f"$pbkdf2-sha256${iterations}${salt_encoded}${hash_encoded}"
 
     @staticmethod
     def verify_hash(password, password_hash):
-        return pbkdf2_sha256.verify(password, password_hash)
+        if not password_hash.startswith("$pbkdf2-sha256$") or password_hash.count("$") != 4:
+            raise ValueError("Invalid password hash")
+
+        details = password_hash[15:].split("$")  # Remove known prefix
+        iterations = int(details[0])
+
+        # base64 padding is required
+        # this workaround is probably CPython specific, but simplifies the code
+        salt = b64decode(details[1] + "===", altchars=b"./")
+        known_hash = b64decode(details[2] + "===", altchars=b"./")
+
+        new_hash = pbkdf2_hmac("sha256", password.encode(), salt, iterations)
+
+        return secrets.compare_digest(new_hash, known_hash)
 
     @classmethod
     def find_by_reset_password_hash(cls, password_hash) -> Self | None:
