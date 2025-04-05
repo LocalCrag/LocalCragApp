@@ -71,6 +71,7 @@ import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors'
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { LocalCragTheme } from './theme/theme';
+import { FooterComponent } from './footer/footer.component';
 
 export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
@@ -174,6 +175,7 @@ export function preloadInstanceSettings(
       mode: 'deferred',
     }),
     MatomoRouterModule,
+    FooterComponent,
   ],
   providers: [
     {
