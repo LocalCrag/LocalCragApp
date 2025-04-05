@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.15.0...v1.16.0) (2025-04-05)
+
+
+### Features
+
+* migrate to Angular 19 and primeng 19 ([#647](https://github.com/LocalCrag/LocalCragApp/issues/647)) ([40c1e53](https://github.com/LocalCrag/LocalCragApp/commit/40c1e5388aedf4b2abed606265c93c55f754da3a))
+
 # [1.15.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.6...v1.15.0) (2025-02-28)
 
 
