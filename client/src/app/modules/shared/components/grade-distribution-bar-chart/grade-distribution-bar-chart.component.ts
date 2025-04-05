@@ -33,7 +33,6 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  standalone: true,
   imports: [ChartModule, NgIf, TranslocoDirective, SharedModule, NgForOf],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',

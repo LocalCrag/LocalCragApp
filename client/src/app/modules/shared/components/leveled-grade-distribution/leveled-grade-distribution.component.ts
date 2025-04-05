@@ -1,12 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
 import { ScalesService } from '../../../../services/crud/scales.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { map } from 'rxjs/operators';
 import { textColor } from '../../../../utility/misc/color';
+import { Tag } from 'primeng/tag';
+import { MeterGroup } from 'primeng/metergroup';
+import { Skeleton } from 'primeng/skeleton';
+import { NgForOf, NgIf } from '@angular/common';
 
 type StackChartData = {
   lineType: LineType;
@@ -23,6 +27,9 @@ type StackChartData = {
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
+  imports: [Tag, MeterGroup, Skeleton, NgIf, TranslocoDirective, NgForOf],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
@@ -54,14 +61,14 @@ export class LeveledGradeDistributionComponent implements OnInit {
    */
   buildGradeDistribution() {
     const colors = [
-      'var(--yellow-500)',
-      'var(--blue-500)',
-      'var(--red-500)',
-      'var(--green-500)',
-      'var(--orange-500)',
-      'var(--teal-500)',
-      'var(--indigo-500)',
-      'var(--bluegray-500)',
+      'var(--p-yellow-500)',
+      'var(--p-blue-500)',
+      'var(--p-red-500)',
+      'var(--p-green-500)',
+      'var(--p-orange-500)',
+      'var(--p-teal-500)',
+      'var(--p-indigo-500)',
+      'var(--p-bluegray-500)',
     ];
     const stackChartData: StackChartData[] = [];
     const observables: Observable<any>[] = [];

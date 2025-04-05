@@ -25,6 +25,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
   selector: 'lc-line-path-form',
   templateUrl: './line-path-form.component.html',
   styleUrls: ['./line-path-form.component.scss'],
+  standalone: false,
 })
 export class LinePathFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

@@ -8,7 +8,7 @@
       <form [formGroup]="linePathForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="line">{{ t("lineLabel") }}</label>
-          <p-dropdown
+          <p-select
             id="line"
             formControlName="line"
             [options]="lines"
@@ -17,7 +17,7 @@
             placeholder="{{ t('linePlaceholder') }}"
             lcFormControl
           >
-            <ng-template let-line pTemplate="item">
+            <ng-template let-line #item>
               <div
                 class="flex align-items-center gap-2"
                 data-cy="line-dropdown-item"
@@ -33,11 +33,11 @@
                 </div>
               </div>
             </ng-template>
-            <ng-template let-selectedItem pTemplate="selectedItem">
+            <ng-template let-selectedItem #selectedItem>
               {{ selectedItem.name }} {{ selectedItem | lineGrade }}
             </ng-template>
-          </p-dropdown>
-          <small class="p-error" *lcIfError="'required'">{{
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
@@ -53,10 +53,10 @@
             [color]="linePathForm.get('line').value?.color"
           >
           </lc-line-path-editor>
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("drawALineWithAtLeastTwoAnchorPoints")
           }}</small>
-          <small class="p-error" *lcIfError="'minlength'">{{
+          <small class="lc-error" *lcIfError="'minlength'">{{
             t("drawALineWithAtLeastTwoAnchorPoints")
           }}</small>
         </div>

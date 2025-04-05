@@ -8,7 +8,6 @@ import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.co
 
 @Component({
   selector: 'lc-sector-ranking',
-  standalone: true,
   imports: [NgIf, RankingListComponent],
   templateUrl: './sector-ranking.component.html',
   styleUrl: './sector-ranking.component.scss',

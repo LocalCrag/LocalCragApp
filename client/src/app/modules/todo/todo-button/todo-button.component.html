@@ -6,7 +6,7 @@
     (click)="addTodo($event)"
     [ngClass]="{ 'hide-label': !showLabel }"
   >
-    <ng-template pTemplate="icon">
+    <ng-template #icon>
       <i *ngIf="!isTodo" class="pi pi-plus"></i>
       <i *ngIf="isTodo" class="pi pi-plus is-todo-icon"></i>
     </ng-template>

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { NgIf } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { SkeletonModule } from 'primeng/skeleton';
-import { TranslocoDirective } from '@jsverse/transloco';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,14 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
  */
 @Component({
   selector: 'lc-region-rules',
-  standalone: true,
-  imports: [
-    GradeDistributionBarChartComponent,
-    NgIf,
-    SharedModule,
-    SkeletonModule,
-    TranslocoDirective,
-  ],
+  imports: [NgIf, SharedModule, SkeletonModule],
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })

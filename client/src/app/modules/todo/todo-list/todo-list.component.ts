@@ -22,8 +22,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MenuModule } from 'primeng/menu';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
@@ -42,17 +40,18 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { SharedModule } from '../../shared/shared.module';
 import { RegionService } from '../../../services/crud/region.service';
+import { Select } from 'primeng/select';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-todo-list',
-  standalone: true,
   imports: [
     AvatarModule,
     ButtonModule,
     ConfirmPopupModule,
     DataViewModule,
-    DropdownModule,
-    InfiniteScrollModule,
     MenuModule,
     NgForOf,
     NgIf,
@@ -69,6 +68,10 @@ import { RegionService } from '../../../services/crud/region.service';
     TickButtonComponent,
     AsyncPipe,
     SharedModule,
+    Select,
+    InfiniteScrollDirective,
+    LineListSkeletonComponent,
+    Message,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

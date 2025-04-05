@@ -13,7 +13,6 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { NgIf } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { TranslocoDirective } from '@jsverse/transloco';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -27,14 +26,12 @@ import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'lc-avatar-upload',
-  standalone: true,
   imports: [
     ButtonModule,
     FileUploadModule,
     ImageModule,
     NgIf,
     ProgressBarModule,
-    TranslocoDirective,
     ProgressSpinnerModule,
   ],
   templateUrl: './avatar-upload.component.html',
@@ -187,7 +184,7 @@ export class AvatarUploadComponent
    */
   clickFileUpload() {
     this.uploaderElementRef['el'].nativeElement
-      .querySelector('.p-fileupload-choose')
+      .querySelector('.p-fileupload-choose-button')
       .click();
   }
 }

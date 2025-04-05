@@ -39,6 +39,7 @@ import { LineType } from '../../../enums/line-type';
   templateUrl: './crag-form.component.html',
   styleUrls: ['./crag-form.component.scss'],
   providers: [ConfirmationService],
+  standalone: false,
 })
 @UntilDestroy()
 export class CragFormComponent implements OnInit {

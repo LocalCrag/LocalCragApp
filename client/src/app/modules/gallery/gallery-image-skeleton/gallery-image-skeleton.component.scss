@@ -1,14 +1,18 @@
-.gallery-image-card {
+lc-gallery-image-skeleton {
   .p-card-body {
     padding: 0.5rem !important;
   }
 
   .p-card-header {
     background-color: #f4f4f4;
+    border-radius: var(--p-card-border-radius);
 
     .image-container {
       height: 300px;
       width: 100%;
+      border-top-left-radius: var(--p-card-border-radius);
+      border-top-right-radius: var(--p-card-border-radius);
+      overflow: hidden;
     }
   }
 

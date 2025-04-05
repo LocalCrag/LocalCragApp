@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
   selector: 'lc-not-found',
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.scss'],
+  standalone: false,
 })
 export class NotFoundComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

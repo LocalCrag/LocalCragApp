@@ -21,10 +21,10 @@
             lcFormControl
             data-cy="register-form-firstname"
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -38,10 +38,10 @@
             lcFormControl
             data-cy="register-form-lastname"
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -56,16 +56,16 @@
               lcFormControl
               data-cy="register-form-email"
             />
-            <small class="p-error" *lcIfError="'required'">{{
+            <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
-            <small class="p-error" *lcIfError="'pattern'">{{
+            <small class="lc-error" *lcIfError="'pattern'">{{
               t("invalidEmailHint")
             }}</small>
-            <small class="p-error" *lcIfError="'emailTaken'">{{
+            <small class="lc-error" *lcIfError="'emailTaken'">{{
               t("emailTaken")
             }}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{
+            <small class="lc-error" *lcIfError="'maxlength'">{{
               t("maxlength120")
             }}</small>
           </div>
@@ -83,16 +83,16 @@
               lcFormControl
               data-cy="register-form-email-confirm"
             />
-            <small class="p-error" *lcIfError="'required'">{{
+            <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
-            <small class="p-error" *lcIfError="'pattern'">{{
+            <small class="lc-error" *lcIfError="'pattern'">{{
               t("invalidEmailHint")
             }}</small>
-            <small class="p-error" *lcIfError="'emailTaken'">{{
+            <small class="lc-error" *lcIfError="'emailTaken'">{{
               t("emailTaken")
             }}</small>
-            <small class="p-error" *lcIfError="'maxlength'">{{
+            <small class="lc-error" *lcIfError="'maxlength'">{{
               t("maxlength120")
             }}</small>
           </div>
@@ -101,10 +101,10 @@
 
       <p-message
         severity="error"
-        text="{{ t('emailsDontMatchAlertText') }}"
         class="mt-4"
         *ngIf="savePressed && emailsDontMatch()"
       >
+        {{ t("emailsDontMatchAlertText") }}
       </p-message>
 
       <p-button
@@ -113,15 +113,13 @@
         [loading]="loadingState === loadingStates.LOADING"
       ></p-button>
 
-      <p-messages
+      <p-message
         severity="info"
         class="w-full max-w-35rem"
         *ngIf="emailChangedPostSave"
       >
-        <ng-template pTemplate>
-          {{ t("emailAddressChangeInfoText") }}
-        </ng-template>
-      </p-messages>
+        {{ t("emailAddressChangeInfoText") }}
+      </p-message>
     </div>
   </div>
 </ng-container>

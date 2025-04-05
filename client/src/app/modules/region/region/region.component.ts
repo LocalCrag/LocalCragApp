@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { NgIf } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
@@ -16,11 +15,23 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 
 @Component({
   selector: 'lc-region',
-  standalone: true,
-  imports: [BreadcrumbModule, CardModule, NgIf, RouterOutlet, TabMenuModule],
+  imports: [
+    BreadcrumbModule,
+    CardModule,
+    NgIf,
+    RouterOutlet,
+    TranslocoDirective,
+    Tabs,
+    TabList,
+    Tab,
+    RouterLink,
+    SetActiveTabDirective,
+  ],
   templateUrl: './region.component.html',
   styleUrl: './region.component.scss',
 })
@@ -60,6 +71,7 @@ export class RegionComponent implements OnInit {
           icon: 'pi pi-fw pi-info-circle',
           routerLink: `/topo`,
           routerLinkActiveOptions: { exact: true },
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.rules')),
@@ -71,26 +83,31 @@ export class RegionComponent implements OnInit {
           label: this.translocoService.translate(marker('region.crags')),
           icon: 'pi pi-fw pi-sitemap',
           routerLink: `/topo/crags`,
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.lines')),
           icon: 'pi pi-fw pi-chart-line',
           routerLink: `/topo/lines`,
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.ascents')),
           icon: 'pi pi-fw pi-check-square',
           routerLink: `/topo/ascents`,
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.ranking')),
           icon: 'pi pi-fw pi-trophy',
           routerLink: `/topo/ranking`,
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.gallery')),
           icon: 'pi pi-fw pi-images',
           routerLink: `/topo/gallery`,
+          visible: true,
         },
         {
           label: this.translocoService.translate(marker('region.edit')),

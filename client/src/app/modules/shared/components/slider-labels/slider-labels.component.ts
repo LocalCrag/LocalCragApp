@@ -10,7 +10,6 @@ import {
 
 @Component({
   selector: 'lc-slider-labels',
-  standalone: true,
   imports: [],
   templateUrl: './slider-labels.component.html',
   styleUrl: './slider-labels.component.scss',

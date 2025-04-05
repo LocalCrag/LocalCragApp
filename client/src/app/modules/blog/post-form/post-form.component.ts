@@ -34,7 +34,6 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
  */
 @Component({
   selector: 'lc-post-form',
-  standalone: true,
   imports: [
     ButtonModule,
     CardModule,

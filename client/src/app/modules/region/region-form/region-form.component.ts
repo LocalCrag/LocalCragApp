@@ -34,7 +34,6 @@ import { InputTextModule } from 'primeng/inputtext';
  */
 @Component({
   selector: 'lc-region-form',
-  standalone: true,
   imports: [
     CardModule,
     ReactiveFormsModule,

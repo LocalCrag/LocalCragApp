@@ -19,15 +19,15 @@ lc-topo-image-list {
 
   .line-table {
     width: 100%;
-    border-top: 1px solid var(--surface-200);
-    border-bottom: 1px solid var(--surface-200);
+    border-top: 1px solid var(--p-surface-200);
+    border-bottom: 1px solid var(--p-surface-200);
     padding-bottom: 0.5rem;
     container-type: inline-size;
 
     .table-header {
-      background-color: var(--surface-50);
+      background-color: var(--p-surface-50);
       font-weight: 700;
-      color: var(--surface-700);
+      color: var(--p-surface-700);
       padding: 0.5rem;
     }
   }
@@ -59,7 +59,7 @@ lc-topo-image-list {
       display: flex;
       color: inherit;
       text-decoration: inherit;
-      border-top: 1px solid var(--surface-200);
+      border-top: 1px solid var(--p-surface-200);
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
 

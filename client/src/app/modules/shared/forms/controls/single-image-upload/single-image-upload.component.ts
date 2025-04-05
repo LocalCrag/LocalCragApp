@@ -33,6 +33,7 @@ import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/insta
     },
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SingleImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy

@@ -19,7 +19,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 
 @Component({
   selector: 'lc-map-marker-form-array',
-  standalone: true,
   imports: [
     NgForOf,
     TranslocoDirective,

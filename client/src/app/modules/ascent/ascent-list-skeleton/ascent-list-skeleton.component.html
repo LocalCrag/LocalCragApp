@@ -1,7 +1,9 @@
-<div class="flex mb-2" *ngFor="let _ of [].constructor(10)">
-  <p-skeleton shape="circle" size="4rem" styleClass="mr-2"></p-skeleton>
-  <div style="flex: 1">
-    <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
-    <p-skeleton width="75%"></p-skeleton>
+<div class="p-4 flex gap-4 flex-column">
+  <div class="flex gap-2" *ngFor="let _ of [].constructor(10)">
+    <p-skeleton shape="circle" size="4rem" styleClass="mr-2"></p-skeleton>
+    <div style="flex: 1">
+      <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="75%" height="2rem"></p-skeleton>
+    </div>
   </div>
 </div>

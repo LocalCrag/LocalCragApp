@@ -18,14 +18,13 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { User } from '../../../models/user';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'lc-gallery-image',
-  standalone: true,
   imports: [
     CardModule,
     ImageModule,
@@ -34,9 +33,9 @@ import { take } from 'rxjs/operators';
     ButtonModule,
     ConfirmPopupModule,
     SpeedDialModule,
-    HasPermissionDirective,
     NgIf,
     TranslocoDirective,
+    Tooltip,
   ],
   templateUrl: './gallery-image.component.html',
   styleUrl: './gallery-image.component.scss',

@@ -28,6 +28,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-topo-image-form',
   templateUrl: './topo-image-form.component.html',
   styleUrls: ['./topo-image-form.component.scss'],
+  standalone: false,
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

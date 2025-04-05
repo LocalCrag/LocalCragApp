@@ -1,5 +1,10 @@
 import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { login } from 'src/app/ngrx/actions/auth.actions';
 import { AppState } from '../../../ngrx/reducers';
@@ -7,6 +12,13 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Observable } from 'rxjs';
 import { selectLoginLoadingState } from '../../../ngrx/selectors/auth.selectors';
 import { FormDirective } from '../../shared/forms/form.directive';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { SharedModule } from '../../shared/shared.module';
+import { InputText } from 'primeng/inputtext';
+import { Password } from 'primeng/password';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Component that shows a login form.
@@ -15,6 +27,16 @@ import { FormDirective } from '../../shared/forms/form.directive';
   selector: 'lc-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  imports: [
+    TranslocoDirective,
+    ReactiveFormsModule,
+    SharedModule,
+    InputText,
+    Password,
+    Button,
+    RouterLink,
+    AsyncPipe,
+  ],
 })
 export class LoginComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

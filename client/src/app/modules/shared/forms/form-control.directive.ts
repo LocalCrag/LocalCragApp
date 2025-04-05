@@ -10,6 +10,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
  */
 @Directive({
   selector: '[lcFormControl]',
+  standalone: false,
 })
 @UntilDestroy()
 export class FormControlDirective implements OnInit, OnDestroy {

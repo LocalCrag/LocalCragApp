@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ImageModule } from 'primeng/image';
-import { NgForOf, NgIf, NgStyle } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
@@ -25,26 +25,24 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
-import { MessagesModule } from 'primeng/messages';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { Message } from 'primeng/message';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-gallery',
-  standalone: true,
   imports: [
     ImageModule,
     NgForOf,
-    NgStyle,
     GalleryImageComponent,
     ButtonModule,
     TranslocoDirective,
     HasPermissionDirective,
     ConfirmPopupModule,
     GalleryImageSkeletonComponent,
-    MessagesModule,
     NgIf,
-    InfiniteScrollModule,
+    Message,
+    InfiniteScrollDirective,
   ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
@@ -152,12 +150,15 @@ export class GalleryComponent implements OnInit {
 
   addImage() {
     this.ref = this.dialogService.open(GalleryFormComponent, {
+      modal: true,
       header: this.translocoService.translate(marker('gallery.addImage')),
       focusOnShow: false,
       data: {
         defaultSearchableSlug: this.objectSlug,
         defaultSearchableType: this.objectType,
       },
+      closable: true,
+      closeOnEscape: true,
     });
     // Add gallery image after dialog is closed
     this.ref.onClose
@@ -204,11 +205,14 @@ export class GalleryComponent implements OnInit {
 
   editImage(image: GalleryImage) {
     this.ref = this.dialogService.open(GalleryFormComponent, {
+      modal: true,
       header: this.translocoService.translate(marker('gallery.editImage')),
       focusOnShow: false,
       data: {
         galleryImage: image,
       },
+      closable: true,
+      closeOnEscape: true,
     });
     this.ref.onClose
       .pipe(untilDestroyed(this))

@@ -1,0 +1,18 @@
+<div class="p-4 flex gap-4 flex-column">
+  <div class="flex gap-2" *ngFor="let _ of [].constructor(10)">
+    <p-skeleton shape="circle" size="4rem" styleClass="mr-4"></p-skeleton>
+    <div style="flex: 1">
+      <div class="flex justify-content-between gap-2">
+        <div style="width: 75%; max-width: 15rem">
+          <p-skeleton class="block w-full" height="2rem"></p-skeleton>
+        </div>
+        <div style="width: 25%; max-width: 5rem">
+          <p-skeleton class="block w-full" height="2rem"></p-skeleton>
+        </div>
+      </div>
+      <div style="max-width: 20rem">
+        <p-skeleton class="block w-full" styleClass="mt-2"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</div>

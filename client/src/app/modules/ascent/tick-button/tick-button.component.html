@@ -7,7 +7,7 @@
     [ngClass]="{ 'hide-label': !showLabel, disabled: ticked }"
     [disabled]="ticked"
   >
-    <ng-template pTemplate="icon">
+    <ng-template #icon>
       <i *ngIf="!ticked" class="pi pi-check"></i>
       <i *ngIf="ticked" class="pi pi-check ticked-icon"></i>
     </ng-template>

@@ -1,8 +1,9 @@
 import {
-  APP_INITIALIZER,
   ErrorHandler,
   LOCALE_ID,
   NgModule,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import * as Sentry from '@sentry/angular';
@@ -11,11 +12,13 @@ import { CoreRoutingModule } from './core-routing.module';
 import { CoreComponent } from './core.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
-import { MenuComponent } from './menu/menu.component';
 import { MenubarModule } from 'primeng/menubar';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
-import { LoginComponent } from './login/login.component';
 import { PasswordModule } from 'primeng/password';
 import { Store, StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../ngrx/reducers';
@@ -33,17 +36,12 @@ import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
-import { FooterComponent } from './footer/footer.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 import { SharedModule } from '../shared/shared.module';
-import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { DialogModule } from 'primeng/dialog';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
-import { ForgotPasswordCheckMailboxComponent } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CragModule } from '../crag/crag.module';
@@ -60,13 +58,17 @@ import { HeaderMenuComponent } from '../shared/components/header-menu/header-men
 import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 import { AvatarModule } from 'primeng/avatar';
 import {
-  MatomoInitializationMode,
   MatomoInitializerService,
   MatomoModule,
   MatomoRouterModule,
 } from 'ngx-matomo-client';
 import { Router } from '@angular/router';
 import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import { LocalCragTheme } from './theme/theme';
+import { FooterComponent } from './footer/footer.component';
+import { MenuComponent } from './menu/menu.component';
 
 export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
@@ -121,17 +123,12 @@ export function preloadInstanceSettings(
 @NgModule({
   declarations: [
     CoreComponent,
-    MenuComponent,
-    LoginComponent,
-    FooterComponent,
-    ChangePasswordComponent,
-    ForgotPasswordComponent,
     ResetPasswordComponent,
     RefreshLoginModalComponent,
     AppLevelAlertsComponent,
-    ForgotPasswordCheckMailboxComponent,
     NotFoundComponent,
   ],
+  bootstrap: [CoreComponent],
   imports: [
     SharedModule,
     BrowserModule,
@@ -139,7 +136,6 @@ export function preloadInstanceSettings(
     CoreRoutingModule,
     InputTextModule,
     MenubarModule,
-    HttpClientModule,
     ButtonModule,
     PasswordModule,
     StoreModule.forRoot(reducers, {
@@ -160,7 +156,6 @@ export function preloadInstanceSettings(
     ReactiveFormsModule,
     CardModule,
     MenuModule,
-    MessagesModule,
     MessageModule,
     DialogModule,
     ToastModule,
@@ -170,9 +165,11 @@ export function preloadInstanceSettings(
     HasPermissionDirective,
     AvatarModule,
     MatomoModule.forRoot({
-      mode: MatomoInitializationMode.AUTO_DEFERRED,
+      mode: 'deferred',
     }),
     MatomoRouterModule,
+    FooterComponent,
+    MenuComponent,
   ],
   providers: [
     {
@@ -185,12 +182,10 @@ export function preloadInstanceSettings(
       provide: Sentry.TraceService,
       deps: [Router],
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [Sentry.TraceService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      inject(Sentry.TraceService);
+      return Promise.resolve();
+    }),
     {
       provide: LOCALE_ID,
       useValue: environment.language,
@@ -216,26 +211,36 @@ export function preloadInstanceSettings(
       multi: true,
     },
     MessageService,
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [TranslocoService, Store],
-      useFactory: preloadTranslations,
-    },
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [InstanceSettingsService, Store],
-      useFactory: preloadInstanceSettings,
-    },
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [MenuItemsService],
-      useFactory: preloadMenus,
-    },
+    provideAppInitializer(() => {
+      const initializerFn = preloadTranslations(
+        inject(TranslocoService),
+        inject(Store),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = preloadInstanceSettings(
+        inject(InstanceSettingsService),
+        inject(Store),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = preloadMenus(inject(MenuItemsService));
+      return initializerFn();
+    }),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG({
+      ripple: true,
+      theme: {
+        preset: LocalCragTheme,
+        options: {
+          darkModeSelector: false,
+        },
+      },
+    }),
   ],
-  bootstrap: [CoreComponent],
 })
 export class CoreModule {
   constructor(

@@ -14,7 +14,7 @@
       (click)="toggleArchived($event)"
       [ngClass]="{ 'hide-label': !showLabel }"
     >
-      <ng-template pTemplate="icon">
+      <ng-template #icon>
         <i *ngIf="!getCurrentState()" class="pi pi-hammer"></i>
         <i *ngIf="getCurrentState()" class="pi pi-undo"></i>
       </ng-template>

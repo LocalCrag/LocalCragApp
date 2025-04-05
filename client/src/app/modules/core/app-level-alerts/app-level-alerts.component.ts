@@ -20,6 +20,7 @@ import { differenceInMilliseconds, subMinutes } from 'date-fns';
   templateUrl: './app-level-alerts.component.html',
   styleUrls: ['./app-level-alerts.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 @UntilDestroy()
 export class AppLevelAlertsComponent implements OnInit {

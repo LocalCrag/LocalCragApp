@@ -11,6 +11,7 @@ import { ControlGroupService } from './control-group.service';
 @Directive({
   selector: '[lcControlGroup]',
   providers: [ControlGroupService],
+  standalone: false,
 })
 export class ControlGroupDirective {
   @HostBinding('class.error') hasError = false;

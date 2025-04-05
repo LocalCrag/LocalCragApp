@@ -12,19 +12,19 @@
         [min]="0"
         [max]="data.total - data.projects"
       >
-        <ng-template pTemplate="label">
-          <ol
-            class="p-metergroup-labels p-component p-metergroup-labels-horizontal"
+        <ng-template #label>
+          <div
+            class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-3"
           >
-            <li
+            <div
               class="p-metergroup-label font-bold"
               *ngIf="data.total - data.projects > 0"
             >
               {{ data.total - data.projects }}
               {{ stackChartData.length > 1 ? data.gradeScale : "" }}
               {{ t("lines") }}:
-            </li>
-            <li
+            </div>
+            <div
               class="p-metergroup-label"
               *ngFor="let meterValue of data.meterValues"
             >
@@ -35,8 +35,8 @@
                   color: textColor(meterValue.color, '#2e3132'),
                 }"
               />
-            </li>
-            <li class="p-metergroup-label" *ngIf="data.projects > 0">
+            </div>
+            <div class="p-metergroup-label" *ngIf="data.projects > 0">
               <p-tag
                 value="{{ data.projects }} {{
                   t('leveledGradeDistributionProjects')
@@ -46,8 +46,8 @@
                   color: textColor('#e5e7eb', '#2e3132'),
                 }"
               />
-            </li>
-          </ol>
+            </div>
+          </div>
         </ng-template>
       </p-meterGroup>
     </div>

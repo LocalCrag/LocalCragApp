@@ -25,7 +25,6 @@ import { AvatarUploadComponent } from '../../shared/forms/controls/avatar-upload
 import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
 import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
-import { MessagesModule } from 'primeng/messages';
 import { NgIf } from '@angular/common';
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { MessageModule } from 'primeng/message';
@@ -33,7 +32,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-account-form',
-  standalone: true,
   imports: [
     SharedModule,
     ReactiveFormsModule,
@@ -41,7 +39,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     TranslocoDirective,
     InputTextModule,
     AvatarUploadComponent,
-    MessagesModule,
     NgIf,
     MessageModule,
   ],

@@ -14,7 +14,6 @@ import { newAuthCredentials } from '../../../ngrx/actions/auth.actions';
 
 @Component({
   selector: 'lc-change-email',
-  standalone: true,
   imports: [
     ButtonModule,
     MessageModule,

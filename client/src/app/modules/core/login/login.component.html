@@ -15,7 +15,7 @@
             lcFormControl
             data-cy="login-form-email"
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>
@@ -29,7 +29,7 @@
             placeholder="{{ t('passwordPlaceholder') }}"
             data-cy="login-form-password"
           ></p-password>
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
         </div>

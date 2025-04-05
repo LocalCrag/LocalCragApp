@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { NgForOf, NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,19 +11,11 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
-import { AscentListSkeletonComponent } from '../../ascent/ascent-list-skeleton/ascent-list-skeleton.component';
 import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line-ascents',
-  standalone: true,
-  imports: [
-    AscentListComponent,
-    NgForOf,
-    NgIf,
-    SkeletonModule,
-    AscentListSkeletonComponent,
-  ],
+  imports: [AscentListComponent, SkeletonModule],
   templateUrl: './line-ascents.component.html',
   styleUrl: './line-ascents.component.scss',
 })

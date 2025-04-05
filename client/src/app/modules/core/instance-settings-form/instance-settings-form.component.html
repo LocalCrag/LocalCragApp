@@ -2,7 +2,7 @@
   <div class="content">
     <p-card header="{{ t('editInstanceSettings') }}">
       <form [formGroup]="instanceSettingsForm" lcForm>
-        <p-divider align="center" type="solid" class="mb-2 block"
+        <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("commonSettings") }}</b></p-divider
         >
 
@@ -18,10 +18,10 @@
             placeholder="{{ t('instanceNamePlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -38,10 +38,10 @@
             placeholder="{{ t('copyrightOwnerPlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'required'">{{
+          <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -54,7 +54,7 @@
             class="flex align-items-center justify-content-center sm:justify-content-start"
           >
             {{ t("gymModeLabelFalse") }}
-            <p-inputSwitch
+            <p-toggleswitch
               id="gym-mode"
               class="mx-2"
               formControlName="gymMode"
@@ -75,7 +75,7 @@
               tooltipPosition="right"
             ></span>
           </div>
-          <p-dropdown
+          <p-select
             id="skippedHierarchicalLayers"
             [options]="[
               { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
@@ -86,10 +86,10 @@
             optionValue="value"
             formControlName="skippedHierarchicalLayers"
             lcFormControl
-          ></p-dropdown>
+          ></p-select>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+        <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >
 
@@ -137,7 +137,7 @@
           ></lc-single-image-upload>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+        <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("arrowsSettings") }}</b></p-divider
         >
 
@@ -181,7 +181,7 @@
           ></p-colorPicker>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2 block"
+        <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("chartSettings") }}</b></p-divider
         >
 
@@ -196,7 +196,7 @@
           ></p-colorPicker>
         </div>
 
-        <p-divider align="center" type="solid" class="mb-2 block"
+        <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("matomoSettings") }}</b></p-divider
         >
 
@@ -212,7 +212,7 @@
             placeholder="{{ t('matomoTrackerUrlPlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
@@ -229,12 +229,12 @@
             placeholder="{{ t('matomoSiteIdPlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>
 
-        <p-divider align="center" type="solid" class="mb-2 block"
+        <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("mapSettings") }}</b></p-divider
         >
 
@@ -250,7 +250,7 @@
             placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
             lcFormControl
           />
-          <small class="p-error" *lcIfError="'maxlength'">{{
+          <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
         </div>

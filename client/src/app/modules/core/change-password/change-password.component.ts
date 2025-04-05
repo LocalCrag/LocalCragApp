@@ -5,7 +5,12 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { AuthCrudService } from '../../../services/crud/auth-crud.service';
@@ -15,8 +20,13 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Password } from 'primeng/password';
+import { SharedModule } from '../../shared/shared.module';
+import { Message } from 'primeng/message';
+import { NgIf } from '@angular/common';
+import { Button } from 'primeng/button';
 
 /**
  * A component that shows a form for changing the user's password.
@@ -26,6 +36,16 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    Password,
+    SharedModule,
+    Message,
+    NgIf,
+    Button,
+    TranslocoDirective,
+  ],
 })
 export class ChangePasswordComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
@@ -69,16 +89,16 @@ export class ChangePasswordComponent implements OnInit {
           this.changePasswordForm.get('oldPassword').value,
           this.changePasswordForm.get('newPasswords.password').value,
         )
-        .subscribe(
-          () => {
+        .subscribe({
+          next: () => {
             this.loading = false;
             this.store.dispatch(toastNotification('CHANGE_PASSWORD_SUCCESS'));
             this.router.navigate(['']);
           },
-          () => {
+          error: () => {
             this.loading = false;
           },
-        );
+        });
     } else {
       this.formDirective.markAsTouched();
     }

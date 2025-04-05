@@ -4,7 +4,6 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-expand-button',
-  standalone: true,
   imports: [ButtonModule, NgIf],
   templateUrl: './expand-button.component.html',
   styleUrl: './expand-button.component.scss',
