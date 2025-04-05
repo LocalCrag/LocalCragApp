@@ -6,7 +6,11 @@
           [src]="image.image.thumbnailM"
           [preview]="true"
           [previewImageSrcSet]="image.image.srcSet"
-        ></p-image>
+        >
+          <ng-template #indicator>
+            <i class="pi pi-eye"></i>
+          </ng-template>
+        </p-image>
       </div>
     </ng-template>
     <div class="tags">

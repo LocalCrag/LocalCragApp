@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
@@ -23,7 +23,8 @@ type StackChartData = {
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
-  standalone: false,
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;

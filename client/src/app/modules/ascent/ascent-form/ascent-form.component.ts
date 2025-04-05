@@ -71,9 +71,14 @@ export class AscentFormComponent implements OnInit {
   public line: Line;
   public ascent: Ascent;
   public grades = [];
-  public today = new Date();
+  public today: Date;
   public gradeDifferenceWarning = false;
   public editMode = false;
+  public toggleButtonDt = {
+    checkedBackground: '{primary.500}',
+    contentCheckedBackground: '{primary.500}',
+    checkedColor: '{surface.0}',
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -92,6 +97,8 @@ export class AscentFormComponent implements OnInit {
       .subscribe((scale) => {
         this.grades = scale.grades.filter((grade) => grade.value >= 0);
       });
+    this.today = new Date();
+    this.today.setHours(23, 59, 59, 999);
   }
 
   ngOnInit() {
@@ -265,8 +272,9 @@ export class AscentFormComponent implements OnInit {
   }
 
   setToToday() {
-    this.ascentForm.get('date').setValue(new Date());
-    this.ascentForm.get('year').setValue(new Date());
+    const today = new Date();
+    this.ascentForm.get('date').setValue(today);
+    this.ascentForm.get('year').setValue(today);
     this.ascentForm.get('yearOnly').setValue(false);
   }
 }

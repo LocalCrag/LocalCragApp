@@ -1,8 +1,9 @@
 lc-gallery-form {
   display: block;
   max-width: 35rem;
+  margin-top: 1px; // Somehow the alert border is hidden instead
 }
 
-.searchable-autocomplete .p-autocomplete-item {
+.searchable-autocomplete .p-autocomplete-option {
   padding: 0 !important;
 }

@@ -6,8 +6,7 @@ import { Line } from '../../../models/line';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { Store } from '@ngrx/store';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { ProjectClimbedFormComponent } from '../project-climbed-form/project-climbed-form.component';
 import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
 
@@ -26,11 +25,7 @@ export class TickButtonComponent {
 
   public ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private dialogService: DialogService,
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  constructor(private dialogService: DialogService) {}
 
   addAscent(event: MouseEvent) {
     event.preventDefault();

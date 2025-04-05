@@ -109,7 +109,7 @@ export const NOTIFICATIONS = {
     message: marker('notifications.UNARCHIVED_ERROR_MESSAGE'),
   },
   LOGIN_ERROR: {
-    type: NotificationType.SUCCESS,
+    type: NotificationType.ERROR,
     title: marker('notifications.LOGIN_ERROR_TITLE'),
     message: marker('notifications.LOGIN_ERROR_MESSAGE'),
   },

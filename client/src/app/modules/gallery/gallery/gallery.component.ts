@@ -157,6 +157,8 @@ export class GalleryComponent implements OnInit {
         defaultSearchableSlug: this.objectSlug,
         defaultSearchableType: this.objectType,
       },
+      closable: true,
+      closeOnEscape: true,
     });
     // Add gallery image after dialog is closed
     this.ref.onClose
@@ -209,6 +211,8 @@ export class GalleryComponent implements OnInit {
       data: {
         galleryImage: image,
       },
+      closable: true,
+      closeOnEscape: true,
     });
     this.ref.onClose
       .pipe(untilDestroyed(this))

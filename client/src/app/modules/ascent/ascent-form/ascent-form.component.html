@@ -22,11 +22,11 @@
           styleClass="w-full"
         ></p-date-picker>
         <small class="lc-error" *lcIfError="'dateInFuture'">{{
-          t("yearInFutureValidationError")
-        }}</small>
+            t("yearInFutureValidationError")
+          }}</small>
         <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+            t("required")
+          }}</small>
       </div>
       <div
         class="flex flex-column gap-2 flex-grow-1"
@@ -45,16 +45,17 @@
           dateFormat="dd.mm.yy"
         ></p-date-picker>
         <small class="lc-error" *lcIfError="'dateInFuture'">{{
-          t("dateInFutureValidationError")
-        }}</small>
+            t("dateInFutureValidationError")
+          }}</small>
         <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+            t("required")
+          }}</small>
       </div>
       <p-toggleButton
         formControlName="yearOnly"
         [onLabel]="t('onlyYear')"
         [offLabel]="t('onlyYear')"
+        [dt]="toggleButtonDt"
       ></p-toggleButton>
     </div>
 
@@ -64,21 +65,18 @@
         size="small"
         severity="secondary"
         (click)="setToToday()"
-        styleClass="shrink-padding-on-mobile"
       ></p-button>
       <p-button
         [label]="t('lastSaturday')"
         size="small"
         severity="secondary"
         (click)="setToLastSaturday()"
-        styleClass="shrink-padding-on-mobile"
       ></p-button>
       <p-button
         [label]="t('lastSunday')"
         size="small"
         severity="secondary"
         (click)="setToLastSunday()"
-        styleClass="shrink-padding-on-mobile"
       ></p-button>
     </div>
 
@@ -94,6 +92,7 @@
         formControlName="soft"
         [onLabel]="t('soft')"
         [offLabel]="t('soft')"
+        [dt]="toggleButtonDt"
       ></p-toggleButton>
       <p-select
         formControlName="grade"
@@ -119,10 +118,11 @@
         formControlName="hard"
         [onLabel]="t('hard')"
         [offLabel]="t('hard')"
+        [dt]="toggleButtonDt"
       ></p-toggleButton>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
-      }}</small>
+          t("required")
+        }}</small>
     </div>
     <p-message
       severity="warn"
@@ -145,8 +145,8 @@
         data-cy="rating"
       ></p-rating>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
-      }}</small>
+          t("required")
+        }}</small>
     </div>
 
     <p-divider align="center" type="dotted">
@@ -175,22 +175,22 @@
     >
       <p-toggleButton
         formControlName="flash"
+        [dt]="toggleButtonDt"
         [onLabel]="t('flash')"
         [offLabel]="t('flash')"
-        styleClass="shrink-padding-on-mobile"
       ></p-toggleButton>
       <p-toggleButton
         formControlName="withKneepad"
+        [dt]="toggleButtonDt"
         [onLabel]="t('withKneepad')"
         data-cy="withKneepad"
-        styleClass="shrink-padding-on-mobile"
         [offLabel]="t('withKneepad')"
       ></p-toggleButton>
       <p-toggleButton
         formControlName="fa"
+        [dt]="toggleButtonDt"
         [onLabel]="t('fa')"
         [offLabel]="t('fa')"
-        styleClass="shrink-padding-on-mobile"
       ></p-toggleButton>
     </div>
     <p-message

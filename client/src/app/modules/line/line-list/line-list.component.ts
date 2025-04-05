@@ -48,7 +48,6 @@ import { RegionService } from '../../../services/crud/region.service';
 import { GradeDistribution } from '../../../models/scale';
 import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
 
@@ -80,7 +79,6 @@ import { Message } from 'primeng/message';
     AsyncPipe,
     Select,
     InfiniteScrollDirective,
-    TopoDataviewSkeletonComponent,
     LineListSkeletonComponent,
     Message,
   ],

@@ -15,13 +15,16 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  standalone: true,
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
   public version = environment.version;
+  public footerButtonsDt = {
+    textSecondaryHoverBackground: '{surface.200}',
+  };
 
   constructor(
     private menuItemsService: MenuItemsService,

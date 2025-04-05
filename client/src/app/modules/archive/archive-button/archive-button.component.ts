@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
 import { SharedModule } from 'primeng/api';
 import { Store } from '@ngrx/store';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Line } from '../../../models/line';
 import { Crag } from '../../../models/crag';
@@ -38,7 +38,6 @@ export class ArchiveButtonComponent {
 
   constructor(
     private archiveService: ArchiveService,
-    private translocoService: TranslocoService,
     private store: Store,
   ) {}
 

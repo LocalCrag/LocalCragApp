@@ -38,7 +38,6 @@ import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
-import { FooterComponent } from './footer/footer.component';
 import { SharedModule } from '../shared/shared.module';
 import { MessageModule } from 'primeng/message';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -128,7 +127,6 @@ export function preloadInstanceSettings(
     CoreComponent,
     MenuComponent,
     LoginComponent,
-    FooterComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
     RefreshLoginModalComponent,

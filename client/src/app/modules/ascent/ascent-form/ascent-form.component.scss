@@ -1,11 +1,3 @@
-@use "../../../styles/media-queries" as m;
-
 .ascent-form-alert {
   max-width: 25rem;
-}
-
-.shrink-padding-on-mobile {
-  @include m.on-mobile {
-    padding: 0.5rem 0.75rem;
-  }
 }

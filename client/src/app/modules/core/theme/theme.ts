@@ -17,4 +17,17 @@ export const LocalCragTheme = definePreset(Aura, {
       950: '{blue.950}',
     },
   },
+  components: {
+    dataview: {
+      header: {
+        background: '{stone.100}',
+      },
+    },
+    card: {
+      title: {
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+      },
+    },
+  },
 });

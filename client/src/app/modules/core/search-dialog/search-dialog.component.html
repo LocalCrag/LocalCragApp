@@ -1,18 +1,19 @@
 <ng-container *transloco="let t; read: 'searchDialog'">
-  <div class="input-wrapper">
-    <div class="p-input-icon-left">
+
+  <p-inputgroup>
+    <p-inputgroup-addon>
       <i class="pi pi-search" *ngIf="!loading"></i>
-      <i class="pi pi-spin pi-spinner" *ngIf="loading"></i>
-      <input
-        type="text"
-        pInputText
-        [(ngModel)]="query"
-        (ngModelChange)="search()"
-        placeholder="{{ t('searchInputPlaceholder') }}"
-      />
-    </div>
-    <p-button icon="pi pi-times" (click)="close()"></p-button>
-  </div>
+      <i class="pi pi-spin pi-spinner" *ngIf="loading"></i>    </p-inputgroup-addon>
+    <input
+      type="text"
+      pInputText
+      [(ngModel)]="query"
+      (ngModelChange)="search()"
+      placeholder="{{ t('searchInputPlaceholder') }}"
+    />    <p-inputgroup-addon>
+      <p-button icon="pi pi-times" (click)="close()"></p-button>
+    </p-inputgroup-addon>
+  </p-inputgroup>
 
   <div class="spacer" *ngIf="searchables?.length > 0"></div>
   <lc-searchable

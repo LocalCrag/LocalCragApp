@@ -30,7 +30,11 @@
       [alt]="file.originalFilename"
       width="250"
       *ngIf="file"
-    ></p-image>
+    >
+      <ng-template #indicator>
+        <i class="pi pi-eye"></i>
+      </ng-template>
+    </p-image>
     <p-button
       icon="pi pi-times"
       (click)="removeMedia()"

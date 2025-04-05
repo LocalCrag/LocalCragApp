@@ -6,16 +6,10 @@ lc-menu {
     color: inherit;
   }
 
-  .p-menubar {
-    border-radius: 0;
-    border-right: none;
-    border-left: none;
-    border-top: none;
-  }
 
-  .p-menuitem-link-active {
-    .p-menuitem-text,
-    .p-menuitem-icon {
+  .p-menu-item-link-active {
+    .p-menu-item-label,
+    .p-menu-item-icon {
       color: var(--p-primary-600) !important;
     }
   }

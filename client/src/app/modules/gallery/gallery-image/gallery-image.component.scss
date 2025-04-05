@@ -5,6 +5,7 @@ lc-gallery-image {
     display: flex;
     justify-content: center;
     align-items: center;
+
     i {
       color: var(--p-gray-500);
     }
@@ -18,7 +19,7 @@ lc-gallery-image {
 
   .p-speeddial {
     position: absolute;
-    top: 2px; // Button is disaligned for some reason
+    top: 2px; // Button is misaligned for some reason
     left: 0;
     width: 2rem;
     height: 2rem;
@@ -36,7 +37,7 @@ lc-gallery-image {
 
   .p-speeddial-action {
     width: 2rem;
-    height: 2rem;
+    height: 2rem !important;
     font-size: 0.75rem;
 
     .p-speeddial-action-icon {
@@ -49,14 +50,17 @@ lc-gallery-image {
     display: flex;
     justify-content: end;
     gap: 0.25rem;
+
+    p-tag {
+      color: white;
+      border-radius: calc(2 * var(--p-tag-rounded-border-radius));
+      padding: .125rem .25rem;
+    }
+
   }
 
   .gallery-image-card {
     overflow: hidden;
-
-    .p-card-body {
-      padding: 0.5rem !important;
-    }
 
     .p-card-header {
       img {
@@ -94,10 +98,9 @@ lc-gallery-image {
 
   // Revert PrimeNG styles for small screens that remove the shadow and border-radius
   .p-card {
-    box-shadow:
-      0 2px 1px -1px rgba(0, 0, 0, 0.2),
-      0 1px 1px 0 rgba(0, 0, 0, 0.14),
-      0 1px 3px 0 rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12) !important;
     border-radius: 6px !important;
   }
 }
