@@ -11,7 +11,7 @@ import {
   logout,
   newAuthCredentials,
 } from 'src/app/ngrx/actions/auth.actions';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { take } from 'rxjs/operators';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
@@ -30,6 +30,13 @@ import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
 import { environment } from '../../../../environments/environment';
+import { HeaderMenuComponent } from '../../shared/components/header-menu/header-menu.component';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Menu } from 'primeng/menu';
+import { Avatar } from 'primeng/avatar';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-menu',
@@ -37,7 +44,17 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [DialogService],
-  standalone: false,
+  imports: [
+    HeaderMenuComponent,
+    AsyncPipe,
+    RouterLink,
+    TranslocoDirective,
+    NgIf,
+    Menu,
+    Avatar,
+    HasPermissionDirective,
+    Button,
+  ],
 })
 export class MenuComponent implements OnInit {
   items: MenuItem[] = [];

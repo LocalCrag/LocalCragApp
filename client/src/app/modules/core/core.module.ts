@@ -12,7 +12,6 @@ import { CoreRoutingModule } from './core-routing.module';
 import { CoreComponent } from './core.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
-import { MenuComponent } from './menu/menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import {
   HTTP_INTERCEPTORS,
@@ -20,7 +19,6 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
-import { LoginComponent } from './login/login.component';
 import { PasswordModule } from 'primeng/password';
 import { Store, StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../ngrx/reducers';
@@ -40,12 +38,10 @@ import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { SharedModule } from '../shared/shared.module';
 import { MessageModule } from 'primeng/message';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { DialogModule } from 'primeng/dialog';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
-import { ForgotPasswordCheckMailboxComponent } from './forgot-password-check-mailbox/forgot-password-check-mailbox.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CragModule } from '../crag/crag.module';
@@ -126,13 +122,9 @@ export function preloadInstanceSettings(
 @NgModule({
   declarations: [
     CoreComponent,
-    MenuComponent,
-    LoginComponent,
-    ForgotPasswordComponent,
     ResetPasswordComponent,
     RefreshLoginModalComponent,
     AppLevelAlertsComponent,
-    ForgotPasswordCheckMailboxComponent,
     NotFoundComponent,
   ],
   bootstrap: [CoreComponent],

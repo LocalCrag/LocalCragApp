@@ -11,6 +11,7 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "@angular-eslint/no-opt-out-of-standalone": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
@@ -47,6 +48,7 @@
         "plugin:@angular-eslint/template/accessibility"
       ],
       "rules": {
+        "jsx-a11y/label-has-associated-control": "off",
         "@angular-eslint/template/click-events-have-key-events": "off"
       }
     }
