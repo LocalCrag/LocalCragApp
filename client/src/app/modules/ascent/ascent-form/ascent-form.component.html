@@ -22,11 +22,11 @@
           styleClass="w-full"
         ></p-date-picker>
         <small class="lc-error" *lcIfError="'dateInFuture'">{{
-            t("yearInFutureValidationError")
-          }}</small>
+          t("yearInFutureValidationError")
+        }}</small>
         <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+          t("required")
+        }}</small>
       </div>
       <div
         class="flex flex-column gap-2 flex-grow-1"
@@ -45,11 +45,11 @@
           dateFormat="dd.mm.yy"
         ></p-date-picker>
         <small class="lc-error" *lcIfError="'dateInFuture'">{{
-            t("dateInFutureValidationError")
-          }}</small>
+          t("dateInFutureValidationError")
+        }}</small>
         <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+          t("required")
+        }}</small>
       </div>
       <p-toggleButton
         formControlName="yearOnly"
@@ -121,8 +121,8 @@
         [dt]="toggleButtonDt"
       ></p-toggleButton>
       <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+        t("required")
+      }}</small>
     </div>
     <p-message
       severity="warn"
@@ -145,8 +145,8 @@
         data-cy="rating"
       ></p-rating>
       <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+        t("required")
+      }}</small>
     </div>
 
     <p-divider align="center" type="dotted">

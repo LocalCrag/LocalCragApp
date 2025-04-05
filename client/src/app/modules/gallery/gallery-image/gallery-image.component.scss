@@ -54,9 +54,8 @@ lc-gallery-image {
     p-tag {
       color: white;
       border-radius: calc(2 * var(--p-tag-rounded-border-radius));
-      padding: .125rem .25rem;
+      padding: 0.125rem 0.25rem;
     }
-
   }
 
   .gallery-image-card {
@@ -98,9 +97,10 @@ lc-gallery-image {
 
   // Revert PrimeNG styles for small screens that remove the shadow and border-radius
   .p-card {
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0 1px 1px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12) !important;
+    box-shadow:
+      0 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0 1px 1px 0 rgba(0, 0, 0, 0.14),
+      0 1px 3px 0 rgba(0, 0, 0, 0.12) !important;
     border-radius: 6px !important;
   }
 }
