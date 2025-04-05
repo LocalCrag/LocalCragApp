@@ -68,6 +68,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import { LocalCragTheme } from './theme/theme';
 import { FooterComponent } from './footer/footer.component';
+import { MenuComponent } from './menu/menu.component';
 
 export function preloadTranslations(transloco: TranslocoService, store: Store) {
   return () => {
@@ -168,6 +169,7 @@ export function preloadInstanceSettings(
     }),
     MatomoRouterModule,
     FooterComponent,
+    MenuComponent,
   ],
   providers: [
     {
