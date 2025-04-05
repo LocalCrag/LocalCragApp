@@ -1,0 +1,12 @@
+<div class="p-4 flex gap-4 flex-column">
+  <div
+    class="flex gap-3 align-items-center"
+    *ngFor="let _ of [].constructor(10)"
+  >
+    <p-skeleton shape="circle" size="4rem" styleClass="mr-2"></p-skeleton>
+    <div style="flex: 1">
+      <p-skeleton width="100%" height="2rem" styleClass="mb-2"></p-skeleton>
+    </div>
+    <p-skeleton size="3rem" styleClass="mb-2"></p-skeleton>
+  </div>
+</div>

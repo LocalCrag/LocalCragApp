@@ -11,13 +11,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { SearchableComponent } from '../searchable/searchable.component';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
 
 @Component({
   selector: 'lc-search-dialog',
-  standalone: true,
   imports: [
     InputTextModule,
     FormsModule,
@@ -26,9 +26,10 @@ import { SearchableComponent } from '../searchable/searchable.component';
     NgForOf,
     AvatarModule,
     ButtonModule,
-    MessagesModule,
     MessageModule,
     SearchableComponent,
+    InputGroup,
+    InputGroupAddon,
   ],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',

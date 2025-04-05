@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { TranslocoDirective } from '@jsverse/transloco';
 import { MenuPage } from '../../../models/menu-page';
 import { SharedModule } from '../../shared/shared.module';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
@@ -12,8 +11,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
   selector: 'lc-menu-page-detail',
-  standalone: true,
-  imports: [CardModule, TranslocoDirective, SharedModule, NgIf, SkeletonModule],
+  imports: [CardModule, SharedModule, NgIf, SkeletonModule],
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss',
 })
@@ -31,15 +29,15 @@ export class MenuPageDetailComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
       const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
-      this.menuPagesService.getMenuPage(menuPageSlug).subscribe(
-        (menuPage) => {
+      this.menuPagesService.getMenuPage(menuPageSlug).subscribe({
+        next: (menuPage) => {
           this.menuPage = menuPage;
           this.loadingState = LoadingState.DEFAULT;
         },
-        () => {
+        error: () => {
           this.router.navigate(['not-found']);
         },
-      );
+      });
     });
   }
 }

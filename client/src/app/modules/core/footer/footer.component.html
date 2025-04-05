@@ -2,6 +2,7 @@
   <div class="footer-menu" *ngIf="menuItems.length > 0">
     <ng-container *ngFor="let menuItem of menuItems">
       <p-button
+        [dt]="footerButtonsDt"
         *ngIf="menuItem.routerLink"
         label="{{ menuItem.title }}"
         styleClass="p-button-secondary p-button-text"
@@ -9,6 +10,7 @@
       >
       </p-button>
       <p-button
+        [dt]="footerButtonsDt"
         *ngIf="menuItem.link"
         label="{{ menuItem.title }}"
         styleClass="p-button-secondary p-button-text"

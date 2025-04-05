@@ -7,6 +7,11 @@ import { MenuItemType } from '../../../../enums/menu-item-type';
 import { Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../../services/crud/scales.service';
+import { OrderList } from 'primeng/orderlist';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { SharedModule } from '../../shared.module';
+import { Button } from 'primeng/button';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -16,6 +21,16 @@ import { ScalesService } from '../../../../services/crud/scales.service';
   selector: 'lc-order-items',
   templateUrl: './order-items.component.html',
   styleUrls: ['./order-items.component.scss'],
+  standalone: true,
+  imports: [
+    OrderList,
+    TranslocoDirective,
+    AsyncPipe,
+    SharedModule,
+    TranslocoPipe,
+    Button,
+    NgIf,
+  ],
 })
 export class OrderItemsComponent {
   public items: AbstractModel[];
@@ -28,9 +43,9 @@ export class OrderItemsComponent {
   public menuItemTypes = MenuItemType;
   public isMobile$: Observable<boolean>;
 
-  private callback: (payload: any, slug?: string) => Observable<any>;
-  private idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
-  private slugParameter: string;
+  readonly callback: (payload: any, slug?: string) => Observable<any>;
+  readonly idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
+  readonly slugParameter: string;
 
   constructor(
     private dialogConfig: DynamicDialogConfig,

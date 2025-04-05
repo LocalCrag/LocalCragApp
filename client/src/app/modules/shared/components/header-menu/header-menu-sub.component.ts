@@ -17,7 +17,6 @@ import { HeaderMenuService } from './header-menu.service';
 
 @Component({
   selector: 'lc-header-menu-sub',
-  standalone: true,
   imports: [NgForOf, NgIf, NgClass, AngleDownIcon, AngleRightIcon],
   templateUrl: './header-menu-sub.component.html',
   styleUrl: './header-menu-sub.component.scss',

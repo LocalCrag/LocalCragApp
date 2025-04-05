@@ -1,19 +1,23 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
     <p-card header="{{ t('menuItemsListTitle') }}">
-      <p-dataView
-        #dv
-        [value]="menuItemsTop"
-        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
-      >
-        <ng-template pTemplate="header">
+      <p-dataView #dv [value]="menuItemsTop">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <div class="flex align-items-center">
               <h3>{{ t("topMenu") }}</h3>
             </div>
             <div class="flex justify-content-end gap-3">
               <p-button
+                [disabled]="loading === loadingStates.LOADING"
                 label="{{ t('newMenuItemButtonLabel') }}"
                 icon="pi pi-plus"
                 routerLink="/menu-items/create-menu-item/top"
@@ -23,14 +27,22 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.TOP)"
-                [disabled]="menuItemsTop?.length < 2"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
-        <ng-template let-menuItems pTemplate="list">
-          <div class="grid grid-nogutter">
+        <ng-template let-menuItems #list>
+          <lc-menu-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-menu-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"
@@ -66,13 +78,16 @@
         </ng-template>
       </p-dataView>
 
-      <p-dataView
-        #dv
-        [value]="menuItemsBottom"
-        [emptyMessage]="t('noMenuItemsFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
-      >
-        <ng-template pTemplate="header">
+      <p-dataView [value]="menuItemsBottom">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template #header>
           <div class="flex flex-row justify-content-between">
             <div class="flex align-items-center">
               <h3>{{ t("bottomMenu") }}</h3>
@@ -81,6 +96,7 @@
               <p-button
                 label="{{ t('newMenuItemButtonLabel') }}"
                 icon="pi pi-plus"
+                [disabled]="loading === loadingStates.LOADING"
                 routerLink="/menu-items/create-menu-item/bottom"
                 class="responsive-button"
               ></p-button>
@@ -88,14 +104,22 @@
                 label="{{ t('reorderMenuItemsButtonLabel') }}"
                 icon="pi pi-sort"
                 (click)="reorderMenuItems(positions.BOTTOM)"
-                [disabled]="menuItemsTop?.length < 2"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
-        <ng-template let-menuItems pTemplate="list">
-          <div class="grid grid-nogutter">
+        <ng-template let-menuItems #list>
+          <lc-menu-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-menu-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let menuItem of menuItems; let first = first"

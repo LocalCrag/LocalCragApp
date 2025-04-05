@@ -33,7 +33,6 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 
 @Component({
   selector: 'lc-menu-pages-form',
-  standalone: true,
   imports: [
     ButtonModule,
     CardModule,

@@ -33,6 +33,7 @@ import { highlightColor, textColor } from '../../../../utility/misc/color';
   templateUrl: './topo-image.component.html',
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 @UntilDestroy()
 export class TopoImageComponent implements OnInit {

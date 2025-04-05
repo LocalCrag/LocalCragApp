@@ -2,21 +2,19 @@
 
 // Add styles for search dialog prime ng component
 .search-dialog .p-dialog-content {
-  padding-top: 2rem;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+  padding-top: 1.25rem;
 }
 
 .search-dialog {
-  margin-top: 5rem;
+  margin-top: 5rem !important;
 
   @media (screen and max-width: 800px) {
-    margin-top: 0;
+    margin-top: 0 !important;
     height: 100%;
     max-height: 100%;
 
-    .p-dialog-content {
-      border-radius: 0;
+    &.p-dialog {
+      border-radius: 0 !important;
     }
   }
 }
@@ -26,23 +24,6 @@ lc-search-dialog {
   display: block;
   width: 40rem;
   max-width: 100%;
-
-  .input-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-  input,
-  .p-input-icon-left {
-    width: 100%;
-    outline: none;
-    box-shadow: none;
-  }
-
-  .p-input-icon-left {
-    display: block;
-  }
 
   .spacer {
     display: block;
@@ -55,7 +36,7 @@ lc-search-dialog {
 
     &:hover {
       cursor: pointer;
-      background-color: var(--gray-100);
+      background-color: var(--p-gray-100);
     }
   }
 }

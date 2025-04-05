@@ -7,7 +7,6 @@ import { IfErrorDirective } from './forms/if-error.directive';
 import { FormControlDirective } from './forms/form-control.directive';
 import { ControlGroupDirective } from './forms/control-group.directive';
 import { MinutesRemainingPipe } from './pipes/minutes-remaining.pipe';
-import { LeveledGradeDistributionComponent } from './components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
 import { SingleImageUploadComponent } from './forms/controls/single-image-upload/single-image-upload.component';
@@ -16,7 +15,6 @@ import { ImageModule } from 'primeng/image';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TopoImageComponent } from './components/topo-image/topo-image.component';
-import { OrderItemsComponent } from './components/order-items/order-items.component';
 import { OrderListModule } from 'primeng/orderlist';
 import { AsFormArrayPipe } from './pipes/as-form-array.pipe';
 import { AsFormGroupPipe } from './pipes/as-form-group.pipe';
@@ -28,6 +26,8 @@ import { ChipModule } from 'primeng/chip';
 import { TranslateSpecialGradesPipe } from './pipes/translate-special-grades.pipe';
 import { LineGradePipe } from './pipes/line-grade.pipe';
 import { MeterGroupModule } from 'primeng/metergroup';
+import { ProgressBar } from 'primeng/progressbar';
+import { Button } from 'primeng/button';
 
 /**
  * Module for shared components, pipes etc.
@@ -41,10 +41,8 @@ import { MeterGroupModule } from 'primeng/metergroup';
     FormControlDirective,
     ControlGroupDirective,
     MinutesRemainingPipe,
-    LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
     TopoImageComponent,
-    OrderItemsComponent,
     AsFormArrayPipe,
     AsFormGroupPipe,
     LineGradePipe,
@@ -65,6 +63,8 @@ import { MeterGroupModule } from 'primeng/metergroup';
     ChartModule,
     ChipModule,
     MeterGroupModule,
+    ProgressBar,
+    Button,
   ],
   exports: [
     DatePipe,
@@ -74,7 +74,6 @@ import { MeterGroupModule } from 'primeng/metergroup';
     FormControlDirective,
     ControlGroupDirective,
     MinutesRemainingPipe,
-    LeveledGradeDistributionComponent,
     SingleImageUploadComponent,
     TopoImageComponent,
     AsFormArrayPipe,

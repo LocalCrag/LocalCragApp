@@ -1,6 +1,6 @@
 @use "media-queries" as m;
 
-.p-card {
+.content .p-card {
   @include m.on-mobile {
     border-radius: 0;
     box-shadow: none;
@@ -10,7 +10,7 @@
 
 // Breadcrumb ellipsis for small screens
 p-breadcrumb {
-  .p-menuitem-text {
+  .p-breadcrumb-item-label {
     @include m.on-mobile {
       overflow: hidden;
       white-space: nowrap;
@@ -26,11 +26,6 @@ button.responsive-button {
   .p-button-label {
     @include m.on-mobile {
       display: none;
-    }
-  }
-  .p-button-icon {
-    @include m.on-mobile {
-      margin: 0;
     }
   }
 }

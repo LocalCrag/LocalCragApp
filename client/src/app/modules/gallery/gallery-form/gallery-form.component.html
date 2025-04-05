@@ -1,12 +1,12 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
-  <p-messages severity="info">
-    <ng-template pTemplate *ngIf="!editMode">
+  <p-message severity="info">
+    <ng-container *ngIf="!editMode">
       <div [innerHTML]="t('addGalleryImageDescription')"></div>
-    </ng-template>
-    <ng-template pTemplate *ngIf="editMode">
+    </ng-container>
+    <ng-container *ngIf="editMode">
       <div [innerHTML]="t('editGalleryImageDescription')"></div>
-    </ng-template>
-  </p-messages>
+    </ng-container>
+  </p-message>
 
   <form [formGroup]="galleryImageForm" lcForm>
     <div class="flex flex-column gap-2" lcControlGroup>
@@ -17,7 +17,9 @@
         formControlName="image"
         data-cy="topo-image-input"
       ></lc-single-image-upload>
-      <small class="p-error" *lcIfError="'required'">{{ t("required") }}</small>
+      <small class="lc-error" *lcIfError="'required'">{{
+        t("required")
+      }}</small>
     </div>
 
     <div class="flex flex-column gap-2" lcControlGroup>
@@ -35,11 +37,11 @@
         (completeMethod)="loadTagSuggestions($event)"
         [multiple]="true"
       >
-        <ng-template let-searchable pTemplate="item">
+        <ng-template let-searchable #item>
           <lc-searchable [searchable]="searchable"></lc-searchable>
         </ng-template>
       </p-autoComplete>
-      <small class="p-error" *lcIfError="'required'">{{
+      <small class="lc-error" *lcIfError="'required'">{{
         t("min1TagRequired")
       }}</small>
     </div>

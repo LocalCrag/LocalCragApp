@@ -8,7 +8,7 @@
         *ngIf="historyItems?.length > 0"
         [ngClass]="{ mobile: isMobile$ | async }"
       >
-        <ng-template pTemplate="marker" let-event>
+        <ng-template #marker let-event>
           <span
             class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
             [class.created]="event.type === historyItemType.CREATED"
@@ -17,12 +17,12 @@
             <i [class]="getIcon(event)"></i>
           </span>
         </ng-template>
-        <ng-template pTemplate="content" let-event>
+        <ng-template #content let-event>
           <p-card>
-            <ng-template pTemplate="title">
+            <ng-template #title>
               {{ getHeader(event) + ": " + event.object.name }}
             </ng-template>
-            <ng-template pTemplate="subtitle">
+            <ng-template #subtitle>
               {{ event.timeCreated | date: "dd.MM.yyyy" }},
               <a class="username" routerLink="{{ event.createdBy.routerLink }}"
                 >{{ event.createdBy.firstname }}

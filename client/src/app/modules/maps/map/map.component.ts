@@ -34,7 +34,6 @@ import { MapStyles } from '../../../enums/map-styles';
 
 @Component({
   selector: 'lc-map',
-  standalone: true,
   imports: [MapItemInfoDialogComponent, TranslocoDirective, NgIf],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
@@ -133,7 +132,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                   const img = new Image(100, 100);
                   img.onload = () => {
                     this.map.addImage(image.name, img);
-                    observer.next();
+                    observer.next(null);
                     observer.complete();
                   };
                   img.src = image.path;

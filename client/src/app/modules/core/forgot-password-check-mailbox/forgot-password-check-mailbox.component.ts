@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -12,6 +12,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-forgot-password-check-mailbox',
   templateUrl: './forgot-password-check-mailbox.component.html',
   styleUrls: ['./forgot-password-check-mailbox.component.scss'],
+  imports: [TranslocoDirective],
 })
 export class ForgotPasswordCheckMailboxComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

@@ -16,6 +16,7 @@ import { Season } from '../../../models/season';
   selector: 'lc-crag-info',
   templateUrl: './crag-info.component.html',
   styleUrls: ['./crag-info.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class CragInfoComponent implements OnInit {

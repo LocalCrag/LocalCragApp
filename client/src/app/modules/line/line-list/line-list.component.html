@@ -1,11 +1,14 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
-  <p-dataView
-    #dv
-    [value]="lines"
-    [emptyMessage]="t('noLinesFoundEmptyMessage')"
-    [loading]="loadingFirstPage === loadingStates.LOADING"
-  >
-    <ng-template pTemplate="header">
+  <p-dataView #dv [value]="lines">
+    <ng-template #emptymessage>
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        class="m-4 mb-1 block"
+        >{{ t("noLinesFoundEmptyMessage") }}</p-message
+      >
+    </ng-template>
+    <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
       >
@@ -29,32 +32,34 @@
         >
           {{ t("orderByLabel") }}
           <div>
-            <p-dropdown
+            <p-select
               [options]="orderOptions"
               [(ngModel)]="orderKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="orderKey">
                   <div>{{ orderKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
-            <p-dropdown
+            </p-select>
+            <p-select
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0 ml-2"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div
                   class="flex align-items-center gap-2"
                   *ngIf="orderDirectionKey"
@@ -62,12 +67,12 @@
                   <div>{{ orderDirectionKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
         </div>
         <div
@@ -75,27 +80,29 @@
         >
           <div *ngIf="availableScales.length > 2">
             {{ t("lineType") }}
-            <p-dropdown
+            <p-select
               [options]="availableScales"
               [(ngModel)]="scaleKey"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               optionLabel="label"
               (onChange)="selectScale()"
               styleClass="md:mb-0"
             >
-              <ng-template pTemplate="selectedItem">
+              <ng-template #selectedItem>
                 <div class="flex align-items-center gap-2" *ngIf="scaleKey">
                   <div>{{ scaleKey.label }}</div>
                 </div>
               </ng-template>
-              <ng-template let-option pTemplate="item">
+              <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
           <div *isGymMode="true">
             <p-button
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
               label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
               [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
               *isModerator="true"
@@ -133,6 +140,7 @@
           <p-slider
             [(ngModel)]="gradeFilterRange"
             [min]="minGradeValue"
+            [disabled]="loadingFirstPage === loadingStates.LOADING"
             [max]="maxGradeValue"
             [range]="true"
             [step]="1"
@@ -142,8 +150,14 @@
         </div>
       </div>
     </ng-template>
-    <ng-template let-lines pTemplate="list">
-      <div class="grid grid-nogutter">
+    <ng-template let-lines #list>
+      <lc-line-list-skeleton
+        *ngIf="loadingFirstPage === loadingStates.LOADING"
+      ></lc-line-list-skeleton>
+      <div
+        class="grid grid-nogutter"
+        *ngIf="loadingFirstPage !== loadingStates.LOADING"
+      >
         <a
           class="col-12 clickable-data-item line-link"
           [ngClass]="{ ticked: ticks.has(line.id) }"
@@ -187,7 +201,6 @@
                   </div>
                   <p-rating
                     [ngModel]="line.rating"
-                    [cancel]="false"
                     [readonly]="true"
                     class="align-self-center md:align-self-end"
                   ></p-rating>

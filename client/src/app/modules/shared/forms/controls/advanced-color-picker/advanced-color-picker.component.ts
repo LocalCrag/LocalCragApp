@@ -27,7 +27,6 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-advanced-color-picker',
-  standalone: true,
   imports: [
     TranslocoDirective,
     ColorPickerModule,

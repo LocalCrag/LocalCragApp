@@ -40,6 +40,7 @@ import { LineType } from '../../../enums/line-type';
   templateUrl: './area-form.component.html',
   styleUrls: ['./area-form.component.scss'],
   providers: [ConfirmationService],
+  standalone: false,
 })
 @UntilDestroy()
 export class AreaFormComponent implements OnInit {

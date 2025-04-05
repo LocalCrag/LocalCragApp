@@ -15,7 +15,7 @@ describe('Create line', () => {
     cy.get('[data-cy="rating"] staricon').eq(3).click();
     cy.get('[data-cy="line-form-faName"]').focus().type('Shawn Raboutou');
     cy.get('[data-cy="line-form-faYear"] input').click();
-    cy.get('.p-yearpicker-year').eq(0).click();
+    cy.get('.p-datepicker-year').eq(0).click();
     cy.get('[data-cy="line-form-highball"]').click();
     cy.get('[data-cy="submit"]').click();
     cy.visit(

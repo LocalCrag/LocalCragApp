@@ -13,7 +13,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 
 @Component({
   selector: 'lc-todo-priority-button',
-  standalone: true,
   imports: [MenuModule, ButtonModule, NgIf, TranslocoDirective],
   templateUrl: './todo-priority-button.component.html',
   styleUrl: './todo-priority-button.component.scss',

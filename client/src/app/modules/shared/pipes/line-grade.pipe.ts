@@ -7,6 +7,7 @@ import { TranslateSpecialGradesPipe } from './translate-special-grades.pipe';
 @Pipe({
   name: 'lineGrade',
   pure: false,
+  standalone: false,
 })
 export class LineGradePipe implements PipeTransform {
   constructor(

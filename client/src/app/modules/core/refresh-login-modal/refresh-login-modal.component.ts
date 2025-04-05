@@ -29,6 +29,7 @@ import { login, logout } from '../../../ngrx/actions/auth.actions';
   templateUrl: './refresh-login-modal.component.html',
   styleUrls: ['./refresh-login-modal.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class RefreshLoginModalComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

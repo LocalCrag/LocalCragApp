@@ -9,38 +9,40 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { Title } from '@angular/platform-browser';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { Select } from 'primeng/select';
+import { DataView } from 'primeng/dataview';
+import { PostListSkeletonComponent } from '../post-list-skeleton/post-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 /**
  * A component that shows a list of blog posts.
  */
 @Component({
   selector: 'lc-post-list',
-  standalone: true,
   imports: [
-    AsyncPipe,
+    DataView,
     ButtonModule,
     CardModule,
-    DataViewModule,
-    DropdownModule,
     NgForOf,
-    NgIf,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
     SharedModule,
     HasPermissionDirective,
+    Select,
+    NgIf,
+    PostListSkeletonComponent,
+    Message,
   ],
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.scss',

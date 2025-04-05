@@ -16,15 +16,15 @@ lc-app-level-alerts {
     }
 
     &.warning {
-      background-color: var(--yellow-700);
+      background-color: var(--p-yellow-700);
     }
 
     &.danger {
-      background-color: var(--red-700);
+      background-color: var(--p-red-700);
     }
 
     &.info {
-      background-color: var(--blue-700);
+      background-color: var(--p-blue-700);
     }
 
     .alert-actions {
@@ -38,10 +38,6 @@ lc-app-level-alerts {
 
     .p-button-label {
       color: #fff;
-    }
-
-    .p-button {
-      padding: 0.75rem 0.25rem;
     }
   }
 }

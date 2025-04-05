@@ -7,8 +7,9 @@ import { CardModule } from 'primeng/card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
-import { DropdownModule } from 'primeng/dropdown';
 import { TopoImagesModule } from '../topo-images/topo-images.module';
+import { Select } from 'primeng/select';
+import { GymModeDirective } from '../shared/directives/gym-mode.directive';
 
 @NgModule({
   declarations: [LinePathEditorComponent, LinePathFormComponent],
@@ -21,8 +22,9 @@ import { TopoImagesModule } from '../topo-images/topo-images.module';
     TranslocoModule,
     FormsModule,
     ReactiveFormsModule,
-    DropdownModule,
     TopoImagesModule,
+    Select,
+    GymModeDirective,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })

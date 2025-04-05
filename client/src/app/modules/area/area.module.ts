@@ -4,21 +4,16 @@ import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { AreaComponent } from './area/area.component';
 import { AreaFormComponent } from './area-form/area-form.component';
 import { AreaInfoComponent } from './area-info/area-info.component';
-import { AreaListComponent } from './area-list/area-list.component';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from '../shared/shared.module';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
-import { MessagesModule } from 'primeng/messages';
 import { EditorModule } from 'primeng/editor';
-import { TabMenuModule } from 'primeng/tabmenu';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -39,14 +34,13 @@ import { ClosedSpotTagComponent } from '../shared/components/closed-spot-tag/clo
 import { MessageModule } from 'primeng/message';
 import { ClosedSpotAlertComponent } from '../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { ArchiveButtonComponent } from '../archive/archive-button/archive-button.component';
+import { Select } from 'primeng/select';
+import { SetActiveTabDirective } from '../shared/directives/set-active-tab.directive';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [
-    AreaComponent,
-    AreaFormComponent,
-    AreaInfoComponent,
-    AreaListComponent,
-  ],
+  declarations: [AreaComponent, AreaFormComponent, AreaInfoComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -55,16 +49,12 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,
-    InputTextareaModule,
     ButtonModule,
     DataViewModule,
     TagModule,
     BadgeModule,
     RouterLink,
-    DropdownModule,
-    MessagesModule,
     EditorModule,
-    TabMenuModule,
     ConfirmPopupModule,
     SkeletonModule,
     BreadcrumbModule,
@@ -85,8 +75,14 @@ import { ArchiveButtonComponent } from '../archive/archive-button/archive-button
     MessageModule,
     ClosedSpotAlertComponent,
     ArchiveButtonComponent,
+    Select,
+    RouterOutlet,
+    SetActiveTabDirective,
+    Tab,
+    TabList,
+    Tabs,
+    TopoDataviewSkeletonComponent,
   ],
-  exports: [AreaListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaModule {}

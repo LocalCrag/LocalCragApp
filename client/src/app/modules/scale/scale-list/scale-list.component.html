@@ -1,14 +1,20 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
   <div class="content">
     <p-card header="{{ t('editScales') }}">
-      <p-dataView
-        [value]="scales"
-        [emptyMessage]="t('noScalesFoundEmptyMessage')"
-        [loading]="loadingState === LoadingState.LOADING"
-        class="p-5"
-      >
-        <ng-template let-scales pTemplate="list">
-          <div class="grid gap-4">
+      <p-dataView [value]="scales" class="p-5">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noScalesFoundEmptyMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template let-scales #list>
+          <lc-scale-list-skeleton
+            *ngIf="loadingState === LoadingState.LOADING"
+          ></lc-scale-list-skeleton>
+          <div class="grid gap-4" *ngIf="loadingState !== LoadingState.LOADING">
             <a
               class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
               *ngFor="let scale of scales; let first = first"
@@ -33,6 +39,7 @@
       </p-dataView>
       <div class="mt-4">
         <p-button
+          [disabled]="loadingState === LoadingState.LOADING"
           icon="pi pi-plus"
           (click)="router.navigate(['/scales/create'])"
           label="{{ t('createScale') }}"

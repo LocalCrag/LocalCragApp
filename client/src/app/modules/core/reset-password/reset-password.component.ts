@@ -29,6 +29,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
+  standalone: false,
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   @HostBinding('class.auth-view') authView: boolean = true;

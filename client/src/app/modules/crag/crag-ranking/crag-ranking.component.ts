@@ -8,7 +8,6 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-crag-ranking',
-  standalone: true,
   imports: [RankingListComponent, NgIf],
   templateUrl: './crag-ranking.component.html',
   styleUrl: './crag-ranking.component.scss',

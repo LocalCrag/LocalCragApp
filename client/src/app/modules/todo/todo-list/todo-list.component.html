@@ -1,13 +1,16 @@
 <ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
     <p-card header="{{ t('todos') }}">
-      <p-dataView
-        #dv
-        [value]="todos"
-        [emptyMessage]="t('noTodosFoundMessage')"
-        [loading]="loadingFirstPage === loadingStates.LOADING"
-      >
-        <ng-template pTemplate="header">
+      <p-dataView #dv [value]="todos">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noTodosFoundMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template #header>
           <div
             class="flex flex-column sm:flex-column justify-content-between gap-2"
           >
@@ -16,30 +19,32 @@
             >
               {{ t("orderByLabel") }}
               <div class="flex flex-wrap gap-2">
-                <p-dropdown
+                <p-select
                   [options]="orderOptions"
                   [(ngModel)]="orderKey"
                   optionLabel="label"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   (onChange)="loadFirstPage()"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div class="flex align-items-center gap-2" *ngIf="orderKey">
                       <div>{{ orderKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
-                <p-dropdown
+                </p-select>
+                <p-select
                   [options]="orderDirectionOptions"
                   [(ngModel)]="orderDirectionKey"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div
                       class="flex align-items-center gap-2"
                       *ngIf="orderDirectionKey"
@@ -47,12 +52,12 @@
                       <div>{{ orderDirectionKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
+                </p-select>
               </div>
             </div>
 
@@ -61,13 +66,14 @@
             >
               {{ t("filterLabel") }}
               <div class="flex flex-wrap gap-2">
-                <p-dropdown
+                <p-select
                   [options]="priorityFilterOptions"
                   [(ngModel)]="priorityFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div
                       class="flex align-items-center gap-2"
                       *ngIf="priorityFilterKey"
@@ -75,20 +81,21 @@
                       <div>{{ priorityFilterKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
-                <p-dropdown
+                </p-select>
+                <p-select
                   [options]="cragFilterOptions"
                   [(ngModel)]="cragFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="buildSectorFilterOptions(); loadFirstPage()"
                   *ngIf="cragFilterOptions"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div
                       class="flex align-items-center gap-2"
                       *ngIf="cragFilterKey"
@@ -96,20 +103,21 @@
                       <div>{{ cragFilterKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
-                <p-dropdown
+                </p-select>
+                <p-select
                   [options]="sectorFilterOptions"
                   [(ngModel)]="sectorFilterKey"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   optionLabel="label"
                   (onChange)="buildAreaFilterOptions(); loadFirstPage()"
                   *ngIf="sectorFilterOptions"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div
                       class="flex align-items-center gap-2"
                       *ngIf="sectorFilterKey"
@@ -117,20 +125,21 @@
                       <div>{{ sectorFilterKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
-                <p-dropdown
+                </p-select>
+                <p-select
                   [options]="areaFilterOptions"
                   [(ngModel)]="areaFilterKey"
                   optionLabel="label"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   (onChange)="loadFirstPage()"
                   *ngIf="areaFilterOptions"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div
                       class="flex align-items-center gap-2"
                       *ngIf="areaFilterKey"
@@ -138,12 +147,12 @@
                       <div>{{ areaFilterKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
+                </p-select>
               </div>
             </div>
 
@@ -152,24 +161,25 @@
             >
               <div *ngIf="availableScales.length > 2">
                 {{ t("lineType") }}
-                <p-dropdown
+                <p-select
                   [options]="availableScales"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
                   [(ngModel)]="scaleKey"
                   optionLabel="label"
                   (onChange)="selectScale()"
                   styleClass="md:mb-0"
                 >
-                  <ng-template pTemplate="selectedItem">
+                  <ng-template #selectedItem>
                     <div class="flex align-items-center gap-2" *ngIf="scaleKey">
                       <div>{{ scaleKey.label }}</div>
                     </div>
                   </ng-template>
-                  <ng-template let-option pTemplate="item">
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
-                </p-dropdown>
+                </p-select>
               </div>
             </div>
 
@@ -202,6 +212,7 @@
                 [(ngModel)]="gradeFilterRange"
                 [min]="minGradeValue"
                 [max]="maxGradeValue"
+                [disabled]="loadingFirstPage === loadingStates.LOADING"
                 [range]="true"
                 [step]="1"
                 (touchstart)="listenForSliderStop = true"
@@ -210,8 +221,14 @@
             </div>
           </div>
         </ng-template>
-        <ng-template let-todos pTemplate="list">
-          <div class="grid grid-nogutter">
+        <ng-template let-todos #list>
+          <lc-line-list-skeleton
+            *ngIf="loadingFirstPage === loadingStates.LOADING"
+          ></lc-line-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loadingFirstPage !== loadingStates.LOADING"
+          >
             <div
               class="col-12"
               *ngFor="let todo of todos; let first = first"
@@ -266,7 +283,7 @@
                       data-cy="delete-todo"
                       (click)="deleteTodo(todo)"
                     >
-                      <ng-template pTemplate="icon">
+                      <ng-template #icon>
                         <i class="pi pi-trash"></i>
                       </ng-template>
                     </p-button>
@@ -321,7 +338,7 @@
                         data-cy="tick-button"
                         (click)="deleteTodo(todo)"
                       >
-                        <ng-template pTemplate="icon">
+                        <ng-template #icon>
                           <i class="pi pi-trash"></i>
                         </ng-template>
                       </p-button>

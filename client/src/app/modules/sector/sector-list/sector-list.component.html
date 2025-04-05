@@ -4,36 +4,44 @@
     [value]="sectors"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    [emptyMessage]="t('noSectorsFoundEmptyMessage')"
-    [loading]="loading === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #emptymessage>
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        class="m-4 mb-1 block"
+        >{{ t("noSectorsFoundEmptyMessage") }}</p-message
+      >
+    </ng-template>
+    <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <p-dropdown
+        <p-select
           [options]="sortOptions"
           [(ngModel)]="sortKey"
           optionLabel="label"
           (onChange)="onSortChange($event)"
+          [disabled]="loading === loadingStates.LOADING"
           styleClass="md:mb-0"
         >
-          <ng-template pTemplate="selectedItem">
+          <ng-template #selectedItem>
             <div class="flex align-items-center gap-2" *ngIf="sortKey">
               <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
               <div>{{ sortKey.label }}</div>
             </div>
           </ng-template>
-          <ng-template let-option pTemplate="item">
+          <ng-template let-option #item>
             <div class="flex align-items-center gap-2">
               <i [class]="option.icon" *ngIf="option.icon"></i>
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
-        </p-dropdown>
+        </p-select>
         <div class="flex justify-content-start sm:justify-content-end gap-3">
           <p-button
             label="{{ t('newSectorButtonLabel') }}"
             icon="pi pi-plus"
             class="responsive-button"
+            [disabled]="loading === loadingStates.LOADING"
             routerLink="/topo/{{ cragSlug }}/create-sector"
             *isModerator="true"
           ></p-button>
@@ -41,15 +49,20 @@
             label="{{ t('reorderSectorsButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderSectors()"
-            [disabled]="sectors?.length < 2"
+            [disabled]="
+              sectors?.length < 2 || loading === loadingStates.LOADING
+            "
             class="responsive-button"
             *isModerator="true"
           ></p-button>
         </div>
       </div>
     </ng-template>
-    <ng-template let-sectors pTemplate="list">
-      <div class="grid grid-nogutter">
+    <ng-template let-sectors #list>
+      <lc-topo-dataview-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-dataview-skeleton>
+      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <a
           class="col-12 clickable-data-item"
           routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
@@ -91,7 +104,6 @@
                   class="quill-content"
                 ></div>
                 <lc-leveled-grade-distribution
-                  #gradeDistribution
                   [fetchingObservable]="
                     sectorsService.getSectorGrades(sector.slug)
                   "

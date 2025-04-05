@@ -5,8 +5,9 @@ lc-gallery-image {
     display: flex;
     justify-content: center;
     align-items: center;
+
     i {
-      color: var(--gray-500);
+      color: var(--p-gray-500);
     }
   }
 
@@ -18,7 +19,7 @@ lc-gallery-image {
 
   .p-speeddial {
     position: absolute;
-    top: 2px; // Button is disaligned for some reason
+    top: 2px; // Button is misaligned for some reason
     left: 0;
     width: 2rem;
     height: 2rem;
@@ -36,7 +37,7 @@ lc-gallery-image {
 
   .p-speeddial-action {
     width: 2rem;
-    height: 2rem;
+    height: 2rem !important;
     font-size: 0.75rem;
 
     .p-speeddial-action-icon {
@@ -49,14 +50,16 @@ lc-gallery-image {
     display: flex;
     justify-content: end;
     gap: 0.25rem;
+
+    p-tag {
+      color: white;
+      border-radius: calc(2 * var(--p-tag-rounded-border-radius));
+      padding: 0.125rem 0.25rem;
+    }
   }
 
   .gallery-image-card {
     overflow: hidden;
-
-    .p-card-body {
-      padding: 0.5rem !important;
-    }
 
     .p-card-header {
       img {

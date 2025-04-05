@@ -20,7 +20,6 @@ export enum StaticBackgroundImageDefaults {
 
 @Component({
   selector: 'lc-background-image',
-  standalone: true,
   imports: [],
   templateUrl: './background-image.component.html',
   styleUrl: './background-image.component.scss',

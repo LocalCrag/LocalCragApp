@@ -16,6 +16,7 @@ import { NgControl } from '@angular/forms';
  */
 @Directive({
   selector: '[lcIfError]',
+  standalone: false,
 })
 export class IfErrorDirective implements OnInit, OnDestroy {
   @Input() lcIfErrorControlName: string = null; // Name of the Angular control on which to look for errors

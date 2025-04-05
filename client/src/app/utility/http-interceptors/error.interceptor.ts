@@ -29,14 +29,14 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      tap(
-        () => {},
-        (err: any) => {
+      tap({
+        next: () => {},
+        error: (err: any) => {
           if (err instanceof HttpErrorResponse) {
             this.errorHandler.handleHttpError(err);
           }
         },
-      ),
+      }),
     );
   }
 }

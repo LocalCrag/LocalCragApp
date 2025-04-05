@@ -2,11 +2,11 @@
 
 lc-history-list {
   .updated {
-    background-color: var(--yellow-400);
+    background-color: var(--p-yellow-400);
   }
 
   .created {
-    background-color: var(--green-600);
+    background-color: var(--p-green-600);
   }
 
   .card-button {
@@ -31,6 +31,6 @@ lc-history-list {
   }
 
   .username {
-    color: var(--text-color);
+    color: var(--p-text-color);
   }
 }

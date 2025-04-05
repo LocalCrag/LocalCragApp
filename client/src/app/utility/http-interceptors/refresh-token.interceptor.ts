@@ -61,7 +61,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
               if (action.type === newAuthCredentials.type) {
                 return next.handle(request);
               }
-              return throwError(new HttpErrorResponse({ error: {} }));
+              return throwError(() => new HttpErrorResponse({ error: {} }));
             }),
           );
         }
