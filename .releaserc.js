@@ -18,10 +18,10 @@ module.exports = {
       {
         writerOpts: {
           transform: (commit, context) => {
-            if (commit.type === "style") {
-              commit.type = "Style Changes";
-            }
-            return commit;
+            return {
+              ...commit,
+              type: commit.type === "style" ? "Style Changes" : commit.type
+            };
           }
         }
       }
