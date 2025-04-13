@@ -64,10 +64,7 @@
           [max]="maxGradeValue"
           [range]="true"
           [step]="1"
-          lcSwiper
-          (swipeHorizontal)="listenForSliderStop = true"
-          (swipeVertical)="listenForSliderStop = false"
-          (mousedown)="listenForSliderStop = true"
+          (onSlideEnd)="reloadOnSlideEnd()"
         />
       </div>
     </div>

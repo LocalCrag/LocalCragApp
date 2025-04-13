@@ -1,9 +1,4 @@
-import {
-  Component,
-  HostListener,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { LinesService } from '../../../services/crud/lines.service';
 import { select, Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -50,7 +45,6 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
-import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-line-list',
@@ -82,7 +76,6 @@ import { SwiperDirective } from '../../shared/directives/swiper.directive';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
-    SwiperDirective,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -117,8 +110,9 @@ export class LineListComponent implements OnInit {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-  public listenForSliderStop = false;
   public showArchive = false;
+
+  private loadedGradeFilterRange: number[] = null;
 
   constructor(
     private linesService: LinesService,
@@ -220,14 +214,6 @@ export class LineListComponent implements OnInit {
       });
   }
 
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadFirstPage();
-    }
-  }
-
   toggleArchive() {
     this.showArchive = !this.showArchive;
     this.loadFirstPage();
@@ -247,11 +233,21 @@ export class LineListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadFirstPage();
+    }
+  }
+
   loadFirstPage() {
-    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
   }
 
   loadNextPage() {

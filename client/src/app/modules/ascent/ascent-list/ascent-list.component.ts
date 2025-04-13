@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostListener,
   Input,
   OnInit,
   ViewEncapsulation,
@@ -50,7 +49,6 @@ import { RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
 import { Message } from 'primeng/message';
-import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -83,7 +81,6 @@ import { SwiperDirective } from '../../shared/directives/swiper.directive';
     InfiniteScrollDirective,
     AscentListSkeletonComponent,
     Message,
-    SwiperDirective,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -122,9 +119,10 @@ export class AscentListComponent implements OnInit {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-  public listenForSliderStop = false;
   public ascentActionItems: MenuItem[];
   public clickedAscentForAction: Ascent;
+
+  private loadedGradeFilterRange: number[] = null;
 
   constructor(
     private ascentsService: AscentsService,
@@ -219,14 +217,6 @@ export class AscentListComponent implements OnInit {
     ];
   }
 
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadFirstPage();
-    }
-  }
-
   selectScale() {
     if (this.scaleKey?.value) {
       this.scalesService
@@ -241,11 +231,21 @@ export class AscentListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadFirstPage();
+    }
+  }
+
   loadFirstPage() {
-    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
   }
 
   loadNextPage() {

@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostListener,
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
@@ -44,7 +43,6 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
-import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-todo-list',
@@ -73,7 +71,6 @@ import { SwiperDirective } from '../../shared/directives/swiper.directive';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
-    SwiperDirective,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -112,8 +109,9 @@ export class TodoListComponent implements OnInit {
   public sectorFilterKey: SelectItem;
   public areaFilterOptions: SelectItem[];
   public areaFilterKey: SelectItem;
-  public listenForSliderStop = false;
   public crags: Crag[] = [];
+
+  private loadedGradeFilterRange: number[] = null;
 
   constructor(
     private todosService: TodosService,
@@ -257,14 +255,6 @@ export class TodoListComponent implements OnInit {
     }
   }
 
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadFirstPage();
-    }
-  }
-
   deleteTodo(todo: Todo) {
     this.todosService.deleteTodo(todo).subscribe(() => {
       this.store.dispatch(toastNotification('TODO_DELETED'));
@@ -287,11 +277,21 @@ export class TodoListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadFirstPage();
+    }
+  }
+
   loadFirstPage() {
-    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
   }
 
   loadNextPage() {
