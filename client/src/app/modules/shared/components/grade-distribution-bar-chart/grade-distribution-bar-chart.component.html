@@ -13,7 +13,12 @@
       {{ t("totalLines") }}:
       {{ chartDataElement.totalCount }}
       <span *ngIf="!excludeProjects">
-        ({{ t("plusXProjects", { projects: chartDataElement.projectCount }) }})
+        ({{
+          t("plusXUngradedYProjects", {
+            ungraded: chartDataElement.ungradedCount,
+            projects: chartDataElement.projectCount
+          })
+        }})
       </span>
     </div>
   </div>
