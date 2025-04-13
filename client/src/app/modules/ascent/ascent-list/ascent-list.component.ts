@@ -50,6 +50,7 @@ import { RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -82,6 +83,7 @@ import { Message } from 'primeng/message';
     InfiniteScrollDirective,
     AscentListSkeletonComponent,
     Message,
+    SwiperDirective,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',

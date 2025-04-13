@@ -44,6 +44,7 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-todo-list',
@@ -72,6 +73,7 @@ import { Message } from 'primeng/message';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
+    SwiperDirective,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

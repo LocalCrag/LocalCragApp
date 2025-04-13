@@ -215,7 +215,9 @@
                 [disabled]="loadingFirstPage === loadingStates.LOADING"
                 [range]="true"
                 [step]="1"
-                (touchstart)="listenForSliderStop = true"
+                lcSwiper
+                (swipeHorizontal)="listenForSliderStop = true"
+                (swipeVertical)="listenForSliderStop = false"
                 (mousedown)="listenForSliderStop = true"
               />
             </div>

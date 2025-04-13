@@ -50,6 +50,7 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-line-list',
@@ -81,6 +82,7 @@ import { Message } from 'primeng/message';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
+    SwiperDirective,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

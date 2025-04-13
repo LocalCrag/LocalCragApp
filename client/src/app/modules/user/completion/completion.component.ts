@@ -26,6 +26,7 @@ import { RegionService } from '../../../services/crud/region.service';
 import { SharedModule } from '../../shared/shared.module';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
+import { SwiperDirective } from '../../shared/directives/swiper.directive';
 
 @Component({
   selector: 'lc-completion',
@@ -44,6 +45,7 @@ import { Message } from 'primeng/message';
     AsyncPipe,
     Select,
     Message,
+    SwiperDirective,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',
