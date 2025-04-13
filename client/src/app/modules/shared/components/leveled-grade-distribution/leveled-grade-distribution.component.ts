@@ -16,6 +16,7 @@ type StackChartData = {
   lineType: LineType;
   gradeScale: string;
   projects: number;
+  ungraded: number;
   total: number;
   meterValues: { color: string; value: number; label: string }[];
 };
@@ -37,12 +38,7 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public stackChartData: any = null;
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
-  value = [
-    { label: 'Apps', color: '#34d399', value: 16 },
-    { label: 'Messages', color: '#fbbf24', value: 8 },
-    { label: 'Media', color: '#60a5fa', value: 24 },
-    { label: 'System', color: '#c084fc', value: 10 },
-  ];
+  public value = [];
 
   constructor(
     private scalesService: ScalesService,
@@ -122,6 +118,7 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 lineType: lineType as LineType,
                 gradeScale,
                 projects: 0,
+                ungraded: 0,
                 total: 0,
                 meterValues: Array.from(
                   { length: scale.gradeBrackets.stackedChartBrackets.length },
@@ -138,7 +135,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 const count =
                   this.gradeDistribution[lineType][gradeScale][gradeValue];
                 data.total += count;
-                if (gradeValue <= 0) {
+                if (gradeValue === 0) {
+                  data.ungraded += count;
+                } else if (gradeValue < 0) {
                   data.projects += count;
                 } else {
                   for (

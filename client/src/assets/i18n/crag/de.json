@@ -1,7 +1,7 @@
 {
+  "cragList.noCragsFoundEmptyMessage": "Keine Gebiete gefunden",
   "cragList.newCragButtonLabel": "Neues Gebiet",
   "cragList.reorderCragsButtonLabel": "Gebiete ordnen",
-  "cragList.noCragsFoundEmptyMessage": "Keine Gebiete gefunden",
   "crag.gradeDistribution": "Gradverteilung",
   "crag.description": "Beschreibung",
   "crag.season": "Saison",
