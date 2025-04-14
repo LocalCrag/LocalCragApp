@@ -14,8 +14,12 @@ export class LinePath extends AbstractModel {
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
   konvaLine: Konva.Line;
+  konvaNumberGroup: Konva.Group;
   konvaRect: Konva.Rect;
   konvaText: Konva.Text;
+  konvaLineLayer: Konva.Layer;
+  konvaNumberLayer: Konva.Layer;
+  konvaFocusLayer: Konva.Layer;
 
   constructor() {
     super();
