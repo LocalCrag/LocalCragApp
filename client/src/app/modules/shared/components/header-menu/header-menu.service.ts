@@ -6,6 +6,7 @@ import { HeaderMenuComponent } from './header-menu.component';
 export class HeaderMenuService {
   private activeItem: ProcessedMenuItem;
   private headerMenu: HeaderMenuComponent;
+  private preventNextMobileMenuCollapse = false;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -55,8 +56,22 @@ export class HeaderMenuService {
     this.headerMenu = headerMenu;
   }
 
+  /**
+   * Called to collapse the mobile menu. The preventNextMobileMenuCollapse flag is needed, because
+   * when opening the mobile menu, the click event bubbles and would close the menu immediately.
+   * Stopping propagation is no option, as the bubbling is still needed, to close other menus that might be eventually
+   * open, like the user menu.
+   */
   public collapseMobileMenu() {
-    this.headerMenu.mobileExpanded = false;
+    if (!this.preventNextMobileMenuCollapse) {
+      this.headerMenu.mobileExpanded = false;
+    } else {
+      this.preventNextMobileMenuCollapse = false;
+    }
+  }
+
+  public setPreventNextMobileMenuCollapse(value: boolean) {
+    this.preventNextMobileMenuCollapse = value;
   }
 
   /**
