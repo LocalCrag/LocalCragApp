@@ -10,6 +10,7 @@ import {
   selectInstanceSettingsState,
 } from '../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
+import { NavigationService } from '../../services/core/navigation.service';
 
 @Component({
   selector: 'lc-root',
@@ -20,6 +21,7 @@ import { take } from 'rxjs/operators';
 export class CoreComponent implements OnInit {
   constructor(
     private title: Title,
+    private navigationService: NavigationService, // Needs to be instantiated here so all router events are tracked
     public store: Store<AppState>,
   ) {
     const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
