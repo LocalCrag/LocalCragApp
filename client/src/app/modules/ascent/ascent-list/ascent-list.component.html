@@ -123,8 +123,7 @@
             [disabled]="loadingFirstPage === loadingStates.LOADING"
             [range]="true"
             [step]="1"
-            (touchstart)="listenForSliderStop = true"
-            (mousedown)="listenForSliderStop = true"
+            (onSlideEnd)="reloadOnSlideEnd()"
           />
         </div>
       </div>

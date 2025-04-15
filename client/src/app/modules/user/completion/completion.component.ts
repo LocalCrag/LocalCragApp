@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -60,7 +60,6 @@ export class CompletionComponent implements OnInit {
   public expandedCrags: Set<string> = new Set<string>();
   public expandedSectors: Set<string> = new Set<string>();
 
-  public listenForSliderStop = false;
   public availableScales: SelectItem<
     { lineType: LineType; gradeScale: string } | undefined
   >[] = [];
@@ -71,6 +70,8 @@ export class CompletionComponent implements OnInit {
   public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
+  private loadedGradeFilterRange: number[] = null;
+
   constructor(
     private statisticsService: StatisticsService,
     private usersService: UsersService,
@@ -80,14 +81,6 @@ export class CompletionComponent implements OnInit {
     private translocoService: TranslocoService,
     protected scalesService: ScalesService,
   ) {}
-
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadCompletion();
-    }
-  }
 
   ngOnInit() {
     const userSlug =
@@ -152,7 +145,18 @@ export class CompletionComponent implements OnInit {
     this.loadCompletion();
   }
 
-  private loadCompletion() {
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadCompletion();
+    }
+  }
+
+  public loadCompletion() {
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
     const filters = new URLSearchParams({
       user_id: this.user.id,
     });

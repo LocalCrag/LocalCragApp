@@ -24,7 +24,6 @@ import { TicksService } from '../../../services/crud/ticks.service';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { Area } from '../../../models/area';
 import { highlightColor, textColor } from '../../../utility/misc/color';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DataView } from 'primeng/dataview';
@@ -95,7 +94,6 @@ export class TopoImageListComponent implements OnInit {
   public showArchive = false;
 
   private scrollTarget: Scroll;
-  private area: Area;
 
   constructor(
     private topoImagesService: TopoImagesService,
@@ -163,7 +161,6 @@ export class TopoImageListComponent implements OnInit {
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
-          this.area = area;
           return forkJoin([
             this.topoImagesService.getTopoImages(
               this.areaSlug,
@@ -372,6 +369,8 @@ export class TopoImageListComponent implements OnInit {
             textColor(highlightColor(linePath.line?.color)) ??
               instanceSettingsState.arrowHighlightTextColor,
           );
+          linePath.konvaFocusLayer.add(linePath.konvaLine);
+          linePath.konvaFocusLayer.add(linePath.konvaNumberGroup);
         });
     }
   }
@@ -400,6 +399,8 @@ export class TopoImageListComponent implements OnInit {
             textColor(linePath.line?.color) ??
               instanceSettingsState.arrowTextColor,
           );
+          linePath.konvaLineLayer.add(linePath.konvaLine);
+          linePath.konvaNumberLayer.add(linePath.konvaNumberGroup);
         });
     }
   }

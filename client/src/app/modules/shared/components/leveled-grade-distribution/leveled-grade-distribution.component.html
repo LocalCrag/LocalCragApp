@@ -10,7 +10,7 @@
       <p-meterGroup
         [value]="data.meterValues"
         [min]="0"
-        [max]="data.total - data.projects"
+        [max]="data.total - data.projects - data.ungraded"
       >
         <ng-template #label>
           <div
@@ -33,6 +33,17 @@
                 [style]="{
                   backgroundColor: meterValue.color,
                   color: textColor(meterValue.color, '#2e3132'),
+                }"
+              />
+            </div>
+            <div class="p-metergroup-label" *ngIf="data.ungraded > 0">
+              <p-tag
+                value="{{ data.ungraded }} {{
+                  t('leveledGradeDistributionUngraded')
+                }}"
+                [style]="{
+                  backgroundColor: '#e5e7eb',
+                  color: textColor('#e5e7eb', '#2e3132'),
                 }"
               />
             </div>

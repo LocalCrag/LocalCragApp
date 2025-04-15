@@ -1,10 +1,10 @@
 {
+  "lineList.noLinesFoundEmptyMessage": "Keine Linien gefunden",
   "lineList.newLineButtonLabel": "Neue Linie",
   "lineList.orderByLabel": "Sortieren nach:",
   "lineList.lineType": "Linientyp",
   "lineList.hideArchive": "Archiv verstecken",
   "lineList.showArchive": "Archiv anzeigen",
-  "lineList.noLinesFoundEmptyMessage": "Keine Linien gefunden",
   "lineList.loadMore": "Mehr Linien laden",
   "line.reorderLinePathsForLineButtonLabel": "Topo Bilder ordnen",
   "line.ascentCount": "Begehungen",

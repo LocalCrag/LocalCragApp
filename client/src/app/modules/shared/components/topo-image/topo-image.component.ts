@@ -57,6 +57,7 @@ export class TopoImageComponent implements OnInit {
   private backgroundImage: any;
   private lineLayer: Konva.Layer;
   private numberLayer: Konva.Layer;
+  private focusLayer: Konva.Layer;
   private stage: Konva.Stage;
   private lineSizeMultiplicator = 1;
   private scale: number = 1;
@@ -200,6 +201,8 @@ export class TopoImageComponent implements OnInit {
     this.stage.add(this.lineLayer);
     this.numberLayer = new Konva.Layer({ preventDefault: this.editorMode });
     this.stage.add(this.numberLayer);
+    this.focusLayer = new Konva.Layer({ preventDefault: this.editorMode });
+    this.stage.add(this.focusLayer);
     const background = new Konva.Rect({
       width: this.width,
       height: this.height,
@@ -266,6 +269,9 @@ export class TopoImageComponent implements OnInit {
         });
         this.lineLayer.add(line);
         linePath.konvaLine = line;
+        linePath.konvaFocusLayer = this.focusLayer;
+        linePath.konvaNumberLayer = this.numberLayer;
+        linePath.konvaLineLayer = this.lineLayer;
       });
   }
 
@@ -315,6 +321,7 @@ export class TopoImageComponent implements OnInit {
         this.numberLayer.add(rectangleGroup);
         linePath.konvaRect = rectangle;
         linePath.konvaText = konvaText;
+        linePath.konvaNumberGroup = rectangleGroup;
       });
   }
 

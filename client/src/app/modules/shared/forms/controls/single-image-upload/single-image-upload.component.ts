@@ -1,9 +1,12 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   forwardRef,
   Injector,
   OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -36,7 +39,7 @@ import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/insta
   standalone: false,
 })
 export class SingleImageUploadComponent
-  implements OnInit, ControlValueAccessor, OnDestroy
+  implements OnInit, ControlValueAccessor, OnDestroy, AfterViewInit
 {
   @ViewChild(FileUpload) uploader: FileUpload;
 
@@ -55,6 +58,8 @@ export class SingleImageUploadComponent
     private api: ApiService,
     private inj: Injector,
     private store: Store,
+    private el: ElementRef,
+    private renderer: Renderer2,
   ) {}
 
   /**
@@ -65,6 +70,17 @@ export class SingleImageUploadComponent
     this.formControl = this.inj.get(NgControl);
     this.store.select(selectInstanceSettingsState).subscribe((settings) => {
       this.maxImageSize = settings?.maxImageSize * 1048576; // Convert to bytes
+    });
+  }
+
+  /**
+   * Allows camera capture for the file upload.
+   */
+  ngAfterViewInit(): void {
+    const fileInputs =
+      this.el.nativeElement.querySelectorAll('input[type="file"]');
+    fileInputs.forEach((input: HTMLInputElement) => {
+      this.renderer.setAttribute(input, 'capture', 'environment');
     });
   }
 

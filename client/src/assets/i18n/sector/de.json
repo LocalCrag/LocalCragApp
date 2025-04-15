@@ -1,7 +1,7 @@
 {
+  "sectorList.noSectorsFoundEmptyMessage": "Keine Sektoren gefunden",
   "sectorList.newSectorButtonLabel": "Neuer Sektor",
   "sectorList.reorderSectorsButtonLabel": "Sektoren ordnen",
-  "sectorList.noSectorsFoundEmptyMessage": "Keine Sektoren gefunden",
   "sector.gradeDistribution": "Gradverteilung",
   "sector.description": "Beschreibung",
   "sectorForm.createSectorDescription": "Hier kannst du einen neuen Sektor anlegen. Sektoren sind größere Bereiche innerhalb eines Gebietes. In Chironico wäre beispielsweise das Schattental ein Sektor. Sektoren werden in einem weiteren Schritt weiter in Bereiche unterteilt welche meist einen einzelnen Block mit mehreren Linien darstellen.",

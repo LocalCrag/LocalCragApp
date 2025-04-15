@@ -52,7 +52,7 @@ export class AreaComponent implements OnInit {
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -60,7 +60,7 @@ export class AreaComponent implements OnInit {
         ),
         this.sectorsService.getSector(sectorSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -68,7 +68,7 @@ export class AreaComponent implements OnInit {
         ),
         this.areasService.getArea(areaSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
