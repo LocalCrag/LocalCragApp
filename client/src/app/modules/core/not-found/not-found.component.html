@@ -2,8 +2,7 @@
   <div class="auth-container">
     <div class="card login-card">
       <h3>{{ t("title") }}</h3>
-
-      <div [innerHTML]="t('description', { url })"></div>
+      <div [innerHTML]="t('description', { url: previousUrl })"></div>
     </div>
   </div>
 </ng-container>
