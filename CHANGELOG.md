@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.2...v1.16.3) (2025-04-15)
+
+
+### Bug Fixes
+
+* **core:** remove fileinput capture attribute that forces capture on mobile ([#679](https://github.com/LocalCrag/LocalCragApp/issues/679)) ([d8278bb](https://github.com/LocalCrag/LocalCragApp/commit/d8278bb2657a75b1fd2747446e4f214a10e7a688))
+
 ## [1.16.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.1...v1.16.2) (2025-04-15)
 
 
