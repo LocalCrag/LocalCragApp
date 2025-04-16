@@ -16,7 +16,6 @@ import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
-import { SharedModule } from '../../shared/shared.module';
 import { Line } from '../../../models/line';
 import { LoadingState } from '../../../enums/loading-state';
 import { FormsModule } from '@angular/forms';
@@ -45,6 +44,11 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 
 @Component({
   selector: 'lc-line-list',
@@ -59,7 +63,6 @@ import { Message } from 'primeng/message';
     RatingModule,
     RouterLink,
     SecretSpotTagComponent,
-    SharedModule,
     TickButtonComponent,
     TranslocoDirective,
     NgClass,
@@ -76,6 +79,11 @@ import { Message } from 'primeng/message';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
+    SanitizeHtmlPipe,
+    LineBoolPropListComponent,
+    LineGradePipe,
+    TopoImageComponent,
+    TranslateSpecialGradesPipe,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

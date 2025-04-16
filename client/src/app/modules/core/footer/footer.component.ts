@@ -18,7 +18,6 @@ import { RouterLink } from '@angular/router';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [Button, TranslocoDirective, NgForOf, RouterLink, NgIf, AsyncPipe],
 })
 export class FooterComponent implements OnInit {

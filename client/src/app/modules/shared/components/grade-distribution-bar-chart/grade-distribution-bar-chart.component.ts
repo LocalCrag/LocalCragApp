@@ -18,7 +18,6 @@ import { getRgbObject } from '../../../../utility/misc/color';
 import { GradeDistribution } from '../../../../models/scale';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { LineType } from '../../../../enums/line-type';
-import { SharedModule } from 'primeng/api';
 
 type BarChartData = {
   lineType: LineType;
@@ -34,7 +33,7 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  imports: [ChartModule, NgIf, TranslocoDirective, SharedModule, NgForOf],
+  imports: [ChartModule, NgIf, TranslocoDirective, NgForOf],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None,

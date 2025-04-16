@@ -1,13 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
-import { AreaComponent } from './area/area.component';
-import { AreaFormComponent } from './area-form/area-form.component';
-import { AreaInfoComponent } from './area-info/area-info.component';
 import { DataViewModule } from 'primeng/dataview';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { SharedModule } from '../shared/shared.module';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -40,12 +36,10 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [AreaComponent, AreaFormComponent, AreaInfoComponent],
   imports: [
     CommonModule,
     CardModule,
     TranslocoModule,
-    SharedModule,
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,

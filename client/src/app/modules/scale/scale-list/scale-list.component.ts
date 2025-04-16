@@ -15,7 +15,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { RatingModule } from 'primeng/rating';
-import { SharedModule } from '../../shared/shared.module';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
@@ -34,7 +33,6 @@ import { Message } from 'primeng/message';
     ButtonModule,
     MenuModule,
     RatingModule,
-    SharedModule,
     TagModule,
     CardModule,
     TranslocoPipe,

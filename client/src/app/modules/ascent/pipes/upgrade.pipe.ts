@@ -3,7 +3,6 @@ import { Ascent } from '../../../models/ascent';
 
 @Pipe({
   name: 'upgrade',
-  standalone: true,
 })
 export class UpgradePipe implements PipeTransform {
   transform(ascent: Ascent): boolean {

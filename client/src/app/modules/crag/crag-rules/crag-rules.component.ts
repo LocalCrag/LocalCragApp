@@ -5,14 +5,14 @@ import { Crag } from '../../../models/crag';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SharedModule } from '../../shared/shared.module';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 /**
  * Component that shows the rules of a crag.
  */
 @Component({
   selector: 'lc-crag-rules',
-  imports: [NgIf, SharedModule, SkeletonModule],
+  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './crag-rules.component.html',
   styleUrl: './crag-rules.component.scss',
 })

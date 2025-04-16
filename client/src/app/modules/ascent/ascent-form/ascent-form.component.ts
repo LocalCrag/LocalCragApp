@@ -9,7 +9,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
@@ -35,6 +34,10 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -42,7 +45,6 @@ import { Textarea } from 'primeng/textarea';
     EditorModule,
     InputTextModule,
     ReactiveFormsModule,
-    SharedModule,
     CheckboxModule,
     ButtonModule,
     ConfirmPopupModule,
@@ -56,6 +58,11 @@ import { Textarea } from 'primeng/textarea';
     MessageModule,
     Select,
     Textarea,
+    TranslateSpecialGradesPipe,
+    IfErrorDirective,
+    FormControlDirective,
+    ControlGroupDirective,
+    FormDirective,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',

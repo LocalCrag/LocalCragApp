@@ -1,13 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LineComponent } from './line/line.component';
-import { LineFormComponent } from './line-form/line-form.component';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { SharedModule } from '../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
@@ -20,7 +17,6 @@ import { RatingModule } from 'primeng/rating';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ColorPickerModule } from 'primeng/colorpicker';
-import { LineBoolPropListComponent } from './line-bool-prop-list/line-bool-prop-list.component';
 import { TopoImageDetailsComponent } from '../topo-images/topo-image-details/topo-image-details.component';
 import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 import { TickButtonComponent } from '../ascent/tick-button/tick-button.component';
@@ -41,12 +37,10 @@ import { SetActiveTabDirective } from '../shared/directives/set-active-tab.direc
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 @NgModule({
-  declarations: [LineComponent, LineFormComponent, LineBoolPropListComponent],
   imports: [
     CommonModule,
     CardModule,
     TranslocoModule,
-    SharedModule,
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,
@@ -85,7 +79,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
     TabList,
     Tabs,
   ],
-  exports: [LineBoolPropListComponent],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineModule {}

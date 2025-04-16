@@ -11,7 +11,6 @@ import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {
@@ -33,6 +32,10 @@ import { UsersService } from '../../../services/crud/users.service';
 import { map } from 'rxjs/operators';
 import { SearchableComponent } from '../../core/searchable/searchable.component';
 import { Message } from 'primeng/message';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -40,12 +43,16 @@ import { Message } from 'primeng/message';
     TranslocoDirective,
     NgIf,
     ReactiveFormsModule,
-    SharedModule,
     ButtonModule,
     MultiSelectModule,
     AutoCompleteModule,
     SearchableComponent,
     Message,
+    FormDirective,
+    ControlGroupDirective,
+    SingleImageUploadComponent,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',

@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TopoImageFormComponent } from './topo-image-form/topo-image-form.component';
 import { DataViewModule } from 'primeng/dataview';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
-import { SharedModule } from '../shared/shared.module';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TableModule } from 'primeng/table';
@@ -28,7 +26,6 @@ import { Select } from 'primeng/select';
 import { TopoImageListSkeletonComponent } from './topo-image-list-skeleton/topo-image-list-skeleton.component';
 
 @NgModule({
-  declarations: [TopoImageFormComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -36,7 +33,6 @@ import { TopoImageListSkeletonComponent } from './topo-image-list-skeleton/topo-
     FormsModule,
     ButtonModule,
     RouterLink,
-    SharedModule,
     TranslocoModule,
     ReactiveFormsModule,
     ConfirmPopupModule,

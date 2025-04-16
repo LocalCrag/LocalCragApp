@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CragFormComponent } from './crag-form/crag-form.component';
 import { CardModule } from 'primeng/card';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
-import { SharedModule } from '../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -11,11 +9,9 @@ import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { CragComponent } from './crag/crag.component';
 import { EditorModule } from 'primeng/editor';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { SectorModule } from '../sector/sector.module';
-import { CragInfoComponent } from './crag-info/crag-info.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { GradeDistributionBarChartComponent } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
@@ -40,12 +36,10 @@ import { TopoDataviewSkeletonComponent } from '../shared/components/topo-datavie
  * Module for crags.
  */
 @NgModule({
-  declarations: [CragFormComponent, CragComponent, CragInfoComponent],
   imports: [
     CommonModule,
     CardModule,
     TranslocoModule,
-    SharedModule,
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,
@@ -81,6 +75,5 @@ import { TopoDataviewSkeletonComponent } from '../shared/components/topo-datavie
     TopoDataviewSkeletonComponent,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
-  exports: [CragFormComponent],
 })
 export class CragModule {}

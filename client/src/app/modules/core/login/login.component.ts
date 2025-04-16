@@ -13,12 +13,14 @@ import { Observable } from 'rxjs';
 import { selectLoginLoadingState } from '../../../ngrx/selectors/auth.selectors';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { SharedModule } from '../../shared/shared.module';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 /**
  * Component that shows a login form.
@@ -30,12 +32,15 @@ import { AsyncPipe } from '@angular/common';
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,
-    SharedModule,
     InputText,
     Password,
     Button,
     RouterLink,
     AsyncPipe,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
 })
 export class LoginComponent implements OnInit {

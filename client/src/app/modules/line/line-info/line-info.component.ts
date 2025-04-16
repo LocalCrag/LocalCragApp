@@ -16,7 +16,6 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
-import { SharedModule } from '../../shared/shared.module';
 import { NgForOf, NgIf } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
@@ -28,6 +27,9 @@ import { TodoButtonComponent } from '../../todo/todo-button/todo-button.componen
 import { FormsModule } from '@angular/forms';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { Skeleton } from 'primeng/skeleton';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
+import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 
 /**
  * Component that shows detailed information about a line.
@@ -40,7 +42,6 @@ import { Skeleton } from 'primeng/skeleton';
   imports: [
     ClosedSpotAlertComponent,
     TranslocoDirective,
-    SharedModule,
     NgIf,
     TopoImageDetailsComponent,
     Button,
@@ -53,6 +54,9 @@ import { Skeleton } from 'primeng/skeleton';
     FormsModule,
     TickButtonComponent,
     Skeleton,
+    SanitizeHtmlPipe,
+    LineBoolPropListComponent,
+    TopoImageComponent,
   ],
 })
 @UntilDestroy()

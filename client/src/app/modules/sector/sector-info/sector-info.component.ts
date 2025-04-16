@@ -7,12 +7,29 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NgIf } from '@angular/common';
+import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
+import { MapComponent } from '../../maps/map/map.component';
+import { Skeleton } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-sector-info',
   templateUrl: './sector-info.component.html',
   styleUrls: ['./sector-info.component.scss'],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    NgIf,
+    ClosedSpotAlertComponent,
+    GradeDistributionBarChartComponent,
+    SanitizeHtmlPipe,
+    CoordinatesButtonComponent,
+    MapComponent,
+    Skeleton,
+  ],
 })
 @UntilDestroy()
 export class SectorInfoComponent implements OnInit {

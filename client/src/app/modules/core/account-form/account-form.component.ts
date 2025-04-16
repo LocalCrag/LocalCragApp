@@ -1,5 +1,4 @@
 import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
 import {
   FormBuilder,
   FormGroup,
@@ -29,11 +28,13 @@ import { NgIf } from '@angular/common';
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { MessageModule } from 'primeng/message';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-account-form',
   imports: [
-    SharedModule,
     ReactiveFormsModule,
     ButtonModule,
     TranslocoDirective,
@@ -41,6 +42,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     AvatarUploadComponent,
     NgIf,
     MessageModule,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',

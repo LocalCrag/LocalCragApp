@@ -11,11 +11,11 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { SharedModule } from '../../shared/shared.module';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 
 @Component({
   selector: 'lc-searchable',
-  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, SharedModule],
+  imports: [AvatarModule, NgIf, TranslocoDirective, RouterLink, LineGradePipe],
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
   encapsulation: ViewEncapsulation.None,

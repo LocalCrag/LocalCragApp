@@ -3,7 +3,6 @@ import { Ascent } from '../../../models/ascent';
 
 @Pipe({
   name: 'downgrade',
-  standalone: true,
 })
 export class DowngradePipe implements PipeTransform {
   transform(ascent: Ascent): boolean {

@@ -36,9 +36,7 @@ import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
-import { SharedModule } from '../shared/shared.module';
 import { MessageModule } from 'primeng/message';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { DialogModule } from 'primeng/dialog';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
@@ -46,7 +44,6 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CragModule } from '../crag/crag.module';
 import { DeviceEffects } from '../../ngrx/effects/device.effects';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { TranslocoService } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -121,16 +118,9 @@ export function preloadInstanceSettings(
 }
 
 @NgModule({
-  declarations: [
-    CoreComponent,
-    ResetPasswordComponent,
-    RefreshLoginModalComponent,
-    AppLevelAlertsComponent,
-    NotFoundComponent,
-  ],
+  declarations: [CoreComponent],
   bootstrap: [CoreComponent],
   imports: [
-    SharedModule,
     BrowserModule,
     BrowserAnimationsModule,
     CoreRoutingModule,
@@ -170,6 +160,8 @@ export function preloadInstanceSettings(
     MatomoRouterModule,
     FooterComponent,
     MenuComponent,
+    RefreshLoginModalComponent,
+    AppLevelAlertsComponent,
   ],
   providers: [
     {

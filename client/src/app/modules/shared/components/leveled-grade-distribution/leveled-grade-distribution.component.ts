@@ -28,7 +28,6 @@ type StackChartData = {
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
-  standalone: true,
   encapsulation: ViewEncapsulation.None,
   imports: [Tag, MeterGroup, Skeleton, NgIf, TranslocoDirective, NgForOf],
 })

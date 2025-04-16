@@ -3,7 +3,6 @@ import { Ascent } from '../../../models/ascent';
 
 @Pipe({
   name: 'consensusGrade',
-  standalone: true,
 })
 export class ConsensusGradePipe implements PipeTransform {
   transform(ascent: Ascent): boolean {

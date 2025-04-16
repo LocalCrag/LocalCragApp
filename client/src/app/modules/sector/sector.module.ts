@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
-import { SharedModule } from '../shared/shared.module';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRANSLOCO_SCOPE, TranslocoModule } from '@jsverse/transloco';
-import { SectorInfoComponent } from './sector-info/sector-info.component';
-import { SectorComponent } from './sector/sector.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EditorModule } from 'primeng/editor';
@@ -36,7 +33,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { TopoDataviewSkeletonComponent } from '../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 
 @NgModule({
-  declarations: [SectorInfoComponent, SectorComponent],
   imports: [
     RouterLink,
     CommonModule,
@@ -45,7 +41,6 @@ import { TopoDataviewSkeletonComponent } from '../shared/components/topo-datavie
     DataViewModule,
     InputTextModule,
     ButtonModule,
-    SharedModule,
     FormsModule,
     ReactiveFormsModule,
     SkeletonModule,

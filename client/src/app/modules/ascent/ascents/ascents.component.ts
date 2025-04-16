@@ -6,7 +6,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'lc-ascents',
-  standalone: true,
   imports: [BreadcrumbModule, CardModule, RouterOutlet, TranslocoDirective],
   templateUrl: './ascents.component.html',
   styleUrl: './ascents.component.scss',

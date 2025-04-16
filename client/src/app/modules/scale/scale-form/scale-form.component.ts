@@ -26,7 +26,6 @@ import { LineType } from '../../../enums/line-type';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { NgForOf, NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -39,6 +38,10 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { MessageModule } from 'primeng/message';
 import { Select } from 'primeng/select';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 
 @Component({
   selector: 'lc-scale-form',
@@ -49,7 +52,6 @@ import { Select } from 'primeng/select';
     CardModule,
     ReactiveFormsModule,
     NgForOf,
-    SharedModule,
     TranslocoPipe,
     NgIf,
     InputTextModule,
@@ -60,6 +62,11 @@ import { Select } from 'primeng/select';
     ConfirmPopupModule,
     MessageModule,
     Select,
+    TranslateSpecialGradesPipe,
+    FormControlDirective,
+    IfErrorDirective,
+    ControlGroupDirective,
+    FormDirective,
   ],
   providers: [ConfirmationService],
 })

@@ -27,9 +27,11 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { NgIf } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
-import { SharedModule } from '../../shared/shared.module';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-menu-pages-form',
@@ -42,8 +44,11 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
     NgIf,
     PaginatorModule,
     ReactiveFormsModule,
-    SharedModule,
     TranslocoDirective,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './menu-pages-form.component.html',
   styleUrl: './menu-pages-form.component.scss',

@@ -43,7 +43,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
 import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { InputText } from 'primeng/inputtext';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { Checkbox } from 'primeng/checkbox';
@@ -52,6 +51,10 @@ import { Message } from 'primeng/message';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -66,7 +69,6 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
     Card,
     NgIf,
     ReactiveFormsModule,
-    SharedModule,
     InputText,
     Editor,
     MapMarkerFormArrayComponent,
@@ -77,6 +79,11 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
     Button,
     ConfirmPopup,
     FormSkeletonComponent,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
+    SingleImageUploadComponent,
   ],
 })
 @UntilDestroy()

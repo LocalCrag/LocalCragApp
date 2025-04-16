@@ -14,13 +14,24 @@ import {
 } from '../../../ngrx/selectors/app-level-alerts.selectors';
 import { cookiesAccepted } from '../../../ngrx/actions/app-level-alerts.actions';
 import { differenceInMilliseconds, subMinutes } from 'date-fns';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { MinutesRemainingPipe } from '../../shared/pipes/minutes-remaining.pipe';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-app-level-alerts',
   templateUrl: './app-level-alerts.component.html',
   styleUrls: ['./app-level-alerts.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    NgIf,
+    AsyncPipe,
+    NgClass,
+    MinutesRemainingPipe,
+    Button,
+  ],
 })
 @UntilDestroy()
 export class AppLevelAlertsComponent implements OnInit {

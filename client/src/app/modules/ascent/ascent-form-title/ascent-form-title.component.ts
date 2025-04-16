@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Line } from '../../../models/line';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { SharedModule } from '../../shared/shared.module';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 
 @Component({
   selector: 'lc-ascent-form-title',
-  imports: [SharedModule],
   templateUrl: './ascent-form-title.component.html',
   styleUrl: './ascent-form-title.component.scss',
+  imports: [LineGradePipe],
 })
 export class AscentFormTitleComponent {
   public line: Line;

@@ -15,7 +15,6 @@ import { differenceInMilliseconds } from 'date-fns';
 @Pipe({
   name: 'minutesRemaining',
   pure: false,
-  standalone: false,
 })
 export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
   private async: AsyncPipe;

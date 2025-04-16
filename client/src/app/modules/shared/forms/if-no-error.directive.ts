@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
  */
 @Directive({
   selector: '[lcIfNoError]',
-  standalone: false,
 })
 export class IfNoErrorDirective implements OnInit, OnDestroy {
   private hasView = false;

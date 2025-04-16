@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { LineModule } from '../../line/line.module';
 import { RatingModule } from 'primeng/rating';
-import { SharedModule } from '../../shared/shared.module';
 import {
   ConfirmationService,
   MenuItem,
@@ -37,6 +36,7 @@ import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 import { Select } from 'primeng/select';
 import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { DatePipe } from '../../shared/pipes/date.pipe';
 
 @Component({
   selector: 'lc-user-list',
@@ -50,7 +50,6 @@ import { Message } from 'primeng/message';
     NgForOf,
     NgIf,
     RatingModule,
-    SharedModule,
     NgClass,
     FormsModule,
     AvatarModule,
@@ -62,6 +61,7 @@ import { Message } from 'primeng/message';
     Select,
     UserListSkeletonComponent,
     Message,
+    DatePipe,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
