@@ -54,6 +54,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]
         instance_settings.maptiler_api_key = instance_settings_data["maptilerApiKey"]
         instance_settings.gym_mode = instance_settings_data["gymMode"]
+        instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
 
         if instance_settings_data["skippedHierarchicalLayers"] > instance_settings.skipped_hierarchical_layers:
             if instance_settings_data["skippedHierarchicalLayers"] >= 1:

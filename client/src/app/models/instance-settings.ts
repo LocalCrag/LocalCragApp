@@ -19,6 +19,7 @@ export class InstanceSettings {
   maxFileSize: number;
   maxImageSize: number;
   gymMode: boolean;
+  displayUserGrades: boolean;
   skippedHierarchicalLayers: number;
 
   public static deserialize(payload: any): InstanceSettings {
@@ -49,6 +50,7 @@ export class InstanceSettings {
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.gymMode = payload.gymMode;
+    instanceSettings.displayUserGrades = payload.displayUserGrades;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     return instanceSettings;
@@ -79,6 +81,7 @@ export class InstanceSettings {
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
       gymMode: instanceSettings.gymMode,
+      displayUserGrades: instanceSettings.displayUserGrades,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
     };
   }

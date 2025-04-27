@@ -65,6 +65,24 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="display-user-grades">
+            {{ t("displayUserGradesLabel") }}
+          </label>
+          <div
+            class="flex align-items-center justify-content-center sm:justify-content-start"
+          >
+            {{ t("displayUserGradesFalse") }}
+            <p-toggleswitch
+              id="display-user-grades"
+              class="mx-2"
+              formControlName="displayUserGrades"
+              lcFormControl
+            />
+            {{ t("displayUserGradesTrue") }}
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
           <div class="form-label flex align-items-center">
             <label for="skippedHierarchicalLayers">
               {{ t("skippedHierarchicalLayersLabel") }}
