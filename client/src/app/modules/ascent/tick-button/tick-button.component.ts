@@ -9,6 +9,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ProjectClimbedFormComponent } from '../project-climbed-form/project-climbed-form.component';
 import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-tick-button',
@@ -25,33 +27,44 @@ export class TickButtonComponent {
 
   public ref: DynamicDialogRef | undefined;
 
-  constructor(private dialogService: DialogService) {}
+  constructor(
+    private dialogService: DialogService,
+    private store: Store,
+  ) {}
 
   addAscent(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (this.line.gradeValue >= 0) {
-      this.ref = this.dialogService.open(AscentFormComponent, {
-        modal: true,
-        focusOnShow: false,
-        templates: {
-          header: AscentFormTitleComponent,
-        },
-        data: {
-          line: this.line,
-        },
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        if (
+          (instanceSettings.displayUserGrades
+            ? this.line.userGradeValue
+            : this.line.authorGradeValue) >= 0
+        ) {
+          this.ref = this.dialogService.open(AscentFormComponent, {
+            modal: true,
+            focusOnShow: false,
+            templates: {
+              header: AscentFormTitleComponent,
+            },
+            data: {
+              line: this.line,
+            },
+          });
+        } else {
+          this.ref = this.dialogService.open(ProjectClimbedFormComponent, {
+            modal: true,
+            focusOnShow: false,
+            templates: {
+              header: ProjectClimbedFormTitleComponent,
+            },
+            data: {
+              line: this.line,
+            },
+          });
+        }
       });
-    } else {
-      this.ref = this.dialogService.open(ProjectClimbedFormComponent, {
-        modal: true,
-        focusOnShow: false,
-        templates: {
-          header: ProjectClimbedFormTitleComponent,
-        },
-        data: {
-          line: this.line,
-        },
-      });
-    }
   }
 }

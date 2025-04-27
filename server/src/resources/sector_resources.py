@@ -16,6 +16,7 @@ from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -183,9 +184,14 @@ class GetSectorGrades(MethodView):
         """
         Returns the grades of all lines of a sector.
         """
+        instance_settings = InstanceSettings.return_it()
         sector_id = Sector.get_id_by_slug(sector_slug)
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
+            db.session.query(
+                Line.type,
+                Line.grade_scale,
+                Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
+            )
             .join(Area)
             .filter(Area.sector_id == sector_id, Line.archived.is_(False))
         )

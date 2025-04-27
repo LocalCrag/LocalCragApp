@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
@@ -180,7 +180,7 @@ export class LineFormComponent implements OnInit {
                   .get('grade')
                   .setValue(
                     this.grades.filter(
-                      (g) => g.value == this.line.gradeValue,
+                      (g) => g.value == this.line.authorGradeValue,
                     )[0],
                   );
               }
@@ -351,7 +351,7 @@ export class LineFormComponent implements OnInit {
       videos: this.line.videos,
       type: this.line.type,
       scale: this.line.gradeScale,
-      grade: this.line.gradeValue,
+      grade: this.line.authorGradeValue,
       color: this.line.color,
       rating: this.line.rating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
@@ -427,7 +427,7 @@ export class LineFormComponent implements OnInit {
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
       line.type = this.lineForm.get('type').value;
-      line.gradeValue = this.lineForm.get('grade').value;
+      line.authorGradeValue = this.lineForm.get('grade').value;
       line.gradeScale = this.lineForm.get('scale').value;
       line.rating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
@@ -543,6 +543,14 @@ export class LineFormComponent implements OnInit {
    */
   public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
+  }
+
+  public getDisplayUserGrades() {
+    return this.store.pipe(
+      select(selectInstanceSettingsState),
+      take(1),
+      map((instanceSettings) => instanceSettings.displayUserGrades),
+    );
   }
 
   protected readonly LineType = LineType;

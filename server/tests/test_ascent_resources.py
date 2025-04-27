@@ -5,6 +5,7 @@ from flask import current_app
 from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.user import User
 
@@ -228,7 +229,7 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeValue": -1,
+        "authorGradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
@@ -306,7 +307,6 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
 
 
 def test_grade_ranking_votes(client, user_token):
-    current_app.config["MIN_VOTING_ASCENTS"] = 1
     line_id = Line.get_id_by_slug("treppe")
 
     ascent_data = {
@@ -328,8 +328,7 @@ def test_grade_ranking_votes(client, user_token):
 
     time.sleep(0.1)  # wait for async update
 
-    current_app.config["MIN_VOTING_ASCENTS"] = 0
-
     line = Line.find_by_id(line_id)
-    assert line.grade_value == 22
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 22
     assert line.rating == 5

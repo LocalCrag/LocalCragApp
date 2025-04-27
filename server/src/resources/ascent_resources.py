@@ -1,7 +1,7 @@
 import datetime
 import threading
 
-from flask import current_app, jsonify, request
+from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import select
@@ -16,6 +16,7 @@ from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_s
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -34,7 +35,7 @@ from webargs_schemas.ascent_args import (
 class GetAscents(MethodView):
 
     def get(self):
-
+        instance_settings = InstanceSettings.return_it()
         user_id = request.args.get("user_id")
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
@@ -77,7 +78,12 @@ class GetAscents(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+            if instance_settings.display_user_grades:
+                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+            else:
+                query = query.filter(
+                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
+                )
 
         # Filter secret spots
         if not get_show_secret():
@@ -128,7 +134,7 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
-        if line.grade_value < 0:
+        if line.author_grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
         if ascent_data["gradeValue"] < 0:
             raise BadRequest("Cannot propose project status.")
@@ -174,9 +180,7 @@ class CreateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
-        thread = threading.Thread(
-            target=update_grades_and_rating, args=(line.id, current_app.config["MIN_VOTING_ASCENTS"])
-        )
+        thread = threading.Thread(target=update_grades_and_rating, args=(line.id,))
         thread.start()
 
         return ascent_schema.dump(ascent), 201
@@ -217,9 +221,7 @@ class UpdateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
-        thread = threading.Thread(
-            target=update_grades_and_rating, args=(line.id, current_app.config["MIN_VOTING_ASCENTS"])
-        )
+        thread = threading.Thread(target=update_grades_and_rating, args=(line.id,))
         thread.start()
 
         return ascent_schema.dump(ascent), 201
@@ -237,9 +239,7 @@ class DeleteAscent(MethodView):
         db.session.delete(ascent)
         db.session.commit()
 
-        thread = threading.Thread(
-            target=update_grades_and_rating, args=(line_id, current_app.config["MIN_VOTING_ASCENTS"])
-        )
+        thread = threading.Thread(target=update_grades_and_rating, args=(line_id,))
         thread.start()
 
         return jsonify(None), 204
@@ -257,7 +257,7 @@ class SendProjectClimbedMessage(MethodView):
         if not line:
             raise NotFound("Line does not exist.")
 
-        if line.grade_value >= 0:
+        if line.author_grade_value >= 0:
             raise BadRequest("Only projects can be first ascended.")
 
         # Email all admins

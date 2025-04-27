@@ -126,6 +126,12 @@
             </p-select>
           </div>
 
+          <p-message
+            severity="info"
+            text="{{ t('displayUserGradesActive') }}"
+            *ngIf="getDisplayUserGrades() | async"
+          />
+
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")

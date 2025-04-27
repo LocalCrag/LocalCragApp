@@ -19,6 +19,7 @@ export interface InstanceSettingsState {
   maxImageSize: number;
   gymMode: boolean;
   skippedHierarchyLayers: number;
+  displayUserGrades: boolean;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -38,6 +39,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   maxImageSize: 0,
   gymMode: false,
   skippedHierarchyLayers: 0,
+  displayUserGrades: false,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -60,6 +62,7 @@ const instanceSettingsReducer = createReducer(
     maxImageSize: action.settings.maxImageSize,
     gymMode: action.settings.gymMode,
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
+    displayUserGrades: action.settings.displayUserGrades,
   })),
 );
 

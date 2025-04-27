@@ -36,7 +36,7 @@ def test_successful_change_value_history(client, moderator_token):
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeValue": 19,
+        "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
         "rating": 5,
