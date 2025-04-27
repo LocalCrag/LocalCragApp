@@ -8,7 +8,6 @@ import { CoordinatesButtonComponent } from '../../shared/components/coordinates-
 
 @Component({
   selector: 'lc-topo-image-details',
-  standalone: true,
   imports: [
     ButtonModule,
     NgIf,

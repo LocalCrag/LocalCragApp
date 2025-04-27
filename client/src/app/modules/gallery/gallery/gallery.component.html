@@ -22,7 +22,7 @@
           loadingAdditionalPage === loadingStates.LOADING ||
           loadingFirstPage === loadingStates.LOADING
         )
-          ? []
+          ? [1, 2, 3]
           : [1, 2, 3, 4, 5, 6]
       "
     >
@@ -40,7 +40,7 @@
       ></p-button>
     </div>
   </div>
-  <p-messages
+  <p-message
     severity="info"
     *ngIf="
       !(
@@ -49,9 +49,7 @@
       ) && images.length === 0
     "
   >
-    <ng-template pTemplate>
-      {{ t("thisGalleryIsEmpty") }}
-    </ng-template>
-  </p-messages>
+    {{ t("thisGalleryIsEmpty") }}
+  </p-message>
   <p-confirmPopup></p-confirmPopup>
 </ng-container>

@@ -1,3 +1,11 @@
-:host {
+lc-leveled-grade-distribution {
   width: 100%;
+
+  .p-metergroup-label {
+    white-space: nowrap;
+  }
+
+  .p-metergroup-labels {
+    flex-wrap: wrap;
+  }
 }

@@ -19,13 +19,23 @@ body {
 html {
   height: 100vh;
   --ticked-bg-color: #eafeee;
-  --ticked-color: var(--green-600);
+  --ticked-color: var(--p-green-600);
 }
 
 body {
   height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    "Inter var",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
 }
 
 .main {
@@ -42,6 +52,9 @@ body {
   padding: 3rem 6rem;
   height: 100%;
   width: 100%;
+  max-width: 110rem;
+  margin-left: auto;
+  margin-right: auto;
 
   @include m.on-mobile {
     padding: 0 0;
@@ -52,10 +65,14 @@ body {
   }
 }
 
-.p-confirm-popup {
+.p-confirmpopup {
   max-width: 500px;
 }
 
 p-avatar img {
   object-fit: cover;
+}
+
+.lc-error {
+  color: var(--p-form-field-invalid-placeholder-color);
 }

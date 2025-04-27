@@ -13,12 +13,12 @@ import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
+  standalone: false,
 })
 @UntilDestroy()
 export class CragComponent implements OnInit {
@@ -29,7 +29,6 @@ export class CragComponent implements OnInit {
 
   constructor(
     private cragsService: CragsService,
-    private regionService: RegionService,
     private translocoService: TranslocoService,
     private router: Router,
     private store: Store,
@@ -45,7 +44,7 @@ export class CragComponent implements OnInit {
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -76,6 +75,7 @@ export class CragComponent implements OnInit {
             icon: 'pi pi-fw pi-info-circle',
             routerLink: `/topo/${this.crag.slug}`,
             routerLinkActiveOptions: { exact: true },
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.rules')),
@@ -87,26 +87,31 @@ export class CragComponent implements OnInit {
             label: this.translocoService.translate(marker('crag.sectors')),
             icon: 'pi pi-fw pi-sitemap',
             routerLink: `/topo/${this.crag.slug}/sectors`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.lines')),
             icon: 'pi pi-fw pi-chart-line',
             routerLink: `/topo/${this.crag.slug}/lines`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.ascents')),
             icon: 'pi pi-fw pi-check-square',
             routerLink: `/topo/${this.crag.slug}/ascents`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.ranking')),
             icon: 'pi pi-fw pi-trophy',
             routerLink: `/topo/${this.crag.slug}/ranking`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.gallery')),
             icon: 'pi pi-fw pi-images',
             routerLink: `/topo/${this.crag.slug}/gallery`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('crag.edit')),

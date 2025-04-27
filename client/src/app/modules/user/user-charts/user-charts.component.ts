@@ -10,7 +10,6 @@ import { GradeDistribution } from '../../../models/scale';
 
 @Component({
   selector: 'lc-user-charts',
-  standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
     TranslocoDirective,

@@ -4,6 +4,7 @@ import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Store } from '@ngrx/store';
+import { NavigationService } from '../../../services/core/navigation.service';
 
 /**
  * A 404 error page.
@@ -12,20 +13,22 @@ import { Store } from '@ngrx/store';
   selector: 'lc-not-found',
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.scss'],
+  standalone: false,
 })
 export class NotFoundComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  public url: string;
+  public previousUrl: string;
 
   constructor(
     private title: Title,
+    private navigationService: NavigationService,
     private store: Store,
     private translocoService: TranslocoService,
   ) {}
 
   ngOnInit() {
-    this.url = window.location.href;
+    this.previousUrl = this.navigationService.getPreviousUrl();
     this.store.select(selectInstanceName).subscribe((instanceName) => {
       this.title.setTitle(
         `${this.translocoService.translate(marker('notFoundPageBrowserTitle'))} - ${instanceName}`,

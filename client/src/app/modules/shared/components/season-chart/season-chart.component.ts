@@ -10,7 +10,6 @@ import { getRgbObject } from '../../../../utility/misc/color';
 
 @Component({
   selector: 'lc-season-chart',
-  standalone: true,
   imports: [ChartModule],
   templateUrl: './season-chart.component.html',
   styleUrl: './season-chart.component.scss',

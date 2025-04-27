@@ -15,7 +15,6 @@ import { GradeDistribution } from '../../../models/scale';
  */
 @Component({
   selector: 'lc-region-info',
-  standalone: true,
   imports: [
     GradeDistributionBarChartComponent,
     SharedModule,

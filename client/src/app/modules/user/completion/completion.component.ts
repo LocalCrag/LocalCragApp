@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -21,15 +21,14 @@ import { SliderLabelsComponent } from '../../shared/components/slider-labels/sli
 import { SliderModule } from 'primeng/slider';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
-import { MessagesModule } from 'primeng/messages';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { DropdownModule } from 'primeng/dropdown';
 import { SharedModule } from '../../shared/shared.module';
+import { Select } from 'primeng/select';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-completion',
-  standalone: true,
   imports: [
     ProgressBarModule,
     SharedModule,
@@ -41,10 +40,10 @@ import { SharedModule } from '../../shared/shared.module';
     SliderLabelsComponent,
     SliderModule,
     FormsModule,
-    MessagesModule,
     TranslocoDirective,
     AsyncPipe,
-    DropdownModule,
+    Select,
+    Message,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',
@@ -61,7 +60,6 @@ export class CompletionComponent implements OnInit {
   public expandedCrags: Set<string> = new Set<string>();
   public expandedSectors: Set<string> = new Set<string>();
 
-  public listenForSliderStop = false;
   public availableScales: SelectItem<
     { lineType: LineType; gradeScale: string } | undefined
   >[] = [];
@@ -72,6 +70,8 @@ export class CompletionComponent implements OnInit {
   public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
+  private loadedGradeFilterRange: number[] = null;
+
   constructor(
     private statisticsService: StatisticsService,
     private usersService: UsersService,
@@ -81,14 +81,6 @@ export class CompletionComponent implements OnInit {
     private translocoService: TranslocoService,
     protected scalesService: ScalesService,
   ) {}
-
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadCompletion();
-    }
-  }
 
   ngOnInit() {
     const userSlug =
@@ -153,7 +145,18 @@ export class CompletionComponent implements OnInit {
     this.loadCompletion();
   }
 
-  private loadCompletion() {
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadCompletion();
+    }
+  }
+
+  public loadCompletion() {
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
     const filters = new URLSearchParams({
       user_id: this.user.id,
     });

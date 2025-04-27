@@ -1,0 +1,25 @@
+<div class="grid grid-nogutter">
+  <div class="col-12" *ngFor="let _ of [1, 2, 3, 4, 5]; let first = first">
+    <div
+      class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+      [ngClass]="{ 'border-top-1 surface-border': !first }"
+    >
+      <p-skeleton styleClass="w-9 sm:w-16rem xl:w-10rem mx-auto h-8rem" />
+      <div class="flex flex-column w-full xl:align-items-start gap-4">
+        <p-skeleton width="15rem" height="2rem" />
+        <p-skeleton
+          width="100%"
+          height="4rem"
+          class="lc-p-full-width-skeleton"
+        />
+        <p-skeleton
+          width="100%"
+          height="1rem"
+          class="lc-p-full-width-skeleton"
+        />
+        <p-skeleton width="20rem" height="1.5rem" />
+        <p-skeleton width="10rem" height="1rem" />
+      </div>
+    </div>
+  </div>
+</div>

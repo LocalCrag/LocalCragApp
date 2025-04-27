@@ -3,8 +3,8 @@ import { LoadingState } from '../../../enums/loading-state';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { ActivatedRoute, Router, Scroll } from '@angular/router';
-import { TranslocoService } from '@jsverse/transloco';
+import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
@@ -16,7 +16,7 @@ import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ViewportScroller } from '@angular/common';
+import { NgClass, NgForOf, NgIf, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -24,9 +24,24 @@ import { TicksService } from '../../../services/crud/ticks.service';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { Area } from '../../../models/area';
 import { highlightColor, textColor } from '../../../utility/misc/color';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { DataView } from 'primeng/dataview';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { Button } from 'primeng/button';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { Message } from 'primeng/message';
+import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
+import { SharedModule } from '../../shared/shared.module';
+import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
+import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
+import { LineModule } from '../../line/line.module';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { Rating } from 'primeng/rating';
+import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 
 /**
  * Component that lists all topo images in an area.
@@ -37,6 +52,29 @@ import { ScalesService } from '../../../services/crud/scales.service';
   styleUrls: ['./topo-image-list.component.scss'],
   providers: [ConfirmationService, DialogService],
   encapsulation: ViewEncapsulation.None,
+  imports: [
+    TranslocoDirective,
+    DataView,
+    Select,
+    FormsModule,
+    NgIf,
+    GymModeDirective,
+    Button,
+    HasPermissionDirective,
+    RouterLink,
+    Message,
+    TopoImageListSkeletonComponent,
+    NgForOf,
+    NgClass,
+    SharedModule,
+    TopoImageDetailsComponent,
+    ArchiveButtonComponent,
+    LineModule,
+    ClosedSpotTagComponent,
+    Rating,
+    TickButtonComponent,
+    ConfirmPopup,
+  ],
 })
 @UntilDestroy()
 export class TopoImageListComponent implements OnInit {
@@ -56,7 +94,6 @@ export class TopoImageListComponent implements OnInit {
   public showArchive = false;
 
   private scrollTarget: Scroll;
-  private area: Area;
 
   constructor(
     private topoImagesService: TopoImagesService,
@@ -124,7 +161,6 @@ export class TopoImageListComponent implements OnInit {
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
-          this.area = area;
           return forkJoin([
             this.topoImagesService.getTopoImages(
               this.areaSlug,
@@ -333,6 +369,8 @@ export class TopoImageListComponent implements OnInit {
             textColor(highlightColor(linePath.line?.color)) ??
               instanceSettingsState.arrowHighlightTextColor,
           );
+          linePath.konvaFocusLayer.add(linePath.konvaLine);
+          linePath.konvaFocusLayer.add(linePath.konvaNumberGroup);
         });
     }
   }
@@ -361,6 +399,8 @@ export class TopoImageListComponent implements OnInit {
             textColor(linePath.line?.color) ??
               instanceSettingsState.arrowTextColor,
           );
+          linePath.konvaLineLayer.add(linePath.konvaLine);
+          linePath.konvaNumberLayer.add(linePath.konvaNumberGroup);
         });
     }
   }
@@ -370,6 +410,7 @@ export class TopoImageListComponent implements OnInit {
    */
   reorderTopoImages() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderTopoImagesDialogTitle'),
       ),
@@ -397,6 +438,7 @@ export class TopoImageListComponent implements OnInit {
    */
   reorderLinePaths(topoImage: TopoImage) {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderLinePathsDialogTitle'),
       ),

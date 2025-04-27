@@ -8,7 +8,7 @@
     <form [formGroup]="mapMarkerForm" lcForm>
       <div class="flex flex-column gap-2" lcControlGroup>
         <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-        <p-dropdown
+        <p-select
           id="type"
           formControlName="type"
           [options]="types"
@@ -17,7 +17,7 @@
           placeholder="{{ t('typePlaceholder') }}"
           lcFormControl
         >
-          <ng-template let-type pTemplate="item">
+          <ng-template let-type #item>
             <div
               class="flex align-items-center gap-2"
               data-cy="type-dropdown-item"
@@ -25,11 +25,11 @@
               <div>{{ t(type) }}</div>
             </div>
           </ng-template>
-          <ng-template let-selectedType pTemplate="selectedItem">
+          <ng-template let-selectedType #selectedItem>
             {{ t(selectedType) }}
           </ng-template>
-        </p-dropdown>
-        <small class="p-error" *lcIfError="'required'">{{
+        </p-select>
+        <small class="lc-error" *lcIfError="'required'">{{
           t("required")
         }}</small>
       </div>
@@ -62,7 +62,7 @@
           lcFormControl
           data-cy="marker-form-name"
         />
-        <small class="p-error" *lcIfError="'maxlength'">{{
+        <small class="lc-error" *lcIfError="'maxlength'">{{
           t("maxlength120")
         }}</small>
       </div>
@@ -83,7 +83,7 @@
           [style]="{ height: '200px' }"
           data-cy="marker-form-description"
         >
-          <ng-template pTemplate="header">
+          <ng-template #header>
             <span class="ql-formats">
               <button type="button" class="ql-bold" aria-label="Bold"></button>
               <button
@@ -105,7 +105,7 @@
       </div>
     </form>
 
-    <ng-template pTemplate="footer">
+    <ng-template #footer>
       <p-button
         [label]="t('cancel')"
         severity="secondary"

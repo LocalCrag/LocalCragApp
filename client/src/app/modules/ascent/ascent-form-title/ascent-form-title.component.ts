@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AsyncPipe } from '@angular/common';
 import { Line } from '../../../models/line';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'lc-ascent-form-title',
-  standalone: true,
-  imports: [AsyncPipe, SharedModule],
+  imports: [SharedModule],
   templateUrl: './ascent-form-title.component.html',
   styleUrl: './ascent-form-title.component.scss',
 })

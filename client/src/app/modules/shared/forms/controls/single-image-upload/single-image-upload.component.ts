@@ -1,9 +1,11 @@
 import {
   Component,
+  ElementRef,
   forwardRef,
   Injector,
   OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -33,6 +35,7 @@ import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/insta
     },
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SingleImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy
@@ -54,6 +57,8 @@ export class SingleImageUploadComponent
     private api: ApiService,
     private inj: Injector,
     private store: Store,
+    private el: ElementRef,
+    private renderer: Renderer2,
   ) {}
 
   /**

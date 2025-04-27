@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { MessagesModule } from 'primeng/messages';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
-import { TranslocoDirective } from '@jsverse/transloco';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -15,15 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
  */
 @Component({
   selector: 'lc-crag-rules',
-  standalone: true,
-  imports: [
-    GradeDistributionBarChartComponent,
-    MessagesModule,
-    NgIf,
-    SharedModule,
-    SkeletonModule,
-    TranslocoDirective,
-  ],
+  imports: [NgIf, SharedModule, SkeletonModule],
   templateUrl: './crag-rules.component.html',
   styleUrl: './crag-rules.component.scss',
 })

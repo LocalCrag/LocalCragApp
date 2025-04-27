@@ -39,10 +39,10 @@ import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { InputTextModule } from 'primeng/inputtext';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-menu-items-form',
-  standalone: true,
   imports: [
     CardModule,
     NgIf,
@@ -55,6 +55,7 @@ import { httpUrlValidator } from '../../../utility/validators/http-url.validator
     ConfirmPopupModule,
     NgClass,
     InputTextModule,
+    Select,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',
@@ -259,7 +260,6 @@ export class MenuItemsFormComponent implements OnInit {
       menuItem.position = this.menuItemForm.get('position').value;
       menuItem.menuPage = this.menuItemForm.get('menuPage').value;
       menuItem.icon = this.menuItemForm.get('icon').value;
-      console.log(menuItem.icon);
       menuItem.url = this.menuItemForm.get('url').value;
       menuItem.title = this.menuItemForm.get('title').value;
       if (this.menuItem) {

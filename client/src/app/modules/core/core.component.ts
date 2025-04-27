@@ -1,5 +1,4 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
 import { tryAutoLogin } from '../../ngrx/actions/auth.actions';
@@ -11,16 +10,18 @@ import {
   selectInstanceSettingsState,
 } from '../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
+import { NavigationService } from '../../services/core/navigation.service';
 
 @Component({
   selector: 'lc-root',
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
+  standalone: false,
 })
 export class CoreComponent implements OnInit {
   constructor(
-    private primengConfig: PrimeNGConfig,
     private title: Title,
+    private navigationService: NavigationService, // Needs to be instantiated here so all router events are tracked
     public store: Store<AppState>,
   ) {
     const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
@@ -63,7 +64,6 @@ export class CoreComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
     this.store.dispatch(tryAutoLogin());
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());

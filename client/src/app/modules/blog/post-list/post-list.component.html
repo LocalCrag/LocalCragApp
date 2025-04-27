@@ -6,31 +6,45 @@
         [value]="posts"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-        [emptyMessage]="t('noPostsFoundEmptyMessage')"
-        [loading]="loading === loadingStates.LOADING"
       >
-        <ng-template pTemplate="header">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noPostsFoundEmptyMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template #header>
           <div class="flex flex-row justify-content-between">
-            <p-dropdown
+            <p-select
               [options]="sortOptions"
               [(ngModel)]="sortKey"
               optionLabel="label"
               (onChange)="onSortChange($event)"
               styleClass="md:mb-0"
-            ></p-dropdown>
+              [disabled]="loading === loadingStates.LOADING"
+            ></p-select>
             <div class="flex justify-content-end gap-3">
               <p-button
                 label="{{ t('newPostButtonLabel') }}"
                 icon="pi pi-plus"
                 routerLink="/news/create-post"
+                [disabled]="loading === loadingStates.LOADING"
                 *isModerator="true"
                 class="responsive-button"
               ></p-button>
             </div>
           </div>
         </ng-template>
-        <ng-template let-posts pTemplate="list">
-          <div class="grid grid-nogutter">
+        <ng-template let-posts #list>
+          <lc-post-list-skeleton
+            *ngIf="loading === loadingStates.LOADING"
+          ></lc-post-list-skeleton>
+          <div
+            class="grid grid-nogutter"
+            *ngIf="loading !== loadingStates.LOADING"
+          >
             <div class="col-12" *ngFor="let post of posts; let first = first">
               <div
                 class="flex flex-column xl:align-items-start p-4 gap-2"

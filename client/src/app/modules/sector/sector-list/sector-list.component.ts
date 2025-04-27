@@ -2,17 +2,31 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PrimeIcons, SelectItem } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DataView } from 'primeng/dataview';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
+import { SharedModule } from '../../shared/shared.module';
+import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { Message } from 'primeng/message';
+import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 
 /**
  * Component that displays a list of sectors.
@@ -22,6 +36,26 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
   templateUrl: './sector-list.component.html',
   styleUrls: ['./sector-list.component.scss'],
   providers: [DialogService],
+  imports: [
+    DataView,
+    Select,
+    FormsModule,
+    Button,
+    RouterLink,
+    HasPermissionDirective,
+    TopoDataviewSkeletonComponent,
+    NgIf,
+    NgForOf,
+    NgClass,
+    ArchiveButtonComponent,
+    SharedModule,
+    AscentCountComponent,
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    TranslocoDirective,
+    Message,
+    LeveledGradeDistributionComponent,
+  ],
 })
 @UntilDestroy()
 export class SectorListComponent implements OnInit {
@@ -114,6 +148,7 @@ export class SectorListComponent implements OnInit {
    */
   reorderSectors() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
+      modal: true,
       header: this.translocoService.translate(
         marker('reorderSectorsDialogTitle'),
       ),

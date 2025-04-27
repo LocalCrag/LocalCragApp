@@ -4,34 +4,34 @@
     [value]="topoImages"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    [emptyMessage]="t('noTopoImagesFoundEmptyMessage')"
-    [loading]="loading === loadingStates.LOADING"
   >
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
         <div class="flex flex-column sm:flex-row gap-2">
-          <p-dropdown
+          <p-select
+            [disabled]="loading === loadingStates.LOADING"
             [options]="sortOptions"
             [(ngModel)]="sortKey"
             optionLabel="label"
             (onChange)="onSortChange($event)"
             styleClass="md:mb-0"
           >
-            <ng-template pTemplate="selectedItem">
+            <ng-template #selectedItem>
               <div class="flex align-items-center gap-2" *ngIf="sortKey">
                 <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
                 <div>{{ sortKey.label }}</div>
               </div>
             </ng-template>
-            <ng-template let-option pTemplate="item">
+            <ng-template let-option #item>
               <div class="flex align-items-center gap-2">
                 <i [class]="option.icon" *ngIf="option.icon"></i>
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
-          </p-dropdown>
+          </p-select>
           <div *isGymMode="true">
             <p-button
+              [disabled]="loading === loadingStates.LOADING"
               label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
               [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
               *isModerator="true"
@@ -42,6 +42,7 @@
         </div>
         <div class="flex justify-content-start sm:justify-content-end gap-3">
           <p-button
+            [disabled]="loading === loadingStates.LOADING"
             label="{{ t('newTopoImageButtonLabel') }}"
             icon="pi pi-plus"
             class="responsive-button"
@@ -54,15 +55,28 @@
             label="{{ t('reorderTopoImagesButtonLabel') }}"
             icon="pi pi-sort"
             (click)="reorderTopoImages()"
-            [disabled]="topoImages?.length < 2"
+            [disabled]="
+              topoImages?.length < 2 || loading === loadingStates.LOADING
+            "
             class="responsive-button"
             *isModerator="true"
           ></p-button>
         </div>
       </div>
     </ng-template>
-    <ng-template let-topoImages pTemplate="list">
-      <div class="grid grid-nogutter">
+    <ng-template #emptymessage>
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        class="m-4 mb-1 block"
+        >{{ t("noTopoImagesFoundEmptyMessage") }}</p-message
+      >
+    </ng-template>
+    <ng-template let-topoImages #list>
+      <lc-topo-image-list-skeleton
+        *ngIf="loading === loadingStates.LOADING"
+      ></lc-topo-image-list-skeleton>
+      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
         <div
           class="col-12"
           *ngFor="let topoImage of topoImages; let first = first"
@@ -210,7 +224,6 @@
                           <p-rating
                             [ngModel]="linePath.line.rating"
                             [readonly]="true"
-                            [cancel]="false"
                           ></p-rating>
                         </div>
                         <div class="line-table-info-actions">

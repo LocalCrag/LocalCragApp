@@ -26,6 +26,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 @UntilDestroy()
 export class LineComponent implements OnInit {
@@ -59,7 +60,7 @@ export class LineComponent implements OnInit {
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -67,7 +68,7 @@ export class LineComponent implements OnInit {
         ),
         this.sectorsService.getSector(sectorSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -75,7 +76,7 @@ export class LineComponent implements OnInit {
         ),
         this.areasService.getArea(areaSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -83,7 +84,7 @@ export class LineComponent implements OnInit {
         ),
         this.linesService.getLine(lineSlug).pipe(
           catchError((e) => {
-            if (e.status === 404) {
+            if (e.status === 404 || e.status === 401) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
@@ -130,16 +131,19 @@ export class LineComponent implements OnInit {
             icon: 'pi pi-fw pi-info-circle',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}`,
             routerLinkActiveOptions: { exact: true },
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.ascents')),
             icon: 'pi pi-fw pi-check-square',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.gallery')),
             icon: 'pi pi-fw pi-images',
             routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
+            visible: true,
           },
           {
             label: this.translocoService.translate(marker('line.edit')),

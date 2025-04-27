@@ -4,27 +4,26 @@ import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { SelectItem, SharedModule } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { Select } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-ranking-list',
-  standalone: true,
   imports: [
     DataViewModule,
-    DropdownModule,
     NgForOf,
     NgIf,
     SharedModule,
@@ -32,13 +31,15 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
     NgClass,
     ButtonModule,
     ConfirmPopupModule,
-    InfiniteScrollModule,
     AvatarModule,
     RouterLink,
     FormsModule,
     DialogModule,
-    InputSwitchModule,
     HasPermissionDirective,
+    Select,
+    ToggleSwitch,
+    RankingListSkeletonComponent,
+    Message,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',

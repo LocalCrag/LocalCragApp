@@ -1,17 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
 import { ScalesService } from '../../../../services/crud/scales.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { map } from 'rxjs/operators';
 import { textColor } from '../../../../utility/misc/color';
+import { Tag } from 'primeng/tag';
+import { MeterGroup } from 'primeng/metergroup';
+import { Skeleton } from 'primeng/skeleton';
+import { NgForOf, NgIf } from '@angular/common';
 
 type StackChartData = {
   lineType: LineType;
   gradeScale: string;
   projects: number;
+  ungraded: number;
   total: number;
   meterValues: { color: string; value: number; label: string }[];
 };
@@ -23,6 +28,9 @@ type StackChartData = {
   selector: 'lc-leveled-grade-distribution',
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
+  imports: [Tag, MeterGroup, Skeleton, NgIf, TranslocoDirective, NgForOf],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
@@ -30,12 +38,7 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public stackChartData: any = null;
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
-  value = [
-    { label: 'Apps', color: '#34d399', value: 16 },
-    { label: 'Messages', color: '#fbbf24', value: 8 },
-    { label: 'Media', color: '#60a5fa', value: 24 },
-    { label: 'System', color: '#c084fc', value: 10 },
-  ];
+  public value = [];
 
   constructor(
     private scalesService: ScalesService,
@@ -54,14 +57,14 @@ export class LeveledGradeDistributionComponent implements OnInit {
    */
   buildGradeDistribution() {
     const colors = [
-      'var(--yellow-500)',
-      'var(--blue-500)',
-      'var(--red-500)',
-      'var(--green-500)',
-      'var(--orange-500)',
-      'var(--teal-500)',
-      'var(--indigo-500)',
-      'var(--bluegray-500)',
+      'var(--p-yellow-500)',
+      'var(--p-blue-500)',
+      'var(--p-red-500)',
+      'var(--p-green-500)',
+      'var(--p-orange-500)',
+      'var(--p-teal-500)',
+      'var(--p-indigo-500)',
+      'var(--p-bluegray-500)',
     ];
     const stackChartData: StackChartData[] = [];
     const observables: Observable<any>[] = [];
@@ -115,6 +118,7 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 lineType: lineType as LineType,
                 gradeScale,
                 projects: 0,
+                ungraded: 0,
                 total: 0,
                 meterValues: Array.from(
                   { length: scale.gradeBrackets.stackedChartBrackets.length },
@@ -131,7 +135,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 const count =
                   this.gradeDistribution[lineType][gradeScale][gradeValue];
                 data.total += count;
-                if (gradeValue <= 0) {
+                if (gradeValue === 0) {
+                  data.ungraded += count;
+                } else if (gradeValue < 0) {
                   data.projects += count;
                 } else {
                   for (

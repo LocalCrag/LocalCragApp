@@ -2,25 +2,33 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { forkJoin, Observable } from 'rxjs';
 import { selectCopyrightOwner } from '../../../ngrx/selectors/instance-settings.selectors';
 import { environment } from '../../../../environments/environment';
+import { Button } from 'primeng/button';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lc-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [Button, TranslocoDirective, NgForOf, RouterLink, NgIf, AsyncPipe],
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
   public version = environment.version;
+  public footerButtonsDt = {
+    textSecondaryHoverBackground: '{surface.200}',
+  };
 
   constructor(
     private menuItemsService: MenuItemsService,

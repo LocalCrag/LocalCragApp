@@ -247,7 +247,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
     admin = User.find_by_email("admin@localcrag.invalid.org")
     any_file_id = str(File.query.first().id)
 
-    ### Test USER+MEMBER permissions
+    # Test USER+MEMBER permissions
     for tok in [user_token, member_token]:
         data = {"promotionTarget": "MODERATOR"}
 
@@ -272,7 +272,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         rv = client.post("/api/crags", token=user_token, json=crag_data)
         assert rv.status_code == 401
 
-    ### Test MODERATOR permissions
+    # Test MODERATOR permissions
     # Test to access admin resource
     rv = client.delete(f"/api/users/{admin.id}", token=moderator_token, json=data)
     assert rv.status_code == 401

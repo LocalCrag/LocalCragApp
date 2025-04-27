@@ -8,7 +8,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-coordinates-button',
-  standalone: true,
   imports: [TranslocoDirective, SplitButtonModule],
   templateUrl: './coordinates-button.component.html',
   styleUrl: './coordinates-button.component.scss',

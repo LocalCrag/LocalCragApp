@@ -7,10 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { NgIf } from '@angular/common';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Line } from '../../../models/line';
@@ -19,19 +17,18 @@ import { Store } from '@ngrx/store';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'lc-project-climbed-form',
-  standalone: true,
   imports: [
     SharedModule,
     ReactiveFormsModule,
     DividerModule,
-    InputTextareaModule,
     ButtonModule,
     MessageModule,
-    NgIf,
     TranslocoDirective,
+    Textarea,
   ],
   templateUrl: './project-climbed-form.component.html',
   styleUrl: './project-climbed-form.component.scss',

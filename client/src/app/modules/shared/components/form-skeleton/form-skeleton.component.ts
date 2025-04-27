@@ -4,7 +4,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-form-skeleton',
-  standalone: true,
   imports: [NgIf, SkeletonModule, NgForOf],
   templateUrl: './form-skeleton.component.html',
   styleUrl: './form-skeleton.component.scss',

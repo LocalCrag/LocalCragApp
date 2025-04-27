@@ -1,3 +1,40 @@
+## [1.16.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.2...v1.16.3) (2025-04-15)
+
+
+### Bug Fixes
+
+* **core:** remove fileinput capture attribute that forces capture on mobile ([#679](https://github.com/LocalCrag/LocalCragApp/issues/679)) ([d8278bb](https://github.com/LocalCrag/LocalCragApp/commit/d8278bb2657a75b1fd2747446e4f214a10e7a688))
+
+## [1.16.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.1...v1.16.2) (2025-04-15)
+
+
+### Bug Fixes
+
+* **core:** prevent multiple header menus being open at the same time ([#674](https://github.com/LocalCrag/LocalCragApp/issues/674)) ([a3c1b2c](https://github.com/LocalCrag/LocalCragApp/commit/a3c1b2c83f9dc11499abb48ae9c73992d9eef0e7)), closes [#386](https://github.com/LocalCrag/LocalCragApp/issues/386)
+* **core:** set max width to content container ([#677](https://github.com/LocalCrag/LocalCragApp/issues/677)) ([3e65f5a](https://github.com/LocalCrag/LocalCragApp/commit/3e65f5a96641dc8ce71513119094b287121023dd)), closes [#645](https://github.com/LocalCrag/LocalCragApp/issues/645)
+* **search:** change elliptical search item avatars to circular avatars ([#669](https://github.com/LocalCrag/LocalCragApp/issues/669)) ([246f1fa](https://github.com/LocalCrag/LocalCragApp/commit/246f1faf3114152f0a39f443d1998d47de234f33))
+* **topo:** allow camera capture for the file upload ([#665](https://github.com/LocalCrag/LocalCragApp/issues/665)) ([af9ee84](https://github.com/LocalCrag/LocalCragApp/commit/af9ee84aee2936743ac0ad4cdc112b772e3129f0))
+* **topo:** fix barchart and stacked chart numbers to correctly include ungraded lines ([#670](https://github.com/LocalCrag/LocalCragApp/issues/670)) ([28060ad](https://github.com/LocalCrag/LocalCragApp/commit/28060add04981297586d7451b78548032a9623e6)), closes [#646](https://github.com/LocalCrag/LocalCragApp/issues/646)
+* **topo:** fix issue where line style description was wrapping below line name in topo image view ([#678](https://github.com/LocalCrag/LocalCragApp/issues/678)) ([137ec11](https://github.com/LocalCrag/LocalCragApp/commit/137ec114e0e97e97758ee58ba5f06e021c9ab606)), closes [#664](https://github.com/LocalCrag/LocalCragApp/issues/664)
+* **topo:** fix null pointer error in line ascents list ([#675](https://github.com/LocalCrag/LocalCragApp/issues/675)) ([e4ce001](https://github.com/LocalCrag/LocalCragApp/commit/e4ce001d81f67fef6f8ece7a7d45a5671deaf8d3))
+* **topo:** numbers of unhovered lines are no longer layered above the highlighted hovered line path ([#673](https://github.com/LocalCrag/LocalCragApp/issues/673)) ([2cf67eb](https://github.com/LocalCrag/LocalCragApp/commit/2cf67eb0299627180b105f01ce6ebaf65239c200)), closes [#445](https://github.com/LocalCrag/LocalCragApp/issues/445)
+* **topo:** prevent data to be reloaded on vertical swipes started on sliders [#671](https://github.com/LocalCrag/LocalCragApp/issues/671) ([#672](https://github.com/LocalCrag/LocalCragApp/issues/672)) ([72e9548](https://github.com/LocalCrag/LocalCragApp/commit/72e9548a9f7620582d25805e268b1e7e3b1dc82c)), closes [#643](https://github.com/LocalCrag/LocalCragApp/issues/643)
+* **topo:** trying to access a secret spot url without permission navigates to not found page ([#676](https://github.com/LocalCrag/LocalCragApp/issues/676)) ([1a45a2d](https://github.com/LocalCrag/LocalCragApp/commit/1a45a2d95ff5420f13aebddf242bfae7011047dd)), closes [#351](https://github.com/LocalCrag/LocalCragApp/issues/351)
+
+## [1.16.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.0...v1.16.1) (2025-04-05)
+
+
+### Bug Fixes
+
+* update out of date piplock file ([61f7382](https://github.com/LocalCrag/LocalCragApp/commit/61f73821c3795f8ec079e06b42146a22b74b0554))
+
+# [1.16.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.15.0...v1.16.0) (2025-04-05)
+
+
+### Features
+
+* migrate to Angular 19 and primeng 19 ([#647](https://github.com/LocalCrag/LocalCragApp/issues/647)) ([40c1e53](https://github.com/LocalCrag/LocalCragApp/commit/40c1e5388aedf4b2abed606265c93c55f754da3a))
+
 # [1.15.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.14.6...v1.15.0) (2025-02-28)
 
 

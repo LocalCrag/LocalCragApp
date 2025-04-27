@@ -8,9 +8,7 @@ import {
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
-import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
@@ -27,30 +25,27 @@ import { select, Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'lc-history-list',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,
     NgIf,
-    RouterOutlet,
-    SecretSpotTagComponent,
-    TabMenuModule,
     TranslocoDirective,
     TimelineModule,
     ButtonModule,
     SharedModule,
     AsyncPipe,
     NgClass,
-    InfiniteScrollModule,
     MessageModule,
+    RouterLink,
+    InfiniteScrollDirective,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',

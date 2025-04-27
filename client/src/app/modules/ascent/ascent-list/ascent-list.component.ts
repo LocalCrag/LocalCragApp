@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostListener,
   Input,
   OnInit,
   ViewEncapsulation,
@@ -10,17 +9,11 @@ import {
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { TabMenuModule } from 'primeng/tabmenu';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { Ascent } from '../../../models/ascent';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { SharedModule } from '../../shared/shared.module';
 import { LoadingState } from '../../../enums/loading-state';
@@ -44,7 +37,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { User } from '../../../models/user';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
@@ -52,19 +44,21 @@ import { MenuModule } from 'primeng/menu';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
+import { Select } from 'primeng/select';
+import { RouterLink } from '@angular/router';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-ascent-list',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     CardModule,
     NgIf,
-    TabMenuModule,
     TranslocoDirective,
     ButtonModule,
     DataViewModule,
-    DropdownModule,
     HasPermissionDirective,
     NgForOf,
     SharedModule,
@@ -73,17 +67,20 @@ import { RegionService } from '../../../services/crud/region.service';
     ConfirmPopupModule,
     LineModule,
     RatingModule,
-    TranslocoPipe,
     AsyncPipe,
     AvatarModule,
     UpgradePipe,
     DowngradePipe,
     ConsensusGradePipe,
     TagModule,
-    InfiniteScrollModule,
     SliderLabelsComponent,
     SliderModule,
     MenuModule,
+    Select,
+    RouterLink,
+    InfiniteScrollDirective,
+    AscentListSkeletonComponent,
+    Message,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -122,9 +119,10 @@ export class AscentListComponent implements OnInit {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-  public listenForSliderStop = false;
   public ascentActionItems: MenuItem[];
   public clickedAscentForAction: Ascent;
+
+  private loadedGradeFilterRange: number[] = null;
 
   constructor(
     private ascentsService: AscentsService,
@@ -219,14 +217,6 @@ export class AscentListComponent implements OnInit {
     ];
   }
 
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadFirstPage();
-    }
-  }
-
   selectScale() {
     if (this.scaleKey?.value) {
       this.scalesService
@@ -241,11 +231,21 @@ export class AscentListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadFirstPage();
+    }
+  }
+
   loadFirstPage() {
-    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
   }
 
   loadNextPage() {
@@ -302,6 +302,7 @@ export class AscentListComponent implements OnInit {
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
+      modal: true,
       templates: {
         header: AscentFormTitleComponent,
       },

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 import {
@@ -25,8 +24,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { DividerModule } from 'primeng/divider';
@@ -35,32 +32,30 @@ import { filter } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { DatePickerModule } from 'primeng/datepicker';
+import { Select } from 'primeng/select';
+import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'lc-ascent-form',
-  standalone: true,
   imports: [
-    DropdownModule,
     EditorModule,
     InputTextModule,
     ReactiveFormsModule,
     SharedModule,
-    SharedModule,
     CheckboxModule,
-    SharedModule,
     ButtonModule,
     ConfirmPopupModule,
     NgIf,
     TranslocoDirective,
-    SharedModule,
-    SharedModule,
     RatingModule,
-    InputTextareaModule,
-    CalendarModule,
+    DatePickerModule,
     ToggleButtonModule,
     FormsModule,
     DividerModule,
     MessageModule,
+    Select,
+    Textarea,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
@@ -76,9 +71,14 @@ export class AscentFormComponent implements OnInit {
   public line: Line;
   public ascent: Ascent;
   public grades = [];
-  public today = new Date();
+  public today: Date;
   public gradeDifferenceWarning = false;
   public editMode = false;
+  public toggleButtonDt = {
+    checkedBackground: '{primary.500}',
+    contentCheckedBackground: '{primary.500}',
+    checkedColor: '{surface.0}',
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -97,6 +97,8 @@ export class AscentFormComponent implements OnInit {
       .subscribe((scale) => {
         this.grades = scale.grades.filter((grade) => grade.value >= 0);
       });
+    this.today = new Date();
+    this.today.setHours(23, 59, 59, 999);
   }
 
   ngOnInit() {
@@ -270,8 +272,9 @@ export class AscentFormComponent implements OnInit {
   }
 
   setToToday() {
-    this.ascentForm.get('date').setValue(new Date());
-    this.ascentForm.get('year').setValue(new Date());
+    const today = new Date();
+    this.ascentForm.get('date').setValue(today);
+    this.ascentForm.get('year').setValue(today);
     this.ascentForm.get('yearOnly').setValue(false);
   }
 }

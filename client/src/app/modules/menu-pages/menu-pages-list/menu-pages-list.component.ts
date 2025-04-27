@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { RouterLink } from '@angular/router';
 import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -19,23 +18,26 @@ import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { SharedModule } from '../../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Select } from 'primeng/select';
+import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-menu-pages-list',
-  standalone: true,
   imports: [
-    AsyncPipe,
     ButtonModule,
     CardModule,
     DataViewModule,
-    DropdownModule,
     NgForOf,
-    NgIf,
     RouterLink,
     SharedModule,
     TranslocoDirective,
     FormsModule,
     NgClass,
+    Select,
+    NgIf,
+    MenuPagesListSkeletonComponent,
+    Message,
   ],
   templateUrl: './menu-pages-list.component.html',
   styleUrl: './menu-pages-list.component.scss',

@@ -13,11 +13,11 @@ lc-instance-settings-form {
 }
 
 #gym-mode {
-  .p-inputswitch-slider {
-    background-color: var(--green-600);
+  .p-toggleswitch-slider {
+    background-color: var(--p-green-600);
   }
 
-  .p-inputswitch-checked .p-inputswitch-slider {
-    background-color: var(--blue-600);
+  .p-toggleswitch-checked .p-toggleswitch-slider {
+    background-color: var(--p-blue-600);
   }
 }

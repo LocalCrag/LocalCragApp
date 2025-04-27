@@ -41,6 +41,7 @@ import { Scale } from '../../../models/scale';
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService],
+  standalone: false,
 })
 @UntilDestroy()
 export class LineFormComponent implements OnInit {

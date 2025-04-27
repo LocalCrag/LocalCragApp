@@ -6,14 +6,14 @@ lc-footer {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: var(--surface-300);
+  background-color: var(--p-surface-300);
 
   .version {
-    color: var(--surface-500);
+    color: var(--p-surface-500);
   }
 
   .p-button-label {
-    color: var(--surface-700);
+    color: var(--p-surface-700);
     font-weight: normal;
   }
 
@@ -29,8 +29,8 @@ lc-footer {
     margin-right: 6rem;
     justify-content: center;
     font-size: 12px;
-    color: var(--surface-700);
-    border-top: 1px solid var(--surface-400);
+    color: var(--p-surface-700);
+    border-top: 1px solid var(--p-surface-400);
     width: calc(100% - 12rem);
     box-sizing: border-box;
 
@@ -48,7 +48,7 @@ lc-footer {
       a:visited,
       a:hover,
       a:active {
-        color: var(--surface-700);
+        color: var(--p-surface-700);
       }
     }
   }

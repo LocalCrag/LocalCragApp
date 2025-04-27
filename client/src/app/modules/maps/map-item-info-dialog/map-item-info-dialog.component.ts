@@ -10,7 +10,6 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-item-info-dialog',
-  standalone: true,
   imports: [DialogModule, ButtonModule, NgIf, TranslocoDirective],
   templateUrl: './map-item-info-dialog.component.html',
   styleUrl: './map-item-info-dialog.component.scss',

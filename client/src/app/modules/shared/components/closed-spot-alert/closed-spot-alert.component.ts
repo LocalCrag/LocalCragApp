@@ -5,7 +5,6 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-closed-spot-alert',
-  standalone: true,
   imports: [MessageModule, TranslocoDirective, NgIf],
   templateUrl: './closed-spot-alert.component.html',
   styleUrl: './closed-spot-alert.component.scss',

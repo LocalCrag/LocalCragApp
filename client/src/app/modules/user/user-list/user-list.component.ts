@@ -1,18 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { LineModule } from '../../line/line.module';
 import { RatingModule } from 'primeng/rating';
-import { RouterLink } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import {
   ConfirmationService,
@@ -40,24 +34,23 @@ import { environment } from '../../../../environments/environment';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
+import { Select } from 'primeng/select';
+import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-user-list',
-  standalone: true,
   imports: [
     CardModule,
     TranslocoDirective,
     AsyncPipe,
     ButtonModule,
     DataViewModule,
-    DropdownModule,
     LineModule,
     NgForOf,
     NgIf,
     RatingModule,
-    RouterLink,
     SharedModule,
-    TranslocoPipe,
     NgClass,
     FormsModule,
     AvatarModule,
@@ -66,6 +59,9 @@ import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
     MenuModule,
     ConfirmPopupModule,
     ConfirmDialogModule,
+    Select,
+    UserListSkeletonComponent,
+    Message,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',

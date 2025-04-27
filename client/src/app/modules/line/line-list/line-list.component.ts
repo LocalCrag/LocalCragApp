@@ -1,9 +1,4 @@
-import {
-  Component,
-  HostListener,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { LinesService } from '../../../services/crud/lines.service';
 import { select, Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -13,7 +8,6 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { LineModule } from '../line.module';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -25,7 +19,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { SharedModule } from '../../shared/shared.module';
 import { Line } from '../../../models/line';
 import { LoadingState } from '../../../enums/loading-state';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
@@ -48,15 +41,17 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { GradeDistribution } from '../../../models/scale';
+import { Select } from 'primeng/select';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'lc-line-list',
-  standalone: true,
   imports: [
     AscentCountComponent,
     ButtonModule,
     DataViewModule,
-    DropdownModule,
     HasPermissionDirective,
     LineModule,
     NgForOf,
@@ -67,7 +62,6 @@ import { GradeDistribution } from '../../../models/scale';
     SharedModule,
     TickButtonComponent,
     TranslocoDirective,
-    InfiniteScrollModule,
     NgClass,
     FormsModule,
     SliderModule,
@@ -78,6 +72,10 @@ import { GradeDistribution } from '../../../models/scale';
     ArchiveButtonComponent,
     GymModeDirective,
     AsyncPipe,
+    Select,
+    InfiniteScrollDirective,
+    LineListSkeletonComponent,
+    Message,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
@@ -112,8 +110,9 @@ export class LineListComponent implements OnInit {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-  public listenForSliderStop = false;
   public showArchive = false;
+
+  private loadedGradeFilterRange: number[] = null;
 
   constructor(
     private linesService: LinesService,
@@ -215,14 +214,6 @@ export class LineListComponent implements OnInit {
       });
   }
 
-  @HostListener('document:touchend')
-  @HostListener('document:mouseup')
-  reloadAfterSliderStop() {
-    if (this.listenForSliderStop) {
-      this.loadFirstPage();
-    }
-  }
-
   toggleArchive() {
     this.showArchive = !this.showArchive;
     this.loadFirstPage();
@@ -242,11 +233,21 @@ export class LineListComponent implements OnInit {
     this.loadFirstPage();
   }
 
+  reloadOnSlideEnd() {
+    if (
+      !this.loadedGradeFilterRange ||
+      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
+      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
+    ) {
+      this.loadFirstPage();
+    }
+  }
+
   loadFirstPage() {
-    this.listenForSliderStop = false;
     this.currentPage = 0;
     this.hasNextPage = true;
     this.loadNextPage();
+    this.loadedGradeFilterRange = [...this.gradeFilterRange];
   }
 
   loadNextPage() {

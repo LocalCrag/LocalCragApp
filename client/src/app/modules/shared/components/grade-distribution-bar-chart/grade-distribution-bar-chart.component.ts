@@ -26,6 +26,7 @@ type BarChartData = {
   data: any;
   totalCount: number;
   projectCount: number;
+  ungradedCount: number;
 };
 
 /**
@@ -33,7 +34,6 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  standalone: true,
   imports: [ChartModule, NgIf, TranslocoDirective, SharedModule, NgForOf],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
@@ -231,8 +231,9 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
               });
               const projectCount =
                 (this.gradeDistribution[lineType][gradeScale]['-2'] ?? 0) +
-                (this.gradeDistribution[lineType][gradeScale]['-1'] ?? 0) +
-                (this.gradeDistribution[lineType][gradeScale]['0'] ?? 0);
+                (this.gradeDistribution[lineType][gradeScale]['-1'] ?? 0);
+              const ungradedCount =
+                this.gradeDistribution[lineType][gradeScale]['0'] ?? 0;
               return {
                 lineType: lineType as LineType,
                 gradeScale,
@@ -247,6 +248,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                   ],
                 },
                 projectCount: projectCount,
+                ungradedCount: ungradedCount,
                 totalCount: counts.reduce((a, b) => a + b, 0),
               };
             }),

@@ -3,7 +3,7 @@
     <p-card header="{{ editMode ? t('editScale') : t('createTitle') }}">
       <form [formGroup]="scaleForm" lcForm>
         <p-card>
-          <ng-template pTemplate="title">
+          <ng-template #title>
             <ng-container *ngIf="editMode"
               >{{ scale?.lineType | transloco }} {{ scale?.name }}
             </ng-container>
@@ -14,7 +14,7 @@
                 <label for="linetype">
                   {{ t("lineTypeLabel") }}
                 </label>
-                <p-dropdown
+                <p-select
                   id="linetype"
                   formControlName="lineType"
                   [options]="[
@@ -39,7 +39,7 @@
                   formControlName="name"
                   lcFormControl
                 />
-                <small class="p-error" *lcIfError="'required'">
+                <small class="lc-error" *lcIfError="'required'">
                   {{ t("required") }}
                 </small>
               </div>
@@ -180,7 +180,7 @@
             class="col-12"
             formArrayName="stackedChartBrackets"
             *ngFor="
-              let bracket of stackedChartBracketsControls().controls;
+              let _ of stackedChartBracketsControls().controls;
               let i = index
             "
           >
@@ -247,10 +247,7 @@
           <div
             class="col-12"
             formArrayName="barChartBrackets"
-            *ngFor="
-              let bracket of barChartBracketsControls().controls;
-              let i = index
-            "
+            *ngFor="let _ of barChartBracketsControls().controls; let i = index"
           >
             <div [formGroupName]="i" class="flex gap-4 mb-2">
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
