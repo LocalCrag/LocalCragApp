@@ -222,7 +222,11 @@
                       <div class="line-table-column-info-bottom-row">
                         <div class="line-table-info-rating">
                           <p-rating
-                            [ngModel]="linePath.line.rating"
+                            [ngModel]="
+                              displayUserRating
+                                ? linePath.line.userRating
+                                : linePath.line.authorRating
+                            "
                             [readonly]="true"
                           ></p-rating>
                         </div>

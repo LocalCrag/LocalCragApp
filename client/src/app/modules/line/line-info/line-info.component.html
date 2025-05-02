@@ -54,7 +54,10 @@
       </div>
       <div>
         {{ t("rating") }}:
-        <p-rating [ngModel]="rating" [readonly]="true"></p-rating>
+        <p-rating
+          [ngModel]="displayUserRating ? line.userRating : line.authorRating"
+          [readonly]="true"
+        ></p-rating>
       </div>
       <div *ngIf="line.faName || line.faYear" class="fa">
         {{ t("FA") }} <span *ngIf="line.faYear">{{ line.faYear }}</span

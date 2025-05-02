@@ -63,7 +63,7 @@ export class LineInfoComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
   public todos: Set<string>;
-  public rating: number = null;
+  public displayUserRating = false;
 
   private lineSlug: string;
 
@@ -90,15 +90,20 @@ export class LineInfoComponent implements OnInit {
       .subscribe(() => {
         this.refreshData();
       });
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        this.displayUserRating = instanceSettings.displayUserGradesRatings;
+      });
   }
 
   /**
    * Loads the line data.
    */
   refreshData() {
-    forkJoin([
-      this.store.select(selectInstanceSettingsState),
-      this.linesService.getLine(this.lineSlug).pipe(
+    this.linesService
+      .getLine(this.lineSlug)
+      .pipe(
         switchMap((line) => {
           this.line = line;
           return forkJoin({
@@ -106,14 +111,11 @@ export class LineInfoComponent implements OnInit {
             todos: this.isTodoService.getIsTodo(null, null, null, [line.id]),
           });
         }),
-      ),
-    ]).subscribe(([instanceSettings, { ticks, todos }]) => {
-      this.rating = instanceSettings.displayUserGradesRatings
-        ? this.line.userRating
-        : this.line.authorRating;
-      this.ticks = ticks;
-      this.todos = todos;
-    });
+      )
+      .subscribe(({ ticks, todos }) => {
+        this.ticks = ticks;
+        this.todos = todos;
+      });
   }
 
   /**

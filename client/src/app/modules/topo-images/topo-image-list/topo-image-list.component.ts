@@ -92,6 +92,7 @@ export class TopoImageListComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
   public showArchive = false;
+  public displayUserRating = false;
 
   private scrollTarget: Scroll;
 
@@ -142,6 +143,11 @@ export class TopoImageListComponent implements OnInit {
       .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
+      });
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        this.displayUserRating = instanceSettings.displayUserGradesRatings;
       });
   }
 

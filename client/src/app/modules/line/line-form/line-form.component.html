@@ -126,12 +126,6 @@
             </p-select>
           </div>
 
-          <p-message
-            severity="info"
-            text="{{ t('displayUserRatingsActive') }}"
-            *ngIf="getDisplayUserGradesRatings() | async"
-          />
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")
@@ -161,6 +155,13 @@
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
+
+            <p-message
+              styleClass="mt-2"
+              severity="warn"
+              text="{{ t('displayUserGradesActive') }}"
+              *ngIf="getDisplayUserGradesRatings() | async"
+            />
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -191,12 +192,6 @@
             }}</small>
           </div>
 
-          <p-message
-            severity="info"
-            text="{{ t('displayUserGradesActive') }}"
-            *ngIf="getDisplayUserGradesRatings() | async"
-          />
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rating">{{
               t("lineRatingLabel")
@@ -207,6 +202,13 @@
               lcFormControl
               data-cy="rating"
             ></p-rating>
+
+            <p-message
+              styleClass="mt-2"
+              severity="warn"
+              text="{{ t('displayUserRatingsActive') }}"
+              *ngIf="getDisplayUserGradesRatings() | async"
+            />
           </div>
 
           <div class="flex flex-column gap-2">
