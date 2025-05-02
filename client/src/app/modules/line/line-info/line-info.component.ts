@@ -98,23 +98,22 @@ export class LineInfoComponent implements OnInit {
   refreshData() {
     forkJoin([
       this.store.select(selectInstanceSettingsState),
-      this.linesService
-        .getLine(this.lineSlug)
-        .pipe(
-          switchMap((line) => {
-            this.line = line;
-            return forkJoin({
-              ticks: this.ticksService.getTicks(null, null, null, [line.id]),
-              todos: this.isTodoService.getIsTodo(null, null, null, [line.id]),
-            });
-          }),
-        ),
-    ])
-    .subscribe(([instanceSettings, { ticks, todos }]) => {
-        this.rating = instanceSettings.displayUserGradesRatings ? this.line.userRating : this.line.authorRating;
-        this.ticks = ticks;
-        this.todos = todos;
-      });
+      this.linesService.getLine(this.lineSlug).pipe(
+        switchMap((line) => {
+          this.line = line;
+          return forkJoin({
+            ticks: this.ticksService.getTicks(null, null, null, [line.id]),
+            todos: this.isTodoService.getIsTodo(null, null, null, [line.id]),
+          });
+        }),
+      ),
+    ]).subscribe(([instanceSettings, { ticks, todos }]) => {
+      this.rating = instanceSettings.displayUserGradesRatings
+        ? this.line.userRating
+        : this.line.authorRating;
+      this.ticks = ticks;
+      this.todos = todos;
+    });
   }
 
   /**

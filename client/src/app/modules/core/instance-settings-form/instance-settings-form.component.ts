@@ -147,8 +147,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
-      instanceSettings.displayUserGradesRatings =
-        this.instanceSettingsForm.get('displayUserGradesRatings').value;
+      instanceSettings.displayUserGradesRatings = this.instanceSettingsForm.get(
+        'displayUserGradesRatings',
+      ).value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

@@ -50,7 +50,8 @@ export class InstanceSettings {
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.gymMode = payload.gymMode;
-    instanceSettings.displayUserGradesRatings = payload.displayUserGradesRatings;
+    instanceSettings.displayUserGradesRatings =
+      payload.displayUserGradesRatings;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     return instanceSettings;
