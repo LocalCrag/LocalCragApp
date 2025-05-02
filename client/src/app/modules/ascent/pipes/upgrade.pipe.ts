@@ -22,7 +22,7 @@ export class UpgradePipe implements PipeTransform {
         map(
           (instanceSettings) =>
             ascent.gradeValue >
-            (instanceSettings.displayUserGrades
+            (instanceSettings.displayUserGradesRatings
               ? ascent.line.userGradeValue
               : ascent.line.authorGradeValue),
         ),

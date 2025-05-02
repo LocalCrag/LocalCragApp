@@ -232,7 +232,7 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "authorGradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -331,4 +331,5 @@ def test_grade_ranking_votes(client, user_token):
     line = Line.find_by_id(line_id)
     assert line.author_grade_value == 1
     assert line.user_grade_value == 22
-    assert line.rating == 5
+    assert line.author_rating == 1
+    assert line.user_rating == 5

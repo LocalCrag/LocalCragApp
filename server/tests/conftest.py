@@ -353,7 +353,8 @@ def fill_db_with_sample_data():
     line.description = "<p>Eine normale Treppe.</p>"
     line.type = LineTypeEnum.BOULDER
     line.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    line.rating = 1
+    line.author_rating = 1
+    line.user_rating = 1
     line.grade_scale = "FB"
     line.author_grade_value = 1
     line.user_grade_value = 1
@@ -365,7 +366,8 @@ def fill_db_with_sample_data():
     line.description = "<p>Geiler Kühlschrankboulder!</p>"
     line.type = LineTypeEnum.BOULDER
     line.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    line.rating = 5
+    line.author_rating = 5
+    line.user_rating = 3
     line.fa_year = 2024
     line.fa_name = "Felix Engelmann"
     line.grade_scale = "FB"

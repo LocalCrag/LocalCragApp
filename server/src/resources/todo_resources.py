@@ -99,7 +99,7 @@ class GetTodos(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades:
+            if instance_settings.display_user_grades_ratings:
                 query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
             else:
                 query = query.filter(
@@ -117,7 +117,7 @@ class GetTodos(MethodView):
         # Apply ordering
         order_function = None
         if order_by in {"grade_value"}:
-            if instance_settings.display_user_grades:
+            if instance_settings.display_user_grades_ratings:
                 order_function = getattr(Line.user_grade_value, order_direction)
             else:
                 order_function = getattr(Line.author_grade_value, order_direction)

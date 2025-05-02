@@ -190,7 +190,7 @@ class GetSectorGrades(MethodView):
             db.session.query(
                 Line.type,
                 Line.grade_scale,
-                Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
+                Line.user_grade_value if instance_settings.display_user_grades_ratings else Line.author_grade_value,
             )
             .join(Area)
             .filter(Area.sector_id == sector_id, Line.archived.is_(False))

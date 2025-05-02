@@ -21,6 +21,7 @@
   "lineForm.colorLabel": "Farbe wählen",
   "lineForm.lineTypeLabel": "Linientyp",
   "lineForm.lineScaleLabel": "Skala",
+  "lineForm.displayUserRatingsActive": "Achtung: Die Bewertungen der Begehungen bestimmen die angezeigte Bewertung",
   "lineForm.displayUserGradesActive": "Achtung: Die Bewertungen der Begehungen bestimmen den angezeigten Grad",
   "lineForm.lineGradeLabel": "Schwierigkeitsgrad",
   "lineForm.gradePlaceholder": "Wähle den Grad...",

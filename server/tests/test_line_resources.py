@@ -10,7 +10,7 @@ def test_successful_create_line(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -58,7 +58,8 @@ def test_successful_create_line(client, moderator_token):
     assert "userGradeValue" in res
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
-    assert res["rating"] == 5
+    assert res["authorRating"] == 5
+    assert "userRating" in res
     assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
@@ -105,7 +106,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "authorGradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -152,7 +153,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["authorGradeValue"] == -1
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
-    assert res["rating"] == 5
+    assert res["authorRating"] == 5
     assert res["ascentCount"] == 0
     assert res["faYear"] == None  # Should be set to None automatically for projects!
     assert res["faName"] == None  # Should be set to None automatically for projects!
@@ -199,7 +200,7 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 9000,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -247,7 +248,7 @@ def test_create_line_invalid_rating(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 6,
+        "authorRating": 6,
         "faYear": 2014,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -295,7 +296,7 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2014,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -343,7 +344,7 @@ def test_create_line_invalid_grade_value(client, moderator_token):
         "authorGradeValue": 42,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -391,7 +392,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "TRAD",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -439,7 +440,7 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "TRESGDFGD",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -487,7 +488,7 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "WEIRD",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -535,7 +536,7 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "PRE_CLIPPED",
@@ -587,7 +588,7 @@ def test_create_line_invalid_video_payload(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "WEIRD",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2000,
         "faName": "Dave Graham",
         "startingPosition": "SIT",
@@ -636,7 +637,7 @@ def test_create_line_invalid_color(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -706,7 +707,7 @@ def test_successful_get_line(client):
     assert "userGradeValue" in res
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
-    assert res["rating"] == 5
+    assert res["authorRating"] == 5
     assert res["ascentCount"] == 1
     assert res["faYear"] == 2024
     assert res["faName"] == "Felix Engelmann"
@@ -769,7 +770,7 @@ def test_successful_edit_line(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "STAND",
@@ -816,7 +817,7 @@ def test_successful_edit_line(client, moderator_token):
     assert res["authorGradeValue"] == 19
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
-    assert res["rating"] == 5
+    assert res["authorRating"] == 5
     assert res["ascentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faName"] == "Dave Graham"
@@ -866,7 +867,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
         "gradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "STAND",

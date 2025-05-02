@@ -128,8 +128,8 @@
 
           <p-message
             severity="info"
-            text="{{ t('displayUserGradesActive') }}"
-            *ngIf="getDisplayUserGrades() | async"
+            text="{{ t('displayUserRatingsActive') }}"
+            *ngIf="getDisplayUserGradesRatings() | async"
           />
 
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -190,6 +190,12 @@
               t("required")
             }}</small>
           </div>
+
+          <p-message
+            severity="info"
+            text="{{ t('displayUserGradesActive') }}"
+            *ngIf="getDisplayUserGradesRatings() | async"
+          />
 
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rating">{{

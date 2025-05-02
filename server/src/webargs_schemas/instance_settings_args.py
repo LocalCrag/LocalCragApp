@@ -20,5 +20,5 @@ instance_settings_args = {
     "skippedHierarchicalLayers": fields.Integer(
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)
     ),
-    "displayUserGrades": fields.Boolean(required=True),
+    "displayUserGradesRatings": fields.Boolean(required=True),
 }

@@ -27,7 +27,8 @@ export class Line extends IsClosable(AbstractModel) {
   gradeScale: string;
   authorGradeValue: number;
   userGradeValue: number;
-  rating: number;
+  authorRating: number;
+  userRating: number;
   type: LineType;
   faYear: number;
   faName: string;
@@ -104,7 +105,8 @@ export class Line extends IsClosable(AbstractModel) {
     line.gradeScale = payload.gradeScale;
     line.authorGradeValue = payload.authorGradeValue;
     line.userGradeValue = payload.userGradeValue;
-    line.rating = payload.rating;
+    line.authorRating = payload.authorRating;
+    line.userRating = payload.userRating;
     line.type = payload.type;
     line.faYear = payload.faYear;
     line.faName = payload.faName;
@@ -181,7 +183,7 @@ export class Line extends IsClosable(AbstractModel) {
         videos: line.videos ? line.videos : null,
         gradeScale: line.gradeScale,
         authorGradeValue: line.authorGradeValue,
-        rating: line.rating,
+        authorRating: line.authorRating,
         type: line.type,
         faYear: line.faYear,
         faName: line.faName ? line.faName : null,

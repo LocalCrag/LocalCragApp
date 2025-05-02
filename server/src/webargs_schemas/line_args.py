@@ -23,7 +23,7 @@ class LineArgsSchema(Schema, IsClosableWebargsMixin):
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
     authorGradeValue = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2))
     type = fields.Enum(LineTypeEnum, required=True, allow_none=False)
-    rating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
+    authorRating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
     faYear = fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year)
     faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
     startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)

@@ -227,7 +227,7 @@
   "instanceSettings.instanceSettingsForm.gymModeLabel": "Betriebsmodus",
   "instanceSettings.instanceSettingsForm.gymModeLabelFalse": "Outdoormodus",
   "instanceSettings.instanceSettingsForm.gymModeLabelTrue": "Hallenmodus",
-  "instanceSettings.instanceSettingsForm.displayUserGradesLabel": "Angezeigte Schwierigkeit",
+  "instanceSettings.instanceSettingsForm.displayUserGradesLabel": "Angezeigte Schwierigkeit und Bewertung",
   "instanceSettings.instanceSettingsForm.displayUserGradesFalse": "Vom Autor festgelegt",
   "instanceSettings.instanceSettingsForm.displayUserGradesTrue": "Nutzer stimmen ab",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersLabel": "Hierarchieebenen",

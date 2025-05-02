@@ -44,11 +44,13 @@ def update_grades_and_rating(line_id: str):
             line.user_grade_value = candidate1
         else:
             line.user_grade_value = candidate2
-        line.rating = round(mean_rating)
+
+        line.user_rating = round(mean_rating)
 
         db.session.add(line)
         db.session.commit()
     else:
         line.user_grade_value = line.author_grade_value
+        line.user_rating = line.author_rating
         db.session.add(line)
         db.session.commit()

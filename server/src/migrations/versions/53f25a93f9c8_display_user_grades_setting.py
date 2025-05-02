@@ -18,9 +18,11 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table("instance_settings", schema=None) as batch_op:
-        batch_op.add_column(sa.Column("display_user_grades", sa.Boolean(), server_default="false", nullable=False))
+        batch_op.add_column(
+            sa.Column("display_user_grades_ratings", sa.Boolean(), server_default="false", nullable=False)
+        )
 
 
 def downgrade():
     with op.batch_alter_table("instance_settings", schema=None) as batch_op:
-        batch_op.drop_column("display_user_grades")
+        batch_op.drop_column("display_user_grades_ratings")

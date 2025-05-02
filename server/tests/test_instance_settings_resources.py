@@ -29,7 +29,7 @@ def test_successful_get_instance_settings(client):
     assert res["maxImageSize"] == 4
     assert res["gymMode"] == instance_settings.gym_mode
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
-    assert res["displayUserGrades"] == instance_settings.display_user_grades
+    assert res["displayUserGradesRatings"] == instance_settings.display_user_grades_ratings
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -51,7 +51,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGrades": True,
+        "displayUserGradesRatings": True,
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
     }
@@ -76,7 +76,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["maxImageSize"] == 4
     assert res["gymMode"] == True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
-    assert res["displayUserGrades"] is True
+    assert res["displayUserGradesRatings"] is True
 
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
@@ -102,7 +102,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGrades": True,
+        "displayUserGradesRatings": True,
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": 2,
     }
@@ -134,7 +134,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGrades": True,
+        "displayUserGradesRatings": True,
         "skippedHierarchicalLayers": 2,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)

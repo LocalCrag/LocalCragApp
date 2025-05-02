@@ -39,7 +39,7 @@ def test_successful_change_value_history(client, moderator_token):
         "authorGradeValue": 19,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "STAND",

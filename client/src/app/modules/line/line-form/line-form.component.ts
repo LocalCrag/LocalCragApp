@@ -353,7 +353,7 @@ export class LineFormComponent implements OnInit {
       scale: this.line.gradeScale,
       grade: this.line.authorGradeValue,
       color: this.line.color,
-      rating: this.line.rating,
+      rating: this.line.authorRating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
       startingPosition: this.line.startingPosition,
@@ -429,7 +429,7 @@ export class LineFormComponent implements OnInit {
       line.type = this.lineForm.get('type').value;
       line.authorGradeValue = this.lineForm.get('grade').value;
       line.gradeScale = this.lineForm.get('scale').value;
-      line.rating = this.lineForm.get('rating').value;
+      line.authorRating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
         : null;
@@ -545,11 +545,11 @@ export class LineFormComponent implements OnInit {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
 
-  public getDisplayUserGrades() {
+  public getDisplayUserGradesRatings() {
     return this.store.pipe(
       select(selectInstanceSettingsState),
       take(1),
-      map((instanceSettings) => instanceSettings.displayUserGrades),
+      map((instanceSettings) => instanceSettings.displayUserGradesRatings),
     );
   }
 

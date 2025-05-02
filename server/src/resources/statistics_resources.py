@@ -53,7 +53,7 @@ class GetCompletion(MethodView):
 
         # Filter lines for grades
         if min_grade_value is not None and max_grade_value is not None:
-            if instance_settings.display_user_grades:
+            if instance_settings.display_user_grades_ratings:
                 lines_query = lines_query.filter(
                     Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
                 )
@@ -80,7 +80,7 @@ class GetCompletion(MethodView):
 
         # Filter ascents for grades
         if min_grade_value is not None and max_grade_value is not None:
-            if instance_settings.display_user_grades:
+            if instance_settings.display_user_grades_ratings:
                 ascents_query = ascents_query.join(Ascent.line).filter(
                     Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
                 )

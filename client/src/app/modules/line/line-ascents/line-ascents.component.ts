@@ -50,7 +50,7 @@ export class LineAscentsComponent implements OnInit {
       this.store.pipe(select(selectInstanceSettingsState), take(1)),
     ]).subscribe(([line, instanceSettings]) => {
       this.line = line;
-      const gradeValue = instanceSettings.displayUserGrades
+      const gradeValue = instanceSettings.displayUserGradesRatings
         ? line.userGradeValue
         : line.authorGradeValue;
       forkJoin([

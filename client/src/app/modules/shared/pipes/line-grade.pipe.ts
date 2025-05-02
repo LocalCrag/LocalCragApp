@@ -26,7 +26,7 @@ export class LineGradePipe implements PipeTransform {
         return this.scalesService.gradeNameByValue(
           line?.type,
           line?.gradeScale,
-          instanceSettings.displayUserGrades
+          instanceSettings.displayUserGradesRatings
             ? line?.userGradeValue
             : line?.authorGradeValue,
         );

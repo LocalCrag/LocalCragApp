@@ -84,7 +84,7 @@ class GetLines(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades:
+            if instance_settings.display_user_grades_ratings:
                 query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
             else:
                 query = query.filter(
@@ -97,6 +97,10 @@ class GetLines(MethodView):
 
         # Handle order
         if order_by and order_direction:
+            if order_by == "grade_value":
+                order_by = "user_grade_value" if instance_settings.display_user_grades_ratings else "author_grade_value"
+            elif order_by == "rating":
+                order_by = "user_rating" if instance_settings.display_user_grades_ratings else "author_rating"
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
@@ -144,7 +148,8 @@ class CreateLine(MethodView):
         new_line.author_grade_value = line_data["authorGradeValue"]
         new_line.user_grade_value = line_data["authorGradeValue"]
         new_line.starting_position = line_data["startingPosition"]
-        new_line.rating = line_data["rating"]
+        new_line.author_rating = line_data["authorRating"]
+        new_line.user_rating = line_data["authorRating"]
         new_line.secret = line_data["secret"]
 
         if new_line.author_grade_value >= 0:
@@ -235,7 +240,7 @@ class UpdateLine(MethodView):
         line.author_grade_value = line_data["authorGradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
-        line.rating = line_data["rating"]
+        line.author_rating = line_data["authorRating"]
         update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
         update_line_propagating_boolean_attr(
             line, line_data["closed"], "closed", set_additionally={"closed_reason": line_data["closedReason"]}

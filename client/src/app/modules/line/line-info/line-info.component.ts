@@ -28,6 +28,8 @@ import { TodoButtonComponent } from '../../todo/todo-button/todo-button.componen
 import { FormsModule } from '@angular/forms';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { Skeleton } from 'primeng/skeleton';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 
 /**
  * Component that shows detailed information about a line.
@@ -61,6 +63,7 @@ export class LineInfoComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
   public todos: Set<string>;
+  public rating: number = null;
 
   private lineSlug: string;
 
@@ -73,6 +76,7 @@ export class LineInfoComponent implements OnInit {
     private dialogService: DialogService,
     private linePathsService: LinePathsService,
     private linesService: LinesService,
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -92,18 +96,22 @@ export class LineInfoComponent implements OnInit {
    * Loads the line data.
    */
   refreshData() {
-    this.linesService
-      .getLine(this.lineSlug)
-      .pipe(
-        switchMap((line) => {
-          this.line = line;
-          return forkJoin({
-            ticks: this.ticksService.getTicks(null, null, null, [line.id]),
-            todos: this.isTodoService.getIsTodo(null, null, null, [line.id]),
-          });
-        }),
-      )
-      .subscribe(({ ticks, todos }) => {
+    forkJoin([
+      this.store.select(selectInstanceSettingsState),
+      this.linesService
+        .getLine(this.lineSlug)
+        .pipe(
+          switchMap((line) => {
+            this.line = line;
+            return forkJoin({
+              ticks: this.ticksService.getTicks(null, null, null, [line.id]),
+              todos: this.isTodoService.getIsTodo(null, null, null, [line.id]),
+            });
+          }),
+        ),
+    ])
+    .subscribe(([instanceSettings, { ticks, todos }]) => {
+        this.rating = instanceSettings.displayUserGradesRatings ? this.line.userRating : this.line.authorRating;
         this.ticks = ticks;
         this.todos = todos;
       });

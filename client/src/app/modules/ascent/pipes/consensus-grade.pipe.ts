@@ -1,8 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Ascent } from '../../../models/ascent';
-import { ScalesService } from '../../../services/crud/scales.service';
 import { AsyncPipe } from '@angular/common';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { map } from 'rxjs/operators';
@@ -24,7 +22,7 @@ export class ConsensusGradePipe implements PipeTransform {
         map(
           (instanceSettings) =>
             ascent.gradeValue ===
-            (instanceSettings.displayUserGrades
+            (instanceSettings.displayUserGradesRatings
               ? ascent.line.userGradeValue
               : ascent.line.authorGradeValue),
         ),

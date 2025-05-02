@@ -117,7 +117,7 @@ export class AscentFormComponent implements OnInit {
             .gradeNameByValue(
               this.line.type,
               this.line.gradeScale,
-              instanceSettings.displayUserGrades
+              instanceSettings.displayUserGradesRatings
                 ? this.line.userGradeValue
                 : this.line.authorGradeValue,
             )
@@ -125,7 +125,7 @@ export class AscentFormComponent implements OnInit {
               this.ascentForm.patchValue({
                 grade: {
                   name: gradeName,
-                  value: instanceSettings.displayUserGrades
+                  value: instanceSettings.displayUserGradesRatings
                     ? this.line.userGradeValue
                     : this.line.authorGradeValue,
                 },
@@ -180,7 +180,7 @@ export class AscentFormComponent implements OnInit {
           .subscribe((newGrade: number) => {
             this.gradeDifferenceWarning =
               Math.abs(
-                (instanceSettings.displayUserGrades
+                (instanceSettings.displayUserGradesRatings
                   ? this.line.userGradeValue
                   : this.line.authorGradeValue) - newGrade,
               ) >= 3;
