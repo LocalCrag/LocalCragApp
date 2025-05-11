@@ -11,7 +11,6 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EditorModule } from 'primeng/editor';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
-import { AreaModule } from '../area/area.module';
 import { GradeDistributionBarChartComponent } from '../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { ChipModule } from 'primeng/chip';
 import { CoordinatesComponent } from '../shared/forms/controls/coordinates/coordinates.component';
@@ -47,7 +46,6 @@ import { TopoDataviewSkeletonComponent } from '../shared/components/topo-datavie
     BreadcrumbModule,
     EditorModule,
     ConfirmPopupModule,
-    AreaModule,
     GradeDistributionBarChartComponent,
     ChipModule,
     CoordinatesComponent,
