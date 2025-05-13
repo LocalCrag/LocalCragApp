@@ -17,7 +17,7 @@ import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { SharedModule } from '../../shared/shared.module';
-import { NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -30,6 +30,7 @@ import { TickButtonComponent } from '../../ascent/tick-button/tick-button.compon
 import { Skeleton } from 'primeng/skeleton';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 /**
  * Component that shows detailed information about a line.
@@ -55,6 +56,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
     FormsModule,
     TickButtonComponent,
     Skeleton,
+    AsyncPipe,
   ],
 })
 @UntilDestroy()
@@ -63,7 +65,7 @@ export class LineInfoComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
   public todos: Set<string>;
-  public displayUserRating = false;
+  public displayUserRating?: boolean = undefined;
 
   private lineSlug: string;
 
@@ -76,6 +78,7 @@ export class LineInfoComponent implements OnInit {
     private dialogService: DialogService,
     private linePathsService: LinePathsService,
     private linesService: LinesService,
+    protected scalesService: ScalesService,
     private store: Store,
   ) {}
 
