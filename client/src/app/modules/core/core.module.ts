@@ -42,7 +42,6 @@ import { DialogModule } from 'primeng/dialog';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { CragModule } from '../crag/crag.module';
 import { DeviceEffects } from '../../ngrx/effects/device.effects';
 import { TranslocoService } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
@@ -149,7 +148,6 @@ export function preloadInstanceSettings(
     MessageModule,
     DialogModule,
     ToastModule,
-    CragModule,
     BackgroundImageComponent,
     HeaderMenuComponent,
     HasPermissionDirective,

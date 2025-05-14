@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -48,7 +44,6 @@ export class ScaleListComponent implements OnInit {
 
   constructor(
     private scalesService: ScalesService,
-    private translocoService: TranslocoService,
     protected router: Router,
   ) {}
 

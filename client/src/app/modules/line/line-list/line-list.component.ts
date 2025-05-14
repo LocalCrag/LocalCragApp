@@ -9,7 +9,6 @@ import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.com
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { LineModule } from '../line.module';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -57,7 +56,6 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,
-    LineModule,
     NgForOf,
     NgIf,
     RatingModule,

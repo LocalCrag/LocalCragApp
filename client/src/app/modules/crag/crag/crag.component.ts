@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
-import { TranslocoService } from '@jsverse/transloco';
+import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, of } from 'rxjs';
@@ -43,6 +43,7 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
     RouterLink,
     RouterOutlet,
   ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 @UntilDestroy()
 export class CragComponent implements OnInit {

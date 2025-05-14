@@ -40,7 +40,6 @@ import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
-import { LineModule } from '../../line/line.module';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { Rating } from 'primeng/rating';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -78,7 +77,6 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     NgClass,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,
-    LineModule,
     ClosedSpotTagComponent,
     Rating,
     TickButtonComponent,

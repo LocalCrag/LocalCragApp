@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import {
   ActivatedRoute,
   Router,
@@ -45,6 +45,7 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
     RouterLink,
     RouterOutlet,
   ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
 @UntilDestroy()
 export class SectorComponent implements OnInit {

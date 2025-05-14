@@ -20,7 +20,6 @@ import { NgForOf, NgIf } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { LineModule } from '../line.module';
 import { Rating } from 'primeng/rating';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
@@ -47,7 +46,6 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     Button,
     HasPermissionDirective,
     NgForOf,
-    LineModule,
     Rating,
     ArchiveButtonComponent,
     TodoButtonComponent,

@@ -20,7 +20,6 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { LineModule } from '../../line/line.module';
 import { RatingModule } from 'primeng/rating';
 import { AvatarModule } from 'primeng/avatar';
 import { UpgradePipe } from '../pipes/upgrade.pipe';
@@ -66,7 +65,6 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
     FormsModule,
     NgClass,
     ConfirmPopupModule,
-    LineModule,
     RatingModule,
     AsyncPipe,
     AvatarModule,

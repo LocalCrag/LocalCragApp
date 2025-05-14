@@ -18,7 +18,11 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { forkJoin } from 'rxjs';
 import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -52,6 +56,7 @@ import { Button } from 'primeng/button';
     LinePathEditorComponent,
     Button,
   ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
 export class LinePathFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
