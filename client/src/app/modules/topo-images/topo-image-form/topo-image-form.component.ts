@@ -15,7 +15,11 @@ import {
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -57,6 +61,7 @@ import { Button } from 'primeng/button';
     CoordinatesComponent,
     Button,
   ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

@@ -4,7 +4,11 @@ import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
@@ -52,7 +56,11 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
   selector: 'lc-topo-image-list',
   templateUrl: './topo-image-list.component.html',
   styleUrls: ['./topo-image-list.component.scss'],
-  providers: [ConfirmationService, DialogService],
+  providers: [
+    ConfirmationService,
+    DialogService,
+    { provide: TRANSLOCO_SCOPE, useValue: 'topoImage' },
+  ],
   encapsulation: ViewEncapsulation.None,
   imports: [
     TranslocoDirective,
