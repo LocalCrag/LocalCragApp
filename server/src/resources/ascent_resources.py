@@ -31,6 +31,13 @@ from webargs_schemas.ascent_args import (
     project_climbed_args,
 )
 
+def _ctx_update_grades_and_rating(line_id: str):
+    # We cannot import app in the top-level due to circular import issues
+    from app import app
+
+    with app.app_context():
+        return update_grades_and_rating(line_id)
+
 
 class GetAscents(MethodView):
 
@@ -180,7 +187,7 @@ class CreateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
-        thread = threading.Thread(target=update_grades_and_rating, args=(line.id,))
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line.id,))
         thread.start()
 
         return ascent_schema.dump(ascent), 201
@@ -221,7 +228,7 @@ class UpdateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
-        thread = threading.Thread(target=update_grades_and_rating, args=(line.id,))
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line.id,))
         thread.start()
 
         return ascent_schema.dump(ascent), 201
@@ -239,7 +246,7 @@ class DeleteAscent(MethodView):
         db.session.delete(ascent)
         db.session.commit()
 
-        thread = threading.Thread(target=update_grades_and_rating, args=(line_id,))
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line_id,))
         thread.start()
 
         return jsonify(None), 204
