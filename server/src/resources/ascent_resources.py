@@ -31,6 +31,7 @@ from webargs_schemas.ascent_args import (
     project_climbed_args,
 )
 
+
 def _ctx_update_grades_and_rating(line_id: str):
     # We cannot import app in the top-level due to circular import issues
     from app import app
