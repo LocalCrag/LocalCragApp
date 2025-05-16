@@ -333,3 +333,36 @@ def test_grade_ranking_votes(client, user_token):
     assert line.user_grade_value == 22
     assert line.author_rating == 1
     assert line.user_rating == 5
+
+
+def test_grade_ranking_votes_value(client, user_token, member_token, admin_token):
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": True,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 11,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    time.sleep(0.1)  # wait for async update
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 11
+    assert line.author_rating == 1
+    assert line.user_rating == 5

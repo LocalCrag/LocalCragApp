@@ -39,7 +39,7 @@ def update_grades_and_rating(line_id: str):
         if lower_grade_index > len(all_grades) - 1:
             lower_grade_index = len(all_grades) - 1
         candidate1 = all_grades[lower_grade_index]
-        candidate2 = all_grades[lower_grade_index + 1 if lower_grade_index + 1 < len(grades) else len(grades)]
+        candidate2 = all_grades[lower_grade_index + 1 if lower_grade_index + 1 < len(all_grades) else len(all_grades)]
         if abs(mean_grade - candidate1) < abs(mean_grade - candidate2):
             line.user_grade_value = candidate1
         else:
