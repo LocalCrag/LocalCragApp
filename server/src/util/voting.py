@@ -35,7 +35,7 @@ def update_grades_and_rating(line_id: str):
         mean_rating = statistics.mean(ratings)
 
         # Round to nearest
-        lower_grade_index = bisect.bisect_right(all_grades, mean_grade)
+        lower_grade_index = bisect.bisect_left(all_grades, mean_grade)
         if lower_grade_index > len(all_grades) - 1:
             lower_grade_index = len(all_grades) - 1
         candidate1 = all_grades[lower_grade_index]
