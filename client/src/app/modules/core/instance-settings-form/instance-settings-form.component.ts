@@ -21,7 +21,6 @@ import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
-import { SharedModule } from '../../shared/shared.module';
 import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
@@ -30,6 +29,10 @@ import { PasswordModule } from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Select } from 'primeng/select';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -41,7 +44,6 @@ import { Select } from 'primeng/select';
     InputTextModule,
     PaginatorModule,
     ReactiveFormsModule,
-    SharedModule,
     TranslocoDirective,
     ColorPickerModule,
     DividerModule,
@@ -50,6 +52,11 @@ import { Select } from 'primeng/select';
     TooltipModule,
     ToggleSwitch,
     Select,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
+    SingleImageUploadComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -96,6 +103,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
       skippedHierarchicalLayers: [null],
+      displayUserGradesRatings: [null],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -119,6 +127,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       gymMode: this.instanceSettings.gymMode,
       skippedHierarchicalLayers:
         this.instanceSettings.skippedHierarchicalLayers,
+      displayUserGradesRatings: this.instanceSettings.displayUserGradesRatings,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -145,6 +154,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
+      instanceSettings.displayUserGradesRatings = this.instanceSettingsForm.get(
+        'displayUserGradesRatings',
+      ).value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

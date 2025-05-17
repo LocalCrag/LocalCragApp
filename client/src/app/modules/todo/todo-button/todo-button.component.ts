@@ -6,13 +6,12 @@ import { TodosService } from '../../../services/crud/todos.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
-import { SharedModule } from 'primeng/api';
 import { Router } from '@angular/router';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 
 @Component({
   selector: 'lc-todo-button',
-  imports: [ButtonModule, NgIf, SharedModule, TranslocoDirective, NgClass],
+  imports: [ButtonModule, NgIf, TranslocoDirective, NgClass],
   templateUrl: './todo-button.component.html',
   styleUrl: './todo-button.component.scss',
   encapsulation: ViewEncapsulation.None,

@@ -1,4 +1,5 @@
 import datetime
+import threading
 
 from flask import jsonify, request
 from flask.views import MethodView
@@ -15,6 +16,7 @@ from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_s
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -22,6 +24,7 @@ from models.user import User
 from util.email import send_project_climbed_email
 from util.secret_spots_auth import get_show_secret
 from util.validators import cross_validate_grade
+from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
     ascent_args,
     cross_validate_ascent_args,
@@ -29,10 +32,18 @@ from webargs_schemas.ascent_args import (
 )
 
 
+def _ctx_update_grades_and_rating(line_id: str):
+    # We cannot import app in the top-level due to circular import issues
+    from app import app
+
+    with app.app_context():
+        return update_grades_and_rating(line_id)
+
+
 class GetAscents(MethodView):
 
     def get(self):
-
+        instance_settings = InstanceSettings.return_it()
         user_id = request.args.get("user_id")
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
@@ -75,7 +86,12 @@ class GetAscents(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+            if instance_settings.display_user_grades_ratings:
+                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+            else:
+                query = query.filter(
+                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
+                )
 
         # Filter secret spots
         if not get_show_secret():
@@ -126,7 +142,7 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_jwt_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
-        if line.grade_value < 0:
+        if line.author_grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
         if ascent_data["gradeValue"] < 0:
             raise BadRequest("Cannot propose project status.")
@@ -172,6 +188,9 @@ class CreateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line.id,))
+        thread.start()
+
         return ascent_schema.dump(ascent), 201
 
 
@@ -210,6 +229,9 @@ class UpdateAscent(MethodView):
         db.session.add(ascent)
         db.session.commit()
 
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line.id,))
+        thread.start()
+
         return ascent_schema.dump(ascent), 201
 
 
@@ -217,12 +239,16 @@ class DeleteAscent(MethodView):
     @jwt_required()
     def delete(self, ascent_id):
         ascent: Ascent = Ascent.find_by_id(ascent_id)
+        line_id = ascent.line_id
 
         if not ascent.created_by.email == get_jwt_identity():
             raise Unauthorized("Ascents can only be deleted by users themselves.")
 
         db.session.delete(ascent)
         db.session.commit()
+
+        thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line_id,))
+        thread.start()
 
         return jsonify(None), 204
 
@@ -239,7 +265,7 @@ class SendProjectClimbedMessage(MethodView):
         if not line:
             raise NotFound("Line does not exist.")
 
-        if line.grade_value >= 0:
+        if line.author_grade_value >= 0:
             raise BadRequest("Only projects can be first ascended.")
 
         # Email all admins

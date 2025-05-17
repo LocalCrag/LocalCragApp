@@ -1,12 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
@@ -32,6 +42,25 @@ import { Area } from '../../../models/area';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Scale } from '../../../models/scale';
+import { Card } from 'primeng/card';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { InputText } from 'primeng/inputtext';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { Select } from 'primeng/select';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { Rating } from 'primeng/rating';
+import { AsFormArrayPipe } from '../../shared/pipes/as-form-array.pipe';
+import { AsFormGroupPipe } from '../../shared/pipes/as-form-group.pipe';
+import { Button } from 'primeng/button';
+import { DatePicker } from 'primeng/datepicker';
+import { Checkbox } from 'primeng/checkbox';
+import { Message } from 'primeng/message';
+import { ConfirmPopup } from 'primeng/confirmpopup';
+import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 
 /**
  * Form component for lines.
@@ -41,7 +70,34 @@ import { Scale } from '../../../models/scale';
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    NgIf,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    InputText,
+    FormControlDirective,
+    IfErrorDirective,
+    Editor,
+    AdvancedColorPickerComponent,
+    GymModeDirective,
+    Select,
+    TranslateSpecialGradesPipe,
+    TranslocoPipe,
+    Rating,
+    AsFormArrayPipe,
+    AsFormGroupPipe,
+    NgForOf,
+    Button,
+    DatePicker,
+    Checkbox,
+    Message,
+    ConfirmPopup,
+    FormSkeletonComponent,
+    AsyncPipe,
+  ],
 })
 @UntilDestroy()
 export class LineFormComponent implements OnInit {
@@ -180,7 +236,7 @@ export class LineFormComponent implements OnInit {
                   .get('grade')
                   .setValue(
                     this.grades.filter(
-                      (g) => g.value == this.line.gradeValue,
+                      (g) => g.value == this.line.authorGradeValue,
                     )[0],
                   );
               }
@@ -351,9 +407,9 @@ export class LineFormComponent implements OnInit {
       videos: this.line.videos,
       type: this.line.type,
       scale: this.line.gradeScale,
-      grade: this.line.gradeValue,
+      grade: this.line.authorGradeValue,
       color: this.line.color,
-      rating: this.line.rating,
+      rating: this.line.authorRating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faName: this.line.faName,
       startingPosition: this.line.startingPosition,
@@ -427,9 +483,9 @@ export class LineFormComponent implements OnInit {
       line.color = this.lineForm.get('color').value;
       line.videos = this.lineForm.get('videos').value;
       line.type = this.lineForm.get('type').value;
-      line.gradeValue = this.lineForm.get('grade').value;
+      line.authorGradeValue = this.lineForm.get('grade').value;
       line.gradeScale = this.lineForm.get('scale').value;
-      line.rating = this.lineForm.get('rating').value;
+      line.authorRating = this.lineForm.get('rating').value;
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
         : null;
@@ -543,6 +599,14 @@ export class LineFormComponent implements OnInit {
    */
   public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
+  }
+
+  public getDisplayUserGradesRatings() {
+    return this.store.pipe(
+      select(selectInstanceSettingsState),
+      take(1),
+      map((instanceSettings) => instanceSettings.displayUserGradesRatings),
+    );
   }
 
   protected readonly LineType = LineType;

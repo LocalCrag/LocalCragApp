@@ -353,10 +353,11 @@ def fill_db_with_sample_data():
     line.description = "<p>Eine normale Treppe.</p>"
     line.type = LineTypeEnum.BOULDER
     line.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    line.rating = 1
-    line.grade_name = "1"
+    line.author_rating = 1
+    line.user_rating = 1
     line.grade_scale = "FB"
-    line.grade_value = 1
+    line.author_grade_value = 1
+    line.user_grade_value = 1
     line.starting_position = StartingPositionEnum.STAND
     db.session.add(line)
 
@@ -365,12 +366,13 @@ def fill_db_with_sample_data():
     line.description = "<p>Geiler Kühlschrankboulder!</p>"
     line.type = LineTypeEnum.BOULDER
     line.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    line.rating = 5
+    line.author_rating = 5
+    line.user_rating = 3
     line.fa_year = 2024
     line.fa_name = "Felix Engelmann"
-    line.grade_name = "8A"
     line.grade_scale = "FB"
-    line.grade_value = 22
+    line.author_grade_value = 22
+    line.user_grade_value = 22
     line.starting_position = StartingPositionEnum.SIT
     line.no_topout = True
     line.overhang = True

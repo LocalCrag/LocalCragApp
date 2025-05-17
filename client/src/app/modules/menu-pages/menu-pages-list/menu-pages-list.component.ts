@@ -15,7 +15,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { environment } from '../../../../environments/environment';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
-import { SharedModule } from '../../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Select } from 'primeng/select';
@@ -30,7 +29,6 @@ import { Message } from 'primeng/message';
     DataViewModule,
     NgForOf,
     RouterLink,
-    SharedModule,
     TranslocoDirective,
     FormsModule,
     NgClass,

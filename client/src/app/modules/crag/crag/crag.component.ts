@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
-import { TranslocoService } from '@jsverse/transloco';
+import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, of } from 'rxjs';
@@ -13,12 +18,32 @@ import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Card } from 'primeng/card';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { NgIf } from '@angular/common';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
-  standalone: false,
+  imports: [
+    Card,
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    NgIf,
+    Breadcrumb,
+    Tabs,
+    SetActiveTabDirective,
+    TabList,
+    Tab,
+    RouterLink,
+    RouterOutlet,
+  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 @UntilDestroy()
 export class CragComponent implements OnInit {

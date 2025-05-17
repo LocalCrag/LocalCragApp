@@ -6,12 +6,21 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
@@ -31,6 +40,20 @@ import {
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
+import { Card } from 'primeng/card';
+import { NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { InputText } from 'primeng/inputtext';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { Checkbox } from 'primeng/checkbox';
+import { Select } from 'primeng/select';
+import { Message } from 'primeng/message';
+import { Button } from 'primeng/button';
+import { ConfirmPopup } from 'primeng/confirmpopup';
+import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 
 /**
  * Form component for creating and editing areas.
@@ -40,7 +63,27 @@ import { LineType } from '../../../enums/line-type';
   templateUrl: './area-form.component.html',
   styleUrls: ['./area-form.component.scss'],
   providers: [ConfirmationService],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    NgIf,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    InputText,
+    FormControlDirective,
+    IfErrorDirective,
+    Editor,
+    MapMarkerFormArrayComponent,
+    SingleImageUploadComponent,
+    Checkbox,
+    TranslocoPipe,
+    Select,
+    Message,
+    Button,
+    ConfirmPopup,
+    FormSkeletonComponent,
+  ],
 })
 @UntilDestroy()
 export class AreaFormComponent implements OnInit {

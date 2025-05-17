@@ -10,8 +10,8 @@ import { ScalesService } from '../../../../services/crud/scales.service';
 import { OrderList } from 'primeng/orderlist';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { SharedModule } from '../../shared.module';
 import { Button } from 'primeng/button';
+import { LineGradePipe } from '../../pipes/line-grade.pipe';
 
 /**
  * A component that shows an order list to order items by orderIndex.
@@ -21,15 +21,14 @@ import { Button } from 'primeng/button';
   selector: 'lc-order-items',
   templateUrl: './order-items.component.html',
   styleUrls: ['./order-items.component.scss'],
-  standalone: true,
   imports: [
     OrderList,
     TranslocoDirective,
     AsyncPipe,
-    SharedModule,
     TranslocoPipe,
     Button,
     NgIf,
+    LineGradePipe,
   ],
 })
 export class OrderItemsComponent {

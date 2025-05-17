@@ -7,7 +7,6 @@ import { Line } from '../../../models/line';
 
 @Pipe({
   name: 'entityLink',
-  standalone: true,
 })
 export class EntityLinkPipe implements PipeTransform {
   transform(value: any): string {

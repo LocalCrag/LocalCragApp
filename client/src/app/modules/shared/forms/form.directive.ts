@@ -7,7 +7,6 @@ import { FormService } from './form.service';
 @Directive({
   selector: '[lcForm]',
   providers: [FormService],
-  standalone: false,
 })
 export class FormDirective {
   constructor(private formService: FormService) {}

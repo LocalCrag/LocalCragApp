@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Store } from '@ngrx/store';
@@ -13,7 +13,7 @@ import { NavigationService } from '../../../services/core/navigation.service';
   selector: 'lc-not-found',
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.scss'],
-  standalone: false,
+  imports: [TranslocoDirective],
 })
 export class NotFoundComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;

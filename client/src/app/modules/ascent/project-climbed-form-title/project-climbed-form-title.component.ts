@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Line } from '../../../models/line';
-import { SharedModule } from '../../shared/shared.module';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 
 @Component({
   selector: 'lc-project-climbed-form-title',
-  imports: [SharedModule],
   templateUrl: './project-climbed-form-title.component.html',
   styleUrl: './project-climbed-form-title.component.scss',
+  imports: [LineGradePipe],
 })
 export class ProjectClimbedFormTitleComponent {
   public line: Line;

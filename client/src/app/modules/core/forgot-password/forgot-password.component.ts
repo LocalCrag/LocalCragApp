@@ -16,10 +16,12 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { SharedModule } from '../../shared/shared.module';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
 import { AsyncPipe } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 /**
  * A component that shows a form for requesting a reset password link per mail.
@@ -31,10 +33,13 @@ import { AsyncPipe } from '@angular/common';
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,
-    SharedModule,
     InputText,
     Button,
     AsyncPipe,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
 })
 export class ForgotPasswordComponent implements OnInit {

@@ -30,7 +30,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { CardModule } from 'primeng/card';
 import { NgClass, NgIf } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
-import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
@@ -40,6 +39,9 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { InputTextModule } from 'primeng/inputtext';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { Select } from 'primeng/select';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -47,7 +49,6 @@ import { Select } from 'primeng/select';
     CardModule,
     NgIf,
     PaginatorModule,
-    SharedModule,
     TranslocoDirective,
     ReactiveFormsModule,
     TranslocoPipe,
@@ -56,6 +57,10 @@ import { Select } from 'primeng/select';
     NgClass,
     InputTextModule,
     Select,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',

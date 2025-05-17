@@ -24,6 +24,8 @@ import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { highlightColor, textColor } from '../../../../utility/misc/color';
+import { Skeleton } from 'primeng/skeleton';
+import { NgIf } from '@angular/common';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -33,7 +35,7 @@ import { highlightColor, textColor } from '../../../../utility/misc/color';
   templateUrl: './topo-image.component.html',
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  imports: [Skeleton, NgIf],
 })
 @UntilDestroy()
 export class TopoImageComponent implements OnInit {

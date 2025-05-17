@@ -4,8 +4,7 @@ import {
   Pipe,
   PipeTransform,
 } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { Observable, timer } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { map, startWith, takeWhile } from 'rxjs/operators';
 import { differenceInMilliseconds } from 'date-fns';
 
@@ -15,18 +14,14 @@ import { differenceInMilliseconds } from 'date-fns';
 @Pipe({
   name: 'minutesRemaining',
   pure: false,
-  standalone: false,
 })
 export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
-  private async: AsyncPipe;
-
+  private subscription: Subscription | null = null;
   private isDestroyed = false;
   private value: Date;
-  private timer: Observable<string>;
+  private cachedResult: string;
 
-  constructor(ref: ChangeDetectorRef) {
-    this.async = new AsyncPipe(ref);
-  }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   /**
    * Transforms the given date to the wanted string.
@@ -34,7 +29,7 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    * @param obj The Date object to convert.
    * @returns Transformed string.
    */
-  public transform(obj: Date): any {
+  public transform(obj: Date): string {
     if (obj === null) {
       return '';
     }
@@ -43,20 +38,37 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
       throw new Error('MinutesRemainingPipe works only with Dates');
     }
 
-    this.value = obj;
+    if (this.value !== obj) {
+      this.value = obj;
+      this.cachedResult = '';
+      this.unsubscribe();
 
-    if (!this.timer) {
-      this.timer = this.getObservable();
+      const observable = this.getObservable();
+      this.subscription = observable.subscribe((result) => {
+        this.cachedResult = result;
+        this.cdr.markForCheck();
+      });
     }
 
-    return this.async.transform(this.timer);
+    return this.cachedResult || '';
   }
 
   /**
-   * Set's the destroyed state to true which will automatically stop the observable subscription.
+   * Cleans up the subscription when the pipe is destroyed.
    */
   public ngOnDestroy() {
     this.isDestroyed = true;
+    this.unsubscribe();
+  }
+
+  /**
+   * Unsubscribes from the current subscription.
+   */
+  private unsubscribe() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
   }
 
   /**
@@ -64,7 +76,7 @@ export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
    *
    * @returns TimerObservable.
    */
-  private getObservable() {
+  private getObservable(): Observable<string> {
     const initialDelay =
       differenceInMilliseconds(this.value, new Date()) % 60000;
     return timer(initialDelay, 60000).pipe(

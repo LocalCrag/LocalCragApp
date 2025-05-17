@@ -9,14 +9,12 @@ import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.com
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { LineModule } from '../line.module';
 import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
-import { SharedModule } from '../../shared/shared.module';
 import { Line } from '../../../models/line';
 import { LoadingState } from '../../../enums/loading-state';
 import { FormsModule } from '@angular/forms';
@@ -45,6 +43,11 @@ import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 
 @Component({
   selector: 'lc-line-list',
@@ -53,13 +56,11 @@ import { Message } from 'primeng/message';
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,
-    LineModule,
     NgForOf,
     NgIf,
     RatingModule,
     RouterLink,
     SecretSpotTagComponent,
-    SharedModule,
     TickButtonComponent,
     TranslocoDirective,
     NgClass,
@@ -76,6 +77,11 @@ import { Message } from 'primeng/message';
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
+    SanitizeHtmlPipe,
+    LineBoolPropListComponent,
+    LineGradePipe,
+    TopoImageComponent,
+    TranslateSpecialGradesPipe,
   ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',

@@ -7,7 +7,6 @@ import { logout } from 'src/app/ngrx/actions/auth.actions';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
@@ -21,7 +20,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
     ButtonModule,
     InputTextModule,
     ReactiveFormsModule,
-    SharedModule,
     TranslocoDirective,
     RouterLink,
   ],

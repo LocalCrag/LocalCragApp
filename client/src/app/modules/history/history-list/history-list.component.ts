@@ -14,7 +14,6 @@ import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
 import { HistoryItem } from '../../../models/history-item';
-import { SharedModule } from '../../shared/shared.module';
 import { HistoryItemType } from '../../../enums/history-item-type';
 import { ObjectType } from '../../../models/tag';
 import { Line } from '../../../models/line';
@@ -30,6 +29,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { DatePipe } from '../../shared/pipes/date.pipe';
 
 @Component({
   selector: 'lc-history-list',
@@ -40,12 +40,12 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
     TranslocoDirective,
     TimelineModule,
     ButtonModule,
-    SharedModule,
     AsyncPipe,
     NgClass,
     MessageModule,
     RouterLink,
     InfiniteScrollDirective,
+    DatePipe,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',

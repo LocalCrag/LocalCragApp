@@ -22,6 +22,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     maptilerApiKey = fields.String(attribute="maptiler_api_key")
     gymMode = fields.Boolean(attribute="gym_mode")
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
+    displayUserGradesRatings = fields.Boolean(attribute="display_user_grades_ratings")
 
 
 instance_settings_schema = InstanceSettingsSchema()

@@ -1,7 +1,5 @@
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { CoreModule } from './app/modules/core/core.module';
 import { environment } from './environments/environment';
 
 import Quill from 'quill';
@@ -10,6 +8,9 @@ import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import BlotFormatter from 'quill-blot-formatter';
 import * as Sentry from '@sentry/angular';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/modules/core/app.config';
+import { CoreComponent } from './app/modules/core/core.component';
 
 if (environment.production) {
   Sentry.init({
@@ -30,9 +31,9 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(CoreModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(CoreComponent, appConfig).catch((err) =>
+  console.error(err),
+);
 
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/blotFormatter', BlotFormatter);

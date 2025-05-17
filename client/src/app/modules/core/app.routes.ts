@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -72,7 +71,7 @@ import { isAdmin } from '../../guards/is-admin';
 import { ScaleListComponent } from '../scale/scale-list/scale-list.component';
 import { ScaleFormComponent } from '../scale/scale-form/scale-form.component';
 
-const routes: Routes = [
+export const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
@@ -855,9 +854,3 @@ const routes: Routes = [
     },
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
-  exports: [RouterModule],
-})
-export class CoreRoutingModule {}

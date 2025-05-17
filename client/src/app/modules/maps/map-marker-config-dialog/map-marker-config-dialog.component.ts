@@ -16,7 +16,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
 import { Editor, EditorModule } from 'primeng/editor';
@@ -34,12 +33,14 @@ import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Select } from 'primeng/select';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
   imports: [
     ReactiveFormsModule,
-    SharedModule,
     InputTextModule,
     TranslocoDirective,
     EditorModule,
@@ -50,6 +51,10 @@ import { Select } from 'primeng/select';
     ButtonModule,
     NgIf,
     Select,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './map-marker-config-dialog.component.html',
   styleUrl: './map-marker-config-dialog.component.scss',

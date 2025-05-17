@@ -25,9 +25,11 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { Editor, EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -42,8 +44,11 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
     InputTextModule,
     NgIf,
     ReactiveFormsModule,
-    SharedModule,
     TranslocoDirective,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.scss',

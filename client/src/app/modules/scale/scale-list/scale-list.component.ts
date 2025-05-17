@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -15,7 +11,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { RatingModule } from 'primeng/rating';
-import { SharedModule } from '../../shared/shared.module';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
@@ -34,7 +29,6 @@ import { Message } from 'primeng/message';
     ButtonModule,
     MenuModule,
     RatingModule,
-    SharedModule,
     TagModule,
     CardModule,
     TranslocoPipe,
@@ -50,7 +44,6 @@ export class ScaleListComponent implements OnInit {
 
   constructor(
     private scalesService: ScalesService,
-    private translocoService: TranslocoService,
     protected router: Router,
   ) {}
 

@@ -16,7 +16,6 @@ import { MenuItem } from 'primeng/api';
 
 @Directive({
   selector: '[lcSetActiveTab]',
-  standalone: true,
   exportAs: 'lcSetActiveTab',
 })
 export class SetActiveTabDirective implements OnInit, OnDestroy, OnChanges {

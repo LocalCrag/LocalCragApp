@@ -37,12 +37,13 @@ import { Crag } from '../../../models/crag';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
-import { SharedModule } from '../../shared/shared.module';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 
 @Component({
   selector: 'lc-todo-list',
@@ -66,11 +67,12 @@ import { Message } from 'primeng/message';
     TodoPriorityButtonComponent,
     TickButtonComponent,
     AsyncPipe,
-    SharedModule,
     Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
+    LineGradePipe,
+    TranslateSpecialGradesPipe,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

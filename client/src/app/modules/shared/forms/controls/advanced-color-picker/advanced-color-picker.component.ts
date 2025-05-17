@@ -22,8 +22,8 @@ import { Store } from '@ngrx/store';
 import { FormDirective } from '../../form.directive';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { ColorSquareComponent } from '../../../components/color-square/color-square.component';
-import { SharedModule } from '../../../shared.module';
 import { NgIf } from '@angular/common';
+import { FormControlDirective } from '../../form-control.directive';
 
 @Component({
   selector: 'lc-advanced-color-picker',
@@ -33,8 +33,9 @@ import { NgIf } from '@angular/common';
     ReactiveFormsModule,
     ColorSquareComponent,
     SelectButtonModule,
-    SharedModule,
     NgIf,
+    FormControlDirective,
+    FormDirective,
   ],
   templateUrl: './advanced-color-picker.component.html',
   styleUrl: './advanced-color-picker.component.scss',

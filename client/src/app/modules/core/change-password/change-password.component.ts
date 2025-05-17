@@ -23,10 +23,12 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Password } from 'primeng/password';
-import { SharedModule } from '../../shared/shared.module';
 import { Message } from 'primeng/message';
 import { NgIf } from '@angular/common';
 import { Button } from 'primeng/button';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 /**
  * A component that shows a form for changing the user's password.
@@ -36,15 +38,17 @@ import { Button } from 'primeng/button';
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     Password,
-    SharedModule,
     Message,
     NgIf,
     Button,
     TranslocoDirective,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
 })
 export class ChangePasswordComponent implements OnInit {

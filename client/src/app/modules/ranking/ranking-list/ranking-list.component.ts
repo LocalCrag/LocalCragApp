@@ -5,7 +5,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
 import { DataViewModule } from 'primeng/dataview';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
-import { SelectItem, SharedModule } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -26,7 +26,6 @@ import { Message } from 'primeng/message';
     DataViewModule,
     NgForOf,
     NgIf,
-    SharedModule,
     TranslocoDirective,
     NgClass,
     ButtonModule,

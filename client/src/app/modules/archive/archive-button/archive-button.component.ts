@@ -1,7 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
-import { SharedModule } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -15,14 +14,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-archive-button',
-  imports: [
-    ButtonModule,
-    NgIf,
-    SharedModule,
-    NgClass,
-    TranslocoDirective,
-    GymModeDirective,
-  ],
+  imports: [ButtonModule, NgIf, NgClass, TranslocoDirective, GymModeDirective],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
   encapsulation: ViewEncapsulation.None,

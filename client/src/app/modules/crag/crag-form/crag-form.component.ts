@@ -5,7 +5,12 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -17,7 +22,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
@@ -30,6 +39,18 @@ import {
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
+import { Card } from 'primeng/card';
+import { NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { InputText } from 'primeng/inputtext';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
+import { Checkbox } from 'primeng/checkbox';
+import { Select } from 'primeng/select';
+import { Button } from 'primeng/button';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 
 /**
  * A component for creating and editing crags.
@@ -39,7 +60,25 @@ import { LineType } from '../../../enums/line-type';
   templateUrl: './crag-form.component.html',
   styleUrls: ['./crag-form.component.scss'],
   providers: [ConfirmationService],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    NgIf,
+    ReactiveFormsModule,
+    ControlGroupDirective,
+    FormDirective,
+    InputText,
+    FormControlDirective,
+    IfErrorDirective,
+    Editor,
+    SingleImageUploadComponent,
+    MapMarkerFormArrayComponent,
+    Checkbox,
+    TranslocoPipe,
+    Select,
+    Button,
+    ConfirmPopup,
+  ],
 })
 @UntilDestroy()
 export class CragFormComponent implements OnInit {

@@ -9,7 +9,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
@@ -35,6 +34,11 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -42,7 +46,6 @@ import { Textarea } from 'primeng/textarea';
     EditorModule,
     InputTextModule,
     ReactiveFormsModule,
-    SharedModule,
     CheckboxModule,
     ButtonModule,
     ConfirmPopupModule,
@@ -56,6 +59,11 @@ import { Textarea } from 'primeng/textarea';
     MessageModule,
     Select,
     Textarea,
+    TranslateSpecialGradesPipe,
+    IfErrorDirective,
+    FormControlDirective,
+    ControlGroupDirective,
+    FormDirective,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
@@ -109,21 +117,29 @@ export class AscentFormComponent implements OnInit {
       this.editMode = true;
       this.setFormValue();
     } else {
-      this.scalesService
-        .gradeNameByValue(
-          this.line.type,
-          this.line.gradeScale,
-          this.line.gradeValue,
-        )
-        .subscribe((gradeName) => {
-          this.ascentForm.patchValue({
-            grade: {
-              name: gradeName,
-              value: this.line.gradeValue,
-            },
-          });
-          this.ascentForm.enable();
-        });
+      this.store
+        .select(selectInstanceSettingsState)
+        .subscribe((instanceSettings) =>
+          this.scalesService
+            .gradeNameByValue(
+              this.line.type,
+              this.line.gradeScale,
+              instanceSettings.displayUserGradesRatings
+                ? this.line.userGradeValue
+                : this.line.authorGradeValue,
+            )
+            .subscribe((gradeName) => {
+              this.ascentForm.patchValue({
+                grade: {
+                  name: gradeName,
+                  value: instanceSettings.displayUserGradesRatings
+                    ? this.line.userGradeValue
+                    : this.line.authorGradeValue,
+                },
+              });
+              this.ascentForm.enable();
+            }),
+        );
     }
   }
 
@@ -162,13 +178,21 @@ export class AscentFormComponent implements OnInit {
       .subscribe(() => {
         this.ascentForm.get('soft').setValue(false);
       });
-    this.ascentForm
-      .get('grade')
-      .valueChanges.pipe(untilDestroyed(this))
-      .subscribe((newGrade: number) => {
-        this.gradeDifferenceWarning =
-          Math.abs(this.line.gradeValue - newGrade) >= 3;
-      });
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) =>
+        this.ascentForm
+          .get('grade')
+          .valueChanges.pipe(untilDestroyed(this))
+          .subscribe((newGrade: number) => {
+            this.gradeDifferenceWarning =
+              Math.abs(
+                (instanceSettings.displayUserGradesRatings
+                  ? this.line.userGradeValue
+                  : this.line.authorGradeValue) - newGrade,
+              ) >= 3;
+          }),
+      );
   }
 
   private setFormValue() {
