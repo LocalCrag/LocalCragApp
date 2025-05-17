@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 /**
  * Component that displays region rules.
  */
 @Component({
   selector: 'lc-region-rules',
-  imports: [NgIf, SharedModule, SkeletonModule],
+  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })

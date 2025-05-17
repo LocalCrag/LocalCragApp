@@ -16,7 +16,6 @@ import {
 } from '@angular/forms';
 import { Coordinates } from '../../../../../interfaces/coordinates.interface';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { SharedModule } from '../../../shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { latValidator } from '../../../../../utility/validators/lat.validator';
 import { lngValidator } from '../../../../../utility/validators/lng.validator';
@@ -25,17 +24,23 @@ import { FormDirective } from '../../form.directive';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../control-group.directive';
+import { FormControlDirective } from '../../form-control.directive';
+import { IfErrorDirective } from '../../if-error.directive';
 
 @Component({
   selector: 'lc-coordinates',
   imports: [
     TranslocoDirective,
-    SharedModule,
     InputTextModule,
     ReactiveFormsModule,
     ButtonModule,
     MessageModule,
     NgIf,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './coordinates.component.html',
   styleUrl: './coordinates.component.scss',

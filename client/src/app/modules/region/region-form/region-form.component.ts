@@ -24,10 +24,12 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
 import { CardModule } from 'primeng/card';
-import { SharedModule } from '../../shared/shared.module';
 import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 /**
  * A component for editing regions.
@@ -37,12 +39,15 @@ import { InputTextModule } from 'primeng/inputtext';
   imports: [
     CardModule,
     ReactiveFormsModule,
-    SharedModule,
     EditorModule,
     ButtonModule,
     NgIf,
     TranslocoDirective,
     InputTextModule,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './region-form.component.html',
   styleUrl: './region-form.component.scss',

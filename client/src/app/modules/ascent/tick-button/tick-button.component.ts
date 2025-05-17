@@ -1,7 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
-import { SharedModule } from 'primeng/api';
 import { Line } from '../../../models/line';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
@@ -14,7 +13,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 
 @Component({
   selector: 'lc-tick-button',
-  imports: [ButtonModule, NgIf, SharedModule, NgClass, TranslocoDirective],
+  imports: [ButtonModule, NgIf, NgClass, TranslocoDirective],
   templateUrl: './tick-button.component.html',
   styleUrl: './tick-button.component.scss',
   providers: [DialogService],

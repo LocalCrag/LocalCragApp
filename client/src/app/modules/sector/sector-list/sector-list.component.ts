@@ -21,12 +21,12 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
-import { SharedModule } from '../../shared/shared.module';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 /**
  * Component that displays a list of sectors.
@@ -48,13 +48,13 @@ import { LeveledGradeDistributionComponent } from '../../shared/components/level
     NgForOf,
     NgClass,
     ArchiveButtonComponent,
-    SharedModule,
     AscentCountComponent,
     ClosedSpotTagComponent,
     SecretSpotTagComponent,
     TranslocoDirective,
     Message,
     LeveledGradeDistributionComponent,
+    SanitizeHtmlPipe,
   ],
 })
 @UntilDestroy()

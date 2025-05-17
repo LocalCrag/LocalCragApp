@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
-import { TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
+import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
@@ -15,12 +20,32 @@ import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Card } from 'primeng/card';
+import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
+import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { NgIf } from '@angular/common';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 
 @Component({
   selector: 'lc-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
-  standalone: false,
+  imports: [
+    Card,
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    NgIf,
+    Breadcrumb,
+    Tabs,
+    SetActiveTabDirective,
+    TabList,
+    Tab,
+    RouterLink,
+    RouterOutlet,
+  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
 @UntilDestroy()
 export class SectorComponent implements OnInit {

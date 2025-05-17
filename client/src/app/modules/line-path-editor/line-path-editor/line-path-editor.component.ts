@@ -13,6 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NgIf } from '@angular/common';
+import { Button } from 'primeng/button';
 
 /**
  * Form component for drawing a line path.
@@ -29,7 +32,7 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  imports: [TranslocoDirective, TopoImageComponent, NgIf, Button],
 })
 export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;

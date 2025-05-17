@@ -11,7 +11,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { SharedModule } from '../../shared/shared.module';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { of } from 'rxjs';
@@ -24,7 +24,7 @@ import { map } from 'rxjs/operators';
     NgIf,
     TranslocoDirective,
     RouterLink,
-    SharedModule,
+    LineGradePipe,
     AsyncPipe,
   ],
   templateUrl: './searchable.component.html',

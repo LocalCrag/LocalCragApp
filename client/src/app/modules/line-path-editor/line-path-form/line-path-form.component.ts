@@ -1,6 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,10 +18,22 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { forkJoin } from 'rxjs';
 import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
 import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { Card } from 'primeng/card';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { Select } from 'primeng/select';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { Button } from 'primeng/button';
 
 /**
  * Form for line paths.
@@ -25,7 +42,21 @@ import { ScalesService } from '../../../services/crud/scales.service';
   selector: 'lc-line-path-form',
   templateUrl: './line-path-form.component.html',
   styleUrls: ['./line-path-form.component.scss'],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    Select,
+    FormControlDirective,
+    GymModeDirective,
+    LineGradePipe,
+    IfErrorDirective,
+    LinePathEditorComponent,
+    Button,
+  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
 export class LinePathFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

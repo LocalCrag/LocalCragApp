@@ -1,11 +1,6 @@
-import time
-
-from flask import current_app
-
 from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
-from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.user import User
 from util.voting import update_grades_and_rating

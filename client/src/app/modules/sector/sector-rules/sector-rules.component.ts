@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 /**
  * Component that displays sector rules.
  */
 @Component({
   selector: 'lc-sector-rules',
-  imports: [NgIf, SharedModule, SkeletonModule],
+  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './sector-rules.component.html',
   styleUrl: './sector-rules.component.scss',
 })

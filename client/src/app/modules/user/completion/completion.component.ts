@@ -23,15 +23,14 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { SharedModule } from '../../shared/shared.module';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 
 @Component({
   selector: 'lc-completion',
   imports: [
     ProgressBarModule,
-    SharedModule,
     NgIf,
     CompletionProgressBarComponent,
     AccordionModule,
@@ -44,6 +43,7 @@ import { Message } from 'primeng/message';
     AsyncPipe,
     Select,
     Message,
+    TranslateSpecialGradesPipe,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',

@@ -1,10 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, map, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
@@ -32,6 +42,25 @@ import { Area } from '../../../models/area';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Scale } from '../../../models/scale';
+import { Card } from 'primeng/card';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { InputText } from 'primeng/inputtext';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { Select } from 'primeng/select';
+import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { Rating } from 'primeng/rating';
+import { AsFormArrayPipe } from '../../shared/pipes/as-form-array.pipe';
+import { AsFormGroupPipe } from '../../shared/pipes/as-form-group.pipe';
+import { Button } from 'primeng/button';
+import { DatePicker } from 'primeng/datepicker';
+import { Checkbox } from 'primeng/checkbox';
+import { Message } from 'primeng/message';
+import { ConfirmPopup } from 'primeng/confirmpopup';
+import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 
 /**
  * Form component for lines.
@@ -41,7 +70,34 @@ import { Scale } from '../../../models/scale';
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    NgIf,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    InputText,
+    FormControlDirective,
+    IfErrorDirective,
+    Editor,
+    AdvancedColorPickerComponent,
+    GymModeDirective,
+    Select,
+    TranslateSpecialGradesPipe,
+    TranslocoPipe,
+    Rating,
+    AsFormArrayPipe,
+    AsFormGroupPipe,
+    NgForOf,
+    Button,
+    DatePicker,
+    Checkbox,
+    Message,
+    ConfirmPopup,
+    FormSkeletonComponent,
+    AsyncPipe,
+  ],
 })
 @UntilDestroy()
 export class LineFormComponent implements OnInit {

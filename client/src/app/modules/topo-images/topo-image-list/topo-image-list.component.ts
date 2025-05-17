@@ -4,7 +4,11 @@ import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
@@ -34,14 +38,15 @@ import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
-import { SharedModule } from '../../shared/shared.module';
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
-import { LineModule } from '../../line/line.module';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { Rating } from 'primeng/rating';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 
 /**
  * Component that lists all topo images in an area.
@@ -50,7 +55,11 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
   selector: 'lc-topo-image-list',
   templateUrl: './topo-image-list.component.html',
   styleUrls: ['./topo-image-list.component.scss'],
-  providers: [ConfirmationService, DialogService],
+  providers: [
+    ConfirmationService,
+    DialogService,
+    { provide: TRANSLOCO_SCOPE, useValue: 'topoImage' },
+  ],
   encapsulation: ViewEncapsulation.None,
   imports: [
     TranslocoDirective,
@@ -66,14 +75,15 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
     TopoImageListSkeletonComponent,
     NgForOf,
     NgClass,
-    SharedModule,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,
-    LineModule,
     ClosedSpotTagComponent,
     Rating,
     TickButtonComponent,
     ConfirmPopup,
+    LineBoolPropListComponent,
+    LineGradePipe,
+    TopoImageComponent,
   ],
 })
 @UntilDestroy()

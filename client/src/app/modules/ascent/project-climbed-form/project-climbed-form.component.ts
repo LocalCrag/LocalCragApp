@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
 import {
   FormBuilder,
   FormGroup,
@@ -18,17 +17,23 @@ import { AscentsService } from '../../../services/crud/ascents.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Textarea } from 'primeng/textarea';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-project-climbed-form',
   imports: [
-    SharedModule,
     ReactiveFormsModule,
     DividerModule,
     ButtonModule,
     MessageModule,
     TranslocoDirective,
     Textarea,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './project-climbed-form.component.html',
   styleUrl: './project-climbed-form.component.scss',

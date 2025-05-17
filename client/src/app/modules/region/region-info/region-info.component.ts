@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { SharedModule } from '../../shared/shared.module';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Observable } from 'rxjs';
 import { Region } from '../../../models/region';
@@ -9,6 +8,7 @@ import { NgIf } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MapComponent } from '../../maps/map/map.component';
 import { GradeDistribution } from '../../../models/scale';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 /**
  * Component that shows information about a region.
@@ -17,11 +17,11 @@ import { GradeDistribution } from '../../../models/scale';
   selector: 'lc-region-info',
   imports: [
     GradeDistributionBarChartComponent,
-    SharedModule,
     SkeletonModule,
     NgIf,
     TranslocoDirective,
     MapComponent,
+    SanitizeHtmlPipe,
   ],
   templateUrl: './region-info.component.html',
   styleUrl: './region-info.component.scss',

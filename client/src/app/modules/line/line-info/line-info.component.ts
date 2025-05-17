@@ -16,18 +16,19 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
-import { SharedModule } from '../../shared/shared.module';
 import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { LineModule } from '../line.module';
 import { Rating } from 'primeng/rating';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { FormsModule } from '@angular/forms';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { Skeleton } from 'primeng/skeleton';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
+import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -43,19 +44,20 @@ import { ScalesService } from '../../../services/crud/scales.service';
   imports: [
     ClosedSpotAlertComponent,
     TranslocoDirective,
-    SharedModule,
     NgIf,
     TopoImageDetailsComponent,
     Button,
     HasPermissionDirective,
     NgForOf,
-    LineModule,
     Rating,
     ArchiveButtonComponent,
     TodoButtonComponent,
     FormsModule,
     TickButtonComponent,
     Skeleton,
+    SanitizeHtmlPipe,
+    LineBoolPropListComponent,
+    TopoImageComponent,
     AsyncPipe,
   ],
 })

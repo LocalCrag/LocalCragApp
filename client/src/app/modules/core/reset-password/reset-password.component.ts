@@ -6,7 +6,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,15 +26,34 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
 import { passwordsValidator } from '../../../utility/validators/passwords.validator';
 import { Title } from '@angular/platform-browser';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { Password } from 'primeng/password';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { Message } from 'primeng/message';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    Password,
+    FormControlDirective,
+    IfErrorDirective,
+    Message,
+    NgIf,
+    Button,
+    AsyncPipe,
+  ],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   @HostBinding('class.auth-view') authView: boolean = true;

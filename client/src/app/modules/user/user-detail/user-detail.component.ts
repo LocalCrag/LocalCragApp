@@ -8,7 +8,7 @@ import {
   RouterLink,
   RouterOutlet,
 } from '@angular/router';
-import { MenuItem, SharedModule } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -27,7 +27,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
     CardModule,
     NgIf,
     RouterOutlet,
-    SharedModule,
     AvatarModule,
     SetActiveTabDirective,
     Tab,

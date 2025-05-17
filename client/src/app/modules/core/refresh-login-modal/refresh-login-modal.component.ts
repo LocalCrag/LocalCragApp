@@ -9,7 +9,12 @@ import {
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Observable } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import {
@@ -20,6 +25,14 @@ import {
 } from '../../../ngrx/selectors/auth.selectors';
 import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { Dialog } from 'primeng/dialog';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { Password } from 'primeng/password';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { Button } from 'primeng/button';
 
 /**
  * A modal for refreshing the current refresh token by performing a new login.
@@ -29,7 +42,19 @@ import { login, logout } from '../../../ngrx/actions/auth.actions';
   templateUrl: './refresh-login-modal.component.html',
   styleUrls: ['./refresh-login-modal.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Dialog,
+    NgIf,
+    ReactiveFormsModule,
+    FormDirective,
+    ControlGroupDirective,
+    Password,
+    FormControlDirective,
+    IfErrorDirective,
+    Button,
+    AsyncPipe,
+  ],
 })
 export class RefreshLoginModalComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

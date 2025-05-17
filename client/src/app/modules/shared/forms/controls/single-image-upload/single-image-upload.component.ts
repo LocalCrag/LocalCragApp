@@ -19,6 +19,11 @@ import { File } from '../../../../../models/file';
 import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NgIf } from '@angular/common';
+import { ProgressBar } from 'primeng/progressbar';
+import { Image } from 'primeng/image';
+import { Button } from 'primeng/button';
 
 /**
  * A media upload component.
@@ -35,7 +40,7 @@ import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/insta
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  standalone: false,
+  imports: [TranslocoDirective, FileUpload, NgIf, ProgressBar, Image, Button],
 })
 export class SingleImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy

@@ -6,11 +6,20 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -20,6 +29,15 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Card } from 'primeng/card';
+import { NgIf } from '@angular/common';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { InputText } from 'primeng/inputtext';
+import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { Button } from 'primeng/button';
 
 /**
  * Component for uploading topo images.
@@ -28,7 +46,22 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-topo-image-form',
   templateUrl: './topo-image-form.component.html',
   styleUrls: ['./topo-image-form.component.scss'],
-  standalone: false,
+  imports: [
+    TranslocoDirective,
+    Card,
+    ReactiveFormsModule,
+    NgIf,
+    SingleImageUploadComponent,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
+    InputText,
+    Editor,
+    CoordinatesComponent,
+    Button,
+  ],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;

@@ -9,7 +9,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
 import { FormDirective } from '../../shared/forms/form.directive';
@@ -26,6 +25,9 @@ import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
 import { MessageModule } from 'primeng/message';
 import { emailsValidator } from '../../../utility/validators/emails.validator';
+import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
 @Component({
   selector: 'lc-register',
@@ -34,11 +36,14 @@ import { emailsValidator } from '../../../utility/validators/emails.validator';
     InputTextModule,
     PasswordModule,
     ReactiveFormsModule,
-    SharedModule,
     TranslocoDirective,
     RouterLink,
     MessageModule,
     NgIf,
+    FormDirective,
+    ControlGroupDirective,
+    FormControlDirective,
+    IfErrorDirective,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',

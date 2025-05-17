@@ -6,7 +6,6 @@ import { selectGymMode } from '../../../ngrx/selectors/instance-settings.selecto
   selector:
     // eslint-disable-next-line  @angular-eslint/directive-selector
     '[isGymMode]',
-  standalone: true,
 })
 export class GymModeDirective {
   constructor(
