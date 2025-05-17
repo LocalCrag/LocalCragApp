@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.3...v1.17.0) (2025-05-17)
+
+
+### Features
+
+* **ascents:** ascents can influence the line grade ([#654](https://github.com/LocalCrag/LocalCragApp/issues/654)) ([156081d](https://github.com/LocalCrag/LocalCragApp/commit/156081d2fc4c25cd6c03d75f7c98d6c5024c8f40)), closes [#653](https://github.com/LocalCrag/LocalCragApp/issues/653)
+
 ## [1.16.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.2...v1.16.3) (2025-04-15)
 
 
