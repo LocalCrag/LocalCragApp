@@ -16,6 +16,7 @@ from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -168,9 +169,14 @@ class GetCragGrades(MethodView):
         """
         Returns the grades of all lines of a crag.
         """
+        instance_settings = InstanceSettings.return_it()
         crag_id = Crag.get_id_by_slug(crag_slug)
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
+            db.session.query(
+                Line.type,
+                Line.grade_scale,
+                Line.user_grade_value if instance_settings.display_user_grades_ratings else Line.author_grade_value,
+            )
             .join(Area)
             .join(Sector)
             .filter(Sector.crag_id == crag_id, Line.archived.is_(False))

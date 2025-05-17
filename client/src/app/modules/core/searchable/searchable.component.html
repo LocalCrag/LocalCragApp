@@ -9,13 +9,13 @@
     [routerLink]="searchable.line.routerLink"
   >
     <div class="grade-circle">
-      <ng-container *ngIf="searchable.line.gradeValue > 0">{{
+      <ng-container *ngIf="(lineGradeValue() | async) > 0">{{
         searchable.line | lineGrade
       }}</ng-container>
-      <ng-container *ngIf="searchable.line.gradeValue === 0">{{
+      <ng-container *ngIf="(lineGradeValue() | async) === 0">{{
         t("gradeCircleNotGraded")
       }}</ng-container>
-      <ng-container *ngIf="searchable.line.gradeValue < 0">{{
+      <ng-container *ngIf="(lineGradeValue() | async) < 0">{{
         t("gradeCircleProject")
       }}</ng-container>
     </div>

@@ -4,6 +4,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from extensions import db
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.ranking import Ranking
 from models.user import User
@@ -63,6 +64,7 @@ class UserRankingMap:
 
 def build_rankings():
     print("Starting ranking calculation...")
+    instance_settings = InstanceSettings.return_it()
     users = User.return_all()
     for user in users:
         # Build ranking map
@@ -90,7 +92,11 @@ def build_rankings():
                     line: Line = ascent.line
                     if not secret and line.secret:
                         continue
-                    ascent_value = line.grade_value
+                    ascent_value = (
+                        line.user_grade_value
+                        if instance_settings.display_user_grades_ratings
+                        else line.author_grade_value
+                    )
                     global_ranking = ranking_map.get_global(line.type, secret)
                     crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id, secret)
                     sector_ranking = ranking_map.get_sector(line.type, ascent.sector_id, secret)

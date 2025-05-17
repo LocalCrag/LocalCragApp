@@ -96,6 +96,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
       skippedHierarchicalLayers: [null],
+      displayUserGradesRatings: [null],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -119,6 +120,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       gymMode: this.instanceSettings.gymMode,
       skippedHierarchicalLayers:
         this.instanceSettings.skippedHierarchicalLayers,
+      displayUserGradesRatings: this.instanceSettings.displayUserGradesRatings,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -145,6 +147,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
+      instanceSettings.displayUserGradesRatings = this.instanceSettingsForm.get(
+        'displayUserGradesRatings',
+      ).value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

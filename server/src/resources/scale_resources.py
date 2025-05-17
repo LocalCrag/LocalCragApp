@@ -74,7 +74,7 @@ class UpdateScale(MethodView):
         # All values set on lines must still be there
         values = {s["value"] for s in scale_data["grades"]}
         for line in lines:
-            if line.grade_value not in values:
+            if line.author_grade_value not in values or line.user_grade_value not in values:
                 raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
         # All values used in the grade brackets must be in the grades

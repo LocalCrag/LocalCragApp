@@ -44,6 +44,16 @@
         class="quill-content line-description"
       ></div>
       <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
+      <div *ngIf="line.ascentCount > 0 && displayUserRating === false">
+        {{ t("userGrade") }}:
+        {{
+          scalesService.gradeNameByValue(
+            line.type,
+            line.gradeScale,
+            line.userGradeValue
+          ) | async
+        }}
+      </div>
       <div *ngIf="line.videos?.length > 0">
         {{ t("videoBeta") }}:
         <span class="link-list">
@@ -54,7 +64,10 @@
       </div>
       <div>
         {{ t("rating") }}:
-        <p-rating [ngModel]="line.rating" [readonly]="true"></p-rating>
+        <p-rating
+          [ngModel]="displayUserRating ? line.userRating : line.authorRating"
+          [readonly]="true"
+        ></p-rating>
       </div>
       <div *ngIf="line.faName || line.faYear" class="fa">
         {{ t("FA") }} <span *ngIf="line.faYear">{{ line.faYear }}</span

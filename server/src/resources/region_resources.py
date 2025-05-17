@@ -11,6 +11,7 @@ from marshmallow_schemas.region_schema import region_schema
 from models.area import Area
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.region import Region
 from models.sector import Sector
@@ -54,8 +55,13 @@ class GetRegionGrades(MethodView):
         """
         Returns the grades of all lines of the region.
         """
+        instance_settings = InstanceSettings.return_it()
         query = (
-            db.session.query(Line.type, Line.grade_scale, Line.grade_value)
+            db.session.query(
+                Line.type,
+                Line.grade_scale,
+                Line.user_grade_value if instance_settings.display_user_grades_ratings else Line.author_grade_value,
+            )
             .join(Area)
             .join(Sector)
             .join(Crag)

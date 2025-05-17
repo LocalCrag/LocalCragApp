@@ -17,7 +17,7 @@ import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { SharedModule } from '../../shared/shared.module';
-import { NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -28,6 +28,9 @@ import { TodoButtonComponent } from '../../todo/todo-button/todo-button.componen
 import { FormsModule } from '@angular/forms';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { Skeleton } from 'primeng/skeleton';
+import { Store } from '@ngrx/store';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { ScalesService } from '../../../services/crud/scales.service';
 
 /**
  * Component that shows detailed information about a line.
@@ -53,6 +56,7 @@ import { Skeleton } from 'primeng/skeleton';
     FormsModule,
     TickButtonComponent,
     Skeleton,
+    AsyncPipe,
   ],
 })
 @UntilDestroy()
@@ -61,6 +65,7 @@ export class LineInfoComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
   public ticks: Set<string>;
   public todos: Set<string>;
+  public displayUserRating?: boolean = undefined;
 
   private lineSlug: string;
 
@@ -73,6 +78,8 @@ export class LineInfoComponent implements OnInit {
     private dialogService: DialogService,
     private linePathsService: LinePathsService,
     private linesService: LinesService,
+    protected scalesService: ScalesService,
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -85,6 +92,11 @@ export class LineInfoComponent implements OnInit {
       .pipe(ofType(reloadAfterAscent, todoAdded), untilDestroyed(this))
       .subscribe(() => {
         this.refreshData();
+      });
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        this.displayUserRating = instanceSettings.displayUserGradesRatings;
       });
   }
 
