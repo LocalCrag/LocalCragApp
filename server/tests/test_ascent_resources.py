@@ -8,6 +8,7 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.user import User
+from util.voting import update_grades_and_rating
 
 
 def test_successful_create_ascent(client, member_token):
@@ -312,7 +313,7 @@ def test_grade_ranking_votes(client, user_token):
     ascent_data = {
         "flash": True,
         "fa": False,
-        "soft": True,
+        "soft": False,
         "hard": False,
         "withKneepad": True,
         "rating": 5,
@@ -326,7 +327,7 @@ def test_grade_ranking_votes(client, user_token):
     rv = client.post("/api/ascents", token=user_token, json=ascent_data)
     assert 200 <= rv.status_code < 300
 
-    time.sleep(0.1)  # wait for async update
+    update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
     assert line.author_grade_value == 1
@@ -335,13 +336,13 @@ def test_grade_ranking_votes(client, user_token):
     assert line.user_rating == 5
 
 
-def test_grade_ranking_votes_value(client, user_token, member_token, admin_token):
+def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_token):
     line_id = Line.get_id_by_slug("treppe")
 
     ascent_data = {
         "flash": True,
         "fa": False,
-        "soft": True,
+        "soft": False,
         "hard": False,
         "withKneepad": True,
         "rating": 5,
@@ -359,7 +360,7 @@ def test_grade_ranking_votes_value(client, user_token, member_token, admin_token
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
     assert 200 <= rv.status_code < 300
 
-    time.sleep(0.1)  # wait for async update
+    update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
     assert line.author_grade_value == 1
