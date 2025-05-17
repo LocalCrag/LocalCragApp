@@ -2,8 +2,8 @@ from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
 from models.line import Line
-from models.scale import GRADES
 from models.user import User
+from util.voting import update_grades_and_rating
 
 
 def test_successful_create_ascent(client, member_token):
@@ -225,10 +225,10 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "name": "Es",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
-        "gradeValue": -1,
+        "authorGradeValue": -1,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "rating": 5,
+        "authorRating": 5,
         "faYear": 2016,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
@@ -300,3 +300,65 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
 
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
     assert rv.status_code == 404
+
+
+def test_grade_ranking_votes(client, user_token):
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 22,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 22
+    assert line.author_rating == 1
+    assert line.user_rating == 5
+
+
+def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_token):
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 11,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 11
+    assert line.author_rating == 1
+    assert line.user_rating == 5

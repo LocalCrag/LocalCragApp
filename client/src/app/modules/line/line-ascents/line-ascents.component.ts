@@ -3,11 +3,14 @@ import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.compon
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectInstanceName,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
@@ -35,30 +38,33 @@ export class LineAscentsComponent implements OnInit {
   ngOnInit() {
     const lineSlug =
       this.route.snapshot.parent.parent.paramMap.get('line-slug');
-    this.linesService
-      .getLine(lineSlug)
-      .pipe(
+    forkJoin([
+      this.linesService.getLine(lineSlug).pipe(
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
           }
           return of(e);
         }),
-      )
-      .subscribe((line) => {
-        this.line = line;
-        forkJoin([
-          this.store.select(selectInstanceName),
-          this.scalesService.gradeNameByValue(
-            line.type,
-            line.gradeScale,
-            line.gradeValue,
-          ),
-        ]).subscribe(([instanceName, gradeName]) => {
-          this.title.setTitle(
-            `${line.name} ${line.gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
-          );
-        });
+      ),
+      this.store.pipe(select(selectInstanceSettingsState), take(1)),
+    ]).subscribe(([line, instanceSettings]) => {
+      this.line = line;
+      const gradeValue = instanceSettings.displayUserGradesRatings
+        ? line.userGradeValue
+        : line.authorGradeValue;
+      forkJoin([
+        this.store.select(selectInstanceName),
+        this.scalesService.gradeNameByValue(
+          line.type,
+          line.gradeScale,
+          gradeValue,
+        ),
+      ]).subscribe(([instanceName, gradeName]) => {
+        this.title.setTitle(
+          `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
+        );
       });
+    });
   }
 }

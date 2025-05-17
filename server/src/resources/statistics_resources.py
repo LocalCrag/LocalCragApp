@@ -7,6 +7,7 @@ from extensions import db
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from util.secret_spots_auth import get_show_secret
@@ -19,7 +20,7 @@ class GetCompletion(MethodView):
         Get the number of lines and ascents for each crag, sector, and area for a user.
         Is used to build a "crag completion" page for a user.
         """
-
+        instance_settings = InstanceSettings.return_it()
         user_id = request.args.get("user_id")
         max_grade_value = request.args.get("max_grade") or None
         min_grade_value = request.args.get("min_grade") or None
@@ -45,14 +46,21 @@ class GetCompletion(MethodView):
             .join(Sector, Area.sector_id == Sector.id)
             .join(Crag, Sector.crag_id == Crag.id)
             .filter(
-                Line.grade_value >= 0, Line.archived.is_(False)
+                Line.author_grade_value >= 0, Line.archived.is_(False)
             )  # Don't include projects in progress or archived lines
             .distinct(Line.id)
         )
 
         # Filter lines for grades
         if min_grade_value is not None and max_grade_value is not None:
-            lines_query = lines_query.filter(Line.grade_value >= min_grade_value, Line.grade_value <= max_grade_value)
+            if instance_settings.display_user_grades_ratings:
+                lines_query = lines_query.filter(
+                    Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
+                )
+            else:
+                lines_query = lines_query.filter(
+                    Line.author_grade_value >= min_grade_value, Line.author_grade_value <= max_grade_value
+                )
 
         # Filter secret spots
         if not get_show_secret():
@@ -72,9 +80,14 @@ class GetCompletion(MethodView):
 
         # Filter ascents for grades
         if min_grade_value is not None and max_grade_value is not None:
-            ascents_query = ascents_query.join(Ascent.line).filter(
-                Line.grade_value >= min_grade_value, Line.grade_value <= max_grade_value
-            )
+            if instance_settings.display_user_grades_ratings:
+                ascents_query = ascents_query.join(Ascent.line).filter(
+                    Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
+                )
+            else:
+                ascents_query.join(Ascent.line).filter(
+                    Line.author_grade_value >= min_grade_value, Line.author_grade_value <= max_grade_value
+                )
 
         # Filter secret spots
         if not get_show_secret():

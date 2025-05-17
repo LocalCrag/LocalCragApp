@@ -11,6 +11,7 @@ from marshmallow_schemas.todo_schema import paginated_todos_schema, todo_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
@@ -58,6 +59,7 @@ class GetTodos(MethodView):
 
     @jwt_required()
     def get(self):
+        instance_settings = InstanceSettings.return_it()
         user = User.find_by_email(get_jwt_identity())
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
@@ -97,7 +99,12 @@ class GetTodos(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+            if instance_settings.display_user_grades_ratings:
+                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+            else:
+                query = query.filter(
+                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
+                )
 
         # Filter by priority
         if priority:
@@ -110,9 +117,12 @@ class GetTodos(MethodView):
         # Apply ordering
         order_function = None
         if order_by in {"grade_value"}:
-            order_function = getattr(getattr(Line, "grade_value"), order_direction)
+            if instance_settings.display_user_grades_ratings:
+                order_function = getattr(Line.user_grade_value, order_direction)
+            else:
+                order_function = getattr(Line.author_grade_value, order_direction)
         if order_by in {"time_created"}:
-            order_function = getattr(getattr(Todo, "time_created"), order_direction)
+            order_function = getattr(Todo.time_created, order_direction)
         # Order by To-do.id as a tie-breaker to prevent duplicate entries in paginate
         query = query.order_by(order_function(), Todo.id)
 

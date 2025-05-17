@@ -3,6 +3,9 @@ import { Line } from '../../../models/line';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { map, switchMap } from 'rxjs/operators';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Pipe({
   name: 'lineGrade',
@@ -16,6 +19,7 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
   constructor(
     private translateSpecialGradesService: TranslateSpecialGradesService,
     private scalesService: ScalesService,
+    private store: Store,
   ) {}
 
   transform(line?: Line): string {
@@ -28,10 +32,17 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
       }
 
       if (line) {
-        const observable = this.scalesService.gradeNameByValue(
-          line.type,
-          line.gradeScale,
-          line.gradeValue,
+        const observable = this.store.select(selectInstanceSettingsState).pipe(
+          map((instanceSettings) =>
+            this.scalesService.gradeNameByValue(
+              line?.type,
+              line?.gradeScale,
+              instanceSettings.displayUserGradesRatings
+                ? line?.userGradeValue
+                : line?.authorGradeValue,
+            ),
+          ),
+          switchMap((gradeNameObservable) => gradeNameObservable),
         );
 
         this.subscription = observable.subscribe((gradeName) => {

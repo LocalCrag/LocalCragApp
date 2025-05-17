@@ -16,6 +16,7 @@ from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.user import User
@@ -45,6 +46,8 @@ class GetLines(MethodView):
         """
         Returns all lines in a paginated manner.
         """
+        instance_settings = InstanceSettings.return_it()
+
         crag_slug = request.args.get("crag_slug")
         sector_slug = request.args.get("sector_slug")
         area_slug = request.args.get("area_slug")
@@ -81,7 +84,12 @@ class GetLines(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            query = query.filter(Line.grade_value <= max_grade_value, Line.grade_value >= min_grade_value)
+            if instance_settings.display_user_grades_ratings:
+                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+            else:
+                query = query.filter(
+                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
+                )
 
         # Filter secret spots
         if not get_show_secret():
@@ -89,6 +97,10 @@ class GetLines(MethodView):
 
         # Handle order
         if order_by and order_direction:
+            if order_by == "grade_value":
+                order_by = "user_grade_value" if instance_settings.display_user_grades_ratings else "author_grade_value"
+            elif order_by == "rating":
+                order_by = "user_rating" if instance_settings.display_user_grades_ratings else "author_rating"
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
@@ -122,7 +134,7 @@ class CreateLine(MethodView):
         line_data = parser.parse(line_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
+        if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
 
         new_line: Line = Line()
@@ -133,12 +145,14 @@ class CreateLine(MethodView):
         new_line.videos = line_data["videos"]
         new_line.type = line_data["type"]
         new_line.grade_scale = line_data["gradeScale"]
-        new_line.grade_value = line_data["gradeValue"]
+        new_line.author_grade_value = line_data["authorGradeValue"]
+        new_line.user_grade_value = line_data["authorGradeValue"]
         new_line.starting_position = line_data["startingPosition"]
-        new_line.rating = line_data["rating"]
+        new_line.author_rating = line_data["authorRating"]
+        new_line.user_rating = line_data["authorRating"]
         new_line.secret = line_data["secret"]
 
-        if new_line.grade_value >= 0:
+        if new_line.author_grade_value >= 0:
             new_line.fa_year = line_data["faYear"]
             new_line.fa_name = line_data["faName"]
         else:
@@ -206,7 +220,7 @@ class UpdateLine(MethodView):
         line_data = parser.parse(line_args, request)
         line: Line = Line.find_by_slug(line_slug)
 
-        if not cross_validate_grade(line_data["gradeValue"], line_data["gradeScale"], line_data["type"]):
+        if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
 
         line.name = line_data["name"].strip()
@@ -219,20 +233,20 @@ class UpdateLine(MethodView):
             HistoryItemTypeEnum.UPDATED,
             line,
             User.find_by_email(get_jwt_identity()),
-            old_value=line.grade_value,
-            new_value=line_data["gradeValue"],
+            old_value=line.author_grade_value,
+            new_value=line_data["authorGradeValue"],
             property_name="grade_value",
         )
-        line.grade_value = line_data["gradeValue"]
+        line.author_grade_value = line_data["authorGradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
-        line.rating = line_data["rating"]
+        line.author_rating = line_data["authorRating"]
         update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
         update_line_propagating_boolean_attr(
             line, line_data["closed"], "closed", set_additionally={"closed_reason": line_data["closedReason"]}
         )
 
-        if line.grade_value >= 0:
+        if line.author_grade_value >= 0:
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
         else:
