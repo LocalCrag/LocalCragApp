@@ -3,7 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -50,6 +52,8 @@ import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -91,13 +95,22 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @UntilDestroy()
-export class AscentListComponent implements OnInit {
+export class AscentListComponent implements OnInit, OnChanges {
   @Input() user: User;
   @Input() cragId: string;
   @Input() sectorId: string;
   @Input() areaId: string;
   @Input() lineId: string;
   @Input() disableGradeOrderAndFiltering = false;
+  /**
+   * If true, the component will not start loading ascents until the parent component
+   * sets the loading state to false. This is necessary as the parent needs to load e.g. the line to
+   * pass the id to the ascent list component.
+   */
+  @Input() parentLoading = false;
+
+  private parentLoading$ = new BehaviorSubject<boolean>(this.parentLoading);
+  private regionGradesLoaded$ = new BehaviorSubject<boolean>(false);
 
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
@@ -138,6 +151,12 @@ export class AscentListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['parentLoading']) {
+      this.parentLoading$.next(changes['parentLoading'].currentValue);
+    }
+  }
+
   ngOnInit() {
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
@@ -160,8 +179,23 @@ export class AscentListComponent implements OnInit {
       } else {
         this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
       }
-      this.selectScale(); // Calls loadFirstPage()
+      this.regionGradesLoaded$.next(true);
     });
+
+    // Call initial selectScale() (which loads th first page) only when both conditions are met:
+    // 1. parentLoading is false
+    // 2. regionGradesLoaded is true
+    combineLatest([this.parentLoading$, this.regionGradesLoaded$])
+      .pipe(
+        filter(
+          ([parentLoading, regionGradesLoaded]) =>
+            !parentLoading && regionGradesLoaded,
+        ),
+        take(1),
+      )
+      .subscribe(() => {
+        this.selectScale();
+      });
 
     this.orderOptions = [
       {
