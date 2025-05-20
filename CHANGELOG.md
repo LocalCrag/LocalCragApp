@@ -1,3 +1,16 @@
+## [1.17.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.17.0...v1.17.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* add back missing ratings in line list ([#697](https://github.com/LocalCrag/LocalCragApp/issues/697)) ([499087d](https://github.com/LocalCrag/LocalCragApp/commit/499087df91a9f6a8649e28807f7715b5c8296f6e))
+* ascents cannot be logged around midnight ([#696](https://github.com/LocalCrag/LocalCragApp/issues/696)) ([69bc54c](https://github.com/LocalCrag/LocalCragApp/commit/69bc54c6651c7ab975cc813fb074526ddb11f7ef))
+* **ascents:** ascent lists do not contain wrong data anymore ([#691](https://github.com/LocalCrag/LocalCragApp/issues/691)) ([be8ea49](https://github.com/LocalCrag/LocalCragApp/commit/be8ea49ecffd4769cad4d5d05f74d04a7458e02d)), closes [#687](https://github.com/LocalCrag/LocalCragApp/issues/687)
+* don't show gallery loading skeleton when no images are loading ([#694](https://github.com/LocalCrag/LocalCragApp/issues/694)) ([b4debe1](https://github.com/LocalCrag/LocalCragApp/commit/b4debe1a333d823bcd83c996df901c29770dc228)), closes [#680](https://github.com/LocalCrag/LocalCragApp/issues/680)
+* line form fa year is not initialized in edit mode ([#698](https://github.com/LocalCrag/LocalCragApp/issues/698)) ([639d84a](https://github.com/LocalCrag/LocalCragApp/commit/639d84a082ab9cd061af44e769fde81661f504a7))
+* make bar chart labels visible again ([#695](https://github.com/LocalCrag/LocalCragApp/issues/695)) ([02a9e00](https://github.com/LocalCrag/LocalCragApp/commit/02a9e00407adf4fc3357e536b206dc931c3a1ab6))
+* voting calculated wrong user grades ([#699](https://github.com/LocalCrag/LocalCragApp/issues/699)) ([1d9d6a1](https://github.com/LocalCrag/LocalCragApp/commit/1d9d6a1378d1fe5ed534176f8455855936aebb06))
+
 # [1.17.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.16.3...v1.17.0) (2025-05-17)
 
 
