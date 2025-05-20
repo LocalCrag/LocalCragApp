@@ -19,6 +19,10 @@ import { GradeDistribution } from '../../../../models/scale';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { LineType } from '../../../../enums/line-type';
 
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart } from 'chart.js';
+Chart.register(ChartDataLabels);
+
 type BarChartData = {
   lineType: LineType;
   gradeScale: string;
@@ -71,7 +75,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color-secondary');
+    const textColor = documentStyle.getPropertyValue('--p-text-color');
     this.options = {
       layout: {
         padding: {
