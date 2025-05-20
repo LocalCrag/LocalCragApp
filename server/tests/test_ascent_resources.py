@@ -362,3 +362,41 @@ def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_to
     assert line.user_grade_value == 11
     assert line.author_rating == 1
     assert line.user_rating == 5
+
+
+def test_grade_ranking_votes_multiple_2(client, user_token, member_token, admin_token, moderator_token):
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 16,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    ascent_data["hard"] = True
+
+    rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+    rv = client.post("/api/ascents", token=moderator_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 16
+    assert line.author_rating == 1
+    assert line.user_rating == 5
