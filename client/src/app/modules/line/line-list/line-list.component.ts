@@ -48,6 +48,7 @@ import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-line-list',
@@ -101,6 +102,7 @@ export class LineListComponent implements OnInit {
   public currentPage = 0;
   public ticks: Set<string> = new Set();
   public isTodo: Set<string> = new Set();
+  public displayUserRating?: boolean = undefined;
 
   public availableScales: SelectItem<
     { lineType: LineType; gradeScale: string } | undefined
@@ -182,6 +184,11 @@ export class LineListComponent implements OnInit {
     });
 
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
+    this.store
+      .select(selectInstanceSettingsState)
+      .subscribe((instanceSettings) => {
+        this.displayUserRating = instanceSettings.displayUserGradesRatings;
+      });
     this.orderOptions = [
       {
         label: this.translocoService.translate(marker('orderByGrade')),
