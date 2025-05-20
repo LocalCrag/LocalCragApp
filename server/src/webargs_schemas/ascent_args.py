@@ -19,9 +19,14 @@ ascent_args = {
     "gradeValue": fields.Integer(required=True),
     "rating": fields.Integer(required=True, allow_none=True),
     "comment": fields.Str(required=True, allow_none=True),
-    "year": fields.Integer(required=True, allow_none=True, validate=lambda year: year <= datetime.date.today().year),
+    "year": fields.Integer(
+        required=True, allow_none=True, validate=lambda year: year <= datetime.datetime.now(datetime.timezone.utc).year
+    ),
     "date": fields.Date(
-        required=True, allow_none=True, format="iso8601", validate=lambda date: date <= datetime.date.today()
+        required=True,
+        allow_none=True,
+        format="iso8601",
+        validate=lambda date: date <= datetime.datetime.now(datetime.timezone.utc).date(),
     ),
 }
 
