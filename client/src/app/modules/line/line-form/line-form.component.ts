@@ -122,7 +122,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
-  public today = new Date();
+  public today = new Date(new Date().getFullYear(), 11, 31);
   public parentSecret = false;
   public parentClosed = false;
 
