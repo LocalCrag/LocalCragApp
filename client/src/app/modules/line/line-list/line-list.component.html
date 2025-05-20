@@ -199,7 +199,9 @@
                     {{ line | lineGrade }}
                   </div>
                   <p-rating
-                    [ngModel]="line.rating"
+                    [ngModel]="
+                      displayUserRating ? line.userRating : line.authorRating
+                    "
                     [readonly]="true"
                     class="align-self-center md:align-self-end"
                   ></p-rating>
