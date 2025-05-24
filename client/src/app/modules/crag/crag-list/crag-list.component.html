@@ -6,12 +6,9 @@
     [sortOrder]="sortOrder"
   >
     <ng-template #emptymessage>
-      <p-message
-        severity="info"
-        icon="pi pi-info-circle"
-        class="m-4 mb-1 block"
-        >{{ t("noCragsFoundEmptyMessage") }}</p-message
-      >
+      <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block"
+        >{{ t("noCragsFoundEmptyMessage") }}
+      </p-message>
     </ng-template>
     <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
@@ -110,6 +107,13 @@
                 <div class="flex gap-1">
                   <lc-closed-spot-tag *ngIf="crag?.closed"></lc-closed-spot-tag>
                   <lc-secret-spot-tag *ngIf="crag?.secret"></lc-secret-spot-tag>
+                </div>
+                <div class="flex gap-1">
+                  <lc-closed-spot-alert
+                    class="mt-0"
+                    *ngIf="crag.closed"
+                    [reason]="crag.closedReason"
+                  ></lc-closed-spot-alert>
                 </div>
               </div>
             </div>
