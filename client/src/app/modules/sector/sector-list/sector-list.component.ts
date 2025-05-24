@@ -27,6 +27,7 @@ import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/
 import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 
 /**
  * Component that displays a list of sectors.
@@ -55,6 +56,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
     Message,
     LeveledGradeDistributionComponent,
     SanitizeHtmlPipe,
+    ClosedSpotAlertComponent,
   ],
 })
 @UntilDestroy()

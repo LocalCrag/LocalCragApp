@@ -10,7 +10,8 @@
         severity="info"
         icon="pi pi-info-circle"
         class="m-4 mb-1 block"
-        >{{ t("noSectorsFoundEmptyMessage") }}</p-message
+      >{{ t("noSectorsFoundEmptyMessage") }}
+      </p-message
       >
     </ng-template>
     <ng-template #header>
@@ -118,6 +119,13 @@
                   <lc-secret-spot-tag
                     *ngIf="sector.secret"
                   ></lc-secret-spot-tag>
+                </div>
+                <div class="flex gap-1">
+                  <lc-closed-spot-alert
+                    class="mt-0"
+                    *ngIf="sector.closed"
+                    [reason]="sector.closedReason"
+                  ></lc-closed-spot-alert>
                 </div>
               </div>
             </div>
