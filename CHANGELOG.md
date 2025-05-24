@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.17.1...v1.18.0) (2025-05-24)
+
+
+### Features
+
+* **topo:** add closed reason in list views ([#700](https://github.com/LocalCrag/LocalCragApp/issues/700)) ([acf9ed2](https://github.com/LocalCrag/LocalCragApp/commit/acf9ed2c505dd4ec538d75975af6ef080c1150c4))
+
 ## [1.17.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.17.0...v1.17.1) (2025-05-20)
 
 
