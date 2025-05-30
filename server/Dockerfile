@@ -19,5 +19,11 @@ COPY Pipfile Pipfile.lock $WORKDIR/
 RUN pipenv install --system --deploy --ignore-pipfile
 COPY . $WORKDIR
 
-EXPOSE 8000
-CMD sh -c "cd src && pipenv run flask db upgrade && pipenv run python util/scripts/database_setup.py && gunicorn -w 4 -b 0.0.0.0:8000 app:app"
+EXPOSE 5000
+CMD sh -c "\
+    cd src && \
+    flask db upgrade && \
+    python3 util/scripts/database_setup.py && \
+    cd .. && \
+    gunicorn  --config src/gunicorn.conf.py \
+"
