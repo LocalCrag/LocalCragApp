@@ -50,7 +50,8 @@ jobs:
           else
             TAG=next
           fi
-          docker build -t $IMAGE_NAME:$TAG -f client/Dockerfile .
+          cd client
+          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
 
       - name: Build and push server Docker image
@@ -61,5 +62,6 @@ jobs:
           else
             TAG=next
           fi
-          docker build -t $IMAGE_NAME:$TAG -f server/Dockerfile .
+          cd server
+          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
