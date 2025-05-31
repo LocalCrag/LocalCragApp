@@ -47,7 +47,7 @@ jobs:
           IMAGE_NAME=ghcr.io/LocalCrag/localcrag-client
           if [ "${{ github.ref_name }}" == "main" ]; then
             TAG=$version
-          elif [ "${{ github.ref_name }}" == "next" ]; then
+          else
             TAG=next
           fi
           docker build -t $IMAGE_NAME:$TAG -f client/Dockerfile .
@@ -58,7 +58,7 @@ jobs:
           IMAGE_NAME=ghcr.io/LocalCrag/localcrag-server
           if [ "${{ github.ref_name }}" == "main" ]; then
             TAG=$version
-          elif [ "${{ github.ref_name }}" == "next" ]; then
+          else
             TAG=next
           fi
           docker build -t $IMAGE_NAME:$TAG -f server/Dockerfile .
