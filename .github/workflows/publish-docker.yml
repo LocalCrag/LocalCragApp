@@ -1,0 +1,64 @@
+name: Publish Docker Images
+
+on:
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
+  push:
+    branches:
+      - next
+      - provide-prod-containers
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main') ||
+      (github.event_name == 'push' && github.ref_name == 'next')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Extract version from package.json
+        id: get-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push client Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}/client
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TAG=$version
+          elif [ "${{ github.ref_name }}" == "next" ]; then
+            TAG=next
+          fi
+          docker build -t $IMAGE_NAME:$TAG -f client/Dockerfile .
+          docker push $IMAGE_NAME:$TAG
+
+      - name: Build and push server Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}/server
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TAG=$version
+          elif [ "${{ github.ref_name }}" == "next" ]; then
+            TAG=next
+          fi
+          docker build -t $IMAGE_NAME:$TAG -f server/Dockerfile .
+          docker push $IMAGE_NAME:$TAG

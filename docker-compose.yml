@@ -6,19 +6,17 @@ services:
     environment:
       POSTGRES_USER: localcrag
       POSTGRES_DB: localcrag
-      POSTGRES_PASSWORD: password
 
   storage:
     image: quay.io/minio/minio
     environment:
       MINIO_ROOT_USER: localcrag
-      MINIO_ROOT_PASSWORD: password
       MINIO_INIT_BUCKET: localcrag
     volumes:
       - storage:/data
     ports:
-      - "127.0.0.1:9000:9000"  # Stored Files
-      - "127.0.0.1:9001:9001"  # Web UI
+      - "9000:9000"  # Stored Files
+      - "9001:9001"  # Web UI
     command: [ "server", "/data", "--console-address", ":9001" ]
     entrypoint: |  # Adopted from https://stackoverflow.com/a/78580294
       /bin/sh -c '
