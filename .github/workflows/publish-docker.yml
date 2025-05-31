@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and push client Docker image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}/client
+          IMAGE_NAME=ghcr.io/LocalCrag/localcrag-client
           if [ "${{ github.ref_name }}" == "main" ]; then
             TAG=$version
           elif [ "${{ github.ref_name }}" == "next" ]; then
@@ -55,7 +55,7 @@ jobs:
 
       - name: Build and push server Docker image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}/server
+          IMAGE_NAME=ghcr.io/LocalCrag/localcrag-server
           if [ "${{ github.ref_name }}" == "main" ]; then
             TAG=$version
           elif [ "${{ github.ref_name }}" == "next" ]; then
