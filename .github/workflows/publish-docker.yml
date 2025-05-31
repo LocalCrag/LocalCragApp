@@ -17,7 +17,8 @@ jobs:
 
     if: >
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main') ||
-      (github.event_name == 'push' && github.ref_name == 'next')
+      (github.event_name == 'push' && github.ref_name == 'next') || 
+      (github.event_name == 'push' && github.ref_name == 'provide-prod-containers')
 
     steps:
       - name: Checkout code
