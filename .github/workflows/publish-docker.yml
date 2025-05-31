@@ -53,6 +53,8 @@ jobs:
           cd client
           docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            docker push $IMAGE_NAME:latest
 
       - name: Build and push server Docker image
         run: |
@@ -65,3 +67,5 @@ jobs:
           cd server
           docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            docker push $IMAGE_NAME:latest

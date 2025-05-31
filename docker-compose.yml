@@ -33,9 +33,7 @@ services:
 
 
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
+    image: ghcr.io/localcrag/localcrag-server:next
     depends_on:
       - database
       - storage
@@ -56,9 +54,7 @@ services:
 
 
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+    image: ghcr.io/localcrag/localcrag-client:next
     depends_on:
       - server
     container_name: client
