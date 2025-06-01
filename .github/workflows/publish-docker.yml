@@ -55,6 +55,7 @@ jobs:
           docker push $IMAGE_NAME:$TAG
           if [ "${{ github.ref_name }}" == "main" ]; then
             docker push $IMAGE_NAME:latest
+          fi
 
       - name: Build and push server Docker image
         run: |
@@ -69,3 +70,4 @@ jobs:
           docker push $IMAGE_NAME:$TAG
           if [ "${{ github.ref_name }}" == "main" ]; then
             docker push $IMAGE_NAME:latest
+          fi
