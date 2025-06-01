@@ -46,7 +46,7 @@ services:
       SPACES_SECRET_KEY: password
       SPACES_ENDPOINT: http://storage:9000
       SPACES_BUCKET: localcrag
-      SPACES_ACCESS_ENDPOINT: http://localhost:9000
+      SPACES_ACCESS_ENDPOINT: /uploads
       SPACES_ADDRESSING: path
       SUPERADMIN_FIRSTNAME: Felix
       SUPERADMIN_LASTNAME: Frosch
