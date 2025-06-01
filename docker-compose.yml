@@ -51,6 +51,11 @@ services:
       SUPERADMIN_FIRSTNAME: Felix
       SUPERADMIN_LASTNAME: Frosch
       SUPERADMIN_EMAIL: test@fengelmann.de
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 
   client:
@@ -59,7 +64,7 @@ services:
       - server
     container_name: client
     ports:
-      - "4200:80"
+      - "4200:4200"
 
 volumes:
   database:
