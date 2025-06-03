@@ -33,7 +33,7 @@ services:
 
 
   server:
-    image: ghcr.io/localcrag/localcrag-server:next
+    image: ghcr.io/localcrag/localcrag-server:latest
     depends_on:
       - database
       - storage
@@ -59,7 +59,7 @@ services:
 
 
   client:
-    image: ghcr.io/localcrag/localcrag-client:next
+    image: ghcr.io/localcrag/localcrag-client:latest
     depends_on:
       - server
     container_name: client
