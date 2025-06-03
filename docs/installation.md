@@ -43,7 +43,7 @@ services:
       FRONTEND_HOST: https://your-domain.com/
 ```
 
-A full list of available environment variables can be found in TODO.
+A full list of available environment variables can be found [here](./environment-variables.md).
 
 ## Start the containers
 
@@ -56,7 +56,7 @@ docker-compose up -d
 On first startup, your initial admin user will be created based on the `SUPERADMIN_FIRSTNAME`, `SUPERADMIN_LASTNAME`, and `SUPERADMIN_EMAIL` variables you set in the `docker-compose.override.yml` file.
 You will get an E-Mail with the initial password for this user.
 
-## Followups
+## Post-Installation Steps
 
 For production use in a server environment you should follow up with e.g. setting up nginx as a reverse proxy and securing your instance with HTTPS. You can find more information on how to do this in the [Nginx documentation](https://nginx.org/en/docs/). Below we also provide a step-by-step guide for a simple example deployment on an Ubuntu server.
 
