@@ -9,7 +9,6 @@ on:
   push:
     branches:
       - next
-      - provide-prod-containers
 
 jobs:
   build-and-publish:
@@ -17,8 +16,7 @@ jobs:
 
     if: >
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main') ||
-      (github.event_name == 'push' && github.ref_name == 'next') || 
-      (github.event_name == 'push' && github.ref_name == 'provide-prod-containers')
+      (github.event_name == 'push' && github.ref_name == 'next')
 
     steps:
       - name: Checkout code
