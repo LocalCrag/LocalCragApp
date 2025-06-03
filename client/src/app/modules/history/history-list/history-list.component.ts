@@ -27,9 +27,9 @@ import { LoadingState } from '../../../enums/loading-state';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 
 @Component({
   selector: 'lc-history-list',
@@ -64,7 +64,7 @@ export class HistoryListComponent implements OnInit {
 
   constructor(
     private historyService: HistoryService,
-    private translateSpecialGradesPipe: TranslateSpecialGradesPipe,
+    private translateSpecialGradesService: TranslateSpecialGradesService,
     private router: Router,
     private store: Store,
     private transloco: TranslocoService,
@@ -166,8 +166,8 @@ export class HistoryListComponent implements OnInit {
         ]).pipe(
           map(([oldGrade, newGrade]) => {
             return [
-              this.translateSpecialGradesPipe.transform(oldGrade),
-              this.translateSpecialGradesPipe.transform(newGrade),
+              this.translateSpecialGradesService.translate(oldGrade),
+              this.translateSpecialGradesService.translate(newGrade),
             ];
           }),
           map(([oldGrade, newGrade]) => {

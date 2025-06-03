@@ -1,0 +1,71 @@
+name: Publish Docker Images
+
+on:
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
+  push:
+    branches:
+      - next
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main') ||
+      (github.event_name == 'push' && github.ref_name == 'next')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Extract version from package.json
+        id: get-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push client Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/localcrag/localcrag-client
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TAG=$VERSION
+          else
+            TAG=next
+          fi
+          cd client
+          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+          docker push $IMAGE_NAME:$TAG
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            docker push $IMAGE_NAME:latest
+          fi
+
+      - name: Build and push server Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/localcrag/localcrag-server
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TAG=$VERSION
+          else
+            TAG=next
+          fi
+          cd server
+          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+          docker push $IMAGE_NAME:$TAG
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            docker push $IMAGE_NAME:latest
+          fi
