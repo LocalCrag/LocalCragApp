@@ -44,7 +44,7 @@ jobs:
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-client
           if [ "${{ github.ref_name }}" == "main" ]; then
-            TAG=$version
+            TAG=$VERSION
           else
             TAG=next
           fi
@@ -59,7 +59,7 @@ jobs:
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-server
           if [ "${{ github.ref_name }}" == "main" ]; then
-            TAG=$version
+            TAG=$VERSION
           else
             TAG=next
           fi
