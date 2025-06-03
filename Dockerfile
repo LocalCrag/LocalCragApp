@@ -1,3 +1,6 @@
+# This Dockerfile is used to build the localcragapp images for development purposes
+# For production separate Dockerfiles are provided in the server and client directories
+
 FROM python AS localcragapp-server
 RUN pip install pipenv
 ENV PYTHONPATH=/localcragapp/src

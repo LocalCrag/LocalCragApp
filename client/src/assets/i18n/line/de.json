@@ -35,7 +35,7 @@
   "lineForm.invalidHttpUrlValidationError": "Ungültige URL",
   "lineForm.addVideoButtonLabel": "Video hinzufügen",
   "lineForm.lineFANameLabel": "Erstbegeher / Erstbegeherin",
-  "lineForm.lineFANamePlaceholder": "e.g. Wolfgang Güllich",
+  "lineForm.lineFANamePlaceholder": "z.B. Wolfgang Güllich",
   "lineForm.lineFAYearLabel": "Jahr der Erstbegehung",
   "lineForm.yearInFutureValidationError": "Das Jahr darf nicht in der Zukunft liegen",
   "lineForm.linePropertiesLabel": "Eigenschaften",
