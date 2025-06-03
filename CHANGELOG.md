@@ -1,3 +1,10 @@
+## [1.18.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.18.0...v1.18.1) (2025-06-03)
+
+
+### Bug Fixes
+
+* **history:** history page does not crash anymore ([#708](https://github.com/LocalCrag/LocalCragApp/issues/708)) ([a814426](https://github.com/LocalCrag/LocalCragApp/commit/a8144262a0002e516db41401fe813c3373beb671))
+
 # [1.18.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.17.1...v1.18.0) (2025-05-24)
 
 
