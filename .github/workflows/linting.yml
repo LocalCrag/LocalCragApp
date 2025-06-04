@@ -1,4 +1,6 @@
 name: Linting Pipeline
+run-name: 🔍 Linting
+
 on:
   pull_request:
     branches:

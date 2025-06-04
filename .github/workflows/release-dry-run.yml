@@ -1,5 +1,5 @@
 name: Release dry-run
-run-name: ${{ github.actor }} is running a release dry run 👩‍🔬
+run-name: 👩‍🔬 Release dry run
 
 on:
   push:
