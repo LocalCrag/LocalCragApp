@@ -1,4 +1,6 @@
 name: Check Migrate from empty DB
+run-name: 🧪 Check Migrate from empty DB
+
 on:
   pull_request:
     branches:
