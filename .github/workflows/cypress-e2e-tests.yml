@@ -1,4 +1,6 @@
 name: Cypress Tests
+run-name: Running Cypress end-to-end tests 🧪
+
 on:
   pull_request_target:
     branches:
