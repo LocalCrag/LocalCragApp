@@ -284,7 +284,7 @@
   "appLevelAlerts.renewLogin": "Login erneuern",
   "appLevelAlerts.thisWebsiteUsesCookies": "Wir verwenden Cookies auf unserer Website, um Dir das bestmögliche Erlebnis zu bieten.",
   "appLevelAlerts.readMoreAboutCookies": "Mehr erfahren",
-  "appLevelAlerts.AcceptCookiesButton": "Alle Cookies akzeptieren",
+  "appLevelAlerts.AcceptCookiesButton": "Erforderliche Cookies akzeptieren",
   "activateAccount.activateAccountTitle": "Account aktivieren",
   "activateAccount.activateAccountDescription": "Du bist bereits eingeloggt. Logge dich aus um einen anderen Account zu aktivieren.",
   "activateAccount.activateNowButtonLabel": "Jetzt ausloggen",
