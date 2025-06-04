@@ -4,7 +4,7 @@ run-name: ${{ github.actor }} is running a release dry run 👩‍🔬
 on:
   push:
     branches:
-      - next
+      - debug-publish-docker
 
 jobs:
   release-dry-run:
