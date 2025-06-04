@@ -49,14 +49,13 @@ jobs:
           IMAGE_NAME=ghcr.io/localcrag/localcrag-client
           if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
+            docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest -f Dockerfile .
+            docker push $IMAGE_NAME:$TAG
+            docker push $IMAGE_NAME:latest
           else
             TAG=next
-          fi
-          cd client
-          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
-          docker push $IMAGE_NAME:$TAG
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            docker push $IMAGE_NAME:latest
+            docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+            docker push $IMAGE_NAME:$TAG
           fi
 
       - name: Build and push server Docker image
@@ -64,12 +63,11 @@ jobs:
           IMAGE_NAME=ghcr.io/localcrag/localcrag-server
           if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
+            docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest -f Dockerfile .
+            docker push $IMAGE_NAME:$TAG
+            docker push $IMAGE_NAME:latest
           else
             TAG=next
-          fi
-          cd server
-          docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
-          docker push $IMAGE_NAME:$TAG
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            docker push $IMAGE_NAME:latest
+            docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+            docker push $IMAGE_NAME:$TAG
           fi
