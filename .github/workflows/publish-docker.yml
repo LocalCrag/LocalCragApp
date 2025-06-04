@@ -1,5 +1,5 @@
 name: Publish Docker Images
-run-name: Publishing Docker Images 🚢
+run-name: 🚢 Publish Docker Images
 
 on:
   workflow_run:
@@ -7,27 +7,20 @@ on:
       - Release
     types:
       - completed
-  push:
+  pull_request:
     branches:
       - next
+    types:
+      - closed
 
 jobs:
-  debug-log:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Print debug information
-        run: |
-          echo "Event Name: ${{ github.event_name }}"
-          echo "Workflow Run Conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Ref Name: ${{ github.ref_name }}"
 
   build-and-publish:
     runs-on: ubuntu-latest
 
     if: >
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main') ||
-      (github.event_name == 'push' && github.ref_name == 'next')
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     steps:
       - name: Checkout code
@@ -54,7 +47,7 @@ jobs:
       - name: Build and push client Docker image
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-client
-          if [ "${{ github.ref_name }}" == "main" ]; then
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
           else
             TAG=next
@@ -62,14 +55,14 @@ jobs:
           cd client
           docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
-          if [ "${{ github.ref_name }}" == "main" ]; then
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
             docker push $IMAGE_NAME:latest
           fi
 
       - name: Build and push server Docker image
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-server
-          if [ "${{ github.ref_name }}" == "main" ]; then
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
           else
             TAG=next
@@ -77,6 +70,6 @@ jobs:
           cd server
           docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
           docker push $IMAGE_NAME:$TAG
-          if [ "${{ github.ref_name }}" == "main" ]; then
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
             docker push $IMAGE_NAME:latest
           fi
