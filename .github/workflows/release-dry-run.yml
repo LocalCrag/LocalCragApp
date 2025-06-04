@@ -1,5 +1,5 @@
 name: Release dry-run
-run-name: 👩‍🔬 Release dry run
+run-name: Release dry run 👩‍🔬
 
 on:
   push:

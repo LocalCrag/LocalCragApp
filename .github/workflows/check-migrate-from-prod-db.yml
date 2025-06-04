@@ -1,5 +1,5 @@
 name: Check Migrate from prod DB
-run-name: 🧪 Check Migrate from prod DB
+run-name: Check Migrate from prod DB 🧪
 
 on:
   pull_request_target:

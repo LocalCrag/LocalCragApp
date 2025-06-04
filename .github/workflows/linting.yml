@@ -1,5 +1,5 @@
 name: Linting Pipeline
-run-name: 🔍 Linting
+run-name: Linting 🔍
 
 on:
   pull_request:
