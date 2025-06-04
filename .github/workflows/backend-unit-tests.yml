@@ -1,4 +1,6 @@
 name: Backend unit tests
+run-name: Running backend unit tests 🧪
+
 on:
   pull_request:
     branches:

@@ -1,4 +1,5 @@
 name: Sentry frontend release
+run-name: Creating new Sentry release 🔎
 
 on:
   pull_request:
