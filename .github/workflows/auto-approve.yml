@@ -1,4 +1,6 @@
 name: Auto-approve PR
+run-name: Auto-approve PRs by dorthrithil 🤖
+
 on:
   pull_request:
     types: [ opened, synchronize ]

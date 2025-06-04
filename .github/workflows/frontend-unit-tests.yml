@@ -1,4 +1,6 @@
 name: Frontend unit tests
+run-name: Running frontend unit tests 🧪
+
 on:
   pull_request:
     branches:
