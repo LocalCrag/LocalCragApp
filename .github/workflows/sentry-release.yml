@@ -1,9 +1,8 @@
 name: Sentry frontend release
-run-name: 📦 Sentry release
+run-name: Sentry release 📦
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
 

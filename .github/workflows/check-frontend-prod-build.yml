@@ -1,5 +1,5 @@
 name: Frontend production build check
-run-name: 🔍 Check frontend production build
+run-name: Check frontend production build 🔍
 
 on:
   pull_request:

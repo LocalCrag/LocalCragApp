@@ -1,5 +1,5 @@
 name: Cypress Tests
-run-name: 🧪 Run Cypress end-to-end tests
+run-name: Run Cypress end-to-end tests 🧪
 
 on:
   pull_request_target:
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
       matrix:
-        containers: [1, 2] # Uses 2 parallel instances
+        containers: [ 1, 2 ] # Uses 2 parallel instances
     services:
       test_db:
         image: postgres:16-alpine

@@ -1,5 +1,5 @@
 name: Backend unit tests
-run-name: 🧪 Run backend unit tests
+run-name: Run backend unit tests 🧪
 
 on:
   pull_request:

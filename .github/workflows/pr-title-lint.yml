@@ -3,7 +3,7 @@
 # The PR title is used as the commit message when squashing PRs (requires specific GitHub settings)
 
 name: Conventional Commits PR Title
-run-name: 🔍 Validate Conventional Commits PR Title
+run-name: Validate Conventional Commits PR Title 🔍
 
 on:
   pull_request:
