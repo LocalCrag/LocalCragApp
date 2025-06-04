@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.18.1...v1.19.0) (2025-06-04)
+
+
+### Features
+
+* better cookie button label ([#710](https://github.com/LocalCrag/LocalCragApp/issues/710)) ([3fd5817](https://github.com/LocalCrag/LocalCragApp/commit/3fd581741ae54b96714312a7ac0caf2d980d3bce)), closes [#648](https://github.com/LocalCrag/LocalCragApp/issues/648)
+
 ## [1.18.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.18.0...v1.18.1) (2025-06-03)
 
 
