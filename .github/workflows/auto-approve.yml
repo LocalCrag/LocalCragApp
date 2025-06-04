@@ -1,5 +1,5 @@
 name: Auto-approve PR
-run-name: 🤖 Auto-approve PR by dorthrithil
+run-name: Auto-approve PR by dorthrithil 🤖
 
 on:
   pull_request:
