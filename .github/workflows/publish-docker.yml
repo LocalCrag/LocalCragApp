@@ -47,6 +47,7 @@ jobs:
       - name: Build and push client Docker image
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-client
+          cd client
           if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
             docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest -f Dockerfile .
@@ -61,6 +62,7 @@ jobs:
       - name: Build and push server Docker image
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-server
+          cd server
           if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
             docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest -f Dockerfile .
