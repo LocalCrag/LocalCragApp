@@ -45,6 +45,16 @@ services:
 
 A full list of available environment variables can be found [here](./environment-variables.md).
 
+### Automated updates
+
+The default configuration uses [Watchtower](https://containrrr.dev/watchtower/) to automatically update the LocalCrag application daily at 4AM. 
+To disable this feature, you can e.g. simply override the `watchtower` service in your `docker-compose.override.yml` file to a noop command:
+
+```yaml
+  watchtower:
+    command: [""]
+```
+
 ## Start the containers
 
 Once you have configured the environment variables, you can start the LocalCrag application using Docker Compose:

@@ -66,6 +66,16 @@ services:
     ports:
       - "4200:4200"
 
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 4 * * *
+    command: server client
+    restart: always
+
 volumes:
   database:
   storage:
