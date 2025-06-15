@@ -39,6 +39,7 @@ def add_backup_user():
         """
             )
         )
+        db.session.commit()
         print("Backup user created or already exists.")
 
         # Grant privileges
@@ -48,6 +49,7 @@ def add_backup_user():
         db.session.execute(text("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO backup;"))
         db.session.execute(text("GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO backup;"))
         db.session.execute(text("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO backup;"))
+        db.session.commit()
         print("Privileges granted to backup user.")
 
 
