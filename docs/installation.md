@@ -101,6 +101,8 @@ Add the following configuration to the file:
 server {
     listen 80;
     server_name your-domain.com  www.your-domain.com;
+    
+    client_max_body_size 50M; # Adjust as needed for your application
 
     location / {
         proxy_pass http://localhost:4200;
@@ -113,6 +115,8 @@ server {
 server {
     listen 80;
     server_name s3.your-domain.com;
+    
+    client_max_body_size 50M; # Adjust as needed for your S3 storage
 
     location / {
         proxy_pass http://localhost:9000;
