@@ -34,7 +34,11 @@ class Search(MethodView):
             db_query = db_query.filter(Searchable.type != SearchableItemTypeEnum.CRAG.value)
         if instance_settings.skipped_hierarchical_layers > 1:
             db_query = db_query.filter(Searchable.type != SearchableItemTypeEnum.SECTOR.value)
-        searchables = db_query.order_by(func.levenshtein(Searchable.name, query)).limit(10).all()
+        searchables = (
+            db_query.order_by(func.levenshtein(Searchable.name, query) / (1 + func.length(Searchable.name)))
+            .limit(10)
+            .all()
+        )
         result = []
         for searchable in searchables:
             item = None
