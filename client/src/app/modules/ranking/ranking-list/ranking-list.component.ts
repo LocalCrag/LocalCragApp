@@ -19,6 +19,11 @@ import { Select } from 'primeng/select';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { CragsService } from '../../../services/crud/crags.service';
+import { SectorsService } from '../../../services/crud/sectors.service';
+import { GradeDistribution } from '../../../models/scale';
+import { Crag } from '../../../models/crag';
+import { Sector } from '../../../models/sector';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -45,8 +50,8 @@ import { Message } from 'primeng/message';
   encapsulation: ViewEncapsulation.None,
 })
 export class RankingListComponent implements OnInit {
-  @Input() cragId: string;
-  @Input() sectorId: string;
+  @Input() crag: Crag;
+  @Input() sector: Sector;
 
   public loadingStates = LoadingState;
   public rankings: Ranking[];
@@ -57,10 +62,14 @@ export class RankingListComponent implements OnInit {
   public rankingType: SelectItem;
   public secretRankings = false;
   public showInfoPopup = false;
+  public lineTypes: SelectItem<LineType>[] = null;
+  public lineType: SelectItem<LineType> = null;
 
   constructor(
     private rankingService: RankingService,
     private translocoService: TranslocoService,
+    private cragsService: CragsService,
+    private sectorsService: SectorsService,
   ) {}
 
   ngOnInit() {
@@ -79,33 +88,86 @@ export class RankingListComponent implements OnInit {
       },
     ];
     this.rankingType = this.rankingTypes[0];
-    this.loadRanking();
+    this.loading = LoadingState.LOADING;
+    if (this.crag) {
+      this.cragsService
+        .getCragGrades(this.crag.slug)
+        .subscribe((gradeDistribution) => {
+          this.interpretGradeDistribution(gradeDistribution);
+          this.loadRanking();
+        });
+    } else if (this.sector) {
+      this.sectorsService
+        .getSectorGrades(this.sector.slug)
+        .subscribe((gradeDistribution) => {
+          this.interpretGradeDistribution(gradeDistribution);
+          this.loadRanking();
+        });
+    } else {
+      this.lineType = {
+        label: this.translocoService.translate(LineType.BOULDER),
+        value: LineType.BOULDER,
+      };
+      this.lineTypes = [this.lineType];
+      this.loadRanking();
+    }
+  }
+
+  interpretGradeDistribution(gradeDistribution: GradeDistribution) {
+    const lineTypes: typeof this.lineTypes = [];
+    const typeCounts = {
+      BOULDER: 0,
+      SPORT: 0,
+      TRAD: 0,
+    };
+    for (const lineType in gradeDistribution) {
+      for (const scale in gradeDistribution[lineType]) {
+        for (const count of Object.values(gradeDistribution[lineType][scale])) {
+          typeCounts[lineType] += count;
+        }
+      }
+    }
+    Object.entries(typeCounts)
+      .filter(([, count]) => count > 0)
+      .sort(([, c1], [, c2]) => c2 - c1)
+      .forEach(([lineType]) => {
+        lineTypes.push({
+          label: this.translocoService.translate(lineType),
+          value: lineType as LineType,
+        });
+      });
+    this.lineType = lineTypes[0] ?? null;
+    this.lineTypes = lineTypes;
   }
 
   loadRanking() {
     this.loading = LoadingState.LOADING;
-    let query_params = `?line_type=${LineType.BOULDER}`;
-    if (this.cragId) {
-      query_params += `&crag_id=${this.cragId}`;
+    const query_params = new URLSearchParams({
+      line_type: this.lineType.value.toString(),
+    });
+    if (this.crag) {
+      query_params.set('crag_id', this.crag.id);
     }
-    if (this.sectorId) {
-      query_params += `&sector_id=${this.sectorId}`;
+    if (this.sector) {
+      query_params.set('sector_id', this.sector.id);
     }
     if (this.secretRankings) {
-      query_params += `&secret=1`;
+      query_params.set('secret', '1');
     }
-    this.rankingService.getRanking(query_params).subscribe((rankings) => {
-      this.rankings = rankings;
-      this.sortField = this.rankingType.value;
-      this.rankings.sort((a, b) =>
-        a[this.sortField] < b[this.sortField]
-          ? 1
-          : a[this.sortField] > b[this.sortField]
-            ? -1
-            : 0,
-      );
-      this.loading = LoadingState.DEFAULT;
-    });
+    this.rankingService
+      .getRanking(`?${query_params.toString()}`)
+      .subscribe((rankings) => {
+        this.rankings = rankings;
+        this.sortField = this.rankingType.value;
+        this.rankings.sort((a, b) =>
+          a[this.sortField] < b[this.sortField]
+            ? 1
+            : a[this.sortField] > b[this.sortField]
+              ? -1
+              : 0,
+        );
+        this.loading = LoadingState.DEFAULT;
+      });
   }
 
   showDialog() {
