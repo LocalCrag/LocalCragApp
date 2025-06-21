@@ -16,6 +16,26 @@
     <ng-template #header>
       <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
         <p-select
+          *ngIf="lineTypes?.length > 1"
+          [options]="lineTypes"
+          [(ngModel)]="lineType"
+          (ngModelChange)="loadRanking()"
+          optionLabel="label"
+          styleClass="md:mb-0 md:mr-2"
+          [disabled]="loading === loadingStates.LOADING"
+        >
+          <ng-template #selectedItem>
+            <div class="flex align-items-center gap-2" *ngIf="lineType">
+              <div>{{ lineType.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-option #item>
+            <div class="flex align-items-center gap-2">
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+        <p-select
           [options]="rankingTypes"
           [(ngModel)]="rankingType"
           (ngModelChange)="sortField = rankingType.value"
