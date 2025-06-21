@@ -1,3 +1,11 @@
+## [1.19.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.0...v1.19.1) (2025-06-21)
+
+
+### Bug Fixes
+
+* **ranking:** ranking ui adapts to prevalent line type ([#724](https://github.com/LocalCrag/LocalCragApp/issues/724)) ([69036dc](https://github.com/LocalCrag/LocalCragApp/commit/69036dca31caf1b5324b9d0974dfc2f00422dbfe)), closes [#652](https://github.com/LocalCrag/LocalCragApp/issues/652)
+* **search:** improve relevance of search results ([#723](https://github.com/LocalCrag/LocalCragApp/issues/723)) ([f9e25b3](https://github.com/LocalCrag/LocalCragApp/commit/f9e25b3c800d4036c9090a94f8e75e5f6d282ef1)), closes [#317](https://github.com/LocalCrag/LocalCragApp/issues/317)
+
 # [1.19.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.18.1...v1.19.0) (2025-06-04)
 
 
