@@ -45,6 +45,16 @@ services:
 
 A full list of available environment variables can be found [here](./environment-variables.md).
 
+### Automated updates
+
+The default configuration uses [Watchtower](https://containrrr.dev/watchtower/) to automatically update the LocalCrag application daily at 4AM. 
+To disable this feature, you can e.g. simply override the `watchtower` service in your `docker-compose.override.yml` file to a noop command:
+
+```yaml
+  watchtower:
+    command: [""]
+```
+
 ## Start the containers
 
 Once you have configured the environment variables, you can start the LocalCrag application using Docker Compose:
@@ -91,6 +101,8 @@ Add the following configuration to the file:
 server {
     listen 80;
     server_name your-domain.com  www.your-domain.com;
+    
+    client_max_body_size 50M; # Adjust as needed for your application
 
     location / {
         proxy_pass http://localhost:4200;
@@ -103,6 +115,8 @@ server {
 server {
     listen 80;
     server_name s3.your-domain.com;
+    
+    client_max_body_size 50M; # Adjust as needed for your S3 storage
 
     location / {
         proxy_pass http://localhost:9000;
@@ -163,6 +177,10 @@ sudo certbot --nginx -d s3.your-domain.com
 #### Verify HTTPS Configuration
 
 After obtaining the certificate, you can verify that your Nginx server is serving LocalCrag over HTTPS by visiting `https://your-domain.com` in your web browser.
+
+#### Backup Configuration
+
+For production deployments, it is recommended to set up regular backups of your LocalCrag instance. You can use the LocalCrag backup tool for this purpose: https://github.com/LocalCrag/LocalCragBackup
 
 #### Final Steps
 
