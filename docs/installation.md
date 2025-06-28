@@ -178,6 +178,10 @@ sudo certbot --nginx -d s3.your-domain.com
 
 After obtaining the certificate, you can verify that your Nginx server is serving LocalCrag over HTTPS by visiting `https://your-domain.com` in your web browser.
 
+#### Backup Configuration
+
+For production deployments, it is recommended to set up regular backups of your LocalCrag instance. You can use the LocalCrag backup tool for this purpose: https://github.com/LocalCrag/LocalCragBackup
+
 #### Final Steps
 
 After completing the above steps, your LocalCrag instance should be up and running, accessible via your domain name with HTTPS enabled. You can now start using LocalCrag to manage your climbing routes and share them with the community.
