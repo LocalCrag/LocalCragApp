@@ -5,8 +5,10 @@
         severity="info"
         icon="pi pi-info-circle"
         class="m-4 mb-1 block"
-        >{{ t("noAscentsFoundMessage") }}</p-message
+        *ngIf="ascents?.length === 0"
       >
+        {{ t("noAscentsFoundMessage") }}
+      </p-message>
     </ng-template>
     <ng-template #header>
       <div
@@ -130,7 +132,9 @@
     </ng-template>
     <ng-template let-ascents #list>
       <lc-ascent-list-skeleton
-        *ngIf="loadingFirstPage === loadingStates.LOADING"
+        *ngIf="
+          loadingFirstPage === loadingStates.LOADING || ascents === undefined
+        "
       ></lc-ascent-list-skeleton>
       <div
         class="grid grid-nogutter"
@@ -245,12 +249,12 @@
               </div>
               <div class="ascent-table-date">
                 <i class="pi pi-calendar"></i>
-                <ng-container *ngIf="ascent.year">{{
-                  ascent.year
-                }}</ng-container>
-                <ng-container *ngIf="ascent.date">{{
-                  ascent.date | date: "dd.MM.yyyy"
-                }}</ng-container>
+                <ng-container *ngIf="ascent.year"
+                  >{{ ascent.year }}
+                </ng-container>
+                <ng-container *ngIf="ascent.date"
+                  >{{ ascent.date | date: "dd.MM.yyyy" }}
+                </ng-container>
               </div>
               <div class="ascent-actions">
                 <p-menu
@@ -370,12 +374,12 @@
               </div>
               <div class="ascent-table-date">
                 <i class="pi pi-calendar"></i>
-                <ng-container *ngIf="ascent.year">{{
-                  ascent.year
-                }}</ng-container>
-                <ng-container *ngIf="ascent.date">{{
-                  ascent.date | date: "dd.MM.yyyy"
-                }}</ng-container>
+                <ng-container *ngIf="ascent.year"
+                  >{{ ascent.year }}
+                </ng-container>
+                <ng-container *ngIf="ascent.date"
+                  >{{ ascent.date | date: "dd.MM.yyyy" }}
+                </ng-container>
               </div>
               <div class="ascent-actions">
                 <p-menu
@@ -529,12 +533,12 @@
                 </div>
                 <div class="ascent-table-date">
                   <i class="pi pi-calendar"></i>
-                  <ng-container *ngIf="ascent.year">{{
-                    ascent.year
-                  }}</ng-container>
-                  <ng-container *ngIf="ascent.date">{{
-                    ascent.date | date: "dd.MM.yyyy"
-                  }}</ng-container>
+                  <ng-container *ngIf="ascent.year"
+                    >{{ ascent.year }}
+                  </ng-container>
+                  <ng-container *ngIf="ascent.date"
+                    >{{ ascent.date | date: "dd.MM.yyyy" }}
+                  </ng-container>
                 </div>
               </div>
             </div>
