@@ -102,7 +102,11 @@ class GetAscents(MethodView):
         if order_by in {"time_created", "ascent_date"}:
             order_function = getattr(getattr(Ascent, order_by), order_direction)
         if order_by in {"grade_value"}:
-            order_function = getattr(getattr(Line, "grade_value"), order_direction)
+            if instance_settings.display_user_grades_ratings:
+                order_function = getattr(getattr(Line, "user_grade_value"), order_direction)
+            else:
+                order_function = getattr(getattr(Line, "author_grade_value"), order_direction)
+
         # Order by Ascent.id as a tie-breaker to prevent duplicate entries in paginate
         query = query.order_by(order_function(), Ascent.id)
 
