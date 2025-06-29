@@ -48,6 +48,9 @@ A full list of available environment variables can be found [here](./environment
 ### Automated updates
 
 The default configuration uses [Watchtower](https://containrrr.dev/watchtower/) to automatically update the LocalCrag application daily at 4AM. 
+
+It is recommended to set up watchtower [notifications](https://containrrr.dev/watchtower/notifications) to keep informed about updates and eventual failures during the automated update process.
+
 To disable this feature, you can e.g. simply override the `watchtower` service in your `docker-compose.override.yml` file to a noop command:
 
 ```yaml
