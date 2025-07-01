@@ -78,6 +78,6 @@ services:
 
 volumes:
   database:
-    name: "${COMPOSE_PROJECT_NAME}_database"
+    name: ${COMPOSE_PROJECT_NAME}_database
   storage:
-    name: "${COMPOSE_PROJECT_NAME}_storage"
+    name: ${COMPOSE_PROJECT_NAME}_storage
