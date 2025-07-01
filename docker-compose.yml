@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: ${COMPOSE_PROJECT_NAME}_database
     volumes:
-      - ${COMPOSE_PROJECT_NAME}_database-volume:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
       - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     environment:
       POSTGRES_USER: localcrag
@@ -16,7 +16,7 @@ services:
       MINIO_ROOT_USER: localcrag
       MINIO_INIT_BUCKET: localcrag
     volumes:
-      - ${COMPOSE_PROJECT_NAME}_storage-volume:/data
+      - storage:/data
     ports:
       - "9000:9000"  # Stored Files
       - "9001:9001"  # Web UI
@@ -44,7 +44,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@${COMPOSE_PROJECT_NAME}_database-volume/localcrag"
+      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/localcrag"
       SPACES_ACCESS_KEY: localcrag
       SPACES_ENDPOINT: http://storage:9000
       SPACES_BUCKET: localcrag
@@ -78,6 +78,4 @@ services:
 
 volumes:
   database:
-    name: ${COMPOSE_PROJECT_NAME}_database-volume
   storage:
-    name: ${COMPOSE_PROJECT_NAME}_storage-volume
