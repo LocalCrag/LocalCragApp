@@ -1,9 +1,9 @@
 services:
   database:
     image: postgres
-    container_name: "${COMPOSE_PROJECT_NAME}_database"
+    container_name: ${COMPOSE_PROJECT_NAME}_database
     volumes:
-      - ${COMPOSE_PROJECT_NAME}_database:/var/lib/postgresql/data
+      - ${COMPOSE_PROJECT_NAME}_database-volume:/var/lib/postgresql/data
       - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     environment:
       POSTGRES_USER: localcrag
@@ -11,12 +11,12 @@ services:
 
   storage:
     image: quay.io/minio/minio
-    container_name: "${COMPOSE_PROJECT_NAME}_minio"
+    container_name: ${COMPOSE_PROJECT_NAME}_minio
     environment:
       MINIO_ROOT_USER: localcrag
       MINIO_INIT_BUCKET: localcrag
     volumes:
-      - ${COMPOSE_PROJECT_NAME}_storage:/data
+      - ${COMPOSE_PROJECT_NAME}_storage-volume:/data
     ports:
       - "9000:9000"  # Stored Files
       - "9001:9001"  # Web UI
@@ -40,11 +40,11 @@ services:
     depends_on:
       - database
       - storage
-    container_name: "${COMPOSE_PROJECT_NAME}_server"
+    container_name: ${COMPOSE_PROJECT_NAME}_server
     ports:
       - "5000:5000"
     environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@${COMPOSE_PROJECT_NAME}_database/localcrag"
+      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@${COMPOSE_PROJECT_NAME}_database-volume/localcrag"
       SPACES_ACCESS_KEY: localcrag
       SPACES_ENDPOINT: http://storage:9000
       SPACES_BUCKET: localcrag
@@ -59,7 +59,7 @@ services:
 
   client:
     image: ghcr.io/localcrag/localcrag-client:latest
-    container_name: "${COMPOSE_PROJECT_NAME}_client"
+    container_name: ${COMPOSE_PROJECT_NAME}_client
     depends_on:
       - server
     ports:
@@ -67,7 +67,7 @@ services:
 
   watchtower:
     image: containrrr/watchtower
-    container_name: "${COMPOSE_PROJECT_NAME}_watchtower"
+    container_name: ${COMPOSE_PROJECT_NAME}_watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
@@ -78,6 +78,6 @@ services:
 
 volumes:
   database:
-    name: ${COMPOSE_PROJECT_NAME}_database
+    name: ${COMPOSE_PROJECT_NAME}_database-volume
   storage:
-    name: ${COMPOSE_PROJECT_NAME}_storage
+    name: ${COMPOSE_PROJECT_NAME}_storage-volume
