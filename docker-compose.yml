@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: "${COMPOSE_PROJECT_NAME}_database"
     volumes:
-      - database:/var/lib/postgresql/data
+      - ${COMPOSE_PROJECT_NAME}_database:/var/lib/postgresql/data
       - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     environment:
       POSTGRES_USER: localcrag
@@ -16,7 +16,7 @@ services:
       MINIO_ROOT_USER: localcrag
       MINIO_INIT_BUCKET: localcrag
     volumes:
-      - storage:/data
+      - ${COMPOSE_PROJECT_NAME}_storage:/data
     ports:
       - "9000:9000"  # Stored Files
       - "9001:9001"  # Web UI
