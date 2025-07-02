@@ -4,17 +4,18 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_database
     volumes:
       - database:/var/lib/postgresql/data
-      - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     environment:
-      POSTGRES_USER: localcrag
-      POSTGRES_DB: localcrag
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   storage:
     image: quay.io/minio/minio
     container_name: ${COMPOSE_PROJECT_NAME}_minio
     environment:
-      MINIO_ROOT_USER: localcrag
-      MINIO_INIT_BUCKET: localcrag
+      MINIO_ROOT_USER: ${S3_USER}
+      MINIO_INIT_BUCKET: ${S3_BUCKET}
+      MINIO_ROOT_PASSWORD: ${S3_PASSWORD}
     volumes:
       - storage:/data
     ports:
@@ -44,12 +45,25 @@ services:
     ports:
       - "5000:5000"
     environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/localcrag"
-      SPACES_ACCESS_KEY: localcrag
+      SQLALCHEMY_DATABASE_URI: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database/${POSTGRES_DB}"
+      SPACES_SECRET_KEY: ${S3_PASSWORD}
+      SPACES_ACCESS_KEY: ${S3_USER}
       SPACES_ENDPOINT: http://storage:9000
-      SPACES_BUCKET: localcrag
-      SPACES_ACCESS_ENDPOINT: http://localhost:9000
+      SPACES_BUCKET: ${S3_BUCKET}
+      SPACES_ACCESS_ENDPOINT: ${S3_ACCESS_ENDPOINT}
       SPACES_ADDRESSING: path
+      SUPERADMIN_FIRSTNAME: ${SUPERADMIN_FIRSTNAME}
+      SUPERADMIN_LASTNAME: ${SUPERADMIN_LASTNAME}
+      SUPERADMIN_EMAIL: ${SUPERADMIN_EMAIL}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SYSTEM_EMAIL: ${SYSTEM_EMAIL}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_TYPE: ${SMTP_TYPE}
+      FRONTEND_HOST: ${FRONTEND_HOST}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5000/api/health" ]
       interval: 30s
@@ -72,7 +86,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       WATCHTOWER_CLEANUP: true
-      WATCHTOWER_SCHEDULE: 0 4 * * *
+      WATCHTOWER_SCHEDULE: ${WATCHTOWER_SCHEDULE}
     command: server client
     restart: always
 
