@@ -88,6 +88,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
+      WATCHTOWER_MONITOR_ONLY: ${WATCHTOWER_MONITOR_ONLY}
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_SCHEDULE: ${WATCHTOWER_SCHEDULE}
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
