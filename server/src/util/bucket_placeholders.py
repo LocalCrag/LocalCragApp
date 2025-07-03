@@ -3,14 +3,14 @@ from flask import current_app
 
 def get_bucket_placeholders():
     bucket_placeholder = "{{BUCKET_PLACEHOLDER}}"
-    if current_app.config["SPACES_ACCESS_ENDPOINT"] and current_app.config["SPACES_BUCKET"]:
-        if current_app.config["SPACES_ADDRESSING"] == "path":
+    if current_app.config["S3_ACCESS_ENDPOINT"] and current_app.config["S3_BUCKET"]:
+        if current_app.config["S3_ADDRESSING"] == "path":
             bucket_placeholder_target = (
-                current_app.config["SPACES_ACCESS_ENDPOINT"].rstrip("/") + f"/{current_app.config['SPACES_BUCKET']}"
+                current_app.config["S3_ACCESS_ENDPOINT"].rstrip("/") + f"/{current_app.config['S3_BUCKET']}"
             )
-        else:  # SPACES_ADDRESSING = 'virtual'
-            bucket_placeholder_target = current_app.config["SPACES_ACCESS_ENDPOINT"].replace(
-                "://", "://{}.".format(current_app.config["SPACES_BUCKET"])
+        else:  # S3_ADDRESSING = 'virtual'
+            bucket_placeholder_target = current_app.config["S3_ACCESS_ENDPOINT"].replace(
+                "://", "://{}.".format(current_app.config["S3_BUCKET"])
             )
     else:
         bucket_placeholder_target = "{{BUCKET_PLACEHOLDER}}"  # Path only used in tests
