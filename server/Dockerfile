@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
     libmagic1 \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

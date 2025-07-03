@@ -8,6 +8,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}", "-h", "localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   storage:
     image: quay.io/minio/minio
@@ -34,6 +39,11 @@ services:
         while isAlive; do sleep 0.1; done
         exec minio $$0 "$$@"
       '
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 
   server:
@@ -66,7 +76,7 @@ services:
       SMTP_TYPE: ${SMTP_TYPE}
       FRONTEND_HOST: ${FRONTEND_HOST}
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://server:5000/api/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/api/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -80,6 +90,11 @@ services:
       - server
     ports:
       - "4200:4200"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   watchtower:
     image: containrrr/watchtower
