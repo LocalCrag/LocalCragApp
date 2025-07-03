@@ -10,48 +10,27 @@ To get started, clone the LocalCrag repository:
 git clone https://github.com/LocalCrag/LocalCragApp.git localcrag
 cd localcrag
 ```
-## Configure Environment Variables
+## Configuration
 
-Create a `docker-compose.override.yml` file in the root directory of the cloned repository. This file will override the default environment variables for your local setup. Here is an example configuration:
+Create an environment file by copying the example file:
 
-```yaml
-services:
-  database:
-    environment:
-      POSTGRES_PASSWORD: securepassword
-
-  storage:
-    environment:
-      MINIO_ROOT_PASSWORD: securepassword
-
-  server:
-    environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://localcrag:password@database/localcrag"
-      SPACES_SECRET_KEY: securepassword # Must match MINIO_ROOT_PASSWORD of storage service
-      SPACES_ACCESS_ENDPOINT: https://s3.your-domain.com
-      SUPERADMIN_FIRSTNAME: Firstname
-      SUPERADMIN_LASTNAME: Lastname
-      SUPERADMIN_EMAIL: example@your-domain.com
-      SECRET_KEY: securekey
-      JWT_SECRET_KEY: securekey
-      SYSTEM_EMAIL: example@your-domain.com
-      SMTP_HOST: smtp.your-domain.com
-      SMTP_USER: user
-      SMTP_PASSWORD: securepassword
-      SMTP_PORT: 465
-      SMTP_TYPE: smtps
-      FRONTEND_HOST: https://your-domain.com/
+```bash
+cp .env.example .env
 ```
 
-A full list of available environment variables can be found [here](./environment-variables.md).
+Set the environment variables in the `.env` file according to your needs. 
+
+You can also create a `docker-compose.override.yml` file to override specific settings without modifying the original `docker-compose.yml` file.
+
+A full list of available environment variables can be found [here](./environment-variables.md). Setting variables that are not included in the `.env.example` file has to be done in the `docker-compose.override.yml` file.
 
 ### Automated updates
 
 The default configuration uses [Watchtower](https://containrrr.dev/watchtower/) to automatically update the LocalCrag application daily at 4AM. 
 
-It is recommended to set up watchtower [notifications](https://containrrr.dev/watchtower/notifications) to keep informed about updates and eventual failures during the automated update process.
+It is recommended to set up watchtower [notifications](https://containrrr.dev/watchtower/notifications) to keep informed about updates and eventual failures during the automated update process. For this, set the `WATCHTOWER_NOTIFICATION_URL` in the `.env` file. You can also choose to only receive notifications if new versions are detected. Use the `WATCHTOWER_MONITOR_ONLY` variable for this.
 
-To disable this feature, you can e.g. simply override the `watchtower` service in your `docker-compose.override.yml` file to a noop command:
+To disable watchtower completely, you can e.g. simply override the `watchtower` service in your `docker-compose.override.yml` file to a noop command:
 
 ```yaml
   watchtower:
