@@ -66,7 +66,7 @@ services:
       SMTP_TYPE: ${SMTP_TYPE}
       FRONTEND_HOST: ${FRONTEND_HOST}
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5000/api/health" ]
+      test: [ "CMD", "curl", "-f", "http://server:5000/api/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
