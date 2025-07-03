@@ -42,6 +42,7 @@ services:
       - database
       - storage
     container_name: ${COMPOSE_PROJECT_NAME}_server
+    labels: [ "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}" ]
     ports:
       - "5000:5000"
     environment:
@@ -74,6 +75,7 @@ services:
   client:
     image: ghcr.io/localcrag/localcrag-client:latest
     container_name: ${COMPOSE_PROJECT_NAME}_client
+    labels: [ "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}" ]
     depends_on:
       - server
     ports:
@@ -91,6 +93,7 @@ services:
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
       WATCHTOWER_NOTIFICATION_REPORT: ${WATCHTOWER_NOTIFICATION_REPORT}
       WATCHTOWER_NOTIFICATION_DELAY: 10
+      WATCHTOWER_SCOPE: ${COMPOSE_PROJECT_NAME}
     command: server client
     restart: always
 
