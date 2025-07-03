@@ -5,7 +5,7 @@ FROM python AS localcragapp-server
 RUN pip install pipenv
 ENV PYTHONPATH=/localcragapp/src
 RUN mkdir /.local && chown 1000:1000 /.local
-RUN echo 'alias pytest="SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}_test LOCALCRAG_CONFIG=/localcragapp/src/config/test-ci.cfg env -u SPACES_SECRET_KEY -u SPACES_ACCESS_KEY -u SPACES_ENDPOINT -u SPACES_ACCESS_ENDPOINT -u SPACES_REGION -u SPACES_BUCKET -u SPACES_ADDRESSING -u SMTP_HOST -u SMTP_USER -u SMTP_PASSWORD -u SMTP_PORT -u SMTP_TYPE pipenv run pytest"' >> /tmp/aliases && \
+RUN echo 'alias pytest="SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}_test LOCALCRAG_CONFIG=/localcragapp/src/config/test-ci.cfg env -u S3_PASSWORD -u S3_USER -u S3_ENDPOINT -u S3_ACCESS_ENDPOINT -u S3_REGION -u S3_BUCKET -u SPACES_SECRET_KEY -u SPACES_ACCESS_KEY -u SPACES_ENDPOINT -u SPACES_ACCESS_ENDPOINT -u SPACES_REGION -u SPACES_BUCKET -u SPACES_ADDRESSING -u SMTP_HOST -u SMTP_USER -u SMTP_PASSWORD -u SMTP_PORT -u SMTP_TYPE pipenv run pytest"' >> /tmp/aliases && \
     echo 'alias flake8="pipenv run flake8"' >> /tmp/aliases && \
     echo 'alias black="pipenv run black --config=/localcragapp/pyproject.toml"' >> /tmp/aliases && \
     echo 'alias isort="pipenv run isort --settings-path=/localcragapp/pyproject.toml"' >> /tmp/aliases && \

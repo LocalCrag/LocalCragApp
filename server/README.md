@@ -21,13 +21,13 @@
     - `SUPERADMIN_FIRSTNAME` First name of the initial superadmin user
     - `SUPERADMIN_LASTNAME` Last name of the initial superadmin user
     - `SUPERADMIN_EMAIL` E-Mail address of the initial superadmin user - invitation mail with password will go here
-    - `SPACES_SECRET_KEY` Secret key for the object storage
-    - `SPACES_ACCESS_KEY` Access key for the object storage
-    - `SPACES_ENDPOINT` Object storage endpoint
-    - `SPACES_REGION` Object storage region
-    - `SPACES_BUCKET` Object storage bucket name
-    - `SPACES_ACCESS_ENDPOINT` Access endpoint of the object storage
-    - `SPACES_ADDRESSING` Object storage addressing mode: `virtual` or `path`
+    - `S3_PASSWORD` Password / secret key for the S3 object storage
+    - `S3_USER` Username / access key for the S3 object storage
+    - `S3_ENDPOINT` S3 object storage endpoint
+    - `S3_REGION` S3 object storage region
+    - `S3_BUCKET` S3 object storage bucket name
+    - `S3_ACCESS_ENDPOINT` Access endpoint of the S3 object storage
+    - `S3_ADDRESSING` S3 object storage addressing mode: `virtual` or `path`
     - `SENTRY_DSN` DSN for Sentry error tracking
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
     - `CRON_ACCESS_TOKEN` Access token for cron jobs accessing e.g. the ranking endpoint

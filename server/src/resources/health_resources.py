@@ -26,7 +26,7 @@ class Health(MethodView):
         # Test spaces connection
         try:
             spaces_client = get_spaces_client()
-            spaces_client.head_bucket(Bucket=current_app.config["SPACES_BUCKET"])
+            spaces_client.head_bucket(Bucket=current_app.config["S3_BUCKET"])
             response["spaces"] = "healthy"
         except Exception:
             response["spaces"] = "Connection failed"

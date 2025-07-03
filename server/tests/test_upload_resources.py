@@ -21,7 +21,7 @@ def test_successful_file_upload(client, clean_test_uploads, s3_mock, moderator_t
     assert isinstance(res["filename"], str)
     assert res["originalFilename"] == "test_pdf.pdf"
     assert isinstance(res["id"], str)
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert res["width"] is None
     assert res["height"] is None
     assert res["thumbnailXS"] is None
@@ -46,7 +46,7 @@ def test_file_upload_too_large_file(client, clean_test_uploads, s3_mock, moderat
     res = rv.json
     assert res["message"] == "FILESIZE_LIMIT_EXCEEDED"
     with pytest.raises(Exception):
-        s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key="test-uuid.jpg")
+        s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key="test-uuid.jpg")
 
 
 def test_successful_upload_small(client, clean_test_uploads, s3_mock, moderator_token):
@@ -73,30 +73,30 @@ def test_successful_upload_small(client, clean_test_uploads, s3_mock, moderator_
     assert res["thumbnailL"] is False
     assert res["thumbnailXL"] is False
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
 
 
@@ -124,32 +124,32 @@ def test_successful_upload_medium(client, clean_test_uploads, s3_mock, moderator
     assert res["thumbnailL"] is False
     assert res["thumbnailXL"] is False
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
 
 
@@ -177,34 +177,34 @@ def test_successful_upload_large(client, clean_test_uploads, s3_mock, moderator_
     assert res["thumbnailL"] is True
     assert res["thumbnailXL"] is True
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
@@ -250,30 +250,30 @@ def test_successful_upload_small_png(client, clean_test_uploads, s3_mock, modera
     assert res["thumbnailL"] is False
     assert res["thumbnailXL"] is False
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
 
 
@@ -301,30 +301,30 @@ def test_successful_upload_small_gif(client, clean_test_uploads, s3_mock, modera
     assert res["thumbnailL"] is False
     assert res["thumbnailXL"] is False
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
 
 
@@ -352,28 +352,28 @@ def test_successful_upload_small_bmp(client, clean_test_uploads, s3_mock, modera
     assert res["thumbnailL"] is False
     assert res["thumbnailXL"] is False
     filename_parts = res["filename"].split(".")
-    assert s3_mock.get_object(Bucket=current_app.config["SPACES_BUCKET"], Key=res["filename"]) is not None
+    assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=res["filename"]) is not None
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xs.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     assert (
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_s.{}".format(filename_parts[0], filename_parts[1])
         )
         is not None
     )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_m.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_l.{}".format(filename_parts[0], filename_parts[1])
         )
     with pytest.raises(Exception):
         s3_mock.get_object(
-            Bucket=current_app.config["SPACES_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
+            Bucket=current_app.config["S3_BUCKET"], Key="{}_xl.{}".format(filename_parts[0], filename_parts[1])
         )
