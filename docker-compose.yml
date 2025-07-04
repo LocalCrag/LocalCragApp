@@ -3,11 +3,12 @@ services:
     image: postgres
     container_name: ${COMPOSE_PROJECT_NAME}_database
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data/db-files
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/db-files/ # Set custom directory to allow initial mounting of pg_hba file without init_db crashing
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}", "-h", "localhost" ]
       interval: 30s
