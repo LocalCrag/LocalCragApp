@@ -1,7 +1,6 @@
 from util.scripts.add_backup_user import add_backup_user
 from util.scripts.add_initial_data import add_initial_data
 from util.scripts.add_initial_instance_settings import add_initial_instance_settings
-from util.scripts.add_postgres_extensions import add_postgres_extensions
 from util.scripts.add_scales import add_scales
 from util.scripts.add_superadmin import add_superadmin
 
@@ -11,7 +10,6 @@ def setup_database(down=False):
     Runs all migration scripts in the correct order.
     """
     scripts = [
-        add_postgres_extensions,
         add_superadmin,
         add_initial_data,
         add_scales,

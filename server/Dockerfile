@@ -24,6 +24,7 @@ EXPOSE 5000
 CMD sh -c "\
     cd src && \
     flask db upgrade && \
+    python3 util/scripts/add_postgres_extensions.py && \
     python3 util/scripts/database_setup.py && \
     cd .. && \
     gunicorn  --config src/gunicorn.conf.py \
