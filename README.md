@@ -25,6 +25,12 @@ This was all perfectly possible by just using Wordpress or some forum software l
 
 Visit https://gleesbouldering.com for an example of a LocalCrag instance. This is the Eifel bouldering area, which was the first area to be developed with LocalCrag.
 
+### Staging instances
+
+The newest features are always available on our staging instances:
+- [LocalCrag outdoor](https://next-outdoor.localcrag.cloud/)
+- [LocalCrag indoor](https://next-indoor.localcrag.cloud/)
+
 ## Screenshots
 
 ![Lines view](docs/assets/topo-images.png "Line view")
