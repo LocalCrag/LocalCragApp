@@ -1,3 +1,12 @@
+## [1.19.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.1...v1.19.2) (2025-07-06)
+
+
+### Bug Fixes
+
+* **ascents:** ascent list doesn't show no ascents alert while it's still loading anymore ([#731](https://github.com/LocalCrag/LocalCragApp/issues/731)) ([c67e05b](https://github.com/LocalCrag/LocalCragApp/commit/c67e05b51ec6ec9d71813c222d752e0207481d04)), closes [#721](https://github.com/LocalCrag/LocalCragApp/issues/721)
+* **ascents:** fix an issue where ascents could not be ordered by grades anymore ([#734](https://github.com/LocalCrag/LocalCragApp/issues/734)) ([c1ec30a](https://github.com/LocalCrag/LocalCragApp/commit/c1ec30a8da3b0d75969d608606086a1042fa95ff)), closes [#729](https://github.com/LocalCrag/LocalCragApp/issues/729)
+* **core:** docker postgres extensions are now installed via migration ([#744](https://github.com/LocalCrag/LocalCragApp/issues/744)) ([cbb3c13](https://github.com/LocalCrag/LocalCragApp/commit/cbb3c1312116c101db9b22c56d8c83e6e1016bdd))
+
 ## [1.19.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.0...v1.19.1) (2025-06-21)
 
 
