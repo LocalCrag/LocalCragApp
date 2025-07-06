@@ -17,9 +17,9 @@ depends_on = None
 
 def upgrade():
     op.execute("CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;")
-    op.execute("CREATE EXTENSION IF NOT EXISTS uuid-ossp;")
+    op.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
 
 
 def downgrade():
     op.execute("DROP EXTENSION IF EXISTS fuzzystrmatch;")
-    op.execute("DROP EXTENSION IF EXISTS uuid-ossp;")
+    op.execute('DROP EXTENSION IF EXISTS "uuid-ossp";')
