@@ -73,8 +73,8 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SPACES_SECRET_KEY: ${{ secrets.SPACES_SECRET_KEY }}
-          SPACES_ACCESS_KEY: ${{ secrets.SPACES_ACCESS_KEY }}
-          SPACES_ENDPOINT: ${{ secrets.SPACES_ENDPOINT }}
-          SPACES_REGION: ${{ secrets.SPACES_REGION }}
-          SPACES_BUCKET: ${{ secrets.SPACES_BUCKET }}
+          S3_PASSWORD: ${{ secrets.SPACES_SECRET_KEY }}
+          S3_USER: ${{ secrets.SPACES_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.SPACES_ENDPOINT }}
+          S3_REGION: ${{ secrets.SPACES_REGION }}
+          S3_BUCKET: ${{ secrets.SPACES_BUCKET }}

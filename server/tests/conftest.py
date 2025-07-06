@@ -186,15 +186,15 @@ def s3_mock():
             session = boto3.session.Session()
             client = session.client(
                 "s3",
-                endpoint_url=current_app.config["SPACES_ENDPOINT"],
-                config=botocore.config.Config(s3={"addressing_style": current_app.config["SPACES_ADDRESSING"]}),
-                region_name=current_app.config["SPACES_REGION"],
-                aws_access_key_id=current_app.config["SPACES_ACCESS_KEY"],
-                aws_secret_access_key=current_app.config["SPACES_SECRET_KEY"],
+                endpoint_url=current_app.config["S3_ENDPOINT"],
+                config=botocore.config.Config(s3={"addressing_style": current_app.config["S3_ADDRESSING"]}),
+                region_name=current_app.config["S3_REGION"],
+                aws_access_key_id=current_app.config["S3_USER"],
+                aws_secret_access_key=current_app.config["S3_PASSWORD"],
             )
             client.create_bucket(
-                Bucket=app.config["SPACES_BUCKET"],
-                CreateBucketConfiguration={"LocationConstraint": app.config["SPACES_REGION"]},
+                Bucket=app.config["S3_BUCKET"],
+                CreateBucketConfiguration={"LocationConstraint": app.config["S3_REGION"]},
             )
             yield client
         finally:

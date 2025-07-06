@@ -25,14 +25,14 @@ class File(BaseEntity):
 
     @hybrid_property
     def filename_with_host(self):
-        if not current_app.config["SPACES_ENDPOINT"] and not current_app.config["SPACES_ACCESS_ENDPOINT"]:
+        if not current_app.config["S3_ENDPOINT"] and not current_app.config["S3_ACCESS_ENDPOINT"]:
             return self.filename
-        endpoint = current_app.config["SPACES_ENDPOINT"]
-        if current_app.config["SPACES_ACCESS_ENDPOINT"]:
-            endpoint = current_app.config["SPACES_ACCESS_ENDPOINT"]
+        endpoint = current_app.config["S3_ENDPOINT"]
+        if current_app.config["S3_ACCESS_ENDPOINT"]:
+            endpoint = current_app.config["S3_ACCESS_ENDPOINT"]
         protocol, host = endpoint.split("://")
-        if current_app.config["SPACES_ADDRESSING"] == "path":
-            result = "{}://{}/{}/{}".format(protocol, host, current_app.config["SPACES_BUCKET"], self.filename)
-        else:  # SPACES_ADDRESSING = 'virtual'
-            result = "{}://{}.{}/{}".format(protocol, current_app.config["SPACES_BUCKET"], host, self.filename)
+        if current_app.config["S3_ADDRESSING"] == "path":
+            result = "{}://{}/{}/{}".format(protocol, host, current_app.config["S3_BUCKET"], self.filename)
+        else:  # S3_ADDRESSING = 'virtual'
+            result = "{}://{}.{}/{}".format(protocol, current_app.config["S3_BUCKET"], host, self.filename)
         return result
