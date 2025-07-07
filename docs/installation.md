@@ -42,7 +42,7 @@ To disable watchtower completely, you can e.g. simply override the `watchtower` 
 Once you have configured the environment variables, you can start the LocalCrag application using Docker Compose:
 
 ```bash 
-docker-compose up -d
+docker compose up -d
 ```
 
 On first startup, your initial admin user will be created based on the `SUPERADMIN_FIRSTNAME`, `SUPERADMIN_LASTNAME`, and `SUPERADMIN_EMAIL` variables you set in the `docker-compose.override.yml` file.
