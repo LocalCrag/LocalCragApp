@@ -111,7 +111,7 @@ services:
       WATCHTOWER_NOTIFICATION_REPORT: ${WATCHTOWER_NOTIFICATION_REPORT}
       WATCHTOWER_NOTIFICATION_DELAY: 10
       WATCHTOWER_SCOPE: ${COMPOSE_PROJECT_NAME}
-    command: server client
+    command: ${COMPOSE_PROJECT_NAME}_server ${COMPOSE_PROJECT_NAME}_client
     restart: always
 
 volumes:
