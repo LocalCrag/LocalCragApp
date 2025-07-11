@@ -71,7 +71,9 @@ export class Ascent extends AbstractModel {
       gradeValue: ascent.gradeValue,
       line: ascent.line.id,
       date: ascent.date
-        ? formatISO(ascent.date, { representation: 'date' })
+        ? formatISO(new Date(ascent.date.toISOString()), {
+            representation: 'date',
+          })
         : null,
     };
   }
