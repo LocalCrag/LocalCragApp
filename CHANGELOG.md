@@ -1,3 +1,10 @@
+## [1.19.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.2...v1.19.3) (2025-07-11)
+
+
+### Bug Fixes
+
+* **ascents:** fix serialization of ascents to utc ([#749](https://github.com/LocalCrag/LocalCragApp/issues/749)) ([6bc80e4](https://github.com/LocalCrag/LocalCragApp/commit/6bc80e4241543d9ae86d8fa152e35ffa47e5a790))
+
 ## [1.19.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.1...v1.19.2) (2025-07-06)
 
 
