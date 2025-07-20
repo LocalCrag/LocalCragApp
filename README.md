@@ -60,6 +60,8 @@ LocalCrag is an open-source project and we welcome contributions from the commun
 
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcome.
 
+See the (dev tooling guide)[./docs/dev-tooling.md] for more information on how to set up your development environment.
+
 ### Our contributors
 
 <a href="https://github.com/LocalCrag/LocalCragApp/graphs/contributors">
