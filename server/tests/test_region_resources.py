@@ -5,7 +5,7 @@ def test_successful_get_region(client):
     assert res["id"] == "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
     assert res["name"] == "Tessin"
     assert res["description"] == "Tolle Region"
-    assert res["rules"] == None
+    assert res["rules"] is None
     assert res["ascentCount"] == 1
 
 

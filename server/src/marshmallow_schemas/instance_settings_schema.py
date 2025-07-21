@@ -23,6 +23,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     gymMode = fields.Boolean(attribute="gym_mode")
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
     displayUserGradesRatings = fields.Boolean(attribute="display_user_grades_ratings")
+    faDefaultFormat = fields.String(attribute="fa_default_format")
 
 
 instance_settings_schema = InstanceSettingsSchema()

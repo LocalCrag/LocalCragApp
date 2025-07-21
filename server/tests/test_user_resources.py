@@ -265,10 +265,10 @@ def test_promote_user_to_member(client, moderator_token, admin_token):
     rv = client.put(f"/api/users/{user.id}/promote", token=moderator_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["superadmin"] == False
-    assert res["admin"] == False
-    assert res["moderator"] == False
-    assert res["member"] == False
+    assert res["superadmin"] is False
+    assert res["admin"] is False
+    assert res["moderator"] is False
+    assert res["member"] is False
 
     data = {
         "promotionTarget": "MEMBER",
@@ -276,10 +276,10 @@ def test_promote_user_to_member(client, moderator_token, admin_token):
     rv = client.put(f"/api/users/{user.id}/promote", token=moderator_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["superadmin"] == False
-    assert res["admin"] == False
-    assert res["moderator"] == False
-    assert res["member"] == True
+    assert res["superadmin"] is False
+    assert res["admin"] is False
+    assert res["moderator"] is False
+    assert res["member"] is True
 
     data = {
         "promotionTarget": "MODERATOR",
@@ -287,10 +287,10 @@ def test_promote_user_to_member(client, moderator_token, admin_token):
     rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["superadmin"] == False
-    assert res["admin"] == False
-    assert res["moderator"] == True
-    assert res["member"] == True
+    assert res["superadmin"] is False
+    assert res["admin"] is False
+    assert res["moderator"] is True
+    assert res["member"] is True
 
     data = {
         "promotionTarget": "ADMIN",
@@ -298,10 +298,10 @@ def test_promote_user_to_member(client, moderator_token, admin_token):
     rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["superadmin"] == False
-    assert res["admin"] == True
-    assert res["moderator"] == True
-    assert res["member"] == True
+    assert res["superadmin"] is False
+    assert res["admin"] is True
+    assert res["moderator"] is True
+    assert res["member"] is True
 
 
 def test_successful_get_user_grades(client):

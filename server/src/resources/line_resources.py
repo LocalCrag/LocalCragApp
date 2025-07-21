@@ -153,11 +153,15 @@ class CreateLine(MethodView):
         new_line.secret = line_data["secret"]
 
         if new_line.author_grade_value >= 0:
+            if line_data["faYear"] and line_data["faDate"]:
+                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             new_line.fa_year = line_data["faYear"]
+            new_line.fa_date = line_data["faDate"]
             new_line.fa_name = line_data["faName"]
         else:
             new_line.fa_year = None
             new_line.fa_name = None
+            new_line.fa_date = None
 
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
@@ -247,11 +251,15 @@ class UpdateLine(MethodView):
         )
 
         if line.author_grade_value >= 0:
+            if line_data["faYear"] and line_data["faDate"]:
+                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
+            line.fa_date = line_data["faDate"]
         else:
             line.fa_year = None
             line.fa_name = None
+            line.fa_date = None
             if line.ascent_count > 0:
                 raise BadRequest("Cannot change a line to a project if it has been ticked!")
 

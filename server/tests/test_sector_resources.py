@@ -41,9 +41,9 @@ def test_successful_create_sector(client, moderator_token):
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["ascentCount"] == 0
-    assert res["secret"] == False
+    assert res["secret"] is False
     assert res["rules"] == "test rules"
-    assert res["closed"] == False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
@@ -82,8 +82,8 @@ def test_successful_get_sector(client):
     assert res["shortDescription"] == "Kurze Beschreibung zum Schattental"
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
-    assert res["secret"] == False
-    assert res["closed"] == False
+    assert res["secret"] is False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
@@ -139,9 +139,9 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["ascentCount"] == 1
-    assert res["secret"] == False
+    assert res["secret"] is False
     assert res["rules"] == "test rules"
-    assert res["closed"] == False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
