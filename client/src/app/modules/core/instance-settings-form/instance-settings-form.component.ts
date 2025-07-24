@@ -33,6 +33,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { FaDefaultFormat } from '../../../enums/fa-default-format';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -69,6 +70,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public instanceSettings: InstanceSettings;
+  public faDefaultFormats = FaDefaultFormat;
 
   constructor(
     private fb: FormBuilder,
@@ -116,6 +118,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoTrackerUrl: [null],
       matomoSiteId: [null],
       maptilerApiKey: [null],
+      faDefaultFormat: [null],
     });
   }
 
@@ -140,6 +143,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
       maptilerApiKey: this.instanceSettings.maptilerApiKey,
+      faDefaultFormat: this.instanceSettings.faDefaultFormat,
     });
   }
 
@@ -184,6 +188,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('matomoTrackerUrl').value;
       instanceSettings.maptilerApiKey =
         this.instanceSettingsForm.get('maptilerApiKey').value;
+      instanceSettings.faDefaultFormat =
+        this.instanceSettingsForm.get('faDefaultFormat').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { File } from '../../models/file';
 import { updateInstanceSettings } from '../actions/instance-settings.actions';
+import { FaDefaultFormat } from '../../enums/fa-default-format';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -20,6 +21,7 @@ export interface InstanceSettingsState {
   gymMode: boolean;
   skippedHierarchyLayers: number;
   displayUserGradesRatings: boolean;
+  faDefaultFormat: FaDefaultFormat;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -40,6 +42,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   gymMode: false,
   skippedHierarchyLayers: 0,
   displayUserGradesRatings: false,
+  faDefaultFormat: FaDefaultFormat.YEAR,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -63,6 +66,7 @@ const instanceSettingsReducer = createReducer(
     gymMode: action.settings.gymMode,
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
     displayUserGradesRatings: action.settings.displayUserGradesRatings,
+    faDefaultFormat: action.settings.faDefaultFormat,
   })),
 );
 

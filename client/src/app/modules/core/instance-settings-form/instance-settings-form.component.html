@@ -107,6 +107,30 @@
           ></p-select>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="faDefaultFormat">
+              {{ t("faDefaultFormat") }}
+            </label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('faDefaultFormatTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
+          <p-select
+            id="faDefaultFormat"
+            [options]="[
+              { value: faDefaultFormats.YEAR, label: t('YEAR') },
+              { value: faDefaultFormats.DATE, label: t('DATE') },
+            ]"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="faDefaultFormat"
+            lcFormControl
+          ></p-select>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

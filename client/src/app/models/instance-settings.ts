@@ -1,4 +1,5 @@
 import { File } from './file';
+import { FaDefaultFormat } from '../enums/fa-default-format';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -21,6 +22,7 @@ export class InstanceSettings {
   gymMode: boolean;
   displayUserGradesRatings: boolean;
   skippedHierarchicalLayers: number;
+  faDefaultFormat: FaDefaultFormat;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -54,6 +56,7 @@ export class InstanceSettings {
       payload.displayUserGradesRatings;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
+    instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     return instanceSettings;
   }
 
@@ -84,6 +87,7 @@ export class InstanceSettings {
       gymMode: instanceSettings.gymMode,
       displayUserGradesRatings: instanceSettings.displayUserGradesRatings,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
+      faDefaultFormat: instanceSettings.faDefaultFormat,
     };
   }
 }

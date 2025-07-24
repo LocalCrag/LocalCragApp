@@ -69,9 +69,10 @@
           [readonly]="true"
         ></p-rating>
       </div>
-      <div *ngIf="line.faName || line.faYear" class="fa">
+      <div *ngIf="line.faName || line.faYear || line.faDate" class="fa">
         {{ t("FA") }} <span *ngIf="line.faYear">{{ line.faYear }}</span
-        ><span *ngIf="line.faName">{{ line.faName }}</span>
+        ><span *ngIf="line.faDate">{{ line.faDate | date : 'dd.MM.yyyy' }}</span
+      ><span *ngIf="line.faName">{{ line.faName }}</span>
       </div>
       <lc-archive-button
         [line]="line"
