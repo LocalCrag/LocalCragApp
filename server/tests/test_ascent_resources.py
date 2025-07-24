@@ -24,14 +24,14 @@ def test_successful_create_ascent(client, member_token):
     rv = client.post("/api/ascents", token=member_token, json=ascent_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["flash"] == True
-    assert res["fa"] == False
-    assert res["soft"] == True
-    assert res["hard"] == False
-    assert res["withKneepad"] == True
+    assert res["flash"] is True
+    assert res["fa"] is False
+    assert res["soft"] is True
+    assert res["hard"] is False
+    assert res["withKneepad"] is True
     assert res["rating"] == 2
     assert res["comment"] == "Hahahahaha"
-    assert res["year"] == None
+    assert res["year"] is None
     assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
     assert res["line"]["slug"] == "treppe"
@@ -86,14 +86,14 @@ def test_successful_update_ascent(client, admin_token):
     rv = client.put(f"/api/ascents/{ascent.id}", token=admin_token, json=ascent_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["flash"] == True
-    assert res["fa"] == False
-    assert res["soft"] == True
-    assert res["hard"] == False
-    assert res["withKneepad"] == True
+    assert res["flash"] is True
+    assert res["fa"] is False
+    assert res["soft"] is True
+    assert res["hard"] is False
+    assert res["withKneepad"] is True
     assert res["rating"] == 2
     assert res["comment"] == "Hahahahaha"
-    assert res["year"] == None
+    assert res["year"] is None
     assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
     assert res["line"]["slug"] == "super-spreader"
@@ -148,21 +148,21 @@ def test_successful_get_ascents(client):
     res = rv.json
     assert len(res["items"]) == 1
     assert res["items"][0]["id"] == str(ascent.id)
-    assert res["items"][0]["flash"] == False
-    assert res["items"][0]["fa"] == True
-    assert res["items"][0]["soft"] == False
-    assert res["items"][0]["hard"] == True
-    assert res["items"][0]["withKneepad"] == True
+    assert res["items"][0]["flash"] is False
+    assert res["items"][0]["fa"] is True
+    assert res["items"][0]["soft"] is False
+    assert res["items"][0]["hard"] is True
+    assert res["items"][0]["withKneepad"] is True
     assert res["items"][0]["rating"] == 3
     assert res["items"][0]["comment"] == "Yeeha!"
-    assert res["items"][0]["year"] == None
+    assert res["items"][0]["year"] is None
     assert res["items"][0]["gradeValue"] == 22
     assert res["items"][0]["date"] == "2024-04-16"
     assert res["items"][0]["line"]["slug"] == "super-spreader"
     assert res["items"][0]["area"]["slug"] == "dritter-block-von-links"
     assert res["items"][0]["sector"]["slug"] == "schattental"
     assert res["items"][0]["crag"]["slug"] == "brione"
-    assert res["hasNext"] == False
+    assert res["hasNext"] is False
 
     rv = client.get(f'/api/ascents?crag_id={Crag.find_by_slug("chironico").id}&page=1')
     assert rv.status_code == 200
@@ -230,6 +230,7 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,

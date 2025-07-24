@@ -55,6 +55,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.maptiler_api_key = instance_settings_data["maptilerApiKey"]
         instance_settings.gym_mode = instance_settings_data["gymMode"]
         instance_settings.display_user_grades_ratings = instance_settings_data["displayUserGradesRatings"]
+        instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
 
         if instance_settings_data["skippedHierarchicalLayers"] > instance_settings.skipped_hierarchical_layers:
             if instance_settings_data["skippedHierarchicalLayers"] >= 1:

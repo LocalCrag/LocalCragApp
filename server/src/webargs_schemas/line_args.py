@@ -25,6 +25,7 @@ class LineArgsSchema(Schema, IsClosableWebargsMixin):
     type = fields.Enum(LineTypeEnum, required=True, allow_none=False)
     authorRating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
     faYear = fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year)
+    faDate = fields.Date(required=True, allow_none=True, validate=lambda x: datetime.date.today() >= x)
     faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
     startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)
     secret = fields.Boolean(required=True, allow_none=False)

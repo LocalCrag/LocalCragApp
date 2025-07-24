@@ -38,11 +38,11 @@ def test_successful_create_area(client, moderator_token):
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["mapMarkers"][0]["type"] == "AREA"
-    assert res["secret"] == False
+    assert res["secret"] is False
     assert res["ascentCount"] == 0
     assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
-    assert res["closed"] == False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
@@ -188,10 +188,10 @@ def test_successful_edit_area(client, moderator_token):
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["ascentCount"] == 1
-    assert res["portraitImage"] == None
-    assert res["secret"] == False
+    assert res["portraitImage"] is None
+    assert res["secret"] is False
     assert res["id"] is not None
-    assert res["closed"] == False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None

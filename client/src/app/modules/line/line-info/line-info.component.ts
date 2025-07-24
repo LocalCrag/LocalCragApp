@@ -32,6 +32,7 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { DatePipe } from '../../shared/pipes/date.pipe';
 
 /**
  * Component that shows detailed information about a line.
@@ -59,6 +60,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
     LineBoolPropListComponent,
     TopoImageComponent,
     AsyncPipe,
+    DatePipe,
   ],
 })
 @UntilDestroy()

@@ -4,6 +4,7 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -61,6 +62,9 @@ import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { FaDefaultFormat } from '../../../enums/fa-default-format';
+import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 
 /**
  * Form component for lines.
@@ -97,6 +101,8 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
     ConfirmPopup,
     FormSkeletonComponent,
     AsyncPipe,
+    ToggleSwitch,
+    FormsModule,
   ],
 })
 @UntilDestroy()
@@ -125,7 +131,8 @@ export class LineFormComponent implements OnInit {
   public today = new Date(new Date().getFullYear(), 11, 31);
   public parentSecret = false;
   public parentClosed = false;
-
+  public faFormat = FaDefaultFormat.YEAR;
+  public faFormats = FaDefaultFormat;
   public groupedScales: Record<LineType, Scale[]> = null;
 
   public defaultScales: Record<LineType, string | null> = {
@@ -300,6 +307,7 @@ export class LineFormComponent implements OnInit {
     this.store
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
+        this.faFormat = instanceSettings.faDefaultFormat;
         this.lineForm = this.fb.group({
           name: ['', [Validators.required, Validators.maxLength(120)]],
           description: [null],
@@ -315,6 +323,7 @@ export class LineFormComponent implements OnInit {
           grade: [null, [Validators.required]],
           rating: [null],
           faYear: [null, [yearOfDateNotInFutureValidator()]],
+          faDate: [null, [dateNotInFutureValidator()]],
           faName: [null, [Validators.maxLength(120)]],
           startingPosition: [StartingPosition.STAND, [Validators.required]],
           eliminate: [false],
@@ -489,6 +498,7 @@ export class LineFormComponent implements OnInit {
       line.faYear = this.lineForm.get('faYear').value
         ? this.lineForm.get('faYear').value.getFullYear()
         : null;
+      line.faDate = this.lineForm.get('faDate').value;
       line.faName = this.lineForm.get('faName').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
@@ -607,6 +617,16 @@ export class LineFormComponent implements OnInit {
       take(1),
       map((instanceSettings) => instanceSettings.displayUserGradesRatings),
     );
+  }
+
+  public toggleFaFormat() {
+    if (this.faFormat === FaDefaultFormat.YEAR) {
+      this.faFormat = FaDefaultFormat.DATE;
+      this.lineForm.get('faYear').setValue(null);
+    } else {
+      this.faFormat = FaDefaultFormat.YEAR;
+      this.lineForm.get('faYear').setValue(null);
+    }
   }
 
   protected readonly LineType = LineType;

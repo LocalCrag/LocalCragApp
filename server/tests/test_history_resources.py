@@ -41,6 +41,7 @@ def test_successful_change_value_history(client, moderator_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "STAND",
         "eliminate": True,

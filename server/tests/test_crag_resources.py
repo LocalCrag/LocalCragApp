@@ -42,8 +42,8 @@ def test_successful_create_crag(client, moderator_token):
     assert res["portraitImage"]["id"] == any_file_id
     assert res["id"] is not None
     assert res["ascentCount"] == 0
-    assert res["secret"] == False
-    assert res["closed"] == False
+    assert res["secret"] is False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
@@ -142,9 +142,9 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["orderIndex"] == 0
     assert res["ascentCount"] == 1
-    assert res["secret"] == False
+    assert res["secret"] is False
     assert res["id"] is not None
-    assert res["closed"] == False
+    assert res["closed"] is False
     assert res["closedReason"] is None
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
