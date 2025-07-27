@@ -86,7 +86,7 @@ class GetAscents(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades_ratings:
+            if instance_settings.display_user_grades:
                 query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
             else:
                 query = query.filter(
@@ -102,7 +102,7 @@ class GetAscents(MethodView):
         if order_by in {"time_created", "ascent_date"}:
             order_function = getattr(getattr(Ascent, order_by), order_direction)
         if order_by in {"grade_value"}:
-            if instance_settings.display_user_grades_ratings:
+            if instance_settings.display_user_grades:
                 order_function = getattr(getattr(Line, "user_grade_value"), order_direction)
             else:
                 order_function = getattr(getattr(Line, "author_grade_value"), order_direction)

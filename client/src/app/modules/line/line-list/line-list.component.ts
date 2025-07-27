@@ -187,7 +187,7 @@ export class LineListComponent implements OnInit {
     this.store
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
-        this.displayUserRating = instanceSettings.displayUserGradesRatings;
+        this.displayUserRating = instanceSettings.displayUserRatings;
       });
     this.orderOptions = [
       {

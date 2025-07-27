@@ -75,10 +75,28 @@
             <p-toggleswitch
               id="display-user-grades"
               class="mx-2"
-              formControlName="displayUserGradesRatings"
+              formControlName="displayUserGrades"
               lcFormControl
             />
             {{ t("displayUserGradesTrue") }}
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="display-user-ratings">
+            {{ t("displayUserRatingsLabel") }}
+          </label>
+          <div
+            class="flex align-items-center justify-content-center sm:justify-content-start"
+          >
+            {{ t("displayUserRatingsFalse") }}
+            <p-toggleswitch
+              id="display-user-ratings"
+              class="mx-2"
+              formControlName="displayUserRatings"
+              lcFormControl
+            />
+            {{ t("displayUserRatingsTrue") }}
           </div>
         </div>
 

@@ -93,9 +93,7 @@ def build_rankings():
                     if not secret and line.secret:
                         continue
                     ascent_value = (
-                        line.user_grade_value
-                        if instance_settings.display_user_grades_ratings
-                        else line.author_grade_value
+                        line.user_grade_value if instance_settings.display_user_grades else line.author_grade_value
                     )
                     global_ranking = ranking_map.get_global(line.type, secret)
                     crag_ranking = ranking_map.get_crag(line.type, ascent.crag_id, secret)

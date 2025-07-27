@@ -22,6 +22,7 @@ instance_settings_args = {
     "skippedHierarchicalLayers": fields.Integer(
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)
     ),
-    "displayUserGradesRatings": fields.Boolean(required=True),
+    "displayUserGrades": fields.Boolean(required=True),
+    "displayUserRatings": fields.Boolean(required=True),
     "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
 }

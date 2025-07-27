@@ -62,7 +62,6 @@ import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 
@@ -101,7 +100,6 @@ import { dateNotInFutureValidator } from '../../../utility/validators/date-not-i
     ConfirmPopup,
     FormSkeletonComponent,
     AsyncPipe,
-    ToggleSwitch,
     FormsModule,
   ],
 })
@@ -611,11 +609,19 @@ export class LineFormComponent implements OnInit {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
 
-  public getDisplayUserGradesRatings() {
+  public getDisplayUserGrades() {
     return this.store.pipe(
       select(selectInstanceSettingsState),
       take(1),
-      map((instanceSettings) => instanceSettings.displayUserGradesRatings),
+      map((instanceSettings) => instanceSettings.displayUserGrades),
+    );
+  }
+
+  public getDisplayUserRatings() {
+    return this.store.pipe(
+      select(selectInstanceSettingsState),
+      take(1),
+      map((instanceSettings) => instanceSettings.displayUserRatings),
     );
   }
 

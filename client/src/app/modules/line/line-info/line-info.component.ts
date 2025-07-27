@@ -100,7 +100,7 @@ export class LineInfoComponent implements OnInit {
     this.store
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
-        this.displayUserRating = instanceSettings.displayUserGradesRatings;
+        this.displayUserRating = instanceSettings.displayUserRatings;
       });
   }
 

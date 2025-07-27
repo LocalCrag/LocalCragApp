@@ -38,7 +38,7 @@ export class TickButtonComponent {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         if (
-          (instanceSettings.displayUserGradesRatings
+          (instanceSettings.displayUserGrades
             ? this.line.userGradeValue
             : this.line.authorGradeValue) >= 0
         ) {
