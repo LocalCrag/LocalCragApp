@@ -129,7 +129,7 @@ export class LineComponent implements OnInit {
           this.sector = sector;
           this.area = area;
           this.line = line;
-          const gradeValue = instanceSettings.displayUserGradesRatings
+          const gradeValue = instanceSettings.displayUserGrades
             ? line.userGradeValue
             : line.authorGradeValue;
           this.scalesService

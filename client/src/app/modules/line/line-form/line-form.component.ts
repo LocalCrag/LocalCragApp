@@ -615,11 +615,19 @@ export class LineFormComponent implements OnInit {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
   }
 
-  public getDisplayUserGradesRatings() {
+  public getDisplayUserGrades() {
     return this.store.pipe(
       select(selectInstanceSettingsState),
       take(1),
-      map((instanceSettings) => instanceSettings.displayUserGradesRatings),
+      map((instanceSettings) => instanceSettings.displayUserGrades),
+    );
+  }
+
+  public getDisplayUserRatings() {
+    return this.store.pipe(
+      select(selectInstanceSettingsState),
+      take(1),
+      map((instanceSettings) => instanceSettings.displayUserRatings),
     );
   }
 

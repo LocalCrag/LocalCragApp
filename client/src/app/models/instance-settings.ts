@@ -20,7 +20,8 @@ export class InstanceSettings {
   maxFileSize: number;
   maxImageSize: number;
   gymMode: boolean;
-  displayUserGradesRatings: boolean;
+  displayUserGrades: boolean;
+  displayUserRatings: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
 
@@ -52,8 +53,8 @@ export class InstanceSettings {
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.gymMode = payload.gymMode;
-    instanceSettings.displayUserGradesRatings =
-      payload.displayUserGradesRatings;
+    instanceSettings.displayUserGrades = payload.displayUserGrades;
+    instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
@@ -85,7 +86,8 @@ export class InstanceSettings {
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
       gymMode: instanceSettings.gymMode,
-      displayUserGradesRatings: instanceSettings.displayUserGradesRatings,
+      displayUserGrades: instanceSettings.displayUserGrades,
+      displayUserRatings: instanceSettings.displayUserRatings,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
     };

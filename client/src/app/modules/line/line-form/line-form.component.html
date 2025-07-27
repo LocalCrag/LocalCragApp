@@ -160,7 +160,7 @@
               styleClass="mt-2"
               severity="warn"
               text="{{ t('displayUserGradesActive') }}"
-              *ngIf="getDisplayUserGradesRatings() | async"
+              *ngIf="getDisplayUserGrades() | async"
             />
           </div>
 
@@ -207,7 +207,7 @@
               styleClass="mt-2"
               severity="warn"
               text="{{ t('displayUserRatingsActive') }}"
-              *ngIf="getDisplayUserGradesRatings() | async"
+              *ngIf="getDisplayUserRatings() | async"
             />
           </div>
 

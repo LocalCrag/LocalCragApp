@@ -187,7 +187,7 @@ class GetAreaGrades(MethodView):
         query = db.session.query(
             Line.type,
             Line.grade_scale,
-            Line.user_grade_value if instance_settings.display_user_grades_ratings else Line.author_grade_value,
+            Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
         ).filter(Line.area_id == area_id, Line.archived.is_(False))
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))

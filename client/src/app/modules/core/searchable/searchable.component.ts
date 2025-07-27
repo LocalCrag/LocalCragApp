@@ -52,7 +52,7 @@ export class SearchableComponent {
       .select(selectInstanceSettingsState)
       .pipe(
         map((state) =>
-          state.displayUserGradesRatings
+          state.displayUserGrades
             ? this.searchable.line.userGradeValue
             : this.searchable.line.authorGradeValue,
         ),

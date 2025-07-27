@@ -84,7 +84,7 @@ class GetLines(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades_ratings:
+            if instance_settings.display_user_grades:
                 query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
             else:
                 query = query.filter(
@@ -98,9 +98,9 @@ class GetLines(MethodView):
         # Handle order
         if order_by and order_direction:
             if order_by == "grade_value":
-                order_by = "user_grade_value" if instance_settings.display_user_grades_ratings else "author_grade_value"
+                order_by = "user_grade_value" if instance_settings.display_user_grades else "author_grade_value"
             elif order_by == "rating":
-                order_by = "user_rating" if instance_settings.display_user_grades_ratings else "author_rating"
+                order_by = "user_rating" if instance_settings.display_user_ratings else "author_rating"
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
