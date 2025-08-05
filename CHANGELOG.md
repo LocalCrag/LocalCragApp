@@ -1,3 +1,16 @@
+# [1.20.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.3...v1.20.0) (2025-08-05)
+
+
+### Bug Fixes
+
+* **topo:** fix editing first ascent date ([#752](https://github.com/LocalCrag/LocalCragApp/issues/752)) ([137c6c2](https://github.com/LocalCrag/LocalCragApp/commit/137c6c229b984dc8fe2690ecbc3d17ce8e1f7d29))
+
+
+### Features
+
+* **topo:** add option to specify the first ascent date as date, not only year ([#751](https://github.com/LocalCrag/LocalCragApp/issues/751)) ([d474afc](https://github.com/LocalCrag/LocalCragApp/commit/d474afc2988ef60b02b71694db7f2cfa6202c821)), closes [#706](https://github.com/LocalCrag/LocalCragApp/issues/706)
+* **topo:** allow setting display of user grades and ratings separately ([#753](https://github.com/LocalCrag/LocalCragApp/issues/753)) ([bff0cbd](https://github.com/LocalCrag/LocalCragApp/commit/bff0cbd9935442c8c351204235be4ea2a51e6c0f)), closes [#707](https://github.com/LocalCrag/LocalCragApp/issues/707)
+
 ## [1.19.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.2...v1.19.3) (2025-07-11)
 
 
