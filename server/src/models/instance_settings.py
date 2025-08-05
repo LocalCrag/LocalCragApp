@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
+from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 
 
 class InstanceSettings(db.Model):
@@ -34,7 +35,11 @@ class InstanceSettings(db.Model):
     maptiler_api_key = db.Column(db.String(120), nullable=True)
     gym_mode = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     skipped_hierarchical_layers = db.Column(db.Integer, nullable=False, server_default="0")
-    display_user_grades_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    fa_default_format = db.Column(
+        db.Enum(FaDefaultFormatEnum), nullable=False, server_default=FaDefaultFormatEnum.YEAR.value
+    )
 
     @hybrid_property
     def superadmin_email(self) -> str:

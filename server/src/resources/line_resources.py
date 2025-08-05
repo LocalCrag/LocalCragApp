@@ -84,7 +84,7 @@ class GetLines(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades_ratings:
+            if instance_settings.display_user_grades:
                 query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
             else:
                 query = query.filter(
@@ -98,9 +98,9 @@ class GetLines(MethodView):
         # Handle order
         if order_by and order_direction:
             if order_by == "grade_value":
-                order_by = "user_grade_value" if instance_settings.display_user_grades_ratings else "author_grade_value"
+                order_by = "user_grade_value" if instance_settings.display_user_grades else "author_grade_value"
             elif order_by == "rating":
-                order_by = "user_rating" if instance_settings.display_user_grades_ratings else "author_rating"
+                order_by = "user_rating" if instance_settings.display_user_ratings else "author_rating"
             order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
@@ -153,11 +153,15 @@ class CreateLine(MethodView):
         new_line.secret = line_data["secret"]
 
         if new_line.author_grade_value >= 0:
+            if line_data["faYear"] and line_data["faDate"]:
+                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             new_line.fa_year = line_data["faYear"]
+            new_line.fa_date = line_data["faDate"]
             new_line.fa_name = line_data["faName"]
         else:
             new_line.fa_year = None
             new_line.fa_name = None
+            new_line.fa_date = None
 
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
@@ -247,11 +251,15 @@ class UpdateLine(MethodView):
         )
 
         if line.author_grade_value >= 0:
+            if line_data["faYear"] and line_data["faDate"]:
+                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
+            line.fa_date = line_data["faDate"]
         else:
             line.fa_year = None
             line.fa_name = None
+            line.fa_date = None
             if line.ascent_count > 0:
                 raise BadRequest("Cannot change a line to a project if it has been ticked!")
 

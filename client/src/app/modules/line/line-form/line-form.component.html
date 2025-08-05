@@ -160,7 +160,7 @@
               styleClass="mt-2"
               severity="warn"
               text="{{ t('displayUserGradesActive') }}"
-              *ngIf="getDisplayUserGradesRatings() | async"
+              *ngIf="getDisplayUserGrades() | async"
             />
           </div>
 
@@ -207,7 +207,7 @@
               styleClass="mt-2"
               severity="warn"
               text="{{ t('displayUserRatingsActive') }}"
-              *ngIf="getDisplayUserGradesRatings() | async"
+              *ngIf="getDisplayUserRatings() | async"
             />
           </div>
 
@@ -296,7 +296,11 @@
             }}</small>
           </div>
 
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="faFormat === faFormats.YEAR"
+          >
             <label class="form-label" for="fa-year">{{
               t("lineFAYearLabel")
             }}</label>
@@ -314,6 +318,40 @@
             <small class="lc-error" *lcIfError="'dateInFuture'">{{
               t("yearInFutureValidationError")
             }}</small>
+          </div>
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            *ngIf="faFormat === faFormats.DATE"
+          >
+            <label class="form-label" for="fa-year">{{
+              t("lineFADateLabel")
+            }}</label>
+            <p-date-picker
+              id="fa-date"
+              formControlName="faDate"
+              view="date"
+              dateFormat="dd.mm.yy"
+              inputId="faDate"
+              lcFormControl
+              [maxDate]="today"
+              [readonlyInput]="true"
+              data-cy="line-form-faDate"
+            ></p-date-picker>
+            <small class="lc-error" *lcIfError="'dateInFuture'">{{
+              t("dateInFutureValidationError")
+            }}</small>
+          </div>
+          <div class="mt-2">
+            <p-button
+              (onClick)="toggleFaFormat()"
+              [label]="
+                faFormat === faFormats.YEAR
+                  ? t('showFaDateInsteadOfYear')
+                  : t('showFaYearInsteadOfDate')
+              "
+              variant="outlined"
+            />
           </div>
 
           <div class="flex flex-column gap-2" lcControlGroup>

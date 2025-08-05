@@ -12,6 +12,7 @@ def test_create_closed_line_in_open_area(client, moderator_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -49,7 +50,7 @@ def test_create_closed_line_in_open_area(client, moderator_token):
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
     assert res["closedReason"] == "Missgünstige Verbandsgemeinde"
 
     # Test, that area, sector and crag are still open
@@ -57,17 +58,17 @@ def test_create_closed_line_in_open_area(client, moderator_token):
     rv = client.get("/api/areas/dritter-block-von-links")
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/sectors/schattental")
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/crags/brione")
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
 
 def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_token):
@@ -98,29 +99,29 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     # Test, that sectors, areas and lines are now also closed
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/sectors/oben", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/lines/treppe", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     # Create open line, check that parents are now open but siblings still closed
 
@@ -133,6 +134,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -170,42 +172,42 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/crags/brione", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False
+    assert res["closed"] is False
 
     rv = client.get("/api/crags/chironico", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == False  # Was open all the time!
+    assert res["closed"] is False  # Was open all the time!
 
     rv = client.get("/api/sectors/oben", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/areas/noch-ein-bereich", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/lines/treppe", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
 
 # Test that creating a closed line in a closed area doesn't change the closed state of it's parents
@@ -248,6 +250,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -285,21 +288,21 @@ def test_secret_property_doesnt_change(client, moderator_token):
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     # Test, that area, sector and crag are still closed
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True
 
     rv = client.get("/api/crags/glees-2", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["closed"] == True
+    assert res["closed"] is True

@@ -37,7 +37,7 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
             this.scalesService.gradeNameByValue(
               line?.type,
               line?.gradeScale,
-              instanceSettings.displayUserGradesRatings
+              instanceSettings.displayUserGrades
                 ? line?.userGradeValue
                 : line?.authorGradeValue,
             ),

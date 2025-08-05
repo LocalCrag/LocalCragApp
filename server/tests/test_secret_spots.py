@@ -12,6 +12,7 @@ def test_create_secret_line_in_public_area(client, moderator_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -49,24 +50,24 @@ def test_create_secret_line_in_public_area(client, moderator_token):
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     # Test, that area, sector and crag are still public
 
     rv = client.get("/api/areas/dritter-block-von-links")
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/sectors/schattental")
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/crags/brione")
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
 
 def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_token):
@@ -97,29 +98,29 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     # Test, that sectors, areas and lines are now also secret
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/sectors/oben", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/lines/treppe", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     # Create public line, check that parents are now public but siblings still secret
 
@@ -132,6 +133,7 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -169,42 +171,42 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/crags/brione", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     rv = client.get("/api/crags/chironico", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False  # Was public all the time!
+    assert res["secret"] is False  # Was public all the time!
 
     rv = client.get("/api/sectors/oben", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/areas/noch-ein-bereich", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/lines/treppe", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
 
 def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret_items(
@@ -237,7 +239,7 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/crags/brione", json=crag_data)
     assert rv.status_code == 401
@@ -294,6 +296,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -331,24 +334,24 @@ def test_secret_property_doesnt_change(client, moderator_token):
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     # Test, that area, sector and crag are still secret
 
     rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/sectors/schattental", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
     rv = client.get("/api/crags/glees-2", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
 
 
 def test_gallery_secret(client, moderator_token, member_token):
@@ -362,6 +365,7 @@ def test_gallery_secret(client, moderator_token, member_token):
         "type": "BOULDER",
         "authorRating": 5,
         "faYear": 2016,
+        "faDate": None,
         "faName": "Dave Graham",
         "startingPosition": "FRENCH",
         "eliminate": True,
@@ -398,7 +402,7 @@ def test_gallery_secret(client, moderator_token, member_token):
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["secret"] == True
+    assert res["secret"] is True
     line_id = res["id"]
     line_slug = res["slug"]
 
@@ -425,7 +429,7 @@ def test_gallery_secret(client, moderator_token, member_token):
     rv = client.put("/api/lines/" + line_slug, token=moderator_token, json=line_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["secret"] == False
+    assert res["secret"] is False
 
     # Anonymous users can now see the image
     rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug={line_slug}")

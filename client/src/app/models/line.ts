@@ -31,6 +31,7 @@ export class Line extends IsClosable(AbstractModel) {
   userRating: number;
   type: LineType;
   faYear: number;
+  faDate: Date;
   faName: string;
   startingPosition: StartingPosition;
   secret: boolean;
@@ -109,6 +110,7 @@ export class Line extends IsClosable(AbstractModel) {
     line.userRating = payload.userRating;
     line.type = payload.type;
     line.faYear = payload.faYear;
+    line.faDate = payload.faDate ? new Date(payload.faDate) : null;
     line.faName = payload.faName;
     line.startingPosition = payload.startingPosition;
     line.secret = payload.secret;
@@ -186,6 +188,7 @@ export class Line extends IsClosable(AbstractModel) {
         authorRating: line.authorRating,
         type: line.type,
         faYear: line.faYear,
+        faDate: line.faDate ? line.faDate.toISOString().split('T')[0] : null,
         faName: line.faName ? line.faName : null,
         startingPosition: line.startingPosition,
         secret: line.secret,

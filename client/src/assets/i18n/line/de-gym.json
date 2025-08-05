@@ -6,5 +6,6 @@
   "lineForm.lineFANameLabel": "Schrauber",
   "lineForm.lineFANamePlaceholder": "z.B. Wolfgang Güllich",
   "lineForm.lineFAYearLabel": "Jahr des Schraubens",
+  "lineForm.lineFADateLabel": "Datum des Schraubens",
   "lineForm.closedReasonPlaceholder": "z.B. Wartungsarbeiten, ..."
 }

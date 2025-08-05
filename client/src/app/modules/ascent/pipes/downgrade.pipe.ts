@@ -26,7 +26,7 @@ export class DowngradePipe implements PipeTransform, OnDestroy {
         map(
           (instanceSettings) =>
             ascent.gradeValue <
-            (instanceSettings.displayUserGradesRatings
+            (instanceSettings.displayUserGrades
               ? ascent.line.userGradeValue
               : ascent.line.authorGradeValue),
         ),

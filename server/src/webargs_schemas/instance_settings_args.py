@@ -1,6 +1,8 @@
 from marshmallow import validate
 from webargs import fields
 
+from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+
 instance_settings_args = {
     "instanceName": fields.Str(required=True, validate=validate.Length(max=120)),
     "copyrightOwner": fields.Str(required=True, validate=validate.Length(max=120)),
@@ -20,5 +22,7 @@ instance_settings_args = {
     "skippedHierarchicalLayers": fields.Integer(
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)
     ),
-    "displayUserGradesRatings": fields.Boolean(required=True),
+    "displayUserGrades": fields.Boolean(required=True),
+    "displayUserRatings": fields.Boolean(required=True),
+    "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
 }

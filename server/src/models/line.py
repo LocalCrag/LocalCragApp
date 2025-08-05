@@ -35,6 +35,7 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
     user_rating = db.Column(db.Integer, nullable=True)
     area_id = db.Column(UUID(), db.ForeignKey("areas.id"), nullable=False)
     fa_year = db.Column(db.Integer, nullable=True)
+    fa_date = db.Column(db.Date, nullable=True)
     fa_name = db.Column(db.String(120), nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
     archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")

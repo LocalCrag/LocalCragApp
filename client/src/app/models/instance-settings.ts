@@ -1,4 +1,5 @@
 import { File } from './file';
+import { FaDefaultFormat } from '../enums/fa-default-format';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -19,8 +20,10 @@ export class InstanceSettings {
   maxFileSize: number;
   maxImageSize: number;
   gymMode: boolean;
-  displayUserGradesRatings: boolean;
+  displayUserGrades: boolean;
+  displayUserRatings: boolean;
   skippedHierarchicalLayers: number;
+  faDefaultFormat: FaDefaultFormat;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -50,10 +53,11 @@ export class InstanceSettings {
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.gymMode = payload.gymMode;
-    instanceSettings.displayUserGradesRatings =
-      payload.displayUserGradesRatings;
+    instanceSettings.displayUserGrades = payload.displayUserGrades;
+    instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
+    instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     return instanceSettings;
   }
 
@@ -82,8 +86,10 @@ export class InstanceSettings {
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
       gymMode: instanceSettings.gymMode,
-      displayUserGradesRatings: instanceSettings.displayUserGradesRatings,
+      displayUserGrades: instanceSettings.displayUserGrades,
+      displayUserRatings: instanceSettings.displayUserRatings,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
+      faDefaultFormat: instanceSettings.faDefaultFormat,
     };
   }
 }

@@ -45,6 +45,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     userGradeValue = fields.Integer(attribute="user_grade_value")
     gradeScale = fields.String(attribute="grade_scale")
     faYear = fields.Integer(attribute="fa_year")
+    faDate = fields.Date(attribute="fa_date")
     faName = fields.String(attribute="fa_name")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     secret = fields.Boolean()

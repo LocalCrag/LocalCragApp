@@ -1,5 +1,6 @@
 from extensions import db
 from models.crag import Crag
+from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 from models.file import File
 from models.instance_settings import InstanceSettings
 from models.sector import Sector
@@ -29,7 +30,9 @@ def test_successful_get_instance_settings(client):
     assert res["maxImageSize"] == 4
     assert res["gymMode"] == instance_settings.gym_mode
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
-    assert res["displayUserGradesRatings"] == instance_settings.display_user_grades_ratings
+    assert res["displayUserGrades"] == instance_settings.display_user_grades
+    assert res["displayUserRatings"] == instance_settings.display_user_ratings
+    assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -51,9 +54,11 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGradesRatings": True,
+        "displayUserGrades": True,
+        "displayUserRatings": True,
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
+        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -74,9 +79,11 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["maptilerApiKey"] == "maptiler"
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
-    assert res["gymMode"] == True
+    assert res["gymMode"] is True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
-    assert res["displayUserGradesRatings"] is True
+    assert res["displayUserRatings"] is True
+    assert res["displayUserGrades"] is True
+    assert res["faDefaultFormat"] == FaDefaultFormatEnum.DATE.value
 
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
@@ -102,9 +109,11 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGradesRatings": True,
+        "displayUserRatings": True,
+        "displayUserGrades": True,
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": 2,
+        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -134,8 +143,10 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
         "gymMode": True,
-        "displayUserGradesRatings": True,
+        "displayUserRatings": True,
+        "displayUserGrades": True,
         "skippedHierarchicalLayers": 2,
+        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json

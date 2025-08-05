@@ -33,6 +33,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { FaDefaultFormat } from '../../../enums/fa-default-format';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -69,6 +70,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public instanceSettings: InstanceSettings;
+  public faDefaultFormats = FaDefaultFormat;
 
   constructor(
     private fb: FormBuilder,
@@ -103,7 +105,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
       skippedHierarchicalLayers: [null],
-      displayUserGradesRatings: [null],
+      displayUserGrades: [null],
+      displayUserRatings: [null],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -116,6 +119,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoTrackerUrl: [null],
       matomoSiteId: [null],
       maptilerApiKey: [null],
+      faDefaultFormat: [null],
     });
   }
 
@@ -127,7 +131,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       gymMode: this.instanceSettings.gymMode,
       skippedHierarchicalLayers:
         this.instanceSettings.skippedHierarchicalLayers,
-      displayUserGradesRatings: this.instanceSettings.displayUserGradesRatings,
+      displayUserGrades: this.instanceSettings.displayUserGrades,
+      displayUserRatings: this.instanceSettings.displayUserRatings,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -140,6 +145,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
       maptilerApiKey: this.instanceSettings.maptilerApiKey,
+      faDefaultFormat: this.instanceSettings.faDefaultFormat,
     });
   }
 
@@ -154,9 +160,10 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
-      instanceSettings.displayUserGradesRatings = this.instanceSettingsForm.get(
-        'displayUserGradesRatings',
-      ).value;
+      instanceSettings.displayUserGrades =
+        this.instanceSettingsForm.get('displayUserGrades').value;
+      instanceSettings.displayUserRatings =
+        this.instanceSettingsForm.get('displayUserRatings').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =
@@ -184,6 +191,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('matomoTrackerUrl').value;
       instanceSettings.maptilerApiKey =
         this.instanceSettingsForm.get('maptilerApiKey').value;
+      instanceSettings.faDefaultFormat =
+        this.instanceSettingsForm.get('faDefaultFormat').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

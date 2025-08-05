@@ -60,8 +60,8 @@ def test_successful_get_menu_items(client):
     assert res[1]["type"] == "NEWS"
     assert res[1]["position"] == "TOP"
     assert res[1]["orderIndex"] == 0
-    assert res[1]["menuPage"] == None
-    assert res[1]["icon"] == None
+    assert res[1]["menuPage"] is None
+    assert res[1]["icon"] is None
 
 
 def test_successful_get_menu_item(client):
@@ -74,8 +74,8 @@ def test_successful_get_menu_item(client):
     assert res["type"] == "NEWS"
     assert res["position"] == "TOP"
     assert res["orderIndex"] == 0
-    assert res["menuPage"] == None
-    assert res["icon"] == None
+    assert res["menuPage"] is None
+    assert res["icon"] is None
 
 
 def test_get_deleted_menu_item(client):
@@ -110,7 +110,7 @@ def test_successful_edit_menu_item(client, moderator_token):
     res = rv.json
     assert res["type"] == "MENU_PAGE"
     assert res["position"] == "BOTTOM"
-    assert res["icon"] == None
+    assert res["icon"] is None
     assert res["menuPage"]["title"] == menu_page.title
     assert res["id"] == str(menu_item.id)
 
