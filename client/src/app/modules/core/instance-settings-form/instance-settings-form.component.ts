@@ -32,7 +32,6 @@ import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 
 @Component({
@@ -57,7 +56,6 @@ import { FaDefaultFormat } from '../../../enums/fa-default-format';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    SingleImageUploadComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',

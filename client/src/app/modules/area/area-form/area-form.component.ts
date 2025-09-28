@@ -47,7 +47,6 @@ import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
-import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
@@ -75,7 +74,6 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
     IfErrorDirective,
     Editor,
     MapMarkerFormArrayComponent,
-    SingleImageUploadComponent,
     Checkbox,
     TranslocoPipe,
     Select,

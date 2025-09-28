@@ -133,10 +133,10 @@ export class AvatarUploadComponent
   /**
    * Sets the given media as current value.
    *
-   * @param event Event from PrimeNG containnig the original upload response.
+   * @param event Event from PrimeNG containing the original upload response.
    */
   setMedia(event: any) {
-    this.file = File.deserialize(event.originalEvent.body);
+    this.file = File.deserialize(event.originalEvent.body[0]);
     this.imageLoading = true;
     this.imageLoadingError = false;
     this.showProgressBar = false;

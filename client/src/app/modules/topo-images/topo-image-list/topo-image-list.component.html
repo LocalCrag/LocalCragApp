@@ -44,11 +44,21 @@
           <p-button
             [disabled]="loading === loadingStates.LOADING"
             label="{{ t('newTopoImageButtonLabel') }}"
-            icon="pi pi-plus"
+            icon="pi pi-image"
             class="responsive-button"
             routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
               areaSlug
             }}/add-topo-image"
+            *isModerator="true"
+          ></p-button>
+          <p-button
+            [disabled]="loading === loadingStates.LOADING"
+            label="{{ t('topoImageBatchUploadButtonLabel') }}"
+            icon="pi pi-images"
+            class="responsive-button"
+            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+              areaSlug
+            }}/line-entry-batch-editor"
             *isModerator="true"
           ></p-button>
           <p-button

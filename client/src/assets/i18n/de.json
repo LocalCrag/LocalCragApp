@@ -712,6 +712,7 @@
   "posts.askReallyWantToDeletePost": "Post wirklich löschen?",
   "posts.yesDelete": "Ja, weg damit!",
   "posts.noDontDelete": "Nee, doch nicht.",
+  "batchUploadTopoImageBrowserTitle": "Topo-Upload + Schnellbearbeitung",
   "ascent.editAscent": "Bearbeiten",
   "ascent.deleteAscent": "Löschen",
   "orderByAscentDate": "Begehungsdatum",

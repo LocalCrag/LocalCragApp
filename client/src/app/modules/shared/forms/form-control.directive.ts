@@ -1,7 +1,7 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, Subject, Subscription } from 'rxjs';
 import { ControlGroupService } from './control-group.service';
-import { NgControl } from '@angular/forms';
+import { NgControl, TouchedChangeEvent } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 
 /**
@@ -32,6 +32,14 @@ export class FormControlDirective implements OnInit, OnDestroy {
       'blur',
     ).subscribe(() => touchedChangedSubject.next(true));
     const touchedChanged = touchedChangedSubject.asObservable();
+    // Also listen to programmatic touched changes (e.g. when the user tabs out of the field)
+    this.ngControl.control.events.subscribe((event) => {
+      if (event instanceof TouchedChangeEvent) {
+        if (event.touched) {
+          touchedChangedSubject.next(true);
+        }
+      }
+    });
     // Register control on the ControlGroupService
     this.controlGroupService.registerControlElement({
       control: this.ngControl,
@@ -39,7 +47,7 @@ export class FormControlDirective implements OnInit, OnDestroy {
       touchedChangedSubject,
       name: this.ngControl.name,
     });
-    this.ngControl.statusChanges.pipe().subscribe(() => {
+    this.ngControl.statusChanges.subscribe(() => {
       this.controlGroupService.onDisabledStateChange();
     });
   }

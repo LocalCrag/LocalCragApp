@@ -45,7 +45,6 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
@@ -71,7 +70,6 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
     FormControlDirective,
     IfErrorDirective,
     Editor,
-    SingleImageUploadComponent,
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
