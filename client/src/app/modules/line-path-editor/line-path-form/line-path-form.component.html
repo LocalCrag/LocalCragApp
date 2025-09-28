@@ -1,5 +1,4 @@
 <ng-container *transloco="let t; read: 'linePath.linePathForm'">
-
   <form [formGroup]="linePathForm" lcForm *ngIf="linePathForm">
     <div class="flex flex-column gap-2" lcControlGroup>
       <label class="form-label" for="line">{{ t("lineLabel") }}</label>
@@ -18,11 +17,11 @@
             data-cy="line-dropdown-item"
           >
             <div>
-                  <span
-                    *isGymMode="true"
-                    class="color-indicator mr-3"
-                    [style]="{ '--arrow-color': line.color }"
-                  ></span>
+              <span
+                *isGymMode="true"
+                class="color-indicator mr-3"
+                [style]="{ '--arrow-color': line.color }"
+              ></span>
               {{ line.name }}
               {{ line | lineGrade }}
             </div>
@@ -33,14 +32,14 @@
         </ng-template>
       </p-select>
       <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
+        t("required")
+      }}</small>
     </div>
 
     <div class="flex flex-column gap-2" lcControlGroup>
       <label class="form-label" for="path-editor">{{
-          t("linePathLabel")
-        }}</label>
+        t("linePathLabel")
+      }}</label>
       <lc-line-path-editor
         formControlName="path"
         lcFormControl
@@ -50,11 +49,11 @@
       >
       </lc-line-path-editor>
       <small class="lc-error" *lcIfError="'required'">{{
-          t("drawALineWithAtLeastTwoAnchorPoints")
-        }}</small>
+        t("drawALineWithAtLeastTwoAnchorPoints")
+      }}</small>
       <small class="lc-error" *lcIfError="'minlength'">{{
-          t("drawALineWithAtLeastTwoAnchorPoints")
-        }}</small>
+        t("drawALineWithAtLeastTwoAnchorPoints")
+      }}</small>
     </div>
   </form>
 
@@ -75,5 +74,4 @@
       icon="pi pi-ban"
     ></p-button>
   </div>
-
 </ng-container>

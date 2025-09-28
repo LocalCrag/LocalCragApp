@@ -1,12 +1,13 @@
 <ng-container *transloco="let t; read: 'line.batchLineForm'">
-
   <form [formGroup]="lineForm" lcForm *ngIf="lineForm">
-
     <div class="flex md:flex-row flex-column gap-2">
-
       <div class="flex flex-shrink-0 align-items-start">
-        <p-tag value="#{{index + 1}}" [rounded]="true" styleClass="form-item-index " />
-       </div>
+        <p-tag
+          value="#{{ index + 1 }}"
+          [rounded]="true"
+          styleClass="form-item-index "
+        />
+      </div>
 
       <div class="flex-1 flex flex-column" lcControlGroup>
         <input
@@ -19,14 +20,18 @@
           data-cy="line-form-name"
         />
         <small class="lc-error mt-1" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+          t("required")
+        }}</small>
         <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          t("maxlength120")
+        }}</small>
       </div>
 
-      <div class="flex-1 flex flex-column" lcControlGroup *ngIf="gymMode$ | async">
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="gymMode$ | async"
+      >
         <lc-advanced-color-picker
           id="color"
           formControlName="color"
@@ -34,7 +39,7 @@
         />
       </div>
 
-      <div class="flex-1 flex flex-column " lcControlGroup>
+      <div class="flex-1 flex flex-column" lcControlGroup>
         <p-select
           formControlName="grade"
           id="grade"
@@ -46,10 +51,7 @@
           lcFormControl
         >
           <ng-template let-grade #item>
-            <div
-              class="flex align-items-center "
-              data-cy="grade-dropdown-item"
-            >
+            <div class="flex align-items-center" data-cy="grade-dropdown-item">
               <div>{{ grade.name | translateSpecialGrades }}</div>
             </div>
           </ng-template>
@@ -58,11 +60,15 @@
           </ng-template>
         </p-select>
         <small class="lc-error mt-1" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+          t("required")
+        }}</small>
       </div>
 
-      <div class="flex-1 flex flex-column " lcControlGroup *ngIf="type === lineTypes.BOULDER && !(gymMode$ | async)">
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="type === lineTypes.BOULDER && !(gymMode$ | async)"
+      >
         <p-select
           id="starting-position"
           formControlName="startingPosition"
@@ -72,7 +78,7 @@
         >
           <ng-template let-startingPosition #item>
             <div
-              class="flex align-items-center "
+              class="flex align-items-center"
               data-cy="starting-position-dropdown-item"
             >
               <div>{{ startingPosition | transloco }}</div>
@@ -83,11 +89,15 @@
           </ng-template>
         </p-select>
         <small class="lc-error mt-1" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+          t("required")
+        }}</small>
       </div>
 
-      <div class="flex-1 flex flex-column " lcControlGroup *ngIf="gymMode$ | async">
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="gymMode$ | async"
+      >
         <input
           id="fa-name"
           type="text"
@@ -98,11 +108,13 @@
           data-cy="line-form-faName"
         />
         <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          t("maxlength120")
+        }}</small>
       </div>
 
-      <div class="flex-shrink-0 flex md:align-items-start sm:align-items-end justify-content-end">
+      <div
+        class="flex-shrink-0 flex md:align-items-start sm:align-items-end justify-content-end"
+      >
         <button
           pButton
           type="button"
@@ -113,9 +125,6 @@
           [disabled]="deleteDisabled"
         ></button>
       </div>
-
     </div>
-
   </form>
-
 </ng-container>

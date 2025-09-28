@@ -1,113 +1,211 @@
 <ng-container *transloco="let t; read: 'topoImage.batchUploadForm'">
   <div class="content">
     <p-card [header]="t('batchImageUploadTitle')">
-      <p class="mt-0">{{ t('batchImageUploadDescription') }}</p>
-      <form [formGroup]="topoImageBatchUploadForm" lcForm *ngIf="topoImageBatchUploadForm">
+      <p class="mt-0">{{ t("batchImageUploadDescription") }}</p>
+      <form
+        [formGroup]="topoImageBatchUploadForm"
+        lcForm
+        *ngIf="topoImageBatchUploadForm"
+      >
         <p-stepper [(value)]="currentStep" class="basis-[50rem]">
           <p-step-list>
-            <p-step [value]="1" [disabled]="currentStepInvalid">{{ t('images') }}</p-step>
-            <p-step [value]="2" [disabled]="currentStepInvalid">{{ t('lines') }}</p-step>
-            <p-step [value]="3" [disabled]="currentStepInvalid">{{ t('linePaths') }}
+            <p-step [value]="1" [disabled]="currentStepInvalid">{{
+              t("images")
+            }}</p-step>
+            <p-step [value]="2" [disabled]="currentStepInvalid">{{
+              t("lines")
+            }}</p-step>
+            <p-step [value]="3" [disabled]="currentStepInvalid"
+              >{{ t("linePaths") }}
             </p-step>
           </p-step-list>
           <p-step-panels>
             <p-step-panel [value]="1">
               <ng-template #content>
                 <div class="flex flex-column gap-2" lcControlGroup>
-                  <lc-multi-image-upload lcFormControl formControlName="images"
-                                         data-cy="topo-images-input"></lc-multi-image-upload>
-                  <small class="lc-error"
-                         *lcIfError="'required'">{{ t('min-length-1-image-validation-error') }}</small>
+                  <lc-multi-image-upload
+                    lcFormControl
+                    formControlName="images"
+                    data-cy="topo-images-input"
+                  ></lc-multi-image-upload>
+                  <small class="lc-error" *lcIfError="'required'">{{
+                    t("min-length-1-image-validation-error")
+                  }}</small>
                 </div>
                 <div class="flex pt-6 justify-content-between">
-                  <p-button [label]="t('cancel')" severity="secondary"
-                            icon="pi pi-ban"
-                            class="responsive-button"
-                            [loading]="loadingState === loadingStates.LOADING"
-                            (onClick)="cancel()"/>
-                  <p-button [label]="t('Next')" icon="pi pi-arrow-right" iconPos="right"
-                            class="responsive-button"
-                            (onClick)="nextStep()"/>
+                  <p-button
+                    [label]="t('cancel')"
+                    severity="secondary"
+                    icon="pi pi-ban"
+                    class="responsive-button"
+                    [loading]="loadingState === loadingStates.LOADING"
+                    (onClick)="cancel()"
+                  />
+                  <p-button
+                    [label]="t('Next')"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    class="responsive-button"
+                    (onClick)="nextStep()"
+                  />
                 </div>
               </ng-template>
             </p-step-panel>
             <p-step-panel [value]="2">
               <ng-template #content>
                 <div formGroupName="lines">
-                  <div class="flex flex-column gap-2 max-w-20rem"  lcControlGroup *ngIf="typeOptions?.length > 1">
-                    <label class="form-label" for="type">{{ t('lineTypeLabel') }}</label>
-                    <p-select formControlName="type" id="type" [options]="typeOptions" optionLabel="label"
-                              optionValue="value" lcFormControl>
-                      <ng-template let-selectedType #selectedItem>{{ selectedType.label }}</ng-template>
+                  <div
+                    class="flex flex-column gap-2 max-w-20rem"
+                    lcControlGroup
+                    *ngIf="typeOptions?.length > 1"
+                  >
+                    <label class="form-label" for="type">{{
+                      t("lineTypeLabel")
+                    }}</label>
+                    <p-select
+                      formControlName="type"
+                      id="type"
+                      [options]="typeOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      lcFormControl
+                    >
+                      <ng-template let-selectedType #selectedItem>{{
+                        selectedType.label
+                      }}</ng-template>
                     </p-select>
                   </div>
-                  <div class="flex flex-column gap-2 max-w-20rem" lcControlGroup *ngIf="scaleOptions?.length > 1">
-                    <label class="form-label" for="scale">{{ t('lineScaleLabel') }}</label>
-                    <p-select formControlName="scale" id="scale" [options]="scaleOptions" optionLabel="label"
-                              optionValue="value" lcFormControl></p-select>
+                  <div
+                    class="flex flex-column gap-2 max-w-20rem"
+                    lcControlGroup
+                    *ngIf="scaleOptions?.length > 1"
+                  >
+                    <label class="form-label" for="scale">{{
+                      t("lineScaleLabel")
+                    }}</label>
+                    <p-select
+                      formControlName="scale"
+                      id="scale"
+                      [options]="scaleOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      lcFormControl
+                    ></p-select>
                   </div>
-                  <div class="flex flex-column gap-2 max-w-20rem" lcControlGroup
-                       *ngIf="faFormat === faFormats.DATE && (gymMode$ | async)">
-                    <label class="form-label" for="fa-year">{{ t('lineFADateLabel') }}</label>
-                    <p-date-picker id="fa-date" formControlName="faDate" view="date" dateFormat="dd.mm.yy"
-                                   inputId="faDate" lcFormControl [maxDate]="today" [readonlyInput]="true"
-                                   data-cy="line-form-faDate"></p-date-picker>
-                    <small class="lc-error" *lcIfError="'dateInFuture'">{{ t('dateInFutureValidationError') }}</small>
+                  <div
+                    class="flex flex-column gap-2 max-w-20rem"
+                    lcControlGroup
+                    *ngIf="faFormat === faFormats.DATE && (gymMode$ | async)"
+                  >
+                    <label class="form-label" for="fa-year">{{
+                      t("lineFADateLabel")
+                    }}</label>
+                    <p-date-picker
+                      id="fa-date"
+                      formControlName="faDate"
+                      view="date"
+                      dateFormat="dd.mm.yy"
+                      inputId="faDate"
+                      lcFormControl
+                      [maxDate]="today"
+                      [readonlyInput]="true"
+                      data-cy="line-form-faDate"
+                    ></p-date-picker>
+                    <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                      t("dateInFutureValidationError")
+                    }}</small>
                   </div>
-                  <div formArrayName="lines" class="flex gap-2 flex-column mb-4">
-                    <label class="form-label" for="scale">{{ t('linesLabel') }}</label>
+                  <div
+                    formArrayName="lines"
+                    class="flex gap-2 flex-column mb-4"
+                  >
+                    <label class="form-label" for="scale">{{
+                      t("linesLabel")
+                    }}</label>
                     <div *ngFor="let _ of lines.controls; let i = index">
-                      <lc-line-entry-batch-line-form [index]="i" [formControlName]="i" [grades]="grades"
-                                                     [control]="lines.at(i)"
-                                                     [type]="topoImageBatchUploadForm.get('lines.type').value"
-                                                     (delete)="removeLine(i)"
-                                                     [deleteDisabled]="lines.length < 2"></lc-line-entry-batch-line-form>
+                      <lc-line-entry-batch-line-form
+                        [index]="i"
+                        [formControlName]="i"
+                        [grades]="grades"
+                        [control]="lines.at(i)"
+                        [type]="
+                          topoImageBatchUploadForm.get('lines.type').value
+                        "
+                        (delete)="removeLine(i)"
+                        [deleteDisabled]="lines.length < 2"
+                      ></lc-line-entry-batch-line-form>
                     </div>
                   </div>
-                  <p-button (click)="addLine()" styleClass="w-full md:w-auto" icon="pi pi-plus" [label]="t('addLine')"></p-button>
+                  <p-button
+                    (click)="addLine()"
+                    styleClass="w-full md:w-auto"
+                    icon="pi pi-plus"
+                    [label]="t('addLine')"
+                  ></p-button>
                 </div>
-                <p-message styleClass="mt-4" severity="warn" [text]="t('displayUserGradesActive')"
-                           *ngIf="getDisplayUserGrades() | async"/>
+                <p-message
+                  styleClass="mt-4"
+                  severity="warn"
+                  [text]="t('displayUserGradesActive')"
+                  *ngIf="getDisplayUserGrades() | async"
+                />
                 <div class="flex pt-6 justify-content-between">
                   <div class="flex gap-2">
-                  <p-button [label]="t('Back')" severity="secondary" icon="pi pi-arrow-left"
-                            class="responsive-button"
-                            [disabled]="loadingState === loadingStates.LOADING"
-                            (onClick)="previousStep()"/>
-                  <p-button [label]="t('cancel')" severity="secondary"
-                            class="responsive-button"
-                            icon="pi pi-ban"
-                            [loading]="loadingState === loadingStates.LOADING"
-                            (onClick)="cancel()"/>
+                    <p-button
+                      [label]="t('Back')"
+                      severity="secondary"
+                      icon="pi pi-arrow-left"
+                      class="responsive-button"
+                      [disabled]="loadingState === loadingStates.LOADING"
+                      (onClick)="previousStep()"
+                    />
+                    <p-button
+                      [label]="t('cancel')"
+                      severity="secondary"
+                      class="responsive-button"
+                      icon="pi pi-ban"
+                      [loading]="loadingState === loadingStates.LOADING"
+                      (onClick)="cancel()"
+                    />
                   </div>
-                  <p-button [label]="t('saveLinesAndTopoImagesAndNext')" icon="pi pi-arrow-right" iconPos="right"
-                            [loading]="loadingState === loadingStates.LOADING"
-                            class="responsive-button"
-                            (onClick)="saveLinesAndTopoImages()"/>
+                  <p-button
+                    [label]="t('saveLinesAndTopoImagesAndNext')"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    [loading]="loadingState === loadingStates.LOADING"
+                    class="responsive-button"
+                    (onClick)="saveLinesAndTopoImages()"
+                  />
                 </div>
               </ng-template>
             </p-step-panel>
             <p-step-panel [value]="3">
               <ng-template #content>
-              <div class="flex flex-column gap-2" lcControlGroup>
-                <label class="form-label" for="topoImage">{{ t("topoImageLabel") }}</label>
-                <p-select
-                  id="topoImage"
-                  formControlName="selectedTopoImage"
-                  [options]="topoImages"
-                  data-cy="line-dropdown"
-                  placeholder="{{ t('topoImagePlaceholder') }}"
-                >
-                  <ng-template #selectedItem >
-<!--                    We show the placeholder as selected item as the actual image is displayed in the line path editor-->
-                    {{ t('topoImagePlaceholder') }}
-                  </ng-template>
-                  <ng-template let-topoImage #item>
-                    <p-image [src]="topoImage.image.thumbnailS"></p-image>
-                  </ng-template>
-                </p-select>
-              </div>
-              <lc-line-path-form [selectedTopoImageId]="topoImageBatchUploadForm.get('selectedTopoImage').value?.id"></lc-line-path-form>
+                <div class="flex flex-column gap-2" lcControlGroup>
+                  <label class="form-label" for="topoImage">{{
+                    t("topoImageLabel")
+                  }}</label>
+                  <p-select
+                    id="topoImage"
+                    formControlName="selectedTopoImage"
+                    [options]="topoImages"
+                    data-cy="line-dropdown"
+                    placeholder="{{ t('topoImagePlaceholder') }}"
+                  >
+                    <ng-template #selectedItem>
+                      <!--                    We show the placeholder as selected item as the actual image is displayed in the line path editor-->
+                      {{ t("topoImagePlaceholder") }}
+                    </ng-template>
+                    <ng-template let-topoImage #item>
+                      <p-image [src]="topoImage.image.thumbnailS"></p-image>
+                    </ng-template>
+                  </p-select>
+                </div>
+                <lc-line-path-form
+                  [selectedTopoImageId]="
+                    topoImageBatchUploadForm.get('selectedTopoImage').value?.id
+                  "
+                ></lc-line-path-form>
               </ng-template>
             </p-step-panel>
           </p-step-panels>
