@@ -67,7 +67,7 @@
       <div
         class="flex-1 flex flex-column"
         lcControlGroup
-        *ngIf="type === lineTypes.BOULDER && !(gymMode$ | async)"
+        *ngIf="type === lineTypes.BOULDER && (gymMode$ | async) === false"
       >
         <p-select
           id="starting-position"
@@ -105,7 +105,6 @@
           formControlName="faName"
           placeholder="{{ t('lineFANamePlaceholder') }}"
           lcFormControl
-          data-cy="line-form-faName"
         />
         <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
           t("maxlength120")
@@ -115,15 +114,12 @@
       <div
         class="flex-shrink-0 flex md:align-items-start sm:align-items-end justify-content-end"
       >
-        <button
-          pButton
-          type="button"
+        <p-button
           icon="pi pi-trash"
           class="p-button-text p-button-danger delete-button"
           (click)="delete.emit()"
-          data-cy="line-form-remove-line-button"
           [disabled]="deleteDisabled"
-        ></button>
+        ></p-button>
       </div>
     </div>
   </form>
