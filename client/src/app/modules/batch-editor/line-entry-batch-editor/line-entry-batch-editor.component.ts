@@ -101,7 +101,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
 
   public today = new Date(new Date().getFullYear(), 11, 31);
   public gymMode$ = this.store.select(selectGymMode).pipe(untilDestroyed(this));
-  public currentStep = 2;
+  public currentStep = 1;
 
   public groupedScales: Record<LineType, Scale[]> = null;
   public defaultScales: Record<LineType, string | null> = {
