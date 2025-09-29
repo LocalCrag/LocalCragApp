@@ -1,0 +1,126 @@
+<ng-container *transloco="let t; read: 'line.batchLineForm'">
+  <form [formGroup]="lineForm" lcForm *ngIf="lineForm">
+    <div class="flex md:flex-row flex-column gap-2">
+      <div class="flex flex-shrink-0 align-items-start">
+        <p-tag
+          value="#{{ index + 1 }}"
+          [rounded]="true"
+          styleClass="form-item-index "
+        />
+      </div>
+
+      <div class="flex-1 flex flex-column" lcControlGroup>
+        <input
+          type="text"
+          pInputText
+          id="name"
+          formControlName="name"
+          placeholder="{{ t('lineNamePlaceholder') }}"
+          lcFormControl
+          data-cy="line-form-name"
+        />
+        <small class="lc-error mt-1" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
+        <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
+          t("maxlength120")
+        }}</small>
+      </div>
+
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="gymMode$ | async"
+      >
+        <lc-advanced-color-picker
+          id="color"
+          formControlName="color"
+          lcFormControl
+        />
+      </div>
+
+      <div class="flex-1 flex flex-column" lcControlGroup>
+        <p-select
+          formControlName="grade"
+          id="grade"
+          [options]="grades"
+          data-cy="grade-dropdown"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="{{ t('gradePlaceholder') }}"
+          lcFormControl
+        >
+          <ng-template let-grade #item>
+            <div class="flex align-items-center" data-cy="grade-dropdown-item">
+              <div>{{ grade.name | translateSpecialGrades }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-selectedGrade #selectedItem>
+            {{ selectedGrade.name | translateSpecialGrades }}
+          </ng-template>
+        </p-select>
+        <small class="lc-error mt-1" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
+      </div>
+
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="type === lineTypes.BOULDER && (gymMode$ | async) === false"
+      >
+        <p-select
+          id="starting-position"
+          formControlName="startingPosition"
+          [options]="startingPositions"
+          lcFormControl
+          data-cy="starting-position-dropdown"
+        >
+          <ng-template let-startingPosition #item>
+            <div
+              class="flex align-items-center"
+              data-cy="starting-position-dropdown-item"
+            >
+              <div>{{ startingPosition | transloco }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-selectedItem #selectedItem>
+            {{ selectedItem | transloco }}
+          </ng-template>
+        </p-select>
+        <small class="lc-error mt-1" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
+      </div>
+
+      <div
+        class="flex-1 flex flex-column"
+        lcControlGroup
+        *ngIf="gymMode$ | async"
+      >
+        <input
+          id="fa-name"
+          type="text"
+          pInputText
+          formControlName="faName"
+          placeholder="{{ t('lineFANamePlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
+          t("maxlength120")
+        }}</small>
+      </div>
+
+      <div
+        class="flex-shrink-0 flex md:align-items-start sm:align-items-end justify-content-end"
+      >
+        <p-button
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger delete-button"
+          (click)="delete.emit()"
+          [disabled]="deleteDisabled"
+        ></p-button>
+      </div>
+    </div>
+  </form>
+</ng-container>

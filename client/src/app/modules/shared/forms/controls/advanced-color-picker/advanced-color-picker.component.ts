@@ -21,9 +21,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Store } from '@ngrx/store';
 import { FormDirective } from '../../form.directive';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
-import { ColorSquareComponent } from '../../../components/color-square/color-square.component';
 import { NgIf } from '@angular/common';
 import { FormControlDirective } from '../../form-control.directive';
+import { NgxColorsModule } from 'ngx-colors';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'lc-advanced-color-picker',
@@ -31,11 +32,12 @@ import { FormControlDirective } from '../../form-control.directive';
     TranslocoDirective,
     ColorPickerModule,
     ReactiveFormsModule,
-    ColorSquareComponent,
     SelectButtonModule,
     NgIf,
     FormControlDirective,
     FormDirective,
+    NgxColorsModule,
+    Select,
   ],
   templateUrl: './advanced-color-picker.component.html',
   styleUrl: './advanced-color-picker.component.scss',
@@ -60,6 +62,20 @@ export class AdvancedColorPickerComponent
   public colorForm: FormGroup;
   public isInitalized = false;
   public deferredCalls: (() => any)[] = [];
+  public palette = [
+    '#ffd811',
+    '#ff6811',
+    '#f10d0d',
+    '#078001',
+    '#0e34b2',
+    '#ff1ec4',
+    '#6402fd',
+    '#ffffff',
+    '#545454',
+    '#000000',
+  ];
+
+  public dropdownOptions: { label: string; value: boolean }[] = [];
 
   private changeHandlers = [];
   private color: string | null = null;
@@ -79,12 +95,23 @@ export class AdvancedColorPickerComponent
           customColor: [instanceSettings.gymMode],
           color: [instanceSettings.arrowColor],
         });
+        this.dropdownOptions = [
+          { label: this.translateLabel('globalColor'), value: false },
+          { label: this.translateLabel('customColor'), value: true },
+        ];
         this.colorForm.valueChanges
           .pipe(untilDestroyed(this))
           .subscribe(this.onChange.bind(this));
         this.isInitalized = true; // We need some extra initialization as colorForm gets populated asynchronously
         for (const fn of this.deferredCalls) fn();
       });
+  }
+
+  private translateLabel(key: string): string {
+    // Use Transloco if available, fallback to key
+    // This assumes you have a translation pipe or service
+    // Replace with your actual translation logic if needed
+    return key;
   }
 
   writeValue(color: string | null) {

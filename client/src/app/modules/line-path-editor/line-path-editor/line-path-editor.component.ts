@@ -3,13 +3,13 @@ import {
   Component,
   forwardRef,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { TopoImagesService } from '../../../services/crud/topo-images.service';
-import { ActivatedRoute } from '@angular/router';
 import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
@@ -34,30 +34,32 @@ import { Button } from 'primeng/button';
   encapsulation: ViewEncapsulation.None,
   imports: [TranslocoDirective, TopoImageComponent, NgIf, Button],
 })
-export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
+export class LinePathEditorComponent
+  implements ControlValueAccessor, OnInit, OnChanges
+{
   @ViewChild(TopoImageComponent) topoImageComponent: TopoImageComponent;
 
   @Input() color?: string; // Line color for currently drawn line
+  @Input() topoImage: TopoImage;
 
-  public topoImage: TopoImage;
   public linePath: LinePath;
   public isDisabled = false;
 
-  private topoImageId: string = null;
   private onChange: (value: number[]) => void;
 
-  constructor(
-    private topoImagesService: TopoImagesService,
-    private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute,
-  ) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   /**
    * Loads the topo image on which to draw the line.
    */
   ngOnInit() {
-    this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
     this.refreshData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['topoImage']) {
+      this.refreshData(true);
+    }
   }
 
   /**
@@ -66,16 +68,13 @@ export class LinePathEditorComponent implements ControlValueAccessor, OnInit {
    * @param clear If true, the old topo image component is destroyed.
    */
   refreshData(clear = false) {
+    const topoImageCache = this.topoImage;
     if (clear) {
       this.topoImage = null;
       this.cdr.detectChanges();
     }
-    this.topoImagesService
-      .getTopoImage(this.topoImageId)
-      .subscribe((topoImage) => {
-        this.topoImage = topoImage;
-        this.cdr.detectChanges();
-      });
+    this.topoImage = topoImageCache;
+    this.cdr.detectChanges();
     this.linePath = new LinePath();
   }
 

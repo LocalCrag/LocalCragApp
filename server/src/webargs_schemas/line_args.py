@@ -15,19 +15,22 @@ class VideosArgsSchema(Schema):
     title = fields.Str(required=True, allow_none=False)
 
 
-class LineArgsSchema(Schema, IsClosableWebargsMixin):
+class BatchLineArgsSchema(Schema):
     name = fields.Str(required=True, validate=validate.Length(max=120))
-    description = fields.Str(required=True, allow_none=True)
     color = fields.Str(required=False, allow_none=True, validate=color_validator)
+    startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)
+    authorGradeValue = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2))
+    faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
+
+
+class LineArgsSchema(BatchLineArgsSchema, IsClosableWebargsMixin):
+    description = fields.Str(required=True, allow_none=True)
     videos = fields.List(fields.Nested(VideosArgsSchema()), required=True, allow_none=True)
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
-    authorGradeValue = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2))
     type = fields.Enum(LineTypeEnum, required=True, allow_none=False)
     authorRating = fields.Integer(required=True, allow_none=True, validate=lambda x: 1 <= x <= 5 or x is None)
     faYear = fields.Integer(required=True, allow_none=True, validate=lambda x: 1900 <= x <= datetime.date.today().year)
     faDate = fields.Date(required=True, allow_none=True, validate=lambda x: datetime.date.today() >= x)
-    faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
-    startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)
     secret = fields.Boolean(required=True, allow_none=False)
     eliminate = fields.Boolean(required=True, allow_none=False)
     traverse = fields.Boolean(required=True, allow_none=False)
@@ -58,4 +61,5 @@ class LineArgsSchema(Schema, IsClosableWebargsMixin):
     mantle = fields.Boolean(required=True, allow_none=False)
 
 
+batch_line_args = BatchLineArgsSchema()
 line_args = LineArgsSchema()

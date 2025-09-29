@@ -16,3 +16,4 @@ class FileSchema(BaseEntityMinSchema):
 
 
 file_schema = FileSchema()
+files_schema = FileSchema(many=True)

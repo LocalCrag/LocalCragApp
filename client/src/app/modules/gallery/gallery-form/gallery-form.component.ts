@@ -33,9 +33,9 @@ import { map } from 'rxjs/operators';
 import { SearchableComponent } from '../../core/searchable/searchable.component';
 import { Message } from 'primeng/message';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -50,9 +50,9 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     Message,
     FormDirective,
     ControlGroupDirective,
-    SingleImageUploadComponent,
     FormControlDirective,
     IfErrorDirective,
+    SingleImageUploadComponent,
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',

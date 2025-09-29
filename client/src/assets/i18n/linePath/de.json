@@ -1,5 +1,6 @@
 {
   "linePathForm.addLinePathDescription": "Hier kannst Du eine Linie auf einem Topo Bild verzeichnen. Wähle die einzuzeichnende Linie aus der Liste aus und zeichne dann durch Klicken auf das Bild den Linienverlauf ein.",
+  "linePathForm.addLinePathTitle": "Linie einzeichnen",
   "linePathForm.lineLabel": "Linie",
   "linePathForm.linePlaceholder": "Wähle eine Linie",
   "linePathForm.required": "Pflichtfeld",
@@ -7,6 +8,5 @@
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
   "linePathForm.addLinePathButtonLabel": "Linie einzeichnen",
   "linePathForm.leaveEditorButtonLabel": "Editor verlassen",
-  "linePathForm.addLinePathTitle": "Linie einzeichnen",
   "linePathForm.cancelButtonLabel": "Abbrechen"
 }

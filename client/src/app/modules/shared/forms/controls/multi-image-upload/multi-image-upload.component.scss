@@ -1,0 +1,24 @@
+lc-multi-image-upload {
+  .image-wrapper {
+    overflow: hidden;
+    display: inline-block;
+    position: relative;
+
+    p-image {
+      img {
+        border-radius: 6px;
+      }
+    }
+
+    p-button {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+    }
+  }
+
+  // Fix bad spacing below upload button
+  p-fileupload:not([hidden]) {
+    display: inline-block;
+  }
+}

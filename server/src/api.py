@@ -26,6 +26,7 @@ from resources.auth_resources import (
     UserLogoutAccess,
     UserLogoutRefresh,
 )
+from resources.batch_editor_resources import BatchCreateLines
 from resources.crag_resources import (
     CreateCrag,
     DeleteCrag,
@@ -162,7 +163,7 @@ def configure_api(app):
 
     # Upload API
     upload_bp = Blueprint("upload", __name__)
-    upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_file"))
+    upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_files"))
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
 
     # Statistics API
@@ -285,6 +286,7 @@ def configure_api(app):
         "/<string:area_slug>/topo-images/update-order",
         view_func=UpdateTopoImageOrder.as_view("update_topo_image_order"),
     )
+    area_bp.add_url_rule("/<string:area_slug>/batch-create", view_func=BatchCreateLines.as_view("batch_create_lines"))
     app.register_blueprint(area_bp, url_prefix="/api/areas")
 
     # Topo image API
