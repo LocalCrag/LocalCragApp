@@ -23,7 +23,6 @@ import { LineInfoComponent } from '../line/line-info/line-info.component';
 import { LineComponent } from '../line/line/line.component';
 import { TopoImageListComponent } from '../topo-images/topo-image-list/topo-image-list.component';
 import { TopoImageFormComponent } from '../topo-images/topo-image-form/topo-image-form.component';
-import { LinePathFormComponent } from '../line-path-editor/line-path-form/line-path-form.component';
 import { isLoggedOut } from '../../guards/is-logged-out';
 import { isLoggedIn } from '../../guards/is-logged-in';
 import { PostListComponent } from '../blog/post-list/post-list.component';
@@ -70,6 +69,8 @@ import { environment } from '../../../environments/environment';
 import { isAdmin } from '../../guards/is-admin';
 import { ScaleListComponent } from '../scale/scale-list/scale-list.component';
 import { ScaleFormComponent } from '../scale/scale-form/scale-form.component';
+import { LineEntryBatchEditorComponent } from '../batch-editor/line-entry-batch-editor/line-entry-batch-editor.component';
+import { LinePathFormWrapperComponent } from '../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component';
 
 export const appRoutes: Routes = [
   {
@@ -708,6 +709,14 @@ export const appRoutes: Routes = [
     },
   },
   {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/line-entry-batch-editor',
+    component: LineEntryBatchEditorComponent,
+    canActivate: [isModerator],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:image-id/edit',
     component: TopoImageFormComponent,
     canActivate: [isModerator],
@@ -836,7 +845,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
-    component: LinePathFormComponent,
+    component: LinePathFormWrapperComponent,
     canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,

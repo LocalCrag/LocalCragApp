@@ -157,6 +157,8 @@ export class ApiService {
     getGrades: (slug: string): string => `${this.apiHost}areas/${slug}/grades`,
     updateOrder: (sectorSlug: string): string =>
       `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
+    batchCreate: (slug: string): string =>
+      `${this.apiHost}areas/${slug}/batch-create`,
   };
 
   public ascents = {

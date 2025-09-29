@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -26,7 +33,6 @@ import {
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { Card } from 'primeng/card';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { Select } from 'primeng/select';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -34,6 +40,8 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Button } from 'primeng/button';
+import { TopoImage } from '../../../models/topo-image';
+import { NgIf } from '@angular/common';
 
 /**
  * Form for line paths.
@@ -44,7 +52,6 @@ import { Button } from 'primeng/button';
   styleUrls: ['./line-path-form.component.scss'],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -55,23 +62,26 @@ import { Button } from 'primeng/button';
     IfErrorDirective,
     LinePathEditorComponent,
     Button,
+    NgIf,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
-export class LinePathFormComponent implements OnInit {
+export class LinePathFormComponent implements OnInit, OnChanges {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(LinePathEditorComponent) linePathEditor: LinePathEditorComponent;
+
+  @Input() selectedTopoImageId: string;
 
   public linePathForm: FormGroup;
   public loadingState = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
   public linePath: LinePath;
   public lines: Line[];
+  public selectedTopoImage: TopoImage;
 
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
-  private topoImageId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -93,13 +103,27 @@ export class LinePathFormComponent implements OnInit {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
-    this.topoImageId = this.route.snapshot.paramMap.get('topo-image-id');
-    this.refreshData();
+    if (
+      this.route.snapshot.paramMap.get('topo-image-id') ||
+      (this.areaSlug && this.selectedTopoImageId)
+    ) {
+      this.refreshData();
+    }
     this.store.select(selectInstanceName).subscribe((instanceName) => {
       this.title.setTitle(
         `${this.translocoService.translate(marker('addLinePathBrowserTitle'))} - ${instanceName}`,
       );
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['selectedTopoImageId'] &&
+      this.selectedTopoImageId &&
+      this.areaSlug
+    ) {
+      this.refreshData();
+    }
   }
 
   /**
@@ -110,9 +134,13 @@ export class LinePathFormComponent implements OnInit {
     this.loadingState = LoadingState.INITIAL_LOADING;
     forkJoin([
       this.linesService.getLinesForLineEditor(this.areaSlug),
-      this.topoImagesService.getTopoImage(this.topoImageId),
+      this.topoImagesService.getTopoImage(
+        this.selectedTopoImageId ||
+          this.route.snapshot.paramMap.get('topo-image-id'),
+      ),
     ]).subscribe(([lines, topoImage]) => {
       this.lines = lines;
+      this.selectedTopoImage = topoImage;
       this.loadingState = LoadingState.DEFAULT;
       const disabledLineIds: { [lineId: string]: any } = {};
       topoImage.linePaths.map((linePath) => {
@@ -157,10 +185,13 @@ export class LinePathFormComponent implements OnInit {
       linePath.line = this.linePathForm.get('line').value;
       linePath.path = this.linePathForm.get('path').value;
       this.linePathsService
-        .addLinePath(linePath, this.topoImageId)
+        .addLinePath(
+          linePath,
+          this.selectedTopoImageId ||
+            this.route.snapshot.paramMap.get('topo-image-id'),
+        )
         .subscribe(() => {
           this.store.dispatch(toastNotification('LINE_PATH_ADDED'));
-          // this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images']);
           this.loadingState = LoadingState.DEFAULT;
           this.refreshData();
           this.linePathEditor.refreshData(true);

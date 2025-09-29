@@ -18,7 +18,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { ProgressBar } from 'primeng/progressbar';
 import { Image } from 'primeng/image';
 import { Button } from 'primeng/button';
@@ -27,20 +27,28 @@ import { Button } from 'primeng/button';
  * A media upload component.
  */
 @Component({
-  selector: 'lc-single-image-upload',
-  templateUrl: './single-image-upload.component.html',
-  styleUrls: ['./single-image-upload.component.scss'],
+  selector: 'lc-multi-image-upload',
+  templateUrl: './multi-image-upload.component.html',
+  styleUrls: ['./multi-image-upload.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SingleImageUploadComponent),
+      useExisting: forwardRef(() => MultiImageUploadComponent),
       multi: true,
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  imports: [TranslocoDirective, FileUpload, NgIf, ProgressBar, Image, Button],
+  imports: [
+    TranslocoDirective,
+    FileUpload,
+    NgIf,
+    ProgressBar,
+    Image,
+    Button,
+    NgForOf,
+  ],
 })
-export class SingleImageUploadComponent
+export class MultiImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy
 {
   @ViewChild(FileUpload) uploader: FileUpload;
@@ -48,7 +56,7 @@ export class SingleImageUploadComponent
   public uploadUrl: string;
   public isDisabled = false;
   public formControl: NgControl;
-  public file: File;
+  public files: File[] = [];
   public imageLoading = true;
   public imageLoadingError = false;
   public progress: number = null;
@@ -88,7 +96,7 @@ export class SingleImageUploadComponent
    * @param obj Value to write.
    */
   writeValue(obj: any): void {
-    this.file = obj;
+    this.files = Array.isArray(obj) ? obj : obj ? [obj] : [];
   }
 
   /**
@@ -105,14 +113,14 @@ export class SingleImageUploadComponent
    * Emits internal value when it changes.
    */
   onChange() {
-    this.propagateChange(this.file);
+    this.propagateChange(this.files);
   }
 
   /**
    * Validates whether there is an image uploaded.
    */
   validate() {
-    return this.file !== null;
+    return this.files.length > 0;
   }
 
   /**
@@ -130,7 +138,9 @@ export class SingleImageUploadComponent
    * @param event Event from PrimeNG containing the original upload response.
    */
   setMedia(event: any) {
-    this.file = File.deserialize(event.originalEvent.body[0]);
+    event.originalEvent.body.forEach((fileBody: any) => {
+      this.files.push(File.deserialize(fileBody));
+    });
     this.imageLoading = true;
     this.imageLoadingError = false;
     this.showProgressBar = false;
@@ -140,8 +150,8 @@ export class SingleImageUploadComponent
   /**
    * Removes the current media.
    */
-  removeMedia() {
-    this.file = null;
+  removeMedia(index: number) {
+    this.files.splice(index, 1);
     this.onChange();
   }
 
