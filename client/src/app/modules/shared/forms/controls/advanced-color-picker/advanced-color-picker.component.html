@@ -9,20 +9,22 @@
     <p-select
       formControlName="customColor"
       [options]="[
-          { value: false, label: t('globalColor') },
-          { value: true, label: t('customColor') },
-        ]"
+        { value: false, label: t('globalColor') },
+        { value: true, label: t('customColor') },
+      ]"
       optionLabel="label"
       optionValue="value"
       lcFormControl
       styleClass="w-full"
     />
-    <ngx-colors ngx-colors-trigger
-                class="flex justify-content-center align-items-center"
-                *ngIf="colorForm?.get('customColor').value"
-                [acceptLabel]="t('accept')"
-                [cancelLabel]="t('cancel')"
-                formControlName="color"
-                [palette]="palette"></ngx-colors>
+    <ngx-colors
+      ngx-colors-trigger
+      class="flex justify-content-center align-items-center"
+      *ngIf="colorForm?.get('customColor').value"
+      [acceptLabel]="t('accept')"
+      [cancelLabel]="t('cancel')"
+      formControlName="color"
+      [palette]="palette"
+    ></ngx-colors>
   </form>
 </ng-container>
