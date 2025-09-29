@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.20.0...v1.21.0) (2025-09-29)
+
+
+### Features
+
+* **topo:** line batch editor ([#766](https://github.com/LocalCrag/LocalCragApp/issues/766)) ([3665c53](https://github.com/LocalCrag/LocalCragApp/commit/3665c53f2403648048bc493209bee4ce247788dc))
+
 # [1.20.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.19.3...v1.20.0) (2025-08-05)
 
 
