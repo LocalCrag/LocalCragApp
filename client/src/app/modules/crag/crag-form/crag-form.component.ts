@@ -50,6 +50,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 /**
  * A component for creating and editing crags.
@@ -76,6 +77,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
     Select,
     Button,
     ConfirmPopup,
+    SingleImageUploadComponent,
   ],
 })
 @UntilDestroy()

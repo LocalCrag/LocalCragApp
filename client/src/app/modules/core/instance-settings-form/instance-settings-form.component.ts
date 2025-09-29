@@ -33,6 +33,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -56,6 +57,7 @@ import { FaDefaultFormat } from '../../../enums/fa-default-format';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    SingleImageUploadComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',

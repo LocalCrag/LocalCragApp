@@ -53,6 +53,7 @@ import { Message } from 'primeng/message';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 /**
  * Form component for creating and editing areas.
@@ -81,6 +82,7 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
     Button,
     ConfirmPopup,
     FormSkeletonComponent,
+    SingleImageUploadComponent,
   ],
 })
 @UntilDestroy()

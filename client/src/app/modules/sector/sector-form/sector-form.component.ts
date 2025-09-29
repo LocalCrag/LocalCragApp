@@ -54,6 +54,7 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -82,6 +83,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    SingleImageUploadComponent,
   ],
 })
 @UntilDestroy()

@@ -55,7 +55,7 @@ import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanc
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
-import { Button, ButtonDirective } from 'primeng/button';
+import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 
 @Component({
@@ -75,7 +75,6 @@ import { Tag } from 'primeng/tag';
     TranslocoPipe,
     NgIf,
     Tag,
-    ButtonDirective,
     AsyncPipe,
     Button,
   ],
