@@ -418,6 +418,7 @@ export class LineFormComponent implements OnInit {
       color: this.line.color,
       rating: this.line.authorRating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
+      faDate: this.line.faDate,
       faName: this.line.faName,
       startingPosition: this.line.startingPosition,
       eliminate: this.line.eliminate,
@@ -493,10 +494,15 @@ export class LineFormComponent implements OnInit {
       line.authorGradeValue = this.lineForm.get('grade').value;
       line.gradeScale = this.lineForm.get('scale').value;
       line.authorRating = this.lineForm.get('rating').value;
-      line.faYear = this.lineForm.get('faYear').value
-        ? this.lineForm.get('faYear').value.getFullYear()
-        : null;
-      line.faDate = this.lineForm.get('faDate').value;
+      line.faYear =
+        this.faFormat === FaDefaultFormat.YEAR &&
+        this.lineForm.get('faYear').value
+          ? this.lineForm.get('faYear').value.getFullYear()
+          : null;
+      line.faDate =
+        this.faFormat === FaDefaultFormat.DATE
+          ? this.lineForm.get('faDate').value
+          : null;
       line.faName = this.lineForm.get('faName').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
