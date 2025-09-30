@@ -123,6 +123,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.STAND,
     StartingPosition.SIT,
     StartingPosition.CROUCH,
+    StartingPosition.LAYDOWN,
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
