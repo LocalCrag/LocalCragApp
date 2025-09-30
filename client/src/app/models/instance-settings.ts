@@ -1,5 +1,6 @@
 import { File } from './file';
 import { FaDefaultFormat } from '../enums/fa-default-format';
+import { StartingPosition } from '../enums/starting-position';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -24,6 +25,7 @@ export class InstanceSettings {
   displayUserRatings: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
+  defaultStartingPosition: StartingPosition;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -58,6 +60,7 @@ export class InstanceSettings {
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
+    instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     return instanceSettings;
   }
 
@@ -90,6 +93,7 @@ export class InstanceSettings {
       displayUserRatings: instanceSettings.displayUserRatings,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
+      defaultStartingPosition: instanceSettings.defaultStartingPosition,
     };
   }
 }

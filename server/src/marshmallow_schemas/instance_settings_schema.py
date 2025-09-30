@@ -1,7 +1,9 @@
 from marshmallow import fields
+from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.file_schema import file_schema
+from models.enums.starting_position_enum import StartingPositionEnum
 
 
 class InstanceSettingsSchema(ma.SQLAlchemySchema):
@@ -25,6 +27,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     displayUserGrades = fields.Boolean(attribute="display_user_grades")
     displayUserRatings = fields.Boolean(attribute="display_user_ratings")
     faDefaultFormat = fields.String(attribute="fa_default_format")
+    defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
 
 
 instance_settings_schema = InstanceSettingsSchema()
