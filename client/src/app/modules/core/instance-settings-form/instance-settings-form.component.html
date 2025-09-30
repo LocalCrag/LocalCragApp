@@ -152,7 +152,7 @@
         <div class="flex flex-column gap-2" lcControlGroup>
           <div class="form-label flex align-items-center">
             <label for="defaultStartingPosition">
-              {{ t('defaultStartingPosition') }}
+              {{ t("defaultStartingPosition") }}
             </label>
           </div>
           <p-select
@@ -164,7 +164,9 @@
             lcFormControl
           >
           </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{ t('required') }}</small>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2"
