@@ -1,3 +1,11 @@
+# [1.22.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.21.0...v1.22.0) (2025-10-01)
+
+
+### Features
+
+* **topo:** add laydown start ([#768](https://github.com/LocalCrag/LocalCragApp/issues/768)) ([7ea6fda](https://github.com/LocalCrag/LocalCragApp/commit/7ea6fdae4fb64bc2175ec018c6a52d0b0c2868c3))
+* **topo:** configurable default starting position ([#769](https://github.com/LocalCrag/LocalCragApp/issues/769)) ([10940b4](https://github.com/LocalCrag/LocalCragApp/commit/10940b40db6164f6abe509c86f71a9a1a2aad4c0))
+
 # [1.21.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.20.0...v1.21.0) (2025-09-29)
 
 
