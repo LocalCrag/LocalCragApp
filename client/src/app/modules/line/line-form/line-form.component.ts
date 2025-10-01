@@ -123,6 +123,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.STAND,
     StartingPosition.SIT,
     StartingPosition.CROUCH,
+    StartingPosition.LAYDOWN,
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
@@ -323,7 +324,10 @@ export class LineFormComponent implements OnInit {
           faYear: [null, [yearOfDateNotInFutureValidator()]],
           faDate: [null, [dateNotInFutureValidator()]],
           faName: [null, [Validators.maxLength(120)]],
-          startingPosition: [StartingPosition.STAND, [Validators.required]],
+          startingPosition: [
+            instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
+            [Validators.required],
+          ],
           eliminate: [false],
           traverse: [false],
           highball: [false],

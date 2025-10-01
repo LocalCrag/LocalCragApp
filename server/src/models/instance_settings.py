@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 
 
 class InstanceSettings(db.Model):
@@ -39,6 +40,12 @@ class InstanceSettings(db.Model):
     display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     fa_default_format = db.Column(
         db.Enum(FaDefaultFormatEnum), nullable=False, server_default=FaDefaultFormatEnum.YEAR.value
+    )
+    default_starting_position = db.Column(
+        db.Enum(StartingPositionEnum),
+        nullable=False,
+        default=StartingPositionEnum.STAND,
+        server_default=StartingPositionEnum.STAND.value,
     )
 
     @hybrid_property

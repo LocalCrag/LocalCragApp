@@ -4,4 +4,5 @@ export enum StartingPosition {
   CROUCH = 'CROUCH' /** t(CROUCH) **/,
   FRENCH = 'FRENCH' /** t(FRENCH) **/,
   CANDLE = 'CANDLE' /** t(CANDLE) **/,
+  LAYDOWN = 'LAYDOWN' /** t(LAYDOWN) **/,
 }

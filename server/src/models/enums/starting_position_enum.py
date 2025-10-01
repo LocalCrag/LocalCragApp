@@ -11,3 +11,4 @@ class StartingPositionEnum(Enum):
     CROUCH = "CROUCH"
     FRENCH = "FRENCH"
     CANDLE = "CANDLE"
+    LAYDOWN = "LAYDOWN"

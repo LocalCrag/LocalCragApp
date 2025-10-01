@@ -10,7 +10,7 @@ import {
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -34,6 +34,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { StartingPosition } from '../../../enums/starting-position';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -71,16 +72,35 @@ export class InstanceSettingsFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public instanceSettings: InstanceSettings;
   public faDefaultFormats = FaDefaultFormat;
+  public startingPositions = [
+    StartingPosition.STAND,
+    StartingPosition.SIT,
+    StartingPosition.CROUCH,
+    StartingPosition.LAYDOWN,
+    StartingPosition.FRENCH,
+    StartingPosition.CANDLE,
+  ];
+  public startingPositionsOptions: {
+    label: string;
+    value: StartingPosition;
+  }[] = [];
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
     private router: Router,
     private instanceSettingsService: InstanceSettingsService,
+    private translocoService: TranslocoService,
   ) {}
 
   ngOnInit() {
     this.buildForm();
+    // build translated options for starting positions
+    this.startingPositionsOptions = this.startingPositions.map((sp) => ({
+      label: this.translocoService.translate(sp),
+      value: sp,
+    }));
+
     this.instanceSettingsForm.disable();
     this.instanceSettingsService
       .getInstanceSettings()
@@ -120,6 +140,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoSiteId: [null],
       maptilerApiKey: [null],
       faDefaultFormat: [null],
+      defaultStartingPosition: [null, [Validators.required]],
     });
   }
 
@@ -146,6 +167,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
       maptilerApiKey: this.instanceSettings.maptilerApiKey,
       faDefaultFormat: this.instanceSettings.faDefaultFormat,
+      defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
     });
   }
 
@@ -193,6 +215,9 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('maptilerApiKey').value;
       instanceSettings.faDefaultFormat =
         this.instanceSettingsForm.get('faDefaultFormat').value;
+      instanceSettings.defaultStartingPosition = this.instanceSettingsForm.get(
+        'defaultStartingPosition',
+      ).value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

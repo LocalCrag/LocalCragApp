@@ -115,6 +115,7 @@ export class LineEntryBatchLineFormComponent
     StartingPosition.STAND,
     StartingPosition.SIT,
     StartingPosition.CROUCH,
+    StartingPosition.LAYDOWN,
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
@@ -224,7 +225,10 @@ export class LineEntryBatchLineFormComponent
           ],
           grade: [null, [Validators.required]],
           faName: [null, [Validators.maxLength(120)]],
-          startingPosition: [StartingPosition.STAND, [Validators.required]],
+          startingPosition: [
+            instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
+            [Validators.required],
+          ],
         });
 
         this.lineForm.valueChanges.subscribe(() => {
