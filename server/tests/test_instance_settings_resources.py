@@ -1,6 +1,7 @@
 from extensions import db
 from models.crag import Crag
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.instance_settings import InstanceSettings
 from models.sector import Sector
@@ -33,6 +34,7 @@ def test_successful_get_instance_settings(client):
     assert res["displayUserGrades"] == instance_settings.display_user_grades
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
     assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
+    assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -59,6 +61,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
+        "defaultStartingPosition": StartingPositionEnum.SIT.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -84,6 +87,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["displayUserRatings"] is True
     assert res["displayUserGrades"] is True
     assert res["faDefaultFormat"] == FaDefaultFormatEnum.DATE.value
+    assert res["defaultStartingPosition"] == StartingPositionEnum.SIT.value
 
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
@@ -114,6 +118,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         # Can only change the value with a "clean" database
         "skippedHierarchicalLayers": 2,
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
+        "defaultStartingPosition": StartingPositionEnum.STAND.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -147,6 +152,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "displayUserGrades": True,
         "skippedHierarchicalLayers": 2,
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
+        "defaultStartingPosition": StartingPositionEnum.STAND.value,
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json

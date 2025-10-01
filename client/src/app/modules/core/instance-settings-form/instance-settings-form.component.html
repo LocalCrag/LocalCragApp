@@ -149,6 +149,26 @@
           ></p-select>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="defaultStartingPosition">
+              {{ t("defaultStartingPosition") }}
+            </label>
+          </div>
+          <p-select
+            id="defaultStartingPosition"
+            [options]="startingPositionsOptions"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="defaultStartingPosition"
+            lcFormControl
+          >
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

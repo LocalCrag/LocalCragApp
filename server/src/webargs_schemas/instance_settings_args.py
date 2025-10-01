@@ -2,6 +2,7 @@ from marshmallow import validate
 from webargs import fields
 
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 
 instance_settings_args = {
     "instanceName": fields.Str(required=True, validate=validate.Length(max=120)),
@@ -25,4 +26,5 @@ instance_settings_args = {
     "displayUserGrades": fields.Boolean(required=True),
     "displayUserRatings": fields.Boolean(required=True),
     "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
+    "defaultStartingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
 }

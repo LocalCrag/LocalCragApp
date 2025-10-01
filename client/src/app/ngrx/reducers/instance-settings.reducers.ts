@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { File } from '../../models/file';
 import { updateInstanceSettings } from '../actions/instance-settings.actions';
 import { FaDefaultFormat } from '../../enums/fa-default-format';
+import { StartingPosition } from '../../enums/starting-position';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -23,6 +24,7 @@ export interface InstanceSettingsState {
   displayUserGrades: boolean;
   displayUserRatings: boolean;
   faDefaultFormat: FaDefaultFormat;
+  defaultStartingPosition: StartingPosition;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -45,6 +47,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   displayUserGrades: false,
   displayUserRatings: false,
   faDefaultFormat: FaDefaultFormat.YEAR,
+  defaultStartingPosition: StartingPosition.STAND,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -70,6 +73,7 @@ const instanceSettingsReducer = createReducer(
     displayUserGrades: action.settings.displayUserGrades,
     displayUserRatings: action.settings.displayUserRatings,
     faDefaultFormat: action.settings.faDefaultFormat,
+    defaultStartingPosition: action.settings.defaultStartingPosition,
   })),
 );
 

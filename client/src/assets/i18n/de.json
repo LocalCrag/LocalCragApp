@@ -243,6 +243,7 @@
   "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "Im Hallenmodus wird das Datumsformat als Standardeinstellung empfohlen. Das Format ist im Formular der jeweiligen Linie individuell anpassbar.",
   "instanceSettings.instanceSettingsForm.YEAR": "Jahr",
   "instanceSettings.instanceSettingsForm.DATE": "Datum",
+  "instanceSettings.instanceSettingsForm.defaultStartingPosition": "Standard-Startposition",
   "instanceSettings.instanceSettingsForm.imagesSettings": "Bilder",
   "instanceSettings.instanceSettingsForm.logoImageLabel": "Logo",
   "instanceSettings.instanceSettingsForm.faviconImageLabel": "Favicon",
