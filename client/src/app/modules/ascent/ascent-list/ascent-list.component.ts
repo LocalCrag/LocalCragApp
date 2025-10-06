@@ -52,8 +52,10 @@ import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { InstanceSettingsState } from '../../../ngrx/reducers/instance-settings.reducers';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -136,6 +138,7 @@ export class AscentListComponent implements OnInit, OnChanges {
   public orderDirectionKey: SelectItem;
   public ascentActionItems: MenuItem[];
   public clickedAscentForAction: Ascent;
+  public instanceSettings$: Observable<InstanceSettingsState>;
 
   private loadedGradeFilterRange: number[] = null;
 
@@ -149,7 +152,9 @@ export class AscentListComponent implements OnInit, OnChanges {
     protected scalesService: ScalesService,
     private regionService: RegionService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+    this.instanceSettings$ = this.store.select(selectInstanceSettingsState);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['parentLoading']) {
