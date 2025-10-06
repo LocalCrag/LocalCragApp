@@ -122,11 +122,13 @@ class UpdateTopoImageOrder(MethodView):
     @check_auth_claims(moderator=True)
     def put(self, area_slug):
         """
-        Changes the order index of topo images.
+        Changes the order index of topo images. Only works on unarchived topo images.
         """
         new_order = request.json
         area_id = Area.get_id_by_slug(area_slug)
-        topo_images: List[TopoImage] = TopoImage.return_all(filter=lambda: TopoImage.area_id == area_id)
+        topo_images: List[TopoImage] = TopoImage.return_all(
+            filter=lambda: [TopoImage.area_id == area_id, TopoImage.archived.is_(False)]
+        )
 
         if not validate_order_payload(new_order, topo_images):
             raise BadRequest("New order doesn't match the requirements of the data to order.")
