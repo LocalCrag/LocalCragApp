@@ -179,14 +179,26 @@
                   </div>
                 </div>
                 <div class="ascent-table-line-location mt-1">
-                  <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                    ascent.crag.name
-                  }}</a
-                  >,
-                  <a routerLink="{{ ascent.routerLinkSector }}">{{
-                    ascent.sector.name
-                  }}</a
-                  >,
+                  <ng-container
+                    *ngIf="
+                      (instanceSettings$ | async).skippedHierarchyLayers === 0
+                    "
+                  >
+                    <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                      ascent.crag.name
+                    }}</a
+                    >,
+                  </ng-container>
+                  <ng-container
+                    *ngIf="
+                      (instanceSettings$ | async).skippedHierarchyLayers === 1
+                    "
+                  >
+                    <a routerLink="{{ ascent.routerLinkSector }}">{{
+                      ascent.sector.name
+                    }}</a
+                    >,
+                  </ng-container>
                   <a routerLink="{{ ascent.routerLinkArea }}">{{
                     ascent.area.name
                   }}</a>
@@ -304,14 +316,26 @@
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">
-                    <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                      ascent.crag.name
-                    }}</a
-                    >,
-                    <a routerLink="{{ ascent.routerLinkSector }}">{{
-                      ascent.sector.name
-                    }}</a
-                    >,
+                    <ng-container
+                      *ngIf="
+                        (instanceSettings$ | async).skippedHierarchyLayers === 0
+                      "
+                    >
+                      <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                        ascent.crag.name
+                      }}</a
+                      >,
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        (instanceSettings$ | async).skippedHierarchyLayers === 1
+                      "
+                    >
+                      <a routerLink="{{ ascent.routerLinkSector }}">{{
+                        ascent.sector.name
+                      }}</a
+                      >,
+                    </ng-container>
                     <a routerLink="{{ ascent.routerLinkArea }}">{{
                       ascent.area.name
                     }}</a>
@@ -428,14 +452,26 @@
                     </div>
                   </div>
                   <div class="ascent-table-line-location mt-1">
-                    <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                      ascent.crag.name
-                    }}</a
-                    >,
-                    <a routerLink="{{ ascent.routerLinkSector }}">{{
-                      ascent.sector.name
-                    }}</a
-                    >,
+                    <ng-container
+                      *ngIf="
+                        (instanceSettings$ | async).skippedHierarchyLayers === 0
+                      "
+                    >
+                      <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                        ascent.crag.name
+                      }}</a
+                      >,
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        (instanceSettings$ | async).skippedHierarchyLayers === 1
+                      "
+                    >
+                      <a routerLink="{{ ascent.routerLinkSector }}">{{
+                        ascent.sector.name
+                      }}</a
+                      >,
+                    </ng-container>
                     <a routerLink="{{ ascent.routerLinkArea }}">{{
                       ascent.area.name
                     }}</a>
