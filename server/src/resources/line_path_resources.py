@@ -70,11 +70,13 @@ class UpdateLinePathOrder(MethodView):
     @check_auth_claims(moderator=True)
     def put(self, image_id):
         """
-        Changes the order index of line paths.
+        Changes the order index of line paths for unarchived lines for a specific topo image.
         """
         new_order = request.json
-        line_paths: List[LinePath] = LinePath.return_all(filter=lambda: LinePath.topo_image_id == image_id)
-
+        line_paths: List[LinePath] = LinePath.return_all(
+            filter=lambda: [LinePath.topo_image_id == image_id, LinePath.line.has(Line.archived.is_(False))],
+            options=db.joinedload(LinePath.line),
+        )
         if not validate_order_payload(new_order, line_paths):
             raise BadRequest("New order doesn't match the requirements of the data to order.")
 

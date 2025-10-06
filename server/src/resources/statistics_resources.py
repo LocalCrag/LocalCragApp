@@ -85,7 +85,7 @@ class GetCompletion(MethodView):
                     Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
                 )
             else:
-                ascents_query.join(Ascent.line).filter(
+                ascents_query = ascents_query.join(Ascent.line).filter(
                     Line.author_grade_value >= min_grade_value, Line.author_grade_value <= max_grade_value
                 )
 
