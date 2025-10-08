@@ -6,6 +6,13 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 
 
+def set_topo_image_archived(topo_image: TopoImage):
+    lines = Line.query.join(Line.line_paths).filter_by(topo_image_id=topo_image.id).all()
+    for line in lines:
+        line.archived = not line.archived
+        db.session.add(line)
+
+
 def set_area_archived(area: Area):
     lines = Line.query.filter_by(area_id=area.id, archived=False).all()
     for line in lines:
