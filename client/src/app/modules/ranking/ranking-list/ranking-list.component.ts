@@ -24,6 +24,8 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { GradeDistribution } from '../../../models/scale';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
+import { Store } from '@ngrx/store';
+import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -64,12 +66,14 @@ export class RankingListComponent implements OnInit {
   public showInfoPopup = false;
   public lineTypes: SelectItem<LineType>[] = null;
   public lineType: SelectItem<LineType> = null;
+  public rankingPastWeeks: number | null = null;
 
   constructor(
     private rankingService: RankingService,
     private translocoService: TranslocoService,
     private cragsService: CragsService,
     private sectorsService: SectorsService,
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -88,6 +92,10 @@ export class RankingListComponent implements OnInit {
       },
     ];
     this.rankingType = this.rankingTypes[0];
+    this.store
+      .select(selectRankingPastWeeks)
+      .subscribe((weeks) => (this.rankingPastWeeks = weeks));
+
     this.loading = LoadingState.LOADING;
     if (this.crag) {
       this.cragsService

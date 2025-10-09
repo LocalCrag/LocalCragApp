@@ -25,6 +25,7 @@ export interface InstanceSettingsState {
   displayUserRatings: boolean;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
+  rankingPastWeeks: number | null;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -48,6 +49,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   displayUserRatings: false,
   faDefaultFormat: FaDefaultFormat.YEAR,
   defaultStartingPosition: StartingPosition.STAND,
+  rankingPastWeeks: null,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -74,6 +76,7 @@ const instanceSettingsReducer = createReducer(
     displayUserRatings: action.settings.displayUserRatings,
     faDefaultFormat: action.settings.faDefaultFormat,
     defaultStartingPosition: action.settings.defaultStartingPosition,
+    rankingPastWeeks: action.settings.rankingPastWeeks,
   })),
 );
 

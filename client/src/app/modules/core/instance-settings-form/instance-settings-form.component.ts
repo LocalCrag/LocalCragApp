@@ -84,6 +84,8 @@ export class InstanceSettingsFormComponent implements OnInit {
     label: string;
     value: StartingPosition;
   }[] = [];
+  public rankingPastWeeksOptions: { label: string; value: number | null }[] =
+    [];
 
   constructor(
     private fb: FormBuilder,
@@ -100,6 +102,23 @@ export class InstanceSettingsFormComponent implements OnInit {
       label: this.translocoService.translate(sp),
       value: sp,
     }));
+
+    // build options for rankingPastWeeks
+    this.rankingPastWeeksOptions = [
+      {
+        label: this.translocoService.translate(
+          'instanceSettings.instanceSettingsForm.rankingPastWeeksAll',
+        ),
+        value: null,
+      },
+      ...Array.from({ length: 20 }, (_, i) => i + 1).map((w) => ({
+        label: this.translocoService.translate(
+          'instanceSettings.instanceSettingsForm.rankingPastWeeksWeeks',
+          { weeks: w },
+        ),
+        value: w,
+      })),
+    ];
 
     this.instanceSettingsForm.disable();
     this.instanceSettingsService
@@ -141,6 +160,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       maptilerApiKey: [null],
       faDefaultFormat: [null],
       defaultStartingPosition: [null, [Validators.required]],
+      rankingPastWeeks: [null],
     });
   }
 
@@ -168,6 +188,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       maptilerApiKey: this.instanceSettings.maptilerApiKey,
       faDefaultFormat: this.instanceSettings.faDefaultFormat,
       defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
+      rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
     });
   }
 
@@ -218,6 +239,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.defaultStartingPosition = this.instanceSettingsForm.get(
         'defaultStartingPosition',
       ).value;
+      instanceSettings.rankingPastWeeks =
+        this.instanceSettingsForm.get('rankingPastWeeks').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

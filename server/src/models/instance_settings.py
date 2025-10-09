@@ -47,6 +47,8 @@ class InstanceSettings(db.Model):
         default=StartingPositionEnum.STAND,
         server_default=StartingPositionEnum.STAND.value,
     )
+    # Number of past weeks to consider for rankings; None means all-time
+    ranking_past_weeks = db.Column(db.Integer, nullable=True)
 
     @hybrid_property
     def superadmin_email(self) -> str:

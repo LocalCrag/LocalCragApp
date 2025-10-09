@@ -26,6 +26,7 @@ export class InstanceSettings {
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
+  rankingPastWeeks: number | null;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -61,6 +62,7 @@ export class InstanceSettings {
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
+    instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
     return instanceSettings;
   }
 
@@ -94,6 +96,7 @@ export class InstanceSettings {
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
+      rankingPastWeeks: instanceSettings.rankingPastWeeks,
     };
   }
 }
