@@ -1,3 +1,12 @@
+## [1.22.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.22.0...v1.22.1) (2025-10-06)
+
+
+### Bug Fixes
+
+* **account:** fix progress calculation with active grade filters ([#773](https://github.com/LocalCrag/LocalCragApp/issues/773)) ([cda3111](https://github.com/LocalCrag/LocalCragApp/commit/cda311100da23b637f3fa64d0e27ee5336575dc2))
+* **ascents:** hide skipped hierarchy levels in ascent list ([#775](https://github.com/LocalCrag/LocalCragApp/issues/775)) ([8d66a13](https://github.com/LocalCrag/LocalCragApp/commit/8d66a1357de5ca7651926ab78a421f3ba5175cd8)), closes [#761](https://github.com/LocalCrag/LocalCragApp/issues/761)
+* **topo:** fix line path and topo image ordering if there exist archived lines and topo images ([#774](https://github.com/LocalCrag/LocalCragApp/issues/774)) ([8d8ff39](https://github.com/LocalCrag/LocalCragApp/commit/8d8ff39b3be58adc69ae93f9ee997fecac693795)), closes [#758](https://github.com/LocalCrag/LocalCragApp/issues/758)
+
 # [1.22.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.21.0...v1.22.0) (2025-10-01)
 
 
