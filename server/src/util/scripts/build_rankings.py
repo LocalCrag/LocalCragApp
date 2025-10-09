@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import select
 from sqlalchemy.orm.attributes import flag_modified
 
@@ -65,6 +67,11 @@ class UserRankingMap:
 def build_rankings():
     print("Starting ranking calculation...")
     instance_settings = InstanceSettings.return_it()
+    cutoff_date = None
+    if instance_settings.ranking_past_weeks is not None:
+        cutoff_date = datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(
+            days=7 * instance_settings.ranking_past_weeks
+        )
     users = User.return_all()
     for user in users:
         # Build ranking map
@@ -83,6 +90,8 @@ def build_rankings():
                 .filter(Ascent.created_by_id == user.id, Line.archived.is_(False))
                 .distinct(Line.id)
             )
+            if cutoff_date is not None:
+                query = query.filter(Ascent.ascent_date >= cutoff_date)
             paginated_ascents = db.paginate(query, page=page, per_page=50)
             has_next_page = paginated_ascents.has_next
             if paginated_ascents.has_next:

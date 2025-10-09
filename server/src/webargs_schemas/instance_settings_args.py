@@ -27,4 +27,9 @@ instance_settings_args = {
     "displayUserRatings": fields.Boolean(required=True),
     "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
     "defaultStartingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
+    "rankingPastWeeks": fields.Integer(
+        required=True,
+        allow_none=True,
+        validate=validate.Range(min=1, max=20, min_inclusive=True, max_inclusive=True),
+    ),
 }

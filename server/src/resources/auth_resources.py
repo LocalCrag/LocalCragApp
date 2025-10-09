@@ -57,7 +57,7 @@ class UserLogin(MethodView):
             # A user becomes activated after first login
             if not current_user.activated:
                 current_user.activated = True
-                current_user.activated_at = datetime.utcnow()
+                current_user.activated_at = datetime.now(pytz.utc)
                 db.session.add(current_user)
                 db.session.commit()
 
