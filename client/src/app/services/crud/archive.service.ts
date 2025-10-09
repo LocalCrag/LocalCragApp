@@ -36,13 +36,18 @@ export class ArchiveService {
    * Adjust the archive status of a single topo image
    *
    * @param topoImage Topo image to adjust the archive status
+   * @param cascade Whether to cascade the change to all lines in the topo image
    * @return Observable of null
    */
-  public changeTopoImageArchived(topoImage: TopoImage): Observable<object> {
+  public changeTopoImageArchived(
+    topoImage: TopoImage,
+    cascade = true,
+  ): Observable<object> {
     return this.http.put(this.api.archive.setArchived(), {
       type: ArchiveType.TOPO_IMAGE,
       slug: topoImage.id,
       value: Boolean(topoImage.archived),
+      cascade: cascade,
     });
   }
 

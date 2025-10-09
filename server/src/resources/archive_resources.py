@@ -11,10 +11,10 @@ from models.line import Line
 from models.sector import Sector
 from models.topo_image import TopoImage
 from util.archive import (
+    cascade_topo_image_archived,
     set_area_archived,
     set_crag_archived,
     set_sector_archived,
-    set_topo_image_archived,
 )
 from util.gym_mode import is_gym_mode
 from util.security_util import check_auth_claims
@@ -44,7 +44,7 @@ class SetArchived(MethodView):
             # Areas, Sectors and Crags archive all lines and topo images below them by default
             # For archived topo images we only do this by condition to allow replacing an image while keeping the lines
             if archive_data["cascade"]:
-                set_topo_image_archived(topo_image)
+                cascade_topo_image_archived(topo_image)
             db.session.commit()
         elif archive_data["type"] == ArchiveTypeEnum.AREA:
             area = Area.find_by_slug(archive_data["slug"])
