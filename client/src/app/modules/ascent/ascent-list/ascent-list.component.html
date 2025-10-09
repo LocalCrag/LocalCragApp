@@ -191,7 +191,7 @@
                   </ng-container>
                   <ng-container
                     *ngIf="
-                      (instanceSettings$ | async).skippedHierarchyLayers === 1
+                      (instanceSettings$ | async).skippedHierarchyLayers <= 1
                     "
                   >
                     <a routerLink="{{ ascent.routerLinkSector }}">{{
@@ -328,7 +328,7 @@
                     </ng-container>
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers === 1
+                        (instanceSettings$ | async).skippedHierarchyLayers <= 1
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{
@@ -464,7 +464,7 @@
                     </ng-container>
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers === 1
+                        (instanceSettings$ | async).skippedHierarchyLayers <= 1
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{

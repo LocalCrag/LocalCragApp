@@ -33,6 +33,7 @@ import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { ConfirmationService } from 'primeng/api';
 
 /**
  * Component that shows detailed information about a line.
@@ -41,7 +42,7 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
   selector: 'lc-line-info',
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
   imports: [
     ClosedSpotAlertComponent,
     TranslocoDirective,

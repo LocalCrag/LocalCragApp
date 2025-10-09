@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { CragsService } from '../../../services/crud/crags.service';
 import { LoadingState } from '../../../enums/loading-state';
-import { PrimeIcons, SelectItem } from 'primeng/api';
+import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, Observable } from 'rxjs';
@@ -36,7 +36,7 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
   selector: 'lc-crag-list',
   templateUrl: './crag-list.component.html',
   styleUrls: ['./crag-list.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
   imports: [
     TranslocoDirective,
     DataView,
