@@ -59,6 +59,9 @@ export class Ascent extends AbstractModel {
   }
 
   public static serialize(ascent: Ascent): any {
+    const utcDate = new Date(
+      ascent.date.getTime() + ascent.date.getTimezoneOffset() * 60000,
+    );
     return {
       flash: ascent.flash,
       fa: ascent.fa,
@@ -71,7 +74,7 @@ export class Ascent extends AbstractModel {
       gradeValue: ascent.gradeValue,
       line: ascent.line.id,
       date: ascent.date
-        ? formatISO(new Date(ascent.date.toISOString()), {
+        ? formatISO(utcDate, {
             representation: 'date',
           })
         : null,
