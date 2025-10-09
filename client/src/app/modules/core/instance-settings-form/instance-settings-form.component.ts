@@ -112,10 +112,15 @@ export class InstanceSettingsFormComponent implements OnInit {
         value: null,
       },
       ...Array.from({ length: 20 }, (_, i) => i + 1).map((w) => ({
-        label: this.translocoService.translate(
-          'instanceSettings.instanceSettingsForm.rankingPastWeeksWeeks',
-          { weeks: w },
-        ),
+        label:
+          w === 1
+            ? this.translocoService.translate(
+                'instanceSettings.instanceSettingsForm.rankingPastWeeksWeek',
+              )
+            : this.translocoService.translate(
+                'instanceSettings.instanceSettingsForm.rankingPastWeeksWeeks',
+                { weeks: w },
+              ),
         value: w,
       })),
     ];

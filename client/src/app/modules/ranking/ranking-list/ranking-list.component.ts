@@ -4,7 +4,7 @@ import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
 import { DataViewModule } from 'primeng/dataview';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -26,6 +26,7 @@ import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { Store } from '@ngrx/store';
 import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -46,6 +47,7 @@ import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-setting
     ToggleSwitch,
     RankingListSkeletonComponent,
     Message,
+    AsyncPipe,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
@@ -66,7 +68,7 @@ export class RankingListComponent implements OnInit {
   public showInfoPopup = false;
   public lineTypes: SelectItem<LineType>[] = null;
   public lineType: SelectItem<LineType> = null;
-  public rankingPastWeeks: number | null = null;
+  public rankingPastWeeks: Observable<number | null>;
 
   constructor(
     private rankingService: RankingService,
@@ -92,9 +94,7 @@ export class RankingListComponent implements OnInit {
       },
     ];
     this.rankingType = this.rankingTypes[0];
-    this.store
-      .select(selectRankingPastWeeks)
-      .subscribe((weeks) => (this.rankingPastWeeks = weeks));
+    this.rankingPastWeeks = this.store.select(selectRankingPastWeeks);
 
     this.loading = LoadingState.LOADING;
     if (this.crag) {

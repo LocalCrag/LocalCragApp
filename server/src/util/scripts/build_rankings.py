@@ -69,7 +69,7 @@ def build_rankings():
     instance_settings = InstanceSettings.return_it()
     cutoff_date = None
     if instance_settings.ranking_past_weeks is not None:
-        cutoff_date = datetime.datetime.utcnow().date() - datetime.timedelta(
+        cutoff_date = datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(
             days=7 * instance_settings.ranking_past_weeks
         )
     users = User.return_all()
