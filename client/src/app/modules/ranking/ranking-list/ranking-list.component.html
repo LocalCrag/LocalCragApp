@@ -79,12 +79,12 @@
           [modal]="true"
         >
           <p>{{ t("aboutRankingsText") }}</p>
-          <p *ngIf="(rankingPastWeeks | async) as weeks">
+          <p *ngIf="rankingPastWeeks | async as weeks">
             {{
               t(
                 weeks === 1
-                  ? 'aboutRankingsTimeRangeSuffixSingular'
-                  : 'aboutRankingsTimeRangeSuffix',
+                  ? "aboutRankingsTimeRangeSuffixSingular"
+                  : "aboutRankingsTimeRangeSuffix",
                 weeks === 1 ? {} : { weeks }
               )
             }}
