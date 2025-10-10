@@ -1,3 +1,16 @@
+# [1.23.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.22.1...v1.23.0) (2025-10-10)
+
+
+### Bug Fixes
+
+* **ascents:** fix issue where utc timeoffset was causing logs near midnight not to work ([#779](https://github.com/LocalCrag/LocalCragApp/issues/779)) ([5eb9775](https://github.com/LocalCrag/LocalCragApp/commit/5eb977505d1625b0e8f328d6e496048d09eeab17)), closes [#685](https://github.com/LocalCrag/LocalCragApp/issues/685)
+
+
+### Features
+
+* **gym:** archiving a topo image can conditionally also archive all attached lines ([#776](https://github.com/LocalCrag/LocalCragApp/issues/776)) ([0b755e7](https://github.com/LocalCrag/LocalCragApp/commit/0b755e7e6a9dc6c4a01e577b937c4683414adeed)), closes [#760](https://github.com/LocalCrag/LocalCragApp/issues/760)
+* **ranking:** add possibility to set the number of considered weeks for rankings ([#777](https://github.com/LocalCrag/LocalCragApp/issues/777)) ([021c671](https://github.com/LocalCrag/LocalCragApp/commit/021c671b8be3381b873f1502cb813576d4286584)), closes [#582](https://github.com/LocalCrag/LocalCragApp/issues/582)
+
 ## [1.22.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.22.0...v1.22.1) (2025-10-06)
 
 
