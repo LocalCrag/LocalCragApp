@@ -20,7 +20,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap } from 'rxjs/operators';
@@ -84,6 +84,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
     TopoImageComponent,
     TranslateSpecialGradesPipe,
   ],
+  providers: [ConfirmationService],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,

@@ -169,6 +169,27 @@
           }}</small>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="rankingPastWeeks">
+              {{ t("rankingPastWeeksLabel") }}
+            </label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('rankingPastWeeksTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
+          <p-select
+            id="rankingPastWeeks"
+            [options]="rankingPastWeeksOptions"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="rankingPastWeeks"
+            lcFormControl
+          ></p-select>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

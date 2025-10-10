@@ -78,7 +78,17 @@
           [closable]="true"
           [modal]="true"
         >
-          {{ t("aboutRankingsText") }}
+          <p>{{ t("aboutRankingsText") }}</p>
+          <p *ngIf="rankingPastWeeks | async as weeks">
+            {{
+              t(
+                weeks === 1
+                  ? "aboutRankingsTimeRangeSuffixSingular"
+                  : "aboutRankingsTimeRangeSuffix",
+                weeks === 1 ? {} : { weeks }
+              )
+            }}
+          </p>
         </p-dialog>
       </div>
     </ng-template>

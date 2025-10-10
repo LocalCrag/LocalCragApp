@@ -2,6 +2,7 @@ import datetime
 import uuid
 from typing import Self
 
+import pytz
 from flask import current_app
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -15,7 +16,7 @@ class InstanceSettings(db.Model):
     __tablename__ = "instance_settings"
 
     id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
-    time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.utcnow)
+    time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.now(pytz.utc))
     instance_name = db.Column(db.String(120), nullable=False)
     copyright_owner = db.Column(db.String(120), nullable=False)
     logo_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
@@ -47,6 +48,8 @@ class InstanceSettings(db.Model):
         default=StartingPositionEnum.STAND,
         server_default=StartingPositionEnum.STAND.value,
     )
+    # Number of past weeks to consider for rankings; None means all-time
+    ranking_past_weeks = db.Column(db.Integer, nullable=True)
 
     @hybrid_property
     def superadmin_email(self) -> str:

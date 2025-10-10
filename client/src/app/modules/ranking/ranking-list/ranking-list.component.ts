@@ -4,7 +4,7 @@ import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
 import { DataViewModule } from 'primeng/dataview';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -24,6 +24,9 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { GradeDistribution } from '../../../models/scale';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
+import { Store } from '@ngrx/store';
+import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -44,6 +47,7 @@ import { Sector } from '../../../models/sector';
     ToggleSwitch,
     RankingListSkeletonComponent,
     Message,
+    AsyncPipe,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
@@ -64,12 +68,14 @@ export class RankingListComponent implements OnInit {
   public showInfoPopup = false;
   public lineTypes: SelectItem<LineType>[] = null;
   public lineType: SelectItem<LineType> = null;
+  public rankingPastWeeks: Observable<number | null>;
 
   constructor(
     private rankingService: RankingService,
     private translocoService: TranslocoService,
     private cragsService: CragsService,
     private sectorsService: SectorsService,
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -88,6 +94,8 @@ export class RankingListComponent implements OnInit {
       },
     ];
     this.rankingType = this.rankingTypes[0];
+    this.rankingPastWeeks = this.store.select(selectRankingPastWeeks);
+
     this.loading = LoadingState.LOADING;
     if (this.crag) {
       this.cragsService
