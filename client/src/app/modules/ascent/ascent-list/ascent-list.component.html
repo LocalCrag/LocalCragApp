@@ -181,7 +181,7 @@
                 <div class="ascent-table-line-location mt-1">
                   <ng-container
                     *ngIf="
-                      (instanceSettings$ | async).skippedHierarchyLayers === 0
+                      ascent.crag.slug !== environment.skippedSlug
                     "
                   >
                     <a routerLink="{{ ascent.routerLinkCrag }}">{{
@@ -191,7 +191,7 @@
                   </ng-container>
                   <ng-container
                     *ngIf="
-                      (instanceSettings$ | async).skippedHierarchyLayers <= 1
+                      ascent.sector.slug !== environment.skippedSlug
                     "
                   >
                     <a routerLink="{{ ascent.routerLinkSector }}">{{
@@ -318,7 +318,7 @@
                   <div class="ascent-table-line-location mt-1">
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers === 0
+                        ascent.crag.slug !== environment.skippedSlug
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkCrag }}">{{
@@ -328,7 +328,7 @@
                     </ng-container>
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers <= 1
+                        ascent.sector.slug !== environment.skippedSlug
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{
@@ -454,7 +454,7 @@
                   <div class="ascent-table-line-location mt-1">
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers === 0
+                        ascent.crag.slug !== environment.skippedSlug
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkCrag }}">{{
@@ -464,7 +464,7 @@
                     </ng-container>
                     <ng-container
                       *ngIf="
-                        (instanceSettings$ | async).skippedHierarchyLayers <= 1
+                        ascent.sector.slug !== environment.skippedSlug
                       "
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{

@@ -138,20 +138,24 @@ export class LineComponent implements OnInit {
               this.breadcrumbs = [
                 {
                   label: crag.name,
+                  slug: crag.slug,
                   routerLink: `/topo/${crag.slug}/sectors`,
                 },
                 {
                   label: sector.name,
+                  slug: sector.slug,
                   routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
                 },
                 {
                   label: area.name,
+                  slug: area.slug,
                   routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
                 },
                 {
                   label: `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
+                  slug: line.slug,
                 },
-              ];
+              ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
 
               this.store
                 .select(selectInstanceName)
