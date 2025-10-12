@@ -24,6 +24,7 @@ import { Crag } from '../../../models/crag';
 import {
   selectInstanceName,
   selectLogoImage,
+  selectSkippedHierarchyLayers,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { File } from '../../../models/file';
 import { User } from '../../../models/user';
@@ -63,6 +64,7 @@ export class MenuComponent implements OnInit {
   logoImage$: Observable<File>;
   instanceName$: Observable<string>;
   currentUser$: Observable<User>;
+  skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
 
   constructor(
@@ -78,6 +80,9 @@ export class MenuComponent implements OnInit {
     this.instanceName$ = this.store.pipe(select(selectInstanceName));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
+    this.skippedHierarchyLayers$ = this.store.select(
+      selectSkippedHierarchyLayers,
+    );
     this.buildMenu();
     this.buildUserMenu();
     this.actions
@@ -124,6 +129,7 @@ export class MenuComponent implements OnInit {
                   icon: 'pi pi-fw pi-users',
                   label: this.translocoService.translate(marker('menu.users')),
                   routerLink: '/users',
+                  routerLinkActiveOptions: { exact: true },
                   visible: authState.user.moderator,
                 },
                 {
@@ -187,7 +193,11 @@ export class MenuComponent implements OnInit {
     forkJoin([
       this.menuItemsService.getMenuItems(),
       this.menuItemsService.getCragMenuStructure(),
-    ]).subscribe(([menuItems, crags]) => {
+      this.skippedHierarchyLayers$.pipe(take(1)),
+    ]).subscribe(([menuItems, crags, skippedHierarchyLayers]) => {
+      const skippedHierarchyLayersSlug = `${environment.skippedSlug}/`.repeat(
+        skippedHierarchyLayers,
+      );
       this.items = [];
       const menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
@@ -241,7 +251,7 @@ export class MenuComponent implements OnInit {
             this.items.push({
               label: this.translocoService.translate(marker('menu.gallery')),
               icon: 'pi pi-fw pi-images',
-              routerLink: '/topo/gallery',
+              routerLink: `/topo/${skippedHierarchyLayersSlug}gallery`,
             });
             break;
           case MenuItemType.HISTORY:
