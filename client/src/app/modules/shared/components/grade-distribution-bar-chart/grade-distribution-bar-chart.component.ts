@@ -45,6 +45,7 @@ type BarChartData = {
 export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
   @Input() excludeProjects: boolean = false;
+  @Input() excludeUngraded: boolean = false;
 
   public gradeDistribution: GradeDistribution;
   public chartData: BarChartData[] = [];
