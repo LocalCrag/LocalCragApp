@@ -13,7 +13,13 @@
       {{ t("totalLines") }}:
       {{ chartDataElement.totalCount }}
       <span
-        *ngIf="!excludeProjects && !excludeUngraded && (chartDataElement.ungradedCount > 0 || chartDataElement.projectCount > 0)">
+        *ngIf="
+          !excludeProjects &&
+          !excludeUngraded &&
+          (chartDataElement.ungradedCount > 0 ||
+            chartDataElement.projectCount > 0)
+        "
+      >
         ({{
           t("plusXUngradedYProjects", {
             ungraded: chartDataElement.ungradedCount,
@@ -21,14 +27,26 @@
           })
         }})
       </span>
-      <span *ngIf="excludeProjects && !excludeUngraded && chartDataElement.ungradedCount > 0">
+      <span
+        *ngIf="
+          excludeProjects &&
+          !excludeUngraded &&
+          chartDataElement.ungradedCount > 0
+        "
+      >
         ({{
           t("plusXUngraded", {
-            ungraded: chartDataElement.ungradedCount
+            ungraded: chartDataElement.ungradedCount,
           })
         }})
       </span>
-      <span *ngIf="!excludeProjects && excludeUngraded && chartDataElement.projectCount > 0">
+      <span
+        *ngIf="
+          !excludeProjects &&
+          excludeUngraded &&
+          chartDataElement.projectCount > 0
+        "
+      >
         ({{
           t("plusXProjects", {
             projects: chartDataElement.projectCount,
