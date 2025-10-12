@@ -129,6 +129,7 @@ export class MenuComponent implements OnInit {
                   icon: 'pi pi-fw pi-users',
                   label: this.translocoService.translate(marker('menu.users')),
                   routerLink: '/users',
+                  routerLinkActiveOptions: { exact: true },
                   visible: authState.user.moderator,
                 },
                 {
