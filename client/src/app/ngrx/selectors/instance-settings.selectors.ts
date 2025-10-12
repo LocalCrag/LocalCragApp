@@ -50,3 +50,8 @@ export const selectRankingPastWeeks = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.rankingPastWeeks,
 );
+
+export const selectSkippedHierarchyLayers = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.skippedHierarchyLayers,
+);
