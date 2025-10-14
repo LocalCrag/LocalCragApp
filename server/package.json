@@ -1,6 +1,6 @@
 {
   "name": "localcrag-server",
-  "version": "1.23.1",
+  "version": "1.23.2",
   "devDependencies": {
     "lint-staged": "^15.4.3"
   },

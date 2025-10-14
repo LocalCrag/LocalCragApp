@@ -1,3 +1,10 @@
+## [1.23.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.1...v1.23.2) (2025-10-14)
+
+
+### Bug Fixes
+
+* **core:** add missing lambda to database default datetimes ([#785](https://github.com/LocalCrag/LocalCragApp/issues/785)) ([c35322a](https://github.com/LocalCrag/LocalCragApp/commit/c35322a52b3c643e71b8c9b43266b04dffc99a46))
+
 ## [1.23.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.0...v1.23.1) (2025-10-12)
 
 
