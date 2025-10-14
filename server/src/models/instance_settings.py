@@ -16,7 +16,7 @@ class InstanceSettings(db.Model):
     __tablename__ = "instance_settings"
 
     id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
-    time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.now(pytz.utc))
+    time_updated = db.Column(db.DateTime(), onupdate=lambda: datetime.datetime.now(pytz.utc))
     instance_name = db.Column(db.String(120), nullable=False)
     copyright_owner = db.Column(db.String(120), nullable=False)
     logo_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)

@@ -20,8 +20,8 @@ class BaseEntity(db.Model):
 
     id = db.Column(UUID(), default=lambda u: uuid.uuid4(), unique=True, primary_key=True)
 
-    time_created = db.Column(db.DateTime(), default=datetime.datetime.now(pytz.utc))
-    time_updated = db.Column(db.DateTime(), onupdate=datetime.datetime.now(pytz.utc))
+    time_created = db.Column(db.DateTime(), default=lambda: datetime.datetime.now(pytz.utc))
+    time_updated = db.Column(db.DateTime(), onupdate=lambda: datetime.datetime.now(pytz.utc))
 
     @declared_attr
     def created_by_id(self):
