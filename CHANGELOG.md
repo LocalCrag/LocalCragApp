@@ -1,3 +1,14 @@
+## [1.23.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.0...v1.23.1) (2025-10-12)
+
+
+### Bug Fixes
+
+* **account:** add missing count of ungraded lines to user grade distribution bar chart ([#783](https://github.com/LocalCrag/LocalCragApp/issues/783)) ([4182f66](https://github.com/LocalCrag/LocalCragApp/commit/4182f6646754dd937e7efbc510f8a411319c9164)), closes [#705](https://github.com/LocalCrag/LocalCragApp/issues/705)
+* **ascents:** fix issue where avatars could be elliptic instead of circle shaped ([#784](https://github.com/LocalCrag/LocalCragApp/issues/784)) ([8b6213a](https://github.com/LocalCrag/LocalCragApp/commit/8b6213aed6b0600b60875709fb389420b7e1aeab)), closes [#684](https://github.com/LocalCrag/LocalCragApp/issues/684)
+* **core:** fix user menu point being highlighted when account page is active ([#782](https://github.com/LocalCrag/LocalCragApp/issues/782)) ([ead7399](https://github.com/LocalCrag/LocalCragApp/commit/ead7399783cb81f808158b975a6518e6eb9a18cf)), closes [#738](https://github.com/LocalCrag/LocalCragApp/issues/738)
+* **gallery:** fix gallery menu item links when hierarchy levels are skipped ([#781](https://github.com/LocalCrag/LocalCragApp/issues/781)) ([9efac7c](https://github.com/LocalCrag/LocalCragApp/commit/9efac7cd7d16e55d6552cb33942fdc1c2217615f)), closes [#756](https://github.com/LocalCrag/LocalCragApp/issues/756)
+* **topo:** line breadcrumbs now respect hierarchy levels ([#780](https://github.com/LocalCrag/LocalCragApp/issues/780)) ([fbe87fd](https://github.com/LocalCrag/LocalCragApp/commit/fbe87fd1c987d41f9442d399d71ffd9f43c78a26)), closes [#778](https://github.com/LocalCrag/LocalCragApp/issues/778)
+
 # [1.23.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.22.1...v1.23.0) (2025-10-10)
 
 
