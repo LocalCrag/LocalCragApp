@@ -59,7 +59,9 @@ export class TranslocoHttpLoader implements TranslocoLoader {
    * @param lang Language key.
    */
   getTranslation(lang: string) {
-    return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+    return this.http.get<Translation>(
+      `/assets/i18n/${lang}.json?v=${environment.version}`,
+    );
   }
 }
 
