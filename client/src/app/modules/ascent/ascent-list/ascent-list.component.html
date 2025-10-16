@@ -5,7 +5,9 @@
         severity="info"
         icon="pi pi-info-circle"
         class="m-4 mb-1 block"
-        *ngIf="ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING"
+        *ngIf="
+          ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+        "
       >
         {{ t("noAscentsFoundMessage") }}
       </p-message>
@@ -165,15 +167,15 @@
                 <a
                   class="username"
                   routerLink="{{ ascent.routerLinkCreatedBy }}"
-                >{{ ascent.createdBy.firstname }}
+                  >{{ ascent.createdBy.firstname }}
                   {{ ascent.createdBy.lastname }}</a
                 >
               </div>
               <div class="ascent-table-line-info">
                 <div class="ascent-table-line-name">
                   <a routerLink="{{ ascent.routerLinkLine }}">{{
-                      ascent.line.name
-                    }}</a>
+                    ascent.line.name
+                  }}</a>
                   <div class="grade">
                     {{ ascent.line | lineGrade }}
                   </div>
@@ -183,21 +185,21 @@
                     *ngIf="ascent.crag.slug !== environment.skippedSlug"
                   >
                     <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                        ascent.crag.name
-                      }}</a
+                      ascent.crag.name
+                    }}</a
                     >,
                   </ng-container>
                   <ng-container
                     *ngIf="ascent.sector.slug !== environment.skippedSlug"
                   >
                     <a routerLink="{{ ascent.routerLinkSector }}">{{
-                        ascent.sector.name
-                      }}</a
+                      ascent.sector.name
+                    }}</a
                     >,
                   </ng-container>
                   <a routerLink="{{ ascent.routerLinkArea }}">{{
-                      ascent.area.name
-                    }}</a>
+                    ascent.area.name
+                  }}</a>
                 </div>
               </div>
               <div class="ascent-table-comment">
@@ -258,10 +260,10 @@
               <div class="ascent-table-date">
                 <i class="pi pi-calendar"></i>
                 <ng-container *ngIf="ascent.year"
-                >{{ ascent.year }}
+                  >{{ ascent.year }}
                 </ng-container>
                 <ng-container *ngIf="ascent.date"
-                >{{ ascent.date | date: "dd.MM.yyyy" }}
+                  >{{ ascent.date | date: "dd.MM.yyyy" }}
                 </ng-container>
               </div>
               <div class="ascent-actions">
@@ -300,13 +302,13 @@
                     class="username"
                     *ngIf="!user"
                     routerLink="{{ ascent.routerLinkCreatedBy }}"
-                  >{{ ascent.createdBy.firstname }}
+                    >{{ ascent.createdBy.firstname }}
                     {{ ascent.createdBy.lastname }}</a
                   >
                   <div class="ascent-table-line-name">
                     <a routerLink="{{ ascent.routerLinkLine }}">{{
-                        ascent.line.name
-                      }}</a>
+                      ascent.line.name
+                    }}</a>
                     <div class="grade">
                       {{ ascent.line | lineGrade }}
                     </div>
@@ -316,21 +318,21 @@
                       *ngIf="ascent.crag.slug !== environment.skippedSlug"
                     >
                       <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                          ascent.crag.name
-                        }}</a
+                        ascent.crag.name
+                      }}</a
                       >,
                     </ng-container>
                     <ng-container
                       *ngIf="ascent.sector.slug !== environment.skippedSlug"
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{
-                          ascent.sector.name
-                        }}</a
+                        ascent.sector.name
+                      }}</a
                       >,
                     </ng-container>
                     <a routerLink="{{ ascent.routerLinkArea }}">{{
-                        ascent.area.name
-                      }}</a>
+                      ascent.area.name
+                    }}</a>
                   </div>
                 </div>
               </div>
@@ -391,10 +393,10 @@
               <div class="ascent-table-date">
                 <i class="pi pi-calendar"></i>
                 <ng-container *ngIf="ascent.year"
-                >{{ ascent.year }}
+                  >{{ ascent.year }}
                 </ng-container>
                 <ng-container *ngIf="ascent.date"
-                >{{ ascent.date | date: "dd.MM.yyyy" }}
+                  >{{ ascent.date | date: "dd.MM.yyyy" }}
                 </ng-container>
               </div>
               <div class="ascent-actions">
@@ -432,13 +434,13 @@
                     class="username"
                     *ngIf="!user"
                     routerLink="{{ ascent.routerLinkCreatedBy }}"
-                  >{{ ascent.createdBy.firstname }}
+                    >{{ ascent.createdBy.firstname }}
                     {{ ascent.createdBy.lastname }}</a
                   >
                   <div class="ascent-table-line-name">
                     <a routerLink="{{ ascent.routerLinkLine }}">{{
-                        ascent.line.name
-                      }}</a>
+                      ascent.line.name
+                    }}</a>
                     <div class="grade">
                       {{ ascent.line | lineGrade }}
                     </div>
@@ -448,21 +450,21 @@
                       *ngIf="ascent.crag.slug !== environment.skippedSlug"
                     >
                       <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                          ascent.crag.name
-                        }}</a
+                        ascent.crag.name
+                      }}</a
                       >,
                     </ng-container>
                     <ng-container
                       *ngIf="ascent.sector.slug !== environment.skippedSlug"
                     >
                       <a routerLink="{{ ascent.routerLinkSector }}">{{
-                          ascent.sector.name
-                        }}</a
+                        ascent.sector.name
+                      }}</a
                       >,
                     </ng-container>
                     <a routerLink="{{ ascent.routerLinkArea }}">{{
-                        ascent.area.name
-                      }}</a>
+                      ascent.area.name
+                    }}</a>
                   </div>
                 </div>
                 <div class="ascent-actions">
@@ -558,10 +560,10 @@
                 <div class="ascent-table-date">
                   <i class="pi pi-calendar"></i>
                   <ng-container *ngIf="ascent.year"
-                  >{{ ascent.year }}
+                    >{{ ascent.year }}
                   </ng-container>
                   <ng-container *ngIf="ascent.date"
-                  >{{ ascent.date | date: "dd.MM.yyyy" }}
+                    >{{ ascent.date | date: "dd.MM.yyyy" }}
                   </ng-container>
                 </div>
               </div>
@@ -580,7 +582,10 @@
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="50"
-      [loading]="loadingAdditionalPage === loadingStates.LOADING || loadingFirstPage === loadingStates.LOADING"
+      [loading]="
+        loadingAdditionalPage === loadingStates.LOADING ||
+        loadingFirstPage === loadingStates.LOADING
+      "
     ></p-button>
   </div>
 
