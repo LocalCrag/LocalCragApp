@@ -30,7 +30,7 @@ class DefaultConfig(object):
     S3_REGION = None
     S3_BUCKET = None
     S3_ACCESS_ENDPOINT = None
-    S3_ADDRESSING = None
+    S3_ADDRESSING = "virtual"
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
     CRON_ACCESS_TOKEN = ""
