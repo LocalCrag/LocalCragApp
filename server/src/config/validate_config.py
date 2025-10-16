@@ -45,13 +45,17 @@ def validate_config(config):
                 raise Exception("Invalid config: SYSTEM_EMAIL needs to be set if PRINT_MAILS_TO_CONSOLE is False.")
 
     # Validate S3 configuration
-    if (
+    if (config["S3_ENDPOINT"] or config["S3_ACCESS_ENDPOINT"]) and (
         not config["S3_ENDPOINT"]
+        or not config["S3_ACCESS_ENDPOINT"]
         or not config["S3_REGION"]
         or not config["S3_BUCKET"]
         or not config["S3_USER"]
         or not config["S3_PASSWORD"]
     ):
-        raise Exception("Invalid config: S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_USER and S3_PASSWORD need to be set.")
+        raise Exception(
+            "Invalid config: S3_ENDPOINT, S3_ACCESS_ENDPOINT, S3_REGION, S3_BUCKET, S3_USER and S3_PASSWORD "
+            "need to be set when S3_ENDPOINT or S3_ACCESS_ENDPOINT are set."
+        )
     if config["S3_ADDRESSING"] not in ["virtual", "path"]:
         raise Exception("Invalid config: S3_ADDRESSING needs to be one of virtual or path.")
