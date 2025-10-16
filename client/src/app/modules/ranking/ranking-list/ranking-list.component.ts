@@ -149,6 +149,11 @@ export class RankingListComponent implements OnInit {
   }
 
   loadRanking() {
+    if (!this.lineType) {
+      // There will be no line type if there is no line yet in an instance
+      this.loading = LoadingState.DEFAULT;
+      return;
+    }
     this.loading = LoadingState.LOADING;
     const query_params = new URLSearchParams({
       line_type: this.lineType.value.toString(),

@@ -1,16 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Season } from '../../../../models/season';
+import { isSeasonEmpty, Season } from '../../../../models/season';
 import { ChartModule } from 'primeng/chart';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
+import { Message } from 'primeng/message';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-season-chart',
-  imports: [ChartModule],
+  imports: [ChartModule, Message, NgIf, TranslocoDirective],
   templateUrl: './season-chart.component.html',
   styleUrl: './season-chart.component.scss',
 })
@@ -19,6 +21,7 @@ export class SeasonChartComponent implements OnInit {
 
   data: any;
   options: any;
+  seasonEmpty = true;
 
   constructor(
     private translocoService: TranslocoService,
@@ -26,6 +29,7 @@ export class SeasonChartComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.seasonEmpty = isSeasonEmpty(this.season);
     this.store
       .select(selectBarChartColor)
       .pipe(take(1))
