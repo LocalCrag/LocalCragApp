@@ -1,3 +1,10 @@
+## [1.23.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.2...v1.23.3) (2025-10-16)
+
+
+### Bug Fixes
+
+* **ascents:** fix logging ascents when providing year instead of date ([#786](https://github.com/LocalCrag/LocalCragApp/issues/786)) ([9a23b16](https://github.com/LocalCrag/LocalCragApp/commit/9a23b16711af70d5157273745737abf124ff23d8))
+
 ## [1.23.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.1...v1.23.2) (2025-10-14)
 
 
