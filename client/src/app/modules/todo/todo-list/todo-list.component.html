@@ -4,6 +4,7 @@
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
           <p-message
+            *ngIf="todos?.length === 0 && loadingFirstPage !== loadingStates.LOADING"
             severity="info"
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
@@ -358,7 +359,7 @@
           infiniteScroll
           [infiniteScrollDistance]="2"
           [infiniteScrollThrottle]="50"
-          [loading]="loadingAdditionalPage === loadingStates.LOADING"
+          [loading]="loadingAdditionalPage === loadingStates.LOADING || loadingFirstPage === loadingStates.LOADING"
         ></p-button>
       </div>
     </p-card>
