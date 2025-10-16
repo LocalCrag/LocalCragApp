@@ -15,3 +15,12 @@ export type Season = {
   '11': number;
   '12': number;
 };
+
+/**
+ * Checks if a season object is empty (all values are 0).
+ * @param season Season object to check.
+ * @return True if the season is empty, false otherwise.
+ */
+export const isSeasonEmpty = (season: Season): boolean => {
+  return Object.values(season).every((value) => value === 0);
+};

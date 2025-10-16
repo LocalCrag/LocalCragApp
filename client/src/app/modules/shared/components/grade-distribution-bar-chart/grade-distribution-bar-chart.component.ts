@@ -21,6 +21,7 @@ import { LineType } from '../../../../enums/line-type';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
+import { Message } from 'primeng/message';
 Chart.register(ChartDataLabels);
 
 type BarChartData = {
@@ -37,7 +38,7 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  imports: [ChartModule, NgIf, TranslocoDirective, NgForOf],
+  imports: [ChartModule, NgIf, TranslocoDirective, NgForOf, Message],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None,

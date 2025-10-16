@@ -105,7 +105,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           break;
       }
       this.markersSource = markersSource;
-      if (!(this.markersSource?.features?.length > 0 || !this.apiKey)) {
+      if (this.markersSource?.features?.length === 0 || !this.apiKey) {
         return;
       }
       this.cdr.detectChanges();

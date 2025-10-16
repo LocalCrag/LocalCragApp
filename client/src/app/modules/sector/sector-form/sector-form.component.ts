@@ -166,7 +166,7 @@ export class SectorFormComponent implements OnInit {
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
           this.editors?.map((editor) => {
-            editor.getQuill().enable();
+            editor.getQuill()?.enable();
           });
         });
       } else {

@@ -1,4 +1,10 @@
 <ng-container *transloco="let t">
+  <p-message
+    *ngIf="!gradeDistribution || chartData.length === 0"
+    severity="info"
+    icon="pi pi-info-circle"
+    text="{{ t('noDataAvailable') }}"
+  ></p-message>
   <div *ngFor="let chartDataElement of chartData">
     <h6 *ngIf="chartData.length > 1">
       {{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}

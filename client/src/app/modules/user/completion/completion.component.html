@@ -1,6 +1,7 @@
 <ng-container *transloco="let t; read: 'user.charts'">
   <div
     class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
+    *ngIf="availableScales.length > 0 && scaleKey?.value"
   >
     <div
       class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"

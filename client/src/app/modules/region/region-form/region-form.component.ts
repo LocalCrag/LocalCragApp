@@ -95,7 +95,7 @@ export class RegionFormComponent implements OnInit {
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
         this.editors?.map((editor) => {
-          editor.getQuill().enable();
+          editor.getQuill()?.enable();
         });
       });
   }
@@ -106,8 +106,8 @@ export class RegionFormComponent implements OnInit {
   private buildForm() {
     this.regionForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(120)]],
-      description: [''],
-      rules: [''],
+      description: [null],
+      rules: [null],
     });
   }
 
