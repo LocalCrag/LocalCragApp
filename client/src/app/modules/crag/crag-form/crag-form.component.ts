@@ -151,7 +151,7 @@ export class CragFormComponent implements OnInit {
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
         this.editors?.map((editor) => {
-          editor.getQuill().enable();
+          editor.getQuill()?.enable();
         });
       });
     } else {
@@ -174,9 +174,9 @@ export class CragFormComponent implements OnInit {
   private buildForm() {
     this.cragForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(120)]],
-      description: [''],
-      shortDescription: [''],
-      rules: [''],
+      description: [null],
+      shortDescription: [null],
+      rules: [null],
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],

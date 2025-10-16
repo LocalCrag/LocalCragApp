@@ -108,7 +108,7 @@ export class PostFormComponent implements OnInit {
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
           if (this.editor) {
-            this.editor.getQuill().enable();
+            this.editor.getQuill()?.enable();
           }
         });
     } else {

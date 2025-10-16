@@ -1,1 +1,9 @@
-<p-chart type="line" [data]="data" [options]="options" />
+<ng-container *transloco="let t">
+  <p-chart type="line" [data]="data" [options]="options" *ngIf="!seasonEmpty"/>
+  <p-message
+    *ngIf="seasonEmpty"
+    severity="info"
+    icon="pi pi-info-circle"
+    text="{{ t('noDataAvailable') }}"
+  ></p-message>
+</ng-container>

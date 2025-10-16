@@ -114,7 +114,7 @@ export class TopoImageFormComponent implements OnInit {
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
           this.editors?.map((editor) => {
-            editor.getQuill().enable();
+            editor.getQuill()?.enable();
           });
         });
       this.store.select(selectInstanceName).subscribe((instanceName) => {

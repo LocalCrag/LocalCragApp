@@ -48,6 +48,7 @@
   "lines": "Linien",
   "leveledGradeDistributionUngraded": "nicht bewertet",
   "leveledGradeDistributionProjects": "Projekte",
+  "noDataAvailable": "Keine Daten verfügbar.",
   "totalLines": "Gesamtzahl",
   "plusXUngradedYProjects": "plus {{ungraded}} nicht bewertete Linien und {{projects}} Projekte",
   "plusXUngraded": "plus {{ungraded}} nicht bewertete Linien",
