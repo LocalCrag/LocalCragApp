@@ -38,7 +38,7 @@
         [multiple]="true"
       >
         <ng-template let-searchable #item>
-          <lc-searchable [searchable]="searchable"></lc-searchable>
+          <lc-searchable [searchable]="searchable" [disableNavigation]="true"></lc-searchable>
         </ng-template>
       </p-autoComplete>
       <small class="lc-error" *lcIfError="'required'">{{
