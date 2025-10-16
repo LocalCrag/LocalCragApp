@@ -1,3 +1,18 @@
+## [1.23.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.3...v1.23.4) (2025-10-16)
+
+
+### Bug Fixes
+
+* **ascents, topo, todos:** disable buttons and remove alert while the first page of data is loading ([#797](https://github.com/LocalCrag/LocalCragApp/issues/797)) ([8f8dc93](https://github.com/LocalCrag/LocalCragApp/commit/8f8dc93cc5698ea2907713e6ebd3c5c683ca9157))
+* **core:** add missing env var [skip ci] ([#793](https://github.com/LocalCrag/LocalCragApp/issues/793)) ([a2c3e5a](https://github.com/LocalCrag/LocalCragApp/commit/a2c3e5ac3c91d3dba04448943c29f0c6739a74fb))
+* **core:** fix an issue where old translation files could be cached after updating the LC version ([#796](https://github.com/LocalCrag/LocalCragApp/issues/796)) ([d29ec40](https://github.com/LocalCrag/LocalCragApp/commit/d29ec4077dfd18a6bb7a8ee421c60ddd789f1d1f)), closes [#770](https://github.com/LocalCrag/LocalCragApp/issues/770)
+* **core:** fix invalid env var validation [skip-ci] ([#794](https://github.com/LocalCrag/LocalCragApp/issues/794)) ([9bf8fac](https://github.com/LocalCrag/LocalCragApp/commit/9bf8fac7cde27cfbed9162de9527d5319e2b4fff))
+* **core:** remove insecure config defaults and enhance config validation ([#789](https://github.com/LocalCrag/LocalCragApp/issues/789)) ([c6763ff](https://github.com/LocalCrag/LocalCragApp/commit/c6763ff4c5da33e7d1c50ef457a78b67cca2d814)), closes [#772](https://github.com/LocalCrag/LocalCragApp/issues/772)
+* **core:** show info messages if data is missing instead of empty graphs etc ([#799](https://github.com/LocalCrag/LocalCragApp/issues/799)) ([fa9eba1](https://github.com/LocalCrag/LocalCragApp/commit/fa9eba1853007c0770409096732df8a411d8511f)), closes [#739](https://github.com/LocalCrag/LocalCragApp/issues/739)
+* **gallery:** fix an issue where navigation was triggered by accident when submitting gallery images ([#788](https://github.com/LocalCrag/LocalCragApp/issues/788)) ([234b0f3](https://github.com/LocalCrag/LocalCragApp/commit/234b0f3dbcd82e754562c6146e41271630e72942)), closes [#686](https://github.com/LocalCrag/LocalCragApp/issues/686)
+* **search:** fix elliptic avatars that should be circle shaped ([#795](https://github.com/LocalCrag/LocalCragApp/issues/795)) ([f32bb7d](https://github.com/LocalCrag/LocalCragApp/commit/f32bb7d680370f39457128d5cc96d621ee30af63)), closes [#792](https://github.com/LocalCrag/LocalCragApp/issues/792)
+* **topo:** line deletion buttons in batch line editor are now danger instead of primary volor ([#787](https://github.com/LocalCrag/LocalCragApp/issues/787)) ([fb1880e](https://github.com/LocalCrag/LocalCragApp/commit/fb1880e4703ce84f07a66c020d833e9c6481c597)), closes [#767](https://github.com/LocalCrag/LocalCragApp/issues/767)
+
 ## [1.23.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.2...v1.23.3) (2025-10-16)
 
 

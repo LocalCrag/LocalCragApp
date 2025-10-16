@@ -1,6 +1,6 @@
 {
   "name": "localcrag",
-  "version": "1.23.3",
+  "version": "1.23.4",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
