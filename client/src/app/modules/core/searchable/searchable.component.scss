@@ -8,10 +8,14 @@ lc-searchable.ellipsis {
       margin-right: 0.25rem;
       height: 1.5rem;
       width: 1.5rem;
+      min-height: 1.5rem;
+      min-width: 1.5rem;
 
       .p-avatar {
         height: 1.5rem;
         width: 1.5rem;
+        min-height: 1.5rem;
+        min-width: 1.5rem;
       }
     }
 
@@ -59,6 +63,8 @@ lc-searchable {
     p-avatar {
       height: 2rem;
       width: 2rem;
+      min-height: 2rem;
+      min-width: 2rem;
     }
 
     .grade-circle {
