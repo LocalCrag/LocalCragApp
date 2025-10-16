@@ -73,7 +73,7 @@ def test_successful_update_ranking(client, admin_token):
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
     assert rv.status_code == 201
 
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer thisTokenIsNotSecretChangeIt"})
+    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
     assert rv.status_code == 200
 
     # We don't know when the thread completes from the previous request.
@@ -117,7 +117,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     db.session.commit()
 
     # Trigger a ranking rebuild; since seed ascents are old, rankings should be empty now
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer thisTokenIsNotSecretChangeIt"})
+    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
     assert rv.status_code == 200
 
     max_wait_time = 5
@@ -151,7 +151,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
     assert rv.status_code == 201
 
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer thisTokenIsNotSecretChangeIt"})
+    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
     assert rv.status_code == 200
 
     max_wait_time = 5

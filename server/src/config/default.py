@@ -5,8 +5,8 @@ class DefaultConfig(object):
     SQLALCHEMY_DATABASE_URI = "postgresql://root:@127.0.0.1/localcrag"
     SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"options": "-c timezone=utc"}}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = "thisKeyIsNotSecretChangeIt"
-    JWT_SECRET_KEY = "thisKeyIsNotSecretChangeIt"
+    SECRET_KEY = ""
+    JWT_SECRET_KEY = ""
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     ERROR_404_HELP = False
@@ -33,4 +33,4 @@ class DefaultConfig(object):
     S3_ADDRESSING = "virtual"
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
-    CRON_ACCESS_TOKEN = "thisTokenIsNotSecretChangeIt"
+    CRON_ACCESS_TOKEN = ""
