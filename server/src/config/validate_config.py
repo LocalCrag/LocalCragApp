@@ -53,5 +53,3 @@ def validate_config(config):
         )
     if config["S3_ENDPOINT"] and config["S3_ADDRESSING"] not in ["virtual", "path"]:
         raise Exception("Invalid config: S3_ADDRESSING needs to be one of virtual or path.")
-    if config["S3_ENDPOINT"] and config["S3_ADDRESSING"] == "virtual" and not config["S3_ACCESS_ENDPOINT"]:
-        raise Exception("Invalid config: S3_ACCESS_ENDPOINT needs to be set when S3_ADDRESSING is virtual.")
