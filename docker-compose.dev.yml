@@ -73,6 +73,9 @@ services:
       SMTP_TYPE: plain
       FLASK_DEBUG: 1
       DOCKER: 1
+      CRON_ACCESS_TOKEN: dev-token
+      SECRET_KEY: dev-key
+      JWT_SECRET_KEY: dev-jwt-key
     volumes:
       - ./server/src:/localcragapp/src
       - ./server/tests:/localcragapp/tests
