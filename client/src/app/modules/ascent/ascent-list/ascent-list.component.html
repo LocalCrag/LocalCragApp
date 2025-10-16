@@ -5,7 +5,9 @@
         severity="info"
         icon="pi pi-info-circle"
         class="m-4 mb-1 block"
-        *ngIf="ascents?.length === 0"
+        *ngIf="
+          ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+        "
       >
         {{ t("noAscentsFoundMessage") }}
       </p-message>
@@ -580,7 +582,10 @@
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="50"
-      [loading]="loadingAdditionalPage === loadingStates.LOADING"
+      [loading]="
+        loadingAdditionalPage === loadingStates.LOADING ||
+        loadingFirstPage === loadingStates.LOADING
+      "
     ></p-button>
   </div>
 
