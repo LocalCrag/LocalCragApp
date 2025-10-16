@@ -6,7 +6,7 @@
   <div
     class="search-result"
     *ngIf="searchable.line"
-    [routerLink]="searchable.line.routerLink"
+    [routerLink]="disableNavigation ? null : searchable.line.routerLink"
   >
     <div class="grade-circle">
       <ng-container *ngIf="(lineGradeValue() | async) > 0">{{
@@ -41,7 +41,7 @@
   <div
     class="search-result"
     *ngIf="searchable.area"
-    [routerLink]="searchable.area.routerLink"
+    [routerLink]="disableNavigation ? null : searchable.area.routerLink"
   >
     <p-avatar
       [image]="
@@ -72,7 +72,7 @@
   <div
     class="search-result"
     *ngIf="searchable.sector"
-    [routerLink]="searchable.sector.routerLink"
+    [routerLink]="disableNavigation ? null : searchable.sector.routerLink"
   >
     <p-avatar
       [image]="
@@ -99,7 +99,7 @@
   <div
     class="search-result"
     *ngIf="searchable.crag"
-    [routerLink]="searchable.crag.routerLink"
+    [routerLink]="disableNavigation ? null : searchable.crag.routerLink"
   >
     <p-avatar
       [image]="
@@ -121,7 +121,7 @@
   <div
     class="search-result"
     *ngIf="searchable.user"
-    [routerLink]="searchable.user.routerLink"
+    [routerLink]="disableNavigation ? null : searchable.user.routerLink"
   >
     <p-avatar
       [image]="

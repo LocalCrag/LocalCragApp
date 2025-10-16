@@ -32,6 +32,7 @@ import { map } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchableComponent {
+  @Input() disableNavigation = false;
   @Input() searchable: Searchable;
   /**
    * Set to true if searchable is displayed in a small container. Will apply ellipsis to texts and force a single line.
