@@ -76,5 +76,6 @@ jobs:
           S3_PASSWORD: ${{ secrets.SPACES_SECRET_KEY }}
           S3_USER: ${{ secrets.SPACES_ACCESS_KEY }}
           S3_ENDPOINT: ${{ secrets.SPACES_ENDPOINT }}
+          S3_ACCESS_ENDPOINT: ${{ secrets.SPACES_ENDPOINT }}
           S3_REGION: ${{ secrets.SPACES_REGION }}
           S3_BUCKET: ${{ secrets.SPACES_BUCKET }}
