@@ -116,14 +116,5 @@
   "batchLineForm.required": "Pflichtfeld",
   "batchLineForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "batchLineForm.gradePlaceholder": "Grad",
-  "batchLineForm.lineFANamePlaceholder": "Erstbegeher / Erstbegeherin",
-  "lineForm.lineSecretLabel": "Geheim",
-  "lineList.ascentCount": "Begehungen",
-  "lineList.videobeta": "Videobeta",
-  "lineForm.lineVideoLabel": "Video",
-  "lineForm.lineVideoPlaceholder": "e.g. Link zu YouTube",
-  "lineList.FA": "FA",
-  "lineBoolPropList.sitstart": "Sitzstart",
-  "lineForm.lineSitstartLabel": "Sitzstart",
-  "lineList.lineListTitle": "Linien"
+  "batchLineForm.lineFANamePlaceholder": "Erstbegeher / Erstbegeherin"
 }

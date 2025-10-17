@@ -27,15 +27,5 @@
   "areaForm.cancelButtonLabel": "Abbrechen",
   "areaForm.deleteAreaButtonLabel": "Bereich löschen",
   "areaForm.editAreaTitle": "Bereich bearbeiten",
-  "areaForm.createAreaTitle": "Neuen Bereich erstellen",
-  "areaForm.secretSecretLabel": "Geheim",
-  "areaForm.closedSecretLabel": "Gesperrt",
-  "areaForm.closedOptionsLabel": "Optionen",
-  "areaForm.coordinatesLabel": "GPS",
-  "areaForm.latLabel": "Breitengrad",
-  "areaForm.latPlaceholder": "z.B. 50.44438",
-  "areaForm.invalidLat": "Ungültiger Breitengrad",
-  "areaForm.lngLabel": "Längengrad",
-  "areaForm.lngPlaceholder": "z.B. 7.26605",
-  "areaForm.invalidLng": "Ungültiger Längengrad"
+  "areaForm.createAreaTitle": "Neuen Bereich erstellen"
 }
