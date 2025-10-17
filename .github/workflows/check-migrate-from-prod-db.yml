@@ -44,7 +44,7 @@ jobs:
       - name: Installing pipenv dependencies
         run: |
           cd server/src
-          pipenv install
+          pipenv install --deploy --ignore-pipfile
 
       - name: Pull newest prod dump from backup server
         run: |
