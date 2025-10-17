@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd client
-          npm install
+          npm ci
 
       - name: Run ESLint
         run: |
