@@ -22,12 +22,5 @@
   "markerList.CRAG": "Gebiets Koordinaten",
   "markerList.PARKING": "Parkplatz",
   "markerList.ACCESS_POINT": "Zustiegspunkt",
-  "markerList.OTHER": "Verschiedenes",
-  "mapMarkerForm.TOPO_IMAGE": "Topo Bild Koordinaten",
-  "mapMarkerForm.AREA": "Bereichs Koordinaten",
-  "mapMarkerForm.SECTOR": "Sektor Koordinaten",
-  "mapMarkerForm.CRAG": "Gebiets Koordinaten",
-  "mapMarkerForm.PARKING": "Parkplatz",
-  "mapMarkerForm.ACCESS_POINT": "Zustiegspunkt",
-  "mapMarkerForm.OTHER": "Verschiedenes"
+  "markerList.OTHER": "Verschiedenes"
 }

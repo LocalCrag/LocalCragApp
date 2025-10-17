@@ -29,13 +29,5 @@
   "sectorForm.cancelButtonLabel": "Abbrechen",
   "sectorForm.deleteSectorButtonLabel": "Sektor löschen",
   "sectorForm.editSectorTitle": "Sektor bearbeiten",
-  "sectorForm.createSectorTitle": "Sektor erstellen",
-  "sectorForm.sectorSecretLabel": "Geheim",
-  "sectorForm.coordinatesLabel": "GPS",
-  "sectorForm.latLabel": "Breitengrad",
-  "sectorForm.latPlaceholder": "z.B. 50.44438",
-  "sectorForm.invalidLat": "Ungültiger Breitengrad",
-  "sectorForm.lngLabel": "Längengrad",
-  "sectorForm.lngPlaceholder": "z.B. 7.26605",
-  "sectorForm.invalidLng": "Ungültiger Längengrad"
+  "sectorForm.createSectorTitle": "Sektor erstellen"
 }
