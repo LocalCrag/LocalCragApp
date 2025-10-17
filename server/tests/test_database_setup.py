@@ -6,6 +6,7 @@ from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.instance_settings import InstanceSettings
 from models.menu_item import MenuItem
+from models.menu_page import MenuPage
 from models.region import Region
 from models.user import User
 from util.scripts.database_setup import setup_database
@@ -36,11 +37,38 @@ def test_database_setup(client, clean_db, mocker):
     assert region.name == "Your climbing region"
 
     menu_items = db.session.query(MenuItem).all()
-    assert len(menu_items) == 1
+    assert len(menu_items) == 7
     menu_item = menu_items[0]
     assert menu_item.position == MenuItemPositionEnum.TOP
     assert menu_item.order_index == 0
+    assert menu_item.type == MenuItemTypeEnum.NEWS
+    menu_item = menu_items[1]
+    assert menu_item.position == MenuItemPositionEnum.TOP
+    assert menu_item.order_index == 1
     assert menu_item.type == MenuItemTypeEnum.TOPO
+    menu_item = menu_items[2]
+    assert menu_item.position == MenuItemPositionEnum.TOP
+    assert menu_item.order_index == 2
+    assert menu_item.type == MenuItemTypeEnum.ASCENTS
+    menu_item = menu_items[3]
+    assert menu_item.position == MenuItemPositionEnum.TOP
+    assert menu_item.order_index == 3
+    assert menu_item.type == MenuItemTypeEnum.RANKING
+    menu_item = menu_items[4]
+    assert menu_item.position == MenuItemPositionEnum.TOP
+    assert menu_item.order_index == 4
+    assert menu_item.type == MenuItemTypeEnum.GALLERY
+    menu_item = menu_items[5]
+    assert menu_item.type == MenuItemTypeEnum.MENU_PAGE
+    assert menu_item.order_index == 0
+    assert menu_item.position == MenuItemPositionEnum.BOTTOM
+    menu_item = menu_items[6]
+    assert menu_item.type == MenuItemTypeEnum.MENU_PAGE
+    assert menu_item.order_index == 1
+    assert menu_item.position == MenuItemPositionEnum.BOTTOM
+
+    menu_pages = db.session.query(MenuPage).all()
+    assert len(menu_pages) == 2
 
     instance_settings_s = db.session.query(InstanceSettings).all()
     assert len(instance_settings_s) == 1
