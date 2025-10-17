@@ -3,7 +3,7 @@ import botocore
 from flask import current_app
 
 
-def get_spaces_client():
+def get_s3_client():
     session = boto3.session.Session()
     client = session.client(
         "s3",

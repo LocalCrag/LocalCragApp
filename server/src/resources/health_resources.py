@@ -3,17 +3,17 @@ from flask.views import MethodView
 from sqlalchemy import text
 
 from extensions import db
-from uploader.do_spaces import get_spaces_client
+from uploader.do_s3 import get_s3_client
 
 
 class Health(MethodView):
 
     def get(self):
         """
-        Health route to check if the server, database and spaces datastorage are healthy.
+        Health route to check if the server, database and s3 datastorage are healthy.
         """
         status = 200
-        response = {"server": "healthy", "database": None, "spaces": None}
+        response = {"server": "healthy", "database": None, "s3": None}
 
         # Test database connection
         try:
@@ -23,13 +23,13 @@ class Health(MethodView):
             response["database"] = "Connection failed"
             status = 503
 
-        # Test spaces connection
+        # Test s3 connection
         try:
-            spaces_client = get_spaces_client()
-            spaces_client.head_bucket(Bucket=current_app.config["S3_BUCKET"])
-            response["spaces"] = "healthy"
+            s3_client = get_s3_client()
+            s3_client.head_bucket(Bucket=current_app.config["S3_BUCKET"])
+            response["s3"] = "healthy"
         except Exception:
-            response["spaces"] = "Connection failed"
+            response["s3"] = "Connection failed"
             status = 503
 
         return jsonify(response), status
