@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
@@ -20,6 +20,8 @@ export class MenuPageDetailComponent implements OnInit {
   public menuPage: MenuPage;
   public loadingState = LoadingState.LOADING;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private menuPagesService: MenuPagesService,
     private router: Router,
@@ -27,17 +29,19 @@ export class MenuPageDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
-      const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
-      this.menuPagesService.getMenuPage(menuPageSlug).subscribe({
-        next: (menuPage) => {
-          this.menuPage = menuPage;
-          this.loadingState = LoadingState.DEFAULT;
-        },
-        error: () => {
-          this.router.navigate(['not-found']);
-        },
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
+        this.menuPagesService.getMenuPage(menuPageSlug).subscribe({
+          next: (menuPage) => {
+            this.menuPage = menuPage;
+            this.loadingState = LoadingState.DEFAULT;
+          },
+          error: () => {
+            this.router.navigate(['not-found']);
+          },
+        });
       });
-    });
   }
 }

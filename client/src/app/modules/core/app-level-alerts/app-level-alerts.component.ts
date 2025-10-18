@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
@@ -40,6 +46,8 @@ export class AppLevelAlertsComponent implements OnInit {
   public refreshTokenExpires$: Observable<Date>;
   public showRefreshTokenAboutToExpireAlert$: Observable<boolean>;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(private store: Store<AppState>) {}
 
   /**
@@ -64,7 +72,7 @@ export class AppLevelAlertsComponent implements OnInit {
           return differenceInMilliseconds(oneMinuteBeforeExpiry, new Date());
         }),
         mergeMap((timeDelta) => bigIntTimer(timeDelta)),
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         this.refreshLoginAlertType = 'danger';

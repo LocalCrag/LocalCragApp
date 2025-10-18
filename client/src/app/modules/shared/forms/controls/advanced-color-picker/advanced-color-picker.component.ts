@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   forwardRef,
+  inject,
   Injector,
   Input,
   OnInit,
@@ -79,6 +81,7 @@ export class AdvancedColorPickerComponent
 
   private changeHandlers = [];
   private color: string | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -100,7 +103,7 @@ export class AdvancedColorPickerComponent
           { label: this.translateLabel('customColor'), value: true },
         ];
         this.colorForm.valueChanges
-          .pipe(takeUntilDestroyed())
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(this.onChange.bind(this));
         this.isInitalized = true; // We need some extra initialization as colorForm gets populated asynchronously
         for (const fn of this.deferredCalls) fn();

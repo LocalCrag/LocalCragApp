@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -72,6 +72,8 @@ export class SectorListComponent implements OnInit {
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     public sectorsService: SectorsService,
     private route: ActivatedRoute,
@@ -85,7 +87,7 @@ export class SectorListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -165,7 +167,7 @@ export class SectorListComponent implements OnInit {
         slugParameter: this.cragSlug,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

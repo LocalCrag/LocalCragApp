@@ -1,8 +1,10 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   OnInit,
   Output,
@@ -66,6 +68,7 @@ export class TopoImageComponent implements OnInit {
   private isMobile = false;
   private resizeRenderSubject = new Subject<any>();
   private windowWidth: number;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private el: ElementRef,
@@ -91,7 +94,7 @@ export class TopoImageComponent implements OnInit {
     // Why we check for window.innerWidth changes.
     this.windowWidth = window.innerWidth;
     this.resizeRenderSubject
-      .pipe(debounceTime(500), takeUntilDestroyed())
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (window.innerWidth != this.windowWidth) {
           this.render();

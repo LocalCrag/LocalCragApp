@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   QueryList,
   ViewChild,
@@ -95,6 +97,8 @@ export class CragFormComponent implements OnInit {
   public tradScales: SelectItem<string | null>[] = null;
   public quillModules: any;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private store: Store,
@@ -188,7 +192,7 @@ export class CragFormComponent implements OnInit {
     });
     this.cragForm
       .get('closed')
-      .valueChanges.pipe(takeUntilDestroyed())
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closed) => {
         if (!closed) {
           this.cragForm.get('closedReason').setValue(null);

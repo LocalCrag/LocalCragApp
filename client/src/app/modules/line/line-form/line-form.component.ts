@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormArray,
@@ -146,6 +152,7 @@ export class LineFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -212,7 +219,7 @@ export class LineFormComponent implements OnInit {
       this.buildForm();
       this.lineForm
         .get('type')
-        .valueChanges.pipe(takeUntilDestroyed())
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scaleOptions = this.groupedScales[item].map((scale) => ({
             label: scale.name,
@@ -224,7 +231,7 @@ export class LineFormComponent implements OnInit {
         });
       this.lineForm
         .get('scale')
-        .valueChanges.pipe(takeUntilDestroyed())
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           if (this.editMode) return;
 
@@ -362,13 +369,13 @@ export class LineFormComponent implements OnInit {
 
         this.lineForm
           .get('grade')
-          .valueChanges.pipe(takeUntilDestroyed())
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             this.setFormDisabledState();
           });
         this.lineForm
           .get('closed')
-          .valueChanges.pipe(takeUntilDestroyed())
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((closed) => {
             if (!closed) {
               this.lineForm.get('closedReason').setValue(null);

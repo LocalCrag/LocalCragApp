@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Card } from 'primeng/card';
 import {
   FormArray,
@@ -113,6 +119,8 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private sectorSlug: string;
   private areaSlug: string;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private store: Store,
@@ -184,7 +192,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
       this.buildForm();
       this.topoImageBatchUploadForm
         .get('lines.type')
-        .valueChanges.pipe(takeUntilDestroyed())
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scaleOptions = this.groupedScales[item].map((scale) => ({
             label: scale.name,
@@ -196,7 +204,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
         });
       this.topoImageBatchUploadForm
         .get('lines.scale')
-        .valueChanges.pipe(takeUntilDestroyed())
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scalesService
             .getScale(

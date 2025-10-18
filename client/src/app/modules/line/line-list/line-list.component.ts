@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LinesService } from '../../../services/crud/lines.service';
 import { select, Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -122,6 +128,7 @@ export class LineListComponent implements OnInit {
   public showArchive = false;
 
   private loadedGradeFilterRange: number[] = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private linesService: LinesService,
@@ -217,12 +224,12 @@ export class LineListComponent implements OnInit {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
     this.actions$
-      .pipe(ofType(todoAdded), takeUntilDestroyed())
+      .pipe(ofType(todoAdded), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.isTodo.add(action.todoLineId);
       });

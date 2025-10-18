@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
@@ -73,6 +73,7 @@ export class LineInfoComponent implements OnInit {
   public displayUserRating?: boolean = undefined;
 
   private lineSlug: string;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -88,13 +89,18 @@ export class LineInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
-      this.line = null;
-      this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
-      this.refreshData();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.line = null;
+        this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
+        this.refreshData();
+      });
     this.actions$
-      .pipe(ofType(reloadAfterAscent, todoAdded), takeUntilDestroyed())
+      .pipe(
+        ofType(reloadAfterAscent, todoAdded),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
         this.refreshData();
       });
@@ -148,7 +154,7 @@ export class LineInfoComponent implements OnInit {
         idAccessor: (item: any) => item.linePaths[0].id,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

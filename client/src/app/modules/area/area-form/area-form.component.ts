@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   QueryList,
   ViewChild,
@@ -103,6 +105,7 @@ export class AreaFormComponent implements OnInit {
 
   private cragSlug: string;
   private sectorSlug: string;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -204,7 +207,7 @@ export class AreaFormComponent implements OnInit {
     });
     this.areaForm
       .get('closed')
-      .valueChanges.pipe(takeUntilDestroyed())
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closed) => {
         if (!closed) {
           this.areaForm.get('closedReason').setValue(null);

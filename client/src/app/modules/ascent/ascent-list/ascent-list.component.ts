@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -138,6 +140,7 @@ export class AscentListComponent implements OnInit, OnChanges {
   public clickedAscentForAction: Ascent;
 
   private loadedGradeFilterRange: number[] = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private ascentsService: AscentsService,
@@ -226,7 +229,7 @@ export class AscentListComponent implements OnInit, OnChanges {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loadFirstPage();
       });

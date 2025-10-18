@@ -1,4 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  ViewEncapsulation,
+} from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -42,6 +47,8 @@ export class SearchDialogComponent {
   public loading = false;
   private queryUpdate = new Subject<any>();
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private searchService: SearchService,
     private router: Router,
@@ -58,11 +65,13 @@ export class SearchDialogComponent {
         this.loading = false;
       }
     });
-    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.ref.close();
-      }
-    });
+    this.router.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.ref.close();
+        }
+      });
   }
 
   search() {

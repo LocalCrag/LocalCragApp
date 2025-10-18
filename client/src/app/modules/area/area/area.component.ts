@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { MenuItem } from 'primeng/api';
@@ -57,6 +57,8 @@ export class AreaComponent implements OnInit {
   public breadcrumbs: MenuItem[] | undefined;
   public breadcrumbHome: MenuItem | undefined;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private cragsService: CragsService,
     private sectorsService: SectorsService,
@@ -69,115 +71,117 @@ export class AreaComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
-      const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
-      const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-      const areaSlug = this.route.snapshot.paramMap.get('area-slug');
-      forkJoin([
-        this.cragsService.getCrag(cragSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404 || e.status === 401) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
-        this.sectorsService.getSector(sectorSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404 || e.status === 401) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
-        this.areasService.getArea(areaSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404 || e.status === 401) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
-        this.store.pipe(select(selectIsLoggedIn), take(1)),
-        this.translocoService.load(`${environment.language}`),
-      ]).subscribe(([crag, sector, area, isLoggedIn]) => {
-        this.crag = crag;
-        this.sector = sector;
-        this.area = area;
-        this.store
-          .select(selectInstanceSettingsState)
-          .subscribe((instanceSettings) => {
-            const components = [area, sector, crag]
-              .filter((e) => e.slug != environment.skippedSlug)
-              .map((e) => e.name);
-            this.title.setTitle(
-              `${components.join(' / ')} - ${instanceSettings.instanceName}`,
-            );
-            this.breadcrumbHome = {
-              icon: 'pi pi-map',
-              routerLink:
-                '/topo' +
-                `/${environment.skippedSlug}`.repeat(
-                  instanceSettings.skippedHierarchyLayers,
-                ),
-            };
-          });
-        this.items = [
-          {
-            label: this.translocoService.translate(marker('area.infos')),
-            icon: 'pi pi-fw pi-info-circle',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}`,
-            routerLinkActiveOptions: { exact: true },
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('area.topoImages')),
-            icon: 'pi pi-fw pi-chart-line',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('area.lines')),
-            icon: 'pi pi-fw pi-chart-line',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('area.ascents')),
-            icon: 'pi pi-fw pi-check-square',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('area.gallery')),
-            icon: 'pi pi-fw pi-images',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('area.edit')),
-            icon: 'pi pi-fw pi-file-edit',
-            routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/edit`,
-            visible: isLoggedIn,
-          },
-        ];
-        this.breadcrumbs = [
-          {
-            label: crag.name,
-            slug: crag.slug,
-            routerLink: `/topo/${crag.slug}/sectors`,
-          },
-          {
-            label: sector.name,
-            slug: sector.slug,
-            routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
-          },
-          {
-            label: area.name,
-            slug: area.slug,
-          },
-        ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
+        const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+        const areaSlug = this.route.snapshot.paramMap.get('area-slug');
+        forkJoin([
+          this.cragsService.getCrag(cragSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404 || e.status === 401) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+          this.sectorsService.getSector(sectorSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404 || e.status === 401) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+          this.areasService.getArea(areaSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404 || e.status === 401) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+          this.store.pipe(select(selectIsLoggedIn), take(1)),
+          this.translocoService.load(`${environment.language}`),
+        ]).subscribe(([crag, sector, area, isLoggedIn]) => {
+          this.crag = crag;
+          this.sector = sector;
+          this.area = area;
+          this.store
+            .select(selectInstanceSettingsState)
+            .subscribe((instanceSettings) => {
+              const components = [area, sector, crag]
+                .filter((e) => e.slug != environment.skippedSlug)
+                .map((e) => e.name);
+              this.title.setTitle(
+                `${components.join(' / ')} - ${instanceSettings.instanceName}`,
+              );
+              this.breadcrumbHome = {
+                icon: 'pi pi-map',
+                routerLink:
+                  '/topo' +
+                  `/${environment.skippedSlug}`.repeat(
+                    instanceSettings.skippedHierarchyLayers,
+                  ),
+              };
+            });
+          this.items = [
+            {
+              label: this.translocoService.translate(marker('area.infos')),
+              icon: 'pi pi-fw pi-info-circle',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}`,
+              routerLinkActiveOptions: { exact: true },
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.topoImages')),
+              icon: 'pi pi-fw pi-chart-line',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.lines')),
+              icon: 'pi pi-fw pi-chart-line',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.ascents')),
+              icon: 'pi pi-fw pi-check-square',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.gallery')),
+              icon: 'pi pi-fw pi-images',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.edit')),
+              icon: 'pi pi-fw pi-file-edit',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/edit`,
+              visible: isLoggedIn,
+            },
+          ];
+          this.breadcrumbs = [
+            {
+              label: crag.name,
+              slug: crag.slug,
+              routerLink: `/topo/${crag.slug}/sectors`,
+            },
+            {
+              label: sector.name,
+              slug: sector.slug,
+              routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+            },
+            {
+              label: area.name,
+              slug: area.slug,
+            },
+          ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+        });
       });
-    });
   }
 }

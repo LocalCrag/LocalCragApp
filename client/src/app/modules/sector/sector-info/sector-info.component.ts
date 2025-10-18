@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
@@ -37,23 +37,28 @@ export class SectorInfoComponent implements OnInit {
   public fetchSectorGrades: Observable<GradeDistribution>;
   public sectorCoordinates: Coordinates;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private route: ActivatedRoute,
     private sectorsService: SectorsService,
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
-      const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
-      this.sectorsService.getSector(sectorSlug).subscribe((sector) => {
-        this.sector = sector;
-        this.sector.mapMarkers.map((marker) => {
-          if (marker.type === MapMarkerType.SECTOR) {
-            this.sectorCoordinates = marker.coordinates;
-          }
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
+        this.sectorsService.getSector(sectorSlug).subscribe((sector) => {
+          this.sector = sector;
+          this.sector.mapMarkers.map((marker) => {
+            if (marker.type === MapMarkerType.SECTOR) {
+              this.sectorCoordinates = marker.coordinates;
+            }
+          });
         });
+        this.fetchSectorGrades =
+          this.sectorsService.getSectorGrades(sectorSlug);
       });
-      this.fetchSectorGrades = this.sectorsService.getSectorGrades(sectorSlug);
-    });
   }
 }

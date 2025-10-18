@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Crag } from '../../../models/crag';
@@ -20,6 +20,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class CragRulesComponent implements OnInit {
   public crag: Crag;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -28,7 +30,7 @@ export class CragRulesComponent implements OnInit {
 
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
         this.crag = null;
         const cragSlug = params.get('crag-slug');

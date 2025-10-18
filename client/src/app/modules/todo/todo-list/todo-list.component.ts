@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
@@ -114,6 +116,7 @@ export class TodoListComponent implements OnInit {
   public crags: Crag[] = [];
 
   private loadedGradeFilterRange: number[] = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private todosService: TodosService,
@@ -193,7 +196,10 @@ export class TodoListComponent implements OnInit {
     ];
     this.priorityFilterKey = this.priorityFilterOptions[0];
     this.actions$
-      .pipe(ofType(todoAdded, reloadAfterAscent), takeUntilDestroyed())
+      .pipe(
+        ofType(todoAdded, reloadAfterAscent),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
         this.loadFirstPage();
       });

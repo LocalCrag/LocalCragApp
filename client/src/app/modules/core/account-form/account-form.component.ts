@@ -1,4 +1,11 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostBinding,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -77,6 +84,8 @@ export class AccountFormComponent implements OnInit {
   public deleteLoadingState: LoadingState = LoadingState.DEFAULT;
   public deleteError = false;
   public ref: DynamicDialogRef | undefined;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private usersService: UsersService,
@@ -173,7 +182,7 @@ export class AccountFormComponent implements OnInit {
       });
     this.accountForm
       .get('emails.email')
-      .valueChanges.pipe(takeUntilDestroyed())
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (!this.emailChangedPreSave) {
           this.accountForm.get('emails.emailConfirm').setValue('');

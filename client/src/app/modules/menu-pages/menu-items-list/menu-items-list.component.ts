@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -57,6 +57,8 @@ export class MenuItemsListComponent implements OnInit {
   public menuItemTypes = MenuItemType;
   public ref: DynamicDialogRef | undefined;
   public positions = MenuItemPosition;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private menuItemsService: MenuItemsService,
@@ -130,7 +132,7 @@ export class MenuItemsListComponent implements OnInit {
       ),
       data,
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
       this.store.dispatch(reloadMenus());
     });

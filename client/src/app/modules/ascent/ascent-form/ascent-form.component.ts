@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
@@ -88,6 +95,8 @@ export class AscentFormComponent implements OnInit {
     checkedColor: '{surface.0}',
   };
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private dialogConfig: DynamicDialogConfig,
@@ -163,7 +172,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('soft')
       .valueChanges.pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -172,7 +181,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('hard')
       .valueChanges.pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -183,7 +192,7 @@ export class AscentFormComponent implements OnInit {
       .subscribe((instanceSettings) =>
         this.ascentForm
           .get('grade')
-          .valueChanges.pipe(takeUntilDestroyed())
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((newGrade: number) => {
             this.gradeDifferenceWarning =
               Math.abs(

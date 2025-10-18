@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -77,6 +79,8 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public marker: MapMarker;
   public nameAndDescriptionHidden = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
@@ -114,7 +118,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
     ];
     this.mapMarkerForm
       .get('type')
-      .valueChanges.pipe(takeUntilDestroyed())
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.nameAndDescriptionHidden = baseTypes.includes(
           this.mapMarkerForm.get('type').value,

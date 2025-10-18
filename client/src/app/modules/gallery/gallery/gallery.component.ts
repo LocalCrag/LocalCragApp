@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   OnInit,
 } from '@angular/core';
 import { GalleryService } from '../../../services/crud/gallery.service';
@@ -61,6 +63,7 @@ export class GalleryComponent implements OnInit {
 
   private objectSlug: string;
   private objectType: ObjectType;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private dialogService: DialogService,
@@ -75,11 +78,11 @@ export class GalleryComponent implements OnInit {
   ngOnInit(): void {
     this.route.data
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((data) => {
           this.objectType = data['objectType'];
           return this.route.parent.parent.paramMap.pipe(
-            takeUntilDestroyed(),
+            takeUntilDestroyed(this.destroyRef),
             map((params) => {
               switch (this.objectType) {
                 case ObjectType.Crag:
@@ -162,7 +165,7 @@ export class GalleryComponent implements OnInit {
     });
     // Add gallery image after dialog is closed
     this.ref.onClose
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((galleryImage: GalleryImage) => {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
@@ -215,7 +218,7 @@ export class GalleryComponent implements OnInit {
       closeOnEscape: true,
     });
     this.ref.onClose
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((galleryImage: GalleryImage) => {
         if (galleryImage) {
           this.images = this.images.map((i) =>

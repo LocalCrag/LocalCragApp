@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
@@ -105,6 +111,7 @@ export class TopoImageListComponent implements OnInit {
   public displayUserRating = false;
 
   private scrollTarget: Scroll;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private topoImagesService: TopoImagesService,
@@ -138,7 +145,7 @@ export class TopoImageListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -150,7 +157,7 @@ export class TopoImageListComponent implements OnInit {
       });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.actions$
-      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
@@ -442,7 +449,7 @@ export class TopoImageListComponent implements OnInit {
         showImage: true,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -470,7 +477,7 @@ export class TopoImageListComponent implements OnInit {
         showLinePathLineName: true,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

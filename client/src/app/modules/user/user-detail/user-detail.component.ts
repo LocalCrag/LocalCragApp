@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { NgIf } from '@angular/common';
@@ -43,6 +49,8 @@ export class UserDetailComponent implements OnInit {
   public user: User;
   public items: MenuItem[];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private usersService: UsersService,
     private translocoService: TranslocoService,
@@ -51,42 +59,44 @@ export class UserDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const userSlug = params.get('user-slug');
-      forkJoin([
-        this.usersService.getUser(userSlug).pipe(
-          catchError((e) => {
-            if (e.status === 404) {
-              this.router.navigate(['/not-found']);
-            }
-            return of(e);
-          }),
-        ),
-      ]).subscribe(([user]) => {
-        this.user = user;
-        this.items = [
-          {
-            label: this.translocoService.translate(marker('user.ascents')),
-            icon: 'pi pi-fw pi-check-square',
-            routerLink: `/users/${userSlug}/ascents`,
-            routerLinkActiveOptions: { exact: true },
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('user.charts')),
-            icon: 'pi pi-fw pi-chart-bar',
-            routerLink: `/users/${userSlug}/charts`,
-            routerLinkActiveOptions: { exact: true },
-            visible: true,
-          },
-          {
-            label: this.translocoService.translate(marker('user.gallery')),
-            icon: 'pi pi-fw pi-images',
-            routerLink: `/users/${userSlug}/gallery`,
-            visible: true,
-          },
-        ];
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const userSlug = params.get('user-slug');
+        forkJoin([
+          this.usersService.getUser(userSlug).pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          ),
+        ]).subscribe(([user]) => {
+          this.user = user;
+          this.items = [
+            {
+              label: this.translocoService.translate(marker('user.ascents')),
+              icon: 'pi pi-fw pi-check-square',
+              routerLink: `/users/${userSlug}/ascents`,
+              routerLinkActiveOptions: { exact: true },
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('user.charts')),
+              icon: 'pi pi-fw pi-chart-bar',
+              routerLink: `/users/${userSlug}/charts`,
+              routerLinkActiveOptions: { exact: true },
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('user.gallery')),
+              icon: 'pi pi-fw pi-images',
+              routerLink: `/users/${userSlug}/gallery`,
+              visible: true,
+            },
+          ];
+        });
       });
-    });
   }
 }

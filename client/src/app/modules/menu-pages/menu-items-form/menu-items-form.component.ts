@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -105,6 +111,8 @@ export class MenuItemsFormComponent implements OnInit {
     marker('pi-youtube'),
   ];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private store: Store,
@@ -177,7 +185,7 @@ export class MenuItemsFormComponent implements OnInit {
     });
     this.menuItemForm
       .get('type')
-      .valueChanges.pipe(takeUntilDestroyed())
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.setValidators();
       });

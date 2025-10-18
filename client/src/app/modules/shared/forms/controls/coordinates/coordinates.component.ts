@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   forwardRef,
+  inject,
   Injector,
   OnInit,
   ViewChild,
@@ -68,6 +70,7 @@ export class CoordinatesComponent
 
   private coordinates: Coordinates;
   private fetchFinishTime: number;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -88,7 +91,7 @@ export class CoordinatesComponent
     this.formControl = this.inj.get(NgControl);
     this.buildForm();
     this.coordinatesForm.valueChanges
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.onChange();
       });

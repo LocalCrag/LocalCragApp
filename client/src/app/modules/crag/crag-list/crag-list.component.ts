@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { CragsService } from '../../../services/crud/crags.service';
 import { LoadingState } from '../../../enums/loading-state';
@@ -70,6 +70,8 @@ export class CragListComponent implements OnInit {
   public sortField: string;
   public isMobile$: Observable<boolean>;
   public ref: DynamicDialogRef | undefined;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     public cragsService: CragsService,
@@ -154,7 +156,7 @@ export class CragListComponent implements OnInit {
         callback: this.cragsService.updateCragOrder.bind(this.cragsService),
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

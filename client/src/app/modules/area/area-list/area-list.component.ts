@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
@@ -73,6 +73,8 @@ export class AreaListComponent implements OnInit {
   public sectorSlug: string;
   public ref: DynamicDialogRef | undefined;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     public areasService: AreasService,
     private store: Store,
@@ -86,7 +88,7 @@ export class AreaListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -166,7 +168,7 @@ export class AreaListComponent implements OnInit {
         slugParameter: this.sectorSlug,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
