@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { NgIf } from '@angular/common';
 import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-sector-ranking',
@@ -12,9 +13,10 @@ import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.co
   templateUrl: './sector-ranking.component.html',
   styleUrl: './sector-ranking.component.scss',
 })
-@UntilDestroy()
 export class SectorRankingComponent implements OnInit {
   public sector: Sector;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -23,7 +25,7 @@ export class SectorRankingComponent implements OnInit {
 
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
         this.sector = null;
         const sectorSlug = params.get('sector-slug');

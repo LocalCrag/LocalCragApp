@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,7 +33,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { DividerModule } from 'primeng/divider';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { filter } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
@@ -39,6 +46,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -69,7 +77,6 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
   styleUrl: './ascent-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class AscentFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
@@ -87,6 +94,8 @@ export class AscentFormComponent implements OnInit {
     contentCheckedBackground: '{primary.500}',
     checkedColor: '{surface.0}',
   };
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -163,7 +172,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('soft')
       .valueChanges.pipe(
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -172,7 +181,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('hard')
       .valueChanges.pipe(
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -183,7 +192,7 @@ export class AscentFormComponent implements OnInit {
       .subscribe((instanceSettings) =>
         this.ascentForm
           .get('grade')
-          .valueChanges.pipe(untilDestroyed(this))
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((newGrade: number) => {
             this.gradeDifferenceWarning =
               Math.abs(

@@ -27,7 +27,6 @@
     "@angular/platform-browser-dynamic": "^19.2.2",
     "@angular/router": "^19.2.2",
     "@jsverse/transloco": "^7.6.1",
-    "@ngneat/until-destroy": "^10.0.0",
     "@ngrx/effects": "^19.0.1",
     "@ngrx/store": "^19.0.1",
     "@primeng/themes": "^19.0.9",

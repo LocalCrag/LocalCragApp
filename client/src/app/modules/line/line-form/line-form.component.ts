@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormArray,
@@ -26,7 +32,7 @@ import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { StartingPosition } from '../../../enums/starting-position';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
@@ -64,6 +70,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form component for lines.
@@ -103,7 +110,6 @@ import { dateNotInFutureValidator } from '../../../utility/validators/date-not-i
     FormsModule,
   ],
 })
-@UntilDestroy()
 export class LineFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
@@ -146,6 +152,7 @@ export class LineFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -212,7 +219,7 @@ export class LineFormComponent implements OnInit {
       this.buildForm();
       this.lineForm
         .get('type')
-        .valueChanges.pipe(untilDestroyed(this))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scaleOptions = this.groupedScales[item].map((scale) => ({
             label: scale.name,
@@ -224,7 +231,7 @@ export class LineFormComponent implements OnInit {
         });
       this.lineForm
         .get('scale')
-        .valueChanges.pipe(untilDestroyed(this))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           if (this.editMode) return;
 
@@ -362,13 +369,13 @@ export class LineFormComponent implements OnInit {
 
         this.lineForm
           .get('grade')
-          .valueChanges.pipe(untilDestroyed(this))
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             this.setFormDisabledState();
           });
         this.lineForm
           .get('closed')
-          .valueChanges.pipe(untilDestroyed(this))
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((closed) => {
             if (!closed) {
               this.lineForm.get('closedReason').setValue(null);

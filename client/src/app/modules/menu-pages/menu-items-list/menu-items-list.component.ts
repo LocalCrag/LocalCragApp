@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -21,12 +21,13 @@ import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenuItemType } from '../../../enums/menu-item-type';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-menu-items-list',
@@ -47,7 +48,6 @@ import { Message } from 'primeng/message';
   styleUrl: './menu-items-list.component.scss',
   providers: [DialogService],
 })
-@UntilDestroy()
 export class MenuItemsListComponent implements OnInit {
   public menuItemsTop: MenuItem[];
   public menuItemsBottom: MenuItem[];
@@ -57,6 +57,8 @@ export class MenuItemsListComponent implements OnInit {
   public menuItemTypes = MenuItemType;
   public ref: DynamicDialogRef | undefined;
   public positions = MenuItemPosition;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private menuItemsService: MenuItemsService,
@@ -130,7 +132,7 @@ export class MenuItemsListComponent implements OnInit {
       ),
       data,
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
       this.store.dispatch(reloadMenus());
     });
