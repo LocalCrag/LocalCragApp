@@ -65,6 +65,12 @@ export class UsersService {
       .pipe(map(() => null));
   }
 
+  public deleteOwnUser(): Observable<null> {
+    return this.http
+      .delete(this.api.users.deleteOwnUser())
+      .pipe(map(() => null));
+  }
+
   public promoteUser(
     id: string,
     target: UserPromotionTargets,

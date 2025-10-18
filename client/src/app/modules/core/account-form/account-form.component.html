@@ -120,6 +120,32 @@
       >
         {{ t("emailAddressChangeInfoText") }}
       </p-message>
+
+      <p-divider align="center" class="mt-5">
+        <b>{{ t('dangerZoneTitle') }}</b>
+      </p-divider>
+
+      <p-message
+        severity="info"
+        class="w-full"
+        icon="pi pi-info-circle"
+        *isSuperadmin="true"
+      >
+        {{ t("superadminsCannotDeleteOwnUser") }}
+      </p-message>
+
+      <div class="flex flex-column gap-3 mt-3" *isSuperadmin="false">
+        <div class="text-600">
+          {{ t('deleteAccountInfoText') }}
+        </div>
+        <div>
+          <p-button
+            label="{{ t('deleteAccountButtonLabel') }}"
+            severity="danger"
+            (click)="openDeleteDialog()"
+          ></p-button>
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>
