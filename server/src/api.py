@@ -1,5 +1,6 @@
 from flask import Blueprint
 
+from resources.account_resources import DeleteOwnUser
 from resources.archive_resources import SetArchived
 from resources.area_resources import (
     CreateArea,
@@ -216,6 +217,7 @@ def configure_api(app):
     )
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
+    user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
     # Gallery API

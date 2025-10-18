@@ -18,3 +18,8 @@
   min-width: var(--p-avatar-lg-width);
   min-height: var(--p-avatar-lg-width);
 }
+
+// Workaround for "visible" bug: https://github.com/primefaces/primeng/issues/19016
+p-menu .p-hidden {
+  display: none;
+}
