@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
@@ -15,6 +15,9 @@ import { toastNotification } from '../actions/notifications.actions';
  */
 @Injectable()
 export class AppLevelAlertsEffects {
+  private actions$ = inject(Actions);
+  private store = inject<Store<AppState>>(Store);
+
   /**
    * Checks the local storage for a flag indicating that the cookie alerts was already seen and accepted.
    * If it's not there, the alert is shown by dispatching a show action.
@@ -49,9 +52,4 @@ export class AppLevelAlertsEffects {
       ),
     { dispatch: false },
   );
-
-  constructor(
-    private actions$: Actions,
-    private store: Store<AppState>,
-  ) {}
 }

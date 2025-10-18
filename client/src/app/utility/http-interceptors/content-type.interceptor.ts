@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
@@ -13,7 +13,7 @@ import { ApiService } from '../../services/core/api.service';
  */
 @Injectable()
 export class ContentTypeInterceptor implements HttpInterceptor {
-  constructor(private api: ApiService) {}
+  private api = inject(ApiService);
 
   /**
    * Intercepts http requests and adds the content type header to them.

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { TopoImage } from '../../models/topo-image';
@@ -13,10 +13,8 @@ import { ItemOrder } from '../../interfaces/item-order.interface';
   providedIn: 'root',
 })
 export class TopoImagesService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   /**
    * Adds a TopoImage to an area.

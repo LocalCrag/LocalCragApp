@@ -6,6 +6,7 @@ import {
   OnChanges,
   Renderer2,
   ViewChild,
+  inject,
 } from '@angular/core';
 
 @Component({
@@ -28,10 +29,8 @@ export class SliderLabelsComponent implements OnChanges {
   public left = '0%';
   public right = '0%';
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private renderer: Renderer2,
-  ) {}
+  private cdr = inject(ChangeDetectorRef);
+  private renderer = inject(Renderer2);
 
   ngOnChanges() {
     if (this.rightLabel && this.leftLabel) {

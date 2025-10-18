@@ -48,12 +48,11 @@ export class SearchDialogComponent {
   private queryUpdate = new Subject<any>();
 
   private destroyRef = inject(DestroyRef);
+  private searchService = inject(SearchService);
+  private router = inject(Router);
+  private ref = inject(DynamicDialogRef);
 
-  constructor(
-    private searchService: SearchService,
-    private router: Router,
-    private ref: DynamicDialogRef,
-  ) {
+  constructor() {
     this.queryUpdate.pipe(debounceTime(400)).subscribe(() => {
       if (this.query) {
         this.searchService.search(this.query).subscribe((searchables) => {

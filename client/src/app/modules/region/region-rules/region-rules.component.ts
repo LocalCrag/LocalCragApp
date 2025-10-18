@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Region } from '../../../models/region';
@@ -18,11 +18,9 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 export class RegionRulesComponent implements OnInit {
   public region: Region;
 
-  constructor(
-    private regionsService: RegionService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
+  private regionsService = inject(RegionService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   ngOnInit() {
     this.region = null;

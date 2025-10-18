@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -31,13 +31,11 @@ export class ChangeEmailComponent implements OnInit {
   public loading = true;
   public error = false;
 
-  constructor(
-    private usersService: UsersService,
-    private route: ActivatedRoute,
-    private store: Store,
-    private translocoService: TranslocoService,
-    private title: Title,
-  ) {}
+  private usersService = inject(UsersService);
+  private route = inject(ActivatedRoute);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
+  private title = inject(Title);
 
   ngOnInit(): void {
     this.store.select(selectInstanceName).subscribe((instanceName) => {

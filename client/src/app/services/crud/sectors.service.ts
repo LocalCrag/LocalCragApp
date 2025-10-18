@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Sector } from '../../models/sector';
@@ -16,11 +16,9 @@ import { deserializeGradeList, GradeDistribution } from '../../models/scale';
   providedIn: 'root',
 })
 export class SectorsService {
-  constructor(
-    private api: ApiService,
-    private store: Store,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private store = inject(Store);
+  private http = inject(HttpClient);
 
   /**
    * Creates a Sector.

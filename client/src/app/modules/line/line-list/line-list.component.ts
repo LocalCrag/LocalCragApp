@@ -129,21 +129,19 @@ export class LineListComponent implements OnInit {
 
   private loadedGradeFilterRange: number[] = null;
   private destroyRef = inject(DestroyRef);
+  private linesService = inject(LinesService);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private regionService = inject(RegionService);
+  private store = inject(Store);
+  private ticksService = inject(TicksService);
+  private isTodoService = inject(IsTodoService);
+  private route = inject(ActivatedRoute);
+  private actions$ = inject(Actions);
+  private translocoService = inject(TranslocoService);
 
-  constructor(
-    private linesService: LinesService,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private regionService: RegionService,
-    private store: Store,
-    private ticksService: TicksService,
-    private isTodoService: IsTodoService,
-    private route: ActivatedRoute,
-    private actions$: Actions,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');

@@ -38,11 +38,8 @@ export class SectorInfoComponent implements OnInit {
   public sectorCoordinates: Coordinates;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private route: ActivatedRoute,
-    private sectorsService: SectorsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private sectorsService = inject(SectorsService);
 
   ngOnInit() {
     this.route.paramMap

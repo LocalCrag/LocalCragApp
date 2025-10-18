@@ -4,6 +4,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -77,15 +78,13 @@ export class TopoImageFormComponent implements OnInit {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private topoImagesService: TopoImagesService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private topoImagesService = inject(TopoImagesService);
 
   /**
    * Builds the form on component initialization.

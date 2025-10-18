@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Sector } from '../../../models/sector';
@@ -18,11 +18,9 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 export class SectorRulesComponent implements OnInit {
   public sector: Sector;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private sectorsService: SectorsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private sectorsService = inject(SectorsService);
 
   ngOnInit() {
     const sectorSlug =

@@ -70,15 +70,12 @@ export class CragListComponent implements OnInit {
   public sortField: string;
   public isMobile$: Observable<boolean>;
   public ref: DynamicDialogRef | undefined;
+  public cragsService = inject(CragsService);
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    public cragsService: CragsService,
-    private store: Store,
-    private dialogService: DialogService,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private dialogService = inject(DialogService);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the crags on initialization.

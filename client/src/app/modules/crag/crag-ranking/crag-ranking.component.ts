@@ -17,11 +17,8 @@ export class CragRankingComponent implements OnInit {
   public crag: Crag;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private route: ActivatedRoute,
-    private cragsService: CragsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private cragsService = inject(CragsService);
 
   ngOnInit() {
     this.route.parent.parent.paramMap

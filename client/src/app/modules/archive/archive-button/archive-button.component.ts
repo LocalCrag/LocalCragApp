@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -31,12 +31,10 @@ export class ArchiveButtonComponent {
   @Input() showLabel: boolean;
   @Input() style: 'plain' | 'outline' | 'rounded' = 'plain';
 
-  constructor(
-    private archiveService: ArchiveService,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private archiveService = inject(ArchiveService);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   getCurrentState() {
     if (this.line) return this.line.archived;

@@ -45,11 +45,8 @@ export class CragInfoComponent implements OnInit {
   public season: Season;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private route: ActivatedRoute,
-    private cragsService: CragsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private cragsService = inject(CragsService);
 
   ngOnInit() {
     this.route.paramMap

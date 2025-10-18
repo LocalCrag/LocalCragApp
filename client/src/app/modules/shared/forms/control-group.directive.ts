@@ -1,4 +1,4 @@
-import { Directive, HostBinding } from '@angular/core';
+import { Directive, HostBinding, inject } from '@angular/core';
 import { ControlGroupService } from './control-group.service';
 
 /**
@@ -17,7 +17,9 @@ export class ControlGroupDirective {
   @HostBinding('class.disabled') isDisabled = false;
   @HostBinding('class.lc-control-group') lcControlGroup = true;
 
-  constructor(private controlGroupService: ControlGroupService) {
+  private controlGroupService = inject(ControlGroupService);
+
+  constructor() {
     this.controlGroupService.hasErrorAndIsTouched().subscribe((hasError) => {
       this.hasError = hasError;
     });

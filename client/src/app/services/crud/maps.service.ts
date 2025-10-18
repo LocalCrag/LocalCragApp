@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,10 +9,8 @@ import { FeatureCollection, Point } from 'geojson';
   providedIn: 'root',
 })
 export class MapsService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public getMarkersGeoJSON(
     filters: string = '',

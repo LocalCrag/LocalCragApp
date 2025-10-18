@@ -4,6 +4,7 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
@@ -62,15 +63,13 @@ export class HistoryListComponent implements OnInit {
   public historyItemType = HistoryItemType;
   public isMobile$: Observable<boolean>;
 
-  constructor(
-    private historyService: HistoryService,
-    private translateSpecialGradesService: TranslateSpecialGradesService,
-    private router: Router,
-    private store: Store,
-    private transloco: TranslocoService,
-    private scalesService: ScalesService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private historyService = inject(HistoryService);
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private transloco = inject(TranslocoService);
+  private scalesService = inject(ScalesService);
+  private cdr = inject(ChangeDetectorRef);
 
   loadFirstPage() {
     this.currentPage = 0;

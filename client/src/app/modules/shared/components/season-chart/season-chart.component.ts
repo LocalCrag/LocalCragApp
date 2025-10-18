@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { isSeasonEmpty, Season } from '../../../../models/season';
 import { ChartModule } from 'primeng/chart';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -23,10 +23,8 @@ export class SeasonChartComponent implements OnInit {
   options: any;
   seasonEmpty = true;
 
-  constructor(
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.seasonEmpty = isSeasonEmpty(this.season);

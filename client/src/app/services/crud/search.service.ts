@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,10 +9,8 @@ import { Searchable } from '../../models/searchable';
   providedIn: 'root',
 })
 export class SearchService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public search(query: string): Observable<Searchable[]> {
     return this.http

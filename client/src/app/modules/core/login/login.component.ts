@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -52,10 +58,8 @@ export class LoginComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingState$: Observable<LoadingState>;
 
-  constructor(
-    private store: Store<AppState>,
-    private fb: FormBuilder,
-  ) {}
+  private store = inject<Store<AppState>>(Store);
+  private fb = inject(FormBuilder);
 
   ngOnInit(): void {
     this.loadingState$ = this.store.pipe(select(selectLoginLoadingState));

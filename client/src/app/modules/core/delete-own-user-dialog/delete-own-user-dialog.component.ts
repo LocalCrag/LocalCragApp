@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import {
   FormBuilder,
@@ -31,11 +31,9 @@ export class DeleteOwnUserDialogComponent implements OnInit {
   public form: FormGroup;
   public email: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogConfig: DynamicDialogConfig,
-    private ref: DynamicDialogRef,
-  ) {}
+  private fb = inject(FormBuilder);
+  private dialogConfig = inject(DynamicDialogConfig);
+  private ref = inject(DynamicDialogRef);
 
   ngOnInit(): void {
     this.email = this.dialogConfig.data?.email ?? '';

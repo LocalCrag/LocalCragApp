@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { Todo } from '../../../models/todo';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
@@ -24,11 +30,9 @@ export class TodoPriorityButtonComponent implements OnInit {
   public items: MenuItem[];
   public priorities = TodoPriority;
 
-  constructor(
-    private todosService: TodosService,
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private todosService = inject(TodosService);
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   setPriority(priority: TodoPriority) {
     this.todosService

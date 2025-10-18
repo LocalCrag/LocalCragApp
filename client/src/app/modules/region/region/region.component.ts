@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { NgIf } from '@angular/common';
@@ -39,13 +39,11 @@ export class RegionComponent implements OnInit {
   public region: Region;
   public items: MenuItem[];
 
-  constructor(
-    private regionsService: RegionService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-  ) {}
+  private regionsService = inject(RegionService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
 
   ngOnInit() {
     this.region = null;

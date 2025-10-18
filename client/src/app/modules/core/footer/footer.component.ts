@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
@@ -34,13 +34,10 @@ export class FooterComponent implements OnInit {
   };
 
   private skippedHierarchyLayers$: Observable<number>;
-
-  constructor(
-    private menuItemsService: MenuItemsService,
-    private store: Store,
-    private actions: Actions,
-    private translocoService: TranslocoService,
-  ) {}
+  private menuItemsService = inject(MenuItemsService);
+  private store = inject(Store);
+  private actions = inject(Actions);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.copyrightOwner$ = this.store.select(selectCopyrightOwner);

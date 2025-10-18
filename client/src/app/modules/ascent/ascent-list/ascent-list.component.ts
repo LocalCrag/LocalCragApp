@@ -141,18 +141,16 @@ export class AscentListComponent implements OnInit, OnChanges {
 
   private loadedGradeFilterRange: number[] = null;
   private destroyRef = inject(DestroyRef);
+  private ascentsService = inject(AscentsService);
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
+  private actions$ = inject(Actions);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
+  private regionService = inject(RegionService);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(
-    private ascentsService: AscentsService,
-    private dialogService: DialogService,
-    private store: Store,
-    private actions$: Actions,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-    private regionService: RegionService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['parentLoading']) {

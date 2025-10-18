@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -19,14 +18,10 @@ import { SkeletonModule } from 'primeng/skeleton';
 export class RegionAscentsComponent implements OnInit {
   public region: Region;
 
-  constructor(
-    private regionService: RegionService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-  ) {}
+  private regionService = inject(RegionService);
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
+  private title = inject(Title);
 
   ngOnInit() {
     this.regionService.getRegion().subscribe((region) => {

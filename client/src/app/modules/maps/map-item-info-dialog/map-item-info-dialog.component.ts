@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { MapMarkerProperties } from '../../../models/map-marker';
@@ -19,7 +19,7 @@ export class MapItemInfoDialogComponent {
   public isOpen: boolean = false;
   public feature: Feature<Geometry, MapMarkerProperties> | undefined;
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   public open(feature: Feature<Geometry, MapMarkerProperties>) {
     this.isOpen = true;

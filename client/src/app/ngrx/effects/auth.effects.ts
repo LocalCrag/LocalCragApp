@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
@@ -55,6 +55,11 @@ const REFRESH_TOKEN_EXPIRY_WARNING_TIME = 2 * 60 * 1000;
  */
 @Injectable()
 export class AuthEffects {
+  private authCrud = inject(AuthCrudService);
+  private actions$ = inject(Actions);
+  private router = inject(Router);
+  private store = inject<Store<AppState>>(Store);
+
   /**
    * Calls the password forgotten route to send a reset password mail and notifies the app about success or failure.
    */
@@ -494,11 +499,4 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
-
-  constructor(
-    private authCrud: AuthCrudService,
-    private actions$: Actions,
-    private router: Router,
-    private store: Store<AppState>,
-  ) {}
 }

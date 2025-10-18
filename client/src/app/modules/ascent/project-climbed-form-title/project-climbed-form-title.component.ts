@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Line } from '../../../models/line';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -12,12 +12,12 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 })
 export class ProjectClimbedFormTitleComponent {
   public line: Line;
+  public ref = inject(DynamicDialogRef);
 
-  constructor(
-    private dialogConfig: DynamicDialogConfig,
-    public ref: DynamicDialogRef,
-    protected scalesService: ScalesService,
-  ) {
+  private dialogConfig = inject(DynamicDialogConfig);
+  protected scalesService = inject(ScalesService);
+
+  constructor() {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;

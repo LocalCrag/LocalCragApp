@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ApiService } from '../../../../../services/core/api.service';
 import {
@@ -56,11 +57,9 @@ export class SingleImageUploadComponent
   public showProgressBar = false;
   public maxImageSize: number;
 
-  constructor(
-    private api: ApiService,
-    private inj: Injector,
-    private store: Store,
-  ) {}
+  private api = inject(ApiService);
+  private inj = inject(Injector);
+  private store = inject(Store);
 
   /**
    * Initializes the uploader component.
