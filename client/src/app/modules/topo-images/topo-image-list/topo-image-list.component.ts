@@ -111,23 +111,24 @@ export class TopoImageListComponent implements OnInit {
   public displayUserRating = false;
 
   private scrollTarget: Scroll;
-  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private topoImagesService: TopoImagesService,
-    private store: Store,
-    private confirmationService: ConfirmationService,
-    private ticksService: TicksService,
-    private areasService: AreasService,
-    private actions$: Actions,
-    private dialogService: DialogService,
-    private linePathsService: LinePathsService,
-    private route: ActivatedRoute,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private viewportScroller: ViewportScroller,
-    protected scalesService: ScalesService,
-  ) {
+  private destroyRef = inject(DestroyRef);
+  private topoImagesService = inject(TopoImagesService);
+  private store = inject(Store);
+  private confirmationService = inject(ConfirmationService);
+  private ticksService = inject(TicksService);
+  private areasService = inject(AreasService);
+  private actions$ = inject(Actions);
+  private dialogService = inject(DialogService);
+  private linePathsService = inject(LinePathsService);
+  private route = inject(ActivatedRoute);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private viewportScroller = inject(ViewportScroller);
+
+  protected scalesService = inject(ScalesService);
+
+  constructor() {
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
       .subscribe((e) => {

@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -38,7 +39,7 @@ export class CompletionProgressBarComponent implements OnInit, OnChanges {
   public itemProgress: ItemProgress;
   public itemName: Observable<string>;
 
-  constructor(private regionService: RegionService) {}
+  private regionService = inject(RegionService);
 
   ngOnInit() {
     this.itemProgress = this.getItemProgress(this.level, this.id);

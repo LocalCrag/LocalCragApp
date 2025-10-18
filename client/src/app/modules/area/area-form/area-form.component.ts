@@ -106,20 +106,19 @@ export class AreaFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private uploadService = inject(UploadService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private uploadService: UploadService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

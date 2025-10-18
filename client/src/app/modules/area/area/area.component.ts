@@ -58,17 +58,14 @@ export class AreaComponent implements OnInit {
   public breadcrumbHome: MenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private cragsService: CragsService,
-    private sectorsService: SectorsService,
-    private areasService: AreasService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-  ) {}
+  private cragsService = inject(CragsService);
+  private sectorsService = inject(SectorsService);
+  private areasService = inject(AreasService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     this.route.paramMap

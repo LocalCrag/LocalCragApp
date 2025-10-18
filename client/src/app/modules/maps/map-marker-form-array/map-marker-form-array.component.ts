@@ -1,4 +1,10 @@
-import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MapMarker } from '../../../models/map-marker';
 import { NgForOf, NgIf } from '@angular/common';
@@ -48,11 +54,9 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
   public markers: MapMarker[] = [];
   public isDisabled = false;
 
-  constructor(
-    private store: Store,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
 
   writeValue(value: MapMarker[]): void {
     this.markers = value;

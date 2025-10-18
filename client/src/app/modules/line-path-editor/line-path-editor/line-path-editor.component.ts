@@ -8,6 +8,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TopoImage } from '../../../models/topo-image';
@@ -45,9 +46,9 @@ export class LinePathEditorComponent
   public linePath: LinePath;
   public isDisabled = false;
 
-  private onChange: (value: number[]) => void;
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  private onChange: (value: number[]) => void;
 
   /**
    * Loads the topo image on which to draw the line.

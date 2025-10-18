@@ -5,6 +5,7 @@ import {
   OnInit,
   TemplateRef,
   ViewContainerRef,
+  inject,
 } from '@angular/core';
 import { ControlGroupService } from './control-group.service';
 import { Subscription } from 'rxjs';
@@ -26,12 +27,9 @@ export class IfErrorDirective implements OnInit, OnDestroy {
   private touched = false;
   private controlElementTouchedChangesSubscription: Subscription;
   private statusChangesSubscription: Subscription;
-
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private controlGroupService: ControlGroupService,
-    private viewContainer: ViewContainerRef,
-  ) {}
+  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private controlGroupService = inject(ControlGroupService);
+  private viewContainer = inject(ViewContainerRef);
 
   /**
    * First, the view is destroyed as the initial state of the form is untouched. Then the control is fetched by using

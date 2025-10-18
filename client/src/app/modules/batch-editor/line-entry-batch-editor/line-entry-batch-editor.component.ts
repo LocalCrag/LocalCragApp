@@ -105,7 +105,6 @@ export class LineEntryBatchEditorComponent implements OnInit {
   public faFormats = FaDefaultFormat;
 
   public today = new Date(new Date().getFullYear(), 11, 31);
-  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
   public currentStep = 1;
 
   public groupedScales: Record<LineType, Scale[]> = null;
@@ -120,20 +119,19 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private areaSlug: string;
 
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private scalesService = inject(ScalesService);
+  private batchEditorService = inject(BatchEditorService);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private scalesService: ScalesService,
-    private batchEditorService: BatchEditorService,
-  ) {}
+  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
 
   ngOnInit() {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');

@@ -11,6 +11,7 @@ import {
   OnInit,
   SimpleChanges,
   TemplateRef,
+  inject,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -40,12 +41,9 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   public overflowDetected = false;
 
   private resizeObserver!: ResizeObserver;
-
-  constructor(
-    private headerMenuService: HeaderMenuService,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef,
-  ) {}
+  private headerMenuService = inject(HeaderMenuService);
+  private cdr = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
 
   ngOnInit() {
     this.onResize(Number(window.innerWidth));

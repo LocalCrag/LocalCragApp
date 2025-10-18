@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
@@ -58,13 +58,11 @@ export class PostListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public isMobile$: Observable<boolean>;
+  public postsService = inject(PostsService);
 
-  constructor(
-    public postsService: PostsService,
-    private store: Store,
-    private title: Title,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the posts on initialization.

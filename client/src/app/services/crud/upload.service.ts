@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { File } from '../../models/file';
@@ -41,10 +41,8 @@ class CustomImageSpec extends ImageSpec {
   providedIn: 'root',
 })
 export class UploadService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   /**
    * Uploads a file.

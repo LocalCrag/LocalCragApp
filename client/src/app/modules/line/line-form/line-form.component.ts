@@ -152,22 +152,20 @@ export class LineFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
-  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-    private router: Router,
-    private linesService: LinesService,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private linesService = inject(LinesService);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
 
   /**
    * Builds the form on component initialization.

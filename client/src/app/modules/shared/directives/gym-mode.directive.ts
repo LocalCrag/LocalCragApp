@@ -1,4 +1,10 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+  Directive,
+  Input,
+  TemplateRef,
+  ViewContainerRef,
+  inject,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectGymMode } from '../../../ngrx/selectors/instance-settings.selectors';
 
@@ -8,11 +14,9 @@ import { selectGymMode } from '../../../ngrx/selectors/instance-settings.selecto
     '[isGymMode]',
 })
 export class GymModeDirective {
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainerRef: ViewContainerRef,
-    private store: Store,
-  ) {}
+  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private viewContainerRef = inject(ViewContainerRef);
+  private store = inject(Store);
 
   @Input()
   set isGymMode(value: boolean) {

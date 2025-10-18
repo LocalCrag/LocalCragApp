@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -67,20 +73,18 @@ export class GalleryFormComponent implements OnInit {
   public loadingState = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
   public searchablesSuggestions: Searchable[] = [];
+  public config = inject(DynamicDialogConfig);
 
-  constructor(
-    private fb: FormBuilder,
-    private searchService: SearchService,
-    private linesService: LinesService,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private usersService: UsersService,
-    private store: Store,
-    private ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
-    private galleryService: GalleryService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private searchService = inject(SearchService);
+  private linesService = inject(LinesService);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private usersService = inject(UsersService);
+  private store = inject(Store);
+  private ref = inject(DynamicDialogRef);
+  private galleryService = inject(GalleryService);
 
   ngOnInit() {
     this.buildForm();

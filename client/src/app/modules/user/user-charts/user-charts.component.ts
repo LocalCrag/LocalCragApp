@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
@@ -22,10 +22,8 @@ export class UserChartsComponent implements OnInit {
   public user: User;
   public fetchUserGrades: Observable<GradeDistribution>;
 
-  constructor(
-    private route: ActivatedRoute,
-    private usersService: UsersService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private usersService = inject(UsersService);
 
   ngOnInit() {
     const userSlug =

@@ -5,6 +5,7 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -83,18 +84,17 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private linesService: LinesService,
-    private topoImagesService: TopoImagesService,
-    private linePathsService: LinePathsService,
-    protected scalesService: ScalesService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private linesService = inject(LinesService);
+  private topoImagesService = inject(TopoImagesService);
+  private linePathsService = inject(LinePathsService);
+
+  protected scalesService = inject(ScalesService);
 
   /**
    * Builds the form on component initialization.

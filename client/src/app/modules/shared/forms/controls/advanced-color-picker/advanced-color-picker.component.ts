@@ -82,12 +82,9 @@ export class AdvancedColorPickerComponent
   private changeHandlers = [];
   private color: string | null = null;
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private fb: FormBuilder,
-    private inj: Injector,
-    private store: Store,
-  ) {}
+  private fb = inject(FormBuilder);
+  private inj = inject(Injector);
+  private store = inject(Store);
 
   ngOnInit() {
     this.formControl = this.inj.get(NgControl);

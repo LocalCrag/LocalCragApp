@@ -4,6 +4,7 @@ import {
   OnInit,
   TemplateRef,
   ViewContainerRef,
+  inject,
 } from '@angular/core';
 import { ControlGroupService } from './control-group.service';
 import { Subscription } from 'rxjs';
@@ -17,14 +18,11 @@ import { Subscription } from 'rxjs';
   selector: '[lcIfNoError]',
 })
 export class IfNoErrorDirective implements OnInit, OnDestroy {
+  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private controlGroupService = inject(ControlGroupService);
+  private viewContainer = inject(ViewContainerRef);
   private hasView = false;
   private hasErrorSubscription: Subscription;
-
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private controlGroupService: ControlGroupService,
-    private viewContainer: ViewContainerRef,
-  ) {}
 
   /**
    * Initially creates the view and subscribes to the form controls error state changes to

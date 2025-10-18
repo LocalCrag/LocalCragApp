@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -65,17 +65,17 @@ export class PostFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private postsService: PostsService,
-    private uploadService: UploadService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-  ) {
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private postsService = inject(PostsService);
+  private uploadService = inject(UploadService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

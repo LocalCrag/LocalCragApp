@@ -112,18 +112,15 @@ export class MenuItemsFormComponent implements OnInit {
   ];
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private menuPagesService: MenuPagesService,
-    private menuItemsService: MenuItemsService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private menuPagesService = inject(MenuPagesService);
+  private menuItemsService = inject(MenuItemsService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
 
   /**
    * Builds the form on component initialization.

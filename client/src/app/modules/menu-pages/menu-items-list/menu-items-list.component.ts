@@ -59,14 +59,11 @@ export class MenuItemsListComponent implements OnInit {
   public positions = MenuItemPosition;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private menuItemsService: MenuItemsService,
-    private dialogService: DialogService,
-    private store: Store,
-    private title: Title,
-    private translocoService: TranslocoService,
-  ) {}
+  private menuItemsService = inject(MenuItemsService);
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the menu items on initialization.

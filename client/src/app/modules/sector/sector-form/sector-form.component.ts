@@ -107,20 +107,19 @@ export class SectorFormComponent implements OnInit {
 
   private cragSlug: string;
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private uploadService = inject(UploadService);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-    private router: Router,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private uploadService: UploadService,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

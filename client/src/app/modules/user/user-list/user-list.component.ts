@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
@@ -78,12 +78,10 @@ export class UserListComponent implements OnInit {
     [] as MenuItem[],
   );
 
-  constructor(
-    private usersService: UsersService,
-    private confirmationService: ConfirmationService,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private usersService = inject(UsersService);
+  private confirmationService = inject(ConfirmationService);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.refreshData();

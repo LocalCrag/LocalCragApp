@@ -50,13 +50,10 @@ export class UserDetailComponent implements OnInit {
   public items: MenuItem[];
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private usersService: UsersService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
+  private usersService = inject(UsersService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     this.route.paramMap

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Observable } from 'rxjs';
@@ -30,7 +30,7 @@ export class RegionInfoComponent implements OnInit {
   public region: Region;
   public fetchRegionGrades: Observable<GradeDistribution>;
 
-  constructor(private regionsService: RegionService) {}
+  private regionsService = inject(RegionService);
 
   ngOnInit() {
     this.region = null;

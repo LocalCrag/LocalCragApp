@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Observable } from 'rxjs';
@@ -68,11 +69,8 @@ export class RefreshLoginModalComponent implements OnInit {
   public loadingStates = LoadingState;
 
   private email: string;
-
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Loads the logged-in user to fetch the email for the re-login.

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Observable } from 'rxjs';
@@ -67,13 +67,11 @@ export class MenuComponent implements OnInit {
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private menuItemsService: MenuItemsService,
-    private translocoService: TranslocoService,
-    private dialogService: DialogService,
-    private actions: Actions,
-    private store: Store,
-  ) {}
+  private menuItemsService = inject(MenuItemsService);
+  private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private actions = inject(Actions);
+  private store = inject(Store);
 
   ngOnInit() {
     this.logoImage$ = this.store.pipe(select(selectLogoImage));

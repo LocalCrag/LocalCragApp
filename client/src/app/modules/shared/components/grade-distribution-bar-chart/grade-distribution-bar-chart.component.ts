@@ -5,6 +5,7 @@ import {
   OnInit,
   SimpleChanges,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -53,12 +54,11 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   public options: any;
 
   private isCondensed: boolean = null;
+  private translocoService = inject(TranslocoService);
+  private scalesService = inject(ScalesService);
+  private store = inject(Store);
 
-  constructor(
-    private translocoService: TranslocoService,
-    private scalesService: ScalesService,
-    private store: Store,
-  ) {
+  constructor() {
     fromEvent(window, 'resize')
       .pipe(debounceTime(200))
       .subscribe(() => {

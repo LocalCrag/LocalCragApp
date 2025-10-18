@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
@@ -50,10 +51,8 @@ export class GalleryImageComponent implements OnInit {
   public speedDialItems: MenuItem[] = [];
   public loggedInUser: User;
 
-  constructor(
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.speedDialItems = [

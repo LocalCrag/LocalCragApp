@@ -69,11 +69,8 @@ export class TopoImageComponent implements OnInit {
   private resizeRenderSubject = new Subject<any>();
   private windowWidth: number;
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private el: ElementRef,
-    private store: Store,
-  ) {}
+  private el = inject(ElementRef);
+  private store = inject(Store);
 
   @HostListener('window:resize', ['$event'])
   onResize() {

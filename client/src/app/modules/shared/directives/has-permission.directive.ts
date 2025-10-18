@@ -24,13 +24,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     '[isAdmin], [isSuperadmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
 })
 export class HasPermissionDirective {
+  private templateRef = inject<TemplateRef<any>>(TemplateRef);
+  private viewContainerRef = inject(ViewContainerRef);
+  private store = inject(Store);
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainerRef: ViewContainerRef,
-    private store: Store,
-  ) {}
 
   @Input()
   set isOwnUser(testUser: User) {

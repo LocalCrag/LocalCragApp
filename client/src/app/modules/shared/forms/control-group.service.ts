@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { NgControl } from '@angular/forms';
 import { FormService } from './form.service';
@@ -19,7 +19,9 @@ export class ControlGroupService {
     new Subject<boolean>();
   private isDisabledSubject: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private formService: FormService) {
+  private formService = inject(FormService);
+
+  constructor() {
     this.formService.addControlGroupService(this);
   }
 

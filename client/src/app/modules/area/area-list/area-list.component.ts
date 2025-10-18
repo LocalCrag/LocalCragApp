@@ -61,6 +61,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ],
 })
 export class AreaListComponent implements OnInit {
+  public areasService = inject(AreasService);
+
   public areas: Area[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
@@ -74,14 +76,10 @@ export class AreaListComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    public areasService: AreasService,
-    private store: Store,
-    private dialogService: DialogService,
-    private route: ActivatedRoute,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private dialogService = inject(DialogService);
+  private route = inject(ActivatedRoute);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the areas on initialization.

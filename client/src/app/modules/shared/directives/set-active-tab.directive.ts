@@ -8,6 +8,7 @@ import {
   Signal,
   computed,
   signal,
+  inject,
 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -29,7 +30,7 @@ export class SetActiveTabDirective implements OnInit, OnDestroy, OnChanges {
     this.activeTabIndexSignal(),
   );
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   ngOnInit() {
     this.updateActiveTabIndex();

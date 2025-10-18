@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -17,11 +17,9 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 export class ForgotPasswordCheckMailboxComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  constructor(
-    private title: Title,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private title = inject(Title);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.store.select(selectInstanceName).subscribe((instanceName) => {

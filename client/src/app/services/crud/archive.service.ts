@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,10 +13,8 @@ import { Crag } from '../../models/crag';
   providedIn: 'root',
 })
 export class ArchiveService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   /**
    * Adjust the archive status of a single line

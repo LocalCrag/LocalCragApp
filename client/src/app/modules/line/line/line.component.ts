@@ -75,19 +75,17 @@ export class LineComponent implements OnInit {
   public breadcrumbHome: MenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
+  private cragsService = inject(CragsService);
+  private sectorsService = inject(SectorsService);
+  private areasService = inject(AreasService);
+  private linesService = inject(LinesService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
 
-  constructor(
-    private cragsService: CragsService,
-    private sectorsService: SectorsService,
-    private areasService: AreasService,
-    private linesService: LinesService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-    protected scalesService: ScalesService,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.route.paramMap

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -20,12 +20,10 @@ export class NotFoundComponent implements OnInit {
 
   public previousUrl: string;
 
-  constructor(
-    private title: Title,
-    private navigationService: NavigationService,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private title = inject(Title);
+  private navigationService = inject(NavigationService);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.previousUrl = this.navigationService.getPreviousUrl();
