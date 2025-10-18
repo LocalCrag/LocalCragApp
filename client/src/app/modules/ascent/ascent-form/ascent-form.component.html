@@ -187,6 +187,7 @@
         [offLabel]="t('withKneepad')"
       ></p-toggleButton>
       <p-toggleButton
+        *ngIf="(disableFAInAscents$ | async) === false"
         formControlName="fa"
         [dt]="toggleButtonDt"
         [onLabel]="t('fa')"
@@ -194,7 +195,9 @@
       ></p-toggleButton>
     </div>
     <p-message
-      *ngIf="ascentForm.get('fa').value"
+      *ngIf="
+        ascentForm.get('fa').value && (disableFAInAscents$ | async) === false
+      "
       styleClass="mt-2 ascent-form-alert"
       severity="info"
       text="{{ t('firstAscentExplanation') }}"

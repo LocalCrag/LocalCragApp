@@ -1,6 +1,7 @@
 from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
+from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.user import User
 from util.voting import update_grades_and_rating
@@ -401,3 +402,29 @@ def test_grade_ranking_votes_multiple_2(client, user_token, member_token, admin_
     assert line.user_grade_value == 16
     assert line.author_rating == 1
     assert line.user_rating == 5
+
+
+def test_disable_fa_in_ascents_enforced_on_create(client, member_token):
+    # Enable the setting to disable FA in ascents
+    instance_settings = InstanceSettings.return_it()
+    instance_settings.disable_fa_in_ascents = True
+    db.session.add(instance_settings)
+
+    ascent_data = {
+        "flash": False,
+        "fa": True,  # client tries to set FA
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 4,
+        "comment": "should not be FA",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("treppe")),
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["fa"] is False  # enforced by instance setting

@@ -163,7 +163,11 @@ class CreateAscent(MethodView):
         ascent: Ascent = Ascent()
         ascent.line_id = ascent_data["line"]
         ascent.flash = ascent_data["flash"]
-        ascent.fa = ascent_data["fa"]
+        # Enforce instance setting: disable FA flag if configured
+        if InstanceSettings.return_it().disable_fa_in_ascents:
+            ascent.fa = False
+        else:
+            ascent.fa = ascent_data["fa"]
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]
@@ -214,7 +218,11 @@ class UpdateAscent(MethodView):
             raise BadRequest("Grade scale, name and line type do not match.")
 
         ascent.flash = ascent_data["flash"]
-        ascent.fa = ascent_data["fa"]
+        # Enforce instance setting: disable FA flag if configured
+        if InstanceSettings.return_it().disable_fa_in_ascents:
+            ascent.fa = False
+        else:
+            ascent.fa = ascent_data["fa"]
         ascent.soft = ascent_data["soft"]
         ascent.hard = ascent_data["hard"]
         ascent.with_kneepad = ascent_data["withKneepad"]

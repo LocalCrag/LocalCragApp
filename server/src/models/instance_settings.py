@@ -50,6 +50,7 @@ class InstanceSettings(db.Model):
     )
     # Number of past weeks to consider for rankings; None means all-time
     ranking_past_weeks = db.Column(db.Integer, nullable=True)
+    disable_fa_in_ascents = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     @hybrid_property
     def superadmin_email(self) -> str:
