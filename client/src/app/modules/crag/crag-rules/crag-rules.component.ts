@@ -4,8 +4,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows the rules of a crag.
@@ -16,7 +17,6 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   templateUrl: './crag-rules.component.html',
   styleUrl: './crag-rules.component.scss',
 })
-@UntilDestroy()
 export class CragRulesComponent implements OnInit {
   public crag: Crag;
 
@@ -28,7 +28,7 @@ export class CragRulesComponent implements OnInit {
 
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((params) => {
         this.crag = null;
         const cragSlug = params.get('crag-slug');

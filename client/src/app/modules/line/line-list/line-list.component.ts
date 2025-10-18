@@ -25,7 +25,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap } from 'rxjs/operators';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
@@ -49,6 +49,7 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-line-list',
@@ -89,7 +90,6 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class LineListComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
@@ -217,12 +217,12 @@ export class LineListComponent implements OnInit {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
     this.actions$
-      .pipe(ofType(todoAdded), untilDestroyed(this))
+      .pipe(ofType(todoAdded), takeUntilDestroyed())
       .subscribe((action) => {
         this.isTodo.add(action.todoLineId);
       });

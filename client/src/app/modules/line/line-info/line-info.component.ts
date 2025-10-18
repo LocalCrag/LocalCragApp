@@ -5,7 +5,7 @@ import { LinesService } from '../../../services/crud/lines.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { TicksService } from '../../../services/crud/ticks.service';
@@ -34,6 +34,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { ConfirmationService } from 'primeng/api';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows detailed information about a line.
@@ -64,7 +65,6 @@ import { ConfirmationService } from 'primeng/api';
     DatePipe,
   ],
 })
-@UntilDestroy()
 export class LineInfoComponent implements OnInit {
   public line: Line;
   public ref: DynamicDialogRef | undefined;
@@ -88,13 +88,13 @@ export class LineInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
       this.line = null;
       this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
       this.refreshData();
     });
     this.actions$
-      .pipe(ofType(reloadAfterAscent, todoAdded), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent, todoAdded), takeUntilDestroyed())
       .subscribe(() => {
         this.refreshData();
       });
@@ -148,7 +148,7 @@ export class LineInfoComponent implements OnInit {
         idAccessor: (item: any) => item.linePaths[0].id,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refreshData();
     });
   }

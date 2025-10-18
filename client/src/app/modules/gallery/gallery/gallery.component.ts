@@ -9,7 +9,7 @@ import { GalleryImage } from '../../../models/gallery-image';
 import { ObjectType } from '../../../models/tag';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ImageModule } from 'primeng/image';
 import { NgForOf, NgIf } from '@angular/common';
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
@@ -28,6 +28,7 @@ import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery
 import { LoadingState } from '../../../enums/loading-state';
 import { Message } from 'primeng/message';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-gallery',
@@ -49,7 +50,6 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
   providers: [DialogService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-@UntilDestroy()
 export class GalleryComponent implements OnInit {
   public images: GalleryImage[] = [];
   public ref: DynamicDialogRef | undefined;
@@ -75,11 +75,11 @@ export class GalleryComponent implements OnInit {
   ngOnInit(): void {
     this.route.data
       .pipe(
-        untilDestroyed(this),
+        takeUntilDestroyed(),
         switchMap((data) => {
           this.objectType = data['objectType'];
           return this.route.parent.parent.paramMap.pipe(
-            untilDestroyed(this),
+            takeUntilDestroyed(),
             map((params) => {
               switch (this.objectType) {
                 case ObjectType.Crag:
@@ -162,7 +162,7 @@ export class GalleryComponent implements OnInit {
     });
     // Add gallery image after dialog is closed
     this.ref.onClose
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((galleryImage: GalleryImage) => {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
@@ -215,7 +215,7 @@ export class GalleryComponent implements OnInit {
       closeOnEscape: true,
     });
     this.ref.onClose
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((galleryImage: GalleryImage) => {
         if (galleryImage) {
           this.images = this.images.map((i) =>

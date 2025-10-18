@@ -19,7 +19,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { InputTextModule } from 'primeng/inputtext';
 import { latValidator } from '../../../../../utility/validators/lat.validator';
 import { lngValidator } from '../../../../../utility/validators/lng.validator';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { FormDirective } from '../../form.directive';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
@@ -27,6 +27,7 @@ import { NgIf } from '@angular/common';
 import { ControlGroupDirective } from '../../control-group.directive';
 import { FormControlDirective } from '../../form-control.directive';
 import { IfErrorDirective } from '../../if-error.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-coordinates',
@@ -52,7 +53,6 @@ import { IfErrorDirective } from '../../if-error.directive';
     },
   ],
 })
-@UntilDestroy()
 export class CoordinatesComponent
   implements OnInit, ControlValueAccessor, AfterViewInit
 {
@@ -88,7 +88,7 @@ export class CoordinatesComponent
     this.formControl = this.inj.get(NgControl);
     this.buildForm();
     this.coordinatesForm.valueChanges
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe(() => {
         this.onChange();
       });

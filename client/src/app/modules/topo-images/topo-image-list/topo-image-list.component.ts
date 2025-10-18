@@ -19,7 +19,7 @@ import { LinePath } from '../../../models/line-path';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { NgClass, NgForOf, NgIf, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
@@ -47,6 +47,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that lists all topo images in an area.
@@ -86,7 +87,6 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     TopoImageComponent,
   ],
 })
-@UntilDestroy()
 export class TopoImageListComponent implements OnInit {
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
@@ -138,7 +138,7 @@ export class TopoImageListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -150,7 +150,7 @@ export class TopoImageListComponent implements OnInit {
       });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
@@ -442,7 +442,7 @@ export class TopoImageListComponent implements OnInit {
         showImage: true,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refreshData();
     });
   }
@@ -470,7 +470,7 @@ export class TopoImageListComponent implements OnInit {
         showLinePathLineName: true,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refreshData();
     });
   }

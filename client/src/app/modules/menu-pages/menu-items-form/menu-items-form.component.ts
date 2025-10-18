@@ -26,7 +26,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemType } from '../../../enums/menu-item-type';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { CardModule } from 'primeng/card';
 import { NgClass, NgIf } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
@@ -42,6 +42,7 @@ import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -66,7 +67,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   styleUrl: './menu-items-form.component.scss',
   providers: [ConfirmationService],
 })
-@UntilDestroy()
 export class MenuItemsFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
@@ -177,7 +177,7 @@ export class MenuItemsFormComponent implements OnInit {
     });
     this.menuItemForm
       .get('type')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed())
       .subscribe(() => {
         this.setValidators();
       });

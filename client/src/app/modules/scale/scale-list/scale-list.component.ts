@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
@@ -37,7 +36,6 @@ import { Message } from 'primeng/message';
     Message,
   ],
 })
-@UntilDestroy()
 export class ScaleListComponent implements OnInit {
   public loadingState: LoadingState;
   public scales: Scale[] = null;

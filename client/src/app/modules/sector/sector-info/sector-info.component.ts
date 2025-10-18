@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Observable } from 'rxjs';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
@@ -15,6 +15,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { MapComponent } from '../../maps/map/map.component';
 import { Skeleton } from 'primeng/skeleton';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-sector-info',
@@ -31,7 +32,6 @@ import { Skeleton } from 'primeng/skeleton';
     Skeleton,
   ],
 })
-@UntilDestroy()
 export class SectorInfoComponent implements OnInit {
   public sector: Sector;
   public fetchSectorGrades: Observable<GradeDistribution>;
@@ -43,7 +43,7 @@ export class SectorInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       this.sectorsService.getSector(sectorSlug).subscribe((sector) => {
         this.sector = sector;

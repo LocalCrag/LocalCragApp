@@ -6,8 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingState } from '../../../enums/loading-state';
 import { NgIf } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-menu-page-detail',
@@ -15,7 +16,6 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss',
 })
-@UntilDestroy()
 export class MenuPageDetailComponent implements OnInit {
   public menuPage: MenuPage;
   public loadingState = LoadingState.LOADING;
@@ -27,7 +27,7 @@ export class MenuPageDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
       const menuPageSlug = this.route.snapshot.paramMap.get('menu-page-slug');
       this.menuPagesService.getMenuPage(menuPageSlug).subscribe({
         next: (menuPage) => {

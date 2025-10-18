@@ -17,7 +17,7 @@ import {
   Label,
   PointFeatureLabelPlacement,
 } from './point-feature-label-placement';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
@@ -26,6 +26,7 @@ import { take } from 'rxjs/operators';
 import { highlightColor, textColor } from '../../../../utility/misc/color';
 import { Skeleton } from 'primeng/skeleton';
 import { NgIf } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -37,7 +38,6 @@ import { NgIf } from '@angular/common';
   encapsulation: ViewEncapsulation.None,
   imports: [Skeleton, NgIf],
 })
-@UntilDestroy()
 export class TopoImageComponent implements OnInit {
   @ViewChild('konvaContainer') konvaContainer: ElementRef;
 
@@ -91,7 +91,7 @@ export class TopoImageComponent implements OnInit {
     // Why we check for window.innerWidth changes.
     this.windowWidth = window.innerWidth;
     this.resizeRenderSubject
-      .pipe(debounceTime(500), untilDestroyed(this))
+      .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(() => {
         if (window.innerWidth != this.windowWidth) {
           this.render();

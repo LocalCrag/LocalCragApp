@@ -7,7 +7,7 @@ import { unixToDate } from '../../../utility/operators/unix-to-date';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { bigIntTimer } from '../../../utility/observables/bigint-timer';
 import { openRefreshLoginModal } from 'src/app/ngrx/actions/auth.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import {
   selectShowCookieAlert,
   selectShowRefreshTokenAboutToExpireAlert,
@@ -18,6 +18,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { MinutesRemainingPipe } from '../../shared/pipes/minutes-remaining.pipe';
 import { Button } from 'primeng/button';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-app-level-alerts',
@@ -33,7 +34,6 @@ import { Button } from 'primeng/button';
     Button,
   ],
 })
-@UntilDestroy()
 export class AppLevelAlertsComponent implements OnInit {
   public showCookieAlert$: Observable<boolean>;
   public refreshLoginAlertType = 'warning';
@@ -64,7 +64,7 @@ export class AppLevelAlertsComponent implements OnInit {
           return differenceInMilliseconds(oneMinuteBeforeExpiry, new Date());
         }),
         mergeMap((timeDelta) => bigIntTimer(timeDelta)),
-        untilDestroyed(this),
+        takeUntilDestroyed(),
       )
       .subscribe(() => {
         this.refreshLoginAlertType = 'danger';

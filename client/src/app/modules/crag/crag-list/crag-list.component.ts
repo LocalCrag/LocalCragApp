@@ -11,7 +11,7 @@ import { environment } from '../../../../environments/environment';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
@@ -28,6 +28,7 @@ import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that lists all crags in an area.
@@ -59,7 +60,6 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
     ClosedSpotAlertComponent,
   ],
 })
-@UntilDestroy()
 export class CragListComponent implements OnInit {
   public crags: Crag[];
   public loading = LoadingState.LOADING;
@@ -154,7 +154,7 @@ export class CragListComponent implements OnInit {
         callback: this.cragsService.updateCragOrder.bind(this.cragsService),
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refreshData();
     });
   }

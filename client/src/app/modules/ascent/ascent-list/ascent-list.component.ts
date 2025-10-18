@@ -36,7 +36,7 @@ import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { User } from '../../../models/user';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
@@ -54,6 +54,7 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -94,7 +95,6 @@ import { filter, take } from 'rxjs/operators';
   providers: [DialogService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-@UntilDestroy()
 export class AscentListComponent implements OnInit, OnChanges {
   @Input() user: User;
   @Input() cragId: string;
@@ -226,7 +226,7 @@ export class AscentListComponent implements OnInit, OnChanges {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed())
       .subscribe(() => {
         this.loadFirstPage();
       });

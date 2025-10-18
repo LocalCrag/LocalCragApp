@@ -9,12 +9,13 @@ import { debounceTime, Subject } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
 import { NavigationEnd, Router } from '@angular/router';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { SearchableComponent } from '../searchable/searchable.component';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-search-dialog',
@@ -35,7 +36,6 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
   styleUrl: './search-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class SearchDialogComponent {
   public query: string;
   public searchables: Searchable[];
@@ -58,7 +58,7 @@ export class SearchDialogComponent {
         this.loading = false;
       }
     });
-    this.router.events.pipe(untilDestroyed(this)).subscribe((event) => {
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.ref.close();
       }

@@ -30,7 +30,7 @@ import { UserValidatorsService } from '../../../services/core/user-validators.se
 import { NgIf } from '@angular/common';
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { MessageModule } from 'primeng/message';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
@@ -38,6 +38,7 @@ import { DividerModule } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-own-user-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-account-form',
@@ -61,7 +62,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
   styleUrl: './account-form.component.scss',
   providers: [DialogService],
 })
-@UntilDestroy()
 export class AccountFormComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
@@ -87,7 +87,6 @@ export class AccountFormComponent implements OnInit {
     private fb: FormBuilder,
     private dialogService: DialogService,
   ) {}
-
   ngOnInit(): void {
     this.buildForm();
     this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -174,7 +173,7 @@ export class AccountFormComponent implements OnInit {
       });
     this.accountForm
       .get('emails.email')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed())
       .subscribe(() => {
         if (!this.emailChangedPreSave) {
           this.accountForm.get('emails.emailConfirm').setValue('');

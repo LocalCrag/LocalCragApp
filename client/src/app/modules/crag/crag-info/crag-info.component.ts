@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Observable } from 'rxjs';
 import { GradeDistribution } from '../../../models/scale';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
@@ -17,6 +17,7 @@ import { CoordinatesButtonComponent } from '../../shared/components/coordinates-
 import { MapComponent } from '../../maps/map/map.component';
 import { SeasonChartComponent } from '../../shared/components/season-chart/season-chart.component';
 import { Skeleton } from 'primeng/skeleton';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows information about a crag.
@@ -37,7 +38,6 @@ import { Skeleton } from 'primeng/skeleton';
     Skeleton,
   ],
 })
-@UntilDestroy()
 export class CragInfoComponent implements OnInit {
   public crag: Crag;
   public fetchCragGrades: Observable<GradeDistribution>;
@@ -50,7 +50,7 @@ export class CragInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
       this.cragsService.getCrag(cragSlug).subscribe((crag) => {

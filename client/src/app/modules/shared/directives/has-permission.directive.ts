@@ -9,14 +9,13 @@ import {
   selectIsSuperadmin,
 } from '../../../ngrx/selectors/auth.selectors';
 import { User } from '../../../models/user';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector:
     // eslint-disable-next-line  @angular-eslint/directive-selector
     '[isAdmin], [isSuperadmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
 })
-@UntilDestroy()
 export class HasPermissionDirective {
   constructor(
     private templateRef: TemplateRef<any>,
@@ -29,7 +28,7 @@ export class HasPermissionDirective {
     if (testUser) {
       this.store
         .select(selectCurrentUser)
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntilDestroyed())
         .subscribe((user) => {
           this.decideView(!!user && testUser.id === user.id);
         });
@@ -40,7 +39,7 @@ export class HasPermissionDirective {
   set isSuperadmin(value: boolean) {
     this.store
       .select(selectIsSuperadmin)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isSuperadmin) => {
         if (value) {
           this.decideView(isSuperadmin);
@@ -54,7 +53,7 @@ export class HasPermissionDirective {
   set isAdmin(value: boolean) {
     this.store
       .select(selectIsAdmin)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isAdmin) => {
         if (value) {
           this.decideView(isAdmin);
@@ -68,7 +67,7 @@ export class HasPermissionDirective {
   set isModerator(value: boolean) {
     this.store
       .select(selectIsModerator)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isModerator) => {
         if (value) {
           this.decideView(isModerator);
@@ -82,7 +81,7 @@ export class HasPermissionDirective {
   set isMember(value: boolean) {
     this.store
       .select(selectIsMember)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isMember) => {
         if (value) {
           this.decideView(isMember);
@@ -96,7 +95,7 @@ export class HasPermissionDirective {
   set isLoggedIn(value: boolean) {
     this.store
       .select(selectIsLoggedIn)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isLoggedIn) => {
         if (value) {
           this.decideView(isLoggedIn);
@@ -110,7 +109,7 @@ export class HasPermissionDirective {
   set isLoggedOut(value: boolean) {
     this.store
       .select(selectIsLoggedIn)
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((isLoggedIn) => {
         if (value) {
           this.decideView(!isLoggedIn);

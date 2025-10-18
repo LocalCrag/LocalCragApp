@@ -16,7 +16,7 @@ import { catchError, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
@@ -25,6 +25,7 @@ import { NgIf } from '@angular/common';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-crag',
@@ -45,7 +46,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
-@UntilDestroy()
 export class CragComponent implements OnInit {
   public crag: Crag;
   public items: MenuItem[];
@@ -62,7 +62,7 @@ export class CragComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       this.crag = null;
       const cragSlug = params.get('crag-slug');
 

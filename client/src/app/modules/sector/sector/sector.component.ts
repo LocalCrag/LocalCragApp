@@ -19,7 +19,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -27,6 +27,7 @@ import { NgIf } from '@angular/common';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-sector',
@@ -47,7 +48,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
-@UntilDestroy()
 export class SectorComponent implements OnInit {
   public crag: Crag;
   public sector: Sector;
@@ -66,7 +66,7 @@ export class SectorComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       forkJoin([

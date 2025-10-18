@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import {
   TranslocoDirective,
@@ -70,7 +69,6 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
   ],
   providers: [ConfirmationService],
 })
-@UntilDestroy()
 export class ScaleFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 

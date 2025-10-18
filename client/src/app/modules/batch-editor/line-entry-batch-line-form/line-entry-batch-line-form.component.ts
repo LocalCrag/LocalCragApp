@@ -46,7 +46,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { ConfirmationService } from 'primeng/api';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   selectGymMode,
   selectInstanceSettingsState,
@@ -94,7 +94,6 @@ import { Tag } from 'primeng/tag';
   templateUrl: './line-entry-batch-line-form.component.html',
   styleUrl: './line-entry-batch-line-form.component.scss',
 })
-@UntilDestroy()
 export class LineEntryBatchLineFormComponent
   implements ControlValueAccessor, Validator, OnInit, OnChanges
 {
@@ -129,7 +128,7 @@ export class LineEntryBatchLineFormComponent
     [LineType.TRAD]: null,
   };
   public typeOptions = null;
-  public gymMode$ = this.store.select(selectGymMode).pipe(untilDestroyed(this));
+  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
 
   private cragSlug: string;
   private sectorSlug: string;

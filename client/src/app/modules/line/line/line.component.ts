@@ -26,7 +26,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ScalesService } from '../../../services/crud/scales.service';
 import { Card } from 'primeng/card';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -36,6 +36,7 @@ import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-line',
@@ -58,7 +59,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
-@UntilDestroy()
 export class LineComponent implements OnInit {
   public crag: Crag;
   public sector: Sector;
@@ -82,7 +82,7 @@ export class LineComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(() => {
       const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
       const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
       const areaSlug = this.route.snapshot.paramMap.get('area-slug');

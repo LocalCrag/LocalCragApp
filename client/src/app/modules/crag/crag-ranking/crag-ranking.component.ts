@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
 import { NgIf } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-crag-ranking',
@@ -12,7 +13,6 @@ import { NgIf } from '@angular/common';
   templateUrl: './crag-ranking.component.html',
   styleUrl: './crag-ranking.component.scss',
 })
-@UntilDestroy()
 export class CragRankingComponent implements OnInit {
   public crag: Crag;
 
@@ -23,7 +23,7 @@ export class CragRankingComponent implements OnInit {
 
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe((params) => {
         this.crag = null;
         const cragSlug = params.get('crag-slug');

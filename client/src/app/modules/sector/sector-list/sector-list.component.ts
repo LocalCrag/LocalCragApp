@@ -11,7 +11,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
@@ -28,6 +28,7 @@ import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that displays a list of sectors.
@@ -59,7 +60,6 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
     ClosedSpotAlertComponent,
   ],
 })
-@UntilDestroy()
 export class SectorListComponent implements OnInit {
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
@@ -85,7 +85,7 @@ export class SectorListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed())
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -165,7 +165,7 @@ export class SectorListComponent implements OnInit {
         slugParameter: this.cragSlug,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refreshData();
     });
   }

@@ -16,9 +16,10 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
 import { AvatarModule } from 'primeng/avatar';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-user-detail',
@@ -38,7 +39,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
   styleUrl: './user-detail.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class UserDetailComponent implements OnInit {
   public user: User;
   public items: MenuItem[];
@@ -51,7 +51,7 @@ export class UserDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       const userSlug = params.get('user-slug');
       forkJoin([
         this.usersService.getUser(userSlug).pipe(

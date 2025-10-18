@@ -13,7 +13,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
@@ -44,6 +44,7 @@ import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-li
 import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-todo-list',
@@ -79,7 +80,6 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-@UntilDestroy()
 export class TodoListComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
@@ -193,7 +193,7 @@ export class TodoListComponent implements OnInit {
     ];
     this.priorityFilterKey = this.priorityFilterOptions[0];
     this.actions$
-      .pipe(ofType(todoAdded, reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(todoAdded, reloadAfterAscent), takeUntilDestroyed())
       .subscribe(() => {
         this.loadFirstPage();
       });
