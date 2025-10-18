@@ -21,12 +21,9 @@ export class CragRulesComponent implements OnInit {
   public crag: Crag;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private cragsService: CragsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private cragsService = inject(CragsService);
 
   ngOnInit() {
     this.route.parent.parent.paramMap

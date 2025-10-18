@@ -80,8 +80,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public nameAndDescriptionHidden = false;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(private fb: FormBuilder) {}
+  private fb = inject(FormBuilder);
 
   ngOnInit() {
     this.buildForm();

@@ -71,16 +71,13 @@ export class SectorListComponent implements OnInit {
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
+  public sectorsService = inject(SectorsService);
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    public sectorsService: SectorsService,
-    private route: ActivatedRoute,
-    private dialogService: DialogService,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the sectors on initialization.

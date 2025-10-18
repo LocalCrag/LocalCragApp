@@ -86,16 +86,14 @@ export class AccountFormComponent implements OnInit {
   public ref: DynamicDialogRef | undefined;
 
   private destroyRef = inject(DestroyRef);
+  private usersService = inject(UsersService);
+  private userValidators = inject(UserValidatorsService);
+  private store = inject<Store<AppState>>(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
+  private dialogService = inject(DialogService);
 
-  constructor(
-    private usersService: UsersService,
-    private userValidators: UserValidatorsService,
-    private store: Store<AppState>,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-    private dialogService: DialogService,
-  ) {}
   ngOnInit(): void {
     this.buildForm();
     this.store.select(selectInstanceName).subscribe((instanceName) => {

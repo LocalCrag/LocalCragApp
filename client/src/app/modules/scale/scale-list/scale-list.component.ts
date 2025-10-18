@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
@@ -40,10 +40,9 @@ export class ScaleListComponent implements OnInit {
   public loadingState: LoadingState;
   public scales: Scale[] = null;
 
-  constructor(
-    private scalesService: ScalesService,
-    protected router: Router,
-  ) {}
+  private scalesService = inject(ScalesService);
+
+  protected router = inject(Router);
 
   ngOnInit() {
     this.loadingState = LoadingState.LOADING;

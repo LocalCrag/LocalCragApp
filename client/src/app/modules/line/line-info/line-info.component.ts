@@ -74,19 +74,17 @@ export class LineInfoComponent implements OnInit {
 
   private lineSlug: string;
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private ticksService = inject(TicksService);
+  private isTodoService = inject(IsTodoService);
+  private actions$ = inject(Actions);
+  private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private linePathsService = inject(LinePathsService);
+  private linesService = inject(LinesService);
+  private store = inject(Store);
 
-  constructor(
-    private route: ActivatedRoute,
-    private ticksService: TicksService,
-    private isTodoService: IsTodoService,
-    private actions$: Actions,
-    private translocoService: TranslocoService,
-    private dialogService: DialogService,
-    private linePathsService: LinePathsService,
-    private linesService: LinesService,
-    protected scalesService: ScalesService,
-    private store: Store,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.route.paramMap

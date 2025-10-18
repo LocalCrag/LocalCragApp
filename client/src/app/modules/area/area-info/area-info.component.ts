@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -36,10 +36,8 @@ export class AreaInfoComponent implements OnInit {
   public fetchAreaGrades: Observable<GradeDistribution>;
   public areaCoordinates: Coordinates;
 
-  constructor(
-    private route: ActivatedRoute,
-    private areasService: AreasService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private areasService = inject(AreasService);
 
   ngOnInit() {
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');

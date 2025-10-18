@@ -21,12 +21,9 @@ export class MenuPageDetailComponent implements OnInit {
   public loadingState = LoadingState.LOADING;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private menuPagesService: MenuPagesService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
+  private menuPagesService = inject(MenuPagesService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     this.route.paramMap

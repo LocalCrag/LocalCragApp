@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TranslocoService } from '@jsverse/transloco';
 
@@ -6,7 +6,7 @@ import { TranslocoService } from '@jsverse/transloco';
   providedIn: 'root',
 })
 export class TranslateSpecialGradesService {
-  constructor(private translocoService: TranslocoService) {}
+  private translocoService = inject(TranslocoService);
 
   public translate(value: string): string {
     const specialGrades: string[] = [

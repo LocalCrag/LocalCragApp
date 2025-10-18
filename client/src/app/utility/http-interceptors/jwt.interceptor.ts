@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
@@ -16,7 +16,7 @@ import { selectAuthState } from '../../ngrx/selectors/auth.selectors';
  */
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-  constructor(private store: Store<AppState>) {}
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Intercepts http requests and adds the JWT header to them.

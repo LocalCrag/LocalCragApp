@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import {
   TranslocoDirective,
@@ -77,15 +77,13 @@ export class ScaleFormComponent implements OnInit {
   public scale: Scale;
   public editMode = true;
 
-  constructor(
-    private fb: FormBuilder,
-    private scalesService: ScalesService,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-    private route: ActivatedRoute,
-    protected router: Router,
-    private store: Store,
-  ) {}
+  private fb = inject(FormBuilder);
+  private scalesService = inject(ScalesService);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
+  private route = inject(ActivatedRoute);
+  protected router = inject(Router);
+  private store = inject(Store);
 
   ngOnInit() {
     const lineType = this.route.snapshot.paramMap.get('lineType') as LineType;

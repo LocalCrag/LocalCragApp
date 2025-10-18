@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
-import { Store } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Completion } from '../../models/statistics';
@@ -9,11 +8,8 @@ import { Completion } from '../../models/statistics';
   providedIn: 'root',
 })
 export class StatisticsService {
-  constructor(
-    private api: ApiService,
-    private store: Store,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public getCompletion(filters: string): Observable<Completion> {
     return this.http.get(

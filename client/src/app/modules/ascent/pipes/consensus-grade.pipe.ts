@@ -1,4 +1,4 @@
-import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { OnDestroy, Pipe, PipeTransform, inject } from '@angular/core';
 import { Ascent } from '../../../models/ascent';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -13,7 +13,7 @@ export class ConsensusGradePipe implements PipeTransform, OnDestroy {
   private cachedResult: boolean = false;
   private subscription: Subscription | null = null;
 
-  constructor(private store: Store) {}
+  private store = inject(Store);
 
   transform(ascent: Ascent): boolean {
     if (this.subscription) {

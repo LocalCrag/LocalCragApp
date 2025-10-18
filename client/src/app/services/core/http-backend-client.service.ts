@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpBackend, HttpClient } from '@angular/common/http';
 
 /**
@@ -9,7 +9,8 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class HttpBackendClientService extends HttpClient {
-  constructor(handler: HttpBackend) {
+  constructor() {
+    const handler = inject(HttpBackend);
     super(handler);
   }
 }

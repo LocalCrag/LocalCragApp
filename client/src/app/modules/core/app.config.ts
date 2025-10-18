@@ -51,7 +51,7 @@ import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
  */
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   /**
    * Loads the translations file for the given language key.

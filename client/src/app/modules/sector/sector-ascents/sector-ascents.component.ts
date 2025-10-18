@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
@@ -21,14 +21,12 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 export class SectorAscentsComponent implements OnInit {
   public sector: Sector;
 
-  constructor(
-    private sectorsService: SectorsService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-  ) {}
+  private sectorsService = inject(SectorsService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     const sectorSlug =

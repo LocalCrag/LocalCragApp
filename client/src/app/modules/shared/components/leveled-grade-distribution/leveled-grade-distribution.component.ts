@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
@@ -39,10 +45,8 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public gradeDistributionEmpty = true;
   public value = [];
 
-  constructor(
-    private scalesService: ScalesService,
-    private translocoService: TranslocoService,
-  ) {}
+  private scalesService = inject(ScalesService);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.fetchingObservable.subscribe((gradeDistributions) => {

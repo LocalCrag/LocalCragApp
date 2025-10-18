@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -71,16 +71,14 @@ export class CompletionComponent implements OnInit {
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
   private loadedGradeFilterRange: number[] = null;
+  private statisticsService = inject(StatisticsService);
+  private usersService = inject(UsersService);
+  private route = inject(ActivatedRoute);
+  private menuItemsService = inject(MenuItemsService);
+  private regionService = inject(RegionService);
+  private translocoService = inject(TranslocoService);
 
-  constructor(
-    private statisticsService: StatisticsService,
-    private usersService: UsersService,
-    private route: ActivatedRoute,
-    private menuItemsService: MenuItemsService,
-    private regionService: RegionService,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     const userSlug =

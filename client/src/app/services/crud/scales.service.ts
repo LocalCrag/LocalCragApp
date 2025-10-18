@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, shareReplay } from 'rxjs';
@@ -26,10 +26,8 @@ const OPEN_REQUESTS: Record<LineType, Record<string, Observable<FullScale>>> = {
   providedIn: 'root',
 })
 export class ScalesService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public getScale(lineType: LineType, name: string): Observable<FullScale> {
     if (CACHE[lineType][name]) {

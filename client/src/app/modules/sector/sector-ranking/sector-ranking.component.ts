@@ -17,11 +17,8 @@ export class SectorRankingComponent implements OnInit {
   public sector: Sector;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private route: ActivatedRoute,
-    private sectorsService: SectorsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private sectorsService = inject(SectorsService);
 
   ngOnInit() {
     this.route.parent.parent.paramMap

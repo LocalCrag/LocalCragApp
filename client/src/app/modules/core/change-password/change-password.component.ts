@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -60,14 +61,12 @@ export class ChangePasswordComponent implements OnInit {
   public loading = false;
   public changePasswordPressed = false;
 
-  constructor(
-    private authCrudService: AuthCrudService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private store: Store<AppState>,
-    private router: Router,
-    private fb: FormBuilder,
-  ) {}
+  private authCrudService = inject(AuthCrudService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private store = inject<Store<AppState>>(Store);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
   /**
    * Builds the form on component initialization.

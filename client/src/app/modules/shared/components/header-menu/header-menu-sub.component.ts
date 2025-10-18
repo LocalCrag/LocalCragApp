@@ -7,6 +7,7 @@ import {
   QueryList,
   ViewChildren,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { AngleDownIcon } from 'primeng/icons/angledown';
@@ -34,11 +35,9 @@ export class HeaderMenuSubComponent {
 
   @ViewChildren('menuItem') menuItems: QueryList<ElementRef>;
 
-  constructor(
-    private router: Router,
-    private el: ElementRef,
-    private headerMenuService: HeaderMenuService,
-  ) {}
+  private router = inject(Router);
+  private el = inject(ElementRef);
+  private headerMenuService = inject(HeaderMenuService);
 
   onItemClick(item: ProcessedMenuItem) {
     if (item.item.routerLink) {

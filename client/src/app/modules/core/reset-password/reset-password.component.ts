@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -67,15 +68,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   public routeParamSubscription: Subscription;
 
   private resetPasswordHash: string;
-
-  constructor(
-    private route: ActivatedRoute,
-    private store: Store<AppState>,
-    private router: Router,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private store = inject<Store<AppState>>(Store);
+  private router = inject(Router);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
 
   /**
    * Builds the form on component initialization.

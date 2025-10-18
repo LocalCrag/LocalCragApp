@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Title } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
@@ -14,11 +14,9 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 export class RegisterCheckMailboxComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  constructor(
-    private title: Title,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private title = inject(Title);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.store.select(selectInstanceName).subscribe((instanceName) => {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { Store } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
@@ -10,11 +10,9 @@ import { selectCurrentUser } from '../../ngrx/selectors/auth.selectors';
   providedIn: 'root',
 })
 export class TicksService {
-  constructor(
-    private api: ApiService,
-    private store: Store,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private store = inject(Store);
+  private http = inject(HttpClient);
 
   public getTicks(
     crag_id?: string,

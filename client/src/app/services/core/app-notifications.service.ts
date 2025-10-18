@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { HashMap, TranslocoService } from '@jsverse/transloco';
 import { AppState } from '../../ngrx/reducers';
@@ -19,13 +19,12 @@ import {
   providedIn: 'root',
 })
 export class AppNotificationsService {
+  private messageService = inject(MessageService);
+  private translocoService = inject(TranslocoService);
+  private store = inject<Store<AppState>>(Store);
   private isMobile: boolean;
 
-  constructor(
-    private messageService: MessageService,
-    private translocoService: TranslocoService,
-    private store: Store<AppState>,
-  ) {
+  constructor() {
     this.store.pipe(select(selectIsMobile)).subscribe((isMobile) => {
       this.isMobile = isMobile;
     });

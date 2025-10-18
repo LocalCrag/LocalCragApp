@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NgClass, NgIf } from '@angular/common';
 import { Line } from '../../../models/line';
@@ -26,10 +26,8 @@ export class TickButtonComponent {
 
   public ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private dialogService: DialogService,
-    private store: Store,
-  ) {}
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
 
   addAscent(event: MouseEvent) {
     event.preventDefault();

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
 import { tryAutoLogin } from '../../ngrx/actions/auth.actions';
@@ -34,11 +34,13 @@ import { Toast } from 'primeng/toast';
   ],
 })
 export class CoreComponent implements OnInit {
-  constructor(
-    private title: Title,
-    private navigationService: NavigationService, // Needs to be instantiated here so all router events are tracked
-    public store: Store<AppState>,
-  ) {
+  public store = inject<Store<AppState>>(Store);
+
+  private title = inject(Title);
+  // // Needs to be instantiated here so all router events are tracked
+  private _navigationService = inject(NavigationService);
+
+  constructor() {
     const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
     this.store
       .select(selectInstanceSettingsState)

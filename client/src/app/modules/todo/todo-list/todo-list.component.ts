@@ -117,17 +117,15 @@ export class TodoListComponent implements OnInit {
 
   private loadedGradeFilterRange: number[] = null;
   private destroyRef = inject(DestroyRef);
+  private todosService = inject(TodosService);
+  private store = inject(Store);
+  private menuItemsService = inject(MenuItemsService);
+  private actions$ = inject(Actions);
+  private translocoService = inject(TranslocoService);
+  private regionService = inject(RegionService);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(
-    private todosService: TodosService,
-    private store: Store,
-    private menuItemsService: MenuItemsService,
-    private actions$: Actions,
-    private translocoService: TranslocoService,
-    private regionService: RegionService,
-    protected scalesService: ScalesService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     // Only offer lineType/gradeScales for filtering that are indeed available

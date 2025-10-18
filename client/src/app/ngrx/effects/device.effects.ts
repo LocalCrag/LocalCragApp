@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map } from 'rxjs/operators';
 import { checkIsMobile, setIsMobile } from '../actions/device.actions';
@@ -8,6 +8,8 @@ import { checkIsMobile, setIsMobile } from '../actions/device.actions';
  */
 @Injectable()
 export class DeviceEffects {
+  private actions$ = inject(Actions);
+
   /**
    * Checks if the device is a mobile devices and notifies the app about it.
    */
@@ -19,6 +21,4 @@ export class DeviceEffects {
       }),
     ),
   );
-
-  constructor(private actions$: Actions) {}
 }

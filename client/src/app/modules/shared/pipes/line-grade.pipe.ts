@@ -1,4 +1,4 @@
-import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { OnDestroy, Pipe, PipeTransform, inject } from '@angular/core';
 import { Line } from '../../../models/line';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
@@ -12,15 +12,13 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
   pure: false,
 })
 export class LineGradePipe implements PipeTransform, OnDestroy {
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
+  private scalesService = inject(ScalesService);
+  private store = inject(Store);
+
   private subscription: Subscription | null = null;
   private cachedResult: string | null = null;
   private lastLine: Line | undefined;
-
-  constructor(
-    private translateSpecialGradesService: TranslateSpecialGradesService,
-    private scalesService: ScalesService,
-    private store: Store,
-  ) {}
 
   transform(line?: Line): string {
     if (line !== this.lastLine) {

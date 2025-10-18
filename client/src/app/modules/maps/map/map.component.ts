@@ -6,6 +6,7 @@ import {
   Input,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 
 import {
@@ -53,12 +54,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   @ViewChild(MapItemInfoDialogComponent)
   private infoDialog: MapItemInfoDialogComponent | undefined;
 
-  constructor(
-    private mapsService: MapsService,
-    private cdr: ChangeDetectorRef,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private mapsService = inject(MapsService);
+  private cdr = inject(ChangeDetectorRef);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   addMissingMarkerNames() {
     this.markersSource.features.map((feature) => {

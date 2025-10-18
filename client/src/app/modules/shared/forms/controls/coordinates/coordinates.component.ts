@@ -71,11 +71,8 @@ export class CoordinatesComponent
   private coordinates: Coordinates;
   private fetchFinishTime: number;
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private fb: FormBuilder,
-    private inj: Injector,
-  ) {}
+  private fb = inject(FormBuilder);
+  private inj = inject(Injector);
 
   private buildForm() {
     this.coordinatesForm = this.fb.group({

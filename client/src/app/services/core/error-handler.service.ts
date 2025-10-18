@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
@@ -12,7 +12,7 @@ import { NOTIFICATIONS } from '../../utility/notifications';
   providedIn: 'root',
 })
 export class ErrorHandlerService {
-  constructor(private store: Store<AppState>) {}
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Handles an http error by logging the error for debugging purposes and alerting a message if the error is known.

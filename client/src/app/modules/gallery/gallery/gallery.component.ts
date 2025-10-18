@@ -64,16 +64,13 @@ export class GalleryComponent implements OnInit {
   private objectSlug: string;
   private objectType: ObjectType;
   private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private dialogService: DialogService,
-    private galleryService: GalleryService,
-    private store: Store,
-    private confirmationService: ConfirmationService,
-    private route: ActivatedRoute,
-    private translocoService: TranslocoService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private dialogService = inject(DialogService);
+  private galleryService = inject(GalleryService);
+  private store = inject(Store);
+  private confirmationService = inject(ConfirmationService);
+  private route = inject(ActivatedRoute);
+  private translocoService = inject(TranslocoService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.route.data

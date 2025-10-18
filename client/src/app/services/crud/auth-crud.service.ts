@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApiService } from '../core/api.service';
@@ -20,11 +20,9 @@ export interface MessageResponse {
   providedIn: 'root',
 })
 export class AuthCrudService {
-  constructor(
-    private httpBackend: HttpBackendClientService,
-    private http: HttpClient,
-    private api: ApiService,
-  ) {}
+  private httpBackend = inject(HttpBackendClientService);
+  private http = inject(HttpClient);
+  private api = inject(ApiService);
 
   /**
    * Performs a login HTTP request.

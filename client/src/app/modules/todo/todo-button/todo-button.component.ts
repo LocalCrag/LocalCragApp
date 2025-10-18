@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { Line } from '../../../models/line';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
@@ -21,11 +21,9 @@ export class TodoButtonComponent {
   @Input() isTodo: boolean;
   @Input() showLabel: boolean;
 
-  constructor(
-    private todosService: TodosService,
-    private router: Router,
-    private store: Store,
-  ) {}
+  private todosService = inject(TodosService);
+  private router = inject(Router);
+  private store = inject(Store);
 
   addTodo(event: MouseEvent) {
     event.preventDefault();

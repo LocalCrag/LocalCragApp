@@ -4,6 +4,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Editor, EditorModule } from 'primeng/editor';
@@ -63,13 +64,13 @@ export class RegionFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private router: Router,
-    private uploadService: UploadService,
-    private regionsService: RegionService,
-  ) {
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private router = inject(Router);
+  private uploadService = inject(UploadService);
+  private regionsService = inject(RegionService);
+
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

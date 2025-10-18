@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
@@ -87,13 +93,11 @@ export class InstanceSettingsFormComponent implements OnInit {
   public rankingPastWeeksOptions: { label: string; value: number | null }[] =
     [];
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private router: Router,
-    private instanceSettingsService: InstanceSettingsService,
-    private translocoService: TranslocoService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private router = inject(Router);
+  private instanceSettingsService = inject(InstanceSettingsService);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.buildForm();

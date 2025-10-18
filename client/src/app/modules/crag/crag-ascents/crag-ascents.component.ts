@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -21,14 +21,12 @@ import { SkeletonModule } from 'primeng/skeleton';
 export class CragAscentsComponent implements OnInit {
   public crag: Crag;
 
-  constructor(
-    private cragsService: CragsService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-  ) {}
+  private cragsService = inject(CragsService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     const cragSlug =

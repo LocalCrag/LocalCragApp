@@ -47,8 +47,7 @@ export class AppLevelAlertsComponent implements OnInit {
   public showRefreshTokenAboutToExpireAlert$: Observable<boolean>;
 
   private destroyRef = inject(DestroyRef);
-
-  constructor(private store: Store<AppState>) {}
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Sets up subscriptions to change the appearance of the alert.

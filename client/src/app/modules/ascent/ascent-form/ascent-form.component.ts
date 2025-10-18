@@ -100,15 +100,14 @@ export class AscentFormComponent implements OnInit {
   public disableFAInAscents$: Observable<boolean>;
 
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private dialogConfig = inject(DynamicDialogConfig);
+  private store = inject(Store);
+  private ref = inject(DynamicDialogRef);
+  private ascentsService = inject(AscentsService);
+  private scalesService = inject(ScalesService);
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogConfig: DynamicDialogConfig,
-    private store: Store,
-    private ref: DynamicDialogRef,
-    private ascentsService: AscentsService,
-    private scalesService: ScalesService,
-  ) {
+  constructor() {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;

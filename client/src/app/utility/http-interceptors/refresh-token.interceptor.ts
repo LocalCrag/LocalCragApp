@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -26,10 +26,8 @@ import { isAfter } from 'date-fns';
  */
 @Injectable()
 export class RefreshTokenInterceptor implements HttpInterceptor {
-  constructor(
-    private store: Store<AppState>,
-    private actions$: Actions,
-  ) {}
+  private store = inject<Store<AppState>>(Store);
+  private actions$ = inject(Actions);
 
   /**
    * Intercepts http requests and eventually prepends additional refresh token requests if token is not valid anymore.
