@@ -28,3 +28,7 @@ CMD sh -c "\
     cd .. && \
     gunicorn  --config src/gunicorn.conf.py \
 "
+
+LABEL org.opencontainers.image.source=https://github.com/LocalCrag/LocalCragApp
+LABEL org.opencontainers.image.description="Server for LocalCrag, a climbing crag database and guidebook platform."
+LABEL org.opencontainers.image.licenses="AGPL-3.0"
