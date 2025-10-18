@@ -27,6 +27,7 @@ export class InstanceSettings {
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
+  disableFAInAscents: boolean;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -63,6 +64,7 @@ export class InstanceSettings {
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
+    instanceSettings.disableFAInAscents = payload.disableFAInAscents;
     return instanceSettings;
   }
 
@@ -97,6 +99,7 @@ export class InstanceSettings {
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
+      disableFAInAscents: instanceSettings.disableFAInAscents,
     };
   }
 }

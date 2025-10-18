@@ -55,3 +55,8 @@ export const selectSkippedHierarchyLayers = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.skippedHierarchyLayers,
 );
+
+export const selectDisableFAInAscents = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.disableFAInAscents,
+);

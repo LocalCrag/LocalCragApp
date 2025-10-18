@@ -3,13 +3,13 @@
     <p-card header="{{ t('editInstanceSettings') }}">
       <form [formGroup]="instanceSettingsForm" lcForm>
         <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("commonSettings") }}</b></p-divider
+        ><b>{{ t("commonSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="instance-name">{{
-            t("instanceNameLabel")
-          }}</label>
+              t("instanceNameLabel")
+            }}</label>
           <input
             type="text"
             pInputText
@@ -19,17 +19,17 @@
             lcFormControl
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+              t("required")
+            }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+              t("maxlength120")
+            }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="copyright-owner">{{
-            t("copyrightOwnerLabel")
-          }}</label>
+              t("copyrightOwnerLabel")
+            }}</label>
           <input
             id="copyright-owner"
             type="text"
@@ -39,11 +39,11 @@
             lcFormControl
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+              t("required")
+            }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+              t("maxlength120")
+            }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -56,7 +56,7 @@
             {{ t("gymModeLabelFalse") }}
             <p-toggleswitch
               id="gym-mode"
-              class="mx-2"
+              class="mx-2 blue-green-switch"
               formControlName="gymMode"
               lcFormControl
             />
@@ -74,7 +74,7 @@
             {{ t("displayUserGradesFalse") }}
             <p-toggleswitch
               id="display-user-grades"
-              class="mx-2"
+              class="mx-2 blue-green-switch"
               formControlName="displayUserGrades"
               lcFormControl
             />
@@ -92,11 +92,36 @@
             {{ t("displayUserRatingsFalse") }}
             <p-toggleswitch
               id="display-user-ratings"
-              class="mx-2"
+              class="mx-2 blue-green-switch"
               formControlName="displayUserRatings"
               lcFormControl
             />
             {{ t("displayUserRatingsTrue") }}
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="disable-fa-in-ascents">
+              {{ t('disableFAInAscentsLabel') }}
+            </label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('disableFAInAscentsDescription')"
+              tooltipPosition="right"
+            ></span>
+          </div>
+          <div
+            class="flex align-items-center justify-content-center sm:justify-content-start"
+          >
+            {{ t('disableFAInAscentsFalse') }}
+            <p-toggleswitch
+              id="disable-fa-in-ascents"
+              class="mx-2 blue-green-switch"
+              formControlName="disableFAInAscents"
+              lcFormControl
+            />
+            {{ t('disableFAInAscentsTrue') }}
           </div>
         </div>
 
@@ -165,8 +190,8 @@
           >
           </p-select>
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
+              t("required")
+            }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -191,13 +216,13 @@
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("imagesSettings") }}</b></p-divider
+        ><b>{{ t("imagesSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="logo-upload">{{
-            t("logoImageLabel")
-          }}</label>
+              t("logoImageLabel")
+            }}</label>
           <lc-single-image-upload
             lcFormControl
             id="logo-upload"
@@ -207,8 +232,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="favicon-image-upload">{{
-            t("faviconImageLabel")
-          }}</label>
+              t("faviconImageLabel")
+            }}</label>
           <lc-single-image-upload
             id="favicon-image-upload"
             lcFormControl
@@ -218,8 +243,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="main-bg-image">{{
-            t("mainBgImageLabel")
-          }}</label>
+              t("mainBgImageLabel")
+            }}</label>
           <lc-single-image-upload
             id="main-bg-image"
             lcFormControl
@@ -229,8 +254,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="auth-bg-image">{{
-            t("authBgImageLabel")
-          }}</label>
+              t("authBgImageLabel")
+            }}</label>
           <lc-single-image-upload
             id="auth-bg-image"
             lcFormControl
@@ -239,13 +264,13 @@
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("arrowsSettings") }}</b></p-divider
+        ><b>{{ t("arrowsSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="arrow-color">{{
-            t("arrowColorLabel")
-          }}</label>
+              t("arrowColorLabel")
+            }}</label>
           <p-colorPicker
             formControlName="arrowColor"
             id="arrow-color"
@@ -254,8 +279,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="arrowTextColor">{{
-            t("arrowTextColorLabel")
-          }}</label>
+              t("arrowTextColorLabel")
+            }}</label>
           <p-colorPicker
             formControlName="arrowTextColor"
             id="arrowTextColor"
@@ -264,8 +289,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="arrow-highlight-color">{{
-            t("arrowHighlightColorLabel")
-          }}</label>
+              t("arrowHighlightColorLabel")
+            }}</label>
           <p-colorPicker
             formControlName="arrowHighlightColor"
             id="arrow-highlight-color"
@@ -274,8 +299,8 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="arrow-highlight-text-color">{{
-            t("arrowHighlightTextColorLabel")
-          }}</label>
+              t("arrowHighlightTextColorLabel")
+            }}</label>
           <p-colorPicker
             id="arrow-highlight-text-color"
             formControlName="arrowHighlightTextColor"
@@ -283,13 +308,13 @@
         </div>
 
         <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("chartSettings") }}</b></p-divider
+        ><b>{{ t("chartSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="bar-chart-color">{{
-            t("barChartColorLabel")
-          }}</label>
+              t("barChartColorLabel")
+            }}</label>
           <p-colorPicker
             id="bar-chart-color"
             formControlName="barChartColor"
@@ -298,13 +323,13 @@
         </div>
 
         <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("matomoSettings") }}</b></p-divider
+        ><b>{{ t("matomoSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="matomo-tracker-url">{{
-            t("matomoTrackerUrlLabel")
-          }}</label>
+              t("matomoTrackerUrlLabel")
+            }}</label>
           <input
             type="text"
             pInputText
@@ -314,14 +339,14 @@
             lcFormControl
           />
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+              t("maxlength120")
+            }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="matomo-site-id">{{
-            t("matomoSiteIdLabel")
-          }}</label>
+              t("matomoSiteIdLabel")
+            }}</label>
           <input
             type="text"
             pInputText
@@ -331,18 +356,18 @@
             lcFormControl
           />
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+              t("maxlength120")
+            }}</small>
         </div>
 
         <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("mapSettings") }}</b></p-divider
+        ><b>{{ t("mapSettings") }}</b></p-divider
         >
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="maptiler-api-key">{{
-            t("maptilerApiKeyLabel")
-          }}</label>
+              t("maptilerApiKeyLabel")
+            }}</label>
           <p-password
             [toggleMask]="true"
             [feedback]="false"
@@ -352,8 +377,8 @@
             lcFormControl
           />
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+              t("maxlength120")
+            }}</small>
         </div>
       </form>
 

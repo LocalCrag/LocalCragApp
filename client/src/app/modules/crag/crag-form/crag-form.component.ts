@@ -228,7 +228,7 @@ export class CragFormComponent implements OnInit {
     if (this.crag) {
       this.router.navigate(['/topo', this.crag.slug]);
     } else {
-      this.router.navigate(['/topo']);
+      this.router.navigate(['/topo/crags']);
     }
   }
 
@@ -261,7 +261,7 @@ export class CragFormComponent implements OnInit {
       } else {
         this.cragsService.createCrag(crag).subscribe(() => {
           this.store.dispatch(toastNotification('CRAG_CREATED'));
-          this.router.navigate(['/topo']);
+          this.router.navigate(['/topo/sectors']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }

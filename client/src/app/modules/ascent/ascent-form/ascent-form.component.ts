@@ -20,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
@@ -34,7 +34,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { DividerModule } from 'primeng/divider';
 
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -47,6 +47,8 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -72,6 +74,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     FormControlDirective,
     ControlGroupDirective,
     FormDirective,
+    AsyncPipe,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
@@ -94,6 +97,7 @@ export class AscentFormComponent implements OnInit {
     contentCheckedBackground: '{primary.500}',
     checkedColor: '{surface.0}',
   };
+  public disableFAInAscents$: Observable<boolean>;
 
   private destroyRef = inject(DestroyRef);
 
@@ -120,6 +124,10 @@ export class AscentFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.disableFAInAscents$ = this.store
+      .select(selectDisableFAInAscents)
+      .pipe(take(1));
+
     this.ascent = this.dialogConfig.data.ascent;
     this.ascentForm.disable();
     if (this.ascent) {
