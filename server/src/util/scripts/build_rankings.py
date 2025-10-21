@@ -65,7 +65,6 @@ class UserRankingMap:
 
 
 def build_rankings():
-    print("Starting ranking calculation...")
     instance_settings = InstanceSettings.return_it()
     cutoff_date = None
     if instance_settings.ranking_past_weeks is not None:
@@ -124,4 +123,3 @@ def build_rankings():
             if ranking.total_count == 0:
                 db.session.delete(ranking)
         db.session.commit()
-    print("Rankings successfully calculated.")

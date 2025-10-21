@@ -89,7 +89,7 @@ from resources.post_resources import (
     GetPosts,
     UpdatePost,
 )
-from resources.ranking_resources import GetRanking, UpdateRanking
+from resources.ranking_resources import GetRanking
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.scale_resources import (
     CreateScale,
@@ -257,7 +257,6 @@ def configure_api(app):
     # Ranking API
     ranking_bp = Blueprint("ranking", __name__)
     ranking_bp.add_url_rule("", view_func=GetRanking.as_view("get_ranking"))
-    ranking_bp.add_url_rule("/update", view_func=UpdateRanking.as_view("update_ranking"))
     app.register_blueprint(ranking_bp, url_prefix="/api/ranking")
 
     # Ticks API

@@ -30,9 +30,8 @@
     - `S3_ADDRESSING` S3 object storage addressing mode: `virtual` or `path`
     - `SENTRY_DSN` DSN for Sentry error tracking
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
-    - `CRON_ACCESS_TOKEN` Access token for cron jobs accessing e.g. the ranking endpoint
 - For configuring a local object storage, read `../docs/dev-tooling.md`. This is needed if you are working with fileupload in any way.
-- Now you are ready to setup the database of your local dev instance:
+- Now you are ready to set up the database of your local dev instance:
   - Set your config env var `LOCALCRAG_CONFIG=config/dev.cfg`
   - Add the postgres uuid extension `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
   - Add the postgres fuzzystrmatch extension `CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;`
