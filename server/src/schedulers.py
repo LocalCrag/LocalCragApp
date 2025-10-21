@@ -41,7 +41,6 @@ def _run_build_rankings_with_lock(app):
                 app.logger.info("build_rankings skipped: another instance is running.")
                 return
 
-            print("Acquired lock for build_rankings job.")
             app.logger.info("Starting build_rankings job.")
             build_rankings()
             app.logger.info("Completed build_rankings job.")
