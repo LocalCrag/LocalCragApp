@@ -1,3 +1,5 @@
+from importlib import import_module
+
 import pytest
 from flask import current_app
 
@@ -9,14 +11,20 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.region import Region
 from models.user import User
-from util.scripts.database_setup import setup_database
+
+# We test the utils that are called by the migration script directly
+# Previously the database setup was done by a dedicated script run after migrations
+_migration = import_module(
+    "migrations.versions.28f64bea4755_database_setup"
+)  # Needed for importing module starting with a number
+upgrade = _migration.upgrade
 
 
 def test_database_setup(client, clean_db, mocker):
     mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
     mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
 
-    setup_database()
+    upgrade()
 
     # Superadmin invite mail was sent
     assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
@@ -82,4 +90,4 @@ def test_database_setup_with_missing_env_vars(client, clean_db):
     current_app.config["SUPERADMIN_LASTNAME"] = None
     current_app.config["SUPERADMIN_EMAIL"] = None
     with pytest.raises(ValueError):
-        setup_database()
+        upgrade()
