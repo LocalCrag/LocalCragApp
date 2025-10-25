@@ -51,5 +51,5 @@ jobs:
         run: |
           cd server/src
           export PYTHONPATH=.
-          export LOCALCRAG_CONFIG=config/test-ci.cfg
+          export LOCALCRAG_CONFIG=config/test-ci-unittests.cfg
           pipenv run pytest ../tests

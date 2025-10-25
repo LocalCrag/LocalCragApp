@@ -29,7 +29,7 @@ def upgrade():
         batch_op.execute(sa.text("UPDATE lines SET user_rating = author_rating"))
 
     print(
-        "WARNING: You need to manually run util/scripts/calculate_user_grades.py "
+        "WARNING: You need to manually run src/migrations/util_scripts/calculate_user_grades.py "
         "to calculate user grades and ratings for existing lines"
     )
 

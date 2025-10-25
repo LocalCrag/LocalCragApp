@@ -19,7 +19,7 @@ def _run_build_rankings_with_lock(app):
     Postgres advisory lock so that, even if multiple processes schedule the job,
     only one actually performs the work at a time.
     """
-    from util.scripts.build_rankings import build_rankings
+    from util.build_rankings import build_rankings
 
     with app.app_context():
         # Use a stable bigint lock ID for the build_rankings job
