@@ -63,6 +63,5 @@ jobs:
           cd server/src
           export PYTHONPATH=.
           export LOCALCRAG_CONFIG=config/test-ci.cfg
-          export PRINT_MAILS_TO_CONSOLE=True
           pipenv run flask db upgrade
 
