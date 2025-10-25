@@ -5,7 +5,7 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
-from util.scripts.build_rankings import build_rankings
+from util.build_rankings import build_rankings
 
 
 def test_successful_get_ranking_boulder(client):

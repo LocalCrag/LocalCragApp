@@ -15,6 +15,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from app import app
 from extensions import db
+from migrations.util_scripts.add_scales import add_scales
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
@@ -41,7 +42,6 @@ from models.sector import Sector
 from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
-from util.scripts.add_scales import add_scales
 
 
 @pytest.fixture(scope="session", autouse=True)

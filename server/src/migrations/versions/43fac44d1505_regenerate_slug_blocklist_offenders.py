@@ -6,7 +6,7 @@ Create Date: 2025-10-25 08:29:54.463210
 
 """
 
-from util.scripts.regenerate_slug_blocklist_offenders import (
+from migrations.util_scripts.regenerate_slug_blocklist_offenders import (
     regenerate_blocklisted_slugs,
 )
 
