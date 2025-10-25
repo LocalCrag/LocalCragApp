@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres
+    image: postgres:17
     container_name: ${COMPOSE_PROJECT_NAME}_database
     volumes:
       - database:/var/lib/postgresql/data/db-files
@@ -16,7 +16,7 @@ services:
       retries: 3
 
   storage:
-    image: quay.io/minio/minio
+    image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     container_name: ${COMPOSE_PROJECT_NAME}_minio
     environment:
       MINIO_ROOT_USER: ${S3_USER}
@@ -99,7 +99,7 @@ services:
       retries: 3
 
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower:1
     container_name: ${COMPOSE_PROJECT_NAME}_watchtower
     labels: [ "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}" ]
     volumes:
