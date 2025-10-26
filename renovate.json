@@ -3,17 +3,7 @@
   "extends": [
     "config:recommended"
   ],
-  "packageRules": [
-    {
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "enabled": false,
-      "addLabels": [
-        "major-update"
-      ],
-      "createIssue": true,
-      "description": "Major updates are disabled; Renovate will open an issue instead."
-    }
-  ]
+  "major": {
+    "enabled": false
+  }
 }
