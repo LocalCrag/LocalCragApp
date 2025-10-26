@@ -51,4 +51,6 @@ export class UserAscentsComponent implements OnInit {
         });
       });
   }
+
+  protected readonly Array = Array;
 }

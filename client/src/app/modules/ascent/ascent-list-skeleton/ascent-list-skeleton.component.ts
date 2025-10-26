@@ -7,4 +7,6 @@ import { SkeletonModule } from 'primeng/skeleton';
   templateUrl: './ascent-list-skeleton.component.html',
   styleUrl: './ascent-list-skeleton.component.scss',
 })
-export class AscentListSkeletonComponent {}
+export class AscentListSkeletonComponent {
+  protected readonly Array = Array;
+}

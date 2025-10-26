@@ -19,11 +19,10 @@ import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
 import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
-import { BarsIcon } from 'primeng/icons/bars';
 
 @Component({
   selector: 'lc-header-menu',
-  imports: [NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
+  imports: [NgTemplateOutlet, HeaderMenuSubComponent, NgClass],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

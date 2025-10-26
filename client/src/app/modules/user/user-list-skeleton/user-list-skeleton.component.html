@@ -1,7 +1,7 @@
 <div class="p-4 flex gap-4 flex-column">
-  @for (_ of [].constructor(10); track _) {
+  @for (i of Array.from({ length: 10 }); track $index) {
     <div class="flex gap-2">
-      <p-skeleton shape="circle" size="4rem" styleClass="mr-4"></p-skeleton>
+      <p-skeleton shape="circle" size="4rem" class="mr-4"></p-skeleton>
       <div style="flex: 1">
         <div class="flex justify-content-between gap-2">
           <div style="width: 75%; max-width: 15rem">
@@ -12,7 +12,7 @@
           </div>
         </div>
         <div style="max-width: 20rem">
-          <p-skeleton class="block w-full" styleClass="mt-2"></p-skeleton>
+          <p-skeleton class="block w-full mt-2"></p-skeleton>
         </div>
       </div>
     </div>

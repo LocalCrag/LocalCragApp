@@ -8,4 +8,6 @@ import { Skeleton } from 'primeng/skeleton';
   templateUrl: './ranking-list-skeleton.component.html',
   styleUrl: './ranking-list-skeleton.component.scss',
 })
-export class RankingListSkeletonComponent {}
+export class RankingListSkeletonComponent {
+  protected readonly Array = Array;
+}

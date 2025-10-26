@@ -25,10 +25,10 @@
       @if (item.items?.length > 0) {
         <div tabindex="0" class="item-angle" (click)="onAngleClick(item)">
           @if (root) {
-            <AngleDownIcon class="ml-2" />
+            <i class="ml-2 pi pi-angle-down"></i>
           }
           @if (!root) {
-            <AngleRightIcon class="ml-2" />
+            <i class="ml-2 pi pi-angle-right"></i>
           }
         </div>
       }

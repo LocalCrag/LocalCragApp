@@ -5,7 +5,7 @@
     </div>
   }
   @if (isMobile || overflowDetected) {
-    <BarsIcon (click)="toggleMobileMenu()" class="ml-2 mr-2 bars" />
+    <i (click)="toggleMobileMenu()" class="ml-2 mr-2 pi pi-bars"></i>
   }
   <lc-header-menu-sub
     [isMobile]="isMobile || overflowDetected"
