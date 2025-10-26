@@ -30,7 +30,7 @@ export class ClipboardService {
           marker('clipboardSuccessToastDescription'),
         ),
       });
-    } catch (err) {
+    } catch (_err) {
       this.messageService.add({
         severity: 'error',
         summary: this.translocoService.translate(

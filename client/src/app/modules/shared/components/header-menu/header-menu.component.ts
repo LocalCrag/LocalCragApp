@@ -19,10 +19,11 @@ import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
 import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-header-menu',
-  imports: [NgTemplateOutlet, HeaderMenuSubComponent, NgClass],
+  imports: [NgTemplateOutlet, HeaderMenuSubComponent, NgClass, Button],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

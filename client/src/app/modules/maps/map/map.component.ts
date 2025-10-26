@@ -295,7 +295,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             feature.properties[key] = JSON.parse(
               feature.properties[key] as string,
             );
-          } catch (e) {
+          } catch (_e) {
             continue;
           }
         }
