@@ -49,6 +49,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
+import { Grade } from '../../../models/scale';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -199,12 +200,12 @@ export class AscentFormComponent implements OnInit {
         this.ascentForm
           .get('grade')
           .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((newGrade: number) => {
+          .subscribe((newGrade: Grade) => {
             this.gradeDifferenceWarning =
               Math.abs(
                 (instanceSettings.displayUserGrades
                   ? this.line.userGradeValue
-                  : this.line.authorGradeValue) - newGrade,
+                  : this.line.authorGradeValue) - newGrade?.value,
               ) >= 3;
           }),
       );

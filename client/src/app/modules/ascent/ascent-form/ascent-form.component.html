@@ -16,7 +16,7 @@
             appendTo="body"
             [maxDate]="today"
             [readonlyInput]="true"
-            styleClass="w-full"
+            class="w-full"
           ></p-date-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("yearInFutureValidationError")
@@ -33,7 +33,7 @@
             view="date"
             inputId="date"
             lcFormControl
-            styleClass="w-full"
+            class="w-full"
             appendTo="body"
             [maxDate]="today"
             [readonlyInput]="true"
@@ -123,9 +123,10 @@
     @if (gradeDifferenceWarning) {
       <p-message
         severity="warn"
-        text="{{ t('unusualGradeDifferenceWarning') }}"
         styleClass="ascent-form-alert mt-2"
-      ></p-message>
+      >
+        {{ t('unusualGradeDifferenceWarning') }}
+      </p-message>
     }
 
     <p-divider align="center" type="dotted">
@@ -198,8 +199,8 @@
       <p-message
         styleClass="mt-2 ascent-form-alert"
         severity="info"
-        text="{{ t('firstAscentExplanation') }}"
       >
+        {{ t('firstAscentExplanation') }}
       </p-message>
     }
   </form>

@@ -260,7 +260,7 @@ export class CragFormComponent implements OnInit {
       } else {
         this.cragsService.createCrag(crag).subscribe(() => {
           this.store.dispatch(toastNotification('CRAG_CREATED'));
-          this.router.navigate(['/topo/sectors']);
+          this.router.navigate(['/topo/crags']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }

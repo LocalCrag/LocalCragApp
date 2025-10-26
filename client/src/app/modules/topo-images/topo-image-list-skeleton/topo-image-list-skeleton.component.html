@@ -1,4 +1,4 @@
-@for (_ of [].constructor(5); track _) {
+@for (i of Array.from({ length: 5 }); track $index) {
   <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
     <div class="w-12 sm:w-9 xl:w-5 align-self-center">
       <p-skeleton height="20rem"></p-skeleton>
