@@ -6,8 +6,16 @@
   "major": {
     "enabled": false
   },
-  "python": {
-    "enabled": false
-  },
-  "dependencyDashboard": false
+  "dependencyDashboard": false,
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "python"
+      ],
+      "matchPackagePatterns": [
+        "python"
+      ],
+      "enabled": false
+    }
+  ]
 }
