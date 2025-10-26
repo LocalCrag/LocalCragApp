@@ -65,7 +65,7 @@
     "@angular-eslint/template-parser": "19.2.1",
     "@angular/cli": "~19.2.3",
     "@angular/compiler-cli": "^19.2.2",
-    "@types/jasmine": "~4.0.0",
+    "@types/jasmine": "~4.6.0",
     "@types/mapbox-gl": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",
