@@ -5,5 +5,8 @@
   ],
   "major": {
     "enabled": false
+  },
+  "python": {
+    "enabled": false
   }
 }
