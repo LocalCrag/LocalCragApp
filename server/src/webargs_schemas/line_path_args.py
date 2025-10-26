@@ -1,5 +1,6 @@
 from typing import List
 
+from marshmallow import ValidationError
 from webargs import fields
 
 
@@ -9,12 +10,11 @@ def validate_path(path: List[float]) -> bool:
     Type is already checked by webargs.
     """
     if len(path) < 4:
-        return False
+        raise ValidationError("Path must contain at least two points (4 values).")
     if len(path) % 2 != 0:
-        return False
+        raise ValidationError("Path must contain an even number of values.")
     if not all(0 <= i <= 100 for i in path):
-        return False
-    return True
+        raise ValidationError("All path values must be in the interval 0-100.")
 
 
 line_path_args = {

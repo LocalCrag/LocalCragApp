@@ -1,6 +1,6 @@
-import datetime
-
 from webargs import fields
+
+from webargs_schemas.line_args import validate_fa_date, validate_fa_year
 
 ticks_args = {
     "user": fields.String(required=False),
@@ -19,14 +19,12 @@ ascent_args = {
     "gradeValue": fields.Integer(required=True),
     "rating": fields.Integer(required=True, allow_none=True),
     "comment": fields.Str(required=True, allow_none=True),
-    "year": fields.Integer(
-        required=True, allow_none=True, validate=lambda year: year <= datetime.datetime.now(datetime.timezone.utc).year
-    ),
+    "year": fields.Integer(required=True, allow_none=True, validate=validate_fa_year),
     "date": fields.Date(
         required=True,
         allow_none=True,
         format="iso8601",
-        validate=lambda date: date <= datetime.datetime.now(datetime.timezone.utc).date(),
+        validate=validate_fa_date,
     ),
 }
 
