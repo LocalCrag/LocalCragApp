@@ -5,13 +5,5 @@
   ],
   "major": {
     "enabled": false
-  },
-  "packageRules": [
-    {
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "dependencyDashboardApproval": true
-    }
-  ]
+  }
 }
