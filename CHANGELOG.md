@@ -1,3 +1,17 @@
+# [1.24.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.4...v1.24.0) (2025-10-26)
+
+
+### Features
+
+* **account:** add possibility to delete your own account ([#806](https://github.com/LocalCrag/LocalCragApp/issues/806)) ([8b6cbc5](https://github.com/LocalCrag/LocalCragApp/commit/8b6cbc57935c7049c516caf6514fa64e50cb89fb)), closes [#764](https://github.com/LocalCrag/LocalCragApp/issues/764)
+* **ascents:** add option to disable logging first ascents for an instance ([#811](https://github.com/LocalCrag/LocalCragApp/issues/811)) ([3241281](https://github.com/LocalCrag/LocalCragApp/commit/3241281268ee15f6f6953c3d2c390695e2e1891c)), closes [#757](https://github.com/LocalCrag/LocalCragApp/issues/757)
+* **core:** replace bg images ([#813](https://github.com/LocalCrag/LocalCragApp/issues/813)) ([9a32a8a](https://github.com/LocalCrag/LocalCragApp/commit/9a32a8a152cff1ca783c7f6dd1c2110fc4abcba8)), closes [#591](https://github.com/LocalCrag/LocalCragApp/issues/591)
+
+
+### Performance Improvements
+
+* **core:** move some dependencies to devDependencies which were falsely bundled as dependency ([#800](https://github.com/LocalCrag/LocalCragApp/issues/800)) ([c3414ea](https://github.com/LocalCrag/LocalCragApp/commit/c3414ea1322a6b91e7d7b8512f4f190abb7e22a0)), closes [#701](https://github.com/LocalCrag/LocalCragApp/issues/701)
+
 ## [1.23.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.3...v1.23.4) (2025-10-16)
 
 
