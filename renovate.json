@@ -8,5 +8,6 @@
   },
   "python": {
     "enabled": false
-  }
+  },
+  "dependencyDashboard": false
 }
