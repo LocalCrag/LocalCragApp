@@ -7,6 +7,18 @@
     "enabled": false
   },
   "dependencyDashboard": false,
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^\\.github/workflows/.*\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "python-version:\\s*\"?(?<currentValue>\\d+\\.\\d+)\"?"
+      ],
+      "depNameTemplate": "python",
+      "datasourceTemplate": "python-version"
+    }
+  ],
   "packageRules": [
     {
       "matchDatasources": [
