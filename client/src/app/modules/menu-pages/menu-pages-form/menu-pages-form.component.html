@@ -4,7 +4,7 @@
       header="{{
         editMode ? t('editMenuPageTitle') : t('createMenuPageTitle')
       }}"
-    >
+      >
       <form [formGroup]="menuPageForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="title">{{
@@ -17,7 +17,7 @@
             formControlName="title"
             placeholder="{{ t('menuPageTitlePlaceholder') }}"
             lcFormControl
-          />
+            />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -37,7 +37,7 @@
             [modules]="quillModules"
             [style]="{ height: '500px' }"
             [readonly]="loadingState === loadingStates.LOADING"
-          >
+            >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -96,22 +96,24 @@
       </form>
 
       <div class="form-actions">
-        <p-button
-          label="{{ t('createMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="!editMode"
-        ></p-button>
-        <p-button
-          label="{{ t('editMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (!editMode) {
+          <p-button
+            label="{{ t('createMenuPageButtonLabel') }}"
+            (click)="saveMenuPage()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
+        @if (editMode) {
+          <p-button
+            label="{{ t('editMenuPageButtonLabel') }}"
+            (click)="saveMenuPage()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
@@ -119,15 +121,16 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
-        <p-button
-          label="{{ t('deleteMenuPageButtonLabel') }}"
-          (click)="confirmDeleteMenuPage($event)"
-          icon="pi pi-trash"
-          styleClass="p-button-danger"
-          class="ml-3 responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (editMode) {
+          <p-button
+            label="{{ t('deleteMenuPageButtonLabel') }}"
+            (click)="confirmDeleteMenuPage($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-confirmPopup></p-confirmPopup>
       </div>
     </p-card>

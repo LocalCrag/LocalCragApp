@@ -5,7 +5,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -45,7 +45,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     TranslocoDirective,
     RouterLink,
     MessageModule,
-    NgIf,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

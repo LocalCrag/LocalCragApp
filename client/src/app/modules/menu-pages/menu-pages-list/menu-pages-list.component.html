@@ -6,79 +6,82 @@
         [value]="menuPages"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-      >
+        >
         <ng-template #emptymessage>
           <p-message
             severity="info"
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
             >{{ t("noMenuPagesFoundEmptyMessage") }}</p-message
-          >
-        </ng-template>
-        <ng-template #header>
-          <div class="flex flex-row justify-content-between">
-            <p-select
-              [disabled]="loading === loadingStates.LOADING"
-              [options]="sortOptions"
-              [(ngModel)]="sortKey"
-              optionLabel="label"
-              (onChange)="onSortChange($event)"
-              styleClass="md:mb-0"
-            ></p-select>
-            <div class="flex justify-content-end gap-3">
-              <p-button
-                [disabled]="loading === loadingStates.LOADING"
-                label="{{ t('newMenuPageButtonLabel') }}"
-                icon="pi pi-plus"
-                routerLink="/pages/create-menu-page"
-                class="responsive-button"
-              ></p-button>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template let-menuPages #list>
-          <lc-menu-list-skeleton
-            *ngIf="loading === loadingStates.LOADING"
-          ></lc-menu-list-skeleton>
-          <div
-            class="grid grid-nogutter"
-            *ngIf="loading !== loadingStates.LOADING"
-          >
-            <div
-              class="col-12"
-              *ngFor="let menuPage of menuPages; let first = first"
             >
-              <div
-                class="flex flex-column xl:align-items-start p-4 gap-2"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
-              >
-                <div class="text-2xl font-bold text-900 flex w-full">
-                  <div class="flex-grow-1 flex align-items-center">
-                    {{ menuPage.title }}
-                  </div>
-                  <div class="flex flex-grow-0 gap-3">
-                    <p-button
-                      label="{{ t('visitMenuPageButtonLabel') }}"
-                      icon="pi pi-eye"
-                      routerLink="/pages/{{ menuPage.slug }}"
-                      styleClass="pr-0 responsive-button"
-                      [text]="true"
-                    ></p-button>
-                    <p-button
-                      label="{{ t('editMenuPageButtonLabel') }}"
-                      icon="pi pi-file-edit"
-                      routerLink="/pages/{{ menuPage.slug }}/edit"
-                      styleClass="pr-0"
-                      class="responsive-button"
-                      [text]="true"
-                    ></p-button>
-                  </div>
-                </div>
+          </ng-template>
+          <ng-template #header>
+            <div class="flex flex-row justify-content-between">
+              <p-select
+                [disabled]="loading === loadingStates.LOADING"
+                [options]="sortOptions"
+                [(ngModel)]="sortKey"
+                optionLabel="label"
+                (onChange)="onSortChange($event)"
+                styleClass="md:mb-0"
+              ></p-select>
+              <div class="flex justify-content-end gap-3">
+                <p-button
+                  [disabled]="loading === loadingStates.LOADING"
+                  label="{{ t('newMenuPageButtonLabel') }}"
+                  icon="pi pi-plus"
+                  routerLink="/pages/create-menu-page"
+                  class="responsive-button"
+                ></p-button>
               </div>
             </div>
-          </div>
-        </ng-template>
-      </p-dataView>
-    </p-card>
-  </div>
-</ng-container>
+          </ng-template>
+          <ng-template let-menuPages #list>
+            @if (loading === loadingStates.LOADING) {
+              <lc-menu-list-skeleton
+              ></lc-menu-list-skeleton>
+            }
+            @if (loading !== loadingStates.LOADING) {
+              <div
+                class="grid grid-nogutter"
+                >
+                @for (menuPage of menuPages; track menuPage; let first = $first) {
+                  <div
+                    class="col-12"
+                    >
+                    <div
+                      class="flex flex-column xl:align-items-start p-4 gap-2"
+                      [ngClass]="{ 'border-top-1 surface-border': !first }"
+                      >
+                      <div class="text-2xl font-bold text-900 flex w-full">
+                        <div class="flex-grow-1 flex align-items-center">
+                          {{ menuPage.title }}
+                        </div>
+                        <div class="flex flex-grow-0 gap-3">
+                          <p-button
+                            label="{{ t('visitMenuPageButtonLabel') }}"
+                            icon="pi pi-eye"
+                            routerLink="/pages/{{ menuPage.slug }}"
+                            styleClass="pr-0 responsive-button"
+                            [text]="true"
+                          ></p-button>
+                          <p-button
+                            label="{{ t('editMenuPageButtonLabel') }}"
+                            icon="pi pi-file-edit"
+                            routerLink="/pages/{{ menuPage.slug }}/edit"
+                            styleClass="pr-0"
+                            class="responsive-button"
+                            [text]="true"
+                          ></p-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </ng-template>
+        </p-dataView>
+      </p-card>
+    </div>
+  </ng-container>

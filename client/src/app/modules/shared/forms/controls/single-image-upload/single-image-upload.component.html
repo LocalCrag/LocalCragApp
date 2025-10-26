@@ -1,45 +1,49 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
-  <p-fileupload
-    mode="basic"
-    *ngIf="!file"
-    [hidden]="showProgressBar"
-    [name]="'upload'"
-    [url]="uploadUrl"
-    accept=".jpg, .jpeg, .png, .gif, .bmp;capture=camera"
-    [multiple]="false"
-    [maxFileSize]="maxImageSize"
-    (onError)="showProgressBar = false"
-    (onBeforeUpload)="startProgress()"
-    (onProgress)="setProgress($event)"
-    (onUpload)="setMedia($event)"
-    [auto]="true"
-    chooseLabel="{{ t('browseFilesButtonLabel') }}"
-  >
-  </p-fileupload>
+  @if (!file) {
+    <p-fileupload
+      mode="basic"
+      [hidden]="showProgressBar"
+      [name]="'upload'"
+      [url]="uploadUrl"
+      accept=".jpg, .jpeg, .png, .gif, .bmp;capture=camera"
+      [multiple]="false"
+      [maxFileSize]="maxImageSize"
+      (onError)="showProgressBar = false"
+      (onBeforeUpload)="startProgress()"
+      (onProgress)="setProgress($event)"
+      (onUpload)="setMedia($event)"
+      [auto]="true"
+      chooseLabel="{{ t('browseFilesButtonLabel') }}"
+      >
+    </p-fileupload>
+  }
 
-  <p-progress-bar
-    [mode]="progressMode"
-    [value]="progress"
-    *ngIf="showProgressBar"
-  ></p-progress-bar>
+  @if (showProgressBar) {
+    <p-progress-bar
+      [mode]="progressMode"
+      [value]="progress"
+    ></p-progress-bar>
+  }
 
   <div class="image-wrapper">
-    <p-image
-      [src]="file.path"
-      [preview]="!isDisabled"
-      [alt]="file.originalFilename"
-      width="250"
-      *ngIf="file"
-    >
-      <ng-template #indicator>
-        <i class="pi pi-eye"></i>
-      </ng-template>
-    </p-image>
-    <p-button
-      icon="pi pi-times"
-      (click)="removeMedia()"
-      *ngIf="file && !isDisabled"
-      styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text bg-white"
-    ></p-button>
+    @if (file) {
+      <p-image
+        [src]="file.path"
+        [preview]="!isDisabled"
+        [alt]="file.originalFilename"
+        width="250"
+        >
+        <ng-template #indicator>
+          <i class="pi pi-eye"></i>
+        </ng-template>
+      </p-image>
+    }
+    @if (file && !isDisabled) {
+      <p-button
+        icon="pi pi-times"
+        (click)="removeMedia()"
+        styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text bg-white"
+      ></p-button>
+    }
   </div>
 </ng-container>

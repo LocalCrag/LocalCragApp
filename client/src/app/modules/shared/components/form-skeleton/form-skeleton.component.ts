@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-form-skeleton',
-  imports: [NgIf, SkeletonModule, NgForOf],
+  imports: [SkeletonModule],
   templateUrl: './form-skeleton.component.html',
   styleUrl: './form-skeleton.component.scss',
 })

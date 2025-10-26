@@ -35,7 +35,7 @@ import { Password } from 'primeng/password';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Message } from 'primeng/message';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 
 @Component({
@@ -51,7 +51,6 @@ import { Button } from 'primeng/button';
     FormControlDirective,
     IfErrorDirective,
     Message,
-    NgIf,
     Button,
     AsyncPipe,
   ],

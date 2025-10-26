@@ -4,13 +4,17 @@
       header="{{
         !editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')
       }}"
-    >
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("addTopoImageDescription") }}
-      </p>
-      <p class="mt-0" *ngIf="editMode">
-        {{ t("editTopoImageDescription") }}
-      </p>
+      >
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("addTopoImageDescription") }}
+        </p>
+      }
+      @if (editMode) {
+        <p class="mt-0">
+          {{ t("editTopoImageDescription") }}
+        </p>
+      }
 
       <form [formGroup]="topoImageForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -36,7 +40,7 @@
             placeholder="{{ t('topoImageTitlePlaceholder') }}"
             lcFormControl
             data-cy="topo-image-form-title"
-          />
+            />
           <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
@@ -54,7 +58,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="topo-image-form-description"
-          >
+            >
             <ng-template #header>
               <span class="ql-formats">
                 <button

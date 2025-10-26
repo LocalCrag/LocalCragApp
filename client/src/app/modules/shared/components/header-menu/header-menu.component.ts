@@ -14,7 +14,7 @@ import {
   inject,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
@@ -23,7 +23,7 @@ import { BarsIcon } from 'primeng/icons/bars';
 
 @Component({
   selector: 'lc-header-menu',
-  imports: [NgIf, NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
+  imports: [NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

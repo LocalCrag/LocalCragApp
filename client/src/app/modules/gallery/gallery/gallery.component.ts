@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 
 import { ImageModule } from 'primeng/image';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
@@ -36,14 +36,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-gallery',
   imports: [
     ImageModule,
-    NgForOf,
     GalleryImageComponent,
     ButtonModule,
     TranslocoDirective,
     HasPermissionDirective,
     ConfirmPopupModule,
     GalleryImageSkeletonComponent,
-    NgIf,
     Message,
     InfiniteScrollDirective,
   ],

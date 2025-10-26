@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { MapMarkerProperties } from '../../../models/map-marker';
-import { NgIf } from '@angular/common';
+
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Feature, Geometry } from 'geojson';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-item-info-dialog',
-  imports: [DialogModule, ButtonModule, NgIf, TranslocoDirective],
+  imports: [DialogModule, ButtonModule, TranslocoDirective],
   templateUrl: './map-item-info-dialog.component.html',
   styleUrl: './map-item-info-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,

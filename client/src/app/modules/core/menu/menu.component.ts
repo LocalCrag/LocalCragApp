@@ -32,7 +32,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { HeaderMenuComponent } from '../../shared/components/header-menu/header-menu.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import { Avatar } from 'primeng/avatar';
@@ -50,7 +50,6 @@ import { Button } from 'primeng/button';
     AsyncPipe,
     RouterLink,
     TranslocoDirective,
-    NgIf,
     Menu,
     Avatar,
     HasPermissionDirective,

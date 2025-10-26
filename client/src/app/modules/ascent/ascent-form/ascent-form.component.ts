@@ -20,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
@@ -59,7 +59,6 @@ import { Observable } from 'rxjs';
     CheckboxModule,
     ButtonModule,
     ConfirmPopupModule,
-    NgIf,
     TranslocoDirective,
     RatingModule,
     DatePickerModule,

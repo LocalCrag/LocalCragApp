@@ -1,16 +1,18 @@
-<p-button
-  icon="pi pi-angle-up"
-  [rounded]="true"
-  [text]="true"
-  severity="secondary"
-  *ngIf="expanded"
-  (click)="expanded = !expanded; expandedChange.emit(expanded)"
-/>
-<p-button
-  icon="pi pi-angle-down"
-  [rounded]="true"
-  [text]="true"
-  severity="secondary"
-  *ngIf="!expanded"
-  (click)="expanded = !expanded; expandedChange.emit(expanded)"
-/>
+@if (expanded) {
+  <p-button
+    icon="pi pi-angle-up"
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+    (click)="expanded = !expanded; expandedChange.emit(expanded)"
+    />
+}
+@if (!expanded) {
+  <p-button
+    icon="pi pi-angle-down"
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+    (click)="expanded = !expanded; expandedChange.emit(expanded)"
+    />
+}

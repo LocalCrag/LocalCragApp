@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { RatingModule } from 'primeng/rating';
@@ -45,8 +45,6 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     AsyncPipe,
     ButtonModule,
     DataViewModule,
-    NgForOf,
-    NgIf,
     RatingModule,
     NgClass,
     FormsModule,

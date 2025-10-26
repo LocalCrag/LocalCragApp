@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { SkeletonModule } from 'primeng/skeleton';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -11,7 +11,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
  */
 @Component({
   selector: 'lc-region-rules',
-  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })

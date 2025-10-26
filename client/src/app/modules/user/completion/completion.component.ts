@@ -13,7 +13,7 @@ import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectItem } from 'primeng/api';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
@@ -31,10 +31,8 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
   selector: 'lc-completion',
   imports: [
     ProgressBarModule,
-    NgIf,
     CompletionProgressBarComponent,
     AccordionModule,
-    NgForOf,
     ExpandButtonComponent,
     SliderLabelsComponent,
     SliderModule,

@@ -16,7 +16,7 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -47,11 +47,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     ClosedSpotAlertComponent,
     TranslocoDirective,
-    NgIf,
     TopoImageDetailsComponent,
     Button,
     HasPermissionDirective,
-    NgForOf,
     Rating,
     ArchiveButtonComponent,
     TodoButtonComponent,

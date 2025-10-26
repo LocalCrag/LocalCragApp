@@ -1,1 +1,3 @@
-<lc-ranking-list [sector]="sector" *ngIf="sector"></lc-ranking-list>
+@if (sector) {
+  <lc-ranking-list [sector]="sector"></lc-ranking-list>
+}

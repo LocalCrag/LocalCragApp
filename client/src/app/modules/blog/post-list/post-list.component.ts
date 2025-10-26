@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
@@ -33,14 +33,12 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     DataView,
     ButtonModule,
     CardModule,
-    NgForOf,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
     HasPermissionDirective,
     Select,
-    NgIf,
     PostListSkeletonComponent,
     Message,
     SanitizeHtmlPipe,

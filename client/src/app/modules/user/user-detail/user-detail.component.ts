@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
-import { NgIf } from '@angular/common';
+
 import {
   ActivatedRoute,
   Router,
@@ -32,7 +32,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     BreadcrumbModule,
     CardModule,
-    NgIf,
     RouterOutlet,
     AvatarModule,
     SetActiveTabDirective,

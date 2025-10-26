@@ -1,7 +1,8 @@
 <div #konvaContainer></div>
 
-<p-skeleton
-  [width]="skeletonWidth + 'px'"
-  [height]="skeletonHeight + 'px'"
-  *ngIf="loading"
-></p-skeleton>
+@if (loading) {
+  <p-skeleton
+    [width]="skeletonWidth + 'px'"
+    [height]="skeletonHeight + 'px'"
+  ></p-skeleton>
+}

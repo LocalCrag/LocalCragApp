@@ -32,7 +32,6 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { MapMarker } from '../../../models/map-marker';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
 
 import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -52,7 +51,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ToggleButtonModule,
     DialogModule,
     ButtonModule,
-    NgIf,
     Select,
     FormDirective,
     ControlGroupDirective,

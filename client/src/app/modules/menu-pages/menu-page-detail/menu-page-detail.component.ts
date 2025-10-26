@@ -4,7 +4,7 @@ import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingState } from '../../../enums/loading-state';
-import { NgIf } from '@angular/common';
+
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-menu-page-detail',
-  imports: [CardModule, NgIf, SkeletonModule, SanitizeHtmlPipe],
+  imports: [CardModule, SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './menu-page-detail.component.html',
   styleUrl: './menu-page-detail.component.scss',
 })

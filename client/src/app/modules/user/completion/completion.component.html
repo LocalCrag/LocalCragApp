@@ -1,45 +1,47 @@
 <ng-container *transloco="let t; read: 'user.charts'">
-  <div
-    class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
-    *ngIf="availableScales.length > 0 && scaleKey?.value"
-  >
+  @if (availableScales.length > 0 && scaleKey?.value) {
     <div
-      class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
-    >
-      <div
-        *ngIf="availableScales.length > 2"
-        class="w-full flex align-items-center"
+      class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
       >
-        <strong class="mr-2">
-          {{ t("lineType") }}
-        </strong>
-
-        <p-select
-          [options]="availableScales"
-          [(ngModel)]="scaleKey"
-          optionLabel="label"
-          (onChange)="selectScale()"
-          styleClass="md:mb-0"
+      <div
+        class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
         >
-          <ng-template #selectedItem>
-            <div class="flex align-items-center gap-2" *ngIf="scaleKey">
-              <div>{{ scaleKey.label }}</div>
-            </div>
-          </ng-template>
-          <ng-template let-option #item>
-            <div class="flex align-items-center gap-2">
-              <div>{{ option.label }}</div>
-            </div>
-          </ng-template>
-        </p-select>
-      </div>
-
-      <div class="slider-container w-full" *ngIf="scaleKey?.value">
-        <lc-slider-labels
-          [rangeMin]="gradeFilterRange[0]"
-          [rangeMax]="gradeFilterRange[1]"
-          [min]="minGradeValue"
-          [max]="maxGradeValue"
+        @if (availableScales.length > 2) {
+          <div
+            class="w-full flex align-items-center"
+            >
+            <strong class="mr-2">
+              {{ t("lineType") }}
+            </strong>
+            <p-select
+              [options]="availableScales"
+              [(ngModel)]="scaleKey"
+              optionLabel="label"
+              (onChange)="selectScale()"
+              styleClass="md:mb-0"
+              >
+              <ng-template #selectedItem>
+                @if (scaleKey) {
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ scaleKey.label }}</div>
+                  </div>
+                }
+              </ng-template>
+              <ng-template let-option #item>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div>
+              </ng-template>
+            </p-select>
+          </div>
+        }
+        @if (scaleKey?.value) {
+          <div class="slider-container w-full">
+            <lc-slider-labels
+              [rangeMin]="gradeFilterRange[0]"
+              [rangeMax]="gradeFilterRange[1]"
+              [min]="minGradeValue"
+              [max]="maxGradeValue"
           [minLabel]="
             scalesService.gradeNameByValue(
               scaleKey.value.lineType,
@@ -58,101 +60,111 @@
               | async
               | translateSpecialGrades
           "
-        ></lc-slider-labels>
-        <p-slider
-          [(ngModel)]="gradeFilterRange"
-          [min]="minGradeValue"
-          [max]="maxGradeValue"
-          [range]="true"
-          [step]="1"
-          (onSlideEnd)="reloadOnSlideEnd()"
-        />
+            ></lc-slider-labels>
+            <p-slider
+              [(ngModel)]="gradeFilterRange"
+              [min]="minGradeValue"
+              [max]="maxGradeValue"
+              [range]="true"
+              [step]="1"
+              (onSlideEnd)="reloadOnSlideEnd()"
+              />
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="completion && Object.keys(completion.crags).length > 0">
-    <div class="progress-bar-wrapper">
-      <lc-completion-progress-bar
-        [completion]="completion"
-        [cragMap]="cragMap"
-        [sectorMap]="sectorMap"
-        [areaMap]="areaMap"
-      ></lc-completion-progress-bar>
-      <lc-expand-button
-        [expanded]="regionExpanded"
-        (expandedChange)="regionExpanded = !regionExpanded"
-      ></lc-expand-button>
-      <div></div>
-    </div>
-
-    <ng-container *ngIf="regionExpanded">
-      <div *ngFor="let crag of crags" class="ml-4">
-        <ng-container *ngIf="completion.crags[crag.id]">
-          <div class="progress-bar-wrapper">
-            <lc-completion-progress-bar
-              [completion]="completion"
-              [cragMap]="cragMap"
-              [sectorMap]="sectorMap"
-              [areaMap]="areaMap"
-              [level]="'crag'"
-              [id]="crag.id"
-            >
-            </lc-completion-progress-bar>
-            <lc-expand-button
-              [expanded]="expandedCrags.has(crag.id)"
-              (expandedChange)="addOrRemove(expandedCrags, crag.id)"
-            ></lc-expand-button>
-          </div>
-          <ng-container *ngIf="expandedCrags.has(crag.id)">
-            <div *ngFor="let sector of crag.sectors" class="ml-4">
-              <ng-container *ngIf="completion.sectors[sector.id]">
-                <div class="progress-bar-wrapper">
-                  <lc-completion-progress-bar
-                    [completion]="completion"
-                    [cragMap]="cragMap"
-                    [sectorMap]="sectorMap"
-                    [areaMap]="areaMap"
-                    [level]="'sector'"
-                    [id]="sector.id"
+  @if (completion && Object.keys(completion.crags).length > 0) {
+    <div>
+      <div class="progress-bar-wrapper">
+        <lc-completion-progress-bar
+          [completion]="completion"
+          [cragMap]="cragMap"
+          [sectorMap]="sectorMap"
+          [areaMap]="areaMap"
+        ></lc-completion-progress-bar>
+        <lc-expand-button
+          [expanded]="regionExpanded"
+          (expandedChange)="regionExpanded = !regionExpanded"
+        ></lc-expand-button>
+        <div></div>
+      </div>
+      @if (regionExpanded) {
+        @for (crag of crags; track crag) {
+          <div class="ml-4">
+            @if (completion.crags[crag.id]) {
+              <div class="progress-bar-wrapper">
+                <lc-completion-progress-bar
+                  [completion]="completion"
+                  [cragMap]="cragMap"
+                  [sectorMap]="sectorMap"
+                  [areaMap]="areaMap"
+                  [level]="'crag'"
+                  [id]="crag.id"
                   >
-                  </lc-completion-progress-bar>
-                  <lc-expand-button
-                    [expanded]="expandedSectors.has(sector.id)"
-                    (expandedChange)="addOrRemove(expandedSectors, sector.id)"
-                  ></lc-expand-button>
-                </div>
-                <ng-container *ngIf="expandedSectors.has(sector.id)">
-                  <div *ngFor="let area of sector.areas" class="ml-4">
-                    <ng-container *ngIf="completion.areas[area.id]">
+                </lc-completion-progress-bar>
+                <lc-expand-button
+                  [expanded]="expandedCrags.has(crag.id)"
+                  (expandedChange)="addOrRemove(expandedCrags, crag.id)"
+                ></lc-expand-button>
+              </div>
+              @if (expandedCrags.has(crag.id)) {
+                @for (sector of crag.sectors; track sector) {
+                  <div class="ml-4">
+                    @if (completion.sectors[sector.id]) {
                       <div class="progress-bar-wrapper">
                         <lc-completion-progress-bar
                           [completion]="completion"
                           [cragMap]="cragMap"
                           [sectorMap]="sectorMap"
                           [areaMap]="areaMap"
-                          [level]="'area'"
-                          [id]="area.id"
-                        >
+                          [level]="'sector'"
+                          [id]="sector.id"
+                          >
                         </lc-completion-progress-bar>
-                        <div></div>
+                        <lc-expand-button
+                          [expanded]="expandedSectors.has(sector.id)"
+                          (expandedChange)="addOrRemove(expandedSectors, sector.id)"
+                        ></lc-expand-button>
                       </div>
-                    </ng-container>
+                      @if (expandedSectors.has(sector.id)) {
+                        @for (area of sector.areas; track area) {
+                          <div class="ml-4">
+                            @if (completion.areas[area.id]) {
+                              <div class="progress-bar-wrapper">
+                                <lc-completion-progress-bar
+                                  [completion]="completion"
+                                  [cragMap]="cragMap"
+                                  [sectorMap]="sectorMap"
+                                  [areaMap]="areaMap"
+                                  [level]="'area'"
+                                  [id]="area.id"
+                                  >
+                                </lc-completion-progress-bar>
+                                <div></div>
+                              </div>
+                            }
+                          </div>
+                        }
+                      }
+                    }
                   </div>
-                </ng-container>
-              </ng-container>
-            </div>
-          </ng-container>
-        </ng-container>
-      </div>
-    </ng-container>
-  </div>
+                }
+              }
+            }
+          </div>
+        }
+      }
+    </div>
+  }
 
-  <p-message
-    severity="info"
-    icon="pi pi-info-circle"
-    *ngIf="completion && Object.keys(completion.crags).length === 0"
-  >
-    {{ t("noLinesInThisGradeRange") }}
-  </p-message>
+  @if (completion && Object.keys(completion.crags).length === 0) {
+    <p-message
+      severity="info"
+      icon="pi pi-info-circle"
+      >
+      {{ t("noLinesInThisGradeRange") }}
+    </p-message>
+  }
 </ng-container>

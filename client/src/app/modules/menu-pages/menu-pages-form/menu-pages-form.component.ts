@@ -25,7 +25,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf } from '@angular/common';
+
 import { PaginatorModule } from 'primeng/paginator';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -41,7 +41,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
-    NgIf,
     PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,

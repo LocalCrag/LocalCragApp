@@ -21,7 +21,7 @@ import {
 import { cookiesAccepted } from '../../../ngrx/actions/app-level-alerts.actions';
 import { differenceInMilliseconds, subMinutes } from 'date-fns';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { MinutesRemainingPipe } from '../../shared/pipes/minutes-remaining.pipe';
 import { Button } from 'primeng/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -33,7 +33,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   encapsulation: ViewEncapsulation.None,
   imports: [
     TranslocoDirective,
-    NgIf,
     AsyncPipe,
     NgClass,
     MinutesRemainingPipe,

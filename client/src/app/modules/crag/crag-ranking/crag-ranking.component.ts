@@ -4,12 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
 
 import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
-import { NgIf } from '@angular/common';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-crag-ranking',
-  imports: [RankingListComponent, NgIf],
+  imports: [RankingListComponent],
   templateUrl: './crag-ranking.component.html',
   styleUrl: './crag-ranking.component.scss',
 })

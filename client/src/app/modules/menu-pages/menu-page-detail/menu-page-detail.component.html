@@ -1,15 +1,16 @@
 <div class="content">
   <p-card header="{{ menuPage?.title }}">
-    <div
-      [innerHTML]="menuPage.text | sanitizeHtml"
-      *ngIf="menuPage"
-      class="quill-content"
-    ></div>
-    <ng-container *ngIf="!menuPage">
+    @if (menuPage) {
+      <div
+        [innerHTML]="menuPage.text | sanitizeHtml"
+        class="quill-content"
+      ></div>
+    }
+    @if (!menuPage) {
       <p-skeleton height="2rem" styleClass="mb-4"></p-skeleton>
       <p-skeleton width="50rem" height="4rem" styleClass="mb-2"></p-skeleton>
       <p-skeleton width="70rem" height="2rem" styleClass="mb-2"></p-skeleton>
       <p-skeleton width="40rem" height="5rem"></p-skeleton>
-    </ng-container>
+    }
   </p-card>
 </div>

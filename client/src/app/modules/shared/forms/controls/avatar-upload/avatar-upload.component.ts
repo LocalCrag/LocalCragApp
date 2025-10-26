@@ -12,7 +12,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
-import { NgIf } from '@angular/common';
+
 import { ProgressBarModule } from 'primeng/progressbar';
 import {
   ControlValueAccessor,
@@ -31,7 +31,6 @@ import { Store } from '@ngrx/store';
     ButtonModule,
     FileUploadModule,
     ImageModule,
-    NgIf,
     ProgressBarModule,
     ProgressSpinnerModule,
   ],

@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { User } from '../../../models/user';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -15,7 +15,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-user-ascents',
-  imports: [AscentListComponent, NgIf, SkeletonModule, NgForOf],
+  imports: [AscentListComponent, SkeletonModule],
   templateUrl: './user-ascents.component.html',
   styleUrl: './user-ascents.component.scss',
 })

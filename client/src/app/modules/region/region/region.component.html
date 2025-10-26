@@ -1,27 +1,29 @@
 <ng-container *transloco="let t; read: 'region'">
   <div class="content">
     <p-card header="{{ region?.name }}">
-      <p-tabs
-        [value]="tabsDirective.activeTabIndex()"
-        scrollable
-        lcSetActiveTab
-        #tabsDirective="lcSetActiveTab"
-        [items]="items"
-        *ngIf="region"
-      >
-        <p-tablist>
-          @for (tab of items; track $index) {
-            <p-tab
-              [value]="$index"
-              [routerLink]="tab.routerLink"
-              *ngIf="tab.visible"
-            >
-              <i [class]="tab.icon" style="font-size: 1rem"></i>
-              {{ tab.label }}
-            </p-tab>
-          }
-        </p-tablist>
-      </p-tabs>
+      @if (region) {
+        <p-tabs
+          [value]="tabsDirective.activeTabIndex()"
+          scrollable
+          lcSetActiveTab
+          #tabsDirective="lcSetActiveTab"
+          [items]="items"
+          >
+          <p-tablist>
+            @for (tab of items; track $index) {
+              @if (tab.visible) {
+                <p-tab
+                  [value]="$index"
+                  [routerLink]="tab.routerLink"
+                  >
+                  <i [class]="tab.icon" style="font-size: 1rem"></i>
+                  {{ tab.label }}
+                </p-tab>
+              }
+            }
+          </p-tablist>
+        </p-tabs>
+      }
       <router-outlet name="regionContent"></router-outlet>
     </p-card>
   </div>

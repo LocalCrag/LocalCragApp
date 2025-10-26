@@ -31,7 +31,7 @@ import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Card } from 'primeng/card';
-import { NgIf } from '@angular/common';
+
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -51,7 +51,6 @@ import { Button } from 'primeng/button';
     TranslocoDirective,
     Card,
     ReactiveFormsModule,
-    NgIf,
     SingleImageUploadComponent,
     FormDirective,
     ControlGroupDirective,

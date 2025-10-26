@@ -1,50 +1,59 @@
-<div
-  *ngFor="let item of model"
-  class="item"
-  (mouseenter)="onMouseenter(item, menuItem)"
-  [ngClass]="{ 'active-item': item.items && item.isActive, 'root-child': root }"
-  #menuItem
->
-  <div class="item-wrapper">
-    <a
-      tabindex="0"
-      class="item-content"
-      (click)="$event.preventDefault(); onItemClick(item)"
-      [ngClass]="{ 'no-sub-menu': !item.items }"
-      [href]="item.item.routerLink || item.item.url || '#'"
+@for (item of model; track item) {
+  <div
+    class="item"
+    (mouseenter)="onMouseenter(item, menuItem)"
+    [ngClass]="{ 'active-item': item.items && item.isActive, 'root-child': root }"
+    #menuItem
     >
-      <span
-        class="p-menuitem-icon menu-icon"
-        [ngClass]="item.item.icon"
-        *ngIf="item.item.icon"
-      >
-      </span>
-      <span>{{ item.item.label }}</span>
-    </a>
-    <div
-      tabindex="0"
-      class="item-angle"
-      *ngIf="item.items?.length > 0"
-      (click)="onAngleClick(item)"
-    >
-      <AngleDownIcon *ngIf="root" class="ml-2" />
-      <AngleRightIcon *ngIf="!root" class="ml-2" />
+    <div class="item-wrapper">
+      <a
+        tabindex="0"
+        class="item-content"
+        (click)="$event.preventDefault(); onItemClick(item)"
+        [ngClass]="{ 'no-sub-menu': !item.items }"
+        [href]="item.item.routerLink || item.item.url || '#'"
+        >
+        @if (item.item.icon) {
+          <span
+            class="p-menuitem-icon menu-icon"
+            [ngClass]="item.item.icon"
+            >
+          </span>
+        }
+        <span>{{ item.item.label }}</span>
+      </a>
+      @if (item.items?.length > 0) {
+        <div
+          tabindex="0"
+          class="item-angle"
+          (click)="onAngleClick(item)"
+          >
+          @if (root) {
+            <AngleDownIcon class="ml-2" />
+          }
+          @if (!root) {
+            <AngleRightIcon class="ml-2" />
+          }
+        </div>
+      }
+      <!-- eslint-disable-next-line @angular-eslint/template/elements-content -->
+      @if (!item.items) {
+        <a
+          tabindex="0"
+          class="item-angle-placeholder"
+          (click)="$event.preventDefault(); onItemClick(item)"
+          [href]="item.item.routerLink || item.item.url || '#'"
+        ></a>
+      }
     </div>
-    <!-- eslint-disable-next-line @angular-eslint/template/elements-content -->
-    <a
-      tabindex="0"
-      class="item-angle-placeholder"
-      *ngIf="!item.items"
-      (click)="$event.preventDefault(); onItemClick(item)"
-      [href]="item.item.routerLink || item.item.url || '#'"
-    ></a>
+    @if (item.items?.length > 0) {
+      <lc-header-menu-sub
+        [model]="item.items"
+        [class.is-active]="item.isActive"
+        [firstChild]="root"
+        [isMobile]="isMobile"
+        >
+      </lc-header-menu-sub>
+    }
   </div>
-  <lc-header-menu-sub
-    *ngIf="item.items?.length > 0"
-    [model]="item.items"
-    [class.is-active]="item.isActive"
-    [firstChild]="root"
-    [isMobile]="isMobile"
-  >
-  </lc-header-menu-sub>
-</div>
+}

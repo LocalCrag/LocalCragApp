@@ -24,7 +24,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import { NgIf } from '@angular/common';
+
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
@@ -38,7 +38,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Card,
     ClosedSpotTagComponent,
     SecretSpotTagComponent,
-    NgIf,
     Breadcrumb,
     Tabs,
     SetActiveTabDirective,

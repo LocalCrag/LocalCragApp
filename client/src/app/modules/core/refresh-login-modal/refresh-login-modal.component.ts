@@ -28,7 +28,7 @@ import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Dialog } from 'primeng/dialog';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { Password } from 'primeng/password';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -46,7 +46,6 @@ import { Button } from 'primeng/button';
   imports: [
     TranslocoDirective,
     Dialog,
-    NgIf,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,

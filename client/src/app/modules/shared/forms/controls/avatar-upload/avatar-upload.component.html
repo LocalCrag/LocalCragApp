@@ -12,21 +12,23 @@
   (onProgress)="setProgress($event)"
   (onUpload)="setMedia($event)"
   [auto]="true"
->
+  >
 </p-fileUpload>
 
 <div class="avatar-wrapper">
   <div class="avatar" [style.background-image]="getAvatarStyle()"></div>
-  <p-progressSpinner
-    *ngIf="showProgressBar"
-    styleClass="w-2rem h-2rem"
-    strokeWidth="8"
-    animationDuration=".5s"
-  ></p-progressSpinner>
-  <p-button
-    *ngIf="!showProgressBar"
-    icon="pi pi-pencil"
-    [rounded]="true"
-    (click)="clickFileUpload()"
-  ></p-button>
+  @if (showProgressBar) {
+    <p-progressSpinner
+      styleClass="w-2rem h-2rem"
+      strokeWidth="8"
+      animationDuration=".5s"
+    ></p-progressSpinner>
+  }
+  @if (!showProgressBar) {
+    <p-button
+      icon="pi pi-pencil"
+      [rounded]="true"
+      (click)="clickFileUpload()"
+    ></p-button>
+  }
 </div>

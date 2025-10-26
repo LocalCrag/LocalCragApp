@@ -8,43 +8,47 @@
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
             >{{ t("noScalesFoundEmptyMessage") }}</p-message
-          >
-        </ng-template>
-        <ng-template let-scales #list>
-          <lc-scale-list-skeleton
-            *ngIf="loadingState === LoadingState.LOADING"
-          ></lc-scale-list-skeleton>
-          <div class="grid gap-4" *ngIf="loadingState !== LoadingState.LOADING">
-            <a
-              class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
-              *ngFor="let scale of scales; let first = first"
-              routerLink="/scales/{{ scale.lineType }}/{{ scale.name }}"
-              data-cy="scale-list-item"
             >
-              <p-card class="width-100">
-                <div class="flex flex-column scale width-100 pb-3">
-                  <div class="scale-large md:ml-4 flex align-items-center">
-                    <span class="pi pi-image scale-vlarge mr-3"></span>
-                    {{ scale.lineType | transloco }}
-                  </div>
-                  <div class="scale-large mt-4 md:ml-4 flex align-items-center">
-                    <span class="pi pi-chart-bar scale-vlarge mr-3"></span>
-                    {{ scale.name }}
-                  </div>
-                </div>
-              </p-card>
-            </a>
-          </div>
-        </ng-template>
-      </p-dataView>
-      <div class="mt-4">
-        <p-button
-          [disabled]="loadingState === LoadingState.LOADING"
-          icon="pi pi-plus"
-          (click)="router.navigate(['/scales/create'])"
-          label="{{ t('createScale') }}"
-        />
-      </div>
-    </p-card>
-  </div>
-</ng-container>
+          </ng-template>
+          <ng-template let-scales #list>
+            @if (loadingState === LoadingState.LOADING) {
+              <lc-scale-list-skeleton
+              ></lc-scale-list-skeleton>
+            }
+            @if (loadingState !== LoadingState.LOADING) {
+              <div class="grid gap-4">
+                @for (scale of scales; track scale; let first = $first) {
+                  <a
+                    class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
+                    routerLink="/scales/{{ scale.lineType }}/{{ scale.name }}"
+                    data-cy="scale-list-item"
+                    >
+                    <p-card class="width-100">
+                      <div class="flex flex-column scale width-100 pb-3">
+                        <div class="scale-large md:ml-4 flex align-items-center">
+                          <span class="pi pi-image scale-vlarge mr-3"></span>
+                          {{ scale.lineType | transloco }}
+                        </div>
+                        <div class="scale-large mt-4 md:ml-4 flex align-items-center">
+                          <span class="pi pi-chart-bar scale-vlarge mr-3"></span>
+                          {{ scale.name }}
+                        </div>
+                      </div>
+                    </p-card>
+                  </a>
+                }
+              </div>
+            }
+          </ng-template>
+        </p-dataView>
+        <div class="mt-4">
+          <p-button
+            [disabled]="loadingState === LoadingState.LOADING"
+            icon="pi pi-plus"
+            (click)="router.navigate(['/scales/create'])"
+            label="{{ t('createScale') }}"
+            />
+        </div>
+      </p-card>
+    </div>
+  </ng-container>

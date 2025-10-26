@@ -8,48 +8,55 @@
       ></p-button>
     </div>
 
-    <div class="col-12 md:col-6 xl:col-4" *ngFor="let image of images">
-      <lc-gallery-image
-        [image]="image"
-        (delete)="confirmDeleteImage($event, image)"
-        (edit)="editImage(image)"
-      ></lc-gallery-image>
-    </div>
-    <div
-      class="col-12 md:col-6 xl:col-4"
-      *ngFor="
-        let _ of loadingAdditionalPage === loadingStates.LOADING
-          ? [1, 2, 3]
-          : loadingFirstPage === loadingStates.LOADING
-            ? [1, 2, 3, 4, 5, 6]
-            : []
-      "
-    >
-      <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
-    </div>
-    <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loadingAdditionalPage === loadingStates.LOADING"
-      ></p-button>
-    </div>
+    @for (image of images; track image) {
+      <div class="col-12 md:col-6 xl:col-4">
+        <lc-gallery-image
+          [image]="image"
+          (delete)="confirmDeleteImage($event, image)"
+          (edit)="editImage(image)"
+        ></lc-gallery-image>
+      </div>
+    }
+    @for (
+      _ of loadingAdditionalPage === loadingStates.LOADING
+      ? [1, 2, 3]
+      : loadingFirstPage === loadingStates.LOADING
+      ? [1, 2, 3, 4, 5, 6]
+      : []
+      ; track
+      _) {
+      <div
+        class="col-12 md:col-6 xl:col-4"
+        >
+        <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+      </div>
+    }
+    @if (hasNextPage) {
+      <div class="flex justify-content-center mt-5">
+        <p-button
+          label="{{ t('loadMore') }}"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          [loading]="loadingAdditionalPage === loadingStates.LOADING"
+        ></p-button>
+      </div>
+    }
   </div>
-  <p-message
-    severity="info"
-    icon="pi pi-info-circle"
-    *ngIf="
-      !(
-        loadingAdditionalPage === loadingStates.LOADING ||
-        loadingFirstPage === loadingStates.LOADING
-      ) && images.length === 0
-    "
-  >
-    {{ t("thisGalleryIsEmpty") }}
-  </p-message>
+  @if (
+    !(
+    loadingAdditionalPage === loadingStates.LOADING ||
+    loadingFirstPage === loadingStates.LOADING
+    ) && images.length === 0
+    ) {
+    <p-message
+      severity="info"
+      icon="pi pi-info-circle"
+      >
+      {{ t("thisGalleryIsEmpty") }}
+    </p-message>
+  }
   <p-confirmPopup></p-confirmPopup>
 </ng-container>

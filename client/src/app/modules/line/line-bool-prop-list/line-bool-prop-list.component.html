@@ -1,36 +1,90 @@
 <ng-container *transloco="let t; read: 'line.lineBoolPropList'">
   <span
     ><strong>{{ line.startingPosition | transloco }}</strong></span
-  >
-  <span *ngIf="line.eliminate">{{ t("eliminate") }}</span>
-  <span *ngIf="line.traverse">{{ t("traverse") }}</span>
-  <span *ngIf="line.highball">{{ t("highball") }}</span>
-  <span *ngIf="line.lowball">{{ t("lowball") }}</span>
-  <span *ngIf="line.morpho">{{ t("morpho") }}</span>
-  <span *ngIf="line.noTopout">{{ t("noTopout") }}</span>
-  <span *ngIf="line.badDropzone">{{ t("badDropzone") }}</span>
-  <span *ngIf="line.childFriendly">{{ t("childFriendly") }}</span>
+    >
+    @if (line.eliminate) {
+      <span>{{ t("eliminate") }}</span>
+    }
+    @if (line.traverse) {
+      <span>{{ t("traverse") }}</span>
+    }
+    @if (line.highball) {
+      <span>{{ t("highball") }}</span>
+    }
+    @if (line.lowball) {
+      <span>{{ t("lowball") }}</span>
+    }
+    @if (line.morpho) {
+      <span>{{ t("morpho") }}</span>
+    }
+    @if (line.noTopout) {
+      <span>{{ t("noTopout") }}</span>
+    }
+    @if (line.badDropzone) {
+      <span>{{ t("badDropzone") }}</span>
+    }
+    @if (line.childFriendly) {
+      <span>{{ t("childFriendly") }}</span>
+    }
 
-  <span *ngIf="line.roof">{{ t("roof") }}</span>
-  <span *ngIf="line.overhang">{{ t("overhang") }}</span>
-  <span *ngIf="line.vertical">{{ t("vertical") }}</span>
-  <span *ngIf="line.slab">{{ t("slab") }}</span>
+    @if (line.roof) {
+      <span>{{ t("roof") }}</span>
+    }
+    @if (line.overhang) {
+      <span>{{ t("overhang") }}</span>
+    }
+    @if (line.vertical) {
+      <span>{{ t("vertical") }}</span>
+    }
+    @if (line.slab) {
+      <span>{{ t("slab") }}</span>
+    }
 
-  <span *ngIf="line.athletic">{{ t("athletic") }}</span>
-  <span *ngIf="line.technical">{{ t("technical") }}</span>
-  <span *ngIf="line.endurance">{{ t("endurance") }}</span>
-  <span *ngIf="line.cruxy">{{ t("cruxy") }}</span>
-  <span *ngIf="line.dyno">{{ t("dyno") }}</span>
+    @if (line.athletic) {
+      <span>{{ t("athletic") }}</span>
+    }
+    @if (line.technical) {
+      <span>{{ t("technical") }}</span>
+    }
+    @if (line.endurance) {
+      <span>{{ t("endurance") }}</span>
+    }
+    @if (line.cruxy) {
+      <span>{{ t("cruxy") }}</span>
+    }
+    @if (line.dyno) {
+      <span>{{ t("dyno") }}</span>
+    }
 
-  <span *ngIf="line.crack">{{ t("crack") }}</span>
-  <span *ngIf="line.dihedral">{{ t("dihedral") }}</span>
-  <span *ngIf="line.compression">{{ t("compression") }}</span>
-  <span *ngIf="line.arete">{{ t("arete") }}</span>
-  <span *ngIf="line.mantle">{{ t("mantle") }}</span>
+    @if (line.crack) {
+      <span>{{ t("crack") }}</span>
+    }
+    @if (line.dihedral) {
+      <span>{{ t("dihedral") }}</span>
+    }
+    @if (line.compression) {
+      <span>{{ t("compression") }}</span>
+    }
+    @if (line.arete) {
+      <span>{{ t("arete") }}</span>
+    }
+    @if (line.mantle) {
+      <span>{{ t("mantle") }}</span>
+    }
 
-  <span *ngIf="line.jugs">{{ t("jugs") }}</span>
-  <span *ngIf="line.sloper">{{ t("sloper") }}</span>
-  <span *ngIf="line.crimps">{{ t("crimps") }}</span>
-  <span *ngIf="line.pockets">{{ t("pockets") }}</span>
-  <span *ngIf="line.pinches">{{ t("pinches") }}</span>
-</ng-container>
+    @if (line.jugs) {
+      <span>{{ t("jugs") }}</span>
+    }
+    @if (line.sloper) {
+      <span>{{ t("sloper") }}</span>
+    }
+    @if (line.crimps) {
+      <span>{{ t("crimps") }}</span>
+    }
+    @if (line.pockets) {
+      <span>{{ t("pockets") }}</span>
+    }
+    @if (line.pinches) {
+      <span>{{ t("pinches") }}</span>
+    }
+  </ng-container>

@@ -6,132 +6,153 @@
         [value]="users"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-      >
+        >
         <ng-template #emptymessage>
           <p-message
             severity="info"
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
             >{{ t("noUsersFoundEmptyMessage") }}</p-message
-          >
-        </ng-template>
-        <ng-template #header>
-          <div
-            class="flex flex-column sm:flex-row justify-content-between gap-2"
-          >
-            <p-select
-              [options]="sortOptions"
-              [(ngModel)]="sortKey"
-              [disabled]="loading === loadingStates.LOADING"
-              optionLabel="label"
-              (onChange)="onSortChange($event)"
-              styleClass="md:mb-0"
             >
-              <ng-template #selectedItem>
-                <div class="flex align-items-center gap-2" *ngIf="sortKey">
-                  <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
-                  <div>{{ sortKey.label }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
-                  <i [class]="option.icon" *ngIf="option.icon"></i>
-                  <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
-          </div>
-        </ng-template>
-        <ng-template let-users #list>
-          <lc-user-list-skeleton
-            *ngIf="loading === loadingStates.LOADING"
-          ></lc-user-list-skeleton>
-          <div
-            class="grid grid-nogutter"
-            *ngIf="loading !== loadingStates.LOADING"
-          >
-            <div class="col-12" *ngFor="let user of users; let first = first">
-              <div
-                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
+          </ng-template>
+          <ng-template #header>
+            <div
+              class="flex flex-column sm:flex-row justify-content-between gap-2"
               >
-                <div>
-                  <p-avatar
-                    image="assets/user.png"
-                    *ngIf="!user.avatar"
-                    styleClass="mr-2"
-                    size="xlarge"
-                    shape="circle"
-                  ></p-avatar>
-                  <p-avatar
-                    image="{{ user.avatar.thumbnailM }}"
-                    *ngIf="user.avatar"
-                    styleClass="mr-2"
-                    size="xlarge"
-                    shape="circle"
-                  ></p-avatar>
-                </div>
-                <div class="flex flex-column flex-grow-1">
-                  <div class="text-xl font-bold text-900 mb-1">
-                    {{ user.fullname }}
+              <p-select
+                [options]="sortOptions"
+                [(ngModel)]="sortKey"
+                [disabled]="loading === loadingStates.LOADING"
+                optionLabel="label"
+                (onChange)="onSortChange($event)"
+                styleClass="md:mb-0"
+                >
+                <ng-template #selectedItem>
+                  @if (sortKey) {
+                    <div class="flex align-items-center gap-2">
+                      @if (sortKey.icon) {
+                        <i [class]="sortKey.icon"></i>
+                      }
+                      <div>{{ sortKey.label }}</div>
+                    </div>
+                  }
+                </ng-template>
+                <ng-template let-option #item>
+                  <div class="flex align-items-center gap-2">
+                    @if (option.icon) {
+                      <i [class]="option.icon"></i>
+                    }
+                    <div>{{ option.label }}</div>
                   </div>
-                  <small class="mb-3">{{ user.email }}</small>
-                  <small class="mb-3" *ngIf="user.activated">{{
-                    t("userActivatedAt", {
-                      activationTime:
-                        user.activatedAt | date: "dd.MM.yyyy HH:mm",
-                    })
-                  }}</small>
-                  <small class="mb-3" *ngIf="!user.activated">{{
-                    t("userNotActivatedYet")
-                  }}</small>
-                  <div>
-                    <p-tag
-                      [value]="t('superadmin')"
-                      severity="danger"
-                      *ngIf="user.superadmin"
-                    ></p-tag>
-                    <p-tag
-                      [value]="t('admin')"
-                      severity="success"
-                      *ngIf="user.admin && !user.superadmin"
-                    ></p-tag>
-                    <p-tag
-                      [value]="t('moderator')"
-                      *ngIf="user.moderator && !user.admin"
-                    ></p-tag>
-                    <p-tag
-                      [value]="t('member')"
-                      severity="info"
-                      *ngIf="user.member && !user.moderator"
-                    ></p-tag>
-                  </div>
-                </div>
-                <div>
-                  <p-menu
-                    #menu
-                    [model]="(dynamicMenuItems$ | async)!"
-                    (onShow)="showUserMenu(user)"
-                    [popup]="true"
-                    appendTo="body"
-                  ></p-menu>
-                  <p-button
-                    icon="pi pi-wrench"
-                    (click)="menu.toggle($event)"
-                    severity="secondary"
-                    *ngIf="currentUser.id !== user.id && !user.admin"
-                    [text]="true"
-                    class="user-actions"
-                    label="{{ t('userActions') }}"
-                  ></p-button>
-                </div>
-              </div>
+                </ng-template>
+              </p-select>
             </div>
-          </div>
-        </ng-template>
-      </p-dataView>
-    </p-card>
-  </div>
+          </ng-template>
+          <ng-template let-users #list>
+            @if (loading === loadingStates.LOADING) {
+              <lc-user-list-skeleton
+              ></lc-user-list-skeleton>
+            }
+            @if (loading !== loadingStates.LOADING) {
+              <div
+                class="grid grid-nogutter"
+                >
+                @for (user of users; track user; let first = $first) {
+                  <div class="col-12">
+                    <div
+                      class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                      [ngClass]="{ 'border-top-1 surface-border': !first }"
+                      >
+                      <div>
+                        @if (!user.avatar) {
+                          <p-avatar
+                            image="assets/user.png"
+                            styleClass="mr-2"
+                            size="xlarge"
+                            shape="circle"
+                          ></p-avatar>
+                        }
+                        @if (user.avatar) {
+                          <p-avatar
+                            image="{{ user.avatar.thumbnailM }}"
+                            styleClass="mr-2"
+                            size="xlarge"
+                            shape="circle"
+                          ></p-avatar>
+                        }
+                      </div>
+                      <div class="flex flex-column flex-grow-1">
+                        <div class="text-xl font-bold text-900 mb-1">
+                          {{ user.fullname }}
+                        </div>
+                        <small class="mb-3">{{ user.email }}</small>
+                        @if (user.activated) {
+                          <small class="mb-3">{{
+                            t("userActivatedAt", {
+                            activationTime:
+                            user.activatedAt | date: "dd.MM.yyyy HH:mm",
+                            })
+                          }}</small>
+                        }
+                        @if (!user.activated) {
+                          <small class="mb-3">{{
+                            t("userNotActivatedYet")
+                          }}</small>
+                        }
+                        <div>
+                          @if (user.superadmin) {
+                            <p-tag
+                              [value]="t('superadmin')"
+                              severity="danger"
+                            ></p-tag>
+                          }
+                          @if (user.admin && !user.superadmin) {
+                            <p-tag
+                              [value]="t('admin')"
+                              severity="success"
+                            ></p-tag>
+                          }
+                          @if (user.moderator && !user.admin) {
+                            <p-tag
+                              [value]="t('moderator')"
+                            ></p-tag>
+                          }
+                          @if (user.member && !user.moderator) {
+                            <p-tag
+                              [value]="t('member')"
+                              severity="info"
+                            ></p-tag>
+                          }
+                        </div>
+                      </div>
+                      <div>
+                        <p-menu
+                          #menu
+                          [model]="(dynamicMenuItems$ | async)!"
+                          (onShow)="showUserMenu(user)"
+                          [popup]="true"
+                          appendTo="body"
+                        ></p-menu>
+                        @if (currentUser.id !== user.id && !user.admin) {
+                          <p-button
+                            icon="pi pi-wrench"
+                            (click)="menu.toggle($event)"
+                            severity="secondary"
+                            [text]="true"
+                            class="user-actions"
+                            label="{{ t('userActions') }}"
+                          ></p-button>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </ng-template>
+        </p-dataView>
+      </p-card>
+    </div>
 
-  <p-confirmDialog [style]="{ maxWidth: '800px' }"></p-confirmDialog>
-</ng-container>
+    <p-confirmDialog [style]="{ maxWidth: '800px' }"></p-confirmDialog>
+  </ng-container>

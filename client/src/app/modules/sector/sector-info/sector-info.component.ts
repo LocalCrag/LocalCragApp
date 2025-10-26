@@ -8,7 +8,7 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
@@ -23,7 +23,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./sector-info.component.scss'],
   imports: [
     TranslocoDirective,
-    NgIf,
     ClosedSpotAlertComponent,
     GradeDistributionBarChartComponent,
     SanitizeHtmlPipe,

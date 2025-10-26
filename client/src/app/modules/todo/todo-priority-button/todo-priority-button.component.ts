@@ -9,7 +9,7 @@ import { Todo } from '../../../models/todo';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
+
 import { TodoPriority } from '../../../enums/todo-priority';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -19,7 +19,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 
 @Component({
   selector: 'lc-todo-priority-button',
-  imports: [MenuModule, ButtonModule, NgIf, TranslocoDirective],
+  imports: [MenuModule, ButtonModule, TranslocoDirective],
   templateUrl: './todo-priority-button.component.html',
   styleUrl: './todo-priority-button.component.scss',
   encapsulation: ViewEncapsulation.None,
