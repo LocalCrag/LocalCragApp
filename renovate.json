@@ -6,19 +6,5 @@
   "major": {
     "enabled": false
   },
-  "dependencyDashboard": false,
-  "packageRules": [
-    {
-      "matchDepNames": [
-        "actions/setup-python"
-      ],
-      "enabled": false
-    },
-    {
-      "matchDatasources": [
-        "python-version"
-      ],
-      "enabled": false
-    }
-  ]
+  "dependencyDashboard": false
 }
