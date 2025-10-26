@@ -39,10 +39,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v1
         with:
-          python-version: 3.11
+          python-version: 3.14
 
       - name: Install pipenv
         run: pip install pipenv
