@@ -10,10 +10,7 @@
   "packageRules": [
     {
       "matchDatasources": [
-        "python"
-      ],
-      "matchPackagePatterns": [
-        "python"
+        "python-version"
       ],
       "enabled": false
     }
