@@ -21,7 +21,6 @@ class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     __tablename__ = "sectors"
 
-    slug_blocklist = ["edit", "create-sector", "sectors", "gallery", "ascents", "rules"]
     searchable_type = SearchableItemTypeEnum.SECTOR
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)

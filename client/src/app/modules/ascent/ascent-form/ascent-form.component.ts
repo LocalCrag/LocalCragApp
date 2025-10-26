@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
@@ -26,8 +33,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { DividerModule } from 'primeng/divider';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { filter } from 'rxjs/operators';
+
+import { filter, take } from 'rxjs/operators';
 import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
@@ -39,6 +46,10 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
+import { Observable } from 'rxjs';
+import { Grade } from '../../../models/scale';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -49,7 +60,6 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
     CheckboxModule,
     ButtonModule,
     ConfirmPopupModule,
-    NgIf,
     TranslocoDirective,
     RatingModule,
     DatePickerModule,
@@ -64,12 +74,12 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
     FormControlDirective,
     ControlGroupDirective,
     FormDirective,
+    AsyncPipe,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class AscentFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
@@ -87,15 +97,17 @@ export class AscentFormComponent implements OnInit {
     contentCheckedBackground: '{primary.500}',
     checkedColor: '{surface.0}',
   };
+  public disableFAInAscents$: Observable<boolean>;
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogConfig: DynamicDialogConfig,
-    private store: Store,
-    private ref: DynamicDialogRef,
-    private ascentsService: AscentsService,
-    private scalesService: ScalesService,
-  ) {
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private dialogConfig = inject(DynamicDialogConfig);
+  private store = inject(Store);
+  private ref = inject(DynamicDialogRef);
+  private ascentsService = inject(AscentsService);
+  private scalesService = inject(ScalesService);
+
+  constructor() {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;
@@ -111,6 +123,10 @@ export class AscentFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.disableFAInAscents$ = this.store
+      .select(selectDisableFAInAscents)
+      .pipe(take(1));
+
     this.ascent = this.dialogConfig.data.ascent;
     this.ascentForm.disable();
     if (this.ascent) {
@@ -163,7 +179,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('soft')
       .valueChanges.pipe(
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -172,7 +188,7 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm
       .get('hard')
       .valueChanges.pipe(
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
         filter((x) => x),
       )
       .subscribe(() => {
@@ -183,13 +199,13 @@ export class AscentFormComponent implements OnInit {
       .subscribe((instanceSettings) =>
         this.ascentForm
           .get('grade')
-          .valueChanges.pipe(untilDestroyed(this))
-          .subscribe((newGrade: number) => {
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((newGrade: Grade) => {
             this.gradeDifferenceWarning =
               Math.abs(
                 (instanceSettings.displayUserGrades
                   ? this.line.userGradeValue
-                  : this.line.authorGradeValue) - newGrade,
+                  : this.line.authorGradeValue) - newGrade?.value,
               ) >= 3;
           }),
       );

@@ -89,13 +89,14 @@
         </div>
       </form>
 
-      <p-message
-        severity="error"
-        text="{{ t('emailsDontMatchAlertText') }}"
-        class="mt-4"
-        *ngIf="registerPressed && emailsDontMatch()"
-      >
-      </p-message>
+      @if (registerPressed && emailsDontMatch()) {
+        <p-message
+          severity="error"
+          text="{{ t('emailsDontMatchAlertText') }}"
+          class="mt-4"
+        >
+        </p-message>
+      }
 
       <p-button
         label="{{ t('registerButtonLabel') }}"

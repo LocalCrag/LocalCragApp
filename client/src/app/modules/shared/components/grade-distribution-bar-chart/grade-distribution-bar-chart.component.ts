@@ -5,11 +5,12 @@ import {
   OnInit,
   SimpleChanges,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
 import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
@@ -38,7 +39,7 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  imports: [ChartModule, NgIf, TranslocoDirective, NgForOf, Message],
+  imports: [ChartModule, TranslocoDirective, Message],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -53,12 +54,11 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   public options: any;
 
   private isCondensed: boolean = null;
+  private translocoService = inject(TranslocoService);
+  private scalesService = inject(ScalesService);
+  private store = inject(Store);
 
-  constructor(
-    private translocoService: TranslocoService,
-    private scalesService: ScalesService,
-    private store: Store,
-  ) {
+  constructor() {
     fromEvent(window, 'resize')
       .pipe(debounceTime(200))
       .subscribe(() => {

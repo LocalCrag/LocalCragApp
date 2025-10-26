@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -7,10 +7,8 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
   providedIn: 'root',
 })
 export class ClipboardService {
-  constructor(
-    private messageService: MessageService,
-    private translocoService: TranslocoService,
-  ) {}
+  private messageService = inject(MessageService);
+  private translocoService = inject(TranslocoService);
 
   private fallbackCopyTextToClipboard(text) {
     const textArea = document.createElement('textarea');
@@ -32,7 +30,7 @@ export class ClipboardService {
           marker('clipboardSuccessToastDescription'),
         ),
       });
-    } catch (err) {
+    } catch (_err) {
       this.messageService.add({
         severity: 'error',
         summary: this.translocoService.translate(

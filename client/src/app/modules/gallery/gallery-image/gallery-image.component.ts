@@ -5,11 +5,12 @@ import {
   OnInit,
   Output,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
 import { ImageModule } from 'primeng/image';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { TagComponent } from '../../shared/components/tag/tag.component';
 import { ButtonModule } from 'primeng/button';
 import { Store } from '@ngrx/store';
@@ -28,12 +29,10 @@ import { Tooltip } from 'primeng/tooltip';
   imports: [
     CardModule,
     ImageModule,
-    NgForOf,
     TagComponent,
     ButtonModule,
     ConfirmPopupModule,
     SpeedDialModule,
-    NgIf,
     TranslocoDirective,
     Tooltip,
   ],
@@ -50,10 +49,8 @@ export class GalleryImageComponent implements OnInit {
   public speedDialItems: MenuItem[] = [];
   public loggedInUser: User;
 
-  constructor(
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.speedDialItems = [

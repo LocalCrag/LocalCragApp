@@ -4,8 +4,9 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
+  inject,
 } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Completion } from '../../../models/statistics';
 import { Crag } from '../../../models/crag';
@@ -23,7 +24,7 @@ type ItemProgress = {
 
 @Component({
   selector: 'lc-completion-progress-bar',
-  imports: [NgIf, ProgressBarModule, AsyncPipe],
+  imports: [ProgressBarModule, AsyncPipe],
   templateUrl: './completion-progress-bar.component.html',
   styleUrl: './completion-progress-bar.component.scss',
 })
@@ -38,7 +39,7 @@ export class CompletionProgressBarComponent implements OnInit, OnChanges {
   public itemProgress: ItemProgress;
   public itemName: Observable<string>;
 
-  constructor(private regionService: RegionService) {}
+  private regionService = inject(RegionService);
 
   ngOnInit() {
     this.itemProgress = this.getItemProgress(this.level, this.id);

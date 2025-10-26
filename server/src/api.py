@@ -1,5 +1,6 @@
 from flask import Blueprint
 
+from resources.account_resources import DeleteOwnUser
 from resources.archive_resources import SetArchived
 from resources.area_resources import (
     CreateArea,
@@ -88,7 +89,7 @@ from resources.post_resources import (
     GetPosts,
     UpdatePost,
 )
-from resources.ranking_resources import GetRanking, UpdateRanking
+from resources.ranking_resources import GetRanking
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.scale_resources import (
     CreateScale,
@@ -216,6 +217,7 @@ def configure_api(app):
     )
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
+    user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
     # Gallery API
@@ -255,7 +257,6 @@ def configure_api(app):
     # Ranking API
     ranking_bp = Blueprint("ranking", __name__)
     ranking_bp.add_url_rule("", view_func=GetRanking.as_view("get_ranking"))
-    ranking_bp.add_url_rule("/update", view_func=UpdateRanking.as_view("update_ranking"))
     app.register_blueprint(ranking_bp, url_prefix="/api/ranking")
 
     # Ticks API

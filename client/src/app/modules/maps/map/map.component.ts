@@ -6,6 +6,7 @@ import {
   Input,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 
 import {
@@ -26,7 +27,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, from, mergeMap, Observable, toArray } from 'rxjs';
 import { MapMarkerType } from '../../../enums/map-marker-type';
-import { NgIf } from '@angular/common';
+
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
@@ -34,7 +35,7 @@ import { MapStyles } from '../../../enums/map-styles';
 
 @Component({
   selector: 'lc-map',
-  imports: [MapItemInfoDialogComponent, TranslocoDirective, NgIf],
+  imports: [MapItemInfoDialogComponent, TranslocoDirective],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
@@ -53,12 +54,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   @ViewChild(MapItemInfoDialogComponent)
   private infoDialog: MapItemInfoDialogComponent | undefined;
 
-  constructor(
-    private mapsService: MapsService,
-    private cdr: ChangeDetectorRef,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private mapsService = inject(MapsService);
+  private cdr = inject(ChangeDetectorRef);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   addMissingMarkerNames() {
     this.markersSource.features.map((feature) => {
@@ -296,7 +295,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             feature.properties[key] = JSON.parse(
               feature.properties[key] as string,
             );
-          } catch (e) {
+          } catch (_e) {
             continue;
           }
         }

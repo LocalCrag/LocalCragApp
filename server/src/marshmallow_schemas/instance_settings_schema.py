@@ -29,6 +29,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)
+    disableFAInAscents = fields.Boolean(attribute="disable_fa_in_ascents")
 
 
 instance_settings_schema = InstanceSettingsSchema()

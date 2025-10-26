@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -36,7 +38,7 @@ import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { User } from '../../../models/user';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
 import { SliderModule } from 'primeng/slider';
@@ -54,6 +56,7 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -94,7 +97,6 @@ import { filter, take } from 'rxjs/operators';
   providers: [DialogService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-@UntilDestroy()
 export class AscentListComponent implements OnInit, OnChanges {
   @Input() user: User;
   @Input() cragId: string;
@@ -138,18 +140,17 @@ export class AscentListComponent implements OnInit, OnChanges {
   public clickedAscentForAction: Ascent;
 
   private loadedGradeFilterRange: number[] = null;
+  private destroyRef = inject(DestroyRef);
+  private ascentsService = inject(AscentsService);
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
+  private actions$ = inject(Actions);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
+  private regionService = inject(RegionService);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(
-    private ascentsService: AscentsService,
-    private dialogService: DialogService,
-    private store: Store,
-    private actions$: Actions,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-    private regionService: RegionService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['parentLoading']) {
@@ -226,7 +227,7 @@ export class AscentListComponent implements OnInit, OnChanges {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loadFirstPage();
       });

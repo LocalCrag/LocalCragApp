@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -34,7 +35,7 @@ import { Password } from 'primeng/password';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Message } from 'primeng/message';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 
 @Component({
@@ -50,7 +51,6 @@ import { Button } from 'primeng/button';
     FormControlDirective,
     IfErrorDirective,
     Message,
-    NgIf,
     Button,
     AsyncPipe,
   ],
@@ -67,15 +67,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   public routeParamSubscription: Subscription;
 
   private resetPasswordHash: string;
-
-  constructor(
-    private route: ActivatedRoute,
-    private store: Store<AppState>,
-    private router: Router,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private store = inject<Store<AppState>>(Store);
+  private router = inject(Router);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
 
   /**
    * Builds the form on component initialization.

@@ -1,11 +1,11 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
   <p-message severity="info">
-    <ng-container *ngIf="!editMode">
+    @if (!editMode) {
       <div [innerHTML]="t('addGalleryImageDescription')"></div>
-    </ng-container>
-    <ng-container *ngIf="editMode">
+    }
+    @if (editMode) {
       <div [innerHTML]="t('editGalleryImageDescription')"></div>
-    </ng-container>
+    }
   </p-message>
 
   <form [formGroup]="galleryImageForm" lcForm>

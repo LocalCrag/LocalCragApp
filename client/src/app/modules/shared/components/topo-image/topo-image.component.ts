@@ -1,8 +1,10 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   OnInit,
   Output,
@@ -17,7 +19,7 @@ import {
   Label,
   PointFeatureLabelPlacement,
 } from './point-feature-label-placement';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import Konva from 'konva';
@@ -25,7 +27,8 @@ import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance
 import { take } from 'rxjs/operators';
 import { highlightColor, textColor } from '../../../../utility/misc/color';
 import { Skeleton } from 'primeng/skeleton';
-import { NgIf } from '@angular/common';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows a topo image with line paths on it.
@@ -35,9 +38,8 @@ import { NgIf } from '@angular/common';
   templateUrl: './topo-image.component.html',
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Skeleton, NgIf],
+  imports: [Skeleton],
 })
-@UntilDestroy()
 export class TopoImageComponent implements OnInit {
   @ViewChild('konvaContainer') konvaContainer: ElementRef;
 
@@ -66,11 +68,9 @@ export class TopoImageComponent implements OnInit {
   private isMobile = false;
   private resizeRenderSubject = new Subject<any>();
   private windowWidth: number;
-
-  constructor(
-    private el: ElementRef,
-    private store: Store,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
+  private store = inject(Store);
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -91,7 +91,7 @@ export class TopoImageComponent implements OnInit {
     // Why we check for window.innerWidth changes.
     this.windowWidth = window.innerWidth;
     this.resizeRenderSubject
-      .pipe(debounceTime(500), untilDestroyed(this))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (window.innerWidth != this.windowWidth) {
           this.render();

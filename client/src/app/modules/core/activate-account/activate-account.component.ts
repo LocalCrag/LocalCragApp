@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Router, RouterLink } from '@angular/router';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
@@ -29,10 +29,8 @@ import { TranslocoDirective } from '@jsverse/transloco';
 export class ActivateAccountComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
-  constructor(
-    private store: Store,
-    private router: Router,
-  ) {}
+  private store = inject(Store);
+  private router = inject(Router);
 
   /**
    * Redirects the user to the login screen if he is not logged in.

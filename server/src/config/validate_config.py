@@ -1,7 +1,5 @@
 def validate_config(config):
     # Check token presence
-    if not config["CRON_ACCESS_TOKEN"]:
-        raise Exception("Invalid config: CRON_ACCESS_TOKEN needs to be set.")
     if not config["SECRET_KEY"]:
         raise Exception("Invalid config: SECRET_KEY needs to be set.")
     if not config["JWT_SECRET_KEY"]:

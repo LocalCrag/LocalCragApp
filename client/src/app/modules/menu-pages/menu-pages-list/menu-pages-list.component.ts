@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
@@ -27,13 +27,11 @@ import { Message } from 'primeng/message';
     ButtonModule,
     CardModule,
     DataViewModule,
-    NgForOf,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
     Select,
-    NgIf,
     MenuPagesListSkeletonComponent,
     Message,
   ],
@@ -49,13 +47,11 @@ export class MenuPagesListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public isMobile$: Observable<boolean>;
+  public menuPagesService = inject(MenuPagesService);
 
-  constructor(
-    public menuPagesService: MenuPagesService,
-    private store: Store,
-    private title: Title,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the menu pages on initialization.

@@ -2,38 +2,38 @@
   <p-card>
     <ng-template #header>
       <div class="card-header p-card-title">
-        <p-avatar
-          [image]="user.avatar ? user.avatar.thumbnailS : 'assets/user.png'"
-          styleClass="mr-3"
-          size="xlarge"
-          shape="circle"
-          *ngIf="user"
-        ></p-avatar>
+        @if (user) {
+          <p-avatar
+            [image]="user.avatar ? user.avatar.thumbnailS : 'assets/user.png'"
+            styleClass="mr-3"
+            size="xlarge"
+            shape="circle"
+          ></p-avatar>
+        }
         {{ user?.firstname }} {{ user?.lastname }}
       </div>
     </ng-template>
 
-    <p-tabs
-      [value]="tabsDirective.activeTabIndex()"
-      scrollable
-      lcSetActiveTab
-      #tabsDirective="lcSetActiveTab"
-      [items]="items"
-      *ngIf="user"
-    >
-      <p-tablist>
-        @for (tab of items; track $index) {
-          <p-tab
-            [value]="$index"
-            [routerLink]="tab.routerLink"
-            *ngIf="tab.visible"
-          >
-            <i [class]="tab.icon" style="font-size: 1rem"></i>
-            {{ tab.label }}
-          </p-tab>
-        }
-      </p-tablist>
-    </p-tabs>
+    @if (user) {
+      <p-tabs
+        [value]="tabsDirective.activeTabIndex()"
+        scrollable
+        lcSetActiveTab
+        #tabsDirective="lcSetActiveTab"
+        [items]="items"
+      >
+        <p-tablist>
+          @for (tab of items; track $index) {
+            @if (tab.visible) {
+              <p-tab [value]="$index" [routerLink]="tab.routerLink">
+                <i [class]="tab.icon" style="font-size: 1rem"></i>
+                {{ tab.label }}
+              </p-tab>
+            }
+          }
+        </p-tablist>
+      </p-tabs>
+    }
 
     <router-outlet name="userContent"></router-outlet>
   </p-card>

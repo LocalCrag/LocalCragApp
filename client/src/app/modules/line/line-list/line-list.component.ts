@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LinesService } from '../../../services/crud/lines.service';
 import { select, Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -25,7 +31,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap } from 'rxjs/operators';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
@@ -49,6 +55,7 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-line-list',
@@ -89,7 +96,6 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-@UntilDestroy()
 export class LineListComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
@@ -122,21 +128,20 @@ export class LineListComponent implements OnInit {
   public showArchive = false;
 
   private loadedGradeFilterRange: number[] = null;
+  private destroyRef = inject(DestroyRef);
+  private linesService = inject(LinesService);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private regionService = inject(RegionService);
+  private store = inject(Store);
+  private ticksService = inject(TicksService);
+  private isTodoService = inject(IsTodoService);
+  private route = inject(ActivatedRoute);
+  private actions$ = inject(Actions);
+  private translocoService = inject(TranslocoService);
 
-  constructor(
-    private linesService: LinesService,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private regionService: RegionService,
-    private store: Store,
-    private ticksService: TicksService,
-    private isTodoService: IsTodoService,
-    private route: ActivatedRoute,
-    private actions$: Actions,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.cragSlug = this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -217,12 +222,12 @@ export class LineListComponent implements OnInit {
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
     this.actions$
-      .pipe(ofType(todoAdded), untilDestroyed(this))
+      .pipe(ofType(todoAdded), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.isTodo.add(action.todoLineId);
       });

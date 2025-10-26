@@ -131,6 +131,7 @@ class DeleteUser(MethodView):  # pragma: no cover
         user: User = User.find_by_id(user_id)
 
         if user.email == get_jwt_identity():
+            # Own user can only be deleted via account settings
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
         if user.superadmin:

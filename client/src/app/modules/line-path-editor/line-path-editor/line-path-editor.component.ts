@@ -8,13 +8,14 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { Button } from 'primeng/button';
 
 /**
@@ -32,7 +33,7 @@ import { Button } from 'primeng/button';
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  imports: [TranslocoDirective, TopoImageComponent, NgIf, Button],
+  imports: [TranslocoDirective, TopoImageComponent, Button],
 })
 export class LinePathEditorComponent
   implements ControlValueAccessor, OnInit, OnChanges
@@ -45,9 +46,9 @@ export class LinePathEditorComponent
   public linePath: LinePath;
   public isDisabled = false;
 
-  private onChange: (value: number[]) => void;
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  private onChange: (value: number[]) => void;
 
   /**
    * Loads the topo image on which to draw the line.

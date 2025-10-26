@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -46,13 +46,13 @@ export class ProjectClimbedFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public line: Line;
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogConfig: DynamicDialogConfig,
-    private store: Store,
-    private ref: DynamicDialogRef,
-    private ascentsService: AscentsService,
-  ) {
+  private fb = inject(FormBuilder);
+  private dialogConfig = inject(DynamicDialogConfig);
+  private store = inject(Store);
+  private ref = inject(DynamicDialogRef);
+  private ascentsService = inject(AscentsService);
+
+  constructor() {
     this.line = this.dialogConfig.data.line
       ? this.dialogConfig.data.line
       : this.dialogConfig.data.ascent.line;

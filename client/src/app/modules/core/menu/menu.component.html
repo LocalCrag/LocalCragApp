@@ -2,20 +2,21 @@
   <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template #start>
       <a class="main-link" routerLink="/">
-        <img
-          alt="{{ t('logoImageAlt') }}"
-          [src]="(logoImage$ | async).thumbnailM"
-          height="40"
-          class="mr-2 flex cursor-pointer"
-          *ngIf="logoImage$ | async"
-        />
-        <strong
-          *ngIf="
-            (logoImage$ | async) === null || (logoImage$ | async) === undefined
-          "
-          class="cursor-pointer white-space-nowrap"
-          >{{ instanceName$ | async }}</strong
-        >
+        @if (logoImage$ | async) {
+          <img
+            alt="{{ t('logoImageAlt') }}"
+            [src]="(logoImage$ | async).thumbnailM"
+            height="40"
+            class="mr-2 flex cursor-pointer"
+          />
+        }
+        @if (
+          (logoImage$ | async) === null || (logoImage$ | async) === undefined
+        ) {
+          <strong class="cursor-pointer white-space-nowrap">{{
+            instanceName$ | async
+          }}</strong>
+        }
       </a>
     </ng-template>
     <ng-template #end>

@@ -15,8 +15,12 @@
       [ngClass]="{ 'hide-label': !showLabel }"
     >
       <ng-template #icon>
-        <i *ngIf="!getCurrentState()" class="pi pi-hammer"></i>
-        <i *ngIf="getCurrentState()" class="pi pi-undo"></i>
+        @if (!getCurrentState()) {
+          <i class="pi pi-hammer"></i>
+        }
+        @if (getCurrentState()) {
+          <i class="pi pi-undo"></i>
+        }
       </ng-template>
     </p-button>
   </ng-container>

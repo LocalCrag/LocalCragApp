@@ -5,6 +5,7 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -41,7 +42,6 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Button } from 'primeng/button';
 import { TopoImage } from '../../../models/topo-image';
-import { NgIf } from '@angular/common';
 
 /**
  * Form for line paths.
@@ -62,7 +62,6 @@ import { NgIf } from '@angular/common';
     IfErrorDirective,
     LinePathEditorComponent,
     Button,
-    NgIf,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
@@ -83,18 +82,17 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private linesService: LinesService,
-    private topoImagesService: TopoImagesService,
-    private linePathsService: LinePathsService,
-    protected scalesService: ScalesService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private linesService = inject(LinesService);
+  private topoImagesService = inject(TopoImagesService);
+  private linePathsService = inject(LinePathsService);
+
+  protected scalesService = inject(ScalesService);
 
   /**
    * Builds the form on component initialization.

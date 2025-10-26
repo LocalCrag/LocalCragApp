@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
@@ -33,14 +33,12 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     DataView,
     ButtonModule,
     CardModule,
-    NgForOf,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
     HasPermissionDirective,
     Select,
-    NgIf,
     PostListSkeletonComponent,
     Message,
     SanitizeHtmlPipe,
@@ -58,13 +56,11 @@ export class PostListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public isMobile$: Observable<boolean>;
+  public postsService = inject(PostsService);
 
-  constructor(
-    public postsService: PostsService,
-    private store: Store,
-    private title: Title,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the posts on initialization.

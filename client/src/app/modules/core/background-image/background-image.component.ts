@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { ActivationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
@@ -25,11 +25,11 @@ export enum StaticBackgroundImageDefaults {
   styleUrl: './background-image.component.scss',
 })
 export class BackgroundImageComponent implements OnInit {
-  constructor(
-    private el: ElementRef,
-    private store: Store,
-    private router: Router,
-  ) {
+  private el = inject(ElementRef);
+  private store = inject(Store);
+  private router = inject(Router);
+
+  constructor() {
     this.setBackgroundImage(StaticBackgroundImages.DEFAULT);
   }
 

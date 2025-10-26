@@ -356,20 +356,23 @@
             styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
-          <p-button
-            label="{{ t('deleteSectorButtonLabel') }}"
-            (click)="confirmDeleteSector($event)"
-            icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="ml-3 responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode && sector?.slug !== environment.skippedSlug"
-          ></p-button>
-          <p-confirmPopup></p-confirmPopup>
+          @if (editMode && sector?.slug !== environment.skippedSlug) {
+            <p-button
+              label="{{ t('deleteSectorButtonLabel') }}"
+              (click)="confirmDeleteSector($event)"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              class="ml-3 responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+            ></p-button>
+          }
+          <p-confirmpopup></p-confirmpopup>
         </div>
       </ng-container>
 
-      <lc-form-skeleton *ngIf="!sectorForm"></lc-form-skeleton>
+      @if (!sectorForm) {
+        <lc-form-skeleton></lc-form-skeleton>
+      }
     </p-card>
   </div>
 </ng-container>

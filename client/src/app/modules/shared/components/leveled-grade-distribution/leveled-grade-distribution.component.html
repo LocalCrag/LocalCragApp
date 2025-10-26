@@ -1,66 +1,68 @@
 <ng-container *transloco="let t">
-  <p-skeleton
-    width="100%"
-    height="2rem"
-    *ngIf="gradeDistributionEmpty"
-  ></p-skeleton>
+  @if (gradeDistributionEmpty) {
+    <p-skeleton width="100%" height="2rem"></p-skeleton>
+  }
 
-  <ng-container *ngIf="!gradeDistributionEmpty">
-    <div class="mb-3" *ngFor="let data of stackChartData">
-      <p-meterGroup
-        [value]="data.meterValues"
-        [min]="0"
-        [max]="data.total - data.projects - data.ungraded"
-      >
-        <ng-template #label>
-          <div
-            class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-3"
-          >
+  @if (!gradeDistributionEmpty) {
+    @for (data of stackChartData; track data) {
+      <div class="mb-3">
+        <p-meterGroup
+          [value]="data.meterValues"
+          [min]="0"
+          [max]="data.total - data.projects - data.ungraded"
+        >
+          <ng-template #label>
             <div
-              class="p-metergroup-label font-bold"
-              *ngIf="data.total - data.projects > 0"
+              class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-3"
             >
-              {{ data.total - data.projects }}
-              {{ stackChartData.length > 1 ? data.gradeScale : "" }}
-              {{ t("lines") }}:
+              @if (data.total - data.projects > 0) {
+                <div class="p-metergroup-label font-bold">
+                  {{ data.total - data.projects }}
+                  {{ stackChartData.length > 1 ? data.gradeScale : "" }}
+                  {{ t("lines") }}:
+                </div>
+              }
+              @for (meterValue of data.meterValues; track meterValue) {
+                <div class="p-metergroup-label">
+                  <p-tag
+                    value="{{ meterValue.value }} {{ meterValue.label }}"
+                    [style]="{
+                      backgroundColor: meterValue.color,
+                      color: textColor(meterValue.color, '#2e3132'),
+                    }"
+                  />
+                </div>
+              }
+              @if (data.ungraded > 0) {
+                <div class="p-metergroup-label">
+                  <p-tag
+                    value="{{ data.ungraded }} {{
+                      t('leveledGradeDistributionUngraded')
+                    }}"
+                    [style]="{
+                      backgroundColor: '#e5e7eb',
+                      color: textColor('#e5e7eb', '#2e3132'),
+                    }"
+                  />
+                </div>
+              }
+              @if (data.projects > 0) {
+                <div class="p-metergroup-label">
+                  <p-tag
+                    value="{{ data.projects }} {{
+                      t('leveledGradeDistributionProjects')
+                    }}"
+                    [style]="{
+                      backgroundColor: '#e5e7eb',
+                      color: textColor('#e5e7eb', '#2e3132'),
+                    }"
+                  />
+                </div>
+              }
             </div>
-            <div
-              class="p-metergroup-label"
-              *ngFor="let meterValue of data.meterValues"
-            >
-              <p-tag
-                value="{{ meterValue.value }} {{ meterValue.label }}"
-                [style]="{
-                  backgroundColor: meterValue.color,
-                  color: textColor(meterValue.color, '#2e3132'),
-                }"
-              />
-            </div>
-            <div class="p-metergroup-label" *ngIf="data.ungraded > 0">
-              <p-tag
-                value="{{ data.ungraded }} {{
-                  t('leveledGradeDistributionUngraded')
-                }}"
-                [style]="{
-                  backgroundColor: '#e5e7eb',
-                  color: textColor('#e5e7eb', '#2e3132'),
-                }"
-              />
-            </div>
-            <div class="p-metergroup-label" *ngIf="data.projects > 0">
-              <p-tag
-                value="{{ data.projects }} {{
-                  t('leveledGradeDistributionProjects')
-                }}"
-                [style]="{
-                  backgroundColor: '#e5e7eb',
-                  color: textColor('#e5e7eb', '#2e3132'),
-                }"
-              />
-            </div>
-          </div>
-        </ng-template>
-      </p-meterGroup>
-    </div>
-  </ng-container>
+          </ng-template>
+        </p-meterGroup>
+      </div>
+    }
+  }
 </ng-container>

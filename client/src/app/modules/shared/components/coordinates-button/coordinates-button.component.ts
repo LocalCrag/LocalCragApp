@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Coordinates } from '../../../../interfaces/coordinates.interface';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -18,10 +18,10 @@ export class CoordinatesButtonComponent {
 
   public items: MenuItem[];
 
-  constructor(
-    private clipboardService: ClipboardService,
-    private translocoService: TranslocoService,
-  ) {
+  private clipboardService = inject(ClipboardService);
+  private translocoService = inject(TranslocoService);
+
+  constructor() {
     this.items = [
       {
         label: this.translocoService.translate(

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
@@ -7,7 +13,7 @@ import { unixToDate } from '../../../utility/operators/unix-to-date';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { bigIntTimer } from '../../../utility/observables/bigint-timer';
 import { openRefreshLoginModal } from 'src/app/ngrx/actions/auth.actions';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import {
   selectShowCookieAlert,
   selectShowRefreshTokenAboutToExpireAlert,
@@ -15,9 +21,10 @@ import {
 import { cookiesAccepted } from '../../../ngrx/actions/app-level-alerts.actions';
 import { differenceInMilliseconds, subMinutes } from 'date-fns';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { MinutesRemainingPipe } from '../../shared/pipes/minutes-remaining.pipe';
 import { Button } from 'primeng/button';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-app-level-alerts',
@@ -26,21 +33,20 @@ import { Button } from 'primeng/button';
   encapsulation: ViewEncapsulation.None,
   imports: [
     TranslocoDirective,
-    NgIf,
     AsyncPipe,
     NgClass,
     MinutesRemainingPipe,
     Button,
   ],
 })
-@UntilDestroy()
 export class AppLevelAlertsComponent implements OnInit {
   public showCookieAlert$: Observable<boolean>;
   public refreshLoginAlertType = 'warning';
   public refreshTokenExpires$: Observable<Date>;
   public showRefreshTokenAboutToExpireAlert$: Observable<boolean>;
 
-  constructor(private store: Store<AppState>) {}
+  private destroyRef = inject(DestroyRef);
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Sets up subscriptions to change the appearance of the alert.
@@ -64,7 +70,7 @@ export class AppLevelAlertsComponent implements OnInit {
           return differenceInMilliseconds(oneMinuteBeforeExpiry, new Date());
         }),
         mergeMap((timeDelta) => bigIntTimer(timeDelta)),
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         this.refreshLoginAlertType = 'danger';

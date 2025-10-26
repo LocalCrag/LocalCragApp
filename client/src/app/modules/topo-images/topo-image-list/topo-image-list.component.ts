@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
@@ -19,8 +25,8 @@ import { LinePath } from '../../../models/line-path';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { NgClass, NgForOf, NgIf, ViewportScroller } from '@angular/common';
+
+import { NgClass, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -47,6 +53,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that lists all topo images in an area.
@@ -66,14 +73,12 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     DataView,
     Select,
     FormsModule,
-    NgIf,
     GymModeDirective,
     Button,
     HasPermissionDirective,
     RouterLink,
     Message,
     TopoImageListSkeletonComponent,
-    NgForOf,
     NgClass,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,
@@ -86,7 +91,6 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
     TopoImageComponent,
   ],
 })
-@UntilDestroy()
 export class TopoImageListComponent implements OnInit {
   public topoImages: TopoImage[];
   public loading = LoadingState.LOADING;
@@ -106,21 +110,23 @@ export class TopoImageListComponent implements OnInit {
 
   private scrollTarget: Scroll;
 
-  constructor(
-    private topoImagesService: TopoImagesService,
-    private store: Store,
-    private confirmationService: ConfirmationService,
-    private ticksService: TicksService,
-    private areasService: AreasService,
-    private actions$: Actions,
-    private dialogService: DialogService,
-    private linePathsService: LinePathsService,
-    private route: ActivatedRoute,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private viewportScroller: ViewportScroller,
-    protected scalesService: ScalesService,
-  ) {
+  private destroyRef = inject(DestroyRef);
+  private topoImagesService = inject(TopoImagesService);
+  private store = inject(Store);
+  private confirmationService = inject(ConfirmationService);
+  private ticksService = inject(TicksService);
+  private areasService = inject(AreasService);
+  private actions$ = inject(Actions);
+  private dialogService = inject(DialogService);
+  private linePathsService = inject(LinePathsService);
+  private route = inject(ActivatedRoute);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private viewportScroller = inject(ViewportScroller);
+
+  protected scalesService = inject(ScalesService);
+
+  constructor() {
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
       .subscribe((e) => {
@@ -138,7 +144,7 @@ export class TopoImageListComponent implements OnInit {
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -150,7 +156,7 @@ export class TopoImageListComponent implements OnInit {
       });
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.actions$
-      .pipe(ofType(reloadAfterAscent), untilDestroyed(this))
+      .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
       });
@@ -442,7 +448,7 @@ export class TopoImageListComponent implements OnInit {
         showImage: true,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -470,7 +476,7 @@ export class TopoImageListComponent implements OnInit {
         showLinePathLineName: true,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

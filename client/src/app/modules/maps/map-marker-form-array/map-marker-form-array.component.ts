@@ -1,7 +1,13 @@
-import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MapMarker } from '../../../models/map-marker';
-import { NgForOf, NgIf } from '@angular/common';
+
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
@@ -20,9 +26,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 @Component({
   selector: 'lc-map-marker-form-array',
   imports: [
-    NgForOf,
     TranslocoDirective,
-    NgIf,
     ButtonModule,
     MapMarkerConfigDialogComponent,
     TagModule,
@@ -48,11 +52,9 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
   public markers: MapMarker[] = [];
   public isDisabled = false;
 
-  constructor(
-    private store: Store,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-  ) {}
+  private store = inject(Store);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
 
   writeValue(value: MapMarker[]): void {
     this.markers = value;

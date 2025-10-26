@@ -59,6 +59,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
         instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
         instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]
+        instance_settings.disable_fa_in_ascents = instance_settings_data["disableFAInAscents"]
 
         if instance_settings_data["skippedHierarchicalLayers"] > instance_settings.skipped_hierarchical_layers:
             if instance_settings_data["skippedHierarchicalLayers"] >= 1:

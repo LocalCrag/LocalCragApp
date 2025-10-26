@@ -7,7 +7,7 @@ describe('Ascent lifespan workflow', () => {
       'localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images',
     );
     cy.get('[data-cy="tick-button"]').eq(1).click();
-    cy.get('[data-cy="rating"] staricon').eq(3).click();
+    cy.get('[data-cy="rating"] .p-rating-option').eq(3).click();
     cy.get('[data-cy="comment"]').focus().type('Guter Boulder Yo!');
     cy.get('[data-cy="withKneepad"]').click();
     cy.get('[data-cy="submit"]').click();

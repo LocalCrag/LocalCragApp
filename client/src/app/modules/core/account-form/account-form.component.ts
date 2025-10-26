@@ -1,4 +1,11 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostBinding,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -21,16 +28,24 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { AvatarUploadComponent } from '../../shared/forms/controls/avatar-upload/avatar-upload.component';
-import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
+import {
+  updateAccountSettings,
+  logout,
+} from '../../../ngrx/actions/auth.actions';
 import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
-import { NgIf } from '@angular/common';
+
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { MessageModule } from 'primeng/message';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { DividerModule } from 'primeng/divider';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-own-user-dialog.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-account-form',
@@ -40,17 +55,19 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     TranslocoDirective,
     InputTextModule,
     AvatarUploadComponent,
-    NgIf,
     MessageModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    DividerModule,
+    HasPermissionDirective,
+    HasPermissionDirective,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',
+  providers: [DialogService],
 })
-@UntilDestroy()
 export class AccountFormComponent implements OnInit {
   @HostBinding('class.auth-view') authView: boolean = true;
 
@@ -63,15 +80,18 @@ export class AccountFormComponent implements OnInit {
   public emailChangedPostSave = false;
   public savePressed = false;
   public currentUser: User;
+  public deleteLoadingState: LoadingState = LoadingState.DEFAULT;
+  public deleteError = false;
+  public ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private usersService: UsersService,
-    private userValidators: UserValidatorsService,
-    private store: Store<AppState>,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private usersService = inject(UsersService);
+  private userValidators = inject(UserValidatorsService);
+  private store = inject<Store<AppState>>(Store);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
+  private dialogService = inject(DialogService);
 
   ngOnInit(): void {
     this.buildForm();
@@ -159,7 +179,7 @@ export class AccountFormComponent implements OnInit {
       });
     this.accountForm
       .get('emails.email')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (!this.emailChangedPreSave) {
           this.accountForm.get('emails.emailConfirm').setValue('');
@@ -179,5 +199,34 @@ export class AccountFormComponent implements OnInit {
       this.accountForm.get('emails').errors &&
       this.accountForm.get('emails').errors['emailsMatch']
     );
+  }
+
+  public openDeleteDialog() {
+    this.deleteError = false;
+    this.ref = this.dialogService.open(DeleteOwnUserDialogComponent, {
+      header: this.translocoService.translate(
+        marker('accountForm.deleteAccountDialogTitle'),
+      ),
+      data: { email: this.currentUser?.email },
+      width: '500px',
+      dismissableMask: true,
+      closable: false,
+    });
+    this.ref.onClose.pipe(take(1)).subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.deleteLoadingState = LoadingState.LOADING;
+        this.usersService.deleteOwnUser().subscribe({
+          next: () => {
+            this.deleteLoadingState = LoadingState.DEFAULT;
+            // Auto logout after successful deletion
+            this.store.dispatch(logout({ isAutoLogout: true, silent: false }));
+          },
+          error: () => {
+            this.deleteLoadingState = LoadingState.DEFAULT;
+            this.deleteError = true;
+          },
+        });
+      }
+    });
   }
 }

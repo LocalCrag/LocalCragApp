@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Editor, EditorModule } from 'primeng/editor';
 import {
@@ -25,7 +25,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf } from '@angular/common';
+
 import { PaginatorModule } from 'primeng/paginator';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -41,7 +41,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
-    NgIf,
     PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,
@@ -65,17 +64,17 @@ export class MenuPagesFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private menuPagesService: MenuPagesService,
-    private uploadService: UploadService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-  ) {
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private menuPagesService = inject(MenuPagesService);
+  private uploadService = inject(UploadService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

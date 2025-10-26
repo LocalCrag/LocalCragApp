@@ -5,6 +5,7 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
+from util.build_rankings import build_rankings
 
 
 def test_successful_get_ranking_boulder(client):
@@ -73,8 +74,8 @@ def test_successful_update_ranking(client, admin_token):
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
     assert rv.status_code == 201
 
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
-    assert rv.status_code == 200
+    # Trigger a ranking rebuild
+    build_rankings()
 
     # We don't know when the thread completes from the previous request.
     # So we need to wait for the ranking to be updated.
@@ -117,8 +118,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     db.session.commit()
 
     # Trigger a ranking rebuild; since seed ascents are old, rankings should be empty now
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
-    assert rv.status_code == 200
+    build_rankings()
 
     max_wait_time = 5
     wait_time = 0.5
@@ -151,8 +151,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
     assert rv.status_code == 201
 
-    rv = client.get("/api/ranking/update", headers={"Authorization": "Bearer test-token"})
-    assert rv.status_code == 200
+    build_rankings()
 
     max_wait_time = 5
     wait_time = 0.5
@@ -170,3 +169,31 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     assert rv.status_code == 200
     assert len(res) == 1
     assert res[0]["totalCount"] == 1
+
+
+def test_scheduler_schedules_ranking_every_15_minutes(client):
+    """Ensure the build_rankings job is scheduled with a 15-minute interval when the scheduler is initialized."""
+    # Import within the test to avoid side-effects on module import
+    from apscheduler.triggers.interval import IntervalTrigger
+
+    import schedulers as sched
+    from app import app as flask_app
+    from schedulers import init_schedulers
+
+    # Ensure a clean scheduler state
+    if getattr(sched, "_scheduler", None) and sched._scheduler.running:
+        sched._scheduler.shutdown(wait=False)
+        sched._scheduler = None
+
+    init_schedulers(flask_app)
+
+    assert sched._scheduler is not None and sched._scheduler.running
+
+    job = sched._scheduler.get_job("build_rankings_every_15m")
+    assert job is not None, "Ranking job should be registered"
+    assert isinstance(job.trigger, IntervalTrigger), "Ranking job should use an interval trigger"
+    assert job.trigger.interval.total_seconds() == 15 * 60, "Ranking job should run every 15 minutes"
+
+    # Teardown: stop scheduler to avoid cross-test side effects
+    sched._scheduler.shutdown(wait=False)
+    sched._scheduler = None

@@ -1,8 +1,12 @@
 <div class="content">
   <p-card header="{{ area?.name }}">
     <div class="flex gap-1">
-      <lc-closed-spot-tag *ngIf="area?.closed"></lc-closed-spot-tag>
-      <lc-secret-spot-tag *ngIf="area?.secret"></lc-secret-spot-tag>
+      @if (area?.closed) {
+        <lc-closed-spot-tag></lc-closed-spot-tag>
+      }
+      @if (area?.secret) {
+        <lc-secret-spot-tag></lc-secret-spot-tag>
+      }
     </div>
 
     <p-breadcrumb
@@ -11,28 +15,27 @@
       [home]="breadcrumbHome"
     ></p-breadcrumb>
 
-    <p-tabs
-      [value]="tabsDirective.activeTabIndex()"
-      scrollable
-      lcSetActiveTab
-      #tabsDirective="lcSetActiveTab"
-      data-cy="area-tabs-menu"
-      [items]="items"
-      *ngIf="area"
-    >
-      <p-tablist>
-        @for (tab of items; track $index) {
-          <p-tab
-            [value]="$index"
-            [routerLink]="tab.routerLink"
-            *ngIf="tab.visible"
-          >
-            <i [class]="tab.icon" style="font-size: 1rem"></i>
-            {{ tab.label }}
-          </p-tab>
-        }
-      </p-tablist>
-    </p-tabs>
+    @if (area) {
+      <p-tabs
+        [value]="tabsDirective.activeTabIndex()"
+        scrollable
+        lcSetActiveTab
+        #tabsDirective="lcSetActiveTab"
+        data-cy="area-tabs-menu"
+        [items]="items"
+      >
+        <p-tablist>
+          @for (tab of items; track $index) {
+            @if (tab.visible) {
+              <p-tab [value]="$index" [routerLink]="tab.routerLink">
+                <i [class]="tab.icon" style="font-size: 1rem"></i>
+                {{ tab.label }}
+              </p-tab>
+            }
+          }
+        </p-tablist>
+      </p-tabs>
+    }
 
     <router-outlet name="areaContent"></router-outlet>
   </p-card>

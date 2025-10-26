@@ -1,3 +1,5 @@
+from marshmallow import ValidationError
+
 from models.enums.line_type_enum import LineTypeEnum
 from models.scale import Scale
 
@@ -31,9 +33,10 @@ def validate_order_payload(new_order, items):
 
 def color_validator(color: str):
     try:
-        return len(color) == 7 and color[0] == "#" and int(color[1:], 16) >= 0 and "x" not in color.lower()
+        if not (len(color) == 7 and color[0] == "#" and int(color[1:], 16) >= 0 and "x" not in color.lower()):
+            raise ValidationError(f"Invalid color '{color}'")
     except ValueError:
-        return False
+        raise ValidationError(f"Invalid color '{color}'")
 
 
 def validate_default_scales(args: dict) -> tuple[bool, str]:

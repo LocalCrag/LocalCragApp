@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   QueryList,
   ViewChild,
@@ -38,7 +40,7 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
@@ -55,6 +57,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form component for creating and editing sectors.
@@ -86,7 +89,6 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
     SingleImageUploadComponent,
   ],
 })
-@UntilDestroy()
 export class SectorFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -104,20 +106,20 @@ export class SectorFormComponent implements OnInit {
   public parentClosed = false;
 
   private cragSlug: string;
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private uploadService = inject(UploadService);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-    private router: Router,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private uploadService: UploadService,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -205,7 +207,7 @@ export class SectorFormComponent implements OnInit {
     });
     this.sectorForm
       .get('closed')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closed) => {
         if (!closed) {
           this.sectorForm.get('closedReason').setValue(null);

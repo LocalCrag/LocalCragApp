@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Card } from 'primeng/card';
 import {
   FormArray,
@@ -42,7 +48,6 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { Scale } from '../../../models/scale';
 import { LineType } from '../../../enums/line-type';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DatePicker } from 'primeng/datepicker';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
@@ -52,6 +57,7 @@ import { BatchEditorService } from '../../../services/crud/batch-editor.service'
 import { LinePathFormComponent } from '../../line-path-editor/line-path-form/line-path-form.component';
 import { TopoImage } from '../../../models/topo-image';
 import { Image } from 'primeng/image';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-line-entry-batch-editor',
@@ -84,7 +90,6 @@ import { Image } from 'primeng/image';
   templateUrl: './line-entry-batch-editor.component.html',
   styleUrl: './line-entry-batch-editor.component.scss',
 })
-@UntilDestroy()
 export class LineEntryBatchEditorComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
 
@@ -100,7 +105,6 @@ export class LineEntryBatchEditorComponent implements OnInit {
   public faFormats = FaDefaultFormat;
 
   public today = new Date(new Date().getFullYear(), 11, 31);
-  public gymMode$ = this.store.select(selectGymMode).pipe(untilDestroyed(this));
   public currentStep = 1;
 
   public groupedScales: Record<LineType, Scale[]> = null;
@@ -114,19 +118,20 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private scalesService: ScalesService,
-    private batchEditorService: BatchEditorService,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private scalesService = inject(ScalesService);
+  private batchEditorService = inject(BatchEditorService);
+
+  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
 
   ngOnInit() {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
@@ -185,7 +190,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
       this.buildForm();
       this.topoImageBatchUploadForm
         .get('lines.type')
-        .valueChanges.pipe(untilDestroyed(this))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scaleOptions = this.groupedScales[item].map((scale) => ({
             label: scale.name,
@@ -197,7 +202,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
         });
       this.topoImageBatchUploadForm
         .get('lines.scale')
-        .valueChanges.pipe(untilDestroyed(this))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
           this.scalesService
             .getScale(

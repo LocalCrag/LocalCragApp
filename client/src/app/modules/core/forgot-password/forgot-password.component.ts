@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -51,12 +57,10 @@ export class ForgotPasswordComponent implements OnInit {
   public loadingState$: Observable<LoadingState>;
   public loadingStates = LoadingState;
 
-  constructor(
-    private title: Title,
-    private store: Store<AppState>,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-  ) {}
+  private title = inject(Title);
+  private store = inject<Store<AppState>>(Store);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
 
   /**
    * Builds the form on component initialization.

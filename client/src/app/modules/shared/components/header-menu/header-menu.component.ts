@@ -11,18 +11,19 @@ import {
   OnInit,
   SimpleChanges,
   TemplateRef,
+  inject,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
 import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
-import { BarsIcon } from 'primeng/icons/bars';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-header-menu',
-  imports: [NgIf, NgTemplateOutlet, HeaderMenuSubComponent, BarsIcon, NgClass],
+  imports: [NgTemplateOutlet, HeaderMenuSubComponent, NgClass, Button],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,12 +41,9 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   public overflowDetected = false;
 
   private resizeObserver!: ResizeObserver;
-
-  constructor(
-    private headerMenuService: HeaderMenuService,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef,
-  ) {}
+  private headerMenuService = inject(HeaderMenuService);
+  private cdr = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
 
   ngOnInit() {
     this.onResize(Number(window.innerWidth));

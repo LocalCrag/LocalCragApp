@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { TicksService } from '../../../services/crud/ticks.service';
@@ -16,7 +16,7 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -34,6 +34,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { ConfirmationService } from 'primeng/api';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that shows detailed information about a line.
@@ -46,11 +47,9 @@ import { ConfirmationService } from 'primeng/api';
   imports: [
     ClosedSpotAlertComponent,
     TranslocoDirective,
-    NgIf,
     TopoImageDetailsComponent,
     Button,
     HasPermissionDirective,
-    NgForOf,
     Rating,
     ArchiveButtonComponent,
     TodoButtonComponent,
@@ -64,7 +63,6 @@ import { ConfirmationService } from 'primeng/api';
     DatePipe,
   ],
 })
-@UntilDestroy()
 export class LineInfoComponent implements OnInit {
   public line: Line;
   public ref: DynamicDialogRef | undefined;
@@ -73,28 +71,32 @@ export class LineInfoComponent implements OnInit {
   public displayUserRating?: boolean = undefined;
 
   private lineSlug: string;
+  private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private ticksService = inject(TicksService);
+  private isTodoService = inject(IsTodoService);
+  private actions$ = inject(Actions);
+  private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private linePathsService = inject(LinePathsService);
+  private linesService = inject(LinesService);
+  private store = inject(Store);
 
-  constructor(
-    private route: ActivatedRoute,
-    private ticksService: TicksService,
-    private isTodoService: IsTodoService,
-    private actions$: Actions,
-    private translocoService: TranslocoService,
-    private dialogService: DialogService,
-    private linePathsService: LinePathsService,
-    private linesService: LinesService,
-    protected scalesService: ScalesService,
-    private store: Store,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
-    this.route.paramMap.pipe(untilDestroyed(this)).subscribe(() => {
-      this.line = null;
-      this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
-      this.refreshData();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.line = null;
+        this.lineSlug = this.route.snapshot.paramMap.get('line-slug');
+        this.refreshData();
+      });
     this.actions$
-      .pipe(ofType(reloadAfterAscent, todoAdded), untilDestroyed(this))
+      .pipe(
+        ofType(reloadAfterAscent, todoAdded),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
         this.refreshData();
       });
@@ -148,7 +150,7 @@ export class LineInfoComponent implements OnInit {
         idAccessor: (item: any) => item.linePaths[0].id,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

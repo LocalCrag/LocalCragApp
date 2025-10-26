@@ -8,6 +8,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -46,7 +47,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { ConfirmationService } from 'primeng/api';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   selectGymMode,
   selectInstanceSettingsState,
@@ -94,7 +95,6 @@ import { Tag } from 'primeng/tag';
   templateUrl: './line-entry-batch-line-form.component.html',
   styleUrl: './line-entry-batch-line-form.component.scss',
 })
-@UntilDestroy()
 export class LineEntryBatchLineFormComponent
   implements ControlValueAccessor, Validator, OnInit, OnChanges
 {
@@ -129,26 +129,25 @@ export class LineEntryBatchLineFormComponent
     [LineType.TRAD]: null,
   };
   public typeOptions = null;
-  public gymMode$ = this.store.select(selectGymMode).pipe(untilDestroyed(this));
 
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
 
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private cragsService = inject(CragsService);
+  private translocoService = inject(TranslocoService);
+  private scalesService = inject(ScalesService);
+
   private onChange: (value: Line) => void = () => {};
   private onTouched: () => void = () => {};
   private validatorChange: () => void = () => {};
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private cragsService: CragsService,
-    private translocoService: TranslocoService,
-    private scalesService: ScalesService,
-  ) {}
+  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
 
   ngOnInit() {
     this.buildForm();

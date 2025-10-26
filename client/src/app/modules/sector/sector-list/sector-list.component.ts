@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -11,7 +11,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
@@ -28,6 +28,7 @@ import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that displays a list of sectors.
@@ -45,8 +46,6 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
     RouterLink,
     HasPermissionDirective,
     TopoDataviewSkeletonComponent,
-    NgIf,
-    NgForOf,
     NgClass,
     ArchiveButtonComponent,
     AscentCountComponent,
@@ -59,7 +58,6 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
     ClosedSpotAlertComponent,
   ],
 })
-@UntilDestroy()
 export class SectorListComponent implements OnInit {
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
@@ -71,21 +69,20 @@ export class SectorListComponent implements OnInit {
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public ref: DynamicDialogRef | undefined;
+  public sectorsService = inject(SectorsService);
 
-  constructor(
-    public sectorsService: SectorsService,
-    private route: ActivatedRoute,
-    private dialogService: DialogService,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private dialogService = inject(DialogService);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   /**
    * Loads the sectors on initialization.
    */
   ngOnInit() {
     this.route.parent.parent.paramMap
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cragSlug =
           this.route.parent.parent.snapshot.paramMap.get('crag-slug');
@@ -165,7 +162,7 @@ export class SectorListComponent implements OnInit {
         slugParameter: this.cragSlug,
       },
     });
-    this.ref.onClose.pipe(untilDestroyed(this)).subscribe(() => {
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

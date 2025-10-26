@@ -1,0 +1,32 @@
+<ng-container *transloco="let t; read: 'accountForm'">
+  <div class="mb-3">
+    {{ t("deleteAccountDialogDescription", { email: email }) }}
+  </div>
+  <form [formGroup]="form" lcForm>
+    <div class="card-container block" lcControlGroup>
+      <input
+        type="text"
+        class="w-full"
+        pInputText
+        formControlName="email"
+        placeholder="{{ t('deleteAccountDialogEmailPlaceholder') }}"
+        lcFormControl
+      />
+    </div>
+  </form>
+
+  <div class="mt-3 flex justify-content-end">
+    <p-button
+      label="{{ t('deleteAccountDialogCancel') }}"
+      styleClass="p-button-outlined p-button-secondary"
+      class="mr-3"
+      (click)="cancel()"
+    ></p-button>
+    <p-button
+      label="{{ t('deleteAccountDialogConfirm') }}"
+      severity="danger"
+      (click)="confirm()"
+      [disabled]="!form.valid || !emailMatches"
+    ></p-button>
+  </div>
+</ng-container>

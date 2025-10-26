@@ -1,13 +1,15 @@
-<div class="progress-container" *ngIf="itemProgress?.totalLines > 0">
-  <div>
-    <strong>{{ itemName | async }}:</strong> {{ itemProgress.totalAscents }} /
-    {{ itemProgress.totalLines }}
-  </div>
-  <div class="progress-inner-container">
+@if (itemProgress?.totalLines > 0) {
+  <div class="progress-container">
     <div>
-      <p-progressBar [value]="itemProgress.progress" [showValue]="false">
-      </p-progressBar>
+      <strong>{{ itemName | async }}:</strong> {{ itemProgress.totalAscents }} /
+      {{ itemProgress.totalLines }}
     </div>
-    <div class="percentage">{{ itemProgress.progress }}%</div>
+    <div class="progress-inner-container">
+      <div>
+        <p-progressBar [value]="itemProgress.progress" [showValue]="false">
+        </p-progressBar>
+      </div>
+      <div class="percentage">{{ itemProgress.progress }}%</div>
+    </div>
   </div>
-</div>
+}

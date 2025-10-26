@@ -3,6 +3,7 @@ import {
   OnDestroy,
   Pipe,
   PipeTransform,
+  inject,
 } from '@angular/core';
 import { Observable, Subscription, timer } from 'rxjs';
 import { map, startWith, takeWhile } from 'rxjs/operators';
@@ -16,12 +17,11 @@ import { differenceInMilliseconds } from 'date-fns';
   pure: false,
 })
 export class MinutesRemainingPipe implements PipeTransform, OnDestroy {
+  private cdr = inject(ChangeDetectorRef);
   private subscription: Subscription | null = null;
   private isDestroyed = false;
   private value: Date;
   private cachedResult: string;
-
-  constructor(private cdr: ChangeDetectorRef) {}
 
   /**
    * Transforms the given date to the wanted string.

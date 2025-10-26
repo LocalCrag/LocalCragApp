@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -12,10 +12,8 @@ import { deserializeGradeList, GradeDistribution } from '../../models/scale';
   providedIn: 'root',
 })
 export class UsersService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public registerUser(user: User): Observable<User> {
     return this.http
@@ -62,6 +60,12 @@ export class UsersService {
   public deleteUser(user: User): Observable<null> {
     return this.http
       .delete(this.api.users.delete(user.id))
+      .pipe(map(() => null));
+  }
+
+  public deleteOwnUser(): Observable<null> {
+    return this.http
+      .delete(this.api.users.deleteOwnUser())
       .pipe(map(() => null));
   }
 

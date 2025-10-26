@@ -7,11 +7,12 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
-import { NgIf } from '@angular/common';
+
 import { ProgressBarModule } from 'primeng/progressbar';
 import {
   ControlValueAccessor,
@@ -30,7 +31,6 @@ import { Store } from '@ngrx/store';
     ButtonModule,
     FileUploadModule,
     ImageModule,
-    NgIf,
     ProgressBarModule,
     ProgressSpinnerModule,
   ],
@@ -62,11 +62,9 @@ export class AvatarUploadComponent
   public showProgressBar = false;
   public maxImageSize: number;
 
-  constructor(
-    private api: ApiService,
-    private inj: Injector,
-    private store: Store,
-  ) {}
+  private api = inject(ApiService);
+  private inj = inject(Injector);
+  private store = inject(Store);
 
   /**
    * Initializes the uploader component.

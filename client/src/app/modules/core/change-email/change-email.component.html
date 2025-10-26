@@ -3,30 +3,29 @@
     <div class="card login-card">
       <h3>{{ t("changeEmailTitle") }}</h3>
 
-      <p-progressSpinner
-        ariaLabel="loading"
-        *ngIf="loading"
-      ></p-progressSpinner>
+      @if (loading) {
+        <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+      }
 
-      <p-message
-        severity="success"
-        text="{{ t('emailChangedSuccessfully') }}"
-        *ngIf="!loading && !error"
-      >
-      </p-message>
+      @if (!loading && !error) {
+        <p-message
+          severity="success"
+          text="{{ t('emailChangedSuccessfully') }}"
+        >
+        </p-message>
+      }
 
-      <p-message
-        severity="error"
-        text="{{ t('emailChangeError') }}"
-        *ngIf="!loading && error"
-      >
-      </p-message>
+      @if (!loading && error) {
+        <p-message severity="error" text="{{ t('emailChangeError') }}">
+        </p-message>
+      }
 
-      <p-button
-        label="{{ t('takeMeToTheRock') }}"
-        routerLink="/topo"
-        *ngIf="!loading && !error"
-      ></p-button>
+      @if (!loading && !error) {
+        <p-button
+          label="{{ t('takeMeToTheRock') }}"
+          routerLink="/topo"
+        ></p-button>
+      }
     </div>
   </div>
 </ng-container>

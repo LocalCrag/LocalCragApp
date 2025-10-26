@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Observable } from 'rxjs';
@@ -32,7 +32,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { HeaderMenuComponent } from '../../shared/components/header-menu/header-menu.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import { Avatar } from 'primeng/avatar';
@@ -50,7 +50,6 @@ import { Button } from 'primeng/button';
     AsyncPipe,
     RouterLink,
     TranslocoDirective,
-    NgIf,
     Menu,
     Avatar,
     HasPermissionDirective,
@@ -67,13 +66,11 @@ export class MenuComponent implements OnInit {
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private menuItemsService: MenuItemsService,
-    private translocoService: TranslocoService,
-    private dialogService: DialogService,
-    private actions: Actions,
-    private store: Store,
-  ) {}
+  private menuItemsService = inject(MenuItemsService);
+  private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private actions = inject(Actions);
+  private store = inject(Store);
 
   ngOnInit() {
     this.logoImage$ = this.store.pipe(select(selectLogoImage));

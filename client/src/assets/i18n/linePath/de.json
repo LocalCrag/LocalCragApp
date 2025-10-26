@@ -7,6 +7,5 @@
   "linePathForm.linePathLabel": "Linienverlauf",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
   "linePathForm.addLinePathButtonLabel": "Linie einzeichnen",
-  "linePathForm.leaveEditorButtonLabel": "Editor verlassen",
-  "linePathForm.cancelButtonLabel": "Abbrechen"
+  "linePathForm.leaveEditorButtonLabel": "Editor verlassen"
 }

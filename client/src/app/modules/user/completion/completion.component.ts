@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -13,7 +13,7 @@ import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectItem } from 'primeng/api';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
@@ -31,10 +31,8 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
   selector: 'lc-completion',
   imports: [
     ProgressBarModule,
-    NgIf,
     CompletionProgressBarComponent,
     AccordionModule,
-    NgForOf,
     ExpandButtonComponent,
     SliderLabelsComponent,
     SliderModule,
@@ -71,16 +69,14 @@ export class CompletionComponent implements OnInit {
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
 
   private loadedGradeFilterRange: number[] = null;
+  private statisticsService = inject(StatisticsService);
+  private usersService = inject(UsersService);
+  private route = inject(ActivatedRoute);
+  private menuItemsService = inject(MenuItemsService);
+  private regionService = inject(RegionService);
+  private translocoService = inject(TranslocoService);
 
-  constructor(
-    private statisticsService: StatisticsService,
-    private usersService: UsersService,
-    private route: ActivatedRoute,
-    private menuItemsService: MenuItemsService,
-    private regionService: RegionService,
-    private translocoService: TranslocoService,
-    protected scalesService: ScalesService,
-  ) {}
+  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     const userSlug =

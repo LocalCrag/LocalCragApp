@@ -1,4 +1,4 @@
-import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { OnDestroy, Pipe, PipeTransform, inject } from '@angular/core';
 import { Ascent } from '../../../models/ascent';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -10,10 +10,9 @@ import { Subscription } from 'rxjs';
   name: 'upgrade',
 })
 export class UpgradePipe implements PipeTransform, OnDestroy {
+  private store = inject(Store);
   private cachedResult: boolean = false;
   private subscription: Subscription | null = null;
-
-  constructor(private store: Store) {}
 
   transform(ascent: Ascent): boolean {
     if (this.subscription) {

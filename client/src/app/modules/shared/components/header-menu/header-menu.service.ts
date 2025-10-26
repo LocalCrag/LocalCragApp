@@ -1,14 +1,13 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable, inject } from '@angular/core';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuComponent } from './header-menu.component';
 
 @Injectable()
 export class HeaderMenuService {
+  private cdr = inject(ChangeDetectorRef);
   private activeItem: ProcessedMenuItem;
   private headerMenu: HeaderMenuComponent;
   private preventNextMobileMenuCollapse = false;
-
-  constructor(private cdr: ChangeDetectorRef) {}
 
   public setActive(item: ProcessedMenuItem, itemElement: HTMLElement = null) {
     this.deactivateCurrent();

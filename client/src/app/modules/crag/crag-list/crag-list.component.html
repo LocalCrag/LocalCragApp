@@ -21,14 +21,20 @@
           styleClass="md:mb-0"
         >
           <ng-template #selectedItem>
-            <div class="flex align-items-center gap-2" *ngIf="sortKey">
-              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
-              <div>{{ sortKey.label }}</div>
-            </div>
+            @if (sortKey) {
+              <div class="flex align-items-center gap-2">
+                @if (sortKey.icon) {
+                  <i [class]="sortKey.icon"></i>
+                }
+                <div>{{ sortKey.label }}</div>
+              </div>
+            }
           </ng-template>
           <ng-template let-option #item>
             <div class="flex align-items-center gap-2">
-              <i [class]="option.icon" *ngIf="option.icon"></i>
+              @if (option.icon) {
+                <i [class]="option.icon"></i>
+              }
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
@@ -54,72 +60,83 @@
       </div>
     </ng-template>
     <ng-template let-crags #list>
-      <lc-topo-dataview-skeleton
-        *ngIf="loading === loadingStates.LOADING"
-      ></lc-topo-dataview-skeleton>
-      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
-        <a
-          class="col-12 clickable-data-item"
-          routerLink="/topo/{{ crag.slug }}/sectors"
-          *ngFor="let crag of crags; let first = first"
-          data-cy="crag-list-item"
-        >
-          <div
-            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
-          >
-            <img
-              class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-              [src]="
-                crag.portraitImage
-                  ? crag.portraitImage.thumbnailM
-                  : 'assets/placeholder.png'
-              "
-              [alt]="crag.name"
-            />
-            <div
-              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+      @if (loading === loadingStates.LOADING) {
+        <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
+      }
+      @if (loading !== loadingStates.LOADING) {
+        <div class="grid grid-nogutter">
+          @for (crag of crags; track crag; let first = $first) {
+            <a
+              class="col-12 clickable-data-item"
+              routerLink="/topo/{{ crag.slug }}/sectors"
+              data-cy="crag-list-item"
             >
               <div
-                class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
               >
-                <div class="flex justify-content-between w-full">
-                  <span class="text-2xl font-bold black-font">
-                    {{ crag.name }}
-                  </span>
-                  <lc-archive-button
-                    *isModerator="true"
-                    [showLabel]="true"
-                    [crag]="crag"
-                  />
-                </div>
+                <img
+                  class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                  [src]="
+                    crag.portraitImage
+                      ? crag.portraitImage.thumbnailM
+                      : 'assets/placeholder.png'
+                  "
+                  [alt]="crag.name"
+                />
                 <div
-                  [innerHTML]="crag.shortDescription | sanitizeHtml"
-                  *ngIf="crag.shortDescription"
-                  class="quill-content"
-                ></div>
-                <lc-leveled-grade-distribution
-                  [fetchingObservable]="cragsService.getCragGrades(crag.slug)"
-                ></lc-leveled-grade-distribution>
-                <lc-ascent-count
-                  [ascentCount]="crag.ascentCount"
-                ></lc-ascent-count>
-                <div class="flex gap-1">
-                  <lc-closed-spot-tag *ngIf="crag?.closed"></lc-closed-spot-tag>
-                  <lc-secret-spot-tag *ngIf="crag?.secret"></lc-secret-spot-tag>
-                </div>
-                <div class="flex gap-1">
-                  <lc-closed-spot-alert
-                    class="mt-0"
-                    *ngIf="crag.closed"
-                    [reason]="crag.closedReason"
-                  ></lc-closed-spot-alert>
+                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+                >
+                  <div
+                    class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
+                  >
+                    <div class="flex justify-content-between w-full">
+                      <span class="text-2xl font-bold black-font">
+                        {{ crag.name }}
+                      </span>
+                      <lc-archive-button
+                        *isModerator="true"
+                        [showLabel]="true"
+                        [crag]="crag"
+                      />
+                    </div>
+                    @if (crag.shortDescription) {
+                      <div
+                        [innerHTML]="crag.shortDescription | sanitizeHtml"
+                        class="quill-content"
+                      ></div>
+                    }
+                    <lc-leveled-grade-distribution
+                      [fetchingObservable]="
+                        cragsService.getCragGrades(crag.slug)
+                      "
+                    ></lc-leveled-grade-distribution>
+                    <lc-ascent-count
+                      [ascentCount]="crag.ascentCount"
+                    ></lc-ascent-count>
+                    <div class="flex gap-1">
+                      @if (crag?.closed) {
+                        <lc-closed-spot-tag></lc-closed-spot-tag>
+                      }
+                      @if (crag?.secret) {
+                        <lc-secret-spot-tag></lc-secret-spot-tag>
+                      }
+                    </div>
+                    <div class="flex gap-1">
+                      @if (crag.closed) {
+                        <lc-closed-spot-alert
+                          class="mt-0"
+                          [reason]="crag.closedReason"
+                        ></lc-closed-spot-alert>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </a>
-      </div>
+            </a>
+          }
+        </div>
+      }
     </ng-template>
   </p-dataView>
 </ng-container>

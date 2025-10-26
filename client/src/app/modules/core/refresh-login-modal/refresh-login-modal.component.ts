@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Observable } from 'rxjs';
@@ -27,7 +28,7 @@ import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Dialog } from 'primeng/dialog';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { Password } from 'primeng/password';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -45,7 +46,6 @@ import { Button } from 'primeng/button';
   imports: [
     TranslocoDirective,
     Dialog,
-    NgIf,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -68,11 +68,8 @@ export class RefreshLoginModalComponent implements OnInit {
   public loadingStates = LoadingState;
 
   private email: string;
-
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject<Store<AppState>>(Store);
 
   /**
    * Loads the logged-in user to fetch the email for the re-login.

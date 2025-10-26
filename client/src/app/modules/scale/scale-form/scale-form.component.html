@@ -4,12 +4,12 @@
       <form [formGroup]="scaleForm" lcForm>
         <p-card>
           <ng-template #title>
-            <ng-container *ngIf="editMode"
-              >{{ scale?.lineType | transloco }} {{ scale?.name }}
-            </ng-container>
+            @if (editMode) {
+              {{ scale?.lineType | transloco }} {{ scale?.name }}
+            }
           </ng-template>
           <div class="grid grid-nogutter">
-            <ng-container *ngIf="!editMode">
+            @if (!editMode) {
               <div class="col-12 flex gap-4 align-items-center mb-2">
                 <label for="linetype">
                   {{ t("lineTypeLabel") }}
@@ -44,109 +44,106 @@
                 </small>
               </div>
               <hr class="col-12" />
-            </ng-container>
-            <div
-              class="col-12"
-              formArrayName="grades"
-              *ngFor="let grade of gradeControls().controls; let i = index"
-              lcControlGroup
-            >
-              <div [formGroupName]="i" class="flex gap-4 mb-2">
-                <ng-container
-                  *ngIf="
-                    grade.get('value').value <= 0 &&
-                    ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
-                      grade.get('name').value
+            }
+            @for (
+              grade of gradeControls().controls;
+              track grade;
+              let i = $index
+            ) {
+              <div class="col-12" formArrayName="grades" lcControlGroup>
+                <div [formGroupName]="i" class="flex gap-4 mb-2">
+                  @if (
+                    grade.get("value").value <= 0 &&
+                    ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
                     )
-                  "
-                >
-                  <div>
-                    <label>
-                      {{ t("gradeNameLabel") }}
-                      <input
-                        type="text"
-                        class="ml-2"
-                        pInputText
-                        disabled
-                        value="{{
-                          grade.get('name').value | translateSpecialGrades
-                        }}"
-                      />
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      {{ t("gradeValueLabel") }}
-                      <input
-                        type="text"
-                        class="ml-2"
-                        pInputText
-                        disabled
-                        value="{{
-                          grade.get('value').value | translateSpecialGrades
-                        }}"
-                      />
-                    </label>
-                  </div>
-                  <p-button
-                    icon="pi pi-trash"
-                    styleClass="p-button-danger"
-                    disabled
-                  />
-                </ng-container>
-                <ng-container
-                  *ngIf="
-                    grade.get('value').value > 0 ||
-                    !['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
-                      grade.get('name').value
+                  ) {
+                    <div>
+                      <label>
+                        {{ t("gradeNameLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          disabled
+                          value="{{
+                            grade.get('name').value | translateSpecialGrades
+                          }}"
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <label>
+                        {{ t("gradeValueLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          disabled
+                          value="{{
+                            grade.get('value').value | translateSpecialGrades
+                          }}"
+                        />
+                      </label>
+                    </div>
+                    <p-button
+                      icon="pi pi-trash"
+                      styleClass="p-button-danger"
+                      disabled
+                    />
+                  }
+                  @if (
+                    grade.get("value").value > 0 ||
+                    !["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
                     )
-                  "
-                >
-                  <div>
-                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-                    <label>
-                      {{ t("gradeNameLabel") }}
-                      <input
-                        type="text"
-                        class="ml-2"
-                        pInputText
-                        formControlName="name"
-                      />
-                    </label>
-                  </div>
-                  <div>
-                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-                    <label>
-                      {{ t("gradeValueLabel") }}
-                      <p-inputNumber
-                        styleClass="ml-2"
-                        formControlName="value"
-                        [min]="1"
-                      />
-                    </label>
-                  </div>
-                  <p-button
-                    [disabled]="loadingState === LoadingState.LOADING"
-                    icon="pi pi-trash"
-                    styleClass="p-button-danger"
-                    (click)="deleteGrade(i)"
-                  />
-                </ng-container>
+                  ) {
+                    <div>
+                      <label>
+                        {{ t("gradeNameLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          formControlName="name"
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <label>
+                        {{ t("gradeValueLabel") }}
+                        <p-inputNumber
+                          styleClass="ml-2"
+                          formControlName="value"
+                          [min]="1"
+                        />
+                      </label>
+                    </div>
+                    <p-button
+                      [disabled]="loadingState === LoadingState.LOADING"
+                      icon="pi pi-trash"
+                      styleClass="p-button-danger"
+                      (click)="deleteGrade(i)"
+                    />
+                  }
+                </div>
               </div>
-            </div>
+            }
             <div class="col-12 mt-2">
-              <p-message
-                *ngIf="gradeControls().hasError('not_unique')"
-                severity="error"
-                text="{{ t('valuesNotUnique') }}"
-                styleClass="min-w-full mb-3"
-              />
-              <p-message
-                *ngIf="gradeControls().hasError('names_not_filled')"
-                severity="error"
-                text="{{ t('namesNotFilled') }}"
-                styleClass="min-w-full mb-3"
-              />
+              @if (gradeControls().hasError("not_unique")) {
+                <p-message
+                  severity="error"
+                  text="{{ t('valuesNotUnique') }}"
+                  styleClass="min-w-full mb-3"
+                />
+              }
+              @if (gradeControls().hasError("names_not_filled")) {
+                <p-message
+                  severity="error"
+                  text="{{ t('namesNotFilled') }}"
+                  styleClass="min-w-full mb-3"
+                />
+              }
             </div>
             <div class="button-container">
               <p-button
@@ -176,47 +173,52 @@
               t("gradeBracketsDescriptionStackedChart", { min: 2, max: 8 })
             }}</em>
           </div>
-          <div
-            class="col-12"
-            formArrayName="stackedChartBrackets"
-            *ngFor="
-              let _ of stackedChartBracketsControls().controls;
-              let i = index
-            "
-          >
-            <div [formGroupName]="i" class="flex gap-4 mb-2">
-              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-              <label>
-                {{ t("gradeBracketsInputLabel") }}
-                <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
-                <p-button
-                  [disabled]="loadingState === LoadingState.LOADING"
-                  icon="pi pi-trash"
-                  styleClass="p-button-danger ml-4"
-                  (click)="deleteStackedChartBracket(i)"
-                />
-              </label>
+          @for (
+            _ of stackedChartBracketsControls().controls;
+            track _;
+            let i = $index
+          ) {
+            <div class="col-12" formArrayName="stackedChartBrackets">
+              <div [formGroupName]="i" class="flex gap-4 mb-2">
+                <label>
+                  {{ t("gradeBracketsInputLabel") }}
+                  <p-inputNumber
+                    formControlName="value"
+                    [min]="1"
+                    class="ml-2"
+                  />
+                  <p-button
+                    [disabled]="loadingState === LoadingState.LOADING"
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger ml-4"
+                    (click)="deleteStackedChartBracket(i)"
+                  />
+                </label>
+              </div>
             </div>
-          </div>
+          }
 
-          <p-message
-            *ngIf="gradeControls().hasError('not_unique')"
-            severity="error"
-            text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
-          />
-          <p-message
-            *ngIf="stackedChartBracketsControls().hasError('semantic_error')"
-            severity="error"
-            text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full mb-3"
-          />
-          <p-message
-            *ngIf="stackedChartBracketsControls().hasError('invalid_length')"
-            severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
-            styleClass="min-w-full mb-3"
-          />
+          @if (gradeControls().hasError("not_unique")) {
+            <p-message
+              severity="error"
+              text="{{ t('valuesNotUnique') }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
+          @if (stackedChartBracketsControls().hasError("semantic_error")) {
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsErrorMsg') }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
+          @if (stackedChartBracketsControls().hasError("invalid_length")) {
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
 
           <div class="button-container">
             <p-button
@@ -244,59 +246,68 @@
             }}</em>
           </div>
 
-          <div
-            class="col-12"
-            formArrayName="barChartBrackets"
-            *ngFor="let _ of barChartBracketsControls().controls; let i = index"
-          >
-            <div [formGroupName]="i" class="flex gap-4 mb-2">
-              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-              <label>
-                {{ t("gradeBracketsInputLabel") }}
-                <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
-                <label class="ml-3">
-                  {{ t("barChartBracketNameLabel") }}
-                  <input
-                    type="text"
+          @for (
+            _ of barChartBracketsControls().controls;
+            track _;
+            let i = $index
+          ) {
+            <div class="col-12" formArrayName="barChartBrackets">
+              <div [formGroupName]="i" class="flex gap-4 mb-2">
+                <label>
+                  {{ t("gradeBracketsInputLabel") }}
+                  <p-inputNumber
+                    formControlName="value"
+                    [min]="1"
                     class="ml-2"
-                    pInputText
-                    formControlName="name"
+                  />
+                  <label class="ml-3">
+                    {{ t("barChartBracketNameLabel") }}
+                    <input
+                      type="text"
+                      class="ml-2"
+                      pInputText
+                      formControlName="name"
+                    />
+                  </label>
+                  <p-button
+                    icon="pi pi-trash"
+                    [disabled]="loadingState === LoadingState.LOADING"
+                    styleClass="p-button-danger ml-4"
+                    (click)="deleteBarChartBracket(i)"
                   />
                 </label>
-                <p-button
-                  icon="pi pi-trash"
-                  [disabled]="loadingState === LoadingState.LOADING"
-                  styleClass="p-button-danger ml-4"
-                  (click)="deleteBarChartBracket(i)"
-                />
-              </label>
+              </div>
             </div>
-          </div>
+          }
 
-          <p-message
-            *ngIf="barChartBracketsControls().hasError('not_unique')"
-            severity="error"
-            text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
-          />
-          <p-message
-            *ngIf="barChartBracketsControls().hasError('semantic_error')"
-            severity="error"
-            text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full mb-3"
-          />
-          <p-message
-            *ngIf="barChartBracketsControls().hasError('invalid_length')"
-            severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
-            styleClass="min-w-full mb-3"
-          />
-          <p-message
-            *ngIf="barChartBracketsControls().hasError('names_not_filled')"
-            severity="error"
-            text="{{ t('namesNotFilled') }}"
-            styleClass="min-w-full mb-3"
-          />
+          @if (barChartBracketsControls().hasError("not_unique")) {
+            <p-message
+              severity="error"
+              text="{{ t('valuesNotUnique') }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
+          @if (barChartBracketsControls().hasError("semantic_error")) {
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsErrorMsg') }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
+          @if (barChartBracketsControls().hasError("invalid_length")) {
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
+          @if (barChartBracketsControls().hasError("names_not_filled")) {
+            <p-message
+              severity="error"
+              text="{{ t('namesNotFilled') }}"
+              styleClass="min-w-full mb-3"
+            />
+          }
 
           <div class="button-container">
             <p-button
@@ -340,7 +351,7 @@
             class="responsive-button ml-2"
             [disabled]="loadingState === LoadingState.LOADING"
           />
-          <p-confirmPopup></p-confirmPopup>
+          <p-confirmpopup></p-confirmpopup>
         </p-toolbar>
       </form>
     </p-card>

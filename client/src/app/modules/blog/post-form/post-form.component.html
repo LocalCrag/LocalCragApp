@@ -90,22 +90,24 @@
       </form>
 
       <div class="form-actions">
-        <p-button
-          label="{{ t('createPostButtonLabel') }}"
-          (click)="savePost()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="!editMode"
-        ></p-button>
-        <p-button
-          label="{{ t('editPostButtonLabel') }}"
-          (click)="savePost()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (!editMode) {
+          <p-button
+            label="{{ t('createPostButtonLabel') }}"
+            (click)="savePost()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
+        @if (editMode) {
+          <p-button
+            label="{{ t('editPostButtonLabel') }}"
+            (click)="savePost()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
@@ -113,16 +115,17 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
-        <p-button
-          label="{{ t('deletePostButtonLabel') }}"
-          (click)="confirmDeletePost($event)"
-          icon="pi pi-trash"
-          styleClass="p-button-danger"
-          class="ml-3 responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
-        <p-confirmPopup></p-confirmPopup>
+        @if (editMode) {
+          <p-button
+            label="{{ t('deletePostButtonLabel') }}"
+            (click)="confirmDeletePost($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
+        <p-confirmpopup></p-confirmpopup>
       </div>
     </p-card>
   </div>

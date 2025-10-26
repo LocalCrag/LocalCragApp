@@ -1,33 +1,32 @@
 <ng-container *transloco="let t; read: 'sector.sector'">
-  <ng-container *ngIf="sector">
-    <lc-closed-spot-alert
-      *ngIf="sector.closed"
-      [reason]="sector.closedReason"
-    ></lc-closed-spot-alert>
-
+  @if (sector) {
+    @if (sector.closed) {
+      <lc-closed-spot-alert
+        [reason]="sector.closedReason"
+      ></lc-closed-spot-alert>
+    }
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
       [fetchingObservable]="fetchSectorGrades"
     ></lc-grade-distribution-bar-chart>
-
-    <ng-container *ngIf="sector.description">
+    @if (sector.description) {
       <h4>{{ t("description") }}:</h4>
-      <section
-        [innerHTML]="sector.description | sanitizeHtml"
-        *ngIf="sector.description"
-        class="quill-content"
-      ></section>
-    </ng-container>
-
-    <lc-coordinates-button
-      [coordinates]="sectorCoordinates"
-      *ngIf="sectorCoordinates"
-    ></lc-coordinates-button>
-
+      @if (sector.description) {
+        <section
+          [innerHTML]="sector.description | sanitizeHtml"
+          class="quill-content"
+        ></section>
+      }
+    }
+    @if (sectorCoordinates) {
+      <lc-coordinates-button
+        [coordinates]="sectorCoordinates"
+      ></lc-coordinates-button>
+    }
     <lc-map [target]="sector"></lc-map>
-  </ng-container>
+  }
 
-  <ng-container *ngIf="!sector">
+  @if (!sector) {
     <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
     <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
     <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
@@ -36,5 +35,5 @@
     <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
     <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
     <p-skeleton width="40%" height="4rem"></p-skeleton>
-  </ng-container>
+  }
 </ng-container>

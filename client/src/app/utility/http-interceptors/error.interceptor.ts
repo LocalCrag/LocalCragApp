@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -15,7 +15,7 @@ import { ErrorHandlerService } from '../../services/core/error-handler.service';
  */
 @Injectable()
 export class ErrorHandlerInterceptor implements HttpInterceptor {
-  constructor(private errorHandler: ErrorHandlerService) {}
+  private errorHandler = inject(ErrorHandlerService);
 
   /**
    * Intercepts an http error and passes it to the error handler.

@@ -6,7 +6,7 @@ archive_args = {
     "type": fields.Enum(required=True, enum=ArchiveTypeEnum),
     "slug": fields.Str(required=True),
     "value": fields.Boolean(required=True),
-    "cascade": fields.Boolean(required=False, default=True),
+    "cascade": fields.Boolean(required=False),
 }
 
 

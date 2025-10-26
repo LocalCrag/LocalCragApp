@@ -1,8 +1,8 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { MapMarkerProperties } from '../../../models/map-marker';
-import { NgIf } from '@angular/common';
+
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Feature, Geometry } from 'geojson';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-item-info-dialog',
-  imports: [DialogModule, ButtonModule, NgIf, TranslocoDirective],
+  imports: [DialogModule, ButtonModule, TranslocoDirective],
   templateUrl: './map-item-info-dialog.component.html',
   styleUrl: './map-item-info-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -19,7 +19,7 @@ export class MapItemInfoDialogComponent {
   public isOpen: boolean = false;
   public feature: Feature<Geometry, MapMarkerProperties> | undefined;
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   public open(feature: Feature<Geometry, MapMarkerProperties>) {
     this.isOpen = true;

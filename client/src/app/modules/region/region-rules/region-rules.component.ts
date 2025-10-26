@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { SkeletonModule } from 'primeng/skeleton';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -11,18 +11,16 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
  */
 @Component({
   selector: 'lc-region-rules',
-  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })
 export class RegionRulesComponent implements OnInit {
   public region: Region;
 
-  constructor(
-    private regionsService: RegionService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
+  private regionsService = inject(RegionService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   ngOnInit() {
     this.region = null;

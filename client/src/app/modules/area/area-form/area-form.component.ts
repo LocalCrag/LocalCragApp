@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   QueryList,
   ViewChild,
@@ -37,7 +39,6 @@ import {
   disabledMarkerTypesArea,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
@@ -54,6 +55,7 @@ import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form component for creating and editing areas.
@@ -85,7 +87,6 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
     SingleImageUploadComponent,
   ],
 })
-@UntilDestroy()
 export class AreaFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -104,20 +105,20 @@ export class AreaFormComponent implements OnInit {
 
   private cragSlug: string;
   private sectorSlug: string;
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private areasService = inject(AreasService);
+  private sectorsService = inject(SectorsService);
+  private uploadService = inject(UploadService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private areasService: AreasService,
-    private sectorsService: SectorsService,
-    private uploadService: UploadService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -205,7 +206,7 @@ export class AreaFormComponent implements OnInit {
     });
     this.areaForm
       .get('closed')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closed) => {
         if (!closed) {
           this.areaForm.get('closedReason').setValue(null);

@@ -1,6 +1,6 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -17,7 +17,7 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'lc-archive-button',
-  imports: [ButtonModule, NgIf, NgClass, TranslocoDirective, GymModeDirective],
+  imports: [ButtonModule, NgClass, TranslocoDirective, GymModeDirective],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -31,12 +31,10 @@ export class ArchiveButtonComponent {
   @Input() showLabel: boolean;
   @Input() style: 'plain' | 'outline' | 'rounded' = 'plain';
 
-  constructor(
-    private archiveService: ArchiveService,
-    private confirmationService: ConfirmationService,
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private archiveService = inject(ArchiveService);
+  private confirmationService = inject(ConfirmationService);
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   getCurrentState() {
     if (this.line) return this.line.archived;

@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -30,12 +32,12 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { MapMarker } from '../../../models/map-marker';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
@@ -49,7 +51,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ToggleButtonModule,
     DialogModule,
     ButtonModule,
-    NgIf,
     Select,
     FormDirective,
     ControlGroupDirective,
@@ -60,7 +61,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   styleUrl: './map-marker-config-dialog.component.scss',
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'maps' }],
 })
-@UntilDestroy()
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -77,7 +77,8 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   public marker: MapMarker;
   public nameAndDescriptionHidden = false;
 
-  constructor(private fb: FormBuilder) {}
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
 
   ngOnInit() {
     this.buildForm();
@@ -114,7 +115,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
     ];
     this.mapMarkerForm
       .get('type')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.nameAndDescriptionHidden = baseTypes.includes(
           this.mapMarkerForm.get('type').value,

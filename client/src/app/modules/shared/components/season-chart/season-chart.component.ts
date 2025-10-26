@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { isSeasonEmpty, Season } from '../../../../models/season';
 import { ChartModule } from 'primeng/chart';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -8,11 +8,10 @@ import { selectBarChartColor } from '../../../../ngrx/selectors/instance-setting
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
 import { Message } from 'primeng/message';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-season-chart',
-  imports: [ChartModule, Message, NgIf, TranslocoDirective],
+  imports: [ChartModule, Message, TranslocoDirective],
   templateUrl: './season-chart.component.html',
   styleUrl: './season-chart.component.scss',
 })
@@ -23,10 +22,8 @@ export class SeasonChartComponent implements OnInit {
   options: any;
   seasonEmpty = true;
 
-  constructor(
-    private translocoService: TranslocoService,
-    private store: Store,
-  ) {}
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.seasonEmpty = isSeasonEmpty(this.season);

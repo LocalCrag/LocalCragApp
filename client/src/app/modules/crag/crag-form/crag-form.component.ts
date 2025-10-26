@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   OnInit,
   QueryList,
   ViewChild,
@@ -36,7 +38,7 @@ import {
   disabledMarkerTypesCrag,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
@@ -51,6 +53,7 @@ import { Select } from 'primeng/select';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * A component for creating and editing crags.
@@ -80,7 +83,6 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
     SingleImageUploadComponent,
   ],
 })
-@UntilDestroy()
 export class CragFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
@@ -95,18 +97,19 @@ export class CragFormComponent implements OnInit {
   public tradScales: SelectItem<string | null>[] = null;
   public quillModules: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private title: Title,
-    private uploadService: UploadService,
-    private cragsService: CragsService,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-    private scalesService: ScalesService,
-  ) {
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private title = inject(Title);
+  private uploadService = inject(UploadService);
+  private cragsService = inject(CragsService);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+  private scalesService = inject(ScalesService);
+
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 
@@ -188,7 +191,7 @@ export class CragFormComponent implements OnInit {
     });
     this.cragForm
       .get('closed')
-      .valueChanges.pipe(untilDestroyed(this))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closed) => {
         if (!closed) {
           this.cragForm.get('closedReason').setValue(null);
@@ -224,7 +227,7 @@ export class CragFormComponent implements OnInit {
     if (this.crag) {
       this.router.navigate(['/topo', this.crag.slug]);
     } else {
-      this.router.navigate(['/topo']);
+      this.router.navigate(['/topo/crags']);
     }
   }
 
@@ -257,7 +260,7 @@ export class CragFormComponent implements OnInit {
       } else {
         this.cragsService.createCrag(crag).subscribe(() => {
           this.store.dispatch(toastNotification('CRAG_CREATED'));
-          this.router.navigate(['/topo']);
+          this.router.navigate(['/topo/crags']);
           this.loadingState = LoadingState.DEFAULT;
         });
       }

@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -24,7 +25,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Password } from 'primeng/password';
 import { Message } from 'primeng/message';
-import { NgIf } from '@angular/common';
+
 import { Button } from 'primeng/button';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -42,7 +43,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ReactiveFormsModule,
     Password,
     Message,
-    NgIf,
     Button,
     TranslocoDirective,
     FormDirective,
@@ -60,14 +60,12 @@ export class ChangePasswordComponent implements OnInit {
   public loading = false;
   public changePasswordPressed = false;
 
-  constructor(
-    private authCrudService: AuthCrudService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private store: Store<AppState>,
-    private router: Router,
-    private fb: FormBuilder,
-  ) {}
+  private authCrudService = inject(AuthCrudService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private store = inject<Store<AppState>>(Store);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
   /**
    * Builds the form on component initialization.

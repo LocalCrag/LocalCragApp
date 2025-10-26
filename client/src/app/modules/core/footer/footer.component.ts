@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
@@ -13,7 +13,7 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { environment } from '../../../../environments/environment';
 import { Button } from 'primeng/button';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
 
@@ -22,7 +22,7 @@ import { take } from 'rxjs/operators';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Button, TranslocoDirective, NgForOf, RouterLink, NgIf, AsyncPipe],
+  imports: [Button, TranslocoDirective, RouterLink, AsyncPipe],
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
@@ -34,13 +34,10 @@ export class FooterComponent implements OnInit {
   };
 
   private skippedHierarchyLayers$: Observable<number>;
-
-  constructor(
-    private menuItemsService: MenuItemsService,
-    private store: Store,
-    private actions: Actions,
-    private translocoService: TranslocoService,
-  ) {}
+  private menuItemsService = inject(MenuItemsService);
+  private store = inject(Store);
+  private actions = inject(Actions);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.copyrightOwner$ = this.store.select(selectCopyrightOwner);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -8,7 +8,7 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
@@ -22,7 +22,6 @@ import { Skeleton } from 'primeng/skeleton';
   styleUrls: ['./area-info.component.scss'],
   imports: [
     TranslocoDirective,
-    NgIf,
     ClosedSpotAlertComponent,
     GradeDistributionBarChartComponent,
     SanitizeHtmlPipe,
@@ -36,10 +35,8 @@ export class AreaInfoComponent implements OnInit {
   public fetchAreaGrades: Observable<GradeDistribution>;
   public areaCoordinates: Coordinates;
 
-  constructor(
-    private route: ActivatedRoute,
-    private areasService: AreasService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private areasService = inject(AreasService);
 
   ngOnInit() {
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');

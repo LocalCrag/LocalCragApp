@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   forwardRef,
+  inject,
   Injector,
   Input,
   OnInit,
@@ -17,14 +19,15 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 import { Store } from '@ngrx/store';
 import { FormDirective } from '../../form.directive';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
-import { NgIf } from '@angular/common';
+
 import { FormControlDirective } from '../../form-control.directive';
 import { NgxColorsModule } from 'ngx-colors';
 import { Select } from 'primeng/select';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-advanced-color-picker',
@@ -33,7 +36,6 @@ import { Select } from 'primeng/select';
     ColorPickerModule,
     ReactiveFormsModule,
     SelectButtonModule,
-    NgIf,
     FormControlDirective,
     FormDirective,
     NgxColorsModule,
@@ -49,7 +51,6 @@ import { Select } from 'primeng/select';
     },
   ],
 })
-@UntilDestroy()
 export class AdvancedColorPickerComponent
   implements OnInit, ControlValueAccessor
 {
@@ -79,12 +80,10 @@ export class AdvancedColorPickerComponent
 
   private changeHandlers = [];
   private color: string | null = null;
-
-  constructor(
-    private fb: FormBuilder,
-    private inj: Injector,
-    private store: Store,
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
+  private inj = inject(Injector);
+  private store = inject(Store);
 
   ngOnInit() {
     this.formControl = this.inj.get(NgControl);
@@ -100,7 +99,7 @@ export class AdvancedColorPickerComponent
           { label: this.translateLabel('customColor'), value: true },
         ];
         this.colorForm.valueChanges
-          .pipe(untilDestroyed(this))
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(this.onChange.bind(this));
         this.isInitalized = true; // We need some extra initialization as colorForm gets populated asynchronously
         for (const fn of this.deferredCalls) fn();

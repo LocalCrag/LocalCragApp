@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ApiService } from '../../../../../services/core/api.service';
 import {
@@ -18,7 +19,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { ProgressBar } from 'primeng/progressbar';
 import { Image } from 'primeng/image';
 import { Button } from 'primeng/button';
@@ -38,7 +39,7 @@ import { Button } from 'primeng/button';
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  imports: [TranslocoDirective, FileUpload, NgIf, ProgressBar, Image, Button],
+  imports: [TranslocoDirective, FileUpload, ProgressBar, Image, Button],
 })
 export class SingleImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy
@@ -56,11 +57,9 @@ export class SingleImageUploadComponent
   public showProgressBar = false;
   public maxImageSize: number;
 
-  constructor(
-    private api: ApiService,
-    private inj: Injector,
-    private store: Store,
-  ) {}
+  private api = inject(ApiService);
+  private inj = inject(Injector);
+  private store = inject(Store);
 
   /**
    * Initializes the uploader component.

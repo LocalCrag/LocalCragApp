@@ -8,8 +8,12 @@
     [disabled]="ticked"
   >
     <ng-template #icon>
-      <i *ngIf="!ticked" class="pi pi-check"></i>
-      <i *ngIf="ticked" class="pi pi-check ticked-icon"></i>
+      @if (!ticked) {
+        <i class="pi pi-check"></i>
+      }
+      @if (ticked) {
+        <i class="pi pi-check ticked-icon"></i>
+      }
     </ng-template>
   </p-button>
 </ng-container>

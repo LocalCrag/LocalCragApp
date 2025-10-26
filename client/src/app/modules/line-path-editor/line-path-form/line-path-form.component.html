@@ -1,61 +1,62 @@
 <ng-container *transloco="let t; read: 'linePath.linePathForm'">
-  <form [formGroup]="linePathForm" lcForm *ngIf="linePathForm">
-    <div class="flex flex-column gap-2" lcControlGroup>
-      <label class="form-label" for="line">{{ t("lineLabel") }}</label>
-      <p-select
-        id="line"
-        formControlName="line"
-        [options]="lines"
-        data-cy="line-dropdown"
-        [optionDisabled]="'disabled'"
-        placeholder="{{ t('linePlaceholder') }}"
-        lcFormControl
-      >
-        <ng-template let-line #item>
-          <div
-            class="flex align-items-center gap-2"
-            data-cy="line-dropdown-item"
-          >
-            <div>
-              <span
-                *isGymMode="true"
-                class="color-indicator mr-3"
-                [style]="{ '--arrow-color': line.color }"
-              ></span>
-              {{ line.name }}
-              {{ line | lineGrade }}
+  @if (linePathForm) {
+    <form [formGroup]="linePathForm" lcForm>
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label" for="line">{{ t("lineLabel") }}</label>
+        <p-select
+          id="line"
+          formControlName="line"
+          [options]="lines"
+          data-cy="line-dropdown"
+          [optionDisabled]="'disabled'"
+          placeholder="{{ t('linePlaceholder') }}"
+          lcFormControl
+        >
+          <ng-template let-line #item>
+            <div
+              class="flex align-items-center gap-2"
+              data-cy="line-dropdown-item"
+            >
+              <div>
+                <span
+                  *isGymMode="true"
+                  class="color-indicator mr-3"
+                  [style]="{ '--arrow-color': line.color }"
+                ></span>
+                {{ line.name }}
+                {{ line | lineGrade }}
+              </div>
             </div>
-          </div>
-        </ng-template>
-        <ng-template let-selectedItem #selectedItem>
-          {{ selectedItem.name }} {{ selectedItem | lineGrade }}
-        </ng-template>
-      </p-select>
-      <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
-      }}</small>
-    </div>
-
-    <div class="flex flex-column gap-2" lcControlGroup>
-      <label class="form-label" for="path-editor">{{
-        t("linePathLabel")
-      }}</label>
-      <lc-line-path-editor
-        formControlName="path"
-        lcFormControl
-        id="path-editor"
-        [topoImage]="selectedTopoImage"
-        [color]="linePathForm.get('line').value?.color"
-      >
-      </lc-line-path-editor>
-      <small class="lc-error" *lcIfError="'required'">{{
-        t("drawALineWithAtLeastTwoAnchorPoints")
-      }}</small>
-      <small class="lc-error" *lcIfError="'minlength'">{{
-        t("drawALineWithAtLeastTwoAnchorPoints")
-      }}</small>
-    </div>
-  </form>
+          </ng-template>
+          <ng-template let-selectedItem #selectedItem>
+            {{ selectedItem.name }} {{ selectedItem | lineGrade }}
+          </ng-template>
+        </p-select>
+        <small class="lc-error" *lcIfError="'required'">{{
+          t("required")
+        }}</small>
+      </div>
+      <div class="flex flex-column gap-2" lcControlGroup>
+        <label class="form-label" for="path-editor">{{
+          t("linePathLabel")
+        }}</label>
+        <lc-line-path-editor
+          formControlName="path"
+          lcFormControl
+          id="path-editor"
+          [topoImage]="selectedTopoImage"
+          [color]="linePathForm.get('line').value?.color"
+        >
+        </lc-line-path-editor>
+        <small class="lc-error" *lcIfError="'required'">{{
+          t("drawALineWithAtLeastTwoAnchorPoints")
+        }}</small>
+        <small class="lc-error" *lcIfError="'minlength'">{{
+          t("drawALineWithAtLeastTwoAnchorPoints")
+        }}</small>
+      </div>
+    </form>
+  }
 
   <div class="form-actions">
     <p-button

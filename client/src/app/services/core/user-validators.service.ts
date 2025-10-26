@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -12,7 +12,7 @@ import { UsersService } from '../crud/users.service';
   providedIn: 'root',
 })
 export class UserValidatorsService {
-  constructor(private usersService: UsersService) {}
+  private usersService = inject(UsersService);
 
   /**
    * Validator that checks if an email is taken.

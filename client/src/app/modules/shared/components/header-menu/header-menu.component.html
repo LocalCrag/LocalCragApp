@@ -1,12 +1,18 @@
 <div class="menubar">
-  <div class="menubar-start" *ngIf="startTemplate">
-    <ng-container *ngTemplateOutlet="startTemplate"></ng-container>
-  </div>
-  <BarsIcon
-    *ngIf="isMobile || overflowDetected"
-    (click)="toggleMobileMenu()"
-    class="ml-2 mr-2 bars"
-  />
+  @if (startTemplate) {
+    <div class="menubar-start">
+      <ng-container *ngTemplateOutlet="startTemplate"></ng-container>
+    </div>
+  }
+  @if (isMobile || overflowDetected) {
+    <p-button
+      text
+      severity="secondary"
+      icon="pi pi-bars"
+      (click)="toggleMobileMenu()"
+      class="ml-2 mr-2"
+    ></p-button>
+  }
   <lc-header-menu-sub
     [isMobile]="isMobile || overflowDetected"
     [model]="processedModel"
@@ -16,7 +22,9 @@
       'is-expanded': mobileExpanded,
     }"
   ></lc-header-menu-sub>
-  <div class="menubar-end" *ngIf="endTemplate">
-    <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
-  </div>
+  @if (endTemplate) {
+    <div class="menubar-end">
+      <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
+    </div>
+  }
 </div>

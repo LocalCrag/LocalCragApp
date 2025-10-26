@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { FormService } from './form.service';
 
 /**
@@ -9,7 +9,7 @@ import { FormService } from './form.service';
   providers: [FormService],
 })
 export class FormDirective {
-  constructor(private formService: FormService) {}
+  private formService = inject(FormService);
 
   /**
    * Marks all registered controls as touched.

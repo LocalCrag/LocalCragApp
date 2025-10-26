@@ -1,5 +1,9 @@
 <ng-container *transloco="let t; read: 'ascentCount'">
   <i class="pi pi-check ticked"></i>
-  <span *ngIf="ascentCount === 1">{{ ascentCount }} {{ t("ascent") }}</span>
-  <span *ngIf="ascentCount !== 1">{{ ascentCount }} {{ t("ascents") }}</span>
+  @if (ascentCount === 1) {
+    <span>{{ ascentCount }} {{ t("ascent") }}</span>
+  }
+  @if (ascentCount !== 1) {
+    <span>{{ ascentCount }} {{ t("ascents") }}</span>
+  }
 </ng-container>

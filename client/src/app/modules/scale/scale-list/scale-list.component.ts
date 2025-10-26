@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { Component, OnInit, inject } from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -23,7 +22,6 @@ import { Message } from 'primeng/message';
   imports: [
     TranslocoDirective,
     DataViewModule,
-    NgForOf,
     RouterLink,
     AvatarModule,
     ButtonModule,
@@ -32,20 +30,17 @@ import { Message } from 'primeng/message';
     TagModule,
     CardModule,
     TranslocoPipe,
-    NgIf,
     ScaleListSkeletonComponent,
     Message,
   ],
 })
-@UntilDestroy()
 export class ScaleListComponent implements OnInit {
   public loadingState: LoadingState;
   public scales: Scale[] = null;
 
-  constructor(
-    private scalesService: ScalesService,
-    protected router: Router,
-  ) {}
+  private scalesService = inject(ScalesService);
+
+  protected router = inject(Router);
 
   ngOnInit() {
     this.loadingState = LoadingState.LOADING;

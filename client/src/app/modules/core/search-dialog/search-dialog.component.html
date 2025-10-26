@@ -1,8 +1,12 @@
 <ng-container *transloco="let t; read: 'searchDialog'">
   <p-inputgroup>
     <p-inputgroup-addon>
-      <i class="pi pi-search" *ngIf="!loading"></i>
-      <i class="pi pi-spin pi-spinner" *ngIf="loading"></i>
+      @if (!loading) {
+        <i class="pi pi-search"></i>
+      }
+      @if (loading) {
+        <i class="pi pi-spin pi-spinner"></i>
+      }
     </p-inputgroup-addon>
     <input
       type="text"
@@ -16,10 +20,10 @@
     </p-inputgroup-addon>
   </p-inputgroup>
 
-  <div class="spacer" *ngIf="searchables?.length > 0"></div>
-  <lc-searchable
-    [searchable]="searchable"
-    *ngFor="let searchable of searchables"
-  >
-  </lc-searchable>
+  @if (searchables?.length > 0) {
+    <div class="spacer"></div>
+  }
+  @for (searchable of searchables; track searchable) {
+    <lc-searchable [searchable]="searchable"> </lc-searchable>
+  }
 </ng-container>

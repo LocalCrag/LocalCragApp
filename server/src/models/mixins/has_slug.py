@@ -25,7 +25,23 @@ class HasSlug:
     Mixin class that adds a slug column to a model.
     """
 
-    slug_blocklist = []
+    slug_blocklist = [
+        "edit",
+        "create-area",
+        "areas",
+        "gallery",
+        "ascents",
+        "rules",
+        "create-crag",
+        "edit-region",
+        "create-line",
+        "add-topo-image",
+        "create-menu-page",
+        "create-post",
+        "create-sector",
+        "sectors",
+        "line-entry-batch-editor",
+    ]
     slug_target_columns = "name"
     slug = db.Column(
         db.String,

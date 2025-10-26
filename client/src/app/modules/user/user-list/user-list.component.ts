@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { RatingModule } from 'primeng/rating';
@@ -45,8 +45,6 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     AsyncPipe,
     ButtonModule,
     DataViewModule,
-    NgForOf,
-    NgIf,
     RatingModule,
     NgClass,
     FormsModule,
@@ -78,12 +76,10 @@ export class UserListComponent implements OnInit {
     [] as MenuItem[],
   );
 
-  constructor(
-    private usersService: UsersService,
-    private confirmationService: ConfirmationService,
-    private store: Store,
-    private translocoService: TranslocoService,
-  ) {}
+  private usersService = inject(UsersService);
+  private confirmationService = inject(ConfirmationService);
+  private store = inject(Store);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.refreshData();

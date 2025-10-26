@@ -3,10 +3,11 @@ import {
   HostBinding,
   Input,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { Searchable } from '../../../models/searchable';
 import { AvatarModule } from 'primeng/avatar';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -21,7 +22,6 @@ import { map } from 'rxjs/operators';
   selector: 'lc-searchable',
   imports: [
     AvatarModule,
-    NgIf,
     TranslocoDirective,
     RouterLink,
     LineGradePipe,
@@ -32,6 +32,10 @@ import { map } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchableComponent {
+  private store = inject(Store);
+
+  protected scalesService = inject(ScalesService);
+
   @Input() disableNavigation = false;
   @Input() searchable: Searchable;
   /**
@@ -41,11 +45,6 @@ export class SearchableComponent {
   @Input()
   ellipsis = false;
   protected readonly environment = environment;
-
-  constructor(
-    protected scalesService: ScalesService,
-    private store: Store,
-  ) {}
 
   public lineGradeValue() {
     if (!this.searchable.line) return of(undefined);

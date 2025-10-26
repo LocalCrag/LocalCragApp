@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { RankingService } from '../../../services/crud/ranking.service';
 import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
@@ -70,13 +76,11 @@ export class RankingListComponent implements OnInit {
   public lineType: SelectItem<LineType> = null;
   public rankingPastWeeks: Observable<number | null>;
 
-  constructor(
-    private rankingService: RankingService,
-    private translocoService: TranslocoService,
-    private cragsService: CragsService,
-    private sectorsService: SectorsService,
-    private store: Store,
-  ) {}
+  private rankingService = inject(RankingService);
+  private translocoService = inject(TranslocoService);
+  private cragsService = inject(CragsService);
+  private sectorsService = inject(SectorsService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.rankingTypes = [

@@ -1,5 +1,11 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
+
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -39,7 +45,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     TranslocoDirective,
     RouterLink,
     MessageModule,
-    NgIf,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -58,15 +63,13 @@ export class RegisterComponent implements OnInit {
   public loadingState: LoadingState = LoadingState.DEFAULT;
   public registerPressed = false;
 
-  constructor(
-    private router: Router,
-    private usersService: UsersService,
-    private store: Store<AppState>,
-    private title: Title,
-    private userValidators: UserValidatorsService,
-    private translocoService: TranslocoService,
-    private fb: FormBuilder,
-  ) {}
+  private router = inject(Router);
+  private usersService = inject(UsersService);
+  private store = inject<Store<AppState>>(Store);
+  private title = inject(Title);
+  private userValidators = inject(UserValidatorsService);
+  private translocoService = inject(TranslocoService);
+  private fb = inject(FormBuilder);
 
   ngOnInit(): void {
     this.buildForm();

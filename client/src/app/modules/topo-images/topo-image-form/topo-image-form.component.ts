@@ -4,6 +4,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -30,7 +31,7 @@ import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Card } from 'primeng/card';
-import { NgIf } from '@angular/common';
+
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -50,7 +51,6 @@ import { Button } from 'primeng/button';
     TranslocoDirective,
     Card,
     ReactiveFormsModule,
-    NgIf,
     SingleImageUploadComponent,
     FormDirective,
     ControlGroupDirective,
@@ -77,15 +77,13 @@ export class TopoImageFormComponent implements OnInit {
   private sectorSlug: string;
   private areaSlug: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private topoImagesService: TopoImagesService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private topoImagesService = inject(TopoImagesService);
 
   /**
    * Builds the form on component initialization.

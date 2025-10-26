@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { GalleryImage } from '../../models/gallery-image';
@@ -10,10 +10,8 @@ import { Paginated } from '../../models/paginated';
   providedIn: 'root',
 })
 export class GalleryService {
-  constructor(
-    private api: ApiService,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private http = inject(HttpClient);
 
   public getGalleryImage(galleryImageId: string): Observable<GalleryImage> {
     return this.http

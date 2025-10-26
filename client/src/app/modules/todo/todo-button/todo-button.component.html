@@ -7,8 +7,12 @@
     [ngClass]="{ 'hide-label': !showLabel }"
   >
     <ng-template #icon>
-      <i *ngIf="!isTodo" class="pi pi-plus"></i>
-      <i *ngIf="isTodo" class="pi pi-plus is-todo-icon"></i>
+      @if (!isTodo) {
+        <i class="pi pi-plus"></i>
+      }
+      @if (isTodo) {
+        <i class="pi pi-plus is-todo-icon"></i>
+      }
     </ng-template>
   </p-button>
 </ng-container>

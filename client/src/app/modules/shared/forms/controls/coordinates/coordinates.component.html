@@ -47,31 +47,33 @@
     </div>
   </form>
 
-  <div
-    class="mt-3"
-    *ngIf="coordinatesLoadingSuccess || coordinatesLoadingError"
-  >
-    <p-message
-      *ngIf="coordinatesLoadingSuccess && !positionLoading"
-      severity="success"
-      text="{{
-        t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
-      }}"
-    ></p-message>
-    <p-message
-      *ngIf="coordinatesLoadingSuccess && positionLoading"
-      severity="success"
-      text="{{
-        t(
-          'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
-          { x: accuracy }
-        )
-      }}"
-    ></p-message>
-    <p-message
-      *ngIf="coordinatesLoadingError"
-      severity="error"
-      text="{{ t('coordinatesCouldNotBeLoaded') }}"
-    ></p-message>
-  </div>
+  @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
+    <div class="mt-3">
+      @if (coordinatesLoadingSuccess && !positionLoading) {
+        <p-message
+          severity="success"
+          text="{{
+            t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
+          }}"
+        ></p-message>
+      }
+      @if (coordinatesLoadingSuccess && positionLoading) {
+        <p-message
+          severity="success"
+          text="{{
+            t(
+              'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
+              { x: accuracy }
+            )
+          }}"
+        ></p-message>
+      }
+      @if (coordinatesLoadingError) {
+        <p-message
+          severity="error"
+          text="{{ t('coordinatesCouldNotBeLoaded') }}"
+        ></p-message>
+      }
+    </div>
+  }
 </ng-container>

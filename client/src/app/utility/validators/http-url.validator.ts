@@ -17,7 +17,7 @@ export const httpUrlValidator =
         newUrl.hostname.includes('.')
         ? null
         : { invalidHttpUrl: true };
-    } catch (err) {
+    } catch (_err) {
       return { invalidHttpUrl: true };
     }
   };

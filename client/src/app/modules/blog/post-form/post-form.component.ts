@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -24,7 +24,7 @@ import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { Editor, EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf } from '@angular/common';
+
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -42,7 +42,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
-    NgIf,
     ReactiveFormsModule,
     TranslocoDirective,
     FormDirective,
@@ -65,17 +64,17 @@ export class PostFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private postsService: PostsService,
-    private uploadService: UploadService,
-    private title: Title,
-    private translocoService: TranslocoService,
-    private confirmationService: ConfirmationService,
-  ) {
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private postsService = inject(PostsService);
+  private uploadService = inject(UploadService);
+  private title = inject(Title);
+  private translocoService = inject(TranslocoService);
+  private confirmationService = inject(ConfirmationService);
+
+  constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
   }
 

@@ -11,6 +11,7 @@ from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import cors, db, jwt, ma, migrate
 from models.revoked_token import RevokedToken
+from schedulers import init_schedulers
 
 
 def register_extensions(application):
@@ -25,6 +26,13 @@ def configure_extensions(application):
     setup_jwt_error_handlers(jwt)
     configure_api(application)
     setup_http_error_handlers(application)
+
+    # Initialize schedulers only in development environment
+    # For production usage, they are initialized in via gunicorn post_fork hook
+    # In debug mode, the reloader spawns two processes, so we only want to init once
+    environment = os.environ.get("FLASK_ENV", None)
+    if environment == "development" and (not application.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true"):
+        init_schedulers(application)
 
 
 def init_sentry_sdk(application):

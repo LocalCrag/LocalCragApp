@@ -30,6 +30,11 @@ export const selectIsLoggedIn = createSelector(
   (authState) => authState.isLoggedIn,
 );
 
+export const selectIsSuperadmin = createSelector(
+  selectAuthState,
+  (authState) => authState.user?.superadmin || false,
+);
+
 export const selectIsAdmin = createSelector(
   selectAuthState,
   (authState) => authState.user?.admin || false,

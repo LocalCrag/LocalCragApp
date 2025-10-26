@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
@@ -25,15 +25,13 @@ import { ScalesService } from '../../../services/crud/scales.service';
 export class LineAscentsComponent implements OnInit {
   public line: Line;
 
-  constructor(
-    private linesService: LinesService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-    private scalesService: ScalesService,
-  ) {}
+  private linesService = inject(LinesService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
+  private scalesService = inject(ScalesService);
 
   ngOnInit() {
     const lineSlug =

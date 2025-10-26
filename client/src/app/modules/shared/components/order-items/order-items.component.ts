@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AbstractModel } from '../../../../models/abstract-model';
 import { LoadingState } from '../../../../enums/loading-state';
@@ -9,7 +9,7 @@ import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { OrderList } from 'primeng/orderlist';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { LineGradePipe } from '../../pipes/line-grade.pipe';
 
@@ -27,7 +27,6 @@ import { LineGradePipe } from '../../pipes/line-grade.pipe';
     AsyncPipe,
     TranslocoPipe,
     Button,
-    NgIf,
     LineGradePipe,
   ],
 })
@@ -46,12 +45,13 @@ export class OrderItemsComponent {
   readonly idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
   readonly slugParameter: string;
 
-  constructor(
-    private dialogConfig: DynamicDialogConfig,
-    private store: Store,
-    private ref: DynamicDialogRef,
-    protected scalesService: ScalesService,
-  ) {
+  private dialogConfig = inject(DynamicDialogConfig);
+  private store = inject(Store);
+  private ref = inject(DynamicDialogRef);
+
+  protected scalesService = inject(ScalesService);
+
+  constructor() {
     this.items = [...this.dialogConfig.data.items];
     this.itemsName = this.dialogConfig.data.itemsName;
     this.callback = this.dialogConfig.data.callback;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { UsersService } from '../../../services/crud/users.service';
 import { TranslocoService } from '@jsverse/transloco';
@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { User } from '../../../models/user';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -15,21 +15,19 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-user-ascents',
-  imports: [AscentListComponent, NgIf, SkeletonModule, NgForOf],
+  imports: [AscentListComponent, SkeletonModule],
   templateUrl: './user-ascents.component.html',
   styleUrl: './user-ascents.component.scss',
 })
 export class UserAscentsComponent implements OnInit {
   public user: User;
 
-  constructor(
-    private usersService: UsersService,
-    private translocoService: TranslocoService,
-    private router: Router,
-    private store: Store,
-    private title: Title,
-    private route: ActivatedRoute,
-  ) {}
+  private usersService = inject(UsersService);
+  private translocoService = inject(TranslocoService);
+  private router = inject(Router);
+  private store = inject(Store);
+  private title = inject(Title);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
     const userSlug =
@@ -53,4 +51,6 @@ export class UserAscentsComponent implements OnInit {
         });
       });
   }
+
+  protected readonly Array = Array;
 }

@@ -33,4 +33,3 @@ class DefaultConfig(object):
     S3_ADDRESSING = "virtual"
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
-    CRON_ACCESS_TOKEN = ""

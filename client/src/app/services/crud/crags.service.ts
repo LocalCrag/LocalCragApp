@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -17,11 +17,9 @@ import { deserializeGradeList, GradeDistribution } from '../../models/scale';
   providedIn: 'root',
 })
 export class CragsService {
-  constructor(
-    private api: ApiService,
-    private store: Store,
-    private http: HttpClient,
-  ) {}
+  private api = inject(ApiService);
+  private store = inject(Store);
+  private http = inject(HttpClient);
 
   /**
    * Creates a Crag.

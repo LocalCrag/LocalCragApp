@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
@@ -10,7 +16,6 @@ import { textColor } from '../../../../utility/misc/color';
 import { Tag } from 'primeng/tag';
 import { MeterGroup } from 'primeng/metergroup';
 import { Skeleton } from 'primeng/skeleton';
-import { NgForOf, NgIf } from '@angular/common';
 
 type StackChartData = {
   lineType: LineType;
@@ -29,7 +34,7 @@ type StackChartData = {
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Tag, MeterGroup, Skeleton, NgIf, TranslocoDirective, NgForOf],
+  imports: [Tag, MeterGroup, Skeleton, TranslocoDirective],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
@@ -39,10 +44,8 @@ export class LeveledGradeDistributionComponent implements OnInit {
   public gradeDistributionEmpty = true;
   public value = [];
 
-  constructor(
-    private scalesService: ScalesService,
-    private translocoService: TranslocoService,
-  ) {}
+  private scalesService = inject(ScalesService);
+  private translocoService = inject(TranslocoService);
 
   ngOnInit() {
     this.fetchingObservable.subscribe((gradeDistributions) => {

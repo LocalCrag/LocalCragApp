@@ -34,7 +34,6 @@ def overwrite_config_by_env_vars(app):
         "FRONTEND_HOST",
         "SENTRY_DSN",
         "SENTRY_ENABLED",
-        "CRON_ACCESS_TOKEN",
         "SUPERADMIN_EMAIL",
         "SUPERADMIN_FIRSTNAME",
         "SUPERADMIN_LASTNAME",
