@@ -5,11 +5,8 @@
     </p-divider>
 
     <div class="flex justify-content-center gap-2 mb-2">
-      @if (ascentForm.get('yearOnly').value) {
-        <div
-          class="flex flex-column gap-2 flex-grow-1"
-          lcControlGroup
-          >
+      @if (ascentForm.get("yearOnly").value) {
+        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
           <p-date-picker
             formControlName="year"
             view="year"
@@ -29,11 +26,8 @@
           }}</small>
         </div>
       }
-      @if (!ascentForm.get('yearOnly').value) {
-        <div
-          class="flex flex-column gap-2 flex-grow-1"
-          lcControlGroup
-          >
+      @if (!ascentForm.get("yearOnly").value) {
+        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
           <p-date-picker
             formControlName="date"
             view="date"
@@ -89,7 +83,7 @@
     <div
       class="flex flex-row gap-2 justify-content-center align-items-center"
       lcControlGroup
-      >
+    >
       <p-toggleButton
         formControlName="soft"
         [onLabel]="t('soft')"
@@ -103,12 +97,12 @@
         optionLabel="name"
         placeholder="{{ t('gradePlaceholder') }}"
         lcFormControl
-        >
+      >
         <ng-template let-grade #item>
           <div
             class="flex align-items-center gap-2"
             data-cy="grade-dropdown-item"
-            >
+          >
             <div>{{ grade.name | translateSpecialGrades }}</div>
           </div>
         </ng-template>
@@ -141,7 +135,7 @@
     <div
       class="flex flex-column gap-2 align-items-center justify-content-center"
       lcControlGroup
-      >
+    >
       <p-rating
         formControlName="rating"
         lcFormControl
@@ -175,7 +169,7 @@
     <div
       class="flex flex-row gap-2 align-items-center justify-content-center"
       lcControlGroup
-      >
+    >
       <p-toggleButton
         formControlName="flash"
         [dt]="toggleButtonDt"
@@ -199,13 +193,13 @@
       }
     </div>
     @if (
-      ascentForm.get('fa').value && (disableFAInAscents$ | async) === false
-      ) {
+      ascentForm.get("fa").value && (disableFAInAscents$ | async) === false
+    ) {
       <p-message
         styleClass="mt-2 ascent-form-alert"
         severity="info"
         text="{{ t('firstAscentExplanation') }}"
-        >
+      >
       </p-message>
     }
   </form>

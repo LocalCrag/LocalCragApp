@@ -1,14 +1,10 @@
 <ng-container *transloco="let t; read: 'line.line'">
   @if (line?.closed) {
-    <lc-closed-spot-alert
-      [reason]="line.closedReason"
-    ></lc-closed-spot-alert>
+    <lc-closed-spot-alert [reason]="line.closedReason"></lc-closed-spot-alert>
   }
 
   @if (line && ticks) {
-    <div
-      class="flex flex-column xl:flex-row xl:align-items-start gap-4"
-      >
+    <div class="flex flex-column xl:flex-row xl:align-items-start gap-4">
       <div class="w-12 sm:w-9 xl:w-5 flex flex-column mx-auto pt-4 gap-3">
         @for (topoImage of line.topoImages; track topoImage) {
           <div>
@@ -17,7 +13,9 @@
               [topoImage]="topoImage"
               [color]="line.color"
             ></lc-topo-image>
-            <lc-topo-image-details [topoImage]="topoImage"></lc-topo-image-details>
+            <lc-topo-image-details
+              [topoImage]="topoImage"
+            ></lc-topo-image-details>
           </div>
         }
         @if (line.topoImages.length === 0) {
@@ -25,7 +23,7 @@
             class="block border-round"
             [src]="'assets/placeholder.png'"
             [alt]="line.name"
-            />
+          />
         }
         <p-button
           label="{{ t('reorderLinePathsForLineButtonLabel') }}"
@@ -38,7 +36,7 @@
       </div>
       <div
         class="flex flex-column justify-content-between align-items-center xl:align-items-start flex-1 gap-4 pt-4"
-        >
+      >
         <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
         @if (line.description) {
           <div
@@ -51,11 +49,11 @@
           <div>
             {{ t("userGrade") }}:
             {{
-            scalesService.gradeNameByValue(
-            line.type,
-            line.gradeScale,
-            line.userGradeValue
-            ) | async
+              scalesService.gradeNameByValue(
+                line.type,
+                line.gradeScale,
+                line.userGradeValue
+              ) | async
             }}
           </div>
         }
@@ -65,63 +63,66 @@
             <span class="link-list">
               @for (video of line.videos; track video) {
                 <span
-                  ><a [href]="video.url" target="_blank">{{ video.title }}</a></span
-                  >
-                }
-              </span>
-            </div>
-          }
-          <div>
-            {{ t("rating") }}:
-            <p-rating
-              [ngModel]="displayUserRating ? line.userRating : line.authorRating"
-              [readonly]="true"
-            ></p-rating>
-          </div>
-          @if (line.faName || line.faYear || line.faDate) {
-            <div class="fa">
-              {{ t("FA") }} @if (line.faYear) {
-              <span>{{ line.faYear }}</span
+                  ><a [href]="video.url" target="_blank">{{
+                    video.title
+                  }}</a></span
                 >
-                }@if (line.faDate) {
-                <span>{{ line.faDate | date: "dd.MM.yyyy" }}</span
-                  >
-                  }@if (line.faName) {
-                  <span>{{ line.faName }}</span>
-                }
-              </div>
-            }
-            <lc-archive-button
-              [line]="line"
-              [showLabel]="true"
-              *isModerator="true"
-            ></lc-archive-button>
-            @if (!ticks.has(line.id)) {
-              <lc-todo-button
-                [line]="line"
-                [isTodo]="todos.has(line.id)"
-                [showLabel]="true"
-                *isLoggedIn="true"
-              ></lc-todo-button>
-            }
-            <lc-tick-button
-              [line]="line"
-              [ticked]="ticks.has(line.id)"
-              [showLabel]="true"
-              *isLoggedIn="true"
-            ></lc-tick-button>
+              }
+            </span>
           </div>
+        }
+        <div>
+          {{ t("rating") }}:
+          <p-rating
+            [ngModel]="displayUserRating ? line.userRating : line.authorRating"
+            [readonly]="true"
+          ></p-rating>
         </div>
-      }
+        @if (line.faName || line.faYear || line.faDate) {
+          <div class="fa">
+            {{ t("FA") }}
+            @if (line.faYear) {
+              <span>{{ line.faYear }}</span>
+            }
+            @if (line.faDate) {
+              <span>{{ line.faDate | date: "dd.MM.yyyy" }}</span>
+            }
+            @if (line.faName) {
+              <span>{{ line.faName }}</span>
+            }
+          </div>
+        }
+        <lc-archive-button
+          [line]="line"
+          [showLabel]="true"
+          *isModerator="true"
+        ></lc-archive-button>
+        @if (!ticks.has(line.id)) {
+          <lc-todo-button
+            [line]="line"
+            [isTodo]="todos.has(line.id)"
+            [showLabel]="true"
+            *isLoggedIn="true"
+          ></lc-todo-button>
+        }
+        <lc-tick-button
+          [line]="line"
+          [ticked]="ticks.has(line.id)"
+          [showLabel]="true"
+          *isLoggedIn="true"
+        ></lc-tick-button>
+      </div>
+    </div>
+  }
 
-      @if (!line && !ticks) {
-        <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
-        <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
-        <p-skeleton width="40%" height="4rem"></p-skeleton>
-      }
-    </ng-container>
+  @if (!line && !ticks) {
+    <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
+    <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
+    <p-skeleton width="40%" height="4rem"></p-skeleton>
+  }
+</ng-container>

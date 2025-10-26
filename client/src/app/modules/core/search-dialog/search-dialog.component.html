@@ -14,7 +14,7 @@
       [(ngModel)]="query"
       (ngModelChange)="search()"
       placeholder="{{ t('searchInputPlaceholder') }}"
-      />
+    />
     <p-inputgroup-addon>
       <p-button icon="pi pi-times" (click)="close()"></p-button>
     </p-inputgroup-addon>
@@ -24,9 +24,6 @@
     <div class="spacer"></div>
   }
   @for (searchable of searchables; track searchable) {
-    <lc-searchable
-      [searchable]="searchable"
-      >
-    </lc-searchable>
+    <lc-searchable [searchable]="searchable"> </lc-searchable>
   }
 </ng-container>

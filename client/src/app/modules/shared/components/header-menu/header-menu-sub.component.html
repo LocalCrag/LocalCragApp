@@ -2,9 +2,12 @@
   <div
     class="item"
     (mouseenter)="onMouseenter(item, menuItem)"
-    [ngClass]="{ 'active-item': item.items && item.isActive, 'root-child': root }"
+    [ngClass]="{
+      'active-item': item.items && item.isActive,
+      'root-child': root,
+    }"
     #menuItem
-    >
+  >
     <div class="item-wrapper">
       <a
         tabindex="0"
@@ -12,22 +15,15 @@
         (click)="$event.preventDefault(); onItemClick(item)"
         [ngClass]="{ 'no-sub-menu': !item.items }"
         [href]="item.item.routerLink || item.item.url || '#'"
-        >
+      >
         @if (item.item.icon) {
-          <span
-            class="p-menuitem-icon menu-icon"
-            [ngClass]="item.item.icon"
-            >
+          <span class="p-menuitem-icon menu-icon" [ngClass]="item.item.icon">
           </span>
         }
         <span>{{ item.item.label }}</span>
       </a>
       @if (item.items?.length > 0) {
-        <div
-          tabindex="0"
-          class="item-angle"
-          (click)="onAngleClick(item)"
-          >
+        <div tabindex="0" class="item-angle" (click)="onAngleClick(item)">
           @if (root) {
             <AngleDownIcon class="ml-2" />
           }
@@ -52,7 +48,7 @@
         [class.is-active]="item.isActive"
         [firstChild]="root"
         [isMobile]="isMobile"
-        >
+      >
       </lc-header-menu-sub>
     }
   </div>

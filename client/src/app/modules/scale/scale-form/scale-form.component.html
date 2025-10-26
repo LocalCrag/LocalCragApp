@@ -23,12 +23,12 @@
                     { name: t('TRAD'), value: LineType.TRAD },
                   ]"
                   optionLabel="name"
-                  />
+                />
               </div>
               <div
                 class="col-12 flex gap-4 align-items-center mb-2"
                 lcControlGroup
-                >
+              >
                 <label for="name">
                   {{ t("nameInputLabel") }}
                 </label>
@@ -38,26 +38,26 @@
                   id="name"
                   formControlName="name"
                   lcFormControl
-                  />
+                />
                 <small class="lc-error" *lcIfError="'required'">
                   {{ t("required") }}
                 </small>
               </div>
               <hr class="col-12" />
             }
-            @for (grade of gradeControls().controls; track grade; let i = $index) {
-              <div
-                class="col-12"
-                formArrayName="grades"
-                lcControlGroup
-                >
+            @for (
+              grade of gradeControls().controls;
+              track grade;
+              let i = $index
+            ) {
+              <div class="col-12" formArrayName="grades" lcControlGroup>
                 <div [formGroupName]="i" class="flex gap-4 mb-2">
                   @if (
-                    grade.get('value').value <= 0 &&
-                    ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
-                    grade.get('name').value
+                    grade.get("value").value <= 0 &&
+                    ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
                     )
-                    ) {
+                  ) {
                     <div>
                       <label>
                         {{ t("gradeNameLabel") }}
@@ -66,10 +66,10 @@
                           class="ml-2"
                           pInputText
                           disabled
-                        value="{{
-                          grade.get('name').value | translateSpecialGrades
-                        }}"
-                          />
+                          value="{{
+                            grade.get('name').value | translateSpecialGrades
+                          }}"
+                        />
                       </label>
                     </div>
                     <div>
@@ -80,24 +80,24 @@
                           class="ml-2"
                           pInputText
                           disabled
-                        value="{{
-                          grade.get('value').value | translateSpecialGrades
-                        }}"
-                          />
+                          value="{{
+                            grade.get('value').value | translateSpecialGrades
+                          }}"
+                        />
                       </label>
                     </div>
                     <p-button
                       icon="pi pi-trash"
                       styleClass="p-button-danger"
                       disabled
-                      />
+                    />
                   }
                   @if (
-                    grade.get('value').value > 0 ||
-                    !['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(
-                    grade.get('name').value
+                    grade.get("value").value > 0 ||
+                    !["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
                     )
-                    ) {
+                  ) {
                     <div>
                       <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                       <label>
@@ -107,7 +107,7 @@
                           class="ml-2"
                           pInputText
                           formControlName="name"
-                          />
+                        />
                       </label>
                     </div>
                     <div>
@@ -118,7 +118,7 @@
                           styleClass="ml-2"
                           formControlName="value"
                           [min]="1"
-                          />
+                        />
                       </label>
                     </div>
                     <p-button
@@ -126,25 +126,25 @@
                       icon="pi pi-trash"
                       styleClass="p-button-danger"
                       (click)="deleteGrade(i)"
-                      />
+                    />
                   }
                 </div>
               </div>
             }
             <div class="col-12 mt-2">
-              @if (gradeControls().hasError('not_unique')) {
+              @if (gradeControls().hasError("not_unique")) {
                 <p-message
                   severity="error"
                   text="{{ t('valuesNotUnique') }}"
                   styleClass="min-w-full mb-3"
-                  />
+                />
               }
-              @if (gradeControls().hasError('names_not_filled')) {
+              @if (gradeControls().hasError("names_not_filled")) {
                 <p-message
                   severity="error"
                   text="{{ t('namesNotFilled') }}"
                   styleClass="min-w-full mb-3"
-                  />
+                />
               }
             </div>
             <div class="button-container">
@@ -154,14 +154,14 @@
                 icon="pi pi-plus-circle"
                 class="responsive-button"
                 [disabled]="loadingState === LoadingState.LOADING"
-                />
+              />
               <p-button
                 label="{{ t('reorderGrades') }}"
                 (click)="reorderGradesByValue()"
                 icon="pi pi-sort-amount-down-alt"
                 class="responsive-button ml-2"
                 [disabled]="loadingState === LoadingState.LOADING"
-                />
+              />
             </div>
           </div>
 
@@ -176,48 +176,51 @@
             }}</em>
           </div>
           @for (
-            _ of stackedChartBracketsControls().controls; track
-            _; let i = $index) {
-            <div
-              class="col-12"
-              formArrayName="stackedChartBrackets"
-              >
+            _ of stackedChartBracketsControls().controls;
+            track _;
+            let i = $index
+          ) {
+            <div class="col-12" formArrayName="stackedChartBrackets">
               <div [formGroupName]="i" class="flex gap-4 mb-2">
                 <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
+                  <p-inputNumber
+                    formControlName="value"
+                    [min]="1"
+                    class="ml-2"
+                  />
                   <p-button
                     [disabled]="loadingState === LoadingState.LOADING"
                     icon="pi pi-trash"
                     styleClass="p-button-danger ml-4"
                     (click)="deleteStackedChartBracket(i)"
-                    />
+                  />
                 </label>
               </div>
             </div>
           }
 
-          @if (gradeControls().hasError('not_unique')) {
+          @if (gradeControls().hasError("not_unique")) {
             <p-message
               severity="error"
               text="{{ t('valuesNotUnique') }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
-          @if (stackedChartBracketsControls().hasError('semantic_error')) {
+          @if (stackedChartBracketsControls().hasError("semantic_error")) {
             <p-message
               severity="error"
               text="{{ t('gradeBracketsErrorMsg') }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
-          @if (stackedChartBracketsControls().hasError('invalid_length')) {
+          @if (stackedChartBracketsControls().hasError("invalid_length")) {
             <p-message
               severity="error"
               text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
 
           <div class="button-container">
@@ -227,14 +230,14 @@
               icon="pi pi-plus-circle"
               class="responsive-button"
               [disabled]="loadingState === LoadingState.LOADING"
-              />
+            />
             <p-button
               label="{{ t('reorderGrades') }}"
               (click)="reorderStackedChartBracketsByValue()"
               icon="pi pi-sort-amount-down-alt"
               class="responsive-button ml-2"
               [disabled]="loadingState === LoadingState.LOADING"
-              />
+            />
           </div>
 
           <hr class="mt-4" />
@@ -246,16 +249,21 @@
             }}</em>
           </div>
 
-          @for (_ of barChartBracketsControls().controls; track _; let i = $index) {
-            <div
-              class="col-12"
-              formArrayName="barChartBrackets"
-              >
+          @for (
+            _ of barChartBracketsControls().controls;
+            track _;
+            let i = $index
+          ) {
+            <div class="col-12" formArrayName="barChartBrackets">
               <div [formGroupName]="i" class="flex gap-4 mb-2">
                 <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber formControlName="value" [min]="1" class="ml-2" />
+                  <p-inputNumber
+                    formControlName="value"
+                    [min]="1"
+                    class="ml-2"
+                  />
                   <label class="ml-3">
                     {{ t("barChartBracketNameLabel") }}
                     <input
@@ -263,46 +271,46 @@
                       class="ml-2"
                       pInputText
                       formControlName="name"
-                      />
+                    />
                   </label>
                   <p-button
                     icon="pi pi-trash"
                     [disabled]="loadingState === LoadingState.LOADING"
                     styleClass="p-button-danger ml-4"
                     (click)="deleteBarChartBracket(i)"
-                    />
+                  />
                 </label>
               </div>
             </div>
           }
 
-          @if (barChartBracketsControls().hasError('not_unique')) {
+          @if (barChartBracketsControls().hasError("not_unique")) {
             <p-message
               severity="error"
               text="{{ t('valuesNotUnique') }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
-          @if (barChartBracketsControls().hasError('semantic_error')) {
+          @if (barChartBracketsControls().hasError("semantic_error")) {
             <p-message
               severity="error"
               text="{{ t('gradeBracketsErrorMsg') }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
-          @if (barChartBracketsControls().hasError('invalid_length')) {
+          @if (barChartBracketsControls().hasError("invalid_length")) {
             <p-message
               severity="error"
               text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
-          @if (barChartBracketsControls().hasError('names_not_filled')) {
+          @if (barChartBracketsControls().hasError("names_not_filled")) {
             <p-message
               severity="error"
               text="{{ t('namesNotFilled') }}"
               styleClass="min-w-full mb-3"
-              />
+            />
           }
 
           <div class="button-container">
@@ -312,14 +320,14 @@
               icon="pi pi-plus-circle"
               class="responsive-button"
               [disabled]="loadingState === LoadingState.LOADING"
-              />
+            />
             <p-button
               label="{{ t('reorderGrades') }}"
               (click)="reorderBarChartBracketsByValue()"
               icon="pi pi-sort-amount-down-alt"
               class="responsive-button ml-2"
               [disabled]="loadingState === LoadingState.LOADING"
-              />
+            />
           </div>
         </p-card>
 
@@ -330,7 +338,7 @@
             icon="pi pi-save"
             class="responsive-button"
             [loading]="loadingState === LoadingState.LOADING"
-            />
+          />
           <p-button
             label="{{ t('deleteScale') }}"
             (click)="confirmDeleteScale($event)"
@@ -338,7 +346,7 @@
             styleClass="p-button-danger"
             class="responsive-button ml-2"
             [disabled]="loadingState === LoadingState.LOADING"
-            />
+          />
           <p-button
             label="{{ t('cancel') }}"
             (click)="router.navigate(['/scales'])"
@@ -346,7 +354,7 @@
             severity="secondary"
             class="responsive-button ml-2"
             [disabled]="loadingState === LoadingState.LOADING"
-            />
+          />
           <p-confirmPopup></p-confirmPopup>
         </p-toolbar>
       </form>

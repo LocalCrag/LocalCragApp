@@ -27,15 +27,14 @@
           !excludeProjects &&
           !excludeUngraded &&
           (chartDataElement.ungradedCount > 0 ||
-          chartDataElement.projectCount > 0)
-          ) {
-          <span
-            >
+            chartDataElement.projectCount > 0)
+        ) {
+          <span>
             ({{
-            t("plusXUngradedYProjects", {
-            ungraded: chartDataElement.ungradedCount,
-            projects: chartDataElement.projectCount,
-            })
+              t("plusXUngradedYProjects", {
+                ungraded: chartDataElement.ungradedCount,
+                projects: chartDataElement.projectCount,
+              })
             }})
           </span>
         }
@@ -43,13 +42,12 @@
           excludeProjects &&
           !excludeUngraded &&
           chartDataElement.ungradedCount > 0
-          ) {
-          <span
-            >
+        ) {
+          <span>
             ({{
-            t("plusXUngraded", {
-            ungraded: chartDataElement.ungradedCount,
-            })
+              t("plusXUngraded", {
+                ungraded: chartDataElement.ungradedCount,
+              })
             }})
           </span>
         }
@@ -57,13 +55,12 @@
           !excludeProjects &&
           excludeUngraded &&
           chartDataElement.projectCount > 0
-          ) {
-          <span
-            >
+        ) {
+          <span>
             ({{
-            t("plusXProjects", {
-            projects: chartDataElement.projectCount,
-            })
+              t("plusXProjects", {
+                projects: chartDataElement.projectCount,
+              })
             }})
           </span>
         }

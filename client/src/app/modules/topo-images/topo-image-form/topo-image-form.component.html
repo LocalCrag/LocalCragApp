@@ -4,7 +4,7 @@
       header="{{
         !editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')
       }}"
-      >
+    >
       @if (!editMode) {
         <p class="mt-0">
           {{ t("addTopoImageDescription") }}
@@ -40,7 +40,7 @@
             placeholder="{{ t('topoImageTitlePlaceholder') }}"
             lcFormControl
             data-cy="topo-image-form-title"
-            />
+          />
           <small class="lc-error" *lcIfError="'maxlength'">{{
             t("maxlength120")
           }}</small>
@@ -58,7 +58,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="topo-image-form-description"
-            >
+          >
             <ng-template #header>
               <span class="ql-formats">
                 <button

@@ -8,7 +8,7 @@
             label="{{ menuItem.title }}"
             styleClass="p-button-secondary p-button-text"
             routerLink="{{ menuItem.routerLink }}"
-            >
+          >
           </p-button>
         }
         @if (menuItem.link) {
@@ -17,7 +17,7 @@
             label="{{ menuItem.title }}"
             styleClass="p-button-secondary p-button-text"
             (click)="openLink(menuItem.link)"
-            >
+          >
           </p-button>
         }
       }
@@ -31,8 +31,8 @@
       Powered with 🦾 by
       <a href="https://github.com/LocalCrag/LocalCragApp" target="_blank"
         >LocalCrag</a
-        >
-        <span class="version"> v{{ version }} </span>
-      </div>
+      >
+      <span class="version"> v{{ version }} </span>
     </div>
-  </ng-container>
+  </div>
+</ng-container>

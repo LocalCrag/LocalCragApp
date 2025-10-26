@@ -2,14 +2,12 @@
   @if (availableScales.length > 0 && scaleKey?.value) {
     <div
       class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
-      >
+    >
       <div
         class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
-        >
+      >
         @if (availableScales.length > 2) {
-          <div
-            class="w-full flex align-items-center"
-            >
+          <div class="w-full flex align-items-center">
             <strong class="mr-2">
               {{ t("lineType") }}
             </strong>
@@ -19,7 +17,7 @@
               optionLabel="label"
               (onChange)="selectScale()"
               styleClass="md:mb-0"
-              >
+            >
               <ng-template #selectedItem>
                 @if (scaleKey) {
                   <div class="flex align-items-center gap-2">
@@ -42,24 +40,24 @@
               [rangeMax]="gradeFilterRange[1]"
               [min]="minGradeValue"
               [max]="maxGradeValue"
-          [minLabel]="
-            scalesService.gradeNameByValue(
-              scaleKey.value.lineType,
-              scaleKey.value.gradeScale,
-              gradeFilterRange[0]
-            )
-              | async
-              | translateSpecialGrades
-          "
-          [maxLabel]="
-            scalesService.gradeNameByValue(
-              scaleKey.value.lineType,
-              scaleKey.value.gradeScale,
-              gradeFilterRange[1]
-            )
-              | async
-              | translateSpecialGrades
-          "
+              [minLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[0]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+              [maxLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[1]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
             ></lc-slider-labels>
             <p-slider
               [(ngModel)]="gradeFilterRange"
@@ -68,7 +66,7 @@
               [range]="true"
               [step]="1"
               (onSlideEnd)="reloadOnSlideEnd()"
-              />
+            />
           </div>
         }
       </div>
@@ -102,7 +100,7 @@
                   [areaMap]="areaMap"
                   [level]="'crag'"
                   [id]="crag.id"
-                  >
+                >
                 </lc-completion-progress-bar>
                 <lc-expand-button
                   [expanded]="expandedCrags.has(crag.id)"
@@ -121,11 +119,13 @@
                           [areaMap]="areaMap"
                           [level]="'sector'"
                           [id]="sector.id"
-                          >
+                        >
                         </lc-completion-progress-bar>
                         <lc-expand-button
                           [expanded]="expandedSectors.has(sector.id)"
-                          (expandedChange)="addOrRemove(expandedSectors, sector.id)"
+                          (expandedChange)="
+                            addOrRemove(expandedSectors, sector.id)
+                          "
                         ></lc-expand-button>
                       </div>
                       @if (expandedSectors.has(sector.id)) {
@@ -140,7 +140,7 @@
                                   [areaMap]="areaMap"
                                   [level]="'area'"
                                   [id]="area.id"
-                                  >
+                                >
                                 </lc-completion-progress-bar>
                                 <div></div>
                               </div>
@@ -160,10 +160,7 @@
   }
 
   @if (completion && Object.keys(completion.crags).length === 0) {
-    <p-message
-      severity="info"
-      icon="pi pi-info-circle"
-      >
+    <p-message severity="info" icon="pi pi-info-circle">
       {{ t("noLinesInThisGradeRange") }}
     </p-message>
   }

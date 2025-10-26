@@ -1,9 +1,7 @@
 <ng-container *transloco="let t; read: 'crag.crag'">
   @if (crag) {
     @if (crag.closed) {
-      <lc-closed-spot-alert
-        [reason]="crag.closedReason"
-      ></lc-closed-spot-alert>
+      <lc-closed-spot-alert [reason]="crag.closedReason"></lc-closed-spot-alert>
     }
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart

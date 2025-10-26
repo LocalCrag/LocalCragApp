@@ -11,12 +11,12 @@
           [optionDisabled]="'disabled'"
           placeholder="{{ t('linePlaceholder') }}"
           lcFormControl
-          >
+        >
           <ng-template let-line #item>
             <div
               class="flex align-items-center gap-2"
               data-cy="line-dropdown-item"
-              >
+            >
               <div>
                 <span
                   *isGymMode="true"
@@ -46,7 +46,7 @@
           id="path-editor"
           [topoImage]="selectedTopoImage"
           [color]="linePathForm.get('line').value?.color"
-          >
+        >
         </lc-line-path-editor>
         <small class="lc-error" *lcIfError="'required'">{{
           t("drawALineWithAtLeastTwoAnchorPoints")

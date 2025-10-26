@@ -11,7 +11,7 @@
           placeholder="{{ t('latPlaceholder') }}"
           lcFormControl
           data-cy="lat"
-          />
+        />
         <small class="lc-error" *lcIfError="'invalidLat'">{{
           t("invalidLat")
         }}</small>
@@ -27,7 +27,7 @@
           placeholder="{{ t('lngPlaceholder') }}"
           lcFormControl
           data-cy="lng"
-          />
+        />
         <small class="lc-error" *lcIfError="'invalidLng'">{{
           t("invalidLng")
         }}</small>
@@ -48,26 +48,24 @@
   </form>
 
   @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
-    <div
-      class="mt-3"
-      >
+    <div class="mt-3">
       @if (coordinatesLoadingSuccess && !positionLoading) {
         <p-message
           severity="success"
-      text="{{
-        t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
-      }}"
+          text="{{
+            t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
+          }}"
         ></p-message>
       }
       @if (coordinatesLoadingSuccess && positionLoading) {
         <p-message
           severity="success"
-      text="{{
-        t(
-          'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
-          { x: accuracy }
-        )
-      }}"
+          text="{{
+            t(
+              'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
+              { x: accuracy }
+            )
+          }}"
         ></p-message>
       }
       @if (coordinatesLoadingError) {

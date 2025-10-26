@@ -36,7 +36,7 @@
         [suggestions]="searchablesSuggestions"
         (completeMethod)="loadTagSuggestions($event)"
         [multiple]="true"
-        >
+      >
         <ng-template let-searchable #item>
           <lc-searchable
             [searchable]="searchable"

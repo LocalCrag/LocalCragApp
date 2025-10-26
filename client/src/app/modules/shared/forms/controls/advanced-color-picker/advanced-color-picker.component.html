@@ -5,19 +5,19 @@
       lcForm
       class="flex flex-row"
       [class]="{ 'gap-2': colorForm?.get('customColor').value }"
-      >
+    >
       <p-select
         formControlName="customColor"
-      [options]="[
-        { value: false, label: t('globalColor') },
-        { value: true, label: t('customColor') },
-      ]"
+        [options]="[
+          { value: false, label: t('globalColor') },
+          { value: true, label: t('customColor') },
+        ]"
         optionLabel="label"
         optionValue="value"
         lcFormControl
         styleClass="w-full"
-        />
-      @if (colorForm?.get('customColor').value) {
+      />
+      @if (colorForm?.get("customColor").value) {
         <ngx-colors
           ngx-colors-trigger
           class="flex justify-content-center align-items-center"

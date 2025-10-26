@@ -20,7 +20,7 @@
             placeholder="{{ t('firstnamePlaceholder') }}"
             lcFormControl
             data-cy="register-form-firstname"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -37,7 +37,7 @@
             placeholder="{{ t('lastnamePlaceholder') }}"
             lcFormControl
             data-cy="register-form-lastname"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -55,7 +55,7 @@
               placeholder="{{ t('emailPlaceholder') }}"
               lcFormControl
               data-cy="register-form-email"
-              />
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -70,11 +70,8 @@
             }}</small>
           </div>
 
-          @if (accountForm.get('emails.email').value !== currentUser.email) {
-            <div
-              class="card-container block"
-              lcControlGroup
-              >
+          @if (accountForm.get("emails.email").value !== currentUser.email) {
+            <div class="card-container block" lcControlGroup>
               <input
                 type="text"
                 pInputText
@@ -82,7 +79,7 @@
                 placeholder="{{ t('emailConfirmPlaceholder') }}"
                 lcFormControl
                 data-cy="register-form-email-confirm"
-                />
+              />
               <small class="lc-error" *lcIfError="'required'">{{
                 t("required")
               }}</small>
@@ -101,10 +98,7 @@
       </form>
 
       @if (savePressed && emailsDontMatch()) {
-        <p-message
-          severity="error"
-          class="mt-4"
-          >
+        <p-message severity="error" class="mt-4">
           {{ t("emailsDontMatchAlertText") }}
         </p-message>
       }
@@ -116,10 +110,7 @@
       ></p-button>
 
       @if (emailChangedPostSave) {
-        <p-message
-          severity="info"
-          class="w-full max-w-35rem"
-          >
+        <p-message severity="info" class="w-full max-w-35rem">
           {{ t("emailAddressChangeInfoText") }}
         </p-message>
       }
@@ -133,7 +124,7 @@
         class="w-full"
         icon="pi pi-info-circle"
         *isSuperadmin="true"
-        >
+      >
         {{ t("superadminsCannotDeleteOwnUser") }}
       </p-message>
 

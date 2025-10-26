@@ -8,53 +8,52 @@
             [src]="(logoImage$ | async).thumbnailM"
             height="40"
             class="mr-2 flex cursor-pointer"
-            />
+          />
         }
         @if (
           (logoImage$ | async) === null || (logoImage$ | async) === undefined
-          ) {
-          <strong
-            class="cursor-pointer white-space-nowrap"
-            >{{ instanceName$ | async }}</strong
-            >
-          }
-        </a>
-      </ng-template>
-      <ng-template #end>
-        <div class="flex justify-content-center gap-2">
-          <div class="search-fake-input" (click)="openSearch()" tabindex="0">
-            <i class="pi pi-search mr-2"></i>
-            <span class="search-label">{{ t("searchPlaceholder") }}</span>
-          </div>
-          <p-menu
-            #menu
-            [model]="userMenuItems"
-            [popup]="true"
-            data-cy="auth-menu"
-            styleClass="wide-menu"
-          ></p-menu>
-          <p-avatar
+        ) {
+          <strong class="cursor-pointer white-space-nowrap">{{
+            instanceName$ | async
+          }}</strong>
+        }
+      </a>
+    </ng-template>
+    <ng-template #end>
+      <div class="flex justify-content-center gap-2">
+        <div class="search-fake-input" (click)="openSearch()" tabindex="0">
+          <i class="pi pi-search mr-2"></i>
+          <span class="search-label">{{ t("searchPlaceholder") }}</span>
+        </div>
+        <p-menu
+          #menu
+          [model]="userMenuItems"
+          [popup]="true"
+          data-cy="auth-menu"
+          styleClass="wide-menu"
+        ></p-menu>
+        <p-avatar
           [image]="
             (currentUser$ | async).avatar
               ? (currentUser$ | async).avatar.thumbnailS
               : 'assets/user.png'
           "
-            (click)="menu.toggle($event)"
-            *isLoggedIn="true"
-            data-cy="auth-menu-button"
-            styleClass="mr-2"
-            size="normal"
-            shape="circle"
-          ></p-avatar>
-          <p-button
-            icon="pi pi-user"
-            routerLink="login"
-            severity="secondary"
-            *isLoggedOut="true"
-            [text]="true"
-            data-cy="navbar-login"
-          ></p-button>
-        </div>
-      </ng-template>
-    </lc-header-menu>
-  </ng-container>
+          (click)="menu.toggle($event)"
+          *isLoggedIn="true"
+          data-cy="auth-menu-button"
+          styleClass="mr-2"
+          size="normal"
+          shape="circle"
+        ></p-avatar>
+        <p-button
+          icon="pi pi-user"
+          routerLink="login"
+          severity="secondary"
+          *isLoggedOut="true"
+          [text]="true"
+          data-cy="navbar-login"
+        ></p-button>
+      </div>
+    </ng-template>
+  </lc-header-menu>
+</ng-container>

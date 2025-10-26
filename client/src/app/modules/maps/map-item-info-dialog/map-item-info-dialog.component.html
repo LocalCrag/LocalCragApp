@@ -4,7 +4,7 @@
     [modal]="true"
     [(visible)]="isOpen"
     [dismissableMask]="true"
-    >
+  >
     <div class="flex justify-content-end gap-2 flex-column">
       <div [innerHTML]="feature?.properties.description"></div>
       <p-button
@@ -12,14 +12,14 @@
         (onClick)="navigateToItem()"
         icon=" pi pi-directions"
         class="w-full"
-        />
+      />
       @if (getCanOpenFeature()) {
         <p-button
           [label]="t('openItem')"
           (onClick)="openItem()"
           icon=" pi pi-info-circle"
           class="w-full"
-          />
+        />
       }
     </div>
   </p-dialog>

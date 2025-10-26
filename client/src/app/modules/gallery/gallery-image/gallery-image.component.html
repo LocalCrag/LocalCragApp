@@ -6,7 +6,7 @@
           [src]="image.image.thumbnailM"
           [preview]="true"
           [previewImageSrcSet]="image.image.srcSet"
-          >
+        >
           <ng-template #indicator>
             <i class="pi pi-eye"></i>
           </ng-template>
@@ -30,18 +30,14 @@
       @for (tag of image.tags; track tag) {
         <lc-tag [tag]="tag"></lc-tag>
       }
-      @if (
-        image.createdBy.id === loggedInUser?.id || loggedInUser?.moderator
-        ) {
-        <div
-          class="speed-dial-container"
-          >
+      @if (image.createdBy.id === loggedInUser?.id || loggedInUser?.moderator) {
+        <div class="speed-dial-container">
           <p-speed-dial
             [model]="speedDialItems"
             direction="up"
             showIcon="pi pi-bars"
             hideIcon="pi pi-times"
-            />
+          />
         </div>
       }
     </div>

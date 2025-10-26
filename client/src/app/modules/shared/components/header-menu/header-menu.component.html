@@ -5,23 +5,20 @@
     </div>
   }
   @if (isMobile || overflowDetected) {
-    <BarsIcon
-    (click)="toggleMobileMenu()"
-    class="ml-2 mr-2 bars"
-    />
-}
-<lc-header-menu-sub
-  [isMobile]="isMobile || overflowDetected"
-  [model]="processedModel"
-  [root]="true"
+    <BarsIcon (click)="toggleMobileMenu()" class="ml-2 mr-2 bars" />
+  }
+  <lc-header-menu-sub
+    [isMobile]="isMobile || overflowDetected"
+    [model]="processedModel"
+    [root]="true"
     [ngClass]="{
       'is-mobile': isMobile || overflowDetected,
       'is-expanded': mobileExpanded,
     }"
-></lc-header-menu-sub>
-@if (endTemplate) {
-  <div class="menubar-end">
-    <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
-  </div>
-}
+  ></lc-header-menu-sub>
+  @if (endTemplate) {
+    <div class="menubar-end">
+      <ng-container *ngTemplateOutlet="endTemplate"></ng-container>
+    </div>
+  }
 </div>

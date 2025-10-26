@@ -5,7 +5,7 @@
     label="{{ isTodo ? t('onTodoList') : t('addTodo') }}"
     (click)="addTodo($event)"
     [ngClass]="{ 'hide-label': !showLabel }"
-    >
+  >
     <ng-template #icon>
       @if (!isTodo) {
         <i class="pi pi-plus"></i>

@@ -14,15 +14,12 @@
       (onUpload)="setMedia($event)"
       [auto]="true"
       chooseLabel="{{ t('browseFilesButtonLabel') }}"
-      >
+    >
     </p-fileupload>
   }
 
   @if (showProgressBar) {
-    <p-progress-bar
-      [mode]="progressMode"
-      [value]="progress"
-    ></p-progress-bar>
+    <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
   }
 
   <div class="image-wrapper">
@@ -32,7 +29,7 @@
         [preview]="!isDisabled"
         [alt]="file.originalFilename"
         width="250"
-        >
+      >
         <ng-template #indicator>
           <i class="pi pi-eye"></i>
         </ng-template>

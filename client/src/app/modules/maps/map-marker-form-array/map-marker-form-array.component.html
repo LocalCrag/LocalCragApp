@@ -12,7 +12,7 @@
               class=""
               icon="pi pi-align-left"
               (click)="showDescriptionDialog($event, marker)"
-              >
+            >
             </p-button>
           }
           <p-button
@@ -21,7 +21,7 @@
             icon="pi pi-pencil"
             (click)="configDialog.open(marker)"
             data-cy="edit-marker"
-            >
+          >
           </p-button>
           <p-button
             [disabled]="isDisabled"
@@ -30,7 +30,7 @@
             icon="pi pi-trash"
             (click)="removeMarker(marker)"
             data-cy="remove-marker"
-            >
+          >
           </p-button>
         </p-tag>
       </div>

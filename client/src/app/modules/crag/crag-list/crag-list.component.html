@@ -4,7 +4,7 @@
     [value]="crags"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    >
+  >
     <ng-template #emptymessage>
       <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block"
         >{{ t("noCragsFoundEmptyMessage") }}
@@ -19,7 +19,7 @@
           [disabled]="loading === loadingStates.LOADING"
           (onChange)="onSortChange($event)"
           styleClass="md:mb-0"
-          >
+        >
           <ng-template #selectedItem>
             @if (sortKey) {
               <div class="flex align-items-center gap-2">
@@ -61,8 +61,7 @@
     </ng-template>
     <ng-template let-crags #list>
       @if (loading === loadingStates.LOADING) {
-        <lc-topo-dataview-skeleton
-        ></lc-topo-dataview-skeleton>
+        <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
         <div class="grid grid-nogutter">
@@ -71,26 +70,26 @@
               class="col-12 clickable-data-item"
               routerLink="/topo/{{ crag.slug }}/sectors"
               data-cy="crag-list-item"
-              >
+            >
               <div
                 class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
                 [ngClass]="{ 'border-top-1 surface-border': !first }"
-                >
+              >
                 <img
                   class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-              [src]="
-                crag.portraitImage
-                  ? crag.portraitImage.thumbnailM
-                  : 'assets/placeholder.png'
-              "
+                  [src]="
+                    crag.portraitImage
+                      ? crag.portraitImage.thumbnailM
+                      : 'assets/placeholder.png'
+                  "
                   [alt]="crag.name"
-                  />
+                />
                 <div
                   class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
-                  >
+                >
                   <div
                     class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
-                    >
+                  >
                     <div class="flex justify-content-between w-full">
                       <span class="text-2xl font-bold black-font">
                         {{ crag.name }}
@@ -99,7 +98,7 @@
                         *isModerator="true"
                         [showLabel]="true"
                         [crag]="crag"
-                        />
+                      />
                     </div>
                     @if (crag.shortDescription) {
                       <div
@@ -108,7 +107,9 @@
                       ></div>
                     }
                     <lc-leveled-grade-distribution
-                      [fetchingObservable]="cragsService.getCragGrades(crag.slug)"
+                      [fetchingObservable]="
+                        cragsService.getCragGrades(crag.slug)
+                      "
                     ></lc-leveled-grade-distribution>
                     <lc-ascent-count
                       [ascentCount]="crag.ascentCount"

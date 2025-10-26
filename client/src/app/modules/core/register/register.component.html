@@ -14,7 +14,7 @@
             placeholder="{{ t('firstnamePlaceholder') }}"
             lcFormControl
             data-cy="register-form-firstname"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -31,7 +31,7 @@
             placeholder="{{ t('lastnamePlaceholder') }}"
             lcFormControl
             data-cy="register-form-lastname"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -49,7 +49,7 @@
               placeholder="{{ t('emailPlaceholder') }}"
               lcFormControl
               data-cy="register-form-email"
-              />
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -72,7 +72,7 @@
               placeholder="{{ t('emailConfirmPlaceholder') }}"
               lcFormControl
               data-cy="register-form-email-confirm"
-              />
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -94,7 +94,7 @@
           severity="error"
           text="{{ t('emailsDontMatchAlertText') }}"
           class="mt-4"
-          >
+        >
         </p-message>
       }
 

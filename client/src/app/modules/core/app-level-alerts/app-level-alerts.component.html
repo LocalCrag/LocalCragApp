@@ -2,11 +2,11 @@
   @if (showRefreshTokenAboutToExpireAlert$ | async) {
     <div
       class="alert"
-    [ngClass]="{
-      warning: refreshLoginAlertType === 'warning',
-      danger: refreshLoginAlertType === 'danger',
-    }"
-      >
+      [ngClass]="{
+        warning: refreshLoginAlertType === 'warning',
+        danger: refreshLoginAlertType === 'danger',
+      }"
+    >
       <div class="alert-text">
         <i class="pi pi-exclamation-circle"></i>
         {{ t("yourSessionExpiresInMinutesBefore") }}

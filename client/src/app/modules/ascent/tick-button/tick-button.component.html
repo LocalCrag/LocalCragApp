@@ -6,7 +6,7 @@
     (click)="addAscent($event)"
     [ngClass]="{ 'hide-label': !showLabel, disabled: ticked }"
     [disabled]="ticked"
-    >
+  >
     <ng-template #icon>
       @if (!ticked) {
         <i class="pi pi-check"></i>

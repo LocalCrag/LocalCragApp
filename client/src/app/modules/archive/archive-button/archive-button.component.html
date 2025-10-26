@@ -13,7 +13,7 @@
       label="{{ !getCurrentState() ? t('archive') : t('unarchive') }}"
       (click)="toggleArchived($event)"
       [ngClass]="{ 'hide-label': !showLabel }"
-      >
+    >
       <ng-template #icon>
         @if (!getCurrentState()) {
           <i class="pi pi-hammer"></i>

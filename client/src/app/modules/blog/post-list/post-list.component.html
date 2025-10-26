@@ -6,89 +6,86 @@
         [value]="posts"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-        >
+      >
         <ng-template #emptymessage>
           <p-message
             severity="info"
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
             >{{ t("noPostsFoundEmptyMessage") }}</p-message
-            >
-          </ng-template>
-          <ng-template #header>
-            <div class="flex flex-row justify-content-between">
-              <p-select
-                [options]="sortOptions"
-                [(ngModel)]="sortKey"
-                optionLabel="label"
-                (onChange)="onSortChange($event)"
-                styleClass="md:mb-0"
+          >
+        </ng-template>
+        <ng-template #header>
+          <div class="flex flex-row justify-content-between">
+            <p-select
+              [options]="sortOptions"
+              [(ngModel)]="sortKey"
+              optionLabel="label"
+              (onChange)="onSortChange($event)"
+              styleClass="md:mb-0"
+              [disabled]="loading === loadingStates.LOADING"
+            ></p-select>
+            <div class="flex justify-content-end gap-3">
+              <p-button
+                label="{{ t('newPostButtonLabel') }}"
+                icon="pi pi-plus"
+                routerLink="/news/create-post"
                 [disabled]="loading === loadingStates.LOADING"
-              ></p-select>
-              <div class="flex justify-content-end gap-3">
-                <p-button
-                  label="{{ t('newPostButtonLabel') }}"
-                  icon="pi pi-plus"
-                  routerLink="/news/create-post"
-                  [disabled]="loading === loadingStates.LOADING"
-                  *isModerator="true"
-                  class="responsive-button"
-                ></p-button>
-              </div>
+                *isModerator="true"
+                class="responsive-button"
+              ></p-button>
             </div>
-          </ng-template>
-          <ng-template let-posts #list>
-            @if (loading === loadingStates.LOADING) {
-              <lc-post-list-skeleton
-              ></lc-post-list-skeleton>
-            }
-            @if (loading !== loadingStates.LOADING) {
-              <div
-                class="grid grid-nogutter"
-                >
-                @for (post of posts; track post; let first = $first) {
-                  <div class="col-12">
-                    <div
-                      class="flex flex-column xl:align-items-start p-4 gap-2"
-                      [ngClass]="{ 'border-top-1 surface-border': !first }"
-                      >
-                      <div class="text-2xl font-bold text-900 flex w-full">
-                        <div class="flex-grow-1 flex align-items-center">
-                          {{ post.title }}
-                        </div>
-                        <div class="flex flex-grow-0 gap-3">
-                          <p-button
-                            label="{{ t('editPostButtonLabel') }}"
-                            icon="pi pi-file-edit"
-                            routerLink="/news/{{ post.slug }}/edit"
-                            styleClass="pr-0"
-                            class="responsive-button"
-                            *isModerator="true"
-                            [text]="true"
-                          ></p-button>
-                        </div>
+          </div>
+        </ng-template>
+        <ng-template let-posts #list>
+          @if (loading === loadingStates.LOADING) {
+            <lc-post-list-skeleton></lc-post-list-skeleton>
+          }
+          @if (loading !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (post of posts; track post; let first = $first) {
+                <div class="col-12">
+                  <div
+                    class="flex flex-column xl:align-items-start p-4 gap-2"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <div class="text-2xl font-bold text-900 flex w-full">
+                      <div class="flex-grow-1 flex align-items-center">
+                        {{ post.title }}
                       </div>
-                      <div class="text-xs mb-2">
-                        {{
-                        t("byUserAtDate", {
-                        user: post.createdBy
-                        ? post.createdBy.fullname
-                        : t("deletedUser"),
-                        date: post.timeCreated | date: "dd.MM.yyyy",
-                        })
-                        }}
+                      <div class="flex flex-grow-0 gap-3">
+                        <p-button
+                          label="{{ t('editPostButtonLabel') }}"
+                          icon="pi pi-file-edit"
+                          routerLink="/news/{{ post.slug }}/edit"
+                          styleClass="pr-0"
+                          class="responsive-button"
+                          *isModerator="true"
+                          [text]="true"
+                        ></p-button>
                       </div>
-                      <div
-                        [innerHTML]="post.text | sanitizeHtml"
-                        class="quill-content"
-                      ></div>
                     </div>
+                    <div class="text-xs mb-2">
+                      {{
+                        t("byUserAtDate", {
+                          user: post.createdBy
+                            ? post.createdBy.fullname
+                            : t("deletedUser"),
+                          date: post.timeCreated | date: "dd.MM.yyyy",
+                        })
+                      }}
+                    </div>
+                    <div
+                      [innerHTML]="post.text | sanitizeHtml"
+                      class="quill-content"
+                    ></div>
                   </div>
-                }
-              </div>
-            }
-          </ng-template>
-        </p-dataView>
-      </p-card>
-    </div>
-  </ng-container>
+                </div>
+              }
+            </div>
+          }
+        </ng-template>
+      </p-dataView>
+    </p-card>
+  </div>
+</ng-container>
