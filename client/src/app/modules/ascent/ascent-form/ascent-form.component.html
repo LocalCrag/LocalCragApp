@@ -121,11 +121,8 @@
       }}</small>
     </div>
     @if (gradeDifferenceWarning) {
-      <p-message
-        severity="warn"
-        styleClass="ascent-form-alert mt-2"
-      >
-        {{ t('unusualGradeDifferenceWarning') }}
+      <p-message severity="warn" styleClass="ascent-form-alert mt-2">
+        {{ t("unusualGradeDifferenceWarning") }}
       </p-message>
     }
 
@@ -196,11 +193,8 @@
     @if (
       ascentForm.get("fa").value && (disableFAInAscents$ | async) === false
     ) {
-      <p-message
-        styleClass="mt-2 ascent-form-alert"
-        severity="info"
-      >
-        {{ t('firstAscentExplanation') }}
+      <p-message styleClass="mt-2 ascent-form-alert" severity="info">
+        {{ t("firstAscentExplanation") }}
       </p-message>
     }
   </form>
