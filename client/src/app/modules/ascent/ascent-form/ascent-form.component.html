@@ -5,52 +5,48 @@
     </p-divider>
 
     <div class="flex justify-content-center gap-2 mb-2">
-      <div
-        class="flex flex-column gap-2 flex-grow-1"
-        lcControlGroup
-        *ngIf="ascentForm.get('yearOnly').value"
-      >
-        <p-date-picker
-          formControlName="year"
-          view="year"
-          dateFormat="yy"
-          inputId="year"
-          lcFormControl
-          appendTo="body"
-          [maxDate]="today"
-          [readonlyInput]="true"
-          styleClass="w-full"
-        ></p-date-picker>
-        <small class="lc-error" *lcIfError="'dateInFuture'">{{
-          t("yearInFutureValidationError")
-        }}</small>
-        <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
-      </div>
-      <div
-        class="flex flex-column gap-2 flex-grow-1"
-        lcControlGroup
-        *ngIf="!ascentForm.get('yearOnly').value"
-      >
-        <p-date-picker
-          formControlName="date"
-          view="date"
-          inputId="date"
-          lcFormControl
-          styleClass="w-full"
-          appendTo="body"
-          [maxDate]="today"
-          [readonlyInput]="true"
-          dateFormat="dd.mm.yy"
-        ></p-date-picker>
-        <small class="lc-error" *lcIfError="'dateInFuture'">{{
-          t("dateInFutureValidationError")
-        }}</small>
-        <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
-      </div>
+      @if (ascentForm.get("yearOnly").value) {
+        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+          <p-date-picker
+            formControlName="year"
+            view="year"
+            dateFormat="yy"
+            inputId="year"
+            lcFormControl
+            appendTo="body"
+            [maxDate]="today"
+            [readonlyInput]="true"
+            class="w-full"
+          ></p-date-picker>
+          <small class="lc-error" *lcIfError="'dateInFuture'">{{
+            t("yearInFutureValidationError")
+          }}</small>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+        </div>
+      }
+      @if (!ascentForm.get("yearOnly").value) {
+        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+          <p-date-picker
+            formControlName="date"
+            view="date"
+            inputId="date"
+            lcFormControl
+            class="w-full"
+            appendTo="body"
+            [maxDate]="today"
+            [readonlyInput]="true"
+            dateFormat="dd.mm.yy"
+          ></p-date-picker>
+          <small class="lc-error" *lcIfError="'dateInFuture'">{{
+            t("dateInFutureValidationError")
+          }}</small>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+        </div>
+      }
       <p-toggleButton
         formControlName="yearOnly"
         [onLabel]="t('onlyYear')"
@@ -124,12 +120,11 @@
         t("required")
       }}</small>
     </div>
-    <p-message
-      severity="warn"
-      text="{{ t('unusualGradeDifferenceWarning') }}"
-      styleClass="ascent-form-alert mt-2"
-      *ngIf="gradeDifferenceWarning"
-    ></p-message>
+    @if (gradeDifferenceWarning) {
+      <p-message severity="warn" styleClass="ascent-form-alert mt-2">
+        {{ t("unusualGradeDifferenceWarning") }}
+      </p-message>
+    }
 
     <p-divider align="center" type="dotted">
       <b>{{ t("rating") }}</b>
@@ -186,23 +181,22 @@
         data-cy="withKneepad"
         [offLabel]="t('withKneepad')"
       ></p-toggleButton>
-      <p-toggleButton
-        *ngIf="(disableFAInAscents$ | async) === false"
-        formControlName="fa"
-        [dt]="toggleButtonDt"
-        [onLabel]="t('fa')"
-        [offLabel]="t('fa')"
-      ></p-toggleButton>
+      @if ((disableFAInAscents$ | async) === false) {
+        <p-toggleButton
+          formControlName="fa"
+          [dt]="toggleButtonDt"
+          [onLabel]="t('fa')"
+          [offLabel]="t('fa')"
+        ></p-toggleButton>
+      }
     </div>
-    <p-message
-      *ngIf="
-        ascentForm.get('fa').value && (disableFAInAscents$ | async) === false
-      "
-      styleClass="mt-2 ascent-form-alert"
-      severity="info"
-      text="{{ t('firstAscentExplanation') }}"
-    >
-    </p-message>
+    @if (
+      ascentForm.get("fa").value && (disableFAInAscents$ | async) === false
+    ) {
+      <p-message styleClass="mt-2 ascent-form-alert" severity="info">
+        {{ t("firstAscentExplanation") }}
+      </p-message>
+    }
   </form>
 
   <div class="form-actions">

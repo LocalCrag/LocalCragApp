@@ -2,7 +2,7 @@ import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { UsersService } from '../../../services/crud/users.service';
 import { Store } from '@ngrx/store';
@@ -18,7 +18,6 @@ import { newAuthCredentials } from '../../../ngrx/actions/auth.actions';
     ButtonModule,
     MessageModule,
     RouterLink,
-    NgIf,
     ProgressSpinnerModule,
     TranslocoDirective,
   ],

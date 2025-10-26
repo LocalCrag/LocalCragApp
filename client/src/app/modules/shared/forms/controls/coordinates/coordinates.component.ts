@@ -25,7 +25,7 @@ import { lngValidator } from '../../../../../utility/validators/lng.validator';
 import { FormDirective } from '../../form.directive';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { NgIf } from '@angular/common';
+
 import { ControlGroupDirective } from '../../control-group.directive';
 import { FormControlDirective } from '../../form-control.directive';
 import { IfErrorDirective } from '../../if-error.directive';
@@ -39,7 +39,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     ButtonModule,
     MessageModule,
-    NgIf,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

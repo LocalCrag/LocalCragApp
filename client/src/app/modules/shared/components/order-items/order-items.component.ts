@@ -9,7 +9,7 @@ import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { OrderList } from 'primeng/orderlist';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { LineGradePipe } from '../../pipes/line-grade.pipe';
 
@@ -27,7 +27,6 @@ import { LineGradePipe } from '../../pipes/line-grade.pipe';
     AsyncPipe,
     TranslocoPipe,
     Button,
-    NgIf,
     LineGradePipe,
   ],
 })

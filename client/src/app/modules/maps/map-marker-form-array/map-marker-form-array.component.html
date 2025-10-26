@@ -1,37 +1,40 @@
 <ng-container *transloco="let t; read: 'maps.markerList'">
   <div class="flex flex-column gap-2 mb-2">
-    <div class="flex flex-row gap-1" *ngFor="let marker of markers">
-      <p-tag class="coordinates-tag">
-        <i class="pi pi-map-marker mr-2"></i>
-        {{ t(marker.type) }} {{ marker.name ? ": " + marker.name : "" }}
-        <p-button
-          [disabled]="isDisabled"
-          text
-          class=""
-          icon="pi pi-align-left"
-          *ngIf="marker.description"
-          (click)="showDescriptionDialog($event, marker)"
-        >
-        </p-button>
-        <p-button
-          [disabled]="isDisabled"
-          text
-          icon="pi pi-pencil"
-          (click)="configDialog.open(marker)"
-          data-cy="edit-marker"
-        >
-        </p-button>
-        <p-button
-          [disabled]="isDisabled"
-          text
-          severity="danger"
-          icon="pi pi-trash"
-          (click)="removeMarker(marker)"
-          data-cy="remove-marker"
-        >
-        </p-button>
-      </p-tag>
-    </div>
+    @for (marker of markers; track marker) {
+      <div class="flex flex-row gap-1">
+        <p-tag class="coordinates-tag">
+          <i class="pi pi-map-marker mr-2"></i>
+          {{ t(marker.type) }} {{ marker.name ? ": " + marker.name : "" }}
+          @if (marker.description) {
+            <p-button
+              [disabled]="isDisabled"
+              text
+              class=""
+              icon="pi pi-align-left"
+              (click)="showDescriptionDialog($event, marker)"
+            >
+            </p-button>
+          }
+          <p-button
+            [disabled]="isDisabled"
+            text
+            icon="pi pi-pencil"
+            (click)="configDialog.open(marker)"
+            data-cy="edit-marker"
+          >
+          </p-button>
+          <p-button
+            [disabled]="isDisabled"
+            text
+            severity="danger"
+            icon="pi pi-trash"
+            (click)="removeMarker(marker)"
+            data-cy="remove-marker"
+          >
+          </p-button>
+        </p-tag>
+      </div>
+    }
   </div>
 
   <p-button

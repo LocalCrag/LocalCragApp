@@ -42,7 +42,6 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Button } from 'primeng/button';
 import { TopoImage } from '../../../models/topo-image';
-import { NgIf } from '@angular/common';
 
 /**
  * Form for line paths.
@@ -63,7 +62,6 @@ import { NgIf } from '@angular/common';
     IfErrorDirective,
     LinePathEditorComponent,
     Button,
-    NgIf,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })

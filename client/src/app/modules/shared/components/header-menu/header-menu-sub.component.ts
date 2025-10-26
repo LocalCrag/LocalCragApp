@@ -9,16 +9,14 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
-import { AngleDownIcon } from 'primeng/icons/angledown';
-import { AngleRightIcon } from 'primeng/icons/angleright';
+import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
 
 @Component({
   selector: 'lc-header-menu-sub',
-  imports: [NgForOf, NgIf, NgClass, AngleDownIcon, AngleRightIcon],
+  imports: [NgClass],
   templateUrl: './header-menu-sub.component.html',
   styleUrl: './header-menu-sub.component.scss',
   encapsulation: ViewEncapsulation.None,

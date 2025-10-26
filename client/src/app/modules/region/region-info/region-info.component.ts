@@ -4,7 +4,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Observable } from 'rxjs';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
-import { NgIf } from '@angular/common';
+
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MapComponent } from '../../maps/map/map.component';
 import { GradeDistribution } from '../../../models/scale';
@@ -18,7 +18,6 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   imports: [
     GradeDistributionBarChartComponent,
     SkeletonModule,
-    NgIf,
     TranslocoDirective,
     MapComponent,
     SanitizeHtmlPipe,

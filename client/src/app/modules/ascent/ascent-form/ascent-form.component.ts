@@ -20,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
@@ -49,6 +49,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
+import { Grade } from '../../../models/scale';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -59,7 +60,6 @@ import { Observable } from 'rxjs';
     CheckboxModule,
     ButtonModule,
     ConfirmPopupModule,
-    NgIf,
     TranslocoDirective,
     RatingModule,
     DatePickerModule,
@@ -200,12 +200,12 @@ export class AscentFormComponent implements OnInit {
         this.ascentForm
           .get('grade')
           .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((newGrade: number) => {
+          .subscribe((newGrade: Grade) => {
             this.gradeDifferenceWarning =
               Math.abs(
                 (instanceSettings.displayUserGrades
                   ? this.line.userGradeValue
-                  : this.line.authorGradeValue) - newGrade,
+                  : this.line.authorGradeValue) - newGrade?.value,
               ) >= 3;
           }),
       );

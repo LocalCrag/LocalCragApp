@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TopoImage } from '../../../models/topo-image';
-import { NgIf } from '@angular/common';
+
 import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
@@ -10,7 +10,6 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   selector: 'lc-topo-image-details',
   imports: [
     ButtonModule,
-    NgIf,
     TranslocoDirective,
     CoordinatesButtonComponent,
     SanitizeHtmlPipe,

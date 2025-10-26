@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { SkeletonModule } from 'primeng/skeleton';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
  */
 @Component({
   selector: 'lc-crag-rules',
-  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './crag-rules.component.html',
   styleUrl: './crag-rules.component.scss',
 })

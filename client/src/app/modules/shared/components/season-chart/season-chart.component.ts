@@ -8,11 +8,10 @@ import { selectBarChartColor } from '../../../../ngrx/selectors/instance-setting
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
 import { Message } from 'primeng/message';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'lc-season-chart',
-  imports: [ChartModule, Message, NgIf, TranslocoDirective],
+  imports: [ChartModule, Message, TranslocoDirective],
   templateUrl: './season-chart.component.html',
   styleUrl: './season-chart.component.scss',
 })

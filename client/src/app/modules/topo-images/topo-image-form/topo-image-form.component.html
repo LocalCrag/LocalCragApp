@@ -5,12 +5,16 @@
         !editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')
       }}"
     >
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("addTopoImageDescription") }}
-      </p>
-      <p class="mt-0" *ngIf="editMode">
-        {{ t("editTopoImageDescription") }}
-      </p>
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("addTopoImageDescription") }}
+        </p>
+      }
+      @if (editMode) {
+        <p class="mt-0">
+          {{ t("editTopoImageDescription") }}
+        </p>
+      }
 
       <form [formGroup]="topoImageForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>

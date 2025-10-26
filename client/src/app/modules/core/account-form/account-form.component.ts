@@ -34,7 +34,7 @@ import {
 } from '../../../ngrx/actions/auth.actions';
 import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
-import { NgIf } from '@angular/common';
+
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { MessageModule } from 'primeng/message';
 
@@ -55,7 +55,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TranslocoDirective,
     InputTextModule,
     AvatarUploadComponent,
-    NgIf,
     MessageModule,
     FormDirective,
     ControlGroupDirective,

@@ -10,7 +10,7 @@ import {
 import { debounceTime, forkJoin, fromEvent, Observable } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
 import { Store } from '@ngrx/store';
 import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
@@ -39,7 +39,7 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  imports: [ChartModule, NgIf, TranslocoDirective, NgForOf, Message],
+  imports: [ChartModule, TranslocoDirective, Message],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   encapsulation: ViewEncapsulation.None,

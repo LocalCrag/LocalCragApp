@@ -13,7 +13,7 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { environment } from '../../../../environments/environment';
 import { Button } from 'primeng/button';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
 
@@ -22,7 +22,7 @@ import { take } from 'rxjs/operators';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Button, TranslocoDirective, NgForOf, RouterLink, NgIf, AsyncPipe],
+  imports: [Button, TranslocoDirective, RouterLink, AsyncPipe],
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();

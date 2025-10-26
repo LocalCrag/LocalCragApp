@@ -1,46 +1,48 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
-  <div *ngFor="let file of files; let i = index">
-    <div class="image-wrapper">
-      <p-image
-        [src]="file.path"
-        [preview]="!isDisabled"
-        [alt]="file.originalFilename"
-        width="250"
-      >
-        <ng-template #indicator>
-          <i class="pi pi-eye"></i>
-        </ng-template>
-      </p-image>
-      <p-button
-        icon="pi pi-times"
-        (click)="removeMedia(i)"
-        *ngIf="!isDisabled"
-        styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text bg-white"
-      ></p-button>
+  @for (file of files; track file; let i = $index) {
+    <div>
+      <div class="image-wrapper">
+        <p-image
+          [src]="file.path"
+          [preview]="!isDisabled"
+          [alt]="file.originalFilename"
+          width="250"
+        >
+          <ng-template #indicator>
+            <i class="pi pi-eye"></i>
+          </ng-template>
+        </p-image>
+        @if (!isDisabled) {
+          <p-button
+            icon="pi pi-times"
+            (click)="removeMedia(i)"
+            styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text bg-white"
+          ></p-button>
+        }
+      </div>
     </div>
-  </div>
+  }
 
-  <p-fileupload
-    mode="basic"
-    *ngIf="!isDisabled"
-    [hidden]="showProgressBar"
-    [name]="'upload'"
-    [url]="uploadUrl"
-    accept=".jpg, .jpeg, .png, .gif, .bmp;capture=camera"
-    [multiple]="true"
-    [maxFileSize]="maxImageSize"
-    (onError)="showProgressBar = false"
-    (onBeforeUpload)="startProgress()"
-    (onProgress)="setProgress($event)"
-    (onUpload)="setMedia($event)"
-    [auto]="true"
-    chooseLabel="{{ t('browseFilesButtonLabel') }}"
-  >
-  </p-fileupload>
+  @if (!isDisabled) {
+    <p-fileupload
+      mode="basic"
+      [hidden]="showProgressBar"
+      [name]="'upload'"
+      [url]="uploadUrl"
+      accept=".jpg, .jpeg, .png, .gif, .bmp;capture=camera"
+      [multiple]="true"
+      [maxFileSize]="maxImageSize"
+      (onError)="showProgressBar = false"
+      (onBeforeUpload)="startProgress()"
+      (onProgress)="setProgress($event)"
+      (onUpload)="setMedia($event)"
+      [auto]="true"
+      chooseLabel="{{ t('browseFilesButtonLabel') }}"
+    >
+    </p-fileupload>
+  }
 
-  <p-progress-bar
-    [mode]="progressMode"
-    [value]="progress"
-    *ngIf="showProgressBar"
-  ></p-progress-bar>
+  @if (showProgressBar) {
+    <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
+  }
 </ng-container>

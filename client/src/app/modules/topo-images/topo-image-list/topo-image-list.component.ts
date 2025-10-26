@@ -26,7 +26,7 @@ import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 
-import { NgClass, NgForOf, NgIf, ViewportScroller } from '@angular/common';
+import { NgClass, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -73,14 +73,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     DataView,
     Select,
     FormsModule,
-    NgIf,
     GymModeDirective,
     Button,
     HasPermissionDirective,
     RouterLink,
     Message,
     TopoImageListSkeletonComponent,
-    NgForOf,
     NgClass,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,

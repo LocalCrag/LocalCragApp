@@ -13,13 +13,14 @@
         icon=" pi pi-directions"
         class="w-full"
       />
-      <p-button
-        [label]="t('openItem')"
-        (onClick)="openItem()"
-        icon=" pi pi-info-circle"
-        class="w-full"
-        *ngIf="getCanOpenFeature()"
-      />
+      @if (getCanOpenFeature()) {
+        <p-button
+          [label]="t('openItem')"
+          (onClick)="openItem()"
+          icon=" pi pi-info-circle"
+          class="w-full"
+        />
+      }
     </div>
   </p-dialog>
 </ng-container>

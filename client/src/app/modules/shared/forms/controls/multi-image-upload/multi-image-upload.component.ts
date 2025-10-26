@@ -19,7 +19,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { ProgressBar } from 'primeng/progressbar';
 import { Image } from 'primeng/image';
 import { Button } from 'primeng/button';
@@ -39,15 +39,7 @@ import { Button } from 'primeng/button';
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  imports: [
-    TranslocoDirective,
-    FileUpload,
-    NgIf,
-    ProgressBar,
-    Image,
-    Button,
-    NgForOf,
-  ],
+  imports: [TranslocoDirective, FileUpload, ProgressBar, Image, Button],
 })
 export class MultiImageUploadComponent
   implements OnInit, ControlValueAccessor, OnDestroy

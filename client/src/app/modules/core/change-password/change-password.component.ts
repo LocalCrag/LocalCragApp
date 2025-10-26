@@ -25,7 +25,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Password } from 'primeng/password';
 import { Message } from 'primeng/message';
-import { NgIf } from '@angular/common';
+
 import { Button } from 'primeng/button';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -43,7 +43,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ReactiveFormsModule,
     Password,
     Message,
-    NgIf,
     Button,
     TranslocoDirective,
     FormDirective,

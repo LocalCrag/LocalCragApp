@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
@@ -46,8 +46,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RouterLink,
     HasPermissionDirective,
     TopoDataviewSkeletonComponent,
-    NgIf,
-    NgForOf,
     NgClass,
     ArchiveButtonComponent,
     AscentCountComponent,

@@ -1,7 +1,7 @@
-<ng-container *ngIf="markersSource?.features?.length > 0 && apiKey">
+@if (markersSource?.features?.length > 0 && apiKey) {
   <ng-container *transloco="let t; read: 'map'">
     <h4>{{ t("map") }}:</h4>
     <div class="map" #map></div>
     <lc-map-item-info-dialog></lc-map-item-info-dialog>
   </ng-container>
-</ng-container>
+}

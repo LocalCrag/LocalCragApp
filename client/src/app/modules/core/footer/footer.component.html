@@ -1,24 +1,28 @@
 <ng-container *transloco="let t; read: 'footer'">
-  <div class="footer-menu" *ngIf="menuItems.length > 0">
-    <ng-container *ngFor="let menuItem of menuItems">
-      <p-button
-        [dt]="footerButtonsDt"
-        *ngIf="menuItem.routerLink"
-        label="{{ menuItem.title }}"
-        styleClass="p-button-secondary p-button-text"
-        routerLink="{{ menuItem.routerLink }}"
-      >
-      </p-button>
-      <p-button
-        [dt]="footerButtonsDt"
-        *ngIf="menuItem.link"
-        label="{{ menuItem.title }}"
-        styleClass="p-button-secondary p-button-text"
-        (click)="openLink(menuItem.link)"
-      >
-      </p-button>
-    </ng-container>
-  </div>
+  @if (menuItems.length > 0) {
+    <div class="footer-menu">
+      @for (menuItem of menuItems; track menuItem) {
+        @if (menuItem.routerLink) {
+          <p-button
+            [dt]="footerButtonsDt"
+            label="{{ menuItem.title }}"
+            styleClass="p-button-secondary p-button-text"
+            routerLink="{{ menuItem.routerLink }}"
+          >
+          </p-button>
+        }
+        @if (menuItem.link) {
+          <p-button
+            [dt]="footerButtonsDt"
+            label="{{ menuItem.title }}"
+            styleClass="p-button-secondary p-button-text"
+            (click)="openLink(menuItem.link)"
+          >
+          </p-button>
+        }
+      }
+    </div>
+  }
   <div class="footer-notes">
     <div class="footer-note-item">
       {{ t("copyright") }} © {{ currentYear }} {{ copyrightOwner$ | async }}

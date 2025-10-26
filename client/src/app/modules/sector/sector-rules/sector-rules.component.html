@@ -1,11 +1,11 @@
-<ng-container *ngIf="sector">
+@if (sector) {
   <section
     [innerHTML]="sector.rules | sanitizeHtml"
     class="quill-content pt-4"
   ></section>
-</ng-container>
+}
 
-<ng-container *ngIf="!sector">
+@if (!sector) {
   <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
   <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
   <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
@@ -14,4 +14,4 @@
   <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
   <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
   <p-skeleton width="40%" height="4rem"></p-skeleton>
-</ng-container>
+}

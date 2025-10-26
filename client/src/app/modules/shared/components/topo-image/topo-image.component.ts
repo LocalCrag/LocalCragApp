@@ -27,7 +27,7 @@ import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance
 import { take } from 'rxjs/operators';
 import { highlightColor, textColor } from '../../../../utility/misc/color';
 import { Skeleton } from 'primeng/skeleton';
-import { NgIf } from '@angular/common';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
@@ -38,7 +38,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './topo-image.component.html',
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Skeleton, NgIf],
+  imports: [Skeleton],
 })
 export class TopoImageComponent implements OnInit {
   @ViewChild('konvaContainer') konvaContainer: ElementRef;

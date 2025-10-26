@@ -24,7 +24,7 @@ import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { Editor, EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf } from '@angular/common';
+
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -42,7 +42,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
-    NgIf,
     ReactiveFormsModule,
     TranslocoDirective,
     FormDirective,

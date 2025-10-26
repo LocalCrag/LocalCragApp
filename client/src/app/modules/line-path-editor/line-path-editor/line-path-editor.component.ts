@@ -15,7 +15,7 @@ import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { Button } from 'primeng/button';
 
 /**
@@ -33,7 +33,7 @@ import { Button } from 'primeng/button';
     },
   ],
   encapsulation: ViewEncapsulation.None,
-  imports: [TranslocoDirective, TopoImageComponent, NgIf, Button],
+  imports: [TranslocoDirective, TopoImageComponent, Button],
 })
 export class LinePathEditorComponent
   implements ControlValueAccessor, OnInit, OnChanges

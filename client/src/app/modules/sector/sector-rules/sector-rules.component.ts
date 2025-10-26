@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { SkeletonModule } from 'primeng/skeleton';
 import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
  */
 @Component({
   selector: 'lc-sector-rules',
-  imports: [NgIf, SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './sector-rules.component.html',
   styleUrl: './sector-rules.component.scss',
 })

@@ -24,7 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LineType } from '../../../enums/line-type';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -50,9 +50,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
     TranslocoDirective,
     CardModule,
     ReactiveFormsModule,
-    NgForOf,
     TranslocoPipe,
-    NgIf,
     InputTextModule,
     InputNumberModule,
     ToolbarModule,

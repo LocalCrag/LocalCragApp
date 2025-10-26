@@ -37,7 +37,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { Card } from 'primeng/card';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
-import { NgIf } from '@angular/common';
+
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
@@ -53,7 +53,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Card,
     LineGradePipe,
     ClosedSpotTagComponent,
-    NgIf,
     SecretSpotTagComponent,
     Breadcrumb,
     Tabs,

@@ -23,7 +23,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { FormDirective } from '../../form.directive';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
-import { NgIf } from '@angular/common';
+
 import { FormControlDirective } from '../../form-control.directive';
 import { NgxColorsModule } from 'ngx-colors';
 import { Select } from 'primeng/select';
@@ -36,7 +36,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ColorPickerModule,
     ReactiveFormsModule,
     SelectButtonModule,
-    NgIf,
     FormControlDirective,
     FormDirective,
     NgxColorsModule,

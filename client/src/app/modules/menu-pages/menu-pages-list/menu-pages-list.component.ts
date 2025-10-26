@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
@@ -27,13 +27,11 @@ import { Message } from 'primeng/message';
     ButtonModule,
     CardModule,
     DataViewModule,
-    NgForOf,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
     Select,
-    NgIf,
     MenuPagesListSkeletonComponent,
     Message,
   ],

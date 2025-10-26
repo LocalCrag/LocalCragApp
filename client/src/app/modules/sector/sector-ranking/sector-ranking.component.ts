@@ -3,13 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { NgIf } from '@angular/common';
+
 import { RankingListComponent } from '../../ranking/ranking-list/ranking-list.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-sector-ranking',
-  imports: [NgIf, RankingListComponent],
+  imports: [RankingListComponent],
   templateUrl: './sector-ranking.component.html',
   styleUrl: './sector-ranking.component.scss',
 })

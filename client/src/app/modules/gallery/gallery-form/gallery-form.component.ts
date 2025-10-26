@@ -16,7 +16,7 @@ import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { NgIf } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {
@@ -47,7 +47,6 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
   selector: 'lc-gallery-form',
   imports: [
     TranslocoDirective,
-    NgIf,
     ReactiveFormsModule,
     ButtonModule,
     MultiSelectModule,

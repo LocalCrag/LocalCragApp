@@ -4,7 +4,7 @@ import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +22,6 @@ import { Message } from 'primeng/message';
   imports: [
     TranslocoDirective,
     DataViewModule,
-    NgForOf,
     RouterLink,
     AvatarModule,
     ButtonModule,
@@ -31,7 +30,6 @@ import { Message } from 'primeng/message';
     TagModule,
     CardModule,
     TranslocoPipe,
-    NgIf,
     ScaleListSkeletonComponent,
     Message,
   ],

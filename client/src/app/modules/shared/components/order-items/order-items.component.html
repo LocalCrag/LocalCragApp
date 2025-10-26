@@ -6,34 +6,32 @@
     [dragdrop]="(isMobile$ | async) === false"
   >
     <ng-template let-item #item>
-      <div
-        class="flex flex-wrap p-2 align-items-center gap-3"
-        *ngIf="!showImage && !showLinePathLineName && item.name"
-      >
-        {{ item.name }}
-      </div>
-      <div
-        class="flex flex-wrap p-2 align-items-center gap-3"
-        *ngIf="showLinePathLineName"
-      >
-        {{ item.line.name }}
-        {{ item.line | lineGrade }}
-      </div>
-      <div
-        class="flex flex-wrap p-2 align-items-center gap-3"
-        *ngIf="showMenuItemTitle"
-      >
-        {{ item.type | transloco }}
-        <span *ngIf="item.type === menuItemTypes.MENU_PAGE"
-          >({{ item.menuPage.title }})</span
-        >
-      </div>
-      <img
-        alt="{{ t('orderItemImageAlt') }}"
-        class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
-        *ngIf="showImage"
-        [src]="item.image.thumbnailM"
-      />
+      @if (!showImage && !showLinePathLineName && item.name) {
+        <div class="flex flex-wrap p-2 align-items-center gap-3">
+          {{ item.name }}
+        </div>
+      }
+      @if (showLinePathLineName) {
+        <div class="flex flex-wrap p-2 align-items-center gap-3">
+          {{ item.line.name }}
+          {{ item.line | lineGrade }}
+        </div>
+      }
+      @if (showMenuItemTitle) {
+        <div class="flex flex-wrap p-2 align-items-center gap-3">
+          {{ item.type | transloco }}
+          @if (item.type === menuItemTypes.MENU_PAGE) {
+            <span>({{ item.menuPage.title }})</span>
+          }
+        </div>
+      }
+      @if (showImage) {
+        <img
+          alt="{{ t('orderItemImageAlt') }}"
+          class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
+          [src]="item.image.thumbnailM"
+        />
+      }
     </ng-template>
   </p-orderList>
 

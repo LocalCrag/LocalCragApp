@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TimelineModule } from 'primeng/timeline';
@@ -37,7 +37,6 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
   imports: [
     BreadcrumbModule,
     CardModule,
-    NgIf,
     TranslocoDirective,
     TimelineModule,
     ButtonModule,

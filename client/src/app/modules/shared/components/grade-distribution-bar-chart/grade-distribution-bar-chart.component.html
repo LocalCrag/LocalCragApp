@@ -1,64 +1,70 @@
 <ng-container *transloco="let t">
-  <p-message
-    *ngIf="!gradeDistribution || chartData.length === 0"
-    severity="info"
-    icon="pi pi-info-circle"
-    text="{{ t('noDataAvailable') }}"
-  ></p-message>
-  <div *ngFor="let chartDataElement of chartData">
-    <h6 *ngIf="chartData.length > 1">
-      {{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}
-    </h6>
-    <p-chart
-      type="bar"
-      [data]="chartDataElement.data"
-      [options]="options"
-      *ngIf="gradeDistribution"
-    ></p-chart>
-    <div class="total">
-      {{ t("totalLines") }}:
-      {{ chartDataElement.totalCount }}
-      <span
-        *ngIf="
+  @if (!gradeDistribution || chartData.length === 0) {
+    <p-message
+      severity="info"
+      icon="pi pi-info-circle"
+      text="{{ t('noDataAvailable') }}"
+    ></p-message>
+  }
+  @for (chartDataElement of chartData; track chartDataElement) {
+    <div>
+      @if (chartData.length > 1) {
+        <h6>
+          {{ chartDataElement.lineType }} {{ chartDataElement.gradeScale }}
+        </h6>
+      }
+      @if (gradeDistribution) {
+        <p-chart
+          type="bar"
+          [data]="chartDataElement.data"
+          [options]="options"
+        ></p-chart>
+      }
+      <div class="total">
+        {{ t("totalLines") }}:
+        {{ chartDataElement.totalCount }}
+        @if (
           !excludeProjects &&
           !excludeUngraded &&
           (chartDataElement.ungradedCount > 0 ||
             chartDataElement.projectCount > 0)
-        "
-      >
-        ({{
-          t("plusXUngradedYProjects", {
-            ungraded: chartDataElement.ungradedCount,
-            projects: chartDataElement.projectCount,
-          })
-        }})
-      </span>
-      <span
-        *ngIf="
+        ) {
+          <span>
+            ({{
+              t("plusXUngradedYProjects", {
+                ungraded: chartDataElement.ungradedCount,
+                projects: chartDataElement.projectCount,
+              })
+            }})
+          </span>
+        }
+        @if (
           excludeProjects &&
           !excludeUngraded &&
           chartDataElement.ungradedCount > 0
-        "
-      >
-        ({{
-          t("plusXUngraded", {
-            ungraded: chartDataElement.ungradedCount,
-          })
-        }})
-      </span>
-      <span
-        *ngIf="
+        ) {
+          <span>
+            ({{
+              t("plusXUngraded", {
+                ungraded: chartDataElement.ungradedCount,
+              })
+            }})
+          </span>
+        }
+        @if (
           !excludeProjects &&
           excludeUngraded &&
           chartDataElement.projectCount > 0
-        "
-      >
-        ({{
-          t("plusXProjects", {
-            projects: chartDataElement.projectCount,
-          })
-        }})
-      </span>
+        ) {
+          <span>
+            ({{
+              t("plusXProjects", {
+                projects: chartDataElement.projectCount,
+              })
+            }})
+          </span>
+        }
+      </div>
     </div>
-  </div>
+  }
 </ng-container>

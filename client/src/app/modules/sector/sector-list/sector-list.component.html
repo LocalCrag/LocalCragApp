@@ -21,14 +21,20 @@
           styleClass="md:mb-0"
         >
           <ng-template #selectedItem>
-            <div class="flex align-items-center gap-2" *ngIf="sortKey">
-              <i [class]="sortKey.icon" *ngIf="sortKey.icon"></i>
-              <div>{{ sortKey.label }}</div>
-            </div>
+            @if (sortKey) {
+              <div class="flex align-items-center gap-2">
+                @if (sortKey.icon) {
+                  <i [class]="sortKey.icon"></i>
+                }
+                <div>{{ sortKey.label }}</div>
+              </div>
+            }
           </ng-template>
           <ng-template let-option #item>
             <div class="flex align-items-center gap-2">
-              <i [class]="option.icon" *ngIf="option.icon"></i>
+              @if (option.icon) {
+                <i [class]="option.icon"></i>
+              }
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
@@ -56,78 +62,83 @@
       </div>
     </ng-template>
     <ng-template let-sectors #list>
-      <lc-topo-dataview-skeleton
-        *ngIf="loading === loadingStates.LOADING"
-      ></lc-topo-dataview-skeleton>
-      <div class="grid grid-nogutter" *ngIf="loading !== loadingStates.LOADING">
-        <a
-          class="col-12 clickable-data-item"
-          routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
-          *ngFor="let sector of sectors; let first = first"
-          data-cy="sector-list-item"
-        >
-          <div
-            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
-          >
-            <img
-              class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-              [src]="
-                sector.portraitImage
-                  ? sector.portraitImage.thumbnailM
-                  : 'assets/placeholder.png'
-              "
-              [alt]="sector.name"
-            />
-            <div
-              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+      @if (loading === loadingStates.LOADING) {
+        <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
+      }
+      @if (loading !== loadingStates.LOADING) {
+        <div class="grid grid-nogutter">
+          @for (sector of sectors; track sector; let first = $first) {
+            <a
+              class="col-12 clickable-data-item"
+              routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
+              data-cy="sector-list-item"
             >
               <div
-                class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
               >
-                <div class="flex justify-content-between w-full">
-                  <span class="text-2xl font-bold black-font">
-                    {{ sector.name }}
-                  </span>
-                  <lc-archive-button
-                    *isModerator="true"
-                    [showLabel]="true"
-                    [sector]="sector"
-                  />
-                </div>
-                <div
-                  [innerHTML]="sector.shortDescription | sanitizeHtml"
-                  *ngIf="sector.shortDescription"
-                  class="quill-content"
-                ></div>
-                <lc-leveled-grade-distribution
-                  [fetchingObservable]="
-                    sectorsService.getSectorGrades(sector.slug)
+                <img
+                  class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                  [src]="
+                    sector.portraitImage
+                      ? sector.portraitImage.thumbnailM
+                      : 'assets/placeholder.png'
                   "
-                ></lc-leveled-grade-distribution>
-                <lc-ascent-count
-                  [ascentCount]="sector.ascentCount"
-                ></lc-ascent-count>
-                <div class="flex gap-1">
-                  <lc-closed-spot-tag
-                    *ngIf="sector.closed"
-                  ></lc-closed-spot-tag>
-                  <lc-secret-spot-tag
-                    *ngIf="sector.secret"
-                  ></lc-secret-spot-tag>
-                </div>
-                <div class="flex gap-1">
-                  <lc-closed-spot-alert
-                    class="mt-0"
-                    *ngIf="sector.closed"
-                    [reason]="sector.closedReason"
-                  ></lc-closed-spot-alert>
+                  [alt]="sector.name"
+                />
+                <div
+                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+                >
+                  <div
+                    class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
+                  >
+                    <div class="flex justify-content-between w-full">
+                      <span class="text-2xl font-bold black-font">
+                        {{ sector.name }}
+                      </span>
+                      <lc-archive-button
+                        *isModerator="true"
+                        [showLabel]="true"
+                        [sector]="sector"
+                      />
+                    </div>
+                    @if (sector.shortDescription) {
+                      <div
+                        [innerHTML]="sector.shortDescription | sanitizeHtml"
+                        class="quill-content"
+                      ></div>
+                    }
+                    <lc-leveled-grade-distribution
+                      [fetchingObservable]="
+                        sectorsService.getSectorGrades(sector.slug)
+                      "
+                    ></lc-leveled-grade-distribution>
+                    <lc-ascent-count
+                      [ascentCount]="sector.ascentCount"
+                    ></lc-ascent-count>
+                    <div class="flex gap-1">
+                      @if (sector.closed) {
+                        <lc-closed-spot-tag></lc-closed-spot-tag>
+                      }
+                      @if (sector.secret) {
+                        <lc-secret-spot-tag></lc-secret-spot-tag>
+                      }
+                    </div>
+                    <div class="flex gap-1">
+                      @if (sector.closed) {
+                        <lc-closed-spot-alert
+                          class="mt-0"
+                          [reason]="sector.closedReason"
+                        ></lc-closed-spot-alert>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </a>
-      </div>
+            </a>
+          }
+        </div>
+      }
     </ng-template>
   </p-dataView>
 </ng-container>

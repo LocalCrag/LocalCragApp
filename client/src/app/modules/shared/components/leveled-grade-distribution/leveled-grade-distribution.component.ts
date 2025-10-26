@@ -16,7 +16,6 @@ import { textColor } from '../../../../utility/misc/color';
 import { Tag } from 'primeng/tag';
 import { MeterGroup } from 'primeng/metergroup';
 import { Skeleton } from 'primeng/skeleton';
-import { NgForOf, NgIf } from '@angular/common';
 
 type StackChartData = {
   lineType: LineType;
@@ -35,7 +34,7 @@ type StackChartData = {
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Tag, MeterGroup, Skeleton, NgIf, TranslocoDirective, NgForOf],
+  imports: [Tag, MeterGroup, Skeleton, TranslocoDirective],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;

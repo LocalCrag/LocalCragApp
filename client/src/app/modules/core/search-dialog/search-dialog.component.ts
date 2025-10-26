@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { SearchService } from '../../../services/crud/search.service';
 import { Searchable } from '../../../models/searchable';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { debounceTime, Subject } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
 import { NavigationEnd, Router } from '@angular/router';
@@ -28,8 +28,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     InputTextModule,
     FormsModule,
     TranslocoDirective,
-    NgIf,
-    NgForOf,
     AvatarModule,
     ButtonModule,
     MessageModule,

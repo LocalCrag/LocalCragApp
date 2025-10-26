@@ -1,123 +1,126 @@
 <ng-container *transloco="let t; read: 'maps.mapMarkerForm'">
-  <p-dialog
-    [header]="marker.id ? t('editMarker') : t('createMarker')"
-    [modal]="true"
-    [(visible)]="isOpen"
-    *ngIf="marker"
-  >
-    <form [formGroup]="mapMarkerForm" lcForm>
-      <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-        <p-select
-          id="type"
-          formControlName="type"
-          [options]="types"
-          data-cy="type-dropdown"
-          optionLabel="type"
-          placeholder="{{ t('typePlaceholder') }}"
-          lcFormControl
-        >
-          <ng-template let-type #item>
-            <div
-              class="flex align-items-center gap-2"
-              data-cy="type-dropdown-item"
+  @if (marker) {
+    <p-dialog
+      [header]="marker.id ? t('editMarker') : t('createMarker')"
+      [modal]="true"
+      [(visible)]="isOpen"
+    >
+      <form [formGroup]="mapMarkerForm" lcForm>
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="type">{{ t("typeLabel") }}</label>
+          <p-select
+            id="type"
+            formControlName="type"
+            [options]="types"
+            data-cy="type-dropdown"
+            optionLabel="type"
+            placeholder="{{ t('typePlaceholder') }}"
+            lcFormControl
+          >
+            <ng-template let-type #item>
+              <div
+                class="flex align-items-center gap-2"
+                data-cy="type-dropdown-item"
+              >
+                <div>{{ t(type) }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedType #selectedItem>
+              {{ t(selectedType) }}
+            </ng-template>
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+        </div>
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="coordinates">{{
+            t("coordinatesLabel")
+          }}</label>
+          <lc-coordinates
+            id="coordinates"
+            formControlName="coordinates"
+            lcFormControl
+            data-cy="marker-form-coordinates"
+            #coordinates
+          ></lc-coordinates>
+        </div>
+        @if (!nameAndDescriptionHidden) {
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="name">{{
+              t("markerNameLabel")
+            }}</label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              formControlName="name"
+              placeholder="{{ t('markerNamePlaceholder') }}"
+              lcFormControl
+              data-cy="marker-form-name"
+            />
+            <small class="lc-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+          </div>
+        }
+        @if (!nameAndDescriptionHidden) {
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="description">{{
+              t("markerDescriptionLabel")
+            }}</label>
+            <p-editor
+              id="description"
+              formControlName="description"
+              lcFormControl
+              placeholder="{{ t('markerDescriptionPlaceholder') }}"
+              [style]="{ height: '200px' }"
+              data-cy="marker-form-description"
             >
-              <div>{{ t(type) }}</div>
-            </div>
-          </ng-template>
-          <ng-template let-selectedType #selectedItem>
-            {{ t(selectedType) }}
-          </ng-template>
-        </p-select>
-        <small class="lc-error" *lcIfError="'required'">{{
-          t("required")
-        }}</small>
-      </div>
-
-      <div class="flex flex-column gap-2" lcControlGroup>
-        <label class="form-label" for="coordinates">{{
-          t("coordinatesLabel")
-        }}</label>
-        <lc-coordinates
-          id="coordinates"
-          formControlName="coordinates"
-          lcFormControl
-          data-cy="marker-form-coordinates"
-          #coordinates
-        ></lc-coordinates>
-      </div>
-
-      <div
-        class="flex flex-column gap-2"
-        lcControlGroup
-        *ngIf="!nameAndDescriptionHidden"
-      >
-        <label class="form-label" for="name">{{ t("markerNameLabel") }}</label>
-        <input
-          id="name"
-          type="text"
-          pInputText
-          formControlName="name"
-          placeholder="{{ t('markerNamePlaceholder') }}"
-          lcFormControl
-          data-cy="marker-form-name"
+              <ng-template #header>
+                <span class="ql-formats">
+                  <button
+                    type="button"
+                    class="ql-bold"
+                    aria-label="Bold"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-italic"
+                    aria-label="Italic"
+                  ></button>
+                  <button
+                    type="button"
+                    class="ql-underline"
+                    aria-label="Underline"
+                  ></button>
+                </span>
+                <span class="ql-formats">
+                  <button
+                    type="button"
+                    class="ql-link"
+                    aria-label="Link"
+                  ></button>
+                </span>
+              </ng-template>
+            </p-editor>
+          </div>
+        }
+      </form>
+      <ng-template #footer>
+        <p-button
+          [label]="t('cancel')"
+          severity="secondary"
+          (onClick)="close()"
         />
-        <small class="lc-error" *lcIfError="'maxlength'">{{
-          t("maxlength120")
-        }}</small>
-      </div>
-
-      <div
-        class="flex flex-column gap-2"
-        lcControlGroup
-        *ngIf="!nameAndDescriptionHidden"
-      >
-        <label class="form-label" for="description">{{
-          t("markerDescriptionLabel")
-        }}</label>
-        <p-editor
-          id="description"
-          formControlName="description"
-          lcFormControl
-          placeholder="{{ t('markerDescriptionPlaceholder') }}"
-          [style]="{ height: '200px' }"
-          data-cy="marker-form-description"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-            </span>
-          </ng-template>
-        </p-editor>
-      </div>
-    </form>
-
-    <ng-template #footer>
-      <p-button
-        [label]="t('cancel')"
-        severity="secondary"
-        (onClick)="close()"
-      />
-      <p-button
-        [label]="t('save')"
-        [disabled]="coordinates.positionLoading"
-        severity="primary"
-        data-cy="save-marker"
-        (onClick)="save()"
-      />
-    </ng-template>
-  </p-dialog>
+        <p-button
+          [label]="t('save')"
+          [disabled]="coordinates.positionLoading"
+          severity="primary"
+          data-cy="save-marker"
+          (onClick)="save()"
+        />
+      </ng-template>
+    </p-dialog>
+  }
 </ng-container>

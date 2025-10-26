@@ -1,63 +1,64 @@
 <ng-container *transloco="let t; read: 'history'">
   <div class="content">
     <p-card header="{{ t('historyTitle') }}">
-      <p-timeline
-        [value]="historyItems"
-        [align]="(isMobile$ | async) ? 'left' : 'alternate'"
-        styleClass="customized-timeline"
-        *ngIf="historyItems?.length > 0"
-        [ngClass]="{ mobile: isMobile$ | async }"
-      >
-        <ng-template #marker let-event>
-          <span
-            class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
-            [class.created]="event.type === historyItemType.CREATED"
-            [class.updated]="event.type === historyItemType.UPDATED"
-          >
-            <i [class]="getIcon(event)"></i>
-          </span>
-        </ng-template>
-        <ng-template #content let-event>
-          <p-card>
-            <ng-template #title>
-              {{ getHeader(event) + ": " + event.object.name }}
-            </ng-template>
-            <ng-template #subtitle>
-              {{ event.timeCreated | date: "dd.MM.yyyy" }},
-              <a class="username" routerLink="{{ event.createdBy.routerLink }}"
-                >{{ event.createdBy.firstname }}
-                {{ event.createdBy.lastname }}</a
-              >
-            </ng-template>
-
-            <div>{{ getDescription(event) | async }}</div>
-            <p-button
-              styleClass="card-button"
-              [label]="t('openObject')"
-              (click)="openObject(event)"
-              [text]="true"
-            />
-          </p-card>
-        </ng-template>
-      </p-timeline>
-      <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-        <p-button
-          label="{{ t('loadMore') }}"
-          (scrolled)="loadNextPage()"
-          (click)="loadNextPage()"
-          infiniteScroll
-          [infiniteScrollDistance]="2"
-          [infiniteScrollThrottle]="50"
-          [loading]="loadingAdditionalPage === loadingStates.LOADING"
-        ></p-button>
-      </div>
-      <p-message
-        *ngIf="historyItems.length === 0"
-        severity="info"
-        styleClass="w-full"
-        [text]="t('noHistory')"
-      >
-      </p-message>
+      @if (historyItems?.length > 0) {
+        <p-timeline
+          [value]="historyItems"
+          [align]="(isMobile$ | async) ? 'left' : 'alternate'"
+          styleClass="customized-timeline"
+          [ngClass]="{ mobile: isMobile$ | async }"
+        >
+          <ng-template #marker let-event>
+            <span
+              class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+              [class.created]="event.type === historyItemType.CREATED"
+              [class.updated]="event.type === historyItemType.UPDATED"
+            >
+              <i [class]="getIcon(event)"></i>
+            </span>
+          </ng-template>
+          <ng-template #content let-event>
+            <p-card>
+              <ng-template #title>
+                {{ getHeader(event) + ": " + event.object.name }}
+              </ng-template>
+              <ng-template #subtitle>
+                {{ event.timeCreated | date: "dd.MM.yyyy" }},
+                <a
+                  class="username"
+                  routerLink="{{ event.createdBy.routerLink }}"
+                  >{{ event.createdBy.firstname }}
+                  {{ event.createdBy.lastname }}</a
+                >
+              </ng-template>
+              <div>{{ getDescription(event) | async }}</div>
+              <p-button
+                styleClass="card-button"
+                [label]="t('openObject')"
+                (click)="openObject(event)"
+                [text]="true"
+              />
+            </p-card>
+          </ng-template>
+        </p-timeline>
+      }
+      @if (hasNextPage) {
+        <div class="flex justify-content-center mt-5">
+          <p-button
+            label="{{ t('loadMore') }}"
+            (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            [loading]="loadingAdditionalPage === loadingStates.LOADING"
+          ></p-button>
+        </div>
+      }
+      @if (historyItems.length === 0) {
+        <p-message severity="info" styleClass="w-full" [text]="t('noHistory')">
+        </p-message>
+      }
     </p-card>
   </div>
 </ng-container>
