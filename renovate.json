@@ -3,7 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "rangeStrategy": "pin",
   "major": {
     "enabled": false
   },
