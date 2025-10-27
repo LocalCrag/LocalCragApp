@@ -28,6 +28,12 @@ from resources.auth_resources import (
     UserLogoutRefresh,
 )
 from resources.batch_editor_resources import BatchCreateLines
+from resources.comment_resources import (
+    CreateComment,
+    DeleteComment,
+    GetComments,
+    UpdateComment,
+)
 from resources.crag_resources import (
     CreateCrag,
     DeleteCrag,
@@ -390,3 +396,11 @@ def configure_api(app):
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateScale.as_view("update_scale"))
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=DeleteScale.as_view("delete_scale"))
     app.register_blueprint(scale_bp, url_prefix="/api/scales")
+
+    # Comments API
+    comments_bp = Blueprint("comments", __name__)
+    comments_bp.add_url_rule("", view_func=GetComments.as_view("get_comments"))
+    comments_bp.add_url_rule("", view_func=CreateComment.as_view("create_comment"))
+    comments_bp.add_url_rule("/<string:comment_id>", view_func=UpdateComment.as_view("update_comment"))
+    comments_bp.add_url_rule("/<string:comment_id>", view_func=DeleteComment.as_view("delete_comment"))
+    app.register_blueprint(comments_bp, url_prefix="/api/comments")
