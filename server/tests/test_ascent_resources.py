@@ -428,3 +428,22 @@ def test_disable_fa_in_ascents_enforced_on_create(client, member_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["fa"] is False  # enforced by instance setting
+
+
+def test_successful_validate_soft_hard(client, member_token):
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": True,
+        "hard": True,
+        "withKneepad": True,
+        "rating": 2,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("treppe")),
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert rv.status_code == 400

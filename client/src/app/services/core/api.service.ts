@@ -223,5 +223,13 @@ export class ApiService {
       `${this.apiHost}scales/${lineType}/${name}`,
   };
 
+  // Comments API
+  public comments = {
+    getList: (filters: string): string => `${this.apiHost}comments${filters}`,
+    create: (): string => `${this.apiHost}comments`,
+    update: (id: string): string => `${this.apiHost}comments/${id}`,
+    delete: (id: string): string => `${this.apiHost}comments/${id}`,
+  };
+
   private apiHost = `${environment.apiHost}/api/`;
 }
