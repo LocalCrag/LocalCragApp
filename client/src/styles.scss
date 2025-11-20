@@ -76,3 +76,7 @@ p-avatar img {
 .lc-error {
   color: var(--p-form-field-invalid-placeholder-color);
 }
+
+.mirror-x{
+  transform: scale(1,-1);
+}

@@ -34,9 +34,19 @@ class GenericRelatedCommentField(fields.Field):
 
 class CommentSchema(BaseEntitySchema):
     message = fields.String()
-    object = GenericRelatedCommentField(attribute="object")
-    objectType = fields.String(attribute="object_type")
     parentId = fields.String(attribute="parent_id")
+    rootId = fields.String(attribute="root_id")
+    isDeleted = fields.Boolean(attribute="is_deleted")
+
+
+class CommentWithRepliesSchema(CommentSchema):
+    replyCount = fields.Method("get_reply_count")
+
+    def get_reply_count(self, obj):
+        # Use dynamic placeholder attribute if present
+        if hasattr(obj, "_reply_count"):
+            return getattr(obj, "_reply_count")
+        return len(getattr(obj, "replies", []) or [])
 
 
 class PaginatedCommentsSchema(ma.SQLAlchemySchema):
@@ -44,5 +54,11 @@ class PaginatedCommentsSchema(ma.SQLAlchemySchema):
     hasNext = fields.Boolean(attribute="has_next")
 
 
+class PaginatedCommentsWithRepliesSchema(ma.SQLAlchemySchema):
+    items = fields.List(fields.Nested(CommentWithRepliesSchema()))
+    hasNext = fields.Boolean(attribute="has_next")
+
+
 comment_schema = CommentSchema()
 paginated_comments_schema = PaginatedCommentsSchema()
+paginated_comments_with_replies_schema = PaginatedCommentsWithRepliesSchema()

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
-import { Comment, CommentObjectType } from '../../models/comment';
+import { Comment } from '../../models/comment';
 import { Paginated } from '../../models/paginated';
 
 @Injectable({ providedIn: 'root' })
@@ -11,19 +11,9 @@ export class CommentsService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
-  public getComments(
-    objectType: CommentObjectType,
-    objectId: string,
-    page?: number,
-    perPage?: number,
-  ): Observable<Paginated<Comment>> {
-    const params = new URLSearchParams();
-    params.set('object_type', objectType);
-    params.set('object_id', objectId);
-    if (page) params.set('page', String(page));
-    if (perPage) params.set('per_page', String(perPage));
+  public getComments(filterString: string): Observable<Paginated<Comment>> {
     return this.http
-      .get(this.api.comments.getList(`?${params.toString()}`))
+      .get(this.api.comments.getList(filterString))
       .pipe(
         map((payload) => Paginated.deserialize(payload, Comment.deserialize)),
       );

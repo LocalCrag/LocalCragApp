@@ -1,0 +1,103 @@
+<ng-container *transloco="let t; read: 'comments'">
+
+  <div class="flex flex-row gap-3" [id]="comment.id">
+    <p-avatar
+      [image]="comment.createdBy?.avatar && !comment.isDeleted ? comment.createdBy.avatar.thumbnailS: 'assets/user.png'"
+      size="large"
+      shape="circle"
+    ></p-avatar>
+    <div class="flex flex-column gap-1 flex-grow-1">
+      <div class="flex justify-content-between">
+        <div>
+          @if (!comment.isDeleted) {
+            <a
+              class="username"
+              routerLink="{{ comment.routerLinkCreatedBy }}"
+            >{{ comment.createdBy.firstname }}
+              {{ comment.createdBy.lastname }}</a
+            >
+          } @else {
+            <strong>-&nbsp;</strong>
+          }
+          <span class="opacity-80">{{ comment.timeCreated | timeAgo }}</span>
+        </div>
+        @if (ellipsisMenuItems && !comment.isDeleted && !editModeActive && !replyActive) {
+          <div>
+            <p-menu #menu [model]="ellipsisMenuItems" [popup]="true"/>
+            <p-button (click)="menu.toggle($event)" variant="text" size="small" class="ellipsis-button"
+                      icon="pi pi-ellipsis-v"/>
+          </div>
+        }
+      </div>
+      <div>
+        @if (!isRootComment && comment.parentId !== comment.rootId && !commentsContextService.getCommentById(comment.parentId).isDeleted) {
+          <div class="reply-to-indicator" (click)="scrollToParent()">
+            &#64;
+            {{ commentsContextService.getCommentById(comment.parentId).createdBy.firstname }}
+            {{ commentsContextService.getCommentById(comment.parentId).createdBy.lastname }}
+          </div>
+        }
+        @if (!comment.isDeleted) {
+          @if (!editModeActive) {
+            {{ comment.message }}
+          } @else {
+            <lc-comment-editor [autoFocus]="true" [cancelable]="true" [commentToEdit]="comment"
+                               (cancelled)="editModeActive = false"></lc-comment-editor>
+          }
+        } @else {
+          <em class="opacity-60">{{ t('commentDeleted') }}</em>
+        }
+      </div>
+      @if (!replyActive && !comment.isDeleted && !editModeActive) {
+        <div>
+          <p-button variant="text" size="small" severity="primary" styleClass="reply-button"
+                    (click)="setReplyActive()">
+            {{ t('reply') }}
+          </p-button>
+        </div>
+      }
+      @if (replyActive) {
+        <lc-comment-editor [parentId]="comment.id" (cancelled)="replyActive = false"
+                           (created)="onReplyCreated($event)"
+                           [autoFocus]="true"
+                           [cancelable]="true"></lc-comment-editor>
+      }
+      @if (comment.replyCount > 0) {
+        <div>
+          <p-button variant="text" size="small" severity="primary" styleClass="reply-button"
+                    (click)="toggleShowReplies()">
+            @if (!showReplies) {
+              <i class="pi pi-angle-down"></i>
+            }
+            @if (showReplies) {
+              <i class="pi pi-angle-up"></i>
+            }
+            {{ t('viewReplies', {count: comment.replyCount}) }}
+          </p-button>
+        </div>
+      }
+      @if (showReplies) {
+        <div class="flex flex-column gap-3 mt-3">
+          @for (reply of replies; track reply) {
+            <lc-comment [comment]="reply" [isRootComment]="false"
+                        (replyCreated)="onReplyCreated($event)"></lc-comment>
+          }
+          @if (currentPage === 1 && hasNextPage && loadingReplies !== loadingStates.LOADING) {
+            <div>
+              <p-button variant="text" size="small" severity="primary" styleClass="reply-button"
+                        (click)="loadNextPageOfReplies()">
+                <i class="pi pi-reply mirror-x"></i>
+                {{ t('loadMoreReplies') }}
+              </p-button>
+            </div>
+          }
+          @if (loadingReplies === loadingStates.LOADING) {
+            <p-progress-spinner strokeWidth="4" [style]="{ width: '2rem', height: '2rem' }"/>
+          }
+        </div>
+      }
+
+    </div>
+  </div>
+
+</ng-container>

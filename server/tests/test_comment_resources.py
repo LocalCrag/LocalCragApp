@@ -15,6 +15,8 @@ def test_create_comment_on_line(client, member_token):
     res = rv.json
     assert res["message"] == "Nice climb!"
     assert res["object"]["id"] == str(line_id)
+    assert res.get("rootId") is None
+    assert res.get("isDeleted") in (False, None)
 
 
 def test_reply_to_comment(client, member_token):
@@ -40,6 +42,8 @@ def test_reply_to_comment(client, member_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["parentId"] == parent_id
+    assert res.get("rootId") == parent_id
+    assert res.get("isDeleted") in (False, None)
 
 
 def test_update_and_delete_comment(client, member_token):
@@ -62,7 +66,7 @@ def test_update_and_delete_comment(client, member_token):
 
 def test_get_comments_for_line(client):
     line_id = Line.get_id_by_slug("treppe")
-    rv = client.get(f"/api/comments?object_type=Line&object_id={line_id}&page=1&per_page=100")
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
     assert rv.status_code == 200
     assert "items" in rv.json
 
@@ -100,7 +104,7 @@ def test_cascade_delete_comments(client, moderator_token, member_token):
     assert rv.status_code == 204
 
     # Fetch comments for deleted area -> should be empty
-    rv = client.get(f"/api/comments?object_type=Area&object_id={area_id}&page=1&per_page=100")
+    rv = client.get(f"/api/comments?object-type=Area&object-id={area_id}&page=1&per-page=100")
     assert rv.status_code == 200
     assert rv.json["items"] == []
 
@@ -282,3 +286,195 @@ def test_update_comment_not_found_returns_404(client, member_token):
     from messages.messages import ResponseMessage
 
     assert rv.json["message"] == ResponseMessage.ENTITY_NOT_FOUND.value
+
+
+def test_get_only_root_level_comments_and_reply_count(client, member_token):
+    # Arrange: create a parent and two replies on the same line
+    line_id = str(Line.get_id_by_slug("treppe"))
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Root", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    parent_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Reply 1", "objectType": "Line", "objectId": line_id, "parentId": parent_id},
+    )
+    assert rv.status_code == 201
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Reply 2", "objectType": "Line", "objectId": line_id, "parentId": parent_id},
+    )
+    assert rv.status_code == 201
+
+    # Act: fetch top-level comments
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+
+    # Assert: Only root-level comments are returned and replyCount is correct
+    assert any(item["id"] == parent_id for item in items)
+    parent = next(item for item in items if item["id"] == parent_id)
+    assert parent["replyCount"] == 2
+    assert parent.get("rootId") is None
+    # Ensure no direct child reply appears in the root-level list
+    assert not any(item.get("parentId") == parent_id and item["id"] != parent_id for item in items)
+
+
+def test_get_replies_for_comment(client, member_token):
+    line_id = str(Line.get_id_by_slug("treppe"))
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Root", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    parent_id = rv.json["id"]
+
+    for i in range(2):
+        rv = client.post(
+            "/api/comments",
+            token=member_token,
+            json={"message": f"Reply {i+1}", "objectType": "Line", "objectId": line_id, "parentId": parent_id},
+        )
+        assert rv.status_code == 201
+
+    rv = client.get(f"/api/comments?root-id={parent_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+
+    assert len(items) == 2
+    assert all(item.get("parentId") == parent_id for item in items)
+    assert all(item.get("rootId") == parent_id for item in items)
+    assert all("replyCount" not in item for item in items)
+
+
+def test_reply_to_reply_sets_root_id(client, member_token):
+    line_id = str(Line.get_id_by_slug("treppe"))
+    # Create root comment
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Root", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    root_id = rv.json["id"]
+    assert rv.json.get("rootId") is None
+
+    # First reply
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Child", "objectType": "Line", "objectId": line_id, "parentId": root_id},
+    )
+    assert rv.status_code == 201
+    child_id = rv.json["id"]
+    assert rv.json.get("rootId") == root_id
+
+    # Reply to the reply
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Grandchild", "objectType": "Line", "objectId": line_id, "parentId": child_id},
+    )
+    assert rv.status_code == 201
+    # Grandchild's rootId still equals the top-level root
+    assert rv.json.get("rootId") == root_id
+
+
+# New tests for soft/hard delete behavior
+
+
+def test_delete_comment_with_replies_is_soft_deleted(client, member_token):
+    line_id = str(Line.get_id_by_slug("treppe"))
+    # Create parent and a reply
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Parent to be soft-deleted", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    parent_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Reply", "objectType": "Line", "objectId": line_id, "parentId": parent_id},
+    )
+    assert rv.status_code == 201
+
+    # Delete parent -> should be soft-deleted
+    rv = client.delete(f"/api/comments/{parent_id}", token=member_token)
+    assert rv.status_code == 204
+
+    # Fetch top-level comments
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+    # Parent should still exist but message cleared and author removed
+    parent = next(i for i in items if i["id"] == parent_id)
+    assert parent["message"] is None
+    assert parent.get("createdBy") is None
+    assert parent["isDeleted"] is True
+    assert parent["replyCount"] == 1
+
+    # Replies should still be retrievable
+    rv = client.get(f"/api/comments?root-id={parent_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    assert len(rv.json["items"]) == 1
+
+
+def test_delete_comment_without_replies_is_hard_deleted(client, member_token):
+    line_id = str(Line.get_id_by_slug("treppe"))
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "To be hard deleted", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    comment_id = rv.json["id"]
+
+    # Delete
+    rv = client.delete(f"/api/comments/{comment_id}", token=member_token)
+    assert rv.status_code == 204
+
+    # Should not be in top-level list anymore
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    assert not any(item["id"] == comment_id for item in rv.json["items"])
+
+
+def test_delete_child_comment_does_not_affect_parent(client, member_token):
+    line_id = str(Line.get_id_by_slug("treppe"))
+    # Create parent and a reply
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Parent stays", "objectType": "Line", "objectId": line_id},
+    )
+    assert rv.status_code == 201
+    parent_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Child to delete", "objectType": "Line", "objectId": line_id, "parentId": parent_id},
+    )
+    assert rv.status_code == 201
+    child_id = rv.json["id"]
+
+    # Delete child -> hard delete
+    rv = client.delete(f"/api/comments/{child_id}", token=member_token)
+    assert rv.status_code == 204
+
+    # Parent should remain and replyCount should be 0 now
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    parent = next(i for i in rv.json["items"] if i["id"] == parent_id)
+    assert parent["replyCount"] == 0

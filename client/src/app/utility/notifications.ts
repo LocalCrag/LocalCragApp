@@ -23,6 +23,21 @@ export type NotificationDefinition = {
  * All available notifications.
  */
 export const NOTIFICATIONS = {
+  COMMENT_CREATED_SUCCESS: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.COMMENT_CREATED_SUCCESS_TITLE'),
+    message: marker('notifications.COMMENT_CREATED_SUCCESS_MESSAGE'),
+  },
+  COMMENT_UPDATED_SUCCESS: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.COMMENT_UPDATED_SUCCESS_TITLE'),
+    message: marker('notifications.COMMENT_UPDATED_SUCCESS_MESSAGE'),
+  },
+  COMMENT_DELETE_SUCCESS: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.COMMENT_DELETE_SUCCESS_TITLE'),
+    message: marker('notifications.COMMENT_DELETE_SUCCESS_MESSAGE'),
+  },
   MAP_MARKER_REMOVED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MAP_MARKER_REMOVED_TITLE'),

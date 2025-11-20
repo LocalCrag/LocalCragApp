@@ -6,22 +6,18 @@ import { Area } from './area';
 import { Line } from './line';
 import { Region } from './region';
 import { Post } from './post';
-
-export type CommentTarget = Line | Area | Sector | Crag | Region | Post;
-export type CommentObjectType =
-  | 'Line'
-  | 'Area'
-  | 'Sector'
-  | 'Crag'
-  | 'Region'
-  | 'Post';
+import { LCObject, ObjectType } from './object';
 
 export class Comment extends AbstractModel {
   message: string;
-  object: CommentTarget;
-  objectType: CommentObjectType;
+  object: LCObject;
+  objectType: ObjectType;
   parentId?: string;
+  rootId?: string;
   createdBy: User;
+  replyCount?: number;
+  isDeleted: boolean;
+  routerLinkCreatedBy: string;
 
   public static deserialize(payload: any): Comment {
     const comment = new Comment();
@@ -32,16 +28,24 @@ export class Comment extends AbstractModel {
       : null;
     comment.objectType = payload.objectType;
     comment.parentId = payload.parentId;
+    comment.rootId = payload.rootId;
     comment.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;
+    comment.replyCount = payload.replyCount ?? 0;
+    comment.isDeleted = payload.isDeleted;
+
+    comment.routerLinkCreatedBy = comment.createdBy
+      ? `/users/${comment.createdBy.slug}`
+      : null;
+
     return comment;
   }
 
   private static deserializeRelatedObject(
-    objectType: CommentObjectType,
+    objectType: ObjectType,
     payload: any,
-  ): CommentTarget {
+  ): LCObject {
     switch (objectType) {
       case 'Line':
         return Line.deserialize(payload);
@@ -69,6 +73,7 @@ export class Comment extends AbstractModel {
     };
   }
 
+  // TODO not used
   public static serializeForUpdate(comment: Comment): any {
     return {
       message: comment.message,
@@ -76,6 +81,7 @@ export class Comment extends AbstractModel {
   }
 }
 
+// TODO not used
 export interface PaginatedComments {
   items: Comment[];
   hasNext: boolean;
