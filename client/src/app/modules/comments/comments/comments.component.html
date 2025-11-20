@@ -1,19 +1,24 @@
 <ng-container *transloco="let t; read: 'comments'">
   @if (commentsContextService.object) {
-    <lc-comment-editor *isLoggedIn="true" (created)="onCommentCreated($event)"></lc-comment-editor>
+    <lc-comment-editor
+      *isLoggedIn="true"
+      (created)="onCommentCreated($event)"
+    ></lc-comment-editor>
   }
 
-  <div class="flex gap-3 flex-column mt-2" >
+  <div class="flex gap-3 flex-column mt-2">
     @for (comment of comments; track comment) {
       <lc-comment [comment]="comment"></lc-comment>
     }
   </div>
-  @for (_ of loadingAdditionalPage === loadingStates.LOADING
-    ? [1, 2, 3]
-    : loadingFirstPage === loadingStates.LOADING
-      ? [1, 2, 3, 4, 5, 6]
-      : [];
-    track _) {
+  @for (
+    _ of loadingAdditionalPage === loadingStates.LOADING
+      ? [1, 2, 3]
+      : loadingFirstPage === loadingStates.LOADING
+        ? [1, 2, 3, 4, 5, 6]
+        : [];
+    track _
+  ) {
     <div class="col-12 md:col-6 xl:col-4">
       <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
     </div>
@@ -31,10 +36,12 @@
       ></p-button>
     </div>
   }
-  @if (!(
-    loadingAdditionalPage === loadingStates.LOADING ||
-    loadingFirstPage === loadingStates.LOADING
-  ) && comments.length === 0) {
+  @if (
+    !(
+      loadingAdditionalPage === loadingStates.LOADING ||
+      loadingFirstPage === loadingStates.LOADING
+    ) && comments.length === 0
+  ) {
     <p-message severity="info" icon="pi pi-info-circle">
       {{ t("thisCommentFeedIsEmpty") }}
     </p-message>

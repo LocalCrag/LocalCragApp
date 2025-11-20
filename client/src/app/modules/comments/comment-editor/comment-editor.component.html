@@ -1,25 +1,39 @@
 <ng-container *transloco="let t; read: 'comments.editor'">
-
-  <form [formGroup]="form" lcForm (ngSubmit)="send()" class="flex gap-2 flex-column">
+  <form
+    [formGroup]="form"
+    lcForm
+    (ngSubmit)="send()"
+    class="flex gap-2 flex-column"
+  >
     <div lcControlGroup class="flex flex-column gap-2">
-    <textarea
-      pTextarea
-      formControlName="message"
-      lcFormControl
-      [placeholder]="t('writeYourComment')"
-      rows="2"
-      autoResize="true"
-      #commentTextarea
-    ></textarea>
-      <small class="lc-error" *lcIfError="'maxlength'">{{ t("maxlength2000") }}</small>
+      <textarea
+        pTextarea
+        formControlName="message"
+        lcFormControl
+        [placeholder]="t('writeYourComment')"
+        rows="2"
+        autoResize="true"
+        #commentTextarea
+      ></textarea>
+      <small class="lc-error" *lcIfError="'maxlength'">{{
+        t("maxlength2000")
+      }}</small>
     </div>
 
     <div class="flex justify-content-end gap-2">
       @if (cancelable) {
-        <p-button (click)="cancel()" [label]="t('cancel')" severity="secondary" variant="outlined"></p-button>
+        <p-button
+          (click)="cancel()"
+          [label]="t('cancel')"
+          severity="secondary"
+          variant="outlined"
+        ></p-button>
       }
-      <p-button (click)="send()" [disabled]="form.invalid" [label]="t('postComment')"></p-button>
+      <p-button
+        (click)="send()"
+        [disabled]="form.invalid"
+        [label]="t('postComment')"
+      ></p-button>
     </div>
   </form>
-
 </ng-container>
