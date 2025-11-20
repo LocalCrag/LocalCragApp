@@ -6,7 +6,7 @@ import { TranslocoService } from '@jsverse/transloco';
   pure: true,
 })
 export class TimeAgoPipe implements PipeTransform {
-  private translocoService = inject(TranslocoService);
+  private transloco = inject(TranslocoService);
 
   transform(value: unknown): string {
     if (value === null || value === undefined || value === '') {
