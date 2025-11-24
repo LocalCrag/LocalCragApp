@@ -71,24 +71,33 @@ class CreateComment(MethodView):
         db.session.add(comment)
         db.session.commit()
 
+        # Prepare reply notification context early so we can avoid duplicate mails
+        parent_author = None
+        send_reply = False
+        if parent and parent.created_by_id:
+            parent_author = User.find_by_id(parent.created_by_id)
+            if parent_author and parent_author.id != created_by.id:
+                settings = getattr(parent_author, "account_settings", None)
+                # Respect user settings for reply mails
+                if not (settings and not settings.comment_reply_mails_enabled):
+                    send_reply = True
+
         # Send notifications
-        # 1) Notify admins and superadmins for any new comment not authored by them
+        # 1) Notify admins and superadmins for any new comment not authored by them.
+        #    If this is a reply and the parent author is an admin/superadmin and will receive a reply mail,
+        #    skip the general admin notification for that user to avoid duplicate mails.
         admins = User.query.filter((User.admin.is_(True)) | (User.superadmin.is_(True))).all()
         for admin in admins:
             if admin.id == created_by.id:
                 continue
+            if send_reply and parent_author and admin.id == parent_author.id and (admin.admin or admin.superadmin):
+                # Skip duplicate: they'll get the reply notification instead.
+                continue
             send_comment_created_email(created_by, admin, comment)
 
-        # 2) If this is a reply, notify the parent author (if exists and not self)
-        if parent and parent.created_by_id:
-            parent_author = User.find_by_id(parent.created_by_id)
-            if parent_author and parent_author.id != created_by.id:
-                send_reply = True
-                settings = getattr(parent_author, "account_settings", None)
-                if settings and not settings.comment_reply_mails_enabled:
-                    send_reply = False
-                if send_reply:
-                    send_comment_reply_email(created_by, parent_author, comment)
+        # 2) If this is a reply, notify the parent author (if exists and not self) via dedicated reply mail
+        if send_reply and parent_author:
+            send_comment_reply_email(created_by, parent_author, comment)
 
         return comment_schema.dump(comment), 201
 
