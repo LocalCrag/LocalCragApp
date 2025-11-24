@@ -83,7 +83,12 @@ class CreateComment(MethodView):
         if parent and parent.created_by_id:
             parent_author = User.find_by_id(parent.created_by_id)
             if parent_author and parent_author.id != created_by.id:
-                send_comment_reply_email(created_by, parent_author, comment)
+                send_reply = True
+                settings = getattr(parent_author, "account_settings", None)
+                if settings and not settings.comment_reply_mails_enabled:
+                    send_reply = False
+                if send_reply:
+                    send_comment_reply_email(created_by, parent_author, comment)
 
         return comment_schema.dump(comment), 201
 

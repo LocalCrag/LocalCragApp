@@ -1,4 +1,5 @@
 from extensions import db
+from models.account_settings import AccountSettings
 from models.user import User
 from util.email import send_create_user_email
 from util.password_util import generate_password
@@ -23,6 +24,10 @@ def create_user(user_data, created_by=None) -> User:
         new_user.created_by_id = created_by.id
 
     db.session.add(new_user)
+    db.session.flush()  # ensure ID available
+    account_settings = AccountSettings()
+    account_settings.user_id = new_user.id
+    db.session.add(account_settings)
     db.session.commit()
 
     send_create_user_email(password, new_user)

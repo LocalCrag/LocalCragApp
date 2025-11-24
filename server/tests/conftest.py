@@ -16,6 +16,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from app import app
 from extensions import db
 from migrations.util_scripts.add_scales import add_scales
+from models.account_settings import AccountSettings
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
@@ -257,6 +258,8 @@ def fill_db_with_sample_data():
     user.moderator = True
     user.member = True
     db.session.add(user)
+    db.session.flush()
+    db.session.add(AccountSettings(user_id=user.id))
 
     user = User()
     user.email = "moderator@localcrag.invalid.org"
@@ -269,6 +272,8 @@ def fill_db_with_sample_data():
     user.moderator = True
     user.member = True
     db.session.add(user)
+    db.session.flush()
+    db.session.add(AccountSettings(user_id=user.id))
 
     user = User()
     user.email = "member@localcrag.invalid.org"
@@ -281,6 +286,8 @@ def fill_db_with_sample_data():
     user.moderator = False
     user.member = True
     db.session.add(user)
+    db.session.flush()
+    db.session.add(AccountSettings(user_id=user.id))
 
     user = User()
     user.email = "user@localcrag.invalid.org"
@@ -293,6 +300,8 @@ def fill_db_with_sample_data():
     user.moderator = False
     user.member = False
     db.session.add(user)
+    db.session.flush()
+    db.session.add(AccountSettings(user_id=user.id))
 
     admin_id = User.find_by_email("admin@localcrag.invalid.org").id
 

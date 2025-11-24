@@ -1,6 +1,10 @@
 from flask import Blueprint
 
-from resources.account_resources import DeleteOwnUser
+from resources.account_resources import (
+    DeleteOwnUser,
+    GetAccountSettings,
+    UpdateAccountSettings,
+)
 from resources.archive_resources import SetArchived
 from resources.area_resources import (
     CreateArea,
@@ -142,7 +146,7 @@ from resources.user_resources import (
     PromoteUser,
     RegisterUser,
     ResendUserCreateMail,
-    UpdateAccountSettings,
+    UpdateAccount,
 )
 from resources.util_resources import SentryTest
 
@@ -216,7 +220,7 @@ def configure_api(app):
     user_bp.add_url_rule("/<string:user_id>", view_func=DeleteUser.as_view("delete_user"))
     user_bp.add_url_rule("/<string:user_slug>", view_func=GetUser.as_view("get_user"))
     user_bp.add_url_rule("/<string:user_id>/promote", view_func=PromoteUser.as_view("promote_user"))
-    user_bp.add_url_rule("/account", view_func=UpdateAccountSettings.as_view("update_account_settings"))
+    user_bp.add_url_rule("/account", view_func=UpdateAccount.as_view("update_account"))
     user_bp.add_url_rule("/account/change-email", view_func=ChangeEmail.as_view("change_email"))
     user_bp.add_url_rule(
         "/<string:user_id>/resend-user-create-mail", view_func=ResendUserCreateMail.as_view("resend_user_create_mail")
@@ -224,6 +228,8 @@ def configure_api(app):
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
     user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
+    user_bp.add_url_rule("/account/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
+    user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
     # Gallery API
