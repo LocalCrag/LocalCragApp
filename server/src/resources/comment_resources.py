@@ -21,6 +21,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.email import send_comment_created_email, send_comment_reply_email
 from util.secret_spots_auth import get_show_secret
 from webargs_schemas.comment_args import comment_args, comment_update_args
 
@@ -69,6 +70,20 @@ class CreateComment(MethodView):
 
         db.session.add(comment)
         db.session.commit()
+
+        # Send notifications
+        # 1) Notify admins and superadmins for any new comment not authored by them
+        admins = User.query.filter((User.admin.is_(True)) | (User.superadmin.is_(True))).all()
+        for admin in admins:
+            if admin.id == created_by.id:
+                continue
+            send_comment_created_email(created_by, admin, comment)
+
+        # 2) If this is a reply, notify the parent author (if exists and not self)
+        if parent and parent.created_by_id:
+            parent_author = User.find_by_id(parent.created_by_id)
+            if parent_author and parent_author.id != created_by.id:
+                send_comment_reply_email(created_by, parent_author, comment)
 
         return comment_schema.dump(comment), 201
 

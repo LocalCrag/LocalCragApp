@@ -100,9 +100,7 @@ def test_forgot_password_wrong_email(client):
     assert res["message"] == ResponseMessage.USER_NOT_FOUND.value
 
 
-def test_forgot_password_successful(client, mocker):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
+def test_forgot_password_successful(client, smtp_mock):
     data = {
         "email": "admin@localcrag.invalid.org",
     }
@@ -110,9 +108,9 @@ def test_forgot_password_successful(client, mocker):
     assert rv.status_code == 200
     res = rv.json
     assert res["message"] == ResponseMessage.RESET_PASSWORD_MAIL_SENT.value
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_reset_password_hash_not_found(client):

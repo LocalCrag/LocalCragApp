@@ -427,6 +427,19 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
+            outlet: 'regionContent',
+            data: {
+              objectType: ObjectType.Region,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
         children: [
@@ -547,6 +560,19 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
+            outlet: 'cragContent',
+            data: {
+              objectType: ObjectType.Crag,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
         children: [
@@ -648,6 +674,19 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: GalleryComponent,
+            outlet: 'sectorContent',
+            data: {
+              objectType: ObjectType.Sector,
+            },
+          },
+        ],
+      },
+      {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
             outlet: 'sectorContent',
             data: {
               objectType: ObjectType.Sector,
@@ -840,6 +879,19 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: GalleryComponent,
+            outlet: 'lineContent',
+            data: {
+              objectType: ObjectType.Line,
+            },
+          },
+        ],
+      },
+      {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
             outlet: 'lineContent',
             data: {
               objectType: ObjectType.Line,

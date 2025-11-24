@@ -107,6 +107,12 @@ export class RegionComponent implements OnInit {
           visible: true,
         },
         {
+          label: this.translocoService.translate(marker('region.comments')),
+          icon: 'pi pi-fw pi-comments',
+          routerLink: `/topo/comments`,
+          visible: true,
+        },
+        {
           label: this.translocoService.translate(marker('region.edit')),
           icon: 'pi pi-fw pi-file-edit',
           routerLink: `/topo/edit-region`,

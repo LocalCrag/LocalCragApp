@@ -7,6 +7,7 @@ import { LinesService } from '../crud/lines.service';
 import { UsersService } from '../crud/users.service';
 import { ObjectType } from '../../models/object';
 import { PostsService } from '../crud/posts.service';
+import { RegionService } from '../crud/region.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class ObjectUtilsService {
   private linesService = inject(LinesService);
   private usersService = inject(UsersService);
   private postsService = inject(PostsService);
+  private regionsService = inject(RegionService);
 
   public getObject(
     objectType: ObjectType,
@@ -32,6 +34,8 @@ export class ObjectUtilsService {
         return this.areasService.getArea(objectSlug);
       case ObjectType.Line:
         return this.linesService.getLine(objectSlug);
+      case ObjectType.Region:
+        return this.regionsService.getRegion();
       case ObjectType.User:
         return this.usersService.getUser(objectSlug);
       case ObjectType.Post:

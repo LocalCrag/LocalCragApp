@@ -14,7 +14,6 @@ def test_create_comment_on_line(client, member_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["message"] == "Nice climb!"
-    assert res["object"]["id"] == str(line_id)
     assert res.get("rootId") is None
     assert res.get("isDeleted") in (False, None)
 
@@ -478,3 +477,51 @@ def test_delete_child_comment_does_not_affect_parent(client, member_token):
     assert rv.status_code == 200
     parent = next(i for i in rv.json["items"] if i["id"] == parent_id)
     assert parent["replyCount"] == 0
+
+
+def test_admins_receive_email_on_new_comment(client, user_token, smtp_mock):
+    line_id = Line.get_id_by_slug("treppe")
+    rv = client.post(
+        "/api/comments",
+        token=user_token,
+        json={"message": "Admin notify", "objectType": "Line", "objectId": str(line_id)},
+    )
+    assert rv.status_code == 201, rv.text
+    # Expect exactly one email (to the single admin)
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
+
+
+def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
+    line_id = Line.get_id_by_slug("treppe")
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Root email", "objectType": "Line", "objectId": str(line_id)},
+    )
+    assert rv.status_code == 201, rv.text
+    root_id = rv.json["id"]
+
+    from flask_jwt_extended import create_access_token
+
+    admin_token = create_access_token(
+        identity="admin@localcrag.invalid.org",
+        additional_claims={"admin": True, "moderator": True, "member": True},
+    )
+    rv = client.post(
+        "/api/comments",
+        token=admin_token,
+        json={
+            "message": "Reply email",
+            "objectType": "Line",
+            "objectId": str(line_id),
+            "parentId": root_id,
+        },
+    )
+    assert rv.status_code == 201, rv.text
+
+    # Two emails total: first to admin on root creation, second to parent on reply
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2

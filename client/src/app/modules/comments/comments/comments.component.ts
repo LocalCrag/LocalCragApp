@@ -79,6 +79,10 @@ export class CommentsComponent implements OnInit {
                 case ObjectType.Line:
                   this.objectSlug = params.get('line-slug');
                   break;
+                case ObjectType.Region:
+                  // Region has no slug in the route - use empty string (getObject ignores slug for Region)
+                  this.objectSlug = '';
+                  break;
                 case ObjectType.User:
                   this.objectSlug = params.get('user-slug');
               }

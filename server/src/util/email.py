@@ -7,11 +7,18 @@ from email.mime.text import MIMEText
 from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
+from i18n.comment_created_mail import comment_created_mail
+from i18n.comment_reply_mail import comment_reply_mail
 from i18n.create_user_mail import create_user_mail
 from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
 from i18n.user_registered_mail import user_registered_mail
+from models.area import Area
+from models.comment import Comment
+from models.crag import Crag
 from models.line import Line
+from models.region import Region
+from models.sector import Sector
 from models.user import User
 
 
@@ -178,6 +185,68 @@ def send_project_climbed_email(climber: User, receiver: User, message: str, line
     )
     msg.attach(MIMEText(template, "html"))
 
+    send_generic_mail(msg)
+
+
+def _build_comment_action_link(comment: Comment) -> str:
+    """Return a frontend link matching the commented object to view the conversation."""
+    obj = comment.object
+    # Lines
+    if isinstance(obj, Line):
+        return (
+            f"{current_app.config['FRONTEND_HOST']}topo/{obj.area.sector.crag.slug}/"
+            f"{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments"
+        )
+    # Areas
+    if isinstance(obj, Area):
+        return (
+            f"{current_app.config['FRONTEND_HOST']}topo/{obj.sector.crag.slug}/"
+            f"{obj.sector.slug}/{obj.slug}/comments"
+        )
+    # Sectors
+    if isinstance(obj, Sector):
+        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.crag.slug}/{obj.slug}/comments"
+    # Crags
+    if isinstance(obj, Crag):
+        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.slug}/comments"
+    # Region
+    if isinstance(obj, Region):
+        return f"{current_app.config['FRONTEND_HOST']}topo/comments"
+    # Fallback
+    return current_app.config["FRONTEND_HOST"]
+
+
+def send_comment_created_email(author: User, receiver: User, comment: Comment):
+    msg, i18n_keyword_arg_dict = prepare_message(author, comment_created_mail)
+    msg["To"] = receiver.email
+    action_link = _build_comment_action_link(comment)
+    template = render_template(
+        "comment-created-mail.html",
+        receiver_firstname=receiver.firstname,
+        author_name=f"{author.firstname} {author.lastname}".strip(),
+        message=comment.message or "",
+        action_link=action_link,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
+    send_generic_mail(msg)
+
+
+def send_comment_reply_email(replier: User, receiver: User, comment: Comment):
+    msg, i18n_keyword_arg_dict = prepare_message(replier, comment_reply_mail)
+    msg["To"] = receiver.email
+    action_link = _build_comment_action_link(comment)
+    template = render_template(
+        "comment-reply-mail.html",
+        receiver_firstname=receiver.firstname,
+        author_name=f"{replier.firstname} {replier.lastname}".strip(),
+        message=comment.message or "",
+        action_link=action_link,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
     send_generic_mail(msg)
 
 

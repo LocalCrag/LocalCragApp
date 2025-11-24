@@ -709,3 +709,13 @@ def fill_db_with_sample_data():
     db.session.add(crag_gallery_image)
 
     db.session.commit()
+
+
+@pytest.fixture(autouse=True)
+def smtp_mock(mocker):
+    """Patch util.email.smtplib.SMTP_SSL to avoid real SMTP calls.
+    Provides the MagicMock so tests can assert call counts.
+    """
+    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
+    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
+    return mock_SMTP_SSL

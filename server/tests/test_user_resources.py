@@ -49,10 +49,7 @@ def test_successful_get_users(client, admin_token):
         assert isinstance(user["avatar"], dict) or user["avatar"] is None
 
 
-def test_successful_resend_invite_mail_role(client, mocker, admin_token):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
-
+def test_successful_resend_invite_mail_role(client, admin_token, smtp_mock):
     user = User.find_by_slug("user-user")
     user.activated = False
     db.session.add(user)
@@ -61,9 +58,9 @@ def test_successful_resend_invite_mail_role(client, mocker, admin_token):
     assert rv.status_code == 200, rv.text
     res = rv.json
     assert res is None
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
 
 
 def test_unsuccessful_resend_invite_mail_role(client, admin_token):
@@ -73,9 +70,7 @@ def test_unsuccessful_resend_invite_mail_role(client, admin_token):
     assert rv.status_code == 400
 
 
-def test_successful_register_user(client, mocker, member_token):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
+def test_successful_register_user(client, member_token, smtp_mock):
     user_data = {
         "firstname": "Thorsten",
         "lastname": "Test",
@@ -91,9 +86,9 @@ def test_successful_register_user(client, mocker, member_token):
     assert not res["activated"]
     assert res["language"] == "de"
     assert res["avatar"] is None
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 2
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
 
 
 def test_unsuccessful_create_user_email_taken(client, member_token):
