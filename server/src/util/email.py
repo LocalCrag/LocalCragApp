@@ -195,23 +195,23 @@ def _build_comment_action_link(comment: Comment) -> str:
     if isinstance(obj, Line):
         return (
             f"{current_app.config['FRONTEND_HOST']}topo/{obj.area.sector.crag.slug}/"
-            f"{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments"
+            f"{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments#{comment.id}"
         )
     # Areas
     if isinstance(obj, Area):
         return (
             f"{current_app.config['FRONTEND_HOST']}topo/{obj.sector.crag.slug}/"
-            f"{obj.sector.slug}/{obj.slug}/comments"
+            f"{obj.sector.slug}/{obj.slug}/comments#{comment.id}"
         )
     # Sectors
     if isinstance(obj, Sector):
-        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.crag.slug}/{obj.slug}/comments"
+        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.crag.slug}/{obj.slug}/comments#{comment.id}"
     # Crags
     if isinstance(obj, Crag):
-        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.slug}/comments"
+        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.slug}/comments#{comment.id}"
     # Region
     if isinstance(obj, Region):
-        return f"{current_app.config['FRONTEND_HOST']}topo/comments"
+        return f"{current_app.config['FRONTEND_HOST']}topo/comments#{comment.id}"
     # Fallback
     return current_app.config["FRONTEND_HOST"]
 
@@ -246,6 +246,7 @@ def send_comment_reply_email(replier: User, receiver: User, comment: Comment):
         frontend_host=current_app.config["FRONTEND_HOST"],
         **i18n_keyword_arg_dict,
     )
+    print(template)
     msg.attach(MIMEText(template, "html"))
     send_generic_mail(msg)
 

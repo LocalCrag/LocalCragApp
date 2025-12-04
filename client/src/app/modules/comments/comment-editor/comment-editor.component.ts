@@ -54,6 +54,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
   @Output() cancelled = new EventEmitter<void>();
 
   public form: FormGroup;
+  public saving = false;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -96,6 +97,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
     if (this.form.invalid) return;
     const message: string = this.form.get('message').value?.trim();
     if (!message) return;
+    this.saving = true;
     if (!this.commentToEdit) {
       const comment = new Comment();
       comment.message = message;
@@ -106,6 +108,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
         this.created.emit(created);
         this.reset();
         this.store.dispatch(toastNotification('COMMENT_CREATED_SUCCESS'));
+        this.saving = false;
       });
     } else {
       this.commentsService
@@ -115,6 +118,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
           this.reset();
           this.cancelled.emit();
           this.store.dispatch(toastNotification('COMMENT_UPDATED_SUCCESS'));
+          this.saving = false;
         });
     }
   }

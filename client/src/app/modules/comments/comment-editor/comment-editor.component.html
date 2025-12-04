@@ -23,6 +23,7 @@
     <div class="flex justify-content-end gap-2">
       @if (cancelable) {
         <p-button
+          [disabled]="saving"
           (click)="cancel()"
           [label]="t('cancel')"
           severity="secondary"
@@ -30,6 +31,7 @@
         ></p-button>
       }
       <p-button
+        [loading]="saving"
         (click)="send()"
         [disabled]="form.invalid"
         [label]="t('postComment')"

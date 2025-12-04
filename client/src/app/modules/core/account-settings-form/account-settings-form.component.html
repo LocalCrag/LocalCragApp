@@ -1,0 +1,28 @@
+<ng-container *transloco="let t; read: 'accountSettingsForm'">
+
+  <form [formGroup]="accountSettingsForm" lcForm>
+    <div class="flex flex-column gap-2" lcControlGroup>
+      <div
+        class="flex align-items-center justify-content-center sm:justify-content-start"
+      >
+        <p-toggleswitch
+          id="display-user-grades"
+          class="mx-2 blue-green-switch"
+          formControlName="commentReplyMailsEnabled"
+          lcFormControl
+        />
+        {{ t("commentReplyMailsEnabled") }}
+      </div>
+    </div>
+  </form>
+
+  <div class="form-actions">
+    <p-button
+      label="{{ t('saveAccountSettingsButtonLabel') }}"
+      (click)="saveAccountSettings()"
+      class="responsive-button"
+      [loading]="loadingState === loadingStates.LOADING"
+    ></p-button>
+  </div>
+
+</ng-container>

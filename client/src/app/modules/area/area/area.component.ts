@@ -29,6 +29,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Badge } from 'primeng/badge';
 
 @Component({
   selector: 'lc-area',
@@ -45,6 +46,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Tab,
     RouterLink,
     RouterOutlet,
+    Badge,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })

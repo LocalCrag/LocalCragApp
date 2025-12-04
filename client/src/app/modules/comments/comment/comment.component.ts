@@ -22,16 +22,18 @@ import { CommentsService } from '../../../services/crud/comments.service';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { CommentsContextService } from '../comments-context.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, timer } from 'rxjs';
+import { forkJoin, Observable, timer } from 'rxjs';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import {
   selectCurrentUser,
+  selectIsLoggedIn,
   selectIsModerator,
 } from '../../../ngrx/selectors/auth.selectors';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'lc-comment',
@@ -44,6 +46,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
     TranslocoDirective,
     ProgressSpinner,
     Menu,
+    AsyncPipe,
   ],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',
@@ -67,6 +70,7 @@ export class CommentComponent implements OnInit {
   public commentsContextService = inject(CommentsContextService);
   public ellipsisMenuItems: MenuItem[] = [];
   public editModeActive = false;
+  public isLoggedIn$: Observable<boolean>;
 
   private pageSize = 10;
   private commentsService = inject(CommentsService);
@@ -115,6 +119,7 @@ export class CommentComponent implements OnInit {
           });
         }
       });
+    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn), take(1));
   }
 
   public setReplyActive(): void {
