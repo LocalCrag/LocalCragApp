@@ -14,7 +14,7 @@
         <div>
           @if (!comment.isDeleted) {
             <a class="username" routerLink="{{ comment.routerLinkCreatedBy }}"
-            >{{ comment.createdBy.firstname }}
+              >{{ comment.createdBy.firstname }}
               {{ comment.createdBy.lastname }}</a
             >
           } @else {
@@ -22,13 +22,15 @@
           }
           <span class="opacity-80">{{ comment.timeCreated | timeAgo }}</span>
         </div>
-        @if (ellipsisMenuItems &&
-        !comment.isDeleted &&
-        !editModeActive &&
-        !replyActive &&
-        isLoggedIn$ | async) {
+        @if (
+          ellipsisMenuItems &&
+            !comment.isDeleted &&
+            !editModeActive &&
+            !replyActive &&
+            isLoggedIn$ | async
+        ) {
           <div>
-            <p-menu #menu [model]="ellipsisMenuItems" [popup]="true"/>
+            <p-menu #menu [model]="ellipsisMenuItems" [popup]="true" />
             <p-button
               (click)="menu.toggle($event)"
               variant="text"
@@ -40,10 +42,16 @@
         }
       </div>
       <div>
-        @if (!isRootComment &&
-        comment.parentId !== comment.rootId &&
-        !commentsContextService.getCommentById(comment.parentId).isDeleted) {
-          <div class="reply-to-indicator" (click)="scrollToParent()" tabindex="0">
+        @if (
+          !isRootComment &&
+          comment.parentId !== comment.rootId &&
+          !commentsContextService.getCommentById(comment.parentId).isDeleted
+        ) {
+          <div
+            class="reply-to-indicator"
+            (click)="scrollToParent()"
+            tabindex="0"
+          >
             &#64;
             {{
               commentsContextService.getCommentById(comment.parentId).createdBy
@@ -70,8 +78,10 @@
           <em class="opacity-60">{{ t("commentDeleted") }}</em>
         }
       </div>
-      @if (!replyActive && !comment.isDeleted && !editModeActive && isLoggedIn$
-        | async) {
+      @if (
+        !replyActive && !comment.isDeleted && !editModeActive && isLoggedIn$
+          | async
+      ) {
         <div>
           <p-button
             variant="text"
@@ -108,7 +118,7 @@
             @if (showReplies) {
               <i class="pi pi-angle-up"></i>
             }
-            {{ t("viewReplies", {count: comment.replyCount}) }}
+            {{ t("viewReplies", { count: comment.replyCount }) }}
           </p-button>
         </div>
       }
@@ -121,9 +131,11 @@
               (replyCreated)="onReplyCreated($event)"
             ></lc-comment>
           }
-          @if (currentPage === 1 &&
-          hasNextPage &&
-          loadingReplies !== loadingStates.LOADING) {
+          @if (
+            currentPage === 1 &&
+            hasNextPage &&
+            loadingReplies !== loadingStates.LOADING
+          ) {
             <div>
               <p-button
                 variant="text"
