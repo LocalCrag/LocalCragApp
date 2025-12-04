@@ -1,10 +1,10 @@
 <ng-container *transloco="let t; read: 'comments'">
   @if (commentsContextService.object) {
     <div class="mt-2 mb-4 block">
-    <lc-comment-editor
-      *isLoggedIn="true"
-      (created)="onCommentCreated($event)"
-    ></lc-comment-editor>
+      <lc-comment-editor
+        *isLoggedIn="true"
+        (created)="onCommentCreated($event)"
+      ></lc-comment-editor>
     </div>
   }
 
