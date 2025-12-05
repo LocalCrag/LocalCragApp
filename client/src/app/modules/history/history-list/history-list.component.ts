@@ -16,7 +16,6 @@ import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
 import { HistoryItem } from '../../../models/history-item';
 import { HistoryItemType } from '../../../enums/history-item-type';
-import { ObjectType } from '../../../models/tag';
 import { Line } from '../../../models/line';
 import { Area } from '../../../models/area';
 import { Crag } from '../../../models/crag';
@@ -31,6 +30,7 @@ import { map } from 'rxjs/operators';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
+import { ObjectType } from '../../../models/object';
 
 @Component({
   selector: 'lc-history-list',

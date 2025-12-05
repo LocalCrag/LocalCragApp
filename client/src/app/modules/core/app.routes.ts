@@ -62,7 +62,6 @@ import { TodoListComponent } from '../todo/todo-list/todo-list.component';
 import { SentryTestComponent } from './sentry-test/sentry-test.component';
 import { MapComponent } from '../maps/map/map.component';
 import { GalleryComponent } from '../gallery/gallery/gallery.component';
-import { ObjectType } from '../../models/tag';
 import { HistoryListComponent } from '../history/history-list/history-list.component';
 import { skipHierarchy } from '../../guards/skip-hierarchy';
 import { environment } from '../../../environments/environment';
@@ -71,6 +70,8 @@ import { ScaleListComponent } from '../scale/scale-list/scale-list.component';
 import { ScaleFormComponent } from '../scale/scale-form/scale-form.component';
 import { LineEntryBatchEditorComponent } from '../batch-editor/line-entry-batch-editor/line-entry-batch-editor.component';
 import { LinePathFormWrapperComponent } from '../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component';
+import { CommentsComponent } from '../comments/comments/comments.component';
+import { ObjectType } from '../../models/object';
 
 export const appRoutes: Routes = [
   {
@@ -426,6 +427,19 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
+            outlet: 'regionContent',
+            data: {
+              objectType: ObjectType.Region,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
         children: [
@@ -546,6 +560,19 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
+            outlet: 'cragContent',
+            data: {
+              objectType: ObjectType.Crag,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
         children: [
@@ -647,6 +674,19 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: GalleryComponent,
+            outlet: 'sectorContent',
+            data: {
+              objectType: ObjectType.Sector,
+            },
+          },
+        ],
+      },
+      {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
             outlet: 'sectorContent',
             data: {
               objectType: ObjectType.Sector,
@@ -778,6 +818,19 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
+            outlet: 'areaContent',
+            data: {
+              objectType: ObjectType.Area,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         children: [
           {
@@ -826,6 +879,19 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: GalleryComponent,
+            outlet: 'lineContent',
+            data: {
+              objectType: ObjectType.Line,
+            },
+          },
+        ],
+      },
+      {
+        path: 'comments',
+        children: [
+          {
+            path: '',
+            component: CommentsComponent,
             outlet: 'lineContent',
             data: {
               objectType: ObjectType.Line,

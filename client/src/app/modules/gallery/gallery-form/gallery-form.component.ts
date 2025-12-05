@@ -25,7 +25,7 @@ import {
 } from 'primeng/autocomplete';
 import { Searchable, SearchableObject } from '../../../models/searchable';
 import { SearchService } from '../../../services/crud/search.service';
-import { ObjectType, Tag } from '../../../models/tag';
+import { Tag } from '../../../models/tag';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
@@ -42,6 +42,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { ObjectType } from '../../../models/object';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -97,6 +98,7 @@ export class GalleryFormComponent implements OnInit {
     } else {
       this.galleryImageForm.get('searchables').disable();
       let defaultSearchableRequest: Observable<SearchableObject>;
+      // TODO use new util service
       switch (this.config.data.defaultSearchableType) {
         case ObjectType.Crag:
           defaultSearchableRequest = this.cragsService.getCrag(

@@ -3,8 +3,9 @@ import { Sector } from './sector';
 import { Area } from './area';
 import { Line } from './line';
 import { User } from './user';
-import { ObjectType } from './tag';
+import { ObjectType } from './object';
 
+// TODO there is another place where similar code exists, use this util there
 export const deserializeObject = (
   objectType: ObjectType,
   payload: any,

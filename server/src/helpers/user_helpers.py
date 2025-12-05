@@ -1,14 +1,17 @@
 from extensions import db
+from models.account_settings import AccountSettings
 from models.user import User
 from util.email import send_create_user_email
 from util.password_util import generate_password
 
 
-def create_user(user_data, created_by=None) -> User:
+def create_user(user_data, created_by=None, skip_account_settings=False) -> User:
     """
     Creates a new user.
     @param user_data: User data as parsed from request.
     @param created_by: User that created the user.
+    @param skip_account_settings: Whether to skip creating default account settings.
+    Used for database setup migration where the table might not exist yet.
     @return: Created user instance.
     """
     password = generate_password()
@@ -23,6 +26,11 @@ def create_user(user_data, created_by=None) -> User:
         new_user.created_by_id = created_by.id
 
     db.session.add(new_user)
+    db.session.flush()  # ensure ID available
+    if not skip_account_settings:
+        account_settings = AccountSettings()
+        account_settings.user_id = new_user.id
+        db.session.add(account_settings)
     db.session.commit()
 
     send_create_user_email(password, new_user)

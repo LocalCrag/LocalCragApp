@@ -45,6 +45,7 @@ import { DeviceEffects } from 'src/app/ngrx/effects/device.effects';
 import { AppLevelAlertsEffects } from 'src/app/ngrx/effects/app-level-alerts.effects';
 import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
+import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 
 /**
  * Transloco HTTP loader.
@@ -233,5 +234,6 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader,
     }),
+    provideTranslocoMessageformat(),
   ],
 };

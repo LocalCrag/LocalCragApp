@@ -153,6 +153,12 @@ export class SectorComponent implements OnInit {
               visible: true,
             },
             {
+              label: this.translocoService.translate(marker('sector.comments')),
+              icon: 'pi pi-fw pi-comments',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
+              visible: true,
+            },
+            {
               label: this.translocoService.translate(marker('sector.edit')),
               icon: 'pi pi-fw pi-file-edit',
               routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,

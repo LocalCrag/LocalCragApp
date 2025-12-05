@@ -46,6 +46,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-own-user-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AccountSettingsFormComponent } from '../account-settings-form/account-settings-form.component';
 
 @Component({
   selector: 'lc-account-form',
@@ -63,6 +64,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     DividerModule,
     HasPermissionDirective,
     HasPermissionDirective,
+    AccountSettingsFormComponent,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',

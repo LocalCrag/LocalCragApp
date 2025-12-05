@@ -4,14 +4,7 @@ import { Area } from './area';
 import { Line } from './line';
 import { User } from './user';
 import { deserializeObject } from './utils';
-
-export enum ObjectType {
-  Crag = 'Crag',
-  Sector = 'Sector',
-  Area = 'Area',
-  Line = 'Line',
-  User = 'User',
-}
+import { ObjectType } from './object';
 
 export class Tag {
   object: Crag | Sector | Area | Line | User;
@@ -19,6 +12,7 @@ export class Tag {
 
   public static serialize(tag: Tag): any {
     let objectType: string;
+    // TODO make this a util
     if (tag.object instanceof Crag) {
       objectType = ObjectType.Crag;
     }

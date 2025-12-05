@@ -4,16 +4,16 @@ import { HistoryItemType } from '../enums/history-item-type';
 import { Crag } from './crag';
 import { Area } from './area';
 import { Line } from './line';
-import { ObjectType } from './tag';
 import { deserializeObject } from './utils';
 import { User } from './user';
+import { ObjectType } from './object';
 
 export class HistoryItem extends AbstractModel {
   oldValue: string;
   newValue: string;
   attributeName: string;
   type: HistoryItemType;
-  object: Crag | Sector | Area | Line;
+  object: Crag | Sector | Area | Line; // TODO use LCObject
   objectType: ObjectType;
   createdBy: User;
 

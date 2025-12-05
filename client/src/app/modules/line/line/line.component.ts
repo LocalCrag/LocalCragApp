@@ -196,6 +196,12 @@ export class LineComponent implements OnInit {
                 visible: true,
               },
               {
+                label: this.translocoService.translate(marker('line.comments')),
+                icon: 'pi pi-fw pi-comments',
+                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/comments`,
+                visible: true,
+              },
+              {
                 label: this.translocoService.translate(marker('line.edit')),
                 icon: 'pi pi-fw pi-file-edit',
                 routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,

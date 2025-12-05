@@ -20,16 +20,11 @@ _migration = import_module(
 upgrade = _migration.upgrade
 
 
-def test_database_setup(client, clean_db, mocker):
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
-
+def test_database_setup(client, clean_db, smtp_mock):
     upgrade()
-
-    # Superadmin invite mail was sent
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
 
     superadmins = db.session.query(User).filter_by(superadmin=True).all()
     assert len(superadmins) == 1

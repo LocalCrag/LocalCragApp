@@ -24,6 +24,11 @@ export class ApiService {
     update: (): string => `${this.apiHost}instance-settings`,
   };
 
+  public account = {
+    getSettings: (): string => `${this.apiHost}users/account/settings`,
+    updateSettings: (): string => `${this.apiHost}users/account/settings`,
+  };
+
   public statistics = {
     completion: (query: string): string =>
       `${this.apiHost}statistics/completion${query}`,
@@ -221,6 +226,14 @@ export class ApiService {
       `${this.apiHost}scales/${lineType}/${name}`,
     delete: (lineType: LineType, name: string) =>
       `${this.apiHost}scales/${lineType}/${name}`,
+  };
+
+  // Comments API
+  public comments = {
+    getList: (filters: string): string => `${this.apiHost}comments${filters}`,
+    create: (): string => `${this.apiHost}comments`,
+    update: (id: string): string => `${this.apiHost}comments/${id}`,
+    delete: (id: string): string => `${this.apiHost}comments/${id}`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;
