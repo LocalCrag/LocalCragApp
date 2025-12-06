@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.24.0...v1.25.0) (2025-12-06)
+
+
+### Features
+
+* **comments:** add possibility to post comments on lines, crags, etc ([#857](https://github.com/LocalCrag/LocalCragApp/issues/857)) ([89d8095](https://github.com/LocalCrag/LocalCragApp/commit/89d80953a1a14d856200d38161739d81e7686fe5))
+
 # [1.24.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.23.4...v1.24.0) (2025-10-26)
 
 
