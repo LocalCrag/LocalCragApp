@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { HashMap, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { AppState } from '../../ngrx/reducers';
 import { selectIsMobile } from '../../ngrx/selectors/device.selectors';
 import { MessageService } from 'primeng/api';
@@ -9,6 +9,7 @@ import {
   NotificationKey,
   NotificationType,
 } from '../../utility/notifications';
+import { TranslocoHashMap } from '../../utility/types/transloco';
 
 /**
  * Wrapper service for the angular2-notifications.
@@ -39,8 +40,8 @@ export class AppNotificationsService {
    */
   public toast(
     notificationKey: NotificationKey,
-    titleParams: HashMap = {},
-    messageParams: HashMap = {},
+    titleParams: TranslocoHashMap = {},
+    messageParams: TranslocoHashMap = {},
   ): void {
     this.doToast(notificationKey, titleParams, messageParams);
   }
@@ -118,8 +119,8 @@ export class AppNotificationsService {
    */
   private doToast(
     notificationKey: NotificationKey,
-    titleParams: HashMap = {},
-    messageParams: HashMap = {},
+    titleParams: TranslocoHashMap = {},
+    messageParams: TranslocoHashMap = {},
   ) {
     const notificationDefinition = getNotification(notificationKey);
     const title = this.translocoService.translate(

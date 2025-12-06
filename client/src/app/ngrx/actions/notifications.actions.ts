@@ -1,13 +1,13 @@
 import { createAction } from '@ngrx/store';
-import { HashMap } from '@jsverse/transloco';
 import { NotificationKey } from '../../utility/notifications';
+import { TranslocoHashMap } from '../../utility/types/transloco';
 
 export const toastNotification = createAction(
   '[Notifications] Toast Notification',
   (
     notificationKey: NotificationKey,
-    titleParams: HashMap = {},
-    messageParams: HashMap = {},
+    titleParams: TranslocoHashMap = {},
+    messageParams: TranslocoHashMap = {},
   ) => ({
     notificationKey,
     titleParams,

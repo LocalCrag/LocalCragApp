@@ -139,6 +139,12 @@ export class CragComponent implements OnInit {
               visible: true,
             },
             {
+              label: this.translocoService.translate(marker('crag.comments')),
+              icon: 'pi pi-fw pi-comments',
+              routerLink: `/topo/${this.crag.slug}/comments`,
+              visible: true,
+            },
+            {
               label: this.translocoService.translate(marker('crag.edit')),
               icon: 'pi pi-fw pi-file-edit',
               routerLink: `/topo/${this.crag.slug}/edit`,

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
-import { ObjectType } from '../../../models/tag';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -31,6 +30,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Message } from 'primeng/message';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ObjectType } from '../../../models/object';
 
 @Component({
   selector: 'lc-gallery',

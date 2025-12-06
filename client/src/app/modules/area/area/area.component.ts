@@ -29,6 +29,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Badge } from 'primeng/badge';
 
 @Component({
   selector: 'lc-area',
@@ -45,6 +46,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Tab,
     RouterLink,
     RouterOutlet,
+    Badge,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
@@ -152,6 +154,12 @@ export class AreaComponent implements OnInit {
               label: this.translocoService.translate(marker('area.gallery')),
               icon: 'pi pi-fw pi-images',
               routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
+              visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('area.comments')),
+              icon: 'pi pi-fw pi-comments',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/comments`,
               visible: true,
             },
             {

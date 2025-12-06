@@ -142,7 +142,7 @@ class DeleteUser(MethodView):  # pragma: no cover
         return jsonify(None), 204
 
 
-class UpdateAccountSettings(MethodView):
+class UpdateAccount(MethodView):
 
     @jwt_required()
     def put(self):

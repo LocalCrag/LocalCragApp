@@ -220,7 +220,7 @@ def test_delete_user_deletes_tick_but_not_line(client):
     assert rv.status_code == 200
 
 
-def test_send_project_climbed_message(client, mocker, moderator_token, user_token):
+def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_token):
     # Create a project line first
     line_data = {
         "name": "Es",
@@ -271,8 +271,6 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
     res = rv.json
     line_id = res["id"]
 
-    mock_SMTP_SSL = mocker.MagicMock(name="util.email.smtplib.SMTP_SSL")
-    mocker.patch("util.email.smtplib.SMTP_SSL", new=mock_SMTP_SSL)
     project_climbed_data = {
         "line": line_id,
         "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts",
@@ -280,9 +278,9 @@ def test_send_project_climbed_message(client, mocker, moderator_token, user_toke
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
     assert rv.status_code == 204
 
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.login.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert mock_SMTP_SSL.return_value.__enter__.return_value.quit.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
 
     treppe = str(Line.get_id_by_slug("treppe"))
 
@@ -428,3 +426,22 @@ def test_disable_fa_in_ascents_enforced_on_create(client, member_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["fa"] is False  # enforced by instance setting
+
+
+def test_successful_validate_soft_hard(client, member_token):
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": True,
+        "hard": True,
+        "withKneepad": True,
+        "rating": 2,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("treppe")),
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert rv.status_code == 400

@@ -1,0 +1,46 @@
+lc-comment {
+  background-color: transparent;
+  outline: 0 solid var(--p-primary-100);
+  transition:
+    background-color 0.75s ease,
+    outline-width 0.75s ease;
+
+  a {
+    text-decoration: none;
+    color: #4b5563;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .username {
+    font-weight: bold;
+    margin-right: 0.25rem;
+  }
+
+  .reply-button {
+    margin-left: -0.6rem;
+  }
+
+  .reply-to-indicator {
+    border-radius: 0.25rem;
+    padding: 2px 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    font-style: normal;
+    background: var(--p-gray-200);
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  &.is-highlighted {
+    background-color: var(--p-primary-100) !important;
+    outline: 0.5rem solid var(--p-primary-100) !important;
+  }
+
+  .ellipsis-button button {
+    margin-top: -0.5rem;
+    margin-bottom: -0.5rem;
+  }
+}
