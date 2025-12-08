@@ -3,6 +3,16 @@ from marshmallow import ValidationError
 from models.enums.line_type_enum import LineTypeEnum
 from models.scale import Scale
 
+ALLOWED_LANGUAGES = {"de", "en", "it"}
+
+
+def validate_language(value: str):
+    """
+    Raises a ValidationError if the language is not one of the allowed values.
+    """
+    if value not in ALLOWED_LANGUAGES:
+        raise ValidationError(f"Invalid language '{value}'. Allowed: {', '.join(sorted(ALLOWED_LANGUAGES))}")
+
 
 def cross_validate_grade(grade_value, grade_scale, line_type):
     """

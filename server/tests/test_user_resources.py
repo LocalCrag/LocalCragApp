@@ -19,7 +19,7 @@ def test_successful_get_user(client, member_token):
     assert res["firstname"] == member.firstname
     assert res["lastname"] == member.lastname
     assert res["email"] == member.email
-    assert res["language"] == member.language
+    assert res["accountLanguage"] == member.account_settings.language
     assert res["activated"] == member.activated
     assert res["admin"] == member.admin
     assert res["moderator"] == member.moderator
@@ -40,7 +40,7 @@ def test_successful_get_users(client, admin_token):
         assert isinstance(user["firstname"], str)
         assert isinstance(user["lastname"], str)
         assert isinstance(user["email"], str)
-        assert isinstance(user["language"], str)
+        assert isinstance(user["accountLanguage"], str)
         assert isinstance(user["activated"], bool)
         assert isinstance(user["admin"], bool)
         assert isinstance(user["moderator"], bool)
@@ -84,7 +84,7 @@ def test_successful_register_user(client, member_token, smtp_mock):
     assert res["lastname"] == "Test"
     assert res["email"] == "felix.engelmann@fengelmann.de"  # expect it to be changed to lowercase
     assert not res["activated"]
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["avatar"] is None
     assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
     assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
@@ -136,7 +136,7 @@ def test_update_user(client, admin_token):
     rv = client.put("/api/users/account", token=admin_token, json=data)
     assert rv.status_code == 200, rv.text
     res = rv.json
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["firstname"] == "Thorsten"
     assert res["lastname"] == "Test"
     assert res["avatar"]["id"] == str(any_file.id)
@@ -156,7 +156,7 @@ def test_update_user_different_email(client, mocker, member_token):
     rv = client.put("/api/users/account", token=member_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["firstname"] == "Thorsten"
     assert res["lastname"] == "Test"
     assert res["avatar"] is None
@@ -187,7 +187,7 @@ def test_change_email(client):
     assert res["accessToken"] != res["refreshToken"]
     assert res["user"]["email"] == "masteradmin@localcrag.invalid.org"
     assert isinstance(res["user"]["id"], str)
-    assert res["user"]["language"] == "de"
+    assert res["user"]["accountLanguage"] == "en"
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["timeUpdated"] is not None
     assert res["user"]["avatar"] is None
