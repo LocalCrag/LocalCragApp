@@ -1,0 +1,25 @@
+lc-language-select {
+
+  p-select{
+    height: 100%;
+    align-items: center;
+  }
+
+  &.no-label .p-select-dropdown {
+    display: none;
+  }
+
+  .language-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .flag {
+    width: 1.25rem;
+    height: auto;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+}

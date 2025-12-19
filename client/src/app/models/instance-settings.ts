@@ -1,6 +1,7 @@
 import { File } from './file';
 import { FaDefaultFormat } from '../enums/fa-default-format';
 import { StartingPosition } from '../enums/starting-position';
+import { LanguageCode } from '../utility/types/language';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -28,6 +29,7 @@ export class InstanceSettings {
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
   disableFAInAscents: boolean;
+  language: LanguageCode;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -65,6 +67,7 @@ export class InstanceSettings {
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
     instanceSettings.disableFAInAscents = payload.disableFAInAscents;
+    instanceSettings.language = payload.language;
     return instanceSettings;
   }
 
@@ -100,6 +103,7 @@ export class InstanceSettings {
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
       disableFAInAscents: instanceSettings.disableFAInAscents,
+      language: instanceSettings.language,
     };
   }
 }

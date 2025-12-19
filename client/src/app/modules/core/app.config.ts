@@ -27,13 +27,11 @@ import {
   provideTransloco,
   Translation,
   TranslocoLoader,
-  TranslocoService,
 } from '@jsverse/transloco';
 import { provideStore, Store } from '@ngrx/store';
 import { InstanceSettingsService } from '../../services/crud/instance-settings.service';
 import { MenuItemsService } from '../../services/crud/menu-items.service';
-import { selectGymMode } from '../../ngrx/selectors/instance-settings.selectors';
-import { forkJoin } from 'rxjs';
+import { concatMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
 import { MessageService } from 'primeng/api';
@@ -46,6 +44,7 @@ import { AppLevelAlertsEffects } from 'src/app/ngrx/effects/app-level-alerts.eff
 import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
+import { LanguageService } from '../../services/core/language.service';
 
 /**
  * Transloco HTTP loader.
@@ -66,33 +65,24 @@ export class TranslocoHttpLoader implements TranslocoLoader {
   }
 }
 
-const preloadTranslations = (transloco: TranslocoService, store: Store) => {
+/**
+ * Initializes instance settings and language on app startup.
+ * @param instanceSettingsService
+ * @param languageService
+ * @param store
+ */
+const initInstanceSettingsAndLanguage = (
+  instanceSettingsService: InstanceSettingsService,
+  languageService: LanguageService,
+  store: Store,
+) => {
   return () => {
-    store.select(selectGymMode).subscribe((gymMode) => {
-      if (gymMode && !transloco.getActiveLang().endsWith('-gym')) {
-        transloco.setActiveLang(environment.language + '-gym');
-        transloco.setFallbackLangForMissingTranslation({
-          fallbackLang: environment.language,
-        });
-      } else if (!gymMode && transloco.getActiveLang().endsWith('-gym')) {
-        transloco.setActiveLang(environment.language);
-      }
-    });
-
-    return forkJoin(
-      [
-        '',
-        'crag/',
-        'sector/',
-        'area/',
-        'line/',
-        'topoImage/',
-        'linePath/',
-        'maps/',
-      ].flatMap((path) => [
-        transloco.load(path + environment.language),
-        transloco.load(path + environment.language + '-gym'),
-      ]),
+    return instanceSettingsService.getInstanceSettings().pipe(
+      map((instanceSettings) => {
+        store.dispatch(updateInstanceSettings({ settings: instanceSettings }));
+        return instanceSettings.language;
+      }),
+      concatMap(languageService.initApp.bind(languageService)),
     );
   };
 };
@@ -100,19 +90,6 @@ const preloadTranslations = (transloco: TranslocoService, store: Store) => {
 const preloadMenus = (menuItemsService: MenuItemsService) => {
   return () => {
     return menuItemsService.getMenuItems();
-  };
-};
-
-const preloadInstanceSettings = (
-  instanceSettingsService: InstanceSettingsService,
-  store: Store,
-) => {
-  return () => {
-    return instanceSettingsService.getInstanceSettings().pipe(
-      map((instanceSettings) => {
-        store.dispatch(updateInstanceSettings({ settings: instanceSettings }));
-      }),
-    );
   };
 };
 
@@ -170,7 +147,7 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
     {
-      provide: LOCALE_ID,
+      provide: LOCALE_ID, // TODO set dynamically
       useValue: environment.language,
     },
     provideHttpClient(withInterceptorsFromDi()),
@@ -185,16 +162,23 @@ export const appConfig: ApplicationConfig = {
     }),
     MessageService,
     provideAnimationsAsync(),
-    provideAppInitializer(() => {
-      const initializerFn = preloadTranslations(
-        inject(TranslocoService),
-        inject(Store),
-      );
-      return initializerFn();
+    provideTransloco({
+      config: {
+        availableLangs: ['de', 'de-gym', 'en', 'en-gym', 'it', 'it-gym'],
+        defaultLang: environment.language,
+        fallbackLang: 'de',
+        prodMode: environment.production,
+        reRenderOnLangChange: true,
+        missingHandler: {
+          useFallbackTranslation: true,
+        },
+      },
+      loader: TranslocoHttpLoader,
     }),
     provideAppInitializer(() => {
-      const initializerFn = preloadInstanceSettings(
+      const initializerFn = initInstanceSettingsAndLanguage(
         inject(InstanceSettingsService),
+        inject(LanguageService),
         inject(Store),
       );
       return initializerFn();
@@ -220,19 +204,6 @@ export const appConfig: ApplicationConfig = {
     ]),
     provideMatomo({
       mode: 'deferred',
-    }),
-    provideTransloco({
-      config: {
-        availableLangs: ['de', 'de-gym'],
-        defaultLang: environment.language,
-        fallbackLang: 'de',
-        prodMode: environment.production,
-        reRenderOnLangChange: true,
-        missingHandler: {
-          useFallbackTranslation: true,
-        },
-      },
-      loader: TranslocoHttpLoader,
     }),
     provideTranslocoMessageformat(),
   ],

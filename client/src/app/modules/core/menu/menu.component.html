@@ -25,6 +25,13 @@
           <i class="pi pi-search mr-2"></i>
           <span class="search-label">{{ t("searchPlaceholder") }}</span>
         </div>
+        <lc-language-select
+          *isLoggedOut="true"
+          [noLabel]="true"
+          [(ngModel)]="language"
+          (ngModelChange)="updateLanguage($event)"
+          lcFormControl
+        ></lc-language-select>
         <p-menu
           #menu
           [model]="userMenuItems"

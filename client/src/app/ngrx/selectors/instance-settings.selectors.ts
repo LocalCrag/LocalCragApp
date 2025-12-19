@@ -60,3 +60,8 @@ export const selectDisableFAInAscents = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.disableFAInAscents,
 );
+
+export const selectInstanceLanguage = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.language,
+);
