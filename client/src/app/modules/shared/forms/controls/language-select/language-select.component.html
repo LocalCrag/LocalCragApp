@@ -8,7 +8,7 @@
 >
   <ng-template #selectedItem let-code>
     <div class="language-option">
-      <img [src]="getFlagSrc(code)" alt="" class="flag"/>
+      <img [src]="getFlagSrc(code)" alt="" class="flag" />
       @if (!noLabel) {
         <span>{{ code | transloco }}</span>
       }
@@ -16,11 +16,10 @@
   </ng-template>
   <ng-template let-code #item>
     <div class="language-option">
-      <img [src]="getFlagSrc(code)" alt="" class="flag"/>
+      <img [src]="getFlagSrc(code)" alt="" class="flag" />
       @if (!noLabel) {
         <div class="ml-2 inline-block">{{ code | transloco }}</div>
       }
     </div>
   </ng-template>
 </p-select>
-

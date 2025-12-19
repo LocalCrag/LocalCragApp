@@ -217,14 +217,12 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <div class="form-label flex align-items-center">
-          <label  for="language">{{
-              t("languageLabel")
-            }}</label>
-          <span
-            class="pi pi-question-circle ml-2"
-            [pTooltip]="t('instanceLanguageTooltip')"
-            tooltipPosition="right"
-          ></span>
+            <label for="language">{{ t("languageLabel") }}</label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('instanceLanguageTooltip')"
+              tooltipPosition="right"
+            ></span>
           </div>
           <lc-language-select
             id="language"

@@ -1,11 +1,8 @@
 <ng-container *transloco="let t; read: 'accountSettingsForm'">
   <form [formGroup]="accountSettingsForm" lcForm>
-
     <div class="flex flex-column gap-2" lcControlGroup>
       <div class="form-label flex align-items-center">
-        <label  for="language">{{
-            t("languageLabel")
-          }}</label>
+        <label for="language">{{ t("languageLabel") }}</label>
       </div>
       <lc-language-select
         id="language"
@@ -14,12 +11,9 @@
       ></lc-language-select>
     </div>
 
-
     <div class="flex flex-column gap-2" lcControlGroup>
       <div class="form-label flex align-items-center">
-        <label  for="language">{{
-            t("notificationsLabel")
-          }}</label>
+        <label for="language">{{ t("notificationsLabel") }}</label>
       </div>
       <div
         class="flex align-items-center justify-content-center sm:justify-content-start"
