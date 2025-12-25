@@ -3,6 +3,7 @@ import { File } from '../../models/file';
 import { updateInstanceSettings } from '../actions/instance-settings.actions';
 import { FaDefaultFormat } from '../../enums/fa-default-format';
 import { StartingPosition } from '../../enums/starting-position';
+import { LanguageCode } from '../../utility/types/language';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -27,6 +28,7 @@ export interface InstanceSettingsState {
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
   disableFAInAscents: boolean;
+  language: LanguageCode;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -52,6 +54,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
   disableFAInAscents: false,
+  language: null,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -80,6 +83,7 @@ const instanceSettingsReducer = createReducer(
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,
     disableFAInAscents: action.settings.disableFAInAscents,
+    language: action.settings.language,
   })),
 );
 

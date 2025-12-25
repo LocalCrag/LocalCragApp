@@ -29,7 +29,6 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Badge } from 'primeng/badge';
 
 @Component({
   selector: 'lc-area',
@@ -46,7 +45,6 @@ import { Badge } from 'primeng/badge';
     Tab,
     RouterLink,
     RouterOutlet,
-    Badge,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
@@ -101,7 +99,6 @@ export class AreaComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, sector, area, isLoggedIn]) => {
           this.crag = crag;
           this.sector = sector;

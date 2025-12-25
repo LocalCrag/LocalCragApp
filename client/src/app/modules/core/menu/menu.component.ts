@@ -38,6 +38,11 @@ import { Menu } from 'primeng/menu';
 import { Avatar } from 'primeng/avatar';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Button } from 'primeng/button';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LanguageCode } from '../../../utility/types/language';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-menu',
@@ -54,6 +59,10 @@ import { Button } from 'primeng/button';
     Avatar,
     HasPermissionDirective,
     Button,
+    FormControlDirective,
+    LanguageSelectComponent,
+    ReactiveFormsModule,
+    FormsModule,
   ],
 })
 export class MenuComponent implements OnInit {
@@ -65,12 +74,14 @@ export class MenuComponent implements OnInit {
   currentUser$: Observable<User>;
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
+  language: LanguageCode;
 
   private menuItemsService = inject(MenuItemsService);
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private actions = inject(Actions);
   private store = inject(Store);
+  private languageService = inject(LanguageService);
 
   ngOnInit() {
     this.logoImage$ = this.store.pipe(select(selectLogoImage));
@@ -80,6 +91,7 @@ export class MenuComponent implements OnInit {
     this.skippedHierarchyLayers$ = this.store.select(
       selectSkippedHierarchyLayers,
     );
+    this.language = this.languageService.calculatedLanguage;
     this.buildMenu();
     this.buildUserMenu();
     this.actions
@@ -95,6 +107,11 @@ export class MenuComponent implements OnInit {
         this.buildMenu();
         this.buildUserMenu();
       });
+  }
+
+  updateLanguage(language: LanguageCode) {
+    this.language = language;
+    this.languageService.setPreferredLanguage(language);
   }
 
   buildUserMenu() {
