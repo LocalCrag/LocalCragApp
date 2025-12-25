@@ -12,7 +12,6 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { FormsModule } from '@angular/forms';
@@ -70,24 +69,23 @@ export class MenuPagesListComponent implements OnInit {
    * Loads new data.
    */
   refreshData() {
-    forkJoin([
-      this.menuPagesService.getMenuPages(),
-      this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([menuPages]) => {
-      this.menuPages = menuPages;
-      this.loading = LoadingState.DEFAULT;
-      this.sortOptions = [
-        {
-          label: this.translocoService.translate(marker('sortNewToOld')),
-          value: 'timeCreated',
-        },
-        {
-          label: this.translocoService.translate(marker('sortOldToNew')),
-          value: '!timeCreated',
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
-    });
+    forkJoin([this.menuPagesService.getMenuPages()]).subscribe(
+      ([menuPages]) => {
+        this.menuPages = menuPages;
+        this.loading = LoadingState.DEFAULT;
+        this.sortOptions = [
+          {
+            label: this.translocoService.translate(marker('sortNewToOld')),
+            value: 'timeCreated',
+          },
+          {
+            label: this.translocoService.translate(marker('sortOldToNew')),
+            value: '!timeCreated',
+          },
+        ];
+        this.sortKey = this.sortOptions[0];
+      },
+    );
   }
 
   /**

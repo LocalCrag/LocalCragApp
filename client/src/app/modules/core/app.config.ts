@@ -109,6 +109,12 @@ const initMatomo = (
   };
 };
 
+export function localeFactory(): string {
+  return (
+    localStorage.getItem('preferredLanguage') || navigator.language || 'en-US'
+  );
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
     {
@@ -147,8 +153,8 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
     {
-      provide: LOCALE_ID, // TODO set dynamically
-      useValue: environment.language,
+      provide: LOCALE_ID,
+      useValue: localeFactory,
     },
     provideHttpClient(withInterceptorsFromDi()),
     providePrimeNG({
@@ -165,8 +171,8 @@ export const appConfig: ApplicationConfig = {
     provideTransloco({
       config: {
         availableLangs: ['de', 'de-gym', 'en', 'en-gym', 'it', 'it-gym'],
-        defaultLang: environment.language,
-        fallbackLang: 'de',
+        defaultLang: 'de',
+        fallbackLang: 'en',
         prodMode: environment.production,
         reRenderOnLangChange: true,
         missingHandler: {

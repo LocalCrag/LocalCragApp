@@ -129,7 +129,6 @@ export class LineComponent implements OnInit {
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(
           ([crag, sector, area, line, isModerator, instanceSettings]) => {
             this.crag = crag;

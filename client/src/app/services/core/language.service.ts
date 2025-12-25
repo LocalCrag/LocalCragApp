@@ -67,7 +67,6 @@ export class LanguageService {
   setUserLanguage(lang: LanguageCode) {
     this.userLanguage = lang;
     this.preferredLanguage = lang;
-    console.log(`Setting user language to ${lang}`);
     // In contrast to setInstanceLanguage and setPreferredLanguage, we always want to change language here
     // as this is never called during app initialization and thus doesn't trigger a redundant / race condition change
     this.changeLanguage().subscribe();
@@ -100,16 +99,11 @@ export class LanguageService {
 
     // Do nothing if current language is the same
     if (this.renderedLanguage === (this.gymMode ? `${lang}-gym` : lang)) {
-      console.log(
-        `Language ${this.renderedLanguage} already rendered, skipping change.`,
-      );
       return new Observable<Translation[]>((subscriber) => {
         subscriber.next([]);
         subscriber.complete();
       });
     }
-
-    console.log(`Changing language to ${this.gymMode ? `${lang}-gym` : lang}`);
 
     // Set active language and preload translations
     this.transloco.setActiveLang(this.gymMode ? `${lang}-gym` : lang);
