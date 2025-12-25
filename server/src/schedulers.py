@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import zlib
 from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -22,9 +23,9 @@ def _run_build_rankings_with_lock(app):
     from util.build_rankings import build_rankings
 
     with app.app_context():
-        # Use a stable bigint lock ID for the build_rankings job
-        lock_id = "build_rankings_job_lock"
-        lock_id = abs(hash(lock_id)) % (2**31)  # Ensure it's a positive 32-bit integer
+        # Use a stable lock ID for the build_rankings job
+        lock_name = "build_rankings_job_lock"
+        lock_id = zlib.crc32(lock_name.encode("utf-8"))
         got_lock = False
         try:
             try:
