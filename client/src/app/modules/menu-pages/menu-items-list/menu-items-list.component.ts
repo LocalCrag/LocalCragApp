@@ -10,7 +10,6 @@ import {
 } from '@jsverse/transloco';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
@@ -82,18 +81,17 @@ export class MenuItemsListComponent implements OnInit {
    * Loads new data.
    */
   refreshData() {
-    forkJoin([
-      this.menuItemsService.getMenuItems(),
-      this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([menuItems]) => {
-      this.menuItemsTop = menuItems.filter(
-        (menuItem) => menuItem.position === MenuItemPosition.TOP,
-      );
-      this.menuItemsBottom = menuItems.filter(
-        (menuItem) => menuItem.position === MenuItemPosition.BOTTOM,
-      );
-      this.loading = LoadingState.DEFAULT;
-    });
+    forkJoin([this.menuItemsService.getMenuItems()]).subscribe(
+      ([menuItems]) => {
+        this.menuItemsTop = menuItems.filter(
+          (menuItem) => menuItem.position === MenuItemPosition.TOP,
+        );
+        this.menuItemsBottom = menuItems.filter(
+          (menuItem) => menuItem.position === MenuItemPosition.BOTTOM,
+        );
+        this.loading = LoadingState.DEFAULT;
+      },
+    );
   }
 
   reorderMenuItems(position: MenuItemPosition) {

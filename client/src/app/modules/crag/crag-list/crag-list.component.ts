@@ -7,7 +7,6 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { environment } from '../../../../environments/environment';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
@@ -87,10 +86,7 @@ export class CragListComponent implements OnInit {
    * Loads new data.
    */
   refreshData() {
-    forkJoin([
-      this.cragsService.getCrags(),
-      this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([crags]) => {
+    forkJoin([this.cragsService.getCrags()]).subscribe(([crags]) => {
       this.crags = crags;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [

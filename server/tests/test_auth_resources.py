@@ -23,7 +23,7 @@ def test_successful_login(client):
     assert res["user"]["firstname"] == "admin"
     assert res["user"]["lastname"] == "admin"
     assert isinstance(res["user"]["id"], str)
-    assert res["user"]["language"] == "de"
+    assert res["user"]["accountLanguage"] == "en"
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["avatar"] is None
 
@@ -172,7 +172,7 @@ def test_reset_password_success(client):
     assert res["accessToken"] != res["refreshToken"]
     assert res["user"]["email"] == user.email
     assert res["user"]["id"] == str(user.id)
-    assert res["user"]["language"] == user.language
+    assert res["user"]["accountLanguage"] == user.account_settings.language
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["timeUpdated"] is not None
     assert res["user"]["avatar"] is None

@@ -351,24 +351,20 @@ export class AscentListComponent implements OnInit, OnChanges {
   }
 
   confirmDeleteAscent(event: Event, ascent: Ascent) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('ascent.askReallyWantToDeleteAscent'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('ascent.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('ascent.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteAscent(ascent);
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('ascent.askReallyWantToDeleteAscent'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('ascent.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('ascent.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteAscent(ascent);
+      },
     });
   }
 
