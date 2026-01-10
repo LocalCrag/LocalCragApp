@@ -3,3 +3,4 @@ node_modules
 .husky/_/
 docker-compose.override.yml
 .env
+helm/localcrag/charts

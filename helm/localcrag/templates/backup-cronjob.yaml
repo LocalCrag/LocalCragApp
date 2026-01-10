@@ -1,0 +1,240 @@
+{{- if .Values.backups.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "localcrag.fullname" . }}-backup
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+spec:
+  schedule: {{ .Values.backups.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.backups.jobHistory.successful }}
+  failedJobsHistoryLimit: {{ .Values.backups.jobHistory.failed }}
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            {{- include "localcrag.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: backup
+        spec:
+          restartPolicy: OnFailure
+          {{- if .Values.backups.serviceAccountName }}
+          serviceAccountName: {{ .Values.backups.serviceAccountName | quote }}
+          {{- end }}
+          containers:
+            - name: backup
+              image: {{ default .Values.backups.postgres.image .Values.backups.image | quote }}
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BACKUP_RETENTION_KEEP
+                  value: {{ default 3 .Values.backups.retention.keep | int | quote }}
+
+                - name: BACKUP_S3_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_ENDPOINT" .Values.backups.target.secretKeys.endpointKey | quote }}
+                      optional: true
+                - name: BACKUP_S3_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_BUCKET" .Values.backups.target.secretKeys.bucketKey | quote }}
+                - name: BACKUP_S3_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_REGION" .Values.backups.target.secretKeys.regionKey | quote }}
+                      optional: true
+                - name: BACKUP_S3_PREFIX
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_PREFIX" .Values.backups.target.secretKeys.prefixKey | quote }}
+                      optional: true
+
+                # Credentials for mc destination.
+                - name: DST_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_ACCESS_KEY" .Values.backups.target.secretKeys.accessKeyKey | quote }}
+                - name: DST_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "BACKUP_S3_SECRET_KEY" .Values.backups.target.secretKeys.secretKeyKey | quote }}
+
+                # Always include Postgres env
+                - name: PGHOST
+                  value: {{ .Values.backups.postgres.pgHost | quote }}
+                - name: PGPORT
+                  value: {{ .Values.backups.postgres.pgPort | quote }}
+                - name: PGUSER
+                  value: {{ .Values.postgres.auth.username | quote }}
+                - name: PGDATABASE
+                  value: {{ .Values.postgres.auth.database | quote }}
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "POSTGRES_PASSWORD" .Values.existingSecret.keys.postgresPassword | quote }}
+
+                # Always include MinIO env
+                - name: SRC_ENDPOINT
+                  value: {{ .Values.backups.minio.source.endpoint | quote }}
+                - name: SRC_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "rootUser" .Values.existingSecret.keys.s3User | quote }}
+                - name: SRC_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      key: {{ default "rootPassword" .Values.existingSecret.keys.s3Password | quote }}
+                - name: SRC_BUCKET
+                  value: {{ .Values.s3.bucket | quote }}
+
+              command:
+                - /bin/sh
+                - -lc
+                - |
+                  set -euo pipefail
+
+                  # Validate all required variables
+                  : "${BACKUP_S3_BUCKET:?BACKUP_S3_BUCKET is required}"
+                  : "${BACKUP_S3_PREFIX:?BACKUP_S3_PREFIX is required.}"
+                  : "${DST_ACCESS_KEY:?BACKUP_S3_ACCESS_KEY is required}"
+                  : "${DST_SECRET_KEY:?BACKUP_S3_SECRET_KEY is required}"
+                  : "${BACKUP_RETENTION_KEEP:?BACKUP_RETENTION_KEEP is required}"
+                  : "${PGHOST:?PGHOST is required}"
+                  : "${PGPORT:?PGPORT is required}"
+                  : "${PGUSER:?PGUSER is required}"
+                  : "${PGDATABASE:?PGDATABASE is required}"
+                  : "${PGPASSWORD:?PGPASSWORD is required}"
+                  : "${SRC_BUCKET:?SRC_BUCKET is required}"
+
+                  # Normalize prefix (remove leading/trailing slashes)
+                  PREFIX="${BACKUP_S3_PREFIX#/}"
+                  PREFIX="${PREFIX%/}"
+
+                  echo "Backup target bucket: ${BACKUP_S3_BUCKET}"
+                  echo "Backup target prefix: ${PREFIX}"
+
+                  TS="$(date -u +%Y%m%dT%H%M%SZ)"
+
+                  # Ensure required tools are available (postgres image is Debian-based)
+                  NEED_APT=0
+                  if ! command -v curl >/dev/null 2>&1; then
+                    echo "curl not found; will install..."
+                    NEED_APT=1
+                  fi
+                  if ! command -v sort >/dev/null 2>&1; then
+                    echo "sort not found; will install coreutils..."
+                    NEED_APT=1
+                  fi
+
+                  if [ "${NEED_APT}" -eq 1 ]; then
+                    export DEBIAN_FRONTEND=noninteractive
+                    apt-get update -y
+                    apt-get install -y --no-install-recommends curl ca-certificates coreutils
+                    rm -rf /var/lib/apt/lists/*
+                  fi
+                  
+                  # Ensure mc is available
+                  if ! command -v mc >/dev/null 2>&1; then
+                    echo "mc not found; downloading..."
+                    ARCH="$(uname -m)"
+                    case "${ARCH}" in
+                      x86_64|amd64) MC_ARCH=amd64 ;;
+                      aarch64|arm64) MC_ARCH=arm64 ;;
+                      *) echo "Unsupported arch for mc: ${ARCH}" >&2; exit 2 ;;
+                    esac
+                    curl -fsSL -o /usr/local/bin/mc "https://dl.min.io/client/mc/release/linux-${MC_ARCH}/mc"
+                    chmod +x /usr/local/bin/mc
+                  fi
+
+                  # Normalize destination endpoint to API endpoint (bucket-style -> api-style)
+                  DST_ENDPOINT="${BACKUP_S3_ENDPOINT:-}"
+                  if [ -z "${DST_ENDPOINT}" ]; then
+                    DST_ENDPOINT="https://s3.amazonaws.com"
+                  else
+                    case "${DST_ENDPOINT}" in
+                      https://*.s3.*) DST_ENDPOINT="https://s3.${DST_ENDPOINT#https://*.s3.}" ;;
+                      http://*.s3.*)  DST_ENDPOINT="http://s3.${DST_ENDPOINT#http://*.s3.}" ;;
+                    esac
+                    case "${DST_ENDPOINT}" in
+                      */) DST_ENDPOINT="${DST_ENDPOINT%/}" ;;
+                    esac
+                  fi
+
+                  echo "Configuring mc aliases..."
+                  mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}"
+                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}"
+
+                  echo "--- Bundled backup snapshot: ${TS} ---"
+
+                  # ---- Postgres dump -> destination snapshot dir ----
+                  FILE="/tmp/${PGDATABASE}_${TS}.sql.gz"
+                  echo "Dumping database '${PGDATABASE}' from ${PGHOST}:${PGPORT}..."
+                  pg_dump --format=plain --no-owner --no-privileges "${PGDATABASE}" | gzip -9 > "${FILE}"
+
+                  PG_DST="dst/${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/postgres/${PGDATABASE}.sql.gz"
+                  echo "Uploading Postgres to ${PG_DST}..."
+                  mc cp "${FILE}" "${PG_DST}"
+
+                  # ---- MinIO mirror -> same snapshot dir ----
+
+                  MINIO_DST="dst/${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/minio/${SRC_BUCKET}"
+                  echo "Mirroring src/${SRC_BUCKET} -> ${MINIO_DST} ..."
+                  mc mirror --overwrite --remove "src/${SRC_BUCKET}" "${MINIO_DST}"
+
+                  # ---- Retention (snapshot-level) ----
+                  echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under dst/${BACKUP_S3_BUCKET}/${PREFIX}/"
+
+                  RETENTION_BASE="dst/${BACKUP_S3_BUCKET}/${PREFIX}"
+                  
+                  # List all snapshot directories - mc ls shows directories with trailing /
+                  # Parse output to get just directory names (last column, remove trailing /)
+                  mc ls "${RETENTION_BASE}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort > /tmp/snapshots.txt || true
+                  
+                  # Debug: show what we found
+                  if [ -s /tmp/snapshots.txt ]; then
+                    echo "DEBUG: Snapshot directories found:"
+                    cat /tmp/snapshots.txt
+                  else
+                    echo "DEBUG: No directories found. Raw mc ls output:"
+                    mc ls "${RETENTION_BASE}/" 2>&1 || echo "(mc ls failed)"
+                  fi
+                  
+                  if [ ! -s /tmp/snapshots.txt ]; then
+                    echo "No existing snapshots found."
+                  else
+                    SNAPSHOT_COUNT=$(wc -l < /tmp/snapshots.txt | tr -d ' ')
+                    echo "Found ${SNAPSHOT_COUNT} snapshot(s)."
+                    
+                    if [ "${SNAPSHOT_COUNT}" -gt "${BACKUP_RETENTION_KEEP}" ]; then
+                      DELETE_COUNT=$((SNAPSHOT_COUNT - BACKUP_RETENTION_KEEP))
+                      echo "Will delete ${DELETE_COUNT} old snapshot(s)."
+                      
+                      # Delete the oldest snapshots (first N lines after sorting)
+                      head -n "${DELETE_COUNT}" /tmp/snapshots.txt | while IFS= read -r old; do
+                        [ -z "${old}" ] && continue
+                        echo "Deleting old bundled snapshot: ${old}"
+                        mc rm --recursive --force "${RETENTION_BASE}/${old}/"
+                      done
+                    else
+                      echo "Retention threshold not exceeded (keeping all ${SNAPSHOT_COUNT} snapshots)."
+                    fi
+                  fi
+                  
+                  rm -f /tmp/snapshots.txt
+
+                  echo "Bundled backup complete."
+              resources:
+                {{- toYaml .Values.backups.resources | nindent 16 }}
+{{- end }}
