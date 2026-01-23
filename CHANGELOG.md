@@ -1,3 +1,10 @@
+## [1.25.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.0...v1.25.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* **posts:** WYSIWYG editor file upload can now handle array responses ([#926](https://github.com/LocalCrag/LocalCragApp/issues/926)) ([b067527](https://github.com/LocalCrag/LocalCragApp/commit/b067527b52fe42d143885050e4992aaa2746a238))
+
 # [1.25.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.24.0...v1.25.0) (2025-12-06)
 
 
