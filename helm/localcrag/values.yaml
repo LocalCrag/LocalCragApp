@@ -38,10 +38,20 @@ appS3:
   accessEndpoint: ""
   addressing: path
 
-  # MinIO subchart configuration
-  buckets:
 # MinIO official chart settings (dependency aliased as `s3`)
 s3:
+  # REQUIRED: Public URL for accessing S3 objects (e.g., "https://s3.example.com")
+  accessEndpoint: ""
+  # REQUIRED: Hosts for the S3 (MinIO) endpoints exposed via Ingress
+  ingress:
+    # Public hostname for S3 API access (e.g., "s3.example.com")
+    s3Host: ""
+    # Public hostname for MinIO console (e.g., "minio.example.com")
+    consoleHost: ""
+
+  # MinIO subchart configuration
+  buckets:
+    - name: localcrag
       policy: download
       purge: false
       versioning: false
@@ -111,12 +121,6 @@ client:
 backups:
   enabled: true
 
-# REQUIRED: Hosts for the S3 (MinIO) endpoints exposed via Ingress
-minio:
-  # Public hostname for S3 API access (e.g., "s3.example.com")
-  s3Host: ""
-  # Public hostname for MinIO console (e.g., "minio.example.com")
-  consoleHost: ""
   # Combined backup schedule (single CronJob / single Pod).
   schedule: "0 2 * * *"
 
