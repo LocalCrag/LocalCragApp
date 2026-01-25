@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["smtp", "systemEmail", "server", "s3", "client"],
+  "required": ["smtp", "systemEmail", "server", "appS3", "s3", "client"],
   "properties": {
     "smtp": {
       "type": "object",
@@ -41,16 +41,23 @@
         }
       }
     },
-    "s3": {
+    "appS3": {
       "type": "object",
-      "required": ["accessEndpoint", "ingress"],
-      "additionalProperties": true,
+      "required": ["accessEndpoint"],
       "properties": {
         "accessEndpoint": {
           "type": "string",
           "minLength": 1,
-          "description": "Public S3 access URL"
-        },
+          "pattern": "^https?://",
+          "description": "Public URL for accessing S3 objects (e.g., https://s3.example.com)"
+        }
+      }
+    },
+    "s3": {
+      "type": "object",
+      "required": ["ingress"],
+      "additionalProperties": true,
+      "properties": {
         "ingress": {
           "type": "object",
           "required": ["s3Host", "consoleHost"],
@@ -69,6 +76,7 @@
         }
       }
     },
+
     "client": {
       "type": "object",
       "required": ["ingress"],

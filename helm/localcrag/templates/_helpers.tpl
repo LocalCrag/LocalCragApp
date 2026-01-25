@@ -46,9 +46,6 @@ This template is included in the main deployments to ensure all mandatory values
 {{- if not .Values.server.frontendHost }}
 {{- fail "server.frontendHost is required but not set. Please provide the public URL of your frontend." }}
 {{- end }}
-{{- if not .Values.s3.accessEndpoint }}
-{{- fail "s3.accessEndpoint is required but not set. Please provide the public S3 access URL." }}
-{{- end }}
 {{- if not .Values.client.ingress.host }}
 {{- fail "client.ingress.host is required but not set. Please provide the public hostname for the application." }}
 {{- end }}

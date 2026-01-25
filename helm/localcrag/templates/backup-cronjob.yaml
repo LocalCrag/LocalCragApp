@@ -97,7 +97,7 @@ spec:
                       name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
                       key: {{ default "rootPassword" .Values.existingSecret.keys.s3Password | quote }}
                 - name: SRC_BUCKET
-                  value: {{ .Values.s3.bucket | quote }}
+                  value: {{ .Values.appS3.bucket | quote }}
 
               command:
                 - /bin/sh

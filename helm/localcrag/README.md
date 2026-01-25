@@ -208,16 +208,52 @@ spec:
     - name: localcrag.backup
       interval: 60s
       rules:
-        - alert: BackupJobFailed
+        - alert: CronJobStatusFailed
           expr: |
-            kube_job_status_failed{job_name=~".*-backup-.*"} > 0
-          for: 1m
+            (
+              max by(cronjob, namespace) (
+                label_replace(
+                  kube_job_created{job_name=~".*backup.*"}
+                    * on(job_name, namespace) group_left()
+                    (kube_job_status_failed{job_name=~".*backup.*"} > 0),
+                  "cronjob", "$1", "job_name", "^(.+)-[0-9]+$"
+                )
+              )
+              >
+              max by(cronjob, namespace) (
+                label_replace(
+                  kube_job_created{job_name=~".*backup.*"}
+                    * on(job_name, namespace) group_left()
+                    (kube_job_status_succeeded{job_name=~".*backup.*"} > 0),
+                  "cronjob", "$1", "job_name", "^(.+)-[0-9]+$"
+                )
+              )
+            )
+            or
+            (
+              max by(cronjob, namespace) (
+                label_replace(
+                  kube_job_created{job_name=~".*backup.*"}
+                    * on(job_name, namespace) group_left()
+                    (kube_job_status_failed{job_name=~".*backup.*"} > 0),
+                  "cronjob", "$1", "job_name", "^(.+)-[0-9]+$"
+                )
+              )
+              unless
+              max by(cronjob, namespace) (
+                label_replace(
+                  kube_job_created{job_name=~".*backup.*"}
+                    * on(job_name, namespace) group_left()
+                    (kube_job_status_succeeded{job_name=~".*backup.*"} > 0),
+                  "cronjob", "$1", "job_name", "^(.+)-[0-9]+$"
+                )
+              )
+            )
           labels:
-            severity: critical
             component: backup
+          for: 1m
           annotations:
-            summary: "LocalCrag backup job failed"
-            description: "The backup job {{ $labels.job_name }} in namespace {{ $labels.namespace }} has failed."
+            description: 'Backup CronJob {{ $labels.job_name }} in namespace {{ $labels.namespace }} has failed.'
 ```
 
 **Note**: Adjust the `namespace` and `labels.release` to match your Prometheus Operator installation. The alert triggers when any backup job (matching the pattern `.*-backup-.*`) fails and remains in a failed state for more than 1 minute. Make sure to also configure your alertmanager to notify you of such critical alerts.

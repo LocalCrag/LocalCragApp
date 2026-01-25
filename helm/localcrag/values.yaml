@@ -40,8 +40,6 @@ appS3:
 
 # MinIO official chart settings (dependency aliased as `s3`)
 s3:
-  # REQUIRED: Public URL for accessing S3 objects (e.g., "https://s3.example.com")
-  accessEndpoint: ""
   # REQUIRED: Hosts for the S3 (MinIO) endpoints exposed via Ingress
   ingress:
     # Public hostname for S3 API access (e.g., "s3.example.com")
@@ -149,8 +147,8 @@ backups:
       secretKeyKey: BACKUP_S3_SECRET_KEY
 
   jobHistory:
-    successful: 3
-    failed: 3
+    successful: 1
+    failed: 1
 
   # Optional: run backups under a specific service account.
   serviceAccountName: ""
