@@ -27,6 +27,12 @@ module.exports = {
             {npmPublish: false, pkgRoot: "server"}
         ],
         "@semantic-release/changelog",
+        [
+            "@semantic-release/exec",
+            {
+                prepareCmd: "sed -i '' 's/^appVersion:.*/appVersion: \"${nextRelease.version}\"/' helm/localcrag/Chart.yaml"
+            }
+        ],
         "@semantic-release/github",
         [
             "@semantic-release/git",
@@ -35,6 +41,7 @@ module.exports = {
                     "package.json",
                     "client/package.json",
                     "server/package.json",
+                    "helm/localcrag/Chart.yaml",
                     "CHANGELOG.md"
                 ],
                 message: "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
