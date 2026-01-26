@@ -1,3 +1,12 @@
+## [1.25.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.1...v1.25.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* **core:** add missing package to make release pipeline work ([#930](https://github.com/LocalCrag/LocalCragApp/issues/930)) ([128dae7](https://github.com/LocalCrag/LocalCragApp/commit/128dae76d8c7b15809fc7e0b1c2e43601325c3ef))
+* fix release sed command ([#931](https://github.com/LocalCrag/LocalCragApp/issues/931)) ([1a6d8b8](https://github.com/LocalCrag/LocalCragApp/commit/1a6d8b82eada83bfbc83030ce48d63a7772510de))
+* update helm chart structure to work with argocd ([#929](https://github.com/LocalCrag/LocalCragApp/issues/929)) ([3d17c58](https://github.com/LocalCrag/LocalCragApp/commit/3d17c586f528edb10db2b90309dd7c30c990cb4a))
+
 ## [1.25.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.0...v1.25.1) (2026-01-23)
 
 
