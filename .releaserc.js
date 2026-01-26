@@ -30,7 +30,7 @@ module.exports = {
         [
             "@semantic-release/exec",
             {
-                prepareCmd: "sed -i '' 's/^appVersion:.*/appVersion: \"${nextRelease.version}\"/' helm/localcrag/Chart.yaml"
+                prepareCmd: "sed -i '' 's/^appVersion:.*/appVersion: \"${nextRelease.version}\"/' helm/localcrag/Chart.yaml && sed -i '' '/^server:/,/^[^ ]/ { /^    tag:/ s/tag: .*/tag: ${nextRelease.version}/; }' helm/localcrag/values.yaml && sed -i '' '/^client:/,/^[^ ]/ { /^    tag:/ s/tag: .*/tag: ${nextRelease.version}/; }' helm/localcrag/values.yaml"
             }
         ],
         "@semantic-release/github",
@@ -42,6 +42,7 @@ module.exports = {
                     "client/package.json",
                     "server/package.json",
                     "helm/localcrag/Chart.yaml",
+                    "helm/localcrag/values.yaml",
                     "CHANGELOG.md"
                 ],
                 message: "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"

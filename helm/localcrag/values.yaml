@@ -19,6 +19,10 @@ existingSecret:
   keys: {}
 
 server:
+  image:
+    repository: ghcr.io/localcrag/localcrag-server
+    tag: 1.25.1
+    pullPolicy: Always
   # REQUIRED: The public URL of your frontend (with trailing slash).
   # Example: "https://localcrag.example.com/"
   frontendHost: ""
@@ -93,6 +97,10 @@ smtp:
 systemEmail: ""
 
 client:
+  image:
+    repository: ghcr.io/localcrag/localcrag-client
+    tag: 1.25.1
+    pullPolicy: Always
   resources:
     requests:
       cpu: 50m

@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: client
-          image: ghcr.io/localcrag/localcrag-client:latest
-          imagePullPolicy: Always
+          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
           resources:
             {{- toYaml .Values.client.resources | nindent 12 }}
           ports:
