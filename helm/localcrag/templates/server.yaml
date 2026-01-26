@@ -37,8 +37,8 @@ spec:
               echo "All dependencies are ready!"
       containers:
         - name: server
-          image: ghcr.io/localcrag/localcrag-server:latest
-          imagePullPolicy: Always
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           resources:
             {{- toYaml .Values.server.resources | nindent 12 }}
           ports:
