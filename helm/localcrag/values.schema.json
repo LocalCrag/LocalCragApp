@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["smtp", "systemEmail", "server", "appS3", "s3", "client"],
+  "properties": {
+    "smtp": {
+      "type": "object",
+      "required": ["host", "port", "type"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "minLength": 1,
+          "description": "SMTP server hostname"
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1,
+          "description": "SMTP server port"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["starttls", "ssl", "plain"],
+          "description": "SMTP connection type"
+        }
+      }
+    },
+    "systemEmail": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^@]+@[^@]+\\.[^@]+$",
+      "description": "System email address for sending notifications"
+    },
+    "server": {
+      "type": "object",
+      "required": ["frontendHost"],
+      "properties": {
+        "frontendHost": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Public URL of the frontend application"
+        }
+      }
+    },
+    "appS3": {
+      "type": "object",
+      "required": ["accessEndpoint"],
+      "properties": {
+        "accessEndpoint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^https?://",
+          "description": "Public URL for accessing S3 objects (e.g., https://s3.example.com)"
+        }
+      }
+    },
+    "s3": {
+      "type": "object",
+      "required": ["ingress"],
+      "additionalProperties": true,
+      "properties": {
+        "ingress": {
+          "type": "object",
+          "required": ["s3Host", "consoleHost"],
+          "properties": {
+            "s3Host": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Public hostname for S3 API access"
+            },
+            "consoleHost": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Public hostname for MinIO console"
+            }
+          }
+        }
+      }
+    },
+
+    "client": {
+      "type": "object",
+      "required": ["ingress"],
+      "properties": {
+        "ingress": {
+          "type": "object",
+          "required": ["host", "clusterIssuer"],
+          "properties": {
+            "host": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Public hostname for the application"
+            },
+            "clusterIssuer": {
+              "type": "string",
+              "minLength": 1,
+              "description": "cert-manager ClusterIssuer name"
+            }
+          }
+        }
+      }
+    },
+    "existingSecret": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the existing Kubernetes Secret containing credentials"
+        }
+      }
+    },
+    "backups": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable or disable backups"
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "keep": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of backup snapshots to retain (must be >= 1)"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

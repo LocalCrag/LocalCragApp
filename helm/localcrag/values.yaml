@@ -1,0 +1,174 @@
+postgres:
+  image:
+    tag: "17.7"
+  auth:
+    username: localcrag
+    database: localcrag
+    existingSecret: localcrag-secrets
+    secretKeys:
+      adminPasswordKey: POSTGRES_PASSWORD
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      memory: 1Gi
+
+existingSecret:
+  name: localcrag-secrets
+  keys: {}
+
+server:
+  # REQUIRED: The public URL of your frontend (with trailing slash).
+  # Example: "https://localcrag.example.com/"
+  frontendHost: ""
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      memory: 2Gi
+
+# S3 settings used by the LocalCrag server application
+appS3:
+  # MinIO dependency service name from the alias is typically <release>-s3
+  endpoint: http://localcrag-s3:9000
+  bucket: localcrag
+  # REQUIRED: Public URL for accessing S3 objects (e.g., "https://s3.example.com")
+  accessEndpoint: ""
+  addressing: path
+
+# MinIO official chart settings (dependency aliased as `s3`)
+s3:
+  # REQUIRED: Hosts for the S3 (MinIO) endpoints exposed via Ingress
+  ingress:
+    # Public hostname for S3 API access (e.g., "s3.example.com")
+    s3Host: ""
+    # Public hostname for MinIO console (e.g., "minio.example.com")
+    consoleHost: ""
+
+  # MinIO subchart configuration
+  buckets:
+    - name: localcrag
+      policy: download
+      purge: false
+      versioning: false
+
+  # Root credentials are sourced from an existing Secret.
+  # NOTE: MinIO chart expects keys: rootUser / rootPassword
+  existingSecret: localcrag-secrets
+
+  mode: standalone
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  service:
+    type: ClusterIP
+    port: 9000
+
+  consoleService:
+    type: ClusterIP
+    port: 9001
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+# REQUIRED: SMTP configuration for sending emails
+smtp:
+  # SMTP server hostname (e.g., "smtp.gmail.com")
+  host: ""
+  # SMTP server port (e.g., "587" for STARTTLS, "465" for SSL)
+  port: ""
+  # Connection type: "starttls", "ssl", or "plain"
+  type: ""
+
+# REQUIRED: Email address used as the sender for system emails
+# Example: "noreply@example.com"
+systemEmail: ""
+
+client:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  ingress:
+    # REQUIRED: The public hostname for the application (e.g., "localcrag.example.com")
+    host: ""
+    path: /
+
+    # REQUIRED: cert-manager ClusterIssuer name for TLS certificates
+    # Example: "letsencrypt-prod" or "letsencrypt-staging"
+    clusterIssuer: ""
+    tls:
+      secretName: localcrag-tls
+
+
+# Scheduled backups for Postgres and MinIO.
+#
+# This creates a single CronJob that backs up both the database and files together.
+# Set backups.enabled=true to enable backups, backups.enabled=false to disable.
+# You must provide S3 credentials in your Secret (see README for required keys).
+backups:
+  enabled: true
+
+  # Combined backup schedule (single CronJob / single Pod).
+  schedule: "0 2 * * *"
+
+  # Optional override for the container image used by the combined job.
+  # Defaults to backups.postgres.image (postgres image) because it includes pg_dump.
+  image: ""
+
+  # Resources for the combined backup container.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+  # S3 backup destination configuration.
+  # The backup CronJob reads destination credentials from `existingSecret.name`.
+  # You can customize the secret key names here.
+  target:
+    secretKeys:
+      endpointKey: BACKUP_S3_ENDPOINT
+      bucketKey: BACKUP_S3_BUCKET
+      regionKey: BACKUP_S3_REGION
+      prefixKey: BACKUP_S3_PREFIX
+      accessKeyKey: BACKUP_S3_ACCESS_KEY
+      secretKeyKey: BACKUP_S3_SECRET_KEY
+
+  jobHistory:
+    successful: 1
+    failed: 1
+
+  # Optional: run backups under a specific service account.
+  serviceAccountName: ""
+
+  postgres:
+    # Image includes pg_dump; we install mc at runtime.
+    image: "postgres:17.7"
+
+    # Postgres dependency service name is usually <release>-postgres.
+    pgHost: "localcrag-postgres"
+    pgPort: "5432"
+
+  minio:
+    image: "minio/mc:RELEASE.2024-10-02T08-27-28Z"
+
+    source:
+      # MinIO dependency service name from the alias is usually <release>-s3
+      endpoint: "http://localcrag-s3:9000"
+
+  # How many backup snapshots to keep under the prefix.
+  # Oldest snapshots are deleted when exceeding this limit.
+  retention:
+    keep: 3

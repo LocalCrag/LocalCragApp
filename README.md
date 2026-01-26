@@ -47,12 +47,12 @@ Save time while creating your topo by using a simple click-editor for drawing li
 
 ## Installation
 
-If you want to use LocalCrag for your own crag, either [deploy yourself](./docs/installation.md) or join our cloud, it's up to you. If you join our cloud you will get automated updates, but you will have to pay a hosting fee (we will not make money charging this fee, it's 1:1 what our cloud provider charges us).
+If you want to use LocalCrag for your own crag, either deploy [via docker](./docs/docker-compose-installation.md) or [helm on k8s](./helm/README.md) or join our cloud, it's up to you. If you join our cloud you will get automated updates, but you will have to pay a hosting fee (we will not make money charging this fee, it's 1:1 what our cloud provider charges us).
 
 ### Configuration
 
 - You can configure your instance by visiting `/instance-settings`
-- If you choose to use Matomo tracking, be sure to setup your Matomo instance in a way that anonymizes user data. Currently, there is no opt-in cookie banner provided, so tracking has to follow your local privacy legislation.
+- If you choose to use Matomo tracking, be sure to set up your Matomo instance in a way that anonymizes user data. Currently, there is no opt-in cookie banner provided, so tracking has to follow your local privacy legislation.
 
 ## Contributing
 
@@ -60,7 +60,7 @@ LocalCrag is an open-source project and we welcome contributions from the commun
 
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcome.
 
-See the (dev tooling guide)[./docs/dev-tooling.md] for more information on how to set up your development environment.
+See the [dev tooling guide](./docs/dev-tooling.md) for more information on how to set up your development environment.
 
 ### Our contributors
 
