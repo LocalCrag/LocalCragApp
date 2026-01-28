@@ -2,7 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: localcrag-server
+  name: {{ include "localcrag.fullname" . }}-server
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
 spec:
   replicas: 1
   selector:
@@ -21,14 +24,14 @@ spec:
             - -c
             - |
               echo "Waiting for Postgres..."
-              until nc -z {{ .Release.Name }}-postgres 5432; do
+              until nc -z {{ include "localcrag.postgres.fullname" . }} 5432; do
                 echo "Postgres is unavailable - sleeping"
                 sleep 2
               done
               echo "Postgres is ready!"
               
               echo "Waiting for MinIO..."
-              until nc -z {{ .Release.Name }}-s3 9000; do
+              until nc -z {{ include "localcrag.s3.fullname" . }} 9000; do
                 echo "MinIO is unavailable - sleeping"
                 sleep 2
               done
@@ -46,13 +49,13 @@ spec:
               containerPort: 5000
           envFrom:
             - secretRef:
-                name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                name: {{ include "localcrag.secrets.name" . | quote }}
           env:
             - name: SQLALCHEMY_DATABASE_URI
-              value: "postgresql://{{ .Values.postgres.auth.username }}:$(POSTGRES_PASSWORD)@{{ .Release.Name }}-postgres/{{ .Values.postgres.auth.database }}"
+              value: "postgresql://{{ .Values.postgres.auth.username }}:$(POSTGRES_PASSWORD)@{{ include "localcrag.postgres.fullname" . }}/{{ .Values.postgres.auth.database }}"
 
             - name: S3_ENDPOINT
-              value: "{{ .Values.appS3.endpoint }}"
+              value: {{ printf "http://%s:9000" (include "localcrag.s3.fullname" .) | quote }}
             - name: S3_BUCKET
               value: "{{ .Values.appS3.bucket }}"
             - name: S3_ACCESS_ENDPOINT
@@ -64,28 +67,28 @@ spec:
             - name: S3_USER
               valueFrom:
                 secretKeyRef:
-                  name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                  name: {{ include "localcrag.secrets.name" . | quote }}
                   key: '{{ default "rootUser" .Values.existingSecret.keys.s3User }}'
             - name: S3_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                  name: {{ include "localcrag.secrets.name" . | quote }}
                   key: '{{ default "rootPassword" .Values.existingSecret.keys.s3Password }}'
 
             - name: SUPERADMIN_FIRSTNAME
               valueFrom:
                 secretKeyRef:
-                  name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                  name: {{ include "localcrag.secrets.name" . | quote }}
                   key: '{{ default "SUPERADMIN_FIRSTNAME" .Values.existingSecret.keys.superadminFirstname }}'
             - name: SUPERADMIN_LASTNAME
               valueFrom:
                 secretKeyRef:
-                  name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                  name: {{ include "localcrag.secrets.name" . | quote }}
                   key: '{{ default "SUPERADMIN_LASTNAME" .Values.existingSecret.keys.superadminLastname }}'
             - name: SUPERADMIN_EMAIL
               valueFrom:
                 secretKeyRef:
-                  name: '{{ required "values.existingSecret.name is required" .Values.existingSecret.name }}'
+                  name: {{ include "localcrag.secrets.name" . | quote }}
                   key: '{{ default "SUPERADMIN_EMAIL" .Values.existingSecret.keys.superadminEmail }}'
 
             - name: SYSTEM_EMAIL
@@ -121,7 +124,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: server
+  name: {{ include "localcrag.fullname" . }}-server
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
 spec:
   type: ClusterIP
   selector:
