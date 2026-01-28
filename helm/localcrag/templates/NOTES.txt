@@ -1,0 +1,38 @@
+LocalCrag has been deployed!
+
+Release name: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+Your LocalCrag installation is using the following service names:
+  - Server: {{ include "localcrag.fullname" . }}-server
+  - Client: {{ include "localcrag.fullname" . }}-client
+  - PostgreSQL: {{ include "localcrag.postgres.fullname" . }}
+  - MinIO (S3): {{ include "localcrag.s3.fullname" . }}
+  - Secrets: {{ include "localcrag.secrets.name" . }}
+
+{{- if .Values.client.ingress.host }}
+
+Your application will be available at:
+  https://{{ .Values.client.ingress.host }}
+
+S3 endpoints:
+  - API: https://{{ .Values.s3.ingress.s3Host }}
+  - Console: https://{{ .Values.s3.ingress.consoleHost }}
+{{- end }}
+
+{{- if .Values.backups.enabled }}
+
+Backups are ENABLED:
+  - Schedule: {{ .Values.backups.schedule }}
+  - Retention: {{ .Values.backups.retention.keep }} snapshots
+{{- else }}
+
+Backups are DISABLED. Set backups.enabled=true to enable automated backups.
+{{- end }}
+
+IMPORTANT: Make sure you have created the secret "{{ include "localcrag.secrets.name" . }}"
+with all required keys before the pods start. See the chart README for details.
+
+To check the status of your deployment:
+  kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+

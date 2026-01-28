@@ -26,7 +26,7 @@ spec:
           {{- end }}
           containers:
             - name: backup
-              image: {{ default .Values.backups.postgres.image .Values.backups.image | quote }}
+              image: {{ printf "postgres:%s" .Values.postgres.image.tag | quote }}
               imagePullPolicy: IfNotPresent
               env:
                 - name: BACKUP_RETENTION_KEEP
@@ -35,24 +35,24 @@ spec:
                 - name: BACKUP_S3_ENDPOINT
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_ENDPOINT" .Values.backups.target.secretKeys.endpointKey | quote }}
                       optional: true
                 - name: BACKUP_S3_BUCKET
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_BUCKET" .Values.backups.target.secretKeys.bucketKey | quote }}
                 - name: BACKUP_S3_REGION
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_REGION" .Values.backups.target.secretKeys.regionKey | quote }}
                       optional: true
                 - name: BACKUP_S3_PREFIX
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_PREFIX" .Values.backups.target.secretKeys.prefixKey | quote }}
                       optional: true
 
@@ -60,19 +60,19 @@ spec:
                 - name: DST_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_ACCESS_KEY" .Values.backups.target.secretKeys.accessKeyKey | quote }}
                 - name: DST_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_SECRET_KEY" .Values.backups.target.secretKeys.secretKeyKey | quote }}
 
                 # Always include Postgres env
                 - name: PGHOST
-                  value: {{ .Values.backups.postgres.pgHost | quote }}
+                  value: {{ include "localcrag.postgres.fullname" . | quote }}
                 - name: PGPORT
-                  value: {{ .Values.backups.postgres.pgPort | quote }}
+                  value: "5432"
                 - name: PGUSER
                   value: {{ .Values.postgres.auth.username | quote }}
                 - name: PGDATABASE
@@ -80,21 +80,21 @@ spec:
                 - name: PGPASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "POSTGRES_PASSWORD" .Values.existingSecret.keys.postgresPassword | quote }}
 
                 # Always include MinIO env
                 - name: SRC_ENDPOINT
-                  value: {{ .Values.backups.minio.source.endpoint | quote }}
+                  value: {{ printf "http://%s:9000" (include "localcrag.s3.fullname" .) | quote }}
                 - name: SRC_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "rootUser" .Values.existingSecret.keys.s3User | quote }}
                 - name: SRC_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ required "values.existingSecret.name is required" .Values.existingSecret.name | quote }}
+                      name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "rootPassword" .Values.existingSecret.keys.s3Password | quote }}
                 - name: SRC_BUCKET
                   value: {{ .Values.appS3.bucket | quote }}

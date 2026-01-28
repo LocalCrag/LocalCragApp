@@ -9,6 +9,15 @@ The default `values.yaml` contains environment-agnostic defaults with **empty st
 Create a file (e.g., `my-values.yaml`) with at minimum the following required configuration:
 
 ```yaml
+# REQUIRED: Secret name containing all credentials
+existingSecret:
+  name: "localcrag-secrets"  # Name of your Kubernetes Secret
+
+# REQUIRED: Secret names for subcharts (typically the same as above)
+postgres:
+  auth:
+    existingSecret: "localcrag-secrets"
+
 # REQUIRED: SMTP configuration for sending emails
 smtp:
   host: "smtp.gmail.com"       # Your SMTP server hostname
@@ -23,9 +32,13 @@ server:
   frontendHost: "https://localcrag.example.com/"
 
 # REQUIRED: S3 / MinIO configuration
-s3:
+appS3:
   # Public URL for accessing S3 objects
   accessEndpoint: "https://s3.example.com"
+
+s3:
+  # Secret for S3/MinIO subchart (same as above in typical setup)
+  existingSecret: "localcrag-secrets"
   
   # Public hostnames for the S3 endpoints exposed via Ingress
   ingress:
@@ -43,7 +56,47 @@ client:
 
 ### 2. Create the Secret (required)
 
-This chart **does not create Secrets**. You must create a Kubernetes Secret and reference it via `existingSecret.name` in your values file.
+This chart **does not create Secrets**. You must create a Kubernetes Secret before installing the chart and explicitly configure it in your values file.
+
+#### Secret Configuration
+
+You must set three secret references in your values file:
+
+1. **`existingSecret.name`** - Secret for the main application (server)
+2. **`postgres.auth.existingSecret`** - Secret for PostgreSQL credentials
+3. **`s3.existingSecret`** - Secret for MinIO/S3 credentials
+
+**Typical setup:** Use the same secret for all three (recommended for simplicity):
+```yaml
+existingSecret:
+  name: "localcrag-secrets"
+postgres:
+  auth:
+    existingSecret: "localcrag-secrets"
+s3:
+  existingSecret: "localcrag-secrets"
+```
+
+**Advanced setup:** You can use different secrets for each component if needed:
+```yaml
+existingSecret:
+  name: "localcrag-app-secrets"
+postgres:
+  auth:
+    existingSecret: "localcrag-db-secrets"
+s3:
+  existingSecret: "localcrag-s3-secrets"
+```
+
+#### Recommended Secret Naming
+
+A common pattern is to use `<release-name>-secrets`. For example:
+- If your release is `localcrag`, use `localcrag-secrets`
+- If your release is `myapp`, use `myapp-secrets`
+
+You can override this by setting `existingSecret.name` in your values file.
+
+#### Required Secret Keys
 
 The Secret must include the following keys:
 
@@ -64,7 +117,8 @@ Create a file (e.g., `localcrag-secrets.yaml`):
 apiVersion: v1
 kind: Secret
 metadata:
-  name: localcrag-secrets
+  name: localcrag-secrets  # Use your chosen secret name
+  namespace: <your-namespace>
 type: Opaque
 stringData:
   # Postgres
@@ -86,6 +140,14 @@ stringData:
   SUPERADMIN_FIRSTNAME: "Admin"
   SUPERADMIN_LASTNAME: "User"
   SUPERADMIN_EMAIL: "admin@example.com"
+
+  # Backup S3 destination (optional - only needed if backups.enabled=true)
+  BACKUP_S3_ENDPOINT: "https://s3.example.com"     # Your S3-compatible endpoint
+  BACKUP_S3_BUCKET: "localcrag-backups"
+  BACKUP_S3_REGION: "eu-central-1"                 # Optional (e.g., eu-central-1 for Frankfurt)
+  BACKUP_S3_PREFIX: "localcrag"                    # Optional
+  BACKUP_S3_ACCESS_KEY: "changeme"
+  BACKUP_S3_SECRET_KEY: "changeme"
 ```
 
 Apply the secret:
@@ -110,6 +172,17 @@ Or upgrade an existing installation:
 helm upgrade localcrag ./helm/localcrag \
   -f my-values.yaml \
   -n <my-namespace>
+```
+
+**Alternative:** You can also use `--set` flags to override values from the command line:
+
+```bash
+helm install localcrag ./helm/localcrag \
+  -f my-values.yaml \
+  -n <my-namespace> \
+  --set existingSecret.name=my-custom-secret \
+  --set postgres.auth.existingSecret=my-custom-secret \
+  --set s3.existingSecret=my-custom-secret
 ```
 
 ## Backups (optional)
@@ -142,8 +215,8 @@ Required keys in that Secret when backups are enabled:
 
 Optional keys:
 
-- `BACKUP_S3_ENDPOINT` (for S3-compatible providers; defaults to AWS S3 if omitted)
-- `BACKUP_S3_REGION` (AWS region)
+- `BACKUP_S3_ENDPOINT` (S3-compatible endpoint URL)
+- `BACKUP_S3_REGION` (region for your S3 provider)
 - `BACKUP_S3_PREFIX` (path prefix within the bucket)
 
 You can change those key names via `backups.target.secretKeys.*`.
@@ -160,9 +233,9 @@ type: Opaque
 stringData:
   # ...existing keys...
 
-  BACKUP_S3_ENDPOINT: "https://<your-s3-endpoint>"   # optional for AWS
+  BACKUP_S3_ENDPOINT: "https://s3.example.com"       # Your S3-compatible endpoint
   BACKUP_S3_BUCKET: "localcrag-backups"
-  BACKUP_S3_REGION: "us-east-1"
+  BACKUP_S3_REGION: "eu-central-1"
   BACKUP_S3_PREFIX: "localcrag"
   BACKUP_S3_ACCESS_KEY: "..."
   BACKUP_S3_SECRET_KEY: "..."

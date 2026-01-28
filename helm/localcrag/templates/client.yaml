@@ -1,7 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: localcrag-client
+  name: {{ include "localcrag.fullname" . }}-client
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: client
 spec:
   replicas: 1
   selector:
@@ -16,6 +19,11 @@ spec:
         - name: client
           image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
           imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          env:
+            - name: SERVER_HOST
+              value: {{ .Values.client.serverHost | default (printf "%s-server" (include "localcrag.fullname" .)) | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.client.serverPort | default "5000" | quote }}
           resources:
             {{- toYaml .Values.client.resources | nindent 12 }}
           ports:
@@ -42,7 +50,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: localcrag-client
+  name: {{ include "localcrag.fullname" . }}-client
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: client
 spec:
   type: ClusterIP
   selector:
