@@ -1,8 +1,27 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["smtp", "systemEmail", "server", "appS3", "s3", "client"],
+  "required": ["smtp", "systemEmail", "server", "appS3", "s3", "client", "postgres", "existingSecret"],
   "properties": {
+    "postgres": {
+      "type": "object",
+      "required": ["auth"],
+      "additionalProperties": true,
+      "properties": {
+        "auth": {
+          "type": "object",
+          "required": ["existingSecret"],
+          "additionalProperties": true,
+          "properties": {
+            "existingSecret": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of the existing Kubernetes Secret containing postgres credentials (should be same as main existingSecret)"
+            }
+          }
+        }
+      }
+    },
     "smtp": {
       "type": "object",
       "required": ["host", "port", "type"],
@@ -55,9 +74,14 @@
     },
     "s3": {
       "type": "object",
-      "required": ["ingress"],
+      "required": ["ingress", "existingSecret"],
       "additionalProperties": true,
       "properties": {
+        "existingSecret": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the existing Kubernetes Secret containing S3/MinIO credentials (should be same as main existingSecret)"
+        },
         "ingress": {
           "type": "object",
           "required": ["s3Host", "consoleHost"],
@@ -106,7 +130,7 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Name of the existing Kubernetes Secret containing credentials"
+          "description": "Name of the existing Kubernetes Secret containing credentials for the main application"
         }
       }
     },

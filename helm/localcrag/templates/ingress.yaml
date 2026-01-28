@@ -1,12 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: localcrag-client
+  name: {{ include "localcrag.fullname" . }}
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.client.ingress.clusterIssuer | quote }}
 spec:
   tls:
-    - secretName: {{ .Values.client.ingress.tls.secretName | quote }}
+    - secretName: {{ printf "%s-tls" .Release.Name | quote }}
       hosts:
         - {{ .Values.client.ingress.host | quote }}
         - {{ .Values.s3.ingress.s3Host | quote }}
@@ -20,7 +22,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: server
+                name: {{ include "localcrag.fullname" . }}-server
                 port:
                   number: 5000
 
@@ -29,7 +31,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: localcrag-client
+                name: {{ include "localcrag.fullname" . }}-client
                 port:
                   number: 4200
     - host: {{ .Values.s3.ingress.s3Host | quote }}
@@ -39,7 +41,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: localcrag-s3
+                name: {{ include "localcrag.s3.fullname" . }}
                 port:
                   number: 9000
     - host: {{ .Values.s3.ingress.consoleHost | quote }}
@@ -49,6 +51,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: localcrag-s3-console
+                name: {{ include "localcrag.s3.fullname" . }}-console
                 port:
                   number: 9001

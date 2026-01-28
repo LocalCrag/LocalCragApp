@@ -4,7 +4,8 @@ postgres:
   auth:
     username: localcrag
     database: localcrag
-    existingSecret: localcrag-secrets
+    # REQUIRED: Provide Postgres password via an existing Kubernetes Secret (normally the same as `existingSecret.name`).
+    existingSecret: ""
     secretKeys:
       adminPasswordKey: POSTGRES_PASSWORD
   resources:
@@ -15,7 +16,10 @@ postgres:
       memory: 1Gi
 
 existingSecret:
-  name: localcrag-secrets
+  # REQUIRED: Name of the Kubernetes Secret containing credentials
+  # This secret contains credentials for the main application
+  # Example: localcrag-secrets (or <release>-secrets pattern)
+  name: ""
   keys: {}
 
 server:
@@ -35,8 +39,6 @@ server:
 
 # S3 settings used by the LocalCrag server application
 appS3:
-  # MinIO dependency service name from the alias is typically <release>-s3
-  endpoint: http://localcrag-s3:9000
   bucket: localcrag
   # REQUIRED: Public URL for accessing S3 objects (e.g., "https://s3.example.com")
   accessEndpoint: ""
@@ -58,9 +60,9 @@ s3:
       purge: false
       versioning: false
 
-  # Root credentials are sourced from an existing Secret.
+  # REQUIRED: Provide MinIO credentials via an existing Kubernetes Secret (normally the same as `existingSecret.name`).
   # NOTE: MinIO chart expects keys: rootUser / rootPassword
-  existingSecret: localcrag-secrets
+  existingSecret: ""
 
   mode: standalone
 
@@ -115,13 +117,12 @@ client:
     # REQUIRED: cert-manager ClusterIssuer name for TLS certificates
     # Example: "letsencrypt-prod" or "letsencrypt-staging"
     clusterIssuer: ""
-    tls:
-      secretName: localcrag-tls
 
 
 # Scheduled backups for Postgres and MinIO.
 #
 # This creates a single CronJob that backs up both the database and files together.
+# The backup container uses the postgres image (includes pg_dump) and installs mc (MinIO client) at runtime.
 # Set backups.enabled=true to enable backups, backups.enabled=false to disable.
 # You must provide S3 credentials in your Secret (see README for required keys).
 backups:
@@ -129,10 +130,6 @@ backups:
 
   # Combined backup schedule (single CronJob / single Pod).
   schedule: "0 2 * * *"
-
-  # Optional override for the container image used by the combined job.
-  # Defaults to backups.postgres.image (postgres image) because it includes pg_dump.
-  image: ""
 
   # Resources for the combined backup container.
   resources:
@@ -160,21 +157,6 @@ backups:
 
   # Optional: run backups under a specific service account.
   serviceAccountName: ""
-
-  postgres:
-    # Image includes pg_dump; we install mc at runtime.
-    image: "postgres:17.7"
-
-    # Postgres dependency service name is usually <release>-postgres.
-    pgHost: "localcrag-postgres"
-    pgPort: "5432"
-
-  minio:
-    image: "minio/mc:RELEASE.2024-10-02T08-27-28Z"
-
-    source:
-      # MinIO dependency service name from the alias is usually <release>-s3
-      endpoint: "http://localcrag-s3:9000"
 
   # How many backup snapshots to keep under the prefix.
   # Oldest snapshots are deleted when exceeding this limit.

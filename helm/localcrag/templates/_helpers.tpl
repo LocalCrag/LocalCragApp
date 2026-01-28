@@ -27,6 +27,37 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Helper templates for dependency service names.
+*/}}
+{{- define "localcrag.postgres.fullname" -}}
+{{- printf "%s-postgres" .Release.Name -}}
+{{- end -}}
+
+{{- define "localcrag.s3.fullname" -}}
+{{- printf "%s-s3" .Release.Name -}}
+{{- end -}}
+
+{{- define "localcrag.secrets.name" -}}
+{{- required "existingSecret.name is required" .Values.existingSecret.name -}}
+{{- end -}}
+
+{{/*
+Helper to get/set postgres auth existingSecret (for subchart).
+Returns the secret name that should be used by the postgres subchart.
+*/}}
+{{- define "localcrag.postgres.secretName" -}}
+{{- .Values.postgres.auth.existingSecret | default (include "localcrag.secrets.name" .) -}}
+{{- end -}}
+
+{{/*
+Helper to get/set s3 (MinIO) existingSecret (for subchart).
+Returns the secret name that should be used by the s3/MinIO subchart.
+*/}}
+{{- define "localcrag.s3.secretName" -}}
+{{- .Values.s3.existingSecret | default (include "localcrag.secrets.name" .) -}}
+{{- end -}}
+
+{{/*
 Validate required configuration values.
 This template is included in the main deployments to ensure all mandatory values are set.
 */}}
