@@ -30,7 +30,7 @@ server:
   # REQUIRED: The public URL of your frontend (with trailing slash).
   # Example: "https://localcrag.example.com/"
   frontendHost: ""
-  # Optional: Additional annotations to add to the server pods
+  # Optional: Additional annotations to add to the server Deployment resource
   annotations: {}
   resources:
     requests:
