@@ -1,0 +1,14 @@
+---
+# Middleware to redirect HTTP to HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "localcrag.fullname" . }}-redirect-https
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+
