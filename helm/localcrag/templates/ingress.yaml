@@ -6,14 +6,12 @@ metadata:
     {{- include "localcrag.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.client.ingress.clusterIssuer | quote }}
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: {{ include "localcrag.fullname" . }}-redirect-https@kubernetescrd
 spec:
   tls:
     - secretName: {{ printf "%s-tls" .Release.Name | quote }}
       hosts:
         - {{ .Values.client.ingress.host | quote }}
-        - {{ printf "www.%s" .Values.client.ingress.host | quote }}
         - {{ .Values.s3.ingress.s3Host | quote }}
         - {{ .Values.s3.ingress.consoleHost | quote }}
   rules:
@@ -30,17 +28,6 @@ spec:
                   number: 5000
 
           # Everything else goes to the Angular client.
-          - path: {{ .Values.client.ingress.path | quote }}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "localcrag.fullname" . }}-client
-                port:
-                  number: 4200
-    # WWW subdomain - serves the same content as the main domain
-    - host: {{ printf "www.%s" .Values.client.ingress.host | quote }}
-      http:
-        paths:
           - path: {{ .Values.client.ingress.path | quote }}
             pathType: Prefix
             backend:
