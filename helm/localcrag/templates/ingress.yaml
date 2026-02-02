@@ -6,7 +6,7 @@ metadata:
     {{- include "localcrag.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.client.ingress.clusterIssuer | quote }}
-    traefik.ingress.kubernetes.io/router.middlewares: {{ include "localcrag.fullname" . }}-redirect-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ include "localcrag.fullname" . }}-redirect-https@kubernetescrd
 spec:
   tls:
     - secretName: {{ printf "%s-tls" .Release.Name | quote }}
