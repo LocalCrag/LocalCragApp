@@ -1,0 +1,28 @@
+# Middleware to redirect HTTP to HTTPS
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "localcrag.fullname" . }}-redirect-https
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+# Middleware to redirect www to non-www (301 permanent redirect)
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "localcrag.fullname" . }}-redirect-www
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+spec:
+  redirectRegex:
+    regex: "^https://www\\.(.+)"
+    replacement: "https://${1}"
+    permanent: true
+
+
+
