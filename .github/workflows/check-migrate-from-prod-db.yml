@@ -6,8 +6,7 @@ on:
     branches:
       - main
       - next
-      - fix-migrate-from-prod-db
-  workflow_dispatch:
+
 jobs:
   check-migrate-from-prod-db:
     environment: Testing
