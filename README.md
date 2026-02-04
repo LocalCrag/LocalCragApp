@@ -34,6 +34,7 @@ The newest features are always available on our staging instances:
 ## Screenshots
 
 
+
 ![Lines view](docs/assets/topo-images.png "Line view")
 
 View lines drawn on images. Hover to highlight them. Click on a line to get more information.
