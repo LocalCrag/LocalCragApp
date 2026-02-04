@@ -35,7 +35,8 @@ The newest features are always available on our staging instances:
 
 ![Lines view](docs/assets/topo-images.png "Line view")
 
-View lines drawn on images. Hover to highlight them. Click on a line to get more information.
+View lines drawn on images. Hover to hi
+ghlight them. Click on a line to get more information.
 
 ![Crag info](docs/assets/crag-info.png "Crag info")
 
