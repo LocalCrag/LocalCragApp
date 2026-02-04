@@ -8,7 +8,6 @@ on:
       - next
 jobs:
   check-migrate-from-empty-db:
-    environment: Testing
     runs-on: ubuntu-latest
     services:
       test_db:
