@@ -46,7 +46,7 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   private el = inject(ElementRef);
 
   ngOnInit() {
-    this.onResize(Number(window.innerWidth));
+    this.handleOnResize(Number(window.innerWidth));
     this.headerMenuService.registerHeaderMenu(this);
   }
 
@@ -104,9 +104,17 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
     });
   }
 
-  @HostListener('window:resize', ['$event.target.innerWidth'])
-  onResize(width: number) {
-    // Reset overflow detection when the window is resized. Widths will be recalculated after
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent) {
+    const width = (event.target as Window).innerWidth;
+    this.handleOnResize(width);
+  }
+
+  /**
+   * Reset overflow detection when the window is resized. Widths will be recalculated after
+   * @param width innerWidth of the window
+   */
+  handleOnResize(width: number) {
     this.overflowDetected = false;
     this.isMobile = width <= MOBILE_BREAKPOINT_HEADER_MENU;
   }
