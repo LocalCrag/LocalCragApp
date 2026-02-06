@@ -40,6 +40,8 @@ export default defineConfig([
 
       "no-control-regex": "off",
 
+      "@angular-eslint/template/prefer-control-flow": "off",
+
       "@angular-eslint/directive-selector": [
         "error",
         {
