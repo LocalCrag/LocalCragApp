@@ -53,7 +53,7 @@ export class SingleImageUploadComponent
   public imageLoading = true;
   public imageLoadingError = false;
   public progress: number = null;
-  public progressMode = 'determinate';
+  public progressMode: 'determinate' | 'indeterminate' = 'determinate';
   public showProgressBar = false;
   public maxImageSize: number;
 
