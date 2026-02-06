@@ -1,4 +1,4 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
 
 import { environment } from './environments/environment';
 
@@ -31,9 +31,10 @@ if (environment.production) {
   enableProdMode();
 }
 
-bootstrapApplication(CoreComponent, appConfig).catch((err) =>
-  console.error(err),
-);
+bootstrapApplication(CoreComponent, {
+  ...appConfig,
+  providers: [provideZoneChangeDetection(), ...appConfig.providers],
+}).catch((err) => console.error(err));
 
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/blotFormatter', BlotFormatter);
