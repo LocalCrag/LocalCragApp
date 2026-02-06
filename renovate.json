@@ -6,5 +6,16 @@
   "major": {
     "enabled": false
   },
-  "dependencyDashboard": false
+  "dependencyDashboard": false,
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchPackageNames": [
+        "postgresql"
+      ],
+      "enabled": false
+    }
+  ]
 }
