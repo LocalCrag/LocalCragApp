@@ -10,18 +10,98 @@
   "lockFileMaintenance": {
     "enabled": true
   },
-  "postUpdateOptions": [
-    "npmDedupe"
-  ],
   "packageRules": [
     {
+      "labels": [
+        "maintenance"
+      ],
       "matchDatasources": [
+        "docker",
         "helm"
       ],
-      "matchPackageNames": [
-        "postgresql"
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
       ],
-      "enabled": false
+      "groupName": "Docker & Helm (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance"
+      ],
+      "matchDatasources": [
+        "docker",
+        "helm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Docker & Helm (major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "backend"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Backend (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "backend"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Backend (major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "frontend"
+      ],
+      "matchDatasources": [
+        "npm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Frontend (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "frontend"
+      ],
+      "matchDatasources": [
+        "npm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Frontend (major)"
     }
-  ]
+  ],
+  "ignoreDeps": [
+    "postgres"
+  ],
+  "schedule": ["every monday"],
+  "prHourlyLimit": 0
 }
