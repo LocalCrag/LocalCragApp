@@ -3,15 +3,16 @@
     <p-card header="{{ t('todos') }}">
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
-          <p-message
-            *ngIf="
-              todos?.length === 0 && loadingFirstPage !== loadingStates.LOADING
-            "
-            severity="info"
-            icon="pi pi-info-circle"
-            class="m-4 mb-1 block"
-            >{{ t("noTodosFoundMessage") }}
-          </p-message>
+          @if (
+            todos?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+          ) {
+            <p-message
+              severity="info"
+              icon="pi pi-info-circle"
+              class="m-4 mb-1 block"
+              >{{ t("noTodosFoundMessage") }}
+            </p-message>
+          }
         </ng-template>
         <ng-template #header>
           <div
@@ -30,9 +31,11 @@
                   (onChange)="loadFirstPage()"
                 >
                   <ng-template #selectedItem>
-                    <div class="flex align-items-center gap-2" *ngIf="orderKey">
-                      <div>{{ orderKey.label }}</div>
-                    </div>
+                    @if (orderKey) {
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ orderKey.label }}</div>
+                      </div>
+                    }
                   </ng-template>
                   <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
@@ -48,12 +51,11 @@
                   [disabled]="loadingFirstPage === loadingStates.LOADING"
                 >
                   <ng-template #selectedItem>
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="orderDirectionKey"
-                    >
-                      <div>{{ orderDirectionKey.label }}</div>
-                    </div>
+                    @if (orderDirectionKey) {
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ orderDirectionKey.label }}</div>
+                      </div>
+                    }
                   </ng-template>
                   <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
@@ -76,297 +78,300 @@
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
                 >
-                  <ng-template #selectedItem>
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="priorityFilterKey"
-                    >
-                      <div>{{ priorityFilterKey.label }}</div>
-                    </div>
+                  <ng-template #selectedItem2>
+                    @if (priorityFilterKey) {
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ priorityFilterKey.label }}</div>
+                      </div>
+                    }
                   </ng-template>
-                  <ng-template let-option #item>
+                  <ng-template let-option #item2>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
                 </p-select>
-                <p-select
-                  [options]="cragFilterOptions"
-                  [(ngModel)]="cragFilterKey"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
-                  optionLabel="label"
-                  (onChange)="buildSectorFilterOptions(); loadFirstPage()"
-                  *ngIf="cragFilterOptions"
-                >
-                  <ng-template #selectedItem>
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="cragFilterKey"
-                    >
-                      <div>{{ cragFilterKey.label }}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ option.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-select>
-                <p-select
-                  [options]="sectorFilterOptions"
-                  [(ngModel)]="sectorFilterKey"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
-                  optionLabel="label"
-                  (onChange)="buildAreaFilterOptions(); loadFirstPage()"
-                  *ngIf="sectorFilterOptions"
-                >
-                  <ng-template #selectedItem>
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="sectorFilterKey"
-                    >
-                      <div>{{ sectorFilterKey.label }}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ option.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-select>
-                <p-select
-                  [options]="areaFilterOptions"
-                  [(ngModel)]="areaFilterKey"
-                  optionLabel="label"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
-                  (onChange)="loadFirstPage()"
-                  *ngIf="areaFilterOptions"
-                >
-                  <ng-template #selectedItem>
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="areaFilterKey"
-                    >
-                      <div>{{ areaFilterKey.label }}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ option.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-select>
+                @if (cragFilterOptions) {
+                  <p-select
+                    [options]="cragFilterOptions"
+                    [(ngModel)]="cragFilterKey"
+                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    optionLabel="label"
+                    (onChange)="buildSectorFilterOptions(); loadFirstPage()"
+                  >
+                    <ng-template #selectedItem3>
+                      @if (cragFilterKey) {
+                        <div class="flex align-items-center gap-2">
+                          <div>{{ cragFilterKey.label }}</div>
+                        </div>
+                      }
+                    </ng-template>
+                    <ng-template let-option #item3>
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div>
+                    </ng-template>
+                  </p-select>
+                }
+                @if (sectorFilterOptions) {
+                  <p-select
+                    [options]="sectorFilterOptions"
+                    [(ngModel)]="sectorFilterKey"
+                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    optionLabel="label"
+                    (onChange)="buildAreaFilterOptions(); loadFirstPage()"
+                  >
+                    <ng-template #selectedItem4>
+                      @if (sectorFilterKey) {
+                        <div class="flex align-items-center gap-2">
+                          <div>{{ sectorFilterKey.label }}</div>
+                        </div>
+                      }
+                    </ng-template>
+                    <ng-template let-option #item4>
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div>
+                    </ng-template>
+                  </p-select>
+                }
+                @if (areaFilterOptions) {
+                  <p-select
+                    [options]="areaFilterOptions"
+                    [(ngModel)]="areaFilterKey"
+                    optionLabel="label"
+                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    (onChange)="loadFirstPage()"
+                  >
+                    <ng-template #selectedItem5>
+                      @if (areaFilterKey) {
+                        <div class="flex align-items-center gap-2">
+                          <div>{{ areaFilterKey.label }}</div>
+                        </div>
+                      }
+                    </ng-template>
+                    <ng-template let-option #item5>
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div>
+                    </ng-template>
+                  </p-select>
+                }
               </div>
             </div>
 
             <div
               class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
             >
-              <div *ngIf="availableScales.length > 2">
-                {{ t("lineType") }}
-                <p-select
-                  [options]="availableScales"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
-                  [(ngModel)]="scaleKey"
-                  optionLabel="label"
-                  (onChange)="selectScale()"
-                  styleClass="md:mb-0"
-                >
-                  <ng-template #selectedItem>
-                    <div class="flex align-items-center gap-2" *ngIf="scaleKey">
-                      <div>{{ scaleKey.label }}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ option.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-select>
-              </div>
+              @if (availableScales.length > 2) {
+                <div>
+                  {{ t("lineType") }}
+                  <p-select
+                    [options]="availableScales"
+                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [(ngModel)]="scaleKey"
+                    optionLabel="label"
+                    (onChange)="selectScale()"
+                    styleClass="md:mb-0"
+                  >
+                    <ng-template #selectedItem6>
+                      @if (scaleKey) {
+                        <div class="flex align-items-center gap-2">
+                          <div>{{ scaleKey.label }}</div>
+                        </div>
+                      }
+                    </ng-template>
+                    <ng-template let-option #item6>
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div>
+                    </ng-template>
+                  </p-select>
+                </div>
+              }
             </div>
 
-            <div class="slider-container mt-1" *ngIf="scaleKey?.value">
-              <lc-slider-labels
-                [rangeMin]="gradeFilterRange[0]"
-                [rangeMax]="gradeFilterRange[1]"
-                [min]="minGradeValue"
-                [max]="maxGradeValue"
-                [minLabel]="
-                  scalesService.gradeNameByValue(
-                    scaleKey.value.lineType,
-                    scaleKey.value.gradeScale,
-                    gradeFilterRange[0]
-                  )
-                    | async
-                    | translateSpecialGrades
-                "
-                [maxLabel]="
-                  scalesService.gradeNameByValue(
-                    scaleKey.value.lineType,
-                    scaleKey.value.gradeScale,
-                    gradeFilterRange[1]
-                  )
-                    | async
-                    | translateSpecialGrades
-                "
-              ></lc-slider-labels>
-              <p-slider
-                [(ngModel)]="gradeFilterRange"
-                [min]="minGradeValue"
-                [max]="maxGradeValue"
-                [disabled]="loadingFirstPage === loadingStates.LOADING"
-                [range]="true"
-                [step]="1"
-                (onSlideEnd)="reloadOnSlideEnd()"
-              />
-            </div>
+            @if (scaleKey?.value) {
+              <div class="slider-container mt-1">
+                <lc-slider-labels
+                  [rangeMin]="gradeFilterRange[0]"
+                  [rangeMax]="gradeFilterRange[1]"
+                  [min]="minGradeValue"
+                  [max]="maxGradeValue"
+                  [minLabel]="
+                    scalesService.gradeNameByValue(
+                      scaleKey.value.lineType,
+                      scaleKey.value.gradeScale,
+                      gradeFilterRange[0]
+                    )
+                      | async
+                      | translateSpecialGrades
+                  "
+                  [maxLabel]="
+                    scalesService.gradeNameByValue(
+                      scaleKey.value.lineType,
+                      scaleKey.value.gradeScale,
+                      gradeFilterRange[1]
+                    )
+                      | async
+                      | translateSpecialGrades
+                  "
+                ></lc-slider-labels>
+                <p-slider
+                  [(ngModel)]="gradeFilterRange"
+                  [min]="minGradeValue"
+                  [max]="maxGradeValue"
+                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [range]="true"
+                  [step]="1"
+                  (onSlideEnd)="reloadOnSlideEnd()"
+                />
+              </div>
+            }
           </div>
         </ng-template>
         <ng-template let-todos #list>
-          <lc-line-list-skeleton
-            *ngIf="loadingFirstPage === loadingStates.LOADING"
-          ></lc-line-list-skeleton>
-          <div
-            class="grid grid-nogutter"
-            *ngIf="loadingFirstPage !== loadingStates.LOADING"
-          >
-            <div
-              class="col-12"
-              *ngFor="let todo of todos; let first = first"
-              data-cy="todo-list-item"
-            >
-              <div
-                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 todo-table-container"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
-              >
-                <!-- DISPLAY FOR NORMAL SCREENS -->
-                <div class="todo-table-row-normal">
-                  <div class="todo-table-line-info">
-                    <div class="todo-table-line-name font-bold">
-                      <a routerLink="{{ todo.routerLinkLine }}">{{
-                        todo.line.name
-                      }}</a>
-                    </div>
-                    <div class="todo-table-line-location mt-1">
-                      <a routerLink="{{ todo.routerLinkCrag }}">{{
-                        todo.crag.name
-                      }}</a
-                      >,
-                      <a routerLink="{{ todo.routerLinkSector }}">{{
-                        todo.sector.name
-                      }}</a
-                      >,
-                      <a routerLink="{{ todo.routerLinkArea }}">{{
-                        todo.area.name
-                      }}</a>
-                    </div>
-                  </div>
-                  <div class="todo-table-grade">
-                    <div class="grade">
-                      <div class="ml-1 grade-name">
-                        {{ todo.line | lineGrade }}
+          @if (loadingFirstPage === loadingStates.LOADING) {
+            <lc-line-list-skeleton></lc-line-list-skeleton>
+          }
+          @if (loadingFirstPage !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (todo of todos; track todo; let first = $first) {
+                <div class="col-12" data-cy="todo-list-item">
+                  <div
+                    class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 todo-table-container"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <!-- DISPLAY FOR NORMAL SCREENS -->
+                    <div class="todo-table-row-normal">
+                      <div class="todo-table-line-info">
+                        <div class="todo-table-line-name font-bold">
+                          <a routerLink="{{ todo.routerLinkLine }}">{{
+                            todo.line.name
+                          }}</a>
+                        </div>
+                        <div class="todo-table-line-location mt-1">
+                          <a routerLink="{{ todo.routerLinkCrag }}">{{
+                            todo.crag.name
+                          }}</a
+                          >,
+                          <a routerLink="{{ todo.routerLinkSector }}">{{
+                            todo.sector.name
+                          }}</a
+                          >,
+                          <a routerLink="{{ todo.routerLinkArea }}">{{
+                            todo.area.name
+                          }}</a>
+                        </div>
+                      </div>
+                      <div class="todo-table-grade">
+                        <div class="grade">
+                          <div class="ml-1 grade-name">
+                            {{ todo.line | lineGrade }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="todo-table-priority">
+                        <lc-todo-priority-button
+                          [todo]="todo"
+                        ></lc-todo-priority-button>
+                      </div>
+                      <div class="todo-actions">
+                        <lc-tick-button
+                          [line]="todo.line"
+                          [showLabel]="false"
+                          [ticked]="false"
+                        ></lc-tick-button>
+                        <p-button
+                          styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                          data-cy="delete-todo"
+                          (click)="deleteTodo(todo)"
+                        >
+                          <ng-template #icon>
+                            <i class="pi pi-trash"></i>
+                          </ng-template>
+                        </p-button>
                       </div>
                     </div>
-                  </div>
-                  <div class="todo-table-priority">
-                    <lc-todo-priority-button
-                      [todo]="todo"
-                    ></lc-todo-priority-button>
-                  </div>
-                  <div class="todo-actions">
-                    <lc-tick-button
-                      [line]="todo.line"
-                      [showLabel]="false"
-                      [ticked]="false"
-                    ></lc-tick-button>
-                    <p-button
-                      styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                      data-cy="delete-todo"
-                      (click)="deleteTodo(todo)"
-                    >
-                      <ng-template #icon>
-                        <i class="pi pi-trash"></i>
-                      </ng-template>
-                    </p-button>
-                  </div>
-                </div>
-
-                <!-- DISPLAY FOR SMALL SCREENS -->
-                <div class="todo-table-row-small">
-                  <div class="todo-table-row-top">
-                    <div class="todo-table-line-info">
-                      <div class="todo-table-line-name font-bold">
-                        <a routerLink="{{ todo.routerLinkLine }}">{{
-                          todo.line.name
-                        }}</a>
+                    <!-- DISPLAY FOR SMALL SCREENS -->
+                    <div class="todo-table-row-small">
+                      <div class="todo-table-row-top">
+                        <div class="todo-table-line-info">
+                          <div class="todo-table-line-name font-bold">
+                            <a routerLink="{{ todo.routerLinkLine }}">{{
+                              todo.line.name
+                            }}</a>
+                          </div>
+                          <div class="todo-table-line-location mt-1">
+                            <a routerLink="{{ todo.routerLinkCrag }}">{{
+                              todo.crag.name
+                            }}</a
+                            >,
+                            <a routerLink="{{ todo.routerLinkSector }}">{{
+                              todo.sector.name
+                            }}</a
+                            >,
+                            <a routerLink="{{ todo.routerLinkArea }}">{{
+                              todo.area.name
+                            }}</a>
+                          </div>
+                        </div>
+                        <div class="todo-table-grade">
+                          <div class="grade">
+                            <div class="ml-1 grade-name">
+                              {{ todo.line | lineGrade }}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="todo-table-line-location mt-1">
-                        <a routerLink="{{ todo.routerLinkCrag }}">{{
-                          todo.crag.name
-                        }}</a
-                        >,
-                        <a routerLink="{{ todo.routerLinkSector }}">{{
-                          todo.sector.name
-                        }}</a
-                        >,
-                        <a routerLink="{{ todo.routerLinkArea }}">{{
-                          todo.area.name
-                        }}</a>
-                      </div>
-                    </div>
-                    <div class="todo-table-grade">
-                      <div class="grade">
-                        <div class="ml-1 grade-name">
-                          {{ todo.line | lineGrade }}
+                      <div class="todo-table-row-bottom">
+                        <div class="todo-table-priority">
+                          <lc-todo-priority-button
+                            [todo]="todo"
+                          ></lc-todo-priority-button>
+                        </div>
+                        <div class="todo-actions">
+                          <lc-tick-button
+                            [line]="todo.line"
+                            [showLabel]="false"
+                            [ticked]="false"
+                          ></lc-tick-button>
+                          <p-button
+                            styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                            data-cy="tick-button"
+                            (click)="deleteTodo(todo)"
+                          >
+                            <ng-template #icon>
+                              <i class="pi pi-trash"></i>
+                            </ng-template>
+                          </p-button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="todo-table-row-bottom">
-                    <div class="todo-table-priority">
-                      <lc-todo-priority-button
-                        [todo]="todo"
-                      ></lc-todo-priority-button>
-                    </div>
-                    <div class="todo-actions">
-                      <lc-tick-button
-                        [line]="todo.line"
-                        [showLabel]="false"
-                        [ticked]="false"
-                      ></lc-tick-button>
-                      <p-button
-                        styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                        data-cy="tick-button"
-                        (click)="deleteTodo(todo)"
-                      >
-                        <ng-template #icon>
-                          <i class="pi pi-trash"></i>
-                        </ng-template>
-                      </p-button>
-                    </div>
-                  </div>
                 </div>
-              </div>
+              }
             </div>
-          </div>
+          }
         </ng-template>
       </p-dataView>
 
-      <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-        <p-button
-          label="{{ t('loadMore') }}"
-          (scrolled)="loadNextPage()"
-          (click)="loadNextPage()"
-          infiniteScroll
-          [infiniteScrollDistance]="2"
-          [infiniteScrollThrottle]="50"
-          [loading]="
-            loadingAdditionalPage === loadingStates.LOADING ||
-            loadingFirstPage === loadingStates.LOADING
-          "
-        ></p-button>
-      </div>
+      @if (hasNextPage) {
+        <div class="flex justify-content-center mt-5">
+          <p-button
+            label="{{ t('loadMore') }}"
+            (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            [loading]="
+              loadingAdditionalPage === loadingStates.LOADING ||
+              loadingFirstPage === loadingStates.LOADING
+            "
+          ></p-button>
+        </div>
+      }
     </p-card>
   </div>
 </ng-container>

@@ -6,9 +6,10 @@ on:
     branches:
       - main
       - next
+
 jobs:
   check-migrate-from-prod-db:
-    environment: Testing
+    environment: ${{ github.actor == 'dorthrithil' && 'Testing-dorthrithil' || 'Testing' }}
     runs-on: ubuntu-latest
     services:
       test_db:
@@ -46,17 +47,54 @@ jobs:
           cd server/src
           pipenv install --deploy --ignore-pipfile
 
-      - name: Pull newest prod dump from backup server
+      - name: Install MinIO Client (mc)
         run: |
-          echo "${{ secrets.BACKUP_SERVER_SSH_KEY }}" >> backup_key.pem
-          chmod 600 backup_key.pem
+          wget https://dl.min.io/client/mc/release/linux-amd64/mc
+          chmod +x mc
+          sudo mv mc /usr/local/bin/
+
+      - name: Pull newest prod dump from S3
+        env:
+          S3_ACCESS_KEY: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          S3_PREFIX: ${{ secrets.BACKUP_S3_PREFIX }}
+        run: |
+          set -euo pipefail
+          
           mkdir -p server/tests/dumps
-          scp -i backup_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null  ${{ secrets.BACKUP_SERVER_USER }}@${{ secrets.BACKUP_SERVER_IP }}:${{ secrets.BACKUP_SERVER_DUMPPATH }} server/tests/dumps/localcrag_prod_dump.sql    
+          
+          echo "Configuring mc alias..."
+          mc alias set s3backup "${S3_ENDPOINT}" "${S3_ACCESS_KEY}" "${S3_SECRET_KEY}" > /dev/null 2>&1
+          
+          echo "Looking for latest backup..."
+          
+          # List all snapshot directories and sort to get the newest one
+          NEWEST_BACKUP=$(mc ls "s3backup/${S3_BUCKET}/${S3_PREFIX}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort -r | head -n 1)
+          
+          if [ -z "$NEWEST_BACKUP" ]; then
+            echo "Error: No backups found"
+            exit 1
+          fi
+          
+          echo "Found backup: $NEWEST_BACKUP"
+          
+          # Download the postgres dump from the newest backup (hardcoded to localcrag)
+          echo "Downloading backup..."
+          mc cp "s3backup/${S3_BUCKET}/${S3_PREFIX}/${NEWEST_BACKUP}/postgres/localcrag.sql.gz" server/tests/dumps/localcrag_prod_dump.sql.gz > /dev/null 2>&1
+          
+          echo "Decompressing backup..."
+          gunzip server/tests/dumps/localcrag_prod_dump.sql.gz
+          echo "Backup ready for restore."
 
       - name: Setup database with prod dump
         run: |
-          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
-          export PGPASSWORD='postgres'; pg_restore --no-privileges --no-owner -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test server/tests/dumps/localcrag_prod_dump.sql
+          echo "Creating UUID extension..."
+          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql > /dev/null 2>&1
+          echo "Restoring database from backup..."
+          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/tests/dumps/localcrag_prod_dump.sql > /dev/null 2>&1
+          echo "Database restored successfully."
 
       - name: Run Migrations
         run: |

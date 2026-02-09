@@ -50,7 +50,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Scale } from '../../../models/scale';
 import { Card } from 'primeng/card';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -83,7 +83,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     TranslocoDirective,
     Card,
-    NgIf,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -99,7 +98,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Rating,
     AsFormArrayPipe,
     AsFormGroupPipe,
-    NgForOf,
     Button,
     DatePicker,
     Checkbox,

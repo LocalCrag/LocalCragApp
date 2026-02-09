@@ -72,7 +72,7 @@ export class TopoImageComponent implements OnInit {
   private el = inject(ElementRef);
   private store = inject(Store);
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize() {
     this.resizeRenderSubject.next(null);
   }

@@ -157,14 +157,15 @@
       </form>
 
       <div class="form-actions">
-        <p-button
-          label="{{ t('editRegionButtonLabel') }}"
-          (click)="saveRegion()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (editMode) {
+          <p-button
+            label="{{ t('editRegionButtonLabel') }}"
+            (click)="saveRegion()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"

@@ -75,7 +75,7 @@ export class CoreComponent implements OnInit {
       });
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize() {
     this.store.dispatch(checkIsMobile());
   }

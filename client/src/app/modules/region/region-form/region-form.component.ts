@@ -26,7 +26,7 @@ import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -42,7 +42,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ReactiveFormsModule,
     EditorModule,
     ButtonModule,
-    NgIf,
     TranslocoDirective,
     InputTextModule,
     FormDirective,

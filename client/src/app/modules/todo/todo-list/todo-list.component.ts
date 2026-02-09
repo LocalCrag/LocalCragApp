@@ -24,7 +24,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DataViewModule } from 'primeng/dataview';
 import { MenuModule } from 'primeng/menu';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
 import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
@@ -56,8 +56,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ConfirmPopupModule,
     DataViewModule,
     MenuModule,
-    NgForOf,
-    NgIf,
     RatingModule,
     RouterLink,
     SliderLabelsComponent,
