@@ -1,24 +1,22 @@
-<ng-container *transloco="let t; read: 'topoImage.topoImageDetail'">
-  @if (topoImage.title || (topoImage.coordinates && topoImage.coordinates)) {
-    <div class="flex justify-content-center align-items-center mt-2">
-      <div class="flex-grow-1 flex block-title">
-        @if (topoImage.title) {
-          <h5 class="mt-0 mb-0 inline-block">
-            {{ topoImage.title }}
-          </h5>
-        }
-      </div>
-      @if (topoImage.coordinates) {
-        <lc-coordinates-button
-          [coordinates]="topoImage.coordinates"
-        ></lc-coordinates-button>
+@if (topoImage.title || (topoImage.coordinates && topoImage.coordinates)) {
+  <div class="flex justify-content-center align-items-center mt-2">
+    <div class="flex-grow-1 flex block-title">
+      @if (topoImage.title) {
+        <h5 class="mt-0 mb-0 inline-block">
+          {{ topoImage.title }}
+        </h5>
       }
     </div>
-  }
+    @if (topoImage.coordinates) {
+      <lc-coordinates-button
+        [coordinates]="topoImage.coordinates"
+      ></lc-coordinates-button>
+    }
+  </div>
+}
 
-  @if (topoImage.description) {
-    <section class="text-xs flex justify-content-center">
-      <div [innerHTML]="topoImage.description | sanitizeHtml"></div>
-    </section>
-  }
-</ng-container>
+@if (topoImage.description) {
+  <section class="text-xs flex justify-content-left">
+    <div [innerHTML]="topoImage.description | sanitizeHtml"></div>
+  </section>
+}
