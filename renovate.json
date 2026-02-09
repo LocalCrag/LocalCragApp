@@ -101,5 +101,7 @@
   ],
   "ignoreDeps": [
     "postgres"
-  ]
+  ],
+  "schedule": ["every monday"],
+  "prHourlyLimit": 0
 }
