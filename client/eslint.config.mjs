@@ -68,7 +68,7 @@ export default defineConfig([
 
     rules: {
       "@angular-eslint/template/label-has-associated-control": "off",
-      "@angular-eslint/template/click-events-have-key-events": "off"
+      "@angular-eslint/template/click-events-have-key-events": "off",
     },
   },
 ]);
