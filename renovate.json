@@ -7,6 +7,12 @@
     "enabled": false
   },
   "dependencyDashboard": false,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "postUpdateOptions": [
+    "npmDedupe"
+  ],
   "packageRules": [
     {
       "matchDatasources": [
