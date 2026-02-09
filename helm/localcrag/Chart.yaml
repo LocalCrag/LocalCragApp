@@ -12,5 +12,5 @@ dependencies:
     repository: https://charts.min.io/
 
   - name: postgres
-    version: 0.13.7
+    version: 0.15.5
     repository: oci://registry-1.docker.io/cloudpirates
