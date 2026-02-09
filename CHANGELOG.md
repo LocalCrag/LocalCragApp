@@ -1,3 +1,10 @@
+## [1.25.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.2...v1.25.3) (2026-02-09)
+
+
+### Bug Fixes
+
+* **topo:** left align topo image subtitles to fix inconsistent look when coordinates for image exist ([#955](https://github.com/LocalCrag/LocalCragApp/issues/955)) ([01cc6eb](https://github.com/LocalCrag/LocalCragApp/commit/01cc6eb195604e119568a89deabcd43bd25975e7))
+
 ## [1.25.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.1...v1.25.2) (2026-01-26)
 
 
