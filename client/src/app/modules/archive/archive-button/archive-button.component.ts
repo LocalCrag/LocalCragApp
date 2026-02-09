@@ -36,22 +36,27 @@ export class ArchiveButtonComponent {
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
 
-  getCurrentState() {
+  get currentState() {
     if (this.line) return this.line.archived;
     if (this.topoImage) return this.topoImage.archived;
     return false;
   }
 
+  // Backwards-compatible method for older templates/calls
+  getCurrentState() {
+    return this.currentState;
+  }
+
   toggleArchivedResultHandler = {
     next: (_) => {
       this.store.dispatch(
-        toastNotification(this.getCurrentState() ? 'ARCHIVED' : 'UNARCHIVED'),
+        toastNotification(this.currentState ? 'ARCHIVED' : 'UNARCHIVED'),
       );
     },
     error: () => {
       this.store.dispatch(
         toastNotification(
-          this.getCurrentState() ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
+          this.currentState ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
         ),
       );
     },

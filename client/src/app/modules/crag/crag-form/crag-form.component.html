@@ -1,9 +1,11 @@
 <ng-container *transloco="let t; read: 'crag.cragForm'">
   <div class="content">
     <p-card header="{{ editMode ? t('editCragTitle') : t('createCragTitle') }}">
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("createCragDescription") }}
-      </p>
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("createCragDescription") }}
+        </p>
+      }
 
       <form [formGroup]="cragForm" lcForm>
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -16,7 +18,7 @@
             placeholder="{{ t('cragNamePlaceholder') }}"
             lcFormControl
             data-cy="crag-form-name"
-          />
+            />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -37,7 +39,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="crag-form-shortDescription"
-          >
+            >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -80,7 +82,7 @@
             data-cy="crag-form-description"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
+            >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -147,8 +149,8 @@
             data-cy="crag-form-rules"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
+            >
+            <ng-template #header2>
               <span class="ql-formats">
                 <button
                   type="button"
@@ -205,7 +207,7 @@
             id="portrait-image"
             formControlName="portraitImage"
             data-cy="crag-form-portraitImage"
-          >
+            >
           </lc-single-image-upload>
         </div>
 
@@ -222,57 +224,59 @@
           ></lc-map-marker-form-array>
         </div>
 
-        <div
-          class="flex flex-column gap-2"
-          lcControlGroup
-          *ngIf="crag?.slug !== environment.skippedSlug"
-        >
-          <label class="form-label">{{ t("cragOptionsLabel") }}</label>
-          <div class="flex flex-column gap-2">
-            <div class="flex">
-              <p-checkbox
-                inputId="secret"
-                name="secret"
-                [binary]="true"
-                formControlName="secret"
-                lcFormControl
-              ></p-checkbox>
-              <label [for]="'secret'" class="ml-2">{{
-                t("secretLabel")
-              }}</label>
-            </div>
-            <div class="flex">
-              <p-checkbox
-                inputId="closed"
-                name="closed"
-                [binary]="true"
-                formControlName="closed"
-                lcFormControl
-              ></p-checkbox>
-              <label [for]="'closed'" class="ml-2">{{
-                t("closedLabel")
-              }}</label>
+        @if (crag?.slug !== environment.skippedSlug) {
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            >
+            <label class="form-label">{{ t("cragOptionsLabel") }}</label>
+            <div class="flex flex-column gap-2">
+              <div class="flex">
+                <p-checkbox
+                  inputId="secret"
+                  name="secret"
+                  [binary]="true"
+                  formControlName="secret"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'secret'" class="ml-2">{{
+                  t("secretLabel")
+                }}</label>
+              </div>
+              <div class="flex">
+                <p-checkbox
+                  inputId="closed"
+                  name="closed"
+                  [binary]="true"
+                  formControlName="closed"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'closed'" class="ml-2">{{
+                  t("closedLabel")
+                }}</label>
+              </div>
             </div>
           </div>
-        </div>
+        }
 
-        <div
-          class="flex flex-column gap-2"
-          lcControlGroup
-          *ngIf="cragForm.get('closed').value"
-        >
-          <label class="form-label" for="closedReason">{{
-            t("closedReasonLabel")
-          }}</label>
-          <input
-            id="closedReason"
-            type="text"
-            pInputText
-            formControlName="closedReason"
-            placeholder="{{ t('closedReasonPlaceholder') }}"
-            lcFormControl
-          />
-        </div>
+        @if (cragForm.get('closed').value) {
+          <div
+            class="flex flex-column gap-2"
+            lcControlGroup
+            >
+            <label class="form-label" for="closedReason">{{
+              t("closedReasonLabel")
+            }}</label>
+            <input
+              id="closedReason"
+              type="text"
+              pInputText
+              formControlName="closedReason"
+              placeholder="{{ t('closedReasonPlaceholder') }}"
+              lcFormControl
+              />
+          </div>
+        }
 
         <div class="grid align-items-center">
           <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
@@ -280,7 +284,7 @@
           <label
             for="defaultBoulderScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
+            >
             {{ "BOULDER" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -297,7 +301,7 @@
           <label
             for="defaultSportScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
+            >
             {{ "SPORT" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -314,7 +318,7 @@
           <label
             for="defaultTradScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
+            >
             {{ "TRAD" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -331,23 +335,25 @@
       </form>
 
       <div class="form-actions">
-        <p-button
-          label="{{ t('createCragButtonLabel') }}"
-          (click)="saveCrag()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="!editMode"
-          data-cy="submit"
-        ></p-button>
-        <p-button
-          label="{{ t('editCragButtonLabel') }}"
-          (click)="saveCrag()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (!editMode) {
+          <p-button
+            label="{{ t('createCragButtonLabel') }}"
+            (click)="saveCrag()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          ></p-button>
+        }
+        @if (editMode) {
+          <p-button
+            label="{{ t('editCragButtonLabel') }}"
+            (click)="saveCrag()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
@@ -355,15 +361,16 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
-        <p-button
-          label="{{ t('deleteCragButtonLabel') }}"
-          (click)="confirmDeleteCrag($event)"
-          icon="pi pi-trash"
-          styleClass="p-button-danger"
-          class="ml-3 responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode && crag?.slug !== environment.skippedSlug"
-        ></p-button>
+        @if (editMode && crag?.slug !== environment.skippedSlug) {
+          <p-button
+            label="{{ t('deleteCragButtonLabel') }}"
+            (click)="confirmDeleteCrag($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-confirmpopup></p-confirmpopup>
       </div>
     </p-card>

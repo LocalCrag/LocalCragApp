@@ -15,7 +15,7 @@ import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.com
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -64,8 +64,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,
-    NgForOf,
-    NgIf,
     RatingModule,
     RouterLink,
     SecretSpotTagComponent,

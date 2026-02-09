@@ -1,11 +1,13 @@
 <ng-container *transloco="let t; read: 'line.lineForm'">
   <div class="content">
     <p-card header="{{ editMode ? t('editLineTitle') : t('createLineTitle') }}">
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("createLineDescription") }}
-      </p>
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("createLineDescription") }}
+        </p>
+      }
 
-      <ng-container *ngIf="lineForm">
+      @if (lineForm) {
         <form [formGroup]="lineForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
@@ -19,7 +21,7 @@
               placeholder="{{ t('lineNamePlaceholder') }}"
               lcFormControl
               data-cy="line-form-name"
-            />
+              />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -27,7 +29,6 @@
               t("maxlength120")
             }}</small>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
               t("lineDescriptionLabel")
@@ -40,7 +41,7 @@
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
               data-cy="line-form-description"
-            >
+              >
               <ng-template #header>
                 <span class="ql-formats">
                   <button
@@ -69,7 +70,6 @@
               </ng-template>
             </p-editor>
           </div>
-
           <ng-container *isGymMode="true">
             <div class="flex flex-column gap-2" lcControlGroup>
               <label class="form-label" for="color">
@@ -79,53 +79,52 @@
                 id="color"
                 formControlName="color"
                 lcFormControl
-              />
+                />
             </div>
           </ng-container>
-
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="!editMode || line?.ascentCount === 0"
-          >
-            <label class="form-label" for="type">
-              {{ t("lineTypeLabel") }}
-            </label>
-            <p-select
-              formControlName="type"
-              id="type"
-              [options]="typeOptions"
-              optionLabel="label"
-              optionValue="value"
-              lcFormControl
-            >
-              <ng-template let-selectedType #selectedItem>
-                {{ selectedType.label }}
-              </ng-template>
-            </p-select>
-          </div>
-
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="
-              scaleOptions.length > 1 && (!editMode || line?.ascentCount === 0)
-            "
-          >
-            <label class="form-label" for="scale">
-              {{ t("lineScaleLabel") }}
-            </label>
-            <p-select
-              formControlName="scale"
-              id="scale"
-              [options]="scaleOptions"
-              optionLabel="label"
-              optionValue="value"
-              lcFormControl
-            >
-            </p-select>
-          </div>
-
+          @if (!editMode || line?.ascentCount === 0) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="type">
+                {{ t("lineTypeLabel") }}
+              </label>
+              <p-select
+                formControlName="type"
+                id="type"
+                [options]="typeOptions"
+                optionLabel="label"
+                optionValue="value"
+                lcFormControl
+                >
+                <ng-template let-selectedType #selectedItem>
+                  {{ selectedType.label }}
+                </ng-template>
+              </p-select>
+            </div>
+          }
+          @if (
+            scaleOptions.length > 1 && (!editMode || line?.ascentCount === 0)
+            ) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="scale">
+                {{ t("lineScaleLabel") }}
+              </label>
+              <p-select
+                formControlName="scale"
+                id="scale"
+                [options]="scaleOptions"
+                optionLabel="label"
+                optionValue="value"
+                lcFormControl
+                >
+              </p-select>
+            </div>
+          }
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")
@@ -139,12 +138,12 @@
               optionValue="value"
               placeholder="{{ t('gradePlaceholder') }}"
               lcFormControl
-            >
+              >
               <ng-template let-grade #item>
                 <div
                   class="flex align-items-center gap-2"
                   data-cy="grade-dropdown-item"
-                >
+                  >
                   <div>{{ grade.name | translateSpecialGrades }}</div>
                 </div>
               </ng-template>
@@ -155,15 +154,14 @@
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
-
-            <p-message
-              styleClass="mt-2"
-              severity="warn"
-              text="{{ t('displayUserGradesActive') }}"
-              *ngIf="getDisplayUserGrades() | async"
-            />
+            @if (getDisplayUserGrades() | async) {
+              <p-message
+                styleClass="mt-2"
+                severity="warn"
+                text="{{ t('displayUserGradesActive') }}"
+                />
+            }
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="starting-position">{{
               t("startingPositionLabel")
@@ -174,16 +172,16 @@
               [options]="startingPositions"
               lcFormControl
               data-cy="starting-position-dropdown"
-            >
+              >
               <ng-template let-startingPosition #item>
                 <div
                   class="flex align-items-center gap-2"
                   data-cy="starting-position-dropdown-item"
-                >
+                  >
                   <div>{{ startingPosition | transloco }}</div>
                 </div>
               </ng-template>
-              <ng-template let-selectedItem #selectedItem>
+              <ng-template let-selectedItem #selectedItem2>
                 {{ selectedItem | transloco }}
               </ng-template>
             </p-select>
@@ -191,7 +189,6 @@
               t("required")
             }}</small>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rating">{{
               t("lineRatingLabel")
@@ -202,71 +199,68 @@
               lcFormControl
               data-cy="rating"
             ></p-rating>
-
-            <p-message
-              styleClass="mt-2"
-              severity="warn"
-              text="{{ t('displayUserRatingsActive') }}"
-              *ngIf="getDisplayUserRatings() | async"
-            />
+            @if (getDisplayUserRatings() | async) {
+              <p-message
+                styleClass="mt-2"
+                severity="warn"
+                text="{{ t('displayUserRatingsActive') }}"
+                />
+            }
           </div>
-
           <div class="flex flex-column gap-2">
             <label class="form-label">{{ t("lineVideosLabel") }}</label>
-
-            <div
-              *ngFor="
-                let lineVideoGroup of (lineForm.get('videos') | asFormArray)
-                  .controls;
-                index as i
-              "
-              [formGroup]="lineVideoGroup | asFormGroup"
-              class="flex flex-row gap-3"
-            >
+            @for (
+              lineVideoGroup of (lineForm.get('videos') | asFormArray)
+              .controls; track
+              lineVideoGroup; let i = $index) {
               <div
-                lcControlGroup
-                class="flex flex-column flex-1 video-input-container"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  formControlName="title"
-                  placeholder="{{ t('lineVideoTitlePlaceholder') }}"
-                  lcFormControl
-                />
-                <div>
-                  <small class="lc-error" *lcIfError="'required'">{{
-                    t("requiredValidationError")
-                  }}</small>
+                [formGroup]="lineVideoGroup | asFormGroup"
+                class="flex flex-row gap-3"
+                >
+                <div
+                  lcControlGroup
+                  class="flex flex-column flex-1 video-input-container"
+                  >
+                  <input
+                    type="text"
+                    pInputText
+                    formControlName="title"
+                    placeholder="{{ t('lineVideoTitlePlaceholder') }}"
+                    lcFormControl
+                    />
+                  <div>
+                    <small class="lc-error" *lcIfError="'required'">{{
+                      t("requiredValidationError")
+                    }}</small>
+                  </div>
                 </div>
-              </div>
-              <div
-                lcControlGroup
-                class="flex flex-column flex-1 video-input-container"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  formControlName="url"
-                  placeholder="{{ t('lineVideoUrlPlaceholder') }}"
-                  lcFormControl
-                />
-                <div>
-                  <small class="lc-error" *lcIfError="'required'">{{
-                    t("requiredValidationError")
-                  }}</small>
-                  <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
-                    t("invalidHttpUrlValidationError")
-                  }}</small>
+                <div
+                  lcControlGroup
+                  class="flex flex-column flex-1 video-input-container"
+                  >
+                  <input
+                    type="text"
+                    pInputText
+                    formControlName="url"
+                    placeholder="{{ t('lineVideoUrlPlaceholder') }}"
+                    lcFormControl
+                    />
+                  <div>
+                    <small class="lc-error" *lcIfError="'required'">{{
+                      t("requiredValidationError")
+                    }}</small>
+                    <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
+                      t("invalidHttpUrlValidationError")
+                    }}</small>
+                  </div>
                 </div>
+                <p-button
+                  (click)="deleteLineVideoControl(i)"
+                  icon="pi pi-trash"
+                  styleClass="p-button-danger"
+                ></p-button>
               </div>
-              <p-button
-                (click)="deleteLineVideoControl(i)"
-                icon="pi pi-trash"
-                styleClass="p-button-danger"
-              ></p-button>
-            </div>
-
+            }
             <div>
               <p-button
                 label="{{ t('addVideoButtonLabel') }}"
@@ -277,7 +271,6 @@
               ></p-button>
             </div>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="fa-name">{{
               t("lineFANameLabel")
@@ -290,58 +283,59 @@
               placeholder="{{ t('lineFANamePlaceholder') }}"
               lcFormControl
               data-cy="line-form-faName"
-            />
+              />
             <small class="lc-error" *lcIfError="'maxlength'">{{
               t("maxlength120")
             }}</small>
           </div>
-
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="faFormat === faFormats.YEAR"
-          >
-            <label class="form-label" for="fa-year">{{
-              t("lineFAYearLabel")
-            }}</label>
-            <p-date-picker
-              id="fa-year"
-              formControlName="faYear"
-              view="year"
-              dateFormat="yy"
-              inputId="faYear"
-              lcFormControl
-              [maxDate]="today"
-              [readonlyInput]="true"
-              data-cy="line-form-faYear"
-            ></p-date-picker>
-            <small class="lc-error" *lcIfError="'dateInFuture'">{{
-              t("yearInFutureValidationError")
-            }}</small>
-          </div>
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="faFormat === faFormats.DATE"
-          >
-            <label class="form-label" for="fa-year">{{
-              t("lineFADateLabel")
-            }}</label>
-            <p-date-picker
-              id="fa-date"
-              formControlName="faDate"
-              view="date"
-              dateFormat="dd.mm.yy"
-              inputId="faDate"
-              lcFormControl
-              [maxDate]="today"
-              [readonlyInput]="true"
-              data-cy="line-form-faDate"
-            ></p-date-picker>
-            <small class="lc-error" *lcIfError="'dateInFuture'">{{
-              t("dateInFutureValidationError")
-            }}</small>
-          </div>
+          @if (faFormat === faFormats.YEAR) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="fa-year">{{
+                t("lineFAYearLabel")
+              }}</label>
+              <p-date-picker
+                id="fa-year"
+                formControlName="faYear"
+                view="year"
+                dateFormat="yy"
+                inputId="faYear"
+                lcFormControl
+                [maxDate]="today"
+                [readonlyInput]="true"
+                data-cy="line-form-faYear"
+              ></p-date-picker>
+              <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                t("yearInFutureValidationError")
+              }}</small>
+            </div>
+          }
+          @if (faFormat === faFormats.DATE) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="fa-year">{{
+                t("lineFADateLabel")
+              }}</label>
+              <p-date-picker
+                id="fa-date"
+                formControlName="faDate"
+                view="date"
+                dateFormat="dd.mm.yy"
+                inputId="faDate"
+                lcFormControl
+                [maxDate]="today"
+                [readonlyInput]="true"
+                data-cy="line-form-faDate"
+              ></p-date-picker>
+              <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                t("dateInFutureValidationError")
+              }}</small>
+            </div>
+          }
           <div class="mt-2">
             <p-button
               (onClick)="toggleFaFormat()"
@@ -351,9 +345,8 @@
                   : t('showFaYearInsteadOfDate')
               "
               variant="outlined"
-            />
+              />
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("linePropertiesLabel") }}</label>
             <div class="flex flex-column gap-2">
@@ -444,7 +437,6 @@
               </div>
             </div>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineTypeLabel") }}</label>
             <div class="flex flex-column gap-2">
@@ -582,7 +574,6 @@
               </div>
             </div>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineKeyAspectsLabel") }}</label>
             <div class="flex flex-column gap-2">
@@ -636,7 +627,6 @@
               </div>
             </div>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{
               t("linePrimaryHoldTypesLabel")
@@ -704,7 +694,6 @@
               </div>
             </div>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineOptionsLabel") }}</label>
             <div class="flex flex-column gap-2">
@@ -734,60 +723,61 @@
               </div>
             </div>
           </div>
-
-          <p-message
-            severity="warn"
-            icon="pi pi-info-circle"
-            *ngIf="parentSecret && !lineForm.get('secret').value"
-          >
-            {{ t("aPublicLineWillSetParentsToPublic") }}
-          </p-message>
-
-          <p-message
-            severity="warn"
-            icon="pi pi-info-circle"
-            *ngIf="parentClosed && !lineForm.get('closed').value"
-          >
-            {{ t("openingAClosedLineWillSetParentsToOpen") }}
-          </p-message>
-
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="lineForm.get('closed').value"
-          >
-            <label class="form-label" for="closedReason">{{
-              t("closedReasonLabel")
-            }}</label>
-            <input
-              id="closedReason"
-              type="text"
-              pInputText
-              formControlName="closedReason"
-              placeholder="{{ t('closedReasonPlaceholder') }}"
-              lcFormControl
-            />
-          </div>
+          @if (parentSecret && !lineForm.get('secret').value) {
+            <p-message
+              severity="warn"
+              icon="pi pi-info-circle"
+              >
+              {{ t("aPublicLineWillSetParentsToPublic") }}
+            </p-message>
+          }
+          @if (parentClosed && !lineForm.get('closed').value) {
+            <p-message
+              severity="warn"
+              icon="pi pi-info-circle"
+              >
+              {{ t("openingAClosedLineWillSetParentsToOpen") }}
+            </p-message>
+          }
+          @if (lineForm.get('closed').value) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="closedReason">{{
+                t("closedReasonLabel")
+              }}</label>
+              <input
+                id="closedReason"
+                type="text"
+                pInputText
+                formControlName="closedReason"
+                placeholder="{{ t('closedReasonPlaceholder') }}"
+                lcFormControl
+                />
+            </div>
+          }
         </form>
-
         <div class="form-actions">
-          <p-button
-            label="{{ t('createLineButtonLabel') }}"
-            (click)="saveLine()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="!editMode"
-            data-cy="submit"
-          ></p-button>
-          <p-button
-            label="{{ t('editLineButtonLabel') }}"
-            (click)="saveLine()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
-          ></p-button>
+          @if (!editMode) {
+            <p-button
+              label="{{ t('createLineButtonLabel') }}"
+              (click)="saveLine()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+              data-cy="submit"
+            ></p-button>
+          }
+          @if (editMode) {
+            <p-button
+              label="{{ t('editLineButtonLabel') }}"
+              (click)="saveLine()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+            ></p-button>
+          }
           <p-button
             label="{{ t('cancelButtonLabel') }}"
             (click)="cancel()"
@@ -795,20 +785,23 @@
             styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
-          <p-button
-            label="{{ t('deleteLineButtonLabel') }}"
-            (click)="confirmDeleteLine($event)"
-            icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="ml-3 responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
-          ></p-button>
+          @if (editMode) {
+            <p-button
+              label="{{ t('deleteLineButtonLabel') }}"
+              (click)="confirmDeleteLine($event)"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              class="ml-3 responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+            ></p-button>
+          }
           <p-confirmpopup></p-confirmpopup>
         </div>
-      </ng-container>
+      }
 
-      <lc-form-skeleton *ngIf="!lineForm"></lc-form-skeleton>
+      @if (!lineForm) {
+        <lc-form-skeleton></lc-form-skeleton>
+      }
     </p-card>
   </div>
 </ng-container>

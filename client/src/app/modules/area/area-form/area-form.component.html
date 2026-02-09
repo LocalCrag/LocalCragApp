@@ -1,11 +1,13 @@
 <ng-container *transloco="let t; read: 'area.areaForm'">
   <div class="content">
     <p-card header="{{ editMode ? t('editAreaTitle') : t('createAreaTitle') }}">
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("createAreaDescription") }}
-      </p>
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("createAreaDescription") }}
+        </p>
+      }
 
-      <ng-container *ngIf="areaForm">
+      @if (areaForm) {
         <form [formGroup]="areaForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
@@ -19,7 +21,7 @@
               placeholder="{{ t('areaNamePlaceholder') }}"
               lcFormControl
               data-cy="area-form-name"
-            />
+              />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -27,7 +29,6 @@
               t("maxlength120")
             }}</small>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="short-description">{{
               t("areaShortDescriptionLabel")
@@ -40,7 +41,7 @@
               placeholder="{{ t('areaShortDescriptionPlaceholder') }}"
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+              >
               <ng-template #header>
                 <span class="ql-formats">
                   <button
@@ -69,7 +70,6 @@
               </ng-template>
             </p-editor>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
               t("areaDescriptionLabel")
@@ -83,7 +83,7 @@
               data-cy="area-form-description"
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+              >
               <ng-template #header>
                 <span class="ql-formats">
                   <button
@@ -136,7 +136,6 @@
               </ng-template>
             </p-editor>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
               t("areaPortraitImageLabel")
@@ -146,10 +145,9 @@
               lcFormControl
               formControlName="portraitImage"
               data-cy="area-form-portraitImage"
-            >
+              >
             </lc-single-image-upload>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
               t("mapMarkersLabel")
@@ -162,7 +160,6 @@
               [defaultMarkerType]="MapMarkerType.AREA"
             ></lc-map-marker-form-array>
           </div>
-
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("secretOptionsLabel") }}</label>
             <div class="flex flex-column gap-2">
@@ -192,14 +189,12 @@
               </div>
             </div>
           </div>
-
           <div class="grid align-items-center">
             <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
-
             <label
               for="defaultBoulderScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+              >
               {{ "BOULDER" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -212,11 +207,10 @@
                 lcFormControl
               ></p-select>
             </div>
-
             <label
               for="defaultSportScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+              >
               {{ "SPORT" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -229,11 +223,10 @@
                 lcFormControl
               ></p-select>
             </div>
-
             <label
               for="defaultTradScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+              >
               {{ "TRAD" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -247,60 +240,61 @@
               ></p-select>
             </div>
           </div>
-
-          <p-message
-            severity="warn"
-            icon="pi pi-info-circle"
-            *ngIf="parentSecret && !areaForm.get('secret').value"
-          >
-            {{ t("aPublicAreaWillSetParentsToPublic") }}
-          </p-message>
-
-          <p-message
-            severity="warn"
-            icon="pi pi-info-circle"
-            *ngIf="parentClosed && !areaForm.get('closed').value"
-          >
-            {{ t("openingAClosedAreaWillSetParentsToOpen") }}
-          </p-message>
-
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *ngIf="areaForm.get('closed').value"
-          >
-            <label class="form-label" for="closedReason">{{
-              t("closedReasonLabel")
-            }}</label>
-            <input
-              id="closedReason"
-              type="text"
-              pInputText
-              formControlName="closedReason"
-              placeholder="{{ t('closedReasonPlaceholder') }}"
-              lcFormControl
-            />
-          </div>
+          @if (parentSecret && !areaForm.get('secret').value) {
+            <p-message
+              severity="warn"
+              icon="pi pi-info-circle"
+              >
+              {{ t("aPublicAreaWillSetParentsToPublic") }}
+            </p-message>
+          }
+          @if (parentClosed && !areaForm.get('closed').value) {
+            <p-message
+              severity="warn"
+              icon="pi pi-info-circle"
+              >
+              {{ t("openingAClosedAreaWillSetParentsToOpen") }}
+            </p-message>
+          }
+          @if (areaForm.get('closed').value) {
+            <div
+              class="flex flex-column gap-2"
+              lcControlGroup
+              >
+              <label class="form-label" for="closedReason">{{
+                t("closedReasonLabel")
+              }}</label>
+              <input
+                id="closedReason"
+                type="text"
+                pInputText
+                formControlName="closedReason"
+                placeholder="{{ t('closedReasonPlaceholder') }}"
+                lcFormControl
+                />
+            </div>
+          }
         </form>
-
         <div class="form-actions">
-          <p-button
-            label="{{ t('createAreaButtonLabel') }}"
-            (click)="saveArea()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="!editMode"
-            data-cy="submit"
-          ></p-button>
-          <p-button
-            label="{{ t('editAreaButtonLabel') }}"
-            (click)="saveArea()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
-          ></p-button>
+          @if (!editMode) {
+            <p-button
+              label="{{ t('createAreaButtonLabel') }}"
+              (click)="saveArea()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+              data-cy="submit"
+            ></p-button>
+          }
+          @if (editMode) {
+            <p-button
+              label="{{ t('editAreaButtonLabel') }}"
+              (click)="saveArea()"
+              icon="pi pi-save"
+              class="responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+            ></p-button>
+          }
           <p-button
             label="{{ t('cancelButtonLabel') }}"
             (click)="cancel()"
@@ -308,20 +302,23 @@
             styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
-          <p-button
-            label="{{ t('deleteAreaButtonLabel') }}"
-            (click)="confirmDeleteArea($event)"
-            icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="ml-3 responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            *ngIf="editMode"
-          ></p-button>
+          @if (editMode) {
+            <p-button
+              label="{{ t('deleteAreaButtonLabel') }}"
+              (click)="confirmDeleteArea($event)"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              class="ml-3 responsive-button"
+              [loading]="loadingState === loadingStates.LOADING"
+            ></p-button>
+          }
           <p-confirmpopup></p-confirmpopup>
         </div>
-      </ng-container>
+      }
 
-      <lc-form-skeleton *ngIf="!areaForm"></lc-form-skeleton>
+      @if (!areaForm) {
+        <lc-form-skeleton></lc-form-skeleton>
+      }
     </p-card>
   </div>
 </ng-container>

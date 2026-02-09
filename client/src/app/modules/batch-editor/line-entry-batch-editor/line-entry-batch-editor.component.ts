@@ -39,7 +39,7 @@ import {
   Stepper,
 } from 'primeng/stepper';
 import { LineEntryBatchLineFormComponent } from '../line-entry-batch-line-form/line-entry-batch-line-form.component';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -76,8 +76,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     StepPanels,
     StepPanel,
     LineEntryBatchLineFormComponent,
-    NgForOf,
-    NgIf,
     Button,
     Select,
     DatePicker,
