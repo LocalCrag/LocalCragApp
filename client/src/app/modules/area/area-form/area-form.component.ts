@@ -42,7 +42,7 @@ import {
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
-import { NgIf } from '@angular/common';
+
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -68,7 +68,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     TranslocoDirective,
     Card,
-    NgIf,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,

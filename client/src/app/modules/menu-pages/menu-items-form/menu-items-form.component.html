@@ -5,163 +5,164 @@
         editMode ? t('editMenuItemTitle') : t('createMenuItemTitle')
       }}"
     >
-      <p class="mt-0" *ngIf="!editMode">
-        {{ t("createMenuItemDescription") }}
-      </p>
+      @if (!editMode) {
+        <p class="mt-0">
+          {{ t("createMenuItemDescription") }}
+        </p>
+      }
 
-      <form [formGroup]="menuItemForm" lcForm *ngIf="menuPages">
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-          <p-select
-            formControlName="type"
-            [options]="types"
-            lcFormControl
-            id="type"
-          >
-            <ng-template let-type #item>
-              <div class="flex align-items-center gap-2">
-                <div>{{ type | transloco }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-selectedItem #selectedItem>
-              {{ selectedItem | transloco }}
-            </ng-template>
-          </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="position">{{
-            t("positionLabel")
-          }}</label>
-          <p-select
-            id="position"
-            formControlName="position"
-            [options]="positions"
-            lcFormControl
-          >
-            <ng-template let-position #item>
-              <div class="flex align-items-center gap-2">
-                <div>{{ position | transloco }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-selectedItem #selectedItem>
-              {{ selectedItem | transloco }}
-            </ng-template>
-          </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="menu-page">{{
-            t("menuPageLabel")
-          }}</label>
-          <p-select
-            id="menu-page"
-            formControlName="menuPage"
-            [options]="menuPages"
-            lcFormControl
-          >
-            <ng-template let-menuPage #item>
-              <div class="flex align-items-center gap-2">
-                <div>{{ menuPage.title }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-selectedItem #selectedItem>
-              {{ selectedItem.title }}
-            </ng-template>
-          </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="icon">{{ t("iconLabel") }}</label>
-          <p-select
-            formControlName="icon"
-            id="icon"
-            [options]="icons"
-            lcFormControl
-          >
-            <ng-template let-icon #item>
-              <div class="flex align-items-center gap-2">
-                <i class="pi" [ngClass]="icon"></i>
-                <div>{{ icon | transloco }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-selectedIcon #selectedItem>
-              <i class="pi" [ngClass]="selectedIcon"></i>
-              {{ selectedIcon | transloco }}
-            </ng-template>
-          </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="title">{{ t("titleLabel") }}</label>
-          <input
-            type="text"
-            pInputText
-            id="title"
-            formControlName="title"
-            placeholder="{{ t('titlePlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="url">{{ t("urlLabel") }}</label>
-          <input
-            type="text"
-            pInputText
-            id="url"
-            formControlName="url"
-            placeholder="{{ t('urlPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
-            t("invalidHttpUrl")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-      </form>
+      @if (menuPages) {
+        <form [formGroup]="menuItemForm" lcForm>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="type">{{ t("typeLabel") }}</label>
+            <p-select
+              formControlName="type"
+              [options]="types"
+              lcFormControl
+              id="type"
+            >
+              <ng-template let-type #item>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ type | transloco }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-selectedItem #selectedItem>
+                {{ selectedItem | transloco }}
+              </ng-template>
+            </p-select>
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="position">{{
+              t("positionLabel")
+            }}</label>
+            <p-select
+              id="position"
+              formControlName="position"
+              [options]="positions"
+              lcFormControl
+            >
+              <ng-template let-position #item>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ position | transloco }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-selectedItem #selectedItem>
+                {{ selectedItem | transloco }}
+              </ng-template>
+            </p-select>
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="menu-page">{{
+              t("menuPageLabel")
+            }}</label>
+            <p-select
+              id="menu-page"
+              formControlName="menuPage"
+              [options]="menuPages"
+              lcFormControl
+            >
+              <ng-template let-menuPage #item2>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ menuPage.title }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-selectedItem #selectedItem2>
+                {{ selectedItem.title }}
+              </ng-template>
+            </p-select>
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="icon">{{ t("iconLabel") }}</label>
+            <p-select
+              formControlName="icon"
+              id="icon"
+              [options]="icons"
+              lcFormControl
+            >
+              <ng-template let-icon #item3>
+                <div class="flex align-items-center gap-2">
+                  <i class="pi" [ngClass]="icon"></i>
+                  <div>{{ icon | transloco }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-selectedIcon #selectedItem3>
+                <i class="pi" [ngClass]="selectedIcon"></i>
+                {{ selectedIcon | transloco }}
+              </ng-template>
+            </p-select>
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="title">{{ t("titleLabel") }}</label>
+            <input
+              type="text"
+              pInputText
+              id="title"
+              formControlName="title"
+              placeholder="{{ t('titlePlaceholder') }}"
+              lcFormControl
+            />
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+            <small class="lc-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="url">{{ t("urlLabel") }}</label>
+            <input
+              type="text"
+              pInputText
+              id="url"
+              formControlName="url"
+              placeholder="{{ t('urlPlaceholder') }}"
+              lcFormControl
+            />
+            <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
+              t("invalidHttpUrl")
+            }}</small>
+            <small class="lc-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+            <small class="lc-error" *lcIfError="'required'">{{
+              t("required")
+            }}</small>
+          </div>
+        </form>
+      }
 
       <div class="form-actions">
-        <p-button
-          label="{{ t('createMenuItemButtonLabel') }}"
-          (click)="saveMenuItem()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="!editMode"
-          data-cy="submit"
-        ></p-button>
-        <p-button
-          label="{{ t('editMenuItemButtonLabel') }}"
-          (click)="saveMenuItem()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (!editMode) {
+          <p-button
+            label="{{ t('createMenuItemButtonLabel') }}"
+            (click)="saveMenuItem()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          ></p-button>
+        }
+        @if (editMode) {
+          <p-button
+            label="{{ t('editMenuItemButtonLabel') }}"
+            (click)="saveMenuItem()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
@@ -169,15 +170,16 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
-        <p-button
-          label="{{ t('deleteMenuItemButtonLabel') }}"
-          (click)="confirmDeleteMenuItem($event)"
-          icon="pi pi-trash"
-          styleClass="p-button-danger"
-          class="ml-3 responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-          *ngIf="editMode"
-        ></p-button>
+        @if (editMode) {
+          <p-button
+            label="{{ t('deleteMenuItemButtonLabel') }}"
+            (click)="confirmDeleteMenuItem($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3 responsive-button"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
         <p-confirmpopup></p-confirmpopup>
       </div>
     </p-card>

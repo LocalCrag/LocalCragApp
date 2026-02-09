@@ -34,7 +34,7 @@ import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemType } from '../../../enums/menu-item-type';
 
 import { CardModule } from 'primeng/card';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -54,7 +54,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-menu-items-form',
   imports: [
     CardModule,
-    NgIf,
     PaginatorModule,
     TranslocoDirective,
     ReactiveFormsModule,
