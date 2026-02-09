@@ -7,7 +7,7 @@
             value="#{{ index + 1 }}"
             [rounded]="true"
             styleClass="form-item-index "
-            />
+          />
         </div>
         <div class="flex-1 flex flex-column" lcControlGroup>
           <input
@@ -18,7 +18,7 @@
             placeholder="{{ t('lineNamePlaceholder') }}"
             lcFormControl
             data-cy="line-form-name"
-            />
+          />
           <small class="lc-error mt-1" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -27,15 +27,12 @@
           }}</small>
         </div>
         @if (gymMode$ | async) {
-          <div
-            class="flex-1 flex flex-column"
-            lcControlGroup
-            >
+          <div class="flex-1 flex flex-column" lcControlGroup>
             <lc-advanced-color-picker
               id="color"
               formControlName="color"
               lcFormControl
-              />
+            />
           </div>
         }
         <div class="flex-1 flex flex-column" lcControlGroup>
@@ -48,9 +45,12 @@
             optionValue="value"
             placeholder="{{ t('gradePlaceholder') }}"
             lcFormControl
-            >
+          >
             <ng-template let-grade #item>
-              <div class="flex align-items-center" data-cy="grade-dropdown-item">
+              <div
+                class="flex align-items-center"
+                data-cy="grade-dropdown-item"
+              >
                 <div>{{ grade.name | translateSpecialGrades }}</div>
               </div>
             </ng-template>
@@ -63,22 +63,19 @@
           }}</small>
         </div>
         @if (type === lineTypes.BOULDER && (gymMode$ | async) === false) {
-          <div
-            class="flex-1 flex flex-column"
-            lcControlGroup
-            >
+          <div class="flex-1 flex flex-column" lcControlGroup>
             <p-select
               id="starting-position"
               formControlName="startingPosition"
               [options]="startingPositions"
               lcFormControl
               data-cy="starting-position-dropdown"
-              >
+            >
               <ng-template let-startingPosition #item>
                 <div
                   class="flex align-items-center"
                   data-cy="starting-position-dropdown-item"
-                  >
+                >
                   <div>{{ startingPosition | transloco }}</div>
                 </div>
               </ng-template>
@@ -92,10 +89,7 @@
           </div>
         }
         @if (gymMode$ | async) {
-          <div
-            class="flex-1 flex flex-column"
-            lcControlGroup
-            >
+          <div class="flex-1 flex flex-column" lcControlGroup>
             <input
               id="fa-name"
               type="text"
@@ -103,7 +97,7 @@
               formControlName="faName"
               placeholder="{{ t('lineFANamePlaceholder') }}"
               lcFormControl
-              />
+            />
             <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
               t("maxlength120")
             }}</small>
@@ -111,7 +105,7 @@
         }
         <div
           class="flex-shrink-0 flex md:align-items-start sm:align-items-end justify-content-end"
-          >
+        >
           <p-button
             icon="pi pi-trash"
             severity="danger"

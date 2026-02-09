@@ -4,52 +4,30 @@
     [value]="rankings"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    >
+  >
     <ng-template #emptymessage>
       <p-message
         severity="info"
         icon="pi pi-info-circle"
         class="m-4 mb-1 block"
         >{{ t("noRankingsFoundMessage") }}</p-message
-        >
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
-          @if (lineTypes?.length > 1) {
-            <p-select
-              [options]="lineTypes"
-              [(ngModel)]="lineType"
-              (ngModelChange)="loadRanking()"
-              optionLabel="label"
-              styleClass="md:mb-0 md:mr-2"
-              [disabled]="loading === loadingStates.LOADING"
-              >
-              <ng-template #selectedItem>
-                @if (lineType) {
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ lineType.label }}</div>
-                  </div>
-                }
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
-          }
+      >
+    </ng-template>
+    <ng-template #header>
+      <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
+        @if (lineTypes?.length > 1) {
           <p-select
-            [options]="rankingTypes"
-            [(ngModel)]="rankingType"
-            (ngModelChange)="sortField = rankingType.value"
+            [options]="lineTypes"
+            [(ngModel)]="lineType"
+            (ngModelChange)="loadRanking()"
             optionLabel="label"
             styleClass="md:mb-0 md:mr-2"
             [disabled]="loading === loadingStates.LOADING"
-            >
+          >
             <ng-template #selectedItem>
-              @if (rankingType) {
+              @if (lineType) {
                 <div class="flex align-items-center gap-2">
-                  <div>{{ rankingType.label }}</div>
+                  <div>{{ lineType.label }}</div>
                 </div>
               }
             </ng-template>
@@ -59,87 +37,114 @@
               </div>
             </ng-template>
           </p-select>
-          <div class="secret-switch-container" *isMember="true">
-            <p-toggleswitch
-              [disabled]="loading === loadingStates.LOADING"
-              [(ngModel)]="secretRankings"
-              (ngModelChange)="loadRanking()"
-              />
-            {{ t("includeSecretSpots") }}
-          </div>
-          <p-button
-            class="ranking-info-button"
-            severity="secondary"
-            text
-            (click)="showDialog()"
-            icon="pi pi-external-link"
-            label="{{ t('aboutRankingsButtonLabel') }}"
-          ></p-button>
-          <p-dialog
-            header="{{ t('aboutRankingsHeader') }}"
-            [(visible)]="showInfoPopup"
-            [style]="{ 'max-width': '800px' }"
-            [dismissableMask]="true"
-            [closable]="true"
-            [modal]="true"
-            >
-            <p>{{ t("aboutRankingsText") }}</p>
-            @if (rankingPastWeeks | async; as weeks) {
-              <p>
-                {{
-                t(
-                weeks === 1
-                ? "aboutRankingsTimeRangeSuffixSingular"
-                : "aboutRankingsTimeRangeSuffix",
-                weeks === 1 ? {} : { weeks }
-                )
-                }}
-              </p>
-            }
-          </p-dialog>
-        </div>
-      </ng-template>
-      <ng-template #list>
-        @if (loading === loadingStates.LOADING) {
-          <lc-ranking-list-skeleton
-          ></lc-ranking-list-skeleton>
         }
-        @if (loading !== loadingStates.LOADING) {
-          <div class="grid grid-nogutter">
-            @for (ranking of rankings; track ranking; let first = $first; let index = $index) {
+        <p-select
+          [options]="rankingTypes"
+          [(ngModel)]="rankingType"
+          (ngModelChange)="sortField = rankingType.value"
+          optionLabel="label"
+          styleClass="md:mb-0 md:mr-2"
+          [disabled]="loading === loadingStates.LOADING"
+        >
+          <ng-template #selectedItem>
+            @if (rankingType) {
+              <div class="flex align-items-center gap-2">
+                <div>{{ rankingType.label }}</div>
+              </div>
+            }
+          </ng-template>
+          <ng-template let-option #item>
+            <div class="flex align-items-center gap-2">
+              <div>{{ option.label }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+        <div class="secret-switch-container" *isMember="true">
+          <p-toggleswitch
+            [disabled]="loading === loadingStates.LOADING"
+            [(ngModel)]="secretRankings"
+            (ngModelChange)="loadRanking()"
+          />
+          {{ t("includeSecretSpots") }}
+        </div>
+        <p-button
+          class="ranking-info-button"
+          severity="secondary"
+          text
+          (click)="showDialog()"
+          icon="pi pi-external-link"
+          label="{{ t('aboutRankingsButtonLabel') }}"
+        ></p-button>
+        <p-dialog
+          header="{{ t('aboutRankingsHeader') }}"
+          [(visible)]="showInfoPopup"
+          [style]="{ 'max-width': '800px' }"
+          [dismissableMask]="true"
+          [closable]="true"
+          [modal]="true"
+        >
+          <p>{{ t("aboutRankingsText") }}</p>
+          @if (rankingPastWeeks | async; as weeks) {
+            <p>
+              {{
+                t(
+                  weeks === 1
+                    ? "aboutRankingsTimeRangeSuffixSingular"
+                    : "aboutRankingsTimeRangeSuffix",
+                  weeks === 1 ? {} : { weeks }
+                )
+              }}
+            </p>
+          }
+        </p-dialog>
+      </div>
+    </ng-template>
+    <ng-template #list>
+      @if (loading === loadingStates.LOADING) {
+        <lc-ranking-list-skeleton></lc-ranking-list-skeleton>
+      }
+      @if (loading !== loadingStates.LOADING) {
+        <div class="grid grid-nogutter">
+          @for (
+            ranking of rankings;
+            track ranking;
+            let first = $first;
+            let index = $index
+          ) {
+            <div class="col-12">
               <div
-                class="col-12"
-                >
-                <div
-                  class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
-                  [ngClass]="{ 'border-top-1 surface-border': !first }"
-                  >
-                  <div class="ranking-table-row">
-                    <div class="ranking-table-rank">{{ index + 1 }}.</div>
-                    <div class="ranking-table-user-info">
-                      <p-avatar
-                  [image]="
-                    ranking.user.avatar
-                      ? ranking.user.avatar.thumbnailS
-                      : 'assets/user.png'
-                  "
-                        styleClass="mr-2"
-                        size="large"
-                        shape="circle"
-                      ></p-avatar>
-                      <a class="username" routerLink="{{ ranking.routerLinkUser }}"
-                        >{{ ranking.user.firstname }} {{ ranking.user.lastname }}</a
-                        >
-                      </div>
-                      <div class="ranking-table-score">
-                        {{ ranking[sortField] }}
-                      </div>
-                    </div>
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
+                <div class="ranking-table-row">
+                  <div class="ranking-table-rank">{{ index + 1 }}.</div>
+                  <div class="ranking-table-user-info">
+                    <p-avatar
+                      [image]="
+                        ranking.user.avatar
+                          ? ranking.user.avatar.thumbnailS
+                          : 'assets/user.png'
+                      "
+                      styleClass="mr-2"
+                      size="large"
+                      shape="circle"
+                    ></p-avatar>
+                    <a
+                      class="username"
+                      routerLink="{{ ranking.routerLinkUser }}"
+                      >{{ ranking.user.firstname }}
+                      {{ ranking.user.lastname }}</a
+                    >
+                  </div>
+                  <div class="ranking-table-score">
+                    {{ ranking[sortField] }}
                   </div>
                 </div>
-              }
+              </div>
             </div>
           }
-        </ng-template>
-      </p-dataView>
-    </ng-container>
+        </div>
+      }
+    </ng-template>
+  </p-dataView>
+</ng-container>

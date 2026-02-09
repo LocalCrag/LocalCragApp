@@ -3,10 +3,7 @@
     <p-card [header]="t('batchImageUploadTitle')">
       <p class="mt-0">{{ t("batchImageUploadDescription") }}</p>
       @if (topoImageBatchUploadForm) {
-        <form
-          [formGroup]="topoImageBatchUploadForm"
-          lcForm
-          >
+        <form [formGroup]="topoImageBatchUploadForm" lcForm>
           <p-stepper [(value)]="currentStep" class="basis-[50rem]">
             <p-step-list>
               <p-step [value]="1" [disabled]="currentStepInvalid">{{
@@ -40,14 +37,14 @@
                       class="responsive-button"
                       [loading]="loadingState === loadingStates.LOADING"
                       (onClick)="cancel()"
-                      />
+                    />
                     <p-button
                       [label]="t('Next')"
                       icon="pi pi-arrow-right"
                       iconPos="right"
                       class="responsive-button"
                       (onClick)="nextStep()"
-                      />
+                    />
                   </div>
                 </ng-template>
               </p-step-panel>
@@ -58,7 +55,7 @@
                       <div
                         class="flex flex-column gap-2 max-w-20rem"
                         lcControlGroup
-                        >
+                      >
                         <label class="form-label" for="type">{{
                           t("lineTypeLabel")
                         }}</label>
@@ -69,7 +66,7 @@
                           optionLabel="label"
                           optionValue="value"
                           lcFormControl
-                          >
+                        >
                           <ng-template let-selectedType #selectedItem>{{
                             selectedType.label
                           }}</ng-template>
@@ -80,7 +77,7 @@
                       <div
                         class="flex flex-column gap-2 max-w-20rem"
                         lcControlGroup
-                        >
+                      >
                         <label class="form-label" for="scale">{{
                           t("lineScaleLabel")
                         }}</label>
@@ -98,7 +95,7 @@
                       <div
                         class="flex flex-column gap-2 max-w-20rem"
                         lcControlGroup
-                        >
+                      >
                         <label class="form-label" for="fa-year">{{
                           t("lineFADateLabel")
                         }}</label>
@@ -121,7 +118,7 @@
                     <div
                       formArrayName="lines"
                       class="flex gap-2 flex-column mb-4"
-                      >
+                    >
                       <label class="form-label" for="scale">{{
                         t("linesLabel")
                       }}</label>
@@ -132,9 +129,9 @@
                             [formControlName]="i"
                             [grades]="grades"
                             [control]="lines.at(i)"
-                        [type]="
-                          topoImageBatchUploadForm.get('lines.type').value
-                        "
+                            [type]="
+                              topoImageBatchUploadForm.get('lines.type').value
+                            "
                             (delete)="removeLine(i)"
                             [deleteDisabled]="lines.length < 2"
                           ></lc-line-entry-batch-line-form>
@@ -153,7 +150,7 @@
                       styleClass="mt-4"
                       severity="warn"
                       [text]="t('displayUserGradesActive')"
-                      />
+                    />
                   }
                   <div class="flex pt-6 justify-content-between">
                     <div class="flex gap-2">
@@ -164,7 +161,7 @@
                         class="responsive-button"
                         [disabled]="loadingState === loadingStates.LOADING"
                         (onClick)="previousStep()"
-                        />
+                      />
                       <p-button
                         [label]="t('cancel')"
                         severity="secondary"
@@ -172,7 +169,7 @@
                         icon="pi pi-ban"
                         [loading]="loadingState === loadingStates.LOADING"
                         (onClick)="cancel()"
-                        />
+                      />
                     </div>
                     <p-button
                       [label]="t('saveLinesAndTopoImagesAndNext')"
@@ -181,7 +178,7 @@
                       [loading]="loadingState === loadingStates.LOADING"
                       class="responsive-button"
                       (onClick)="saveLinesAndTopoImages()"
-                      />
+                    />
                   </div>
                 </ng-template>
               </p-step-panel>
@@ -197,7 +194,7 @@
                       [options]="topoImages"
                       data-cy="line-dropdown"
                       placeholder="{{ t('topoImagePlaceholder') }}"
-                      >
+                    >
                       <ng-template #selectedItem>
                         <!--                    We show the placeholder as selected item as the actual image is displayed in the line path editor-->
                         {{ t("topoImagePlaceholder") }}
@@ -208,9 +205,10 @@
                     </p-select>
                   </div>
                   <lc-line-path-form
-                  [selectedTopoImageId]="
-                    topoImageBatchUploadForm.get('selectedTopoImage').value?.id
-                  "
+                    [selectedTopoImageId]="
+                      topoImageBatchUploadForm.get('selectedTopoImage').value
+                        ?.id
+                    "
                   ></lc-line-path-form>
                 </ng-template>
               </p-step-panel>

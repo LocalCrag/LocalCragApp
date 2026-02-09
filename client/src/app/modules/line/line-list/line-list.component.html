@@ -1,9 +1,7 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
   <p-dataView #dv [value]="lines">
     <ng-template #emptymessage>
-      @if (
-        lines?.length === 0 && loadingFirstPage !== loadingStates.LOADING
-        ) {
+      @if (lines?.length === 0 && loadingFirstPage !== loadingStates.LOADING) {
         <p-message
           severity="info"
           icon="pi pi-info-circle"
@@ -15,17 +13,15 @@
     <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
-        >
+      >
         @if (cragSlug && sectorSlug && areaSlug) {
-          <div
-            class="flex justify-content-start sm:justify-content-end gap-3"
-            >
+          <div class="flex justify-content-start sm:justify-content-end gap-3">
             <p-button
               label="{{ t('newLineButtonLabel') }}"
               icon="pi pi-plus"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-              areaSlug
-            }}/create-line"
+              routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+                areaSlug
+              }}/create-line"
               *isModerator="true"
               class="responsive-button"
             ></p-button>
@@ -34,7 +30,7 @@
 
         <div
           class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
-          >
+        >
           {{ t("orderByLabel") }}
           <div>
             <p-select
@@ -44,7 +40,7 @@
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
               [disabled]="loadingFirstPage === loadingStates.LOADING"
-              >
+            >
               <ng-template #selectedItem>
                 @if (orderKey) {
                   <div class="flex align-items-center gap-2">
@@ -65,12 +61,10 @@
               [disabled]="loadingFirstPage === loadingStates.LOADING"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0 ml-2"
-              >
+            >
               <ng-template #selectedItem>
                 @if (orderDirectionKey) {
-                  <div
-                    class="flex align-items-center gap-2"
-                    >
+                  <div class="flex align-items-center gap-2">
                     <div>{{ orderDirectionKey.label }}</div>
                   </div>
                 }
@@ -85,7 +79,7 @@
         </div>
         <div
           class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
-          >
+        >
           @if (availableScales.length > 2) {
             <div>
               {{ t("lineType") }}
@@ -96,7 +90,7 @@
                 optionLabel="label"
                 (onChange)="selectScale()"
                 styleClass="md:mb-0"
-                >
+              >
                 <ng-template #selectedItem2>
                   @if (scaleKey) {
                     <div class="flex align-items-center gap-2">
@@ -131,24 +125,24 @@
               [rangeMax]="gradeFilterRange[1]"
               [min]="minGradeValue"
               [max]="maxGradeValue"
-            [minLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[0]
-              )
-                | async
-                | translateSpecialGrades
-            "
-            [maxLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[1]
-              )
-                | async
-                | translateSpecialGrades
-            "
+              [minLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[0]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+              [maxLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[1]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
             ></lc-slider-labels>
             <p-slider
               [(ngModel)]="gradeFilterRange"
@@ -158,36 +152,33 @@
               [range]="true"
               [step]="1"
               (onSlideEnd)="reloadOnSlideEnd()"
-              />
+            />
           </div>
         }
       </div>
     </ng-template>
     <ng-template let-lines #list>
       @if (loadingFirstPage === loadingStates.LOADING) {
-        <lc-line-list-skeleton
-        ></lc-line-list-skeleton>
+        <lc-line-list-skeleton></lc-line-list-skeleton>
       }
       @if (loadingFirstPage !== loadingStates.LOADING) {
-        <div
-          class="grid grid-nogutter"
-          >
+        <div class="grid grid-nogutter">
           @for (line of lines; track line; let first = $first) {
             <a
               class="col-12 clickable-data-item line-link"
               [ngClass]="{ ticked: ticks.has(line.id) }"
-          routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
-            line.areaSlug
-          }}/{{ line.slug }}"
+              routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
+                line.areaSlug
+              }}/{{ line.slug }}"
               data-cy="line-list-item"
-              >
+            >
               <div
                 class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{
-              'border-top-1 surface-border': !first,
-              archived: line.archived,
-            }"
-                >
+                [ngClass]="{
+                  'border-top-1 surface-border': !first,
+                  archived: line.archived,
+                }"
+              >
                 @if (line.topoImages.length > 0) {
                   <lc-topo-image
                     class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
@@ -200,30 +191,34 @@
                     class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
                     [src]="'assets/placeholder.png'"
                     [alt]="line.name"
-                    />
+                  />
                 }
                 <div
                   class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
-                  >
+                >
                   <div
                     class="flex flex-column align-items-center sm:align-items-start gap-3 line-info-container"
-                    >
+                  >
                     <div
                       class="text-2xl text-900 line-name flex flex-column md:flex-row align-items-center justify-content-between"
-                      >
+                    >
                       <div>
                         <strong>{{ line.name }}</strong>
                         {{ line | lineGrade }}
                       </div>
                       <p-rating
-                    [ngModel]="
-                      displayUserRating ? line.userRating : line.authorRating
-                    "
+                        [ngModel]="
+                          displayUserRating
+                            ? line.userRating
+                            : line.authorRating
+                        "
                         [readonly]="true"
                         class="align-self-center md:align-self-end"
                       ></p-rating>
                     </div>
-                    <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
+                    <lc-line-bool-prop-list
+                      [line]="line"
+                    ></lc-line-bool-prop-list>
                     @if (line.description) {
                       <div
                         [innerHTML]="line.description | sanitizeHtml"
@@ -241,7 +236,7 @@
                           label="{{ line.videos[0].title }}"
                           (click)="openVideo($event, line)"
                           class="video-button"
-                          >
+                        >
                         </p-button>
                       }
                       <div class="flex-grow-1"></div>
@@ -291,10 +286,10 @@
         infiniteScroll
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-      [loading]="
-        loadingAdditionalPage === loadingStates.LOADING ||
-        loadingFirstPage === loadingStates.LOADING
-      "
+        [loading]="
+          loadingAdditionalPage === loadingStates.LOADING ||
+          loadingFirstPage === loadingStates.LOADING
+        "
       ></p-button>
     </div>
   }

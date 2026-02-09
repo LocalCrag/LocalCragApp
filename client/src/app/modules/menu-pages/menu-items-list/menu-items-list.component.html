@@ -8,161 +8,145 @@
             icon="pi pi-info-circle"
             class="m-4 mb-1 block"
             >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
-            >
-          </ng-template>
-          <ng-template #header>
-            <div class="flex flex-row justify-content-between">
-              <div class="flex align-items-center">
-                <h3>{{ t("topMenu") }}</h3>
-              </div>
-              <div class="flex justify-content-end gap-3">
-                <p-button
-                  [disabled]="loading === loadingStates.LOADING"
-                  label="{{ t('newMenuItemButtonLabel') }}"
-                  icon="pi pi-plus"
-                  routerLink="/menu-items/create-menu-item/top"
-                  class="responsive-button"
-                ></p-button>
-                <p-button
-                  label="{{ t('reorderMenuItemsButtonLabel') }}"
-                  icon="pi pi-sort"
-                  (click)="reorderMenuItems(positions.TOP)"
-                [disabled]="
-                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
-                "
-                  class="responsive-button"
-                ></p-button>
-              </div>
+          >
+        </ng-template>
+        <ng-template #header>
+          <div class="flex flex-row justify-content-between">
+            <div class="flex align-items-center">
+              <h3>{{ t("topMenu") }}</h3>
             </div>
-          </ng-template>
-          <ng-template let-menuItems #list>
-            @if (loading === loadingStates.LOADING) {
-              <lc-menu-list-skeleton
-              ></lc-menu-list-skeleton>
-            }
-            @if (loading !== loadingStates.LOADING) {
-              <div
-                class="grid grid-nogutter"
-                >
-                @for (menuItem of menuItems; track menuItem; let first = $first) {
-                  <div
-                    class="col-12"
-                    >
-                    <div
-                      class="flex flex-column xl:align-items-start p-4 gap-2"
-                      [ngClass]="{ 'border-top-1 surface-border': !first }"
-                      >
-                      <div class="text-md font-bold text-900 flex w-full">
-                        <div class="flex-grow-1 flex align-items-center">
-                          {{ menuItem.type | transloco }}
-                          @if (menuItem.type === menuItemTypes.MENU_PAGE) {
-                            <span
-                              >&nbsp;({{ menuItem.menuPage.title }})</span
-                              >
-                            }
-                            @if (menuItem.type === menuItemTypes.URL) {
-                              <span
-                                >&nbsp;({{ menuItem.title }})</span
-                                >
-                              }
-                            </div>
-                            <div class="flex flex-grow-0 gap-3">
-                              <p-button
-                                label="{{ t('editMenuItemButtonLabel') }}"
-                                icon="pi pi-file-edit"
-                                routerLink="/menu-items/{{ menuItem.id }}/edit"
-                                styleClass="pr-0"
-                                class="responsive-button"
-                                [text]="true"
-                              ></p-button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
-              </ng-template>
-            </p-dataView>
-
-            <p-dataView [value]="menuItemsBottom">
-              <ng-template #emptymessage>
-                <p-message
-                  severity="info"
-                  icon="pi pi-info-circle"
-                  class="m-4 mb-1 block"
-                  >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
-                  >
-                </ng-template>
-                <ng-template #header>
-                  <div class="flex flex-row justify-content-between">
-                    <div class="flex align-items-center">
-                      <h3>{{ t("bottomMenu") }}</h3>
-                    </div>
-                    <div class="flex justify-content-end gap-3">
-                      <p-button
-                        label="{{ t('newMenuItemButtonLabel') }}"
-                        icon="pi pi-plus"
-                        [disabled]="loading === loadingStates.LOADING"
-                        routerLink="/menu-items/create-menu-item/bottom"
-                        class="responsive-button"
-                      ></p-button>
-                      <p-button
-                        label="{{ t('reorderMenuItemsButtonLabel') }}"
-                        icon="pi pi-sort"
-                        (click)="reorderMenuItems(positions.BOTTOM)"
+            <div class="flex justify-content-end gap-3">
+              <p-button
+                [disabled]="loading === loadingStates.LOADING"
+                label="{{ t('newMenuItemButtonLabel') }}"
+                icon="pi pi-plus"
+                routerLink="/menu-items/create-menu-item/top"
+                class="responsive-button"
+              ></p-button>
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.TOP)"
                 [disabled]="
                   menuItemsTop?.length < 2 || loading === loadingStates.LOADING
                 "
-                        class="responsive-button"
-                      ></p-button>
-                    </div>
-                  </div>
-                </ng-template>
-                <ng-template let-menuItems #list>
-                  @if (loading === loadingStates.LOADING) {
-                    <lc-menu-list-skeleton
-                    ></lc-menu-list-skeleton>
-                  }
-                  @if (loading !== loadingStates.LOADING) {
-                    <div
-                      class="grid grid-nogutter"
-                      >
-                      @for (menuItem of menuItems; track menuItem; let first = $first) {
-                        <div
-                          class="col-12"
-                          >
-                          <div
-                            class="flex flex-column xl:align-items-start p-4 gap-2"
-                            [ngClass]="{ 'border-top-1 surface-border': !first }"
-                            >
-                            <div class="text-md font-bold text-900 flex w-full">
-                              <div class="flex-grow-1 flex align-items-center">
-                                {{ menuItem.type | transloco }}
-                                @if (menuItem.type === menuItemTypes.MENU_PAGE) {
-                                  <span
-                                    >&nbsp;({{ menuItem.menuPage.title }})</span
-                                    >
-                                  }
-                                </div>
-                                <div class="flex flex-grow-0 gap-3">
-                                  <p-button
-                                    label="{{ t('editMenuItemButtonLabel') }}"
-                                    icon="pi pi-file-edit"
-                                    routerLink="/menu-items/{{ menuItem.id }}/edit"
-                                    styleClass="pr-0"
-                                    class="responsive-button"
-                                    [text]="true"
-                                  ></p-button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                class="responsive-button"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-menuItems #list>
+          @if (loading === loadingStates.LOADING) {
+            <lc-menu-list-skeleton></lc-menu-list-skeleton>
+          }
+          @if (loading !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (menuItem of menuItems; track menuItem; let first = $first) {
+                <div class="col-12">
+                  <div
+                    class="flex flex-column xl:align-items-start p-4 gap-2"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <div class="text-md font-bold text-900 flex w-full">
+                      <div class="flex-grow-1 flex align-items-center">
+                        {{ menuItem.type | transloco }}
+                        @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                          <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                        }
+                        @if (menuItem.type === menuItemTypes.URL) {
+                          <span>&nbsp;({{ menuItem.title }})</span>
                         }
                       </div>
-                    }
-                  </ng-template>
-                </p-dataView>
-              </p-card>
+                      <div class="flex flex-grow-0 gap-3">
+                        <p-button
+                          label="{{ t('editMenuItemButtonLabel') }}"
+                          icon="pi pi-file-edit"
+                          routerLink="/menu-items/{{ menuItem.id }}/edit"
+                          styleClass="pr-0"
+                          class="responsive-button"
+                          [text]="true"
+                        ></p-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
-          </ng-container>
+          }
+        </ng-template>
+      </p-dataView>
+
+      <p-dataView [value]="menuItemsBottom">
+        <ng-template #emptymessage>
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            class="m-4 mb-1 block"
+            >{{ t("noMenuItemsFoundEmptyMessage") }}</p-message
+          >
+        </ng-template>
+        <ng-template #header>
+          <div class="flex flex-row justify-content-between">
+            <div class="flex align-items-center">
+              <h3>{{ t("bottomMenu") }}</h3>
+            </div>
+            <div class="flex justify-content-end gap-3">
+              <p-button
+                label="{{ t('newMenuItemButtonLabel') }}"
+                icon="pi pi-plus"
+                [disabled]="loading === loadingStates.LOADING"
+                routerLink="/menu-items/create-menu-item/bottom"
+                class="responsive-button"
+              ></p-button>
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.BOTTOM)"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
+                class="responsive-button"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-menuItems #list>
+          @if (loading === loadingStates.LOADING) {
+            <lc-menu-list-skeleton></lc-menu-list-skeleton>
+          }
+          @if (loading !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (menuItem of menuItems; track menuItem; let first = $first) {
+                <div class="col-12">
+                  <div
+                    class="flex flex-column xl:align-items-start p-4 gap-2"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <div class="text-md font-bold text-900 flex w-full">
+                      <div class="flex-grow-1 flex align-items-center">
+                        {{ menuItem.type | transloco }}
+                        @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                          <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                        }
+                      </div>
+                      <div class="flex flex-grow-0 gap-3">
+                        <p-button
+                          label="{{ t('editMenuItemButtonLabel') }}"
+                          icon="pi pi-file-edit"
+                          routerLink="/menu-items/{{ menuItem.id }}/edit"
+                          styleClass="pr-0"
+                          class="responsive-button"
+                          [text]="true"
+                        ></p-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </ng-template>
+      </p-dataView>
+    </p-card>
+  </div>
+</ng-container>

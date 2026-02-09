@@ -21,7 +21,7 @@
               placeholder="{{ t('areaNamePlaceholder') }}"
               lcFormControl
               data-cy="area-form-name"
-              />
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -41,7 +41,7 @@
               placeholder="{{ t('areaShortDescriptionPlaceholder') }}"
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-              >
+            >
               <ng-template #header>
                 <span class="ql-formats">
                   <button
@@ -83,7 +83,7 @@
               data-cy="area-form-description"
               [style]="{ height: '200px' }"
               [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-              >
+            >
               <ng-template #header>
                 <span class="ql-formats">
                   <button
@@ -145,7 +145,7 @@
               lcFormControl
               formControlName="portraitImage"
               data-cy="area-form-portraitImage"
-              >
+            >
             </lc-single-image-upload>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -194,7 +194,7 @@
             <label
               for="defaultBoulderScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-              >
+            >
               {{ "BOULDER" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -210,7 +210,7 @@
             <label
               for="defaultSportScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-              >
+            >
               {{ "SPORT" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -226,7 +226,7 @@
             <label
               for="defaultTradScale"
               class="xl:col-1 md:col-2 sm:col-3 col-4"
-              >
+            >
               {{ "TRAD" | transloco }}:
             </label>
             <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -240,27 +240,18 @@
               ></p-select>
             </div>
           </div>
-          @if (parentSecret && !areaForm.get('secret').value) {
-            <p-message
-              severity="warn"
-              icon="pi pi-info-circle"
-              >
+          @if (parentSecret && !areaForm.get("secret").value) {
+            <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicAreaWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentClosed && !areaForm.get('closed').value) {
-            <p-message
-              severity="warn"
-              icon="pi pi-info-circle"
-              >
+          @if (parentClosed && !areaForm.get("closed").value) {
+            <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("openingAClosedAreaWillSetParentsToOpen") }}
             </p-message>
           }
-          @if (areaForm.get('closed').value) {
-            <div
-              class="flex flex-column gap-2"
-              lcControlGroup
-              >
+          @if (areaForm.get("closed").value) {
+            <div class="flex flex-column gap-2" lcControlGroup>
               <label class="form-label" for="closedReason">{{
                 t("closedReasonLabel")
               }}</label>
@@ -271,7 +262,7 @@
                 formControlName="closedReason"
                 placeholder="{{ t('closedReasonPlaceholder') }}"
                 lcFormControl
-                />
+              />
             </div>
           }
         </form>

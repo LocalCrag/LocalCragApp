@@ -18,7 +18,7 @@
             placeholder="{{ t('cragNamePlaceholder') }}"
             lcFormControl
             data-cy="crag-form-name"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -39,7 +39,7 @@
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="crag-form-shortDescription"
-            >
+          >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -82,7 +82,7 @@
             data-cy="crag-form-description"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+          >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -149,7 +149,7 @@
             data-cy="crag-form-rules"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+          >
             <ng-template #header2>
               <span class="ql-formats">
                 <button
@@ -207,7 +207,7 @@
             id="portrait-image"
             formControlName="portraitImage"
             data-cy="crag-form-portraitImage"
-            >
+          >
           </lc-single-image-upload>
         </div>
 
@@ -225,10 +225,7 @@
         </div>
 
         @if (crag?.slug !== environment.skippedSlug) {
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            >
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("cragOptionsLabel") }}</label>
             <div class="flex flex-column gap-2">
               <div class="flex">
@@ -259,11 +256,8 @@
           </div>
         }
 
-        @if (cragForm.get('closed').value) {
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            >
+        @if (cragForm.get("closed").value) {
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="closedReason">{{
               t("closedReasonLabel")
             }}</label>
@@ -274,7 +268,7 @@
               formControlName="closedReason"
               placeholder="{{ t('closedReasonPlaceholder') }}"
               lcFormControl
-              />
+            />
           </div>
         }
 
@@ -284,7 +278,7 @@
           <label
             for="defaultBoulderScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+          >
             {{ "BOULDER" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -301,7 +295,7 @@
           <label
             for="defaultSportScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+          >
             {{ "SPORT" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">
@@ -318,7 +312,7 @@
           <label
             for="defaultTradScale"
             class="xl:col-1 md:col-2 sm:col-3 col-4"
-            >
+          >
             {{ "TRAD" | transloco }}:
           </label>
           <div class="xl:col-11 md:col-10 sm:col-9 col-8">

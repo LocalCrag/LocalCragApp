@@ -14,7 +14,7 @@
             placeholder="{{ t('regionNamePlaceholder') }}"
             lcFormControl
             data-cy="region-form-name"
-            />
+          />
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
@@ -35,7 +35,7 @@
             [modules]="quillModules"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+          >
             <ng-template #header>
               <span class="ql-formats">
                 <button
@@ -101,7 +101,7 @@
             [modules]="quillModules"
             [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            >
+          >
             <ng-template #header>
               <span class="ql-formats">
                 <button

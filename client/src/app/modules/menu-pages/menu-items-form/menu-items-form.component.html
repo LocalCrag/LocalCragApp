@@ -4,7 +4,7 @@
       header="{{
         editMode ? t('editMenuItemTitle') : t('createMenuItemTitle')
       }}"
-      >
+    >
       @if (!editMode) {
         <p class="mt-0">
           {{ t("createMenuItemDescription") }}
@@ -20,7 +20,7 @@
               [options]="types"
               lcFormControl
               id="type"
-              >
+            >
               <ng-template let-type #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ type | transloco }}</div>
@@ -43,7 +43,7 @@
               formControlName="position"
               [options]="positions"
               lcFormControl
-              >
+            >
               <ng-template let-position #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ position | transloco }}</div>
@@ -66,7 +66,7 @@
               formControlName="menuPage"
               [options]="menuPages"
               lcFormControl
-              >
+            >
               <ng-template let-menuPage #item2>
                 <div class="flex align-items-center gap-2">
                   <div>{{ menuPage.title }}</div>
@@ -87,7 +87,7 @@
               id="icon"
               [options]="icons"
               lcFormControl
-              >
+            >
               <ng-template let-icon #item3>
                 <div class="flex align-items-center gap-2">
                   <i class="pi" [ngClass]="icon"></i>
@@ -112,7 +112,7 @@
               formControlName="title"
               placeholder="{{ t('titlePlaceholder') }}"
               lcFormControl
-              />
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               t("required")
             }}</small>
@@ -129,7 +129,7 @@
               formControlName="url"
               placeholder="{{ t('urlPlaceholder') }}"
               lcFormControl
-              />
+            />
             <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
               t("invalidHttpUrl")
             }}</small>
