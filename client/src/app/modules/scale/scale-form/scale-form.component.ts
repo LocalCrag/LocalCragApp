@@ -31,7 +31,6 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
@@ -385,22 +384,20 @@ export class ScaleFormComponent implements OnInit {
   }
 
   confirmDeleteScale(event: Event) {
-    this.translocoService.load(environment.language).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('scale.scaleForm.confirmDeleteMessage'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('scale.scaleForm.acceptConfirmDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('scale.scaleForm.cancel'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: this.deleteScale.bind(this),
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('scale.scaleForm.confirmDeleteMessage'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('scale.scaleForm.acceptConfirmDelete'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('scale.scaleForm.cancel'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: this.deleteScale.bind(this),
     });
   }
 

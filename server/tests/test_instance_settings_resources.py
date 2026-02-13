@@ -66,6 +66,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "defaultStartingPosition": StartingPositionEnum.SIT.value,
         "rankingPastWeeks": 12,
         "disableFAInAscents": True,
+        "language": "de",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -94,6 +95,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["defaultStartingPosition"] == StartingPositionEnum.SIT.value
     assert res["rankingPastWeeks"] == 12
     assert res["disableFAInAscents"] is True
+    assert res["language"] == "de"
 
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
@@ -127,6 +129,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "defaultStartingPosition": StartingPositionEnum.STAND.value,
         "rankingPastWeeks": None,
         "disableFAInAscents": False,
+        "language": "en",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -163,6 +166,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "defaultStartingPosition": StartingPositionEnum.STAND.value,
         "rankingPastWeeks": 4,
         "disableFAInAscents": True,
+        "language": "en",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json

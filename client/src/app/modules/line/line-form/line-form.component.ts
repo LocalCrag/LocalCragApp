@@ -26,7 +26,6 @@ import { ConfirmationService } from 'primeng/api';
 import { catchError, map, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
@@ -578,22 +577,18 @@ export class LineFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteLine(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('line.askReallyWantToDeleteLine'),
-        ),
-        acceptLabel: this.translocoService.translate(marker('line.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('line.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteLine();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('line.askReallyWantToDeleteLine'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('line.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(marker('line.noDontDelete')),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteLine();
+      },
     });
   }
 

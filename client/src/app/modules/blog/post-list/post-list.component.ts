@@ -5,7 +5,6 @@ import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
@@ -79,10 +78,7 @@ export class PostListComponent implements OnInit {
    * Loads new data.
    */
   refreshData() {
-    forkJoin([
-      this.postsService.getPosts(),
-      this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([posts]) => {
+    forkJoin([this.postsService.getPosts()]).subscribe(([posts]) => {
       this.posts = posts;
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [

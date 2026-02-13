@@ -15,7 +15,6 @@ import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
@@ -181,22 +180,20 @@ export class PostFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeletePost(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('posts.askReallyWantToDeletePost'),
-        ),
-        acceptLabel: this.translocoService.translate(marker('posts.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('posts.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deletePost();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('posts.askReallyWantToDeletePost'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('posts.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('posts.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deletePost();
+      },
     });
   }
 
