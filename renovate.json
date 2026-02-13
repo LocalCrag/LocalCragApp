@@ -102,7 +102,7 @@
   "ignoreDeps": [
     "postgres"
   ],
-  "rangeStrategy": "pin",
+  "postUpdateOptions": ["npmInstallTwice"],
   "schedule": ["every monday"],
   "prHourlyLimit": 0
 }
