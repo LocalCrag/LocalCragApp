@@ -102,6 +102,7 @@
   "ignoreDeps": [
     "postgres"
   ],
+  "rangeStrategy": "pin",
   "schedule": ["every monday"],
   "prHourlyLimit": 0
 }
