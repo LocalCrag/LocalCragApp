@@ -43,12 +43,6 @@ spec:
                     secretKeyRef:
                       name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_BUCKET" .Values.backups.target.secretKeys.bucketKey | quote }}
-                - name: BACKUP_S3_REGION
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "localcrag.secrets.name" . | quote }}
-                      key: {{ default "BACKUP_S3_REGION" .Values.backups.target.secretKeys.regionKey | quote }}
-                      optional: true
                 - name: BACKUP_S3_PREFIX
                   valueFrom:
                     secretKeyRef:

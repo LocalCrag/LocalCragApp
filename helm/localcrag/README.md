@@ -144,7 +144,6 @@ stringData:
   # Backup S3 destination (optional - only needed if backups.enabled=true)
   BACKUP_S3_ENDPOINT: "https://s3.example.com"     # Your S3-compatible endpoint
   BACKUP_S3_BUCKET: "localcrag-backups"
-  BACKUP_S3_REGION: "eu-central-1"                 # Optional (e.g., eu-central-1 for Frankfurt)
   BACKUP_S3_PREFIX: "localcrag"                    # Optional
   BACKUP_S3_ACCESS_KEY: "changeme"
   BACKUP_S3_SECRET_KEY: "changeme"
@@ -212,11 +211,10 @@ Required keys in that Secret when backups are enabled:
 - `BACKUP_S3_BUCKET` (required)
 - `BACKUP_S3_ACCESS_KEY` (required)
 - `BACKUP_S3_SECRET_KEY` (required)
+- `BACKUP_S3_ENDPOINT` (S3-compatible endpoint URL)
 
 Optional keys:
 
-- `BACKUP_S3_ENDPOINT` (S3-compatible endpoint URL)
-- `BACKUP_S3_REGION` (region for your S3 provider)
 - `BACKUP_S3_PREFIX` (path prefix within the bucket)
 
 You can change those key names via `backups.target.secretKeys.*`.
@@ -235,7 +233,6 @@ stringData:
 
   BACKUP_S3_ENDPOINT: "https://s3.example.com"       # Your S3-compatible endpoint
   BACKUP_S3_BUCKET: "localcrag-backups"
-  BACKUP_S3_REGION: "eu-central-1"
   BACKUP_S3_PREFIX: "localcrag"
   BACKUP_S3_ACCESS_KEY: "..."
   BACKUP_S3_SECRET_KEY: "..."
