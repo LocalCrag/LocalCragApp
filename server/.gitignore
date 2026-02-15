@@ -6,7 +6,6 @@ uploads/*
 !uploads/tmp/.gitkeep
 /src/uploads/
 .idea/*
-!.idea/runConfigurations
 .coverage
 __pycache__/
 /src/config/alembic.cfg
