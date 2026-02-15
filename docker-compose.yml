@@ -76,7 +76,6 @@ services:
       SMTP_PORT: ${SMTP_PORT}
       SMTP_TYPE: ${SMTP_TYPE}
       FRONTEND_HOST: ${FRONTEND_HOST}
-      CRON_ACCESS_TOKEN: ${CRON_ACCESS_TOKEN}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5000/api/health" ]
       interval: 30s
