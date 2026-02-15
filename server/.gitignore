@@ -1,11 +1,11 @@
 src/config/dev.cfg
 src/config/test.cfg
+src/config/e2e.cfg
 uploads/*
 !uploads/.gitkeep
 !uploads/tmp/.gitkeep
 /src/uploads/
 .idea/*
-!.idea/runConfigurations
 .coverage
 __pycache__/
 /src/config/alembic.cfg
