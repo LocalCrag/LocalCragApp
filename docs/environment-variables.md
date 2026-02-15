@@ -23,7 +23,6 @@ This document provides an overview of the environment variables used in the serv
 | `FRONTEND_HOST`           | `string` (e.g., `http://localhost:4200/`)                 | URL of the frontend application.                                                       |
 | `SENTRY_DSN`              | `string`                                                  | Data Source Name (DSN) for Sentry error tracking.                                      |
 | `SENTRY_ENABLED`          | `boolean` (`true`, `false`)                               | Flag to enable or disable Sentry integration.                                          |
-| `CRON_ACCESS_TOKEN`       | `string`                                                  | Access token for securing cron job endpoints.                                          |
 | `SUPERADMIN_EMAIL`        | `string` (e.g., `admin@example.com`)                      | Email address of the initial superadmin user.                                          |
 | `SUPERADMIN_FIRSTNAME`    | `string`                                                  | First name of the initial superadmin user.                                             |
 | `SUPERADMIN_LASTNAME`     | `string`                                                  | Last name of the initial superadmin user.                                              |
