@@ -146,7 +146,6 @@ backups:
     secretKeys:
       endpointKey: BACKUP_S3_ENDPOINT
       bucketKey: BACKUP_S3_BUCKET
-      regionKey: BACKUP_S3_REGION
       prefixKey: BACKUP_S3_PREFIX
       accessKeyKey: BACKUP_S3_ACCESS_KEY
       secretKeyKey: BACKUP_S3_SECRET_KEY
