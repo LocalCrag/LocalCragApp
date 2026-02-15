@@ -1,5 +1,6 @@
 src/config/dev.cfg
 src/config/test.cfg
+src/config/test-e2e.cfg
 uploads/*
 !uploads/.gitkeep
 !uploads/tmp/.gitkeep

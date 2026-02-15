@@ -4,7 +4,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:cypress-test-backend": "cd ../server/src && export PYTHONPATH=. && export LOCALCRAG_CONFIG=config/test-ci-e2e.cfg && pipenv run flask run",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -12,6 +11,9 @@
     "i18n:extract": "transloco-keys-manager extract -d \"\" -l de -R",
     "i18n:find": "transloco-keys-manager find",
     "cypress": "cypress open",
+    "cypress:run-test-backend": "cd ../server/src && export PYTHONPATH=. && export LOCALCRAG_CONFIG=config/test-ci-e2e.cfg && pipenv run flask run",
+    "e2e:headless": "cd ../scripts && bash run-cypress-with-dependencies.sh",
+    "e2e": "cd ../scripts && CYPRESS_MODE=open bash run-cypress-with-dependencies.sh",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org localcrag --project localcrag-client ./dist/client && sentry-cli sourcemaps upload --org localcrag --project localcrag-client ./dist/client",
     "lint": "ng lint"
   },
