@@ -37,7 +37,6 @@ spec:
                     secretKeyRef:
                       name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "BACKUP_S3_ENDPOINT" .Values.backups.target.secretKeys.endpointKey | quote }}
-                      optional: true
                 - name: BACKUP_S3_BUCKET
                   valueFrom:
                     secretKeyRef:
@@ -100,6 +99,7 @@ spec:
                   set -euo pipefail
 
                   # Validate all required variables
+                  : "${BACKUP_S3_ENDPOINT:?BACKUP_S3_ENDPOINT is required}"
                   : "${BACKUP_S3_BUCKET:?BACKUP_S3_BUCKET is required}"
                   : "${BACKUP_S3_PREFIX:?BACKUP_S3_PREFIX is required.}"
                   : "${DST_ACCESS_KEY:?BACKUP_S3_ACCESS_KEY is required}"
@@ -116,6 +116,7 @@ spec:
                   PREFIX="${BACKUP_S3_PREFIX#/}"
                   PREFIX="${PREFIX%/}"
 
+                  echo "Backup target endpoint: ${BACKUP_S3_ENDPOINT}"
                   echo "Backup target bucket: ${BACKUP_S3_BUCKET}"
                   echo "Backup target prefix: ${PREFIX}"
 
@@ -138,7 +139,7 @@ spec:
                     apt-get install -y --no-install-recommends curl ca-certificates coreutils
                     rm -rf /var/lib/apt/lists/*
                   fi
-                  
+
                   # Ensure mc is available
                   if ! command -v mc >/dev/null 2>&1; then
                     echo "mc not found; downloading..."
@@ -152,19 +153,7 @@ spec:
                     chmod +x /usr/local/bin/mc
                   fi
 
-                  # Normalize destination endpoint to API endpoint (bucket-style -> api-style)
-                  DST_ENDPOINT="${BACKUP_S3_ENDPOINT:-}"
-                  if [ -z "${DST_ENDPOINT}" ]; then
-                    DST_ENDPOINT="https://s3.amazonaws.com"
-                  else
-                    case "${DST_ENDPOINT}" in
-                      https://*.s3.*) DST_ENDPOINT="https://s3.${DST_ENDPOINT#https://*.s3.}" ;;
-                      http://*.s3.*)  DST_ENDPOINT="http://s3.${DST_ENDPOINT#http://*.s3.}" ;;
-                    esac
-                    case "${DST_ENDPOINT}" in
-                      */) DST_ENDPOINT="${DST_ENDPOINT%/}" ;;
-                    esac
-                  fi
+                  DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
 
                   echo "Configuring mc aliases..."
                   mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}"
@@ -191,11 +180,11 @@ spec:
                   echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under dst/${BACKUP_S3_BUCKET}/${PREFIX}/"
 
                   RETENTION_BASE="dst/${BACKUP_S3_BUCKET}/${PREFIX}"
-                  
+
                   # List all snapshot directories - mc ls shows directories with trailing /
                   # Parse output to get just directory names (last column, remove trailing /)
                   mc ls "${RETENTION_BASE}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort > /tmp/snapshots.txt || true
-                  
+
                   # Debug: show what we found
                   if [ -s /tmp/snapshots.txt ]; then
                     echo "DEBUG: Snapshot directories found:"
@@ -204,17 +193,17 @@ spec:
                     echo "DEBUG: No directories found. Raw mc ls output:"
                     mc ls "${RETENTION_BASE}/" 2>&1 || echo "(mc ls failed)"
                   fi
-                  
+
                   if [ ! -s /tmp/snapshots.txt ]; then
                     echo "No existing snapshots found."
                   else
                     SNAPSHOT_COUNT=$(wc -l < /tmp/snapshots.txt | tr -d ' ')
                     echo "Found ${SNAPSHOT_COUNT} snapshot(s)."
-                    
+
                     if [ "${SNAPSHOT_COUNT}" -gt "${BACKUP_RETENTION_KEEP}" ]; then
                       DELETE_COUNT=$((SNAPSHOT_COUNT - BACKUP_RETENTION_KEEP))
                       echo "Will delete ${DELETE_COUNT} old snapshot(s)."
-                      
+
                       # Delete the oldest snapshots (first N lines after sorting)
                       head -n "${DELETE_COUNT}" /tmp/snapshots.txt | while IFS= read -r old; do
                         [ -z "${old}" ] && continue
@@ -225,7 +214,7 @@ spec:
                       echo "Retention threshold not exceeded (keeping all ${SNAPSHOT_COUNT} snapshots)."
                     fi
                   fi
-                  
+
                   rm -f /tmp/snapshots.txt
 
                   echo "Bundled backup complete."
