@@ -27,4 +27,17 @@ user_registered_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "New user",
     },
+    "it": {
+        "title": "",
+        "new_user_text": "",
+        "LOCALCRAG": "",
+        "user_count_text": "",
+        "hello": "",
+        "view_user": "",
+        "copyright": "",
+        "hint": "",
+        "thanks": "",
+        "greetings": "",
+        "subject": "",
+    },
 }

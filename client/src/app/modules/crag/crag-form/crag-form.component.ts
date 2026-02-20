@@ -273,22 +273,18 @@ export class CragFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteCrag(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('crag.askReallyWantToDeleteCrag'),
-        ),
-        acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('crag.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteCrag();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('crag.askReallyWantToDeleteCrag'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(marker('crag.noDontDelete')),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteCrag();
+      },
     });
   }
 

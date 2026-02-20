@@ -76,7 +76,6 @@ export class CragComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, isModerator]) => {
           this.crag = crag;
           this.store

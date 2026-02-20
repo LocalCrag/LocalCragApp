@@ -10,7 +10,6 @@ import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -56,7 +55,6 @@ export class RegionComponent implements OnInit {
         }),
       ),
       this.store.pipe(select(selectIsLoggedIn), take(1)),
-      this.translocoService.load(`${environment.language}`),
     ]).subscribe(([region, isLoggedIn]) => {
       this.region = region;
       this.store.select(selectInstanceName).subscribe((instanceName) => {

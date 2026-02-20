@@ -1,11 +1,12 @@
 from extensions import db
 from models.account_settings import AccountSettings
+from models.instance_settings import InstanceSettings
 from models.user import User
 from util.email import send_create_user_email
 from util.password_util import generate_password
 
 
-def create_user(user_data, created_by=None, skip_account_settings=False) -> User:
+def create_user(user_data, created_by=None) -> User:
     """
     Creates a new user.
     @param user_data: User data as parsed from request.
@@ -20,17 +21,16 @@ def create_user(user_data, created_by=None, skip_account_settings=False) -> User
     new_user.firstname = user_data["firstname"]
     new_user.lastname = user_data["lastname"]
     new_user.email = user_data["email"].lower()
-    new_user.language = "de"
     new_user.password = User.generate_hash(password)
     if created_by:
         new_user.created_by_id = created_by.id
 
     db.session.add(new_user)
     db.session.flush()  # ensure ID available
-    if not skip_account_settings:
-        account_settings = AccountSettings()
-        account_settings.user_id = new_user.id
-        db.session.add(account_settings)
+    account_settings = AccountSettings()
+    account_settings.user_id = new_user.id
+    account_settings.language = InstanceSettings.return_it().language
+    db.session.add(account_settings)
     db.session.commit()
 
     send_create_user_email(password, new_user)
