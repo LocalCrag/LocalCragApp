@@ -1,35 +1,40 @@
 # LocalCrag
 
-Deploy your local alternative to the well known online climbing guide platforms with LocalCrag to keep control over all data in the crags you are developing!
+Full-featured OSS climbing topo platform that keeps the data in the hand of the locals.
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## The idea
+## Background
 
-As developers of climbing crags you invest hours and hours of work in cleaning lines and managing the politics behind providing public access to the areas you love. A central piece of this work is also to publish information about the areas - usually by providing a paper guidebook or some form of online guide. While developing the Eifel bouldering areas our approach was to use a Wordpress site for publishing information. Like other core developers of areas we know well (e.g. Pfalz) we opted against publishing on well known big platforms as we don't want to give our data out of our hands. Because of brittle access situations we wanted to be in 100% control of all the detailed information that is the fruit of our year long engagement in cleaning all the blocks in the forest. We wanted to be able to act fast if certain events require to restrict information. Corporate interests of big platforms stand in the way of this flexibility. And also, we liked the idea of having our information accessible under our own domain.
+As developers of climbing crags you invest hours and hours of work in cleaning lines and managing the politics behind providing public access to the areas you love. 
+A central piece of this work is also to publish information about the areas - usually by providing a paper guidebook or some form of online guide. 
+While developing the Eifel bouldering areas our approach was to use a WordPress site for publishing information. 
+Like other developers of areas we know well, we opted against publishing on one of the big platforms. We didn't want to give our data out of our hands and basically gift it to the big platforms to make a profit of.
+Because of brittle access situations we wanted to be in 100% control of all the detailed information that is the fruit of our year-long engagement in cleaning all the blocks in the forest. 
+We wanted to be able to act fast if certain events require to restrict information. Corporate interests of big platforms stand in the way of this flexibility. 
+And also, we liked the idea of having our information accessible under our own domain.
 
-This was all perfectly possible by just using Wordpress or some forum software like it is done in other areas. However having all the nice features of a modern topo app is very intriguing. This is why I decided to create LocalCrag. A topo webapp to manage your local climbing area information.
+This was all perfectly possible by just using WordPress or some forum software like it is done in other areas. 
+However, having all the nice features of a modern topo app is very intriguing. 
+This is why I decided to create LocalCrag. A topo webapp to manage your local climbing area information.
 
 ## Core features
 
 - **Self-hosted:** Keep full control over all the data
 - **Online topo:** Publish detailed information about crags, sectors, areas and lines 
 - **Line editor:** Draw lines for boulders and routes on images with a simple click-editor
-- **Ticklist:** Track your ascends and create todo lists
+- **Tick list:** Track your ascends and create todo lists
 - **Statistics:** Numerous statistics for lines and ascends
 - **News blog:** Publish news for your crags in a blog
-- **Multi language:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibility to run your instances in multiple languages.
+- **Multilanguage:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibility to run your instances in multiple languages.
 - ... more to come! We have a lot of ideas. We are open to your ideas and accept pull requests.
 
-## Live example
+## Example instances
 
-Visit https://gleesbouldering.com for an example of a LocalCrag instance. This is the Eifel bouldering area, which was the first area to be developed with LocalCrag.
-
-### Staging instances
-
-The newest features are always available on our staging instances:
-- [LocalCrag outdoor](https://next-outdoor.localcrag.cloud/)
-- [LocalCrag indoor](https://next-indoor.localcrag.cloud/)
+- [gleesbouldering.com](https://gleesbouldering.com/) - The OG LocalCrag instance showcasing undisputably the best bouldering area in the world - the Eifel in Germany
+- [nahetalbouldering.com](https://nahetalbouldering.com/) - The lesser known Nahetal sandstone bouldering area
+- [goewalddb.de](https://goewalldb.de/) - Bouldering in the Göttinger Forest - HDWG!
+- [mainbloc.de](https://topo.mainbloc.de/) - Taunus bouldering!
 
 ## Screenshots
 
@@ -56,7 +61,7 @@ If you want to use LocalCrag for your own crag, either deploy [via docker](./doc
 
 ## Contributing
 
-LocalCrag is an open-source project and we welcome contributions from the community.
+LocalCrag is an open-source project, and we welcome contributions from the community.
 
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcome.
 
