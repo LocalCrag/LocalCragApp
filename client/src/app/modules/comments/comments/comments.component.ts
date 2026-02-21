@@ -22,6 +22,7 @@ import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CommentComponent } from '../comment/comment.component';
 import { CommentsContextService } from '../comments-context.service';
+import { CommentsSkeletonComponent } from '../comments-skeleton/comments-skeleton.component';
 
 @Component({
   selector: 'lc-comments',
@@ -34,6 +35,7 @@ import { CommentsContextService } from '../comments-context.service';
     Message,
     TranslocoDirective,
     CommentComponent,
+    CommentsSkeletonComponent,
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
