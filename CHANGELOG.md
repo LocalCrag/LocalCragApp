@@ -1,3 +1,13 @@
+## [1.25.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.3...v1.25.4) (2026-02-21)
+
+
+### Bug Fixes
+
+* **comments:** add loading skeleton for comments in correct shape ([#970](https://github.com/LocalCrag/LocalCragApp/issues/970)) ([e1fc96c](https://github.com/LocalCrag/LocalCragApp/commit/e1fc96c8b01f94abb8f9064ccd3831b58fba46c6)), closes [#919](https://github.com/LocalCrag/LocalCragApp/issues/919)
+* **core:** don't render empty system group label in user menu for non moderators ([#972](https://github.com/LocalCrag/LocalCragApp/issues/972)) ([71735ef](https://github.com/LocalCrag/LocalCragApp/commit/71735ef9a1563fd182d890a22d9041a5514295f7)), closes [#904](https://github.com/LocalCrag/LocalCragApp/issues/904)
+* **topo:** fix broken label of starting position select in line form ([#969](https://github.com/LocalCrag/LocalCragApp/issues/969)) ([196f327](https://github.com/LocalCrag/LocalCragApp/commit/196f327b764ff2d8ef49d9b4d8486464348fb6fd)), closes [#962](https://github.com/LocalCrag/LocalCragApp/issues/962)
+* **topo:** fix incorrect rendering of user grades in line detail view ([#973](https://github.com/LocalCrag/LocalCragApp/issues/973)) ([16a0f15](https://github.com/LocalCrag/LocalCragApp/commit/16a0f156bb1471f3670fe00e7e39ffb92a6c9caf)), closes [#874](https://github.com/LocalCrag/LocalCragApp/issues/874)
+
 ## [1.25.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.2...v1.25.3) (2026-02-09)
 
 
