@@ -69,6 +69,7 @@ export class LineInfoComponent implements OnInit {
   public ticks: Set<string>;
   public todos: Set<string>;
   public displayUserRating?: boolean = undefined;
+  public displayUserGrades?: boolean = undefined;
 
   private lineSlug: string;
   private destroyRef = inject(DestroyRef);
@@ -104,6 +105,7 @@ export class LineInfoComponent implements OnInit {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
+        this.displayUserGrades = instanceSettings.displayUserGrades;
       });
   }
 
