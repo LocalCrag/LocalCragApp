@@ -65,7 +65,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: npm run start:cypress-test-backend, npm run start
+          start: npm run cypress:run-test-backend, npm run start
           wait-on: 'http://127.0.0.1:5000/api/health, http://localhost:4200'
           record: true
           parallel: true # Runs test in parallel using settings above

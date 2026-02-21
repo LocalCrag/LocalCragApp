@@ -36,7 +36,6 @@
   - Add the postgres uuid extension `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
   - Add the postgres fuzzystrmatch extension `CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;`
   - Run initial database migrations `pipenv run flask db upgrade`
-  - Run the database setup script `src/util/scripts/database_setup.py`
   - The setup script will add some initial data and create your superadmin user. You should receive an email at the configured superadmin mail containing your password.
 - If everything worked until here, you should be ready to run the server:
   - Set `PYTHONPATH` to the src directory
