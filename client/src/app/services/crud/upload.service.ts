@@ -53,8 +53,8 @@ export class UploadService {
     const formData = new FormData();
     formData.append('upload', file);
     return this.http
-      .post(this.api.uploader.uploadFile(), formData)
-      .pipe(map(File.deserialize));
+      .post<File[]>(this.api.uploader.uploadFile(), formData)
+      .pipe(map((response: File[]) => File.deserialize(response[0])));
   }
 
   /**

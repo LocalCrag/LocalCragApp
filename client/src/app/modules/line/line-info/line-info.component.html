@@ -45,7 +45,7 @@
           ></div>
         }
         <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
-        @if (line.ascentCount > 0 && displayUserRating === false) {
+        @if (line.ascentCount > 0 && displayUserGrades === true) {
           <div>
             {{ t("userGrade") }}:
             {{

@@ -36,45 +36,43 @@
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <lc-menu-list-skeleton
-            *ngIf="loading === loadingStates.LOADING"
-          ></lc-menu-list-skeleton>
-          <div
-            class="grid grid-nogutter"
-            *ngIf="loading !== loadingStates.LOADING"
-          >
-            <div
-              class="col-12"
-              *ngFor="let menuItem of menuItems; let first = first"
-            >
-              <div
-                class="flex flex-column xl:align-items-start p-4 gap-2"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
-              >
-                <div class="text-md font-bold text-900 flex w-full">
-                  <div class="flex-grow-1 flex align-items-center">
-                    {{ menuItem.type | transloco }}
-                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE"
-                      >&nbsp;({{ menuItem.menuPage.title }})</span
-                    >
-                    <span *ngIf="menuItem.type === menuItemTypes.URL"
-                      >&nbsp;({{ menuItem.title }})</span
-                    >
-                  </div>
-                  <div class="flex flex-grow-0 gap-3">
-                    <p-button
-                      label="{{ t('editMenuItemButtonLabel') }}"
-                      icon="pi pi-file-edit"
-                      routerLink="/menu-items/{{ menuItem.id }}/edit"
-                      styleClass="pr-0"
-                      class="responsive-button"
-                      [text]="true"
-                    ></p-button>
+          @if (loading === loadingStates.LOADING) {
+            <lc-menu-list-skeleton></lc-menu-list-skeleton>
+          }
+          @if (loading !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (menuItem of menuItems; track menuItem; let first = $first) {
+                <div class="col-12">
+                  <div
+                    class="flex flex-column xl:align-items-start p-4 gap-2"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <div class="text-md font-bold text-900 flex w-full">
+                      <div class="flex-grow-1 flex align-items-center">
+                        {{ menuItem.type | transloco }}
+                        @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                          <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                        }
+                        @if (menuItem.type === menuItemTypes.URL) {
+                          <span>&nbsp;({{ menuItem.title }})</span>
+                        }
+                      </div>
+                      <div class="flex flex-grow-0 gap-3">
+                        <p-button
+                          label="{{ t('editMenuItemButtonLabel') }}"
+                          icon="pi pi-file-edit"
+                          routerLink="/menu-items/{{ menuItem.id }}/edit"
+                          styleClass="pr-0"
+                          class="responsive-button"
+                          [text]="true"
+                        ></p-button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              }
             </div>
-          </div>
+          }
         </ng-template>
       </p-dataView>
 
@@ -113,42 +111,40 @@
           </div>
         </ng-template>
         <ng-template let-menuItems #list>
-          <lc-menu-list-skeleton
-            *ngIf="loading === loadingStates.LOADING"
-          ></lc-menu-list-skeleton>
-          <div
-            class="grid grid-nogutter"
-            *ngIf="loading !== loadingStates.LOADING"
-          >
-            <div
-              class="col-12"
-              *ngFor="let menuItem of menuItems; let first = first"
-            >
-              <div
-                class="flex flex-column xl:align-items-start p-4 gap-2"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
-              >
-                <div class="text-md font-bold text-900 flex w-full">
-                  <div class="flex-grow-1 flex align-items-center">
-                    {{ menuItem.type | transloco }}
-                    <span *ngIf="menuItem.type === menuItemTypes.MENU_PAGE"
-                      >&nbsp;({{ menuItem.menuPage.title }})</span
-                    >
-                  </div>
-                  <div class="flex flex-grow-0 gap-3">
-                    <p-button
-                      label="{{ t('editMenuItemButtonLabel') }}"
-                      icon="pi pi-file-edit"
-                      routerLink="/menu-items/{{ menuItem.id }}/edit"
-                      styleClass="pr-0"
-                      class="responsive-button"
-                      [text]="true"
-                    ></p-button>
+          @if (loading === loadingStates.LOADING) {
+            <lc-menu-list-skeleton></lc-menu-list-skeleton>
+          }
+          @if (loading !== loadingStates.LOADING) {
+            <div class="grid grid-nogutter">
+              @for (menuItem of menuItems; track menuItem; let first = $first) {
+                <div class="col-12">
+                  <div
+                    class="flex flex-column xl:align-items-start p-4 gap-2"
+                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  >
+                    <div class="text-md font-bold text-900 flex w-full">
+                      <div class="flex-grow-1 flex align-items-center">
+                        {{ menuItem.type | transloco }}
+                        @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                          <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                        }
+                      </div>
+                      <div class="flex flex-grow-0 gap-3">
+                        <p-button
+                          label="{{ t('editMenuItemButtonLabel') }}"
+                          icon="pi pi-file-edit"
+                          routerLink="/menu-items/{{ menuItem.id }}/edit"
+                          styleClass="pr-0"
+                          class="responsive-button"
+                          [text]="true"
+                        ></p-button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              }
             </div>
-          </div>
+          }
         </ng-template>
       </p-dataView>
     </p-card>

@@ -1,16 +1,17 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
   <p-dataView #dv [value]="ascents">
     <ng-template #emptymessage>
-      <p-message
-        severity="info"
-        icon="pi pi-info-circle"
-        class="m-4 mb-1 block"
-        *ngIf="
-          ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING
-        "
-      >
-        {{ t("noAscentsFoundMessage") }}
-      </p-message>
+      @if (
+        ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+      ) {
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          class="m-4 mb-1 block"
+        >
+          {{ t("noAscentsFoundMessage") }}
+        </p-message>
+      }
     </ng-template>
     <ng-template #header>
       <div
@@ -30,9 +31,11 @@
               styleClass="md:mb-0"
             >
               <ng-template #selectedItem>
-                <div class="flex align-items-center gap-2" *ngIf="orderKey">
-                  <div>{{ orderKey.label }}</div>
-                </div>
+                @if (orderKey) {
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ orderKey.label }}</div>
+                  </div>
+                }
               </ng-template>
               <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
@@ -49,12 +52,11 @@
               styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
             >
               <ng-template #selectedItem>
-                <div
-                  class="flex align-items-center gap-2"
-                  *ngIf="orderDirectionKey"
-                >
-                  <div>{{ orderDirectionKey.label }}</div>
-                </div>
+                @if (orderDirectionKey) {
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ orderDirectionKey.label }}</div>
+                  </div>
+                }
               </ng-template>
               <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
@@ -68,526 +70,542 @@
         <div
           class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
         >
-          <div *ngIf="availableScales.length > 2">
-            {{ t("lineType") }}
-            <p-select
-              [options]="availableScales"
-              [disabled]="loadingFirstPage === loadingStates.LOADING"
-              [(ngModel)]="scaleKey"
-              optionLabel="label"
-              (onChange)="selectScale()"
-              styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
-            >
-              <ng-template #selectedItem>
-                <div class="flex align-items-center gap-2" *ngIf="scaleKey">
-                  <div>{{ scaleKey.label }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
-          </div>
+          @if (availableScales.length > 2) {
+            <div>
+              {{ t("lineType") }}
+              <p-select
+                [options]="availableScales"
+                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                [(ngModel)]="scaleKey"
+                optionLabel="label"
+                (onChange)="selectScale()"
+                styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
+              >
+                <ng-template #selectedItem2>
+                  @if (scaleKey) {
+                    <div class="flex align-items-center gap-2">
+                      <div>{{ scaleKey.label }}</div>
+                    </div>
+                  }
+                </ng-template>
+                <ng-template let-option #item2>
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ option.label }}</div>
+                  </div>
+                </ng-template>
+              </p-select>
+            </div>
+          }
         </div>
 
-        <div
-          class="slider-container mt-1"
-          *ngIf="!disableGradeOrderAndFiltering && scaleKey?.value"
-        >
-          <lc-slider-labels
-            [rangeMin]="gradeFilterRange[0]"
-            [rangeMax]="gradeFilterRange[1]"
-            [min]="minGradeValue"
-            [max]="maxGradeValue"
-            [minLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[0]
-              )
-                | async
-                | translateSpecialGrades
-            "
-            [maxLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[1]
-              )
-                | async
-                | translateSpecialGrades
-            "
-          ></lc-slider-labels>
-          <p-slider
-            [(ngModel)]="gradeFilterRange"
-            [min]="minGradeValue"
-            [max]="maxGradeValue"
-            [disabled]="loadingFirstPage === loadingStates.LOADING"
-            [range]="true"
-            [step]="1"
-            (onSlideEnd)="reloadOnSlideEnd()"
-          />
-        </div>
+        @if (!disableGradeOrderAndFiltering && scaleKey?.value) {
+          <div class="slider-container mt-1">
+            <lc-slider-labels
+              [rangeMin]="gradeFilterRange[0]"
+              [rangeMax]="gradeFilterRange[1]"
+              [min]="minGradeValue"
+              [max]="maxGradeValue"
+              [minLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[0]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+              [maxLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[1]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+            ></lc-slider-labels>
+            <p-slider
+              [(ngModel)]="gradeFilterRange"
+              [min]="minGradeValue"
+              [max]="maxGradeValue"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
+              [range]="true"
+              [step]="1"
+              (onSlideEnd)="reloadOnSlideEnd()"
+            />
+          </div>
+        }
       </div>
     </ng-template>
     <ng-template let-ascents #list>
-      <lc-ascent-list-skeleton
-        *ngIf="
-          loadingFirstPage === loadingStates.LOADING || ascents === undefined
-        "
-      ></lc-ascent-list-skeleton>
-      <div
-        class="grid grid-nogutter"
-        *ngIf="loadingFirstPage !== loadingStates.LOADING"
-      >
-        <div
-          class="col-12"
-          *ngFor="let ascent of ascents; let first = first"
-          data-cy="ascent-list-item"
-        >
-          <div
-            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
-            [ngClass]="{ 'border-top-1 surface-border': !first }"
-          >
-            <!-- DISPLAY FOR LARGE SCREENS -->
-            <div class="ascent-table-row-large">
-              <div class="ascent-table-user-info" *ngIf="!user">
-                <p-avatar
-                  [image]="
-                    ascent.createdBy.avatar
-                      ? ascent.createdBy.avatar.thumbnailS
-                      : 'assets/user.png'
-                  "
-                  styleClass="mr-2"
-                  size="large"
-                  shape="circle"
-                ></p-avatar>
-                <a
-                  class="username"
-                  routerLink="{{ ascent.routerLinkCreatedBy }}"
-                  >{{ ascent.createdBy.firstname }}
-                  {{ ascent.createdBy.lastname }}</a
-                >
-              </div>
-              <div class="ascent-table-line-info">
-                <div class="ascent-table-line-name">
-                  <a routerLink="{{ ascent.routerLinkLine }}">{{
-                    ascent.line.name
-                  }}</a>
-                  <div class="grade">
-                    {{ ascent.line | lineGrade }}
+      @if (
+        loadingFirstPage === loadingStates.LOADING || ascents === undefined
+      ) {
+        <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
+      }
+      @if (loadingFirstPage !== loadingStates.LOADING) {
+        <div class="grid grid-nogutter">
+          @for (ascent of ascents; track ascent; let first = $first) {
+            <div class="col-12" data-cy="ascent-list-item">
+              <div
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
+                <!-- DISPLAY FOR LARGE SCREENS -->
+                <div class="ascent-table-row-large">
+                  @if (!user) {
+                    <div class="ascent-table-user-info">
+                      <p-avatar
+                        [image]="
+                          ascent.createdBy.avatar
+                            ? ascent.createdBy.avatar.thumbnailS
+                            : 'assets/user.png'
+                        "
+                        styleClass="mr-2"
+                        size="large"
+                        shape="circle"
+                      ></p-avatar>
+                      <a
+                        class="username"
+                        routerLink="{{ ascent.routerLinkCreatedBy }}"
+                        >{{ ascent.createdBy.firstname }}
+                        {{ ascent.createdBy.lastname }}</a
+                      >
+                    </div>
+                  }
+                  <div class="ascent-table-line-info">
+                    <div class="ascent-table-line-name">
+                      <a routerLink="{{ ascent.routerLinkLine }}">{{
+                        ascent.line.name
+                      }}</a>
+                      <div class="grade">
+                        {{ ascent.line | lineGrade }}
+                      </div>
+                    </div>
+                    <div class="ascent-table-line-location mt-1">
+                      @if (ascent.crag.slug !== environment.skippedSlug) {
+                        <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                          ascent.crag.name
+                        }}</a
+                        >,
+                      }
+                      @if (ascent.sector.slug !== environment.skippedSlug) {
+                        <a routerLink="{{ ascent.routerLinkSector }}">{{
+                          ascent.sector.name
+                        }}</a
+                        >,
+                      }
+                      <a routerLink="{{ ascent.routerLinkArea }}">{{
+                        ascent.area.name
+                      }}</a>
+                    </div>
                   </div>
-                </div>
-                <div class="ascent-table-line-location mt-1">
-                  <ng-container
-                    *ngIf="ascent.crag.slug !== environment.skippedSlug"
-                  >
-                    <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                      ascent.crag.name
-                    }}</a
-                    >,
-                  </ng-container>
-                  <ng-container
-                    *ngIf="ascent.sector.slug !== environment.skippedSlug"
-                  >
-                    <a routerLink="{{ ascent.routerLinkSector }}">{{
-                      ascent.sector.name
-                    }}</a
-                    >,
-                  </ng-container>
-                  <a routerLink="{{ ascent.routerLinkArea }}">{{
-                    ascent.area.name
-                  }}</a>
-                </div>
-              </div>
-              <div class="ascent-table-comment">
-                {{ ascent.comment }}
-              </div>
-              <div class="ascent-table-rating">
-                <p-rating
-                  [ngModel]="ascent.rating"
-                  [readonly]="true"
-                ></p-rating>
-              </div>
-              <div class="ascent-table-grade">
-                <div class="grade">
-                  <i
-                    class="pi pi-angle-double-up"
-                    style="color: green"
-                    *ngIf="ascent | upgrade"
-                  ></i>
-                  <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
-                  <i
-                    class="pi pi-angle-double-down"
-                    style="color: red"
-                    *ngIf="ascent | downgrade"
-                  ></i>
-                  <div class="ml-1 grade-name">
-                    {{
-                      scalesService.gradeNameByValue(
-                        ascent.line.type,
-                        ascent.line.gradeScale,
-                        ascent.gradeValue
-                      )
-                        | async
-                        | translateSpecialGrades
-                    }}
-                    <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
-                    <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
+                  <div class="ascent-table-comment">
+                    {{ ascent.comment }}
                   </div>
-                </div>
-              </div>
-              <div class="ascent-table-properties">
-                <p-tag
-                  value="{{ t('fa') }}"
-                  *ngIf="ascent.fa"
-                  icon="pi pi-star"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('flash') }}"
-                  *ngIf="ascent.flash"
-                  icon="pi pi-bolt"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('withKneepad') }}"
-                  *ngIf="ascent.withKneepad"
-                  icon="pi pi-ticket"
-                  data-cy="kneepadtag"
-                ></p-tag>
-              </div>
-              <div class="ascent-table-date">
-                <i class="pi pi-calendar"></i>
-                <ng-container *ngIf="ascent.year"
-                  >{{ ascent.year }}
-                </ng-container>
-                <ng-container *ngIf="ascent.date"
-                  >{{ ascent.date | date: "dd.MM.yyyy" }}
-                </ng-container>
-              </div>
-              <div class="ascent-actions">
-                <p-menu
-                  #menu
-                  [model]="ascentActionItems"
-                  [popup]="true"
-                  [appendTo]="'body'"
-                ></p-menu>
-                <p-button
-                  icon="pi pi-ellipsis-v"
-                  styleClass="p-button-rounded p-button-text"
-                  data-cy="ascent-actions-button"
-                  *isOwnUser="ascent.createdBy"
-                  (click)="clickedAscentForAction = ascent; menu.toggle($event)"
-                ></p-button>
-              </div>
-            </div>
-
-            <!-- DISPLAY FOR MEDIUM SCREENS -->
-            <div class="ascent-table-row-medium">
-              <div class="ascent-table-user-and-name-info">
-                <p-avatar
-                  [image]="
-                    ascent.createdBy.avatar
-                      ? ascent.createdBy.avatar.thumbnailS
-                      : 'assets/user.png'
-                  "
-                  styleClass="mr-2"
-                  size="large"
-                  shape="circle"
-                  *ngIf="!user"
-                ></p-avatar>
-                <div class="name-with-line">
-                  <a
-                    class="username"
-                    *ngIf="!user"
-                    routerLink="{{ ascent.routerLinkCreatedBy }}"
-                    >{{ ascent.createdBy.firstname }}
-                    {{ ascent.createdBy.lastname }}</a
-                  >
-                  <div class="ascent-table-line-name">
-                    <a routerLink="{{ ascent.routerLinkLine }}">{{
-                      ascent.line.name
-                    }}</a>
+                  <div class="ascent-table-rating">
+                    <p-rating
+                      [ngModel]="ascent.rating"
+                      [readonly]="true"
+                    ></p-rating>
+                  </div>
+                  <div class="ascent-table-grade">
                     <div class="grade">
-                      {{ ascent.line | lineGrade }}
+                      @if (ascent | upgrade) {
+                        <i
+                          class="pi pi-angle-double-up"
+                          style="color: green"
+                        ></i>
+                      }
+                      @if (ascent | consensusGrade) {
+                        <i class="pi pi-check"></i>
+                      }
+                      @if (ascent | downgrade) {
+                        <i
+                          class="pi pi-angle-double-down"
+                          style="color: red"
+                        ></i>
+                      }
+                      <div class="ml-1 grade-name">
+                        {{
+                          scalesService.gradeNameByValue(
+                            ascent.line.type,
+                            ascent.line.gradeScale,
+                            ascent.gradeValue
+                          )
+                            | async
+                            | translateSpecialGrades
+                        }}
+                        @if (ascent.soft) {
+                          <span>&nbsp;({{ t("soft") }})</span>
+                        }
+                        @if (ascent.hard) {
+                          <span>&nbsp;({{ t("hard") }})</span>
+                        }
+                      </div>
                     </div>
                   </div>
-                  <div class="ascent-table-line-location mt-1">
-                    <ng-container
-                      *ngIf="ascent.crag.slug !== environment.skippedSlug"
-                    >
-                      <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                        ascent.crag.name
-                      }}</a
-                      >,
-                    </ng-container>
-                    <ng-container
-                      *ngIf="ascent.sector.slug !== environment.skippedSlug"
-                    >
-                      <a routerLink="{{ ascent.routerLinkSector }}">{{
-                        ascent.sector.name
-                      }}</a
-                      >,
-                    </ng-container>
-                    <a routerLink="{{ ascent.routerLinkArea }}">{{
-                      ascent.area.name
-                    }}</a>
+                  <div class="ascent-table-properties">
+                    @if (ascent.fa) {
+                      <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                    }
+                    @if (ascent.flash) {
+                      <p-tag value="{{ t('flash') }}" icon="pi pi-bolt"></p-tag>
+                    }
+                    @if (ascent.withKneepad) {
+                      <p-tag
+                        value="{{ t('withKneepad') }}"
+                        icon="pi pi-ticket"
+                        data-cy="kneepadtag"
+                      ></p-tag>
+                    }
+                  </div>
+                  <div class="ascent-table-date">
+                    <i class="pi pi-calendar"></i>
+                    @if (ascent.year) {
+                      {{ ascent.year }}
+                    }
+                    @if (ascent.date) {
+                      {{ ascent.date | date: "dd.MM.yyyy" }}
+                    }
+                  </div>
+                  <div class="ascent-actions">
+                    <p-menu
+                      #menu
+                      [model]="ascentActionItems"
+                      [popup]="true"
+                      [appendTo]="'body'"
+                    ></p-menu>
+                    <p-button
+                      icon="pi pi-ellipsis-v"
+                      styleClass="p-button-rounded p-button-text"
+                      data-cy="ascent-actions-button"
+                      *isOwnUser="ascent.createdBy"
+                      (click)="
+                        clickedAscentForAction = ascent; menu.toggle($event)
+                      "
+                    ></p-button>
                   </div>
                 </div>
-              </div>
-              <div class="ascent-table-comment">
-                {{ ascent.comment }}
-              </div>
-              <div class="ascent-table-rating">
-                <p-rating
-                  [ngModel]="ascent.rating"
-                  [readonly]="true"
-                ></p-rating>
-              </div>
-              <div class="ascent-table-grade">
-                <div class="grade">
-                  <i
-                    class="pi pi-angle-double-up"
-                    style="color: green"
-                    *ngIf="ascent | upgrade"
-                  ></i>
-                  <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
-                  <i
-                    class="pi pi-angle-double-down"
-                    style="color: red"
-                    *ngIf="ascent | downgrade"
-                  ></i>
-                  <div class="ml-1 grade-name">
-                    {{
-                      scalesService.gradeNameByValue(
-                        ascent.line.type,
-                        ascent.line.gradeScale,
-                        ascent.gradeValue
-                      )
-                        | async
-                        | translateSpecialGrades
-                    }}
-                    <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
-                    <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
+                <!-- DISPLAY FOR MEDIUM SCREENS -->
+                <div class="ascent-table-row-medium">
+                  <div class="ascent-table-user-and-name-info">
+                    @if (!user) {
+                      <p-avatar
+                        [image]="
+                          ascent.createdBy.avatar
+                            ? ascent.createdBy.avatar.thumbnailS
+                            : 'assets/user.png'
+                        "
+                        styleClass="mr-2"
+                        size="large"
+                        shape="circle"
+                      ></p-avatar>
+                    }
+                    <div class="name-with-line">
+                      @if (!user) {
+                        <a
+                          class="username"
+                          routerLink="{{ ascent.routerLinkCreatedBy }}"
+                          >{{ ascent.createdBy.firstname }}
+                          {{ ascent.createdBy.lastname }}</a
+                        >
+                      }
+                      <div class="ascent-table-line-name">
+                        <a routerLink="{{ ascent.routerLinkLine }}">{{
+                          ascent.line.name
+                        }}</a>
+                        <div class="grade">
+                          {{ ascent.line | lineGrade }}
+                        </div>
+                      </div>
+                      <div class="ascent-table-line-location mt-1">
+                        @if (ascent.crag.slug !== environment.skippedSlug) {
+                          <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                            ascent.crag.name
+                          }}</a
+                          >,
+                        }
+                        @if (ascent.sector.slug !== environment.skippedSlug) {
+                          <a routerLink="{{ ascent.routerLinkSector }}">{{
+                            ascent.sector.name
+                          }}</a
+                          >,
+                        }
+                        <a routerLink="{{ ascent.routerLinkArea }}">{{
+                          ascent.area.name
+                        }}</a>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="ascent-table-properties">
-                <p-tag
-                  value="{{ t('fa') }}"
-                  *ngIf="ascent.fa"
-                  icon="pi pi-star"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('flash') }}"
-                  *ngIf="ascent.flash"
-                  icon="pi pi-bolt"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('withKneepad') }}"
-                  *ngIf="ascent.withKneepad"
-                  icon="pi pi-ticket"
-                ></p-tag>
-              </div>
-              <div class="ascent-table-date">
-                <i class="pi pi-calendar"></i>
-                <ng-container *ngIf="ascent.year"
-                  >{{ ascent.year }}
-                </ng-container>
-                <ng-container *ngIf="ascent.date"
-                  >{{ ascent.date | date: "dd.MM.yyyy" }}
-                </ng-container>
-              </div>
-              <div class="ascent-actions">
-                <p-menu
-                  #menu
-                  [model]="ascentActionItems"
-                  [popup]="true"
-                  [appendTo]="'body'"
-                ></p-menu>
-                <p-button
-                  icon="pi pi-ellipsis-v"
-                  styleClass="p-button-rounded p-button-text"
-                  *isOwnUser="ascent.createdBy"
-                  (click)="clickedAscentForAction = ascent; menu.toggle($event)"
-                ></p-button>
-              </div>
-            </div>
-
-            <!-- DISPLAY FOR SMALL SCREENS -->
-            <div class="ascent-table-row-small">
-              <div class="ascent-table-user-and-name-info">
-                <p-avatar
-                  [image]="
-                    ascent.createdBy.avatar
-                      ? ascent.createdBy.avatar.thumbnailS
-                      : 'assets/user.png'
-                  "
-                  styleClass="mr-3"
-                  size="large"
-                  shape="circle"
-                  *ngIf="!user"
-                ></p-avatar>
-                <div class="name-with-line">
-                  <a
-                    class="username"
-                    *ngIf="!user"
-                    routerLink="{{ ascent.routerLinkCreatedBy }}"
-                    >{{ ascent.createdBy.firstname }}
-                    {{ ascent.createdBy.lastname }}</a
-                  >
-                  <div class="ascent-table-line-name">
-                    <a routerLink="{{ ascent.routerLinkLine }}">{{
-                      ascent.line.name
-                    }}</a>
+                  <div class="ascent-table-comment">
+                    {{ ascent.comment }}
+                  </div>
+                  <div class="ascent-table-rating">
+                    <p-rating
+                      [ngModel]="ascent.rating"
+                      [readonly]="true"
+                    ></p-rating>
+                  </div>
+                  <div class="ascent-table-grade">
                     <div class="grade">
-                      {{ ascent.line | lineGrade }}
+                      @if (ascent | upgrade) {
+                        <i
+                          class="pi pi-angle-double-up"
+                          style="color: green"
+                        ></i>
+                      }
+                      @if (ascent | consensusGrade) {
+                        <i class="pi pi-check"></i>
+                      }
+                      @if (ascent | downgrade) {
+                        <i
+                          class="pi pi-angle-double-down"
+                          style="color: red"
+                        ></i>
+                      }
+                      <div class="ml-1 grade-name">
+                        {{
+                          scalesService.gradeNameByValue(
+                            ascent.line.type,
+                            ascent.line.gradeScale,
+                            ascent.gradeValue
+                          )
+                            | async
+                            | translateSpecialGrades
+                        }}
+                        @if (ascent.soft) {
+                          <span>&nbsp;({{ t("soft") }})</span>
+                        }
+                        @if (ascent.hard) {
+                          <span>&nbsp;({{ t("hard") }})</span>
+                        }
+                      </div>
                     </div>
                   </div>
-                  <div class="ascent-table-line-location mt-1">
-                    <ng-container
-                      *ngIf="ascent.crag.slug !== environment.skippedSlug"
-                    >
-                      <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                        ascent.crag.name
-                      }}</a
-                      >,
-                    </ng-container>
-                    <ng-container
-                      *ngIf="ascent.sector.slug !== environment.skippedSlug"
-                    >
-                      <a routerLink="{{ ascent.routerLinkSector }}">{{
-                        ascent.sector.name
-                      }}</a
-                      >,
-                    </ng-container>
-                    <a routerLink="{{ ascent.routerLinkArea }}">{{
-                      ascent.area.name
-                    }}</a>
+                  <div class="ascent-table-properties">
+                    @if (ascent.fa) {
+                      <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                    }
+                    @if (ascent.flash) {
+                      <p-tag value="{{ t('flash') }}" icon="pi pi-bolt"></p-tag>
+                    }
+                    @if (ascent.withKneepad) {
+                      <p-tag
+                        value="{{ t('withKneepad') }}"
+                        icon="pi pi-ticket"
+                      ></p-tag>
+                    }
+                  </div>
+                  <div class="ascent-table-date">
+                    <i class="pi pi-calendar"></i>
+                    @if (ascent.year) {
+                      {{ ascent.year }}
+                    }
+                    @if (ascent.date) {
+                      {{ ascent.date | date: "dd.MM.yyyy" }}
+                    }
+                  </div>
+                  <div class="ascent-actions">
+                    <p-menu
+                      #menu
+                      [model]="ascentActionItems"
+                      [popup]="true"
+                      [appendTo]="'body'"
+                    ></p-menu>
+                    <p-button
+                      icon="pi pi-ellipsis-v"
+                      styleClass="p-button-rounded p-button-text"
+                      *isOwnUser="ascent.createdBy"
+                      (click)="
+                        clickedAscentForAction = ascent; menu.toggle($event)
+                      "
+                    ></p-button>
                   </div>
                 </div>
-                <div class="ascent-actions">
-                  <p-menu
-                    #menu
-                    [model]="ascentActionItems"
-                    [popup]="true"
-                    [appendTo]="'body'"
-                  ></p-menu>
-                  <p-button
-                    icon="pi pi-ellipsis-v"
-                    styleClass="p-button-rounded p-button-text"
-                    *isOwnUser="ascent.createdBy"
-                    (click)="
-                      clickedAscentForAction = ascent; menu.toggle($event)
-                    "
-                  ></p-button>
-                </div>
-              </div>
-              <div class="ascent-table-comment">
-                {{ ascent.comment }}
-              </div>
-              <div class="property-row-very-small">
-                <p-tag
-                  value="{{ t('fa') }}"
-                  *ngIf="ascent.fa"
-                  icon="pi pi-star"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('flash') }}"
-                  *ngIf="ascent.flash"
-                  icon="pi pi-bolt"
-                ></p-tag>
-                <p-tag
-                  value="{{ t('withKneepad') }}"
-                  *ngIf="ascent.withKneepad"
-                  icon="pi pi-ticket"
-                ></p-tag>
-              </div>
-              <div class="ascent-table-bottom-row">
-                <div class="ascent-table-properties">
-                  <div class="grade">
-                    <i
-                      class="pi pi-angle-double-up"
-                      style="color: green"
-                      *ngIf="ascent | upgrade"
-                    ></i>
-                    <i class="pi pi-check" *ngIf="ascent | consensusGrade"></i>
-                    <i
-                      class="pi pi-angle-double-down"
-                      style="color: red"
-                      *ngIf="ascent | downgrade"
-                    ></i>
-                    <div class="ml-1 grade-name">
-                      {{
-                        scalesService.gradeNameByValue(
-                          ascent.line.type,
-                          ascent.line.gradeScale,
-                          ascent.gradeValue
-                        )
-                          | async
-                          | translateSpecialGrades
-                      }}
-                      <span *ngIf="ascent.soft">&nbsp;({{ t("soft") }})</span>
-                      <span *ngIf="ascent.hard">&nbsp;({{ t("hard") }})</span>
+                <!-- DISPLAY FOR SMALL SCREENS -->
+                <div class="ascent-table-row-small">
+                  <div class="ascent-table-user-and-name-info">
+                    @if (!user) {
+                      <p-avatar
+                        [image]="
+                          ascent.createdBy.avatar
+                            ? ascent.createdBy.avatar.thumbnailS
+                            : 'assets/user.png'
+                        "
+                        styleClass="mr-3"
+                        size="large"
+                        shape="circle"
+                      ></p-avatar>
+                    }
+                    <div class="name-with-line">
+                      @if (!user) {
+                        <a
+                          class="username"
+                          routerLink="{{ ascent.routerLinkCreatedBy }}"
+                          >{{ ascent.createdBy.firstname }}
+                          {{ ascent.createdBy.lastname }}</a
+                        >
+                      }
+                      <div class="ascent-table-line-name">
+                        <a routerLink="{{ ascent.routerLinkLine }}">{{
+                          ascent.line.name
+                        }}</a>
+                        <div class="grade">
+                          {{ ascent.line | lineGrade }}
+                        </div>
+                      </div>
+                      <div class="ascent-table-line-location mt-1">
+                        @if (ascent.crag.slug !== environment.skippedSlug) {
+                          <a routerLink="{{ ascent.routerLinkCrag }}">{{
+                            ascent.crag.name
+                          }}</a
+                          >,
+                        }
+                        @if (ascent.sector.slug !== environment.skippedSlug) {
+                          <a routerLink="{{ ascent.routerLinkSector }}">{{
+                            ascent.sector.name
+                          }}</a
+                          >,
+                        }
+                        <a routerLink="{{ ascent.routerLinkArea }}">{{
+                          ascent.area.name
+                        }}</a>
+                      </div>
+                    </div>
+                    <div class="ascent-actions">
+                      <p-menu
+                        #menu
+                        [model]="ascentActionItems"
+                        [popup]="true"
+                        [appendTo]="'body'"
+                      ></p-menu>
+                      <p-button
+                        icon="pi pi-ellipsis-v"
+                        styleClass="p-button-rounded p-button-text"
+                        *isOwnUser="ascent.createdBy"
+                        (click)="
+                          clickedAscentForAction = ascent; menu.toggle($event)
+                        "
+                      ></p-button>
                     </div>
                   </div>
-                  <p-tag
-                    class="property-small"
-                    value="{{ t('fa') }}"
-                    *ngIf="ascent.fa"
-                    icon="pi pi-star"
-                  ></p-tag>
-                  <p-tag
-                    class="property-small"
-                    value="{{ t('flash') }}"
-                    *ngIf="ascent.flash"
-                    icon="pi pi-bolt"
-                  ></p-tag>
-                  <p-tag
-                    class="property-small"
-                    value="{{ t('withKneepad') }}"
-                    *ngIf="ascent.withKneepad"
-                    icon="pi pi-ticket"
-                  ></p-tag>
-                </div>
-                <div class="ascent-table-rating">
-                  <p-rating
-                    [ngModel]="ascent.rating"
-                    [readonly]="true"
-                  ></p-rating>
-                </div>
-                <div class="ascent-table-date">
-                  <i class="pi pi-calendar"></i>
-                  <ng-container *ngIf="ascent.year"
-                    >{{ ascent.year }}
-                  </ng-container>
-                  <ng-container *ngIf="ascent.date"
-                    >{{ ascent.date | date: "dd.MM.yyyy" }}
-                  </ng-container>
+                  <div class="ascent-table-comment">
+                    {{ ascent.comment }}
+                  </div>
+                  <div class="property-row-very-small">
+                    @if (ascent.fa) {
+                      <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                    }
+                    @if (ascent.flash) {
+                      <p-tag value="{{ t('flash') }}" icon="pi pi-bolt"></p-tag>
+                    }
+                    @if (ascent.withKneepad) {
+                      <p-tag
+                        value="{{ t('withKneepad') }}"
+                        icon="pi pi-ticket"
+                      ></p-tag>
+                    }
+                  </div>
+                  <div class="ascent-table-bottom-row">
+                    <div class="ascent-table-properties">
+                      <div class="grade">
+                        @if (ascent | upgrade) {
+                          <i
+                            class="pi pi-angle-double-up"
+                            style="color: green"
+                          ></i>
+                        }
+                        @if (ascent | consensusGrade) {
+                          <i class="pi pi-check"></i>
+                        }
+                        @if (ascent | downgrade) {
+                          <i
+                            class="pi pi-angle-double-down"
+                            style="color: red"
+                          ></i>
+                        }
+                        <div class="ml-1 grade-name">
+                          {{
+                            scalesService.gradeNameByValue(
+                              ascent.line.type,
+                              ascent.line.gradeScale,
+                              ascent.gradeValue
+                            )
+                              | async
+                              | translateSpecialGrades
+                          }}
+                          @if (ascent.soft) {
+                            <span>&nbsp;({{ t("soft") }})</span>
+                          }
+                          @if (ascent.hard) {
+                            <span>&nbsp;({{ t("hard") }})</span>
+                          }
+                        </div>
+                      </div>
+                      @if (ascent.fa) {
+                        <p-tag
+                          class="property-small"
+                          value="{{ t('fa') }}"
+                          icon="pi pi-star"
+                        ></p-tag>
+                      }
+                      @if (ascent.flash) {
+                        <p-tag
+                          class="property-small"
+                          value="{{ t('flash') }}"
+                          icon="pi pi-bolt"
+                        ></p-tag>
+                      }
+                      @if (ascent.withKneepad) {
+                        <p-tag
+                          class="property-small"
+                          value="{{ t('withKneepad') }}"
+                          icon="pi pi-ticket"
+                        ></p-tag>
+                      }
+                    </div>
+                    <div class="ascent-table-rating">
+                      <p-rating
+                        [ngModel]="ascent.rating"
+                        [readonly]="true"
+                      ></p-rating>
+                    </div>
+                    <div class="ascent-table-date">
+                      <i class="pi pi-calendar"></i>
+                      @if (ascent.year) {
+                        {{ ascent.year }}
+                      }
+                      @if (ascent.date) {
+                        {{ ascent.date | date: "dd.MM.yyyy" }}
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          }
         </div>
-      </div>
+      }
     </ng-template>
   </p-dataView>
 
-  <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-    <p-button
-      label="{{ t('loadMore') }}"
-      (scrolled)="loadNextPage()"
-      (click)="loadNextPage()"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      [loading]="
-        loadingAdditionalPage === loadingStates.LOADING ||
-        loadingFirstPage === loadingStates.LOADING
-      "
-    ></p-button>
-  </div>
+  @if (hasNextPage) {
+    <div class="flex justify-content-center mt-5">
+      <p-button
+        label="{{ t('loadMore') }}"
+        (scrolled)="loadNextPage()"
+        (click)="loadNextPage()"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        [loading]="
+          loadingAdditionalPage === loadingStates.LOADING ||
+          loadingFirstPage === loadingStates.LOADING
+        "
+      ></p-button>
+    </div>
+  }
 
   <p-confirmpopup></p-confirmpopup>
 </ng-container>

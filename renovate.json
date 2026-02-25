@@ -6,5 +6,107 @@
   "major": {
     "enabled": false
   },
-  "dependencyDashboard": false
+  "dependencyDashboard": false,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "labels": [
+        "maintenance"
+      ],
+      "matchDatasources": [
+        "docker",
+        "helm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Docker & Helm (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance"
+      ],
+      "matchDatasources": [
+        "docker",
+        "helm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Docker & Helm (major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "backend"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Backend (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "backend"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Backend (major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "frontend"
+      ],
+      "matchDatasources": [
+        "npm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Frontend (non-major)"
+    },
+    {
+      "labels": [
+        "maintenance",
+        "frontend"
+      ],
+      "matchDatasources": [
+        "npm"
+      ],
+      "recreateWhen": "always",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Frontend (major)"
+    }
+  ],
+  "ignoreDeps": [
+    "postgres"
+  ],
+  "postUpdateOptions": ["npmInstallTwice"],
+  "constraints": {
+    "npm": "11.3.0",
+    "node": "24.2.0"
+  },
+  "schedule": ["every monday"],
+  "prHourlyLimit": 0
 }

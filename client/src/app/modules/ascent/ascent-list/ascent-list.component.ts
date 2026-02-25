@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { Ascent } from '../../../models/ascent';
@@ -63,12 +63,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     BreadcrumbModule,
     CardModule,
-    NgIf,
     TranslocoDirective,
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,
-    NgForOf,
     FormsModule,
     NgClass,
     ConfirmPopupModule,

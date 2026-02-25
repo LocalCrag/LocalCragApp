@@ -10,7 +10,7 @@ import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
 import { DataViewModule } from 'primeng/dataview';
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -38,8 +38,6 @@ import { Observable } from 'rxjs';
   selector: 'lc-ranking-list',
   imports: [
     DataViewModule,
-    NgForOf,
-    NgIf,
     TranslocoDirective,
     NgClass,
     ButtonModule,

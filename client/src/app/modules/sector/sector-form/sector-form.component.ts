@@ -44,7 +44,7 @@ import {
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { Card } from 'primeng/card';
-import { NgIf } from '@angular/common';
+
 import { InputText } from 'primeng/inputtext';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { Checkbox } from 'primeng/checkbox';
@@ -70,7 +70,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     TranslocoDirective,
     Card,
-    NgIf,
     ReactiveFormsModule,
     InputText,
     Editor,

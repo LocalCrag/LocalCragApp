@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate branch
+        shell: bash
         run: |
-          if [[ "${{ github.event.inputs.branch }}" != "main" ]]; then
-            echo "This action can only be run on the main branch"
+          if [[ "${GITHUB_REF_NAME}" != "main" ]]; then
+            echo "This action can only be run on the main branch (got: ${GITHUB_REF_NAME})"
             exit 1
           fi
 

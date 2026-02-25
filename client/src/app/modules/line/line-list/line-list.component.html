@@ -1,34 +1,32 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
   <p-dataView #dv [value]="lines">
     <ng-template #emptymessage>
-      <p-message
-        *ngIf="
-          lines?.length === 0 && loadingFirstPage !== loadingStates.LOADING
-        "
-        severity="info"
-        icon="pi pi-info-circle"
-        class="m-4 mb-1 block"
-        >{{ t("noLinesFoundEmptyMessage") }}
-      </p-message>
+      @if (lines?.length === 0 && loadingFirstPage !== loadingStates.LOADING) {
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          class="m-4 mb-1 block"
+          >{{ t("noLinesFoundEmptyMessage") }}
+        </p-message>
+      }
     </ng-template>
     <ng-template #header>
       <div
         class="flex flex-column sm:flex-column justify-content-between gap-2"
       >
-        <div
-          class="flex justify-content-start sm:justify-content-end gap-3"
-          *ngIf="cragSlug && sectorSlug && areaSlug"
-        >
-          <p-button
-            label="{{ t('newLineButtonLabel') }}"
-            icon="pi pi-plus"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-              areaSlug
-            }}/create-line"
-            *isModerator="true"
-            class="responsive-button"
-          ></p-button>
-        </div>
+        @if (cragSlug && sectorSlug && areaSlug) {
+          <div class="flex justify-content-start sm:justify-content-end gap-3">
+            <p-button
+              label="{{ t('newLineButtonLabel') }}"
+              icon="pi pi-plus"
+              routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+                areaSlug
+              }}/create-line"
+              *isModerator="true"
+              class="responsive-button"
+            ></p-button>
+          </div>
+        }
 
         <div
           class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
@@ -44,9 +42,11 @@
               [disabled]="loadingFirstPage === loadingStates.LOADING"
             >
               <ng-template #selectedItem>
-                <div class="flex align-items-center gap-2" *ngIf="orderKey">
-                  <div>{{ orderKey.label }}</div>
-                </div>
+                @if (orderKey) {
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ orderKey.label }}</div>
+                  </div>
+                }
               </ng-template>
               <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
@@ -63,12 +63,11 @@
               styleClass="md:mb-0 ml-2"
             >
               <ng-template #selectedItem>
-                <div
-                  class="flex align-items-center gap-2"
-                  *ngIf="orderDirectionKey"
-                >
-                  <div>{{ orderDirectionKey.label }}</div>
-                </div>
+                @if (orderDirectionKey) {
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ orderDirectionKey.label }}</div>
+                  </div>
+                }
               </ng-template>
               <ng-template let-option #item>
                 <div class="flex align-items-center gap-2">
@@ -81,28 +80,32 @@
         <div
           class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
         >
-          <div *ngIf="availableScales.length > 2">
-            {{ t("lineType") }}
-            <p-select
-              [options]="availableScales"
-              [(ngModel)]="scaleKey"
-              [disabled]="loadingFirstPage === loadingStates.LOADING"
-              optionLabel="label"
-              (onChange)="selectScale()"
-              styleClass="md:mb-0"
-            >
-              <ng-template #selectedItem>
-                <div class="flex align-items-center gap-2" *ngIf="scaleKey">
-                  <div>{{ scaleKey.label }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
-          </div>
+          @if (availableScales.length > 2) {
+            <div>
+              {{ t("lineType") }}
+              <p-select
+                [options]="availableScales"
+                [(ngModel)]="scaleKey"
+                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                optionLabel="label"
+                (onChange)="selectScale()"
+                styleClass="md:mb-0"
+              >
+                <ng-template #selectedItem2>
+                  @if (scaleKey) {
+                    <div class="flex align-items-center gap-2">
+                      <div>{{ scaleKey.label }}</div>
+                    </div>
+                  }
+                </ng-template>
+                <ng-template let-option #item2>
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ option.label }}</div>
+                  </div>
+                </ng-template>
+              </p-select>
+            </div>
+          }
           <div *isGymMode="true">
             <p-button
               [disabled]="loadingFirstPage === loadingStates.LOADING"
@@ -115,163 +118,179 @@
           </div>
         </div>
 
-        <div class="slider-container mt-1" *ngIf="scaleKey?.value">
-          <lc-slider-labels
-            [rangeMin]="gradeFilterRange[0]"
-            [rangeMax]="gradeFilterRange[1]"
-            [min]="minGradeValue"
-            [max]="maxGradeValue"
-            [minLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[0]
-              )
-                | async
-                | translateSpecialGrades
-            "
-            [maxLabel]="
-              scalesService.gradeNameByValue(
-                scaleKey.value.lineType,
-                scaleKey.value.gradeScale,
-                gradeFilterRange[1]
-              )
-                | async
-                | translateSpecialGrades
-            "
-          ></lc-slider-labels>
-          <p-slider
-            [(ngModel)]="gradeFilterRange"
-            [min]="minGradeValue"
-            [disabled]="loadingFirstPage === loadingStates.LOADING"
-            [max]="maxGradeValue"
-            [range]="true"
-            [step]="1"
-            (onSlideEnd)="reloadOnSlideEnd()"
-          />
-        </div>
+        @if (scaleKey?.value) {
+          <div class="slider-container mt-1">
+            <lc-slider-labels
+              [rangeMin]="gradeFilterRange[0]"
+              [rangeMax]="gradeFilterRange[1]"
+              [min]="minGradeValue"
+              [max]="maxGradeValue"
+              [minLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[0]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+              [maxLabel]="
+                scalesService.gradeNameByValue(
+                  scaleKey.value.lineType,
+                  scaleKey.value.gradeScale,
+                  gradeFilterRange[1]
+                )
+                  | async
+                  | translateSpecialGrades
+              "
+            ></lc-slider-labels>
+            <p-slider
+              [(ngModel)]="gradeFilterRange"
+              [min]="minGradeValue"
+              [disabled]="loadingFirstPage === loadingStates.LOADING"
+              [max]="maxGradeValue"
+              [range]="true"
+              [step]="1"
+              (onSlideEnd)="reloadOnSlideEnd()"
+            />
+          </div>
+        }
       </div>
     </ng-template>
     <ng-template let-lines #list>
-      <lc-line-list-skeleton
-        *ngIf="loadingFirstPage === loadingStates.LOADING"
-      ></lc-line-list-skeleton>
-      <div
-        class="grid grid-nogutter"
-        *ngIf="loadingFirstPage !== loadingStates.LOADING"
-      >
-        <a
-          class="col-12 clickable-data-item line-link"
-          [ngClass]="{ ticked: ticks.has(line.id) }"
-          routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
-            line.areaSlug
-          }}/{{ line.slug }}"
-          *ngFor="let line of lines; let first = first"
-          data-cy="line-list-item"
-        >
-          <div
-            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-            [ngClass]="{
-              'border-top-1 surface-border': !first,
-              archived: line.archived,
-            }"
-          >
-            <lc-topo-image
-              class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-              [topoImage]="line.topoImages[0]"
-              [color]="line.color ?? undefined"
-              *ngIf="line.topoImages.length > 0"
-            ></lc-topo-image>
-            <img
-              class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-              [src]="'assets/placeholder.png'"
-              *ngIf="line.topoImages.length === 0"
-              [alt]="line.name"
-            />
-            <div
-              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+      @if (loadingFirstPage === loadingStates.LOADING) {
+        <lc-line-list-skeleton></lc-line-list-skeleton>
+      }
+      @if (loadingFirstPage !== loadingStates.LOADING) {
+        <div class="grid grid-nogutter">
+          @for (line of lines; track line; let first = $first) {
+            <a
+              class="col-12 clickable-data-item line-link"
+              [ngClass]="{ ticked: ticks.has(line.id) }"
+              routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
+                line.areaSlug
+              }}/{{ line.slug }}"
+              data-cy="line-list-item"
             >
               <div
-                class="flex flex-column align-items-center sm:align-items-start gap-3 line-info-container"
+                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                [ngClass]="{
+                  'border-top-1 surface-border': !first,
+                  archived: line.archived,
+                }"
               >
+                @if (line.topoImages.length > 0) {
+                  <lc-topo-image
+                    class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                    [topoImage]="line.topoImages[0]"
+                    [color]="line.color ?? undefined"
+                  ></lc-topo-image>
+                }
+                @if (line.topoImages.length === 0) {
+                  <img
+                    class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                    [src]="'assets/placeholder.png'"
+                    [alt]="line.name"
+                  />
+                }
                 <div
-                  class="text-2xl text-900 line-name flex flex-column md:flex-row align-items-center justify-content-between"
+                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
                 >
-                  <div>
-                    <strong>{{ line.name }}</strong>
-                    {{ line | lineGrade }}
-                  </div>
-                  <p-rating
-                    [ngModel]="
-                      displayUserRating ? line.userRating : line.authorRating
-                    "
-                    [readonly]="true"
-                    class="align-self-center md:align-self-end"
-                  ></p-rating>
-                </div>
-                <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
-                <div
-                  [innerHTML]="line.description | sanitizeHtml"
-                  *ngIf="line.description"
-                  class="quill-content"
-                ></div>
-                <lc-ascent-count
-                  [ascentCount]="line.ascentCount"
-                ></lc-ascent-count>
-                <div class="bottom-row">
-                  <p-button
-                    icon="pi pi-video"
-                    styleClass="p-button-rounded p-button-text"
-                    label="{{ line.videos[0].title }}"
-                    (click)="openVideo($event, line)"
-                    class="video-button"
-                    *ngIf="line.videos?.length > 0"
+                  <div
+                    class="flex flex-column align-items-center sm:align-items-start gap-3 line-info-container"
                   >
-                  </p-button>
-                  <div class="flex-grow-1"></div>
-                  <lc-archive-button
-                    [line]="line"
-                    [showLabel]="false"
-                    [style]="'plain'"
-                    *isModerator="true"
-                  ></lc-archive-button>
-                  <ng-container *ngIf="!ticks.has(line.id)">
-                    <lc-todo-button
+                    <div
+                      class="text-2xl text-900 line-name flex flex-column md:flex-row align-items-center justify-content-between"
+                    >
+                      <div>
+                        <strong>{{ line.name }}</strong>
+                        {{ line | lineGrade }}
+                      </div>
+                      <p-rating
+                        [ngModel]="
+                          displayUserRating
+                            ? line.userRating
+                            : line.authorRating
+                        "
+                        [readonly]="true"
+                        class="align-self-center md:align-self-end"
+                      ></p-rating>
+                    </div>
+                    <lc-line-bool-prop-list
                       [line]="line"
-                      [isTodo]="isTodo.has(line.id)"
-                      *isLoggedIn="true"
-                    ></lc-todo-button>
-                  </ng-container>
-                  <lc-tick-button
-                    [line]="line"
-                    [ticked]="ticks.has(line.id)"
-                    *isLoggedIn="true"
-                  ></lc-tick-button>
-                </div>
-                <div class="flex gap-1">
-                  <lc-closed-spot-tag *ngIf="line.closed"></lc-closed-spot-tag>
-                  <lc-secret-spot-tag *ngIf="line.secret"></lc-secret-spot-tag>
+                    ></lc-line-bool-prop-list>
+                    @if (line.description) {
+                      <div
+                        [innerHTML]="line.description | sanitizeHtml"
+                        class="quill-content"
+                      ></div>
+                    }
+                    <lc-ascent-count
+                      [ascentCount]="line.ascentCount"
+                    ></lc-ascent-count>
+                    <div class="bottom-row">
+                      @if (line.videos?.length > 0) {
+                        <p-button
+                          icon="pi pi-video"
+                          styleClass="p-button-rounded p-button-text"
+                          label="{{ line.videos[0].title }}"
+                          (click)="openVideo($event, line)"
+                          class="video-button"
+                        >
+                        </p-button>
+                      }
+                      <div class="flex-grow-1"></div>
+                      <lc-archive-button
+                        [line]="line"
+                        [showLabel]="false"
+                        [style]="'plain'"
+                        *isModerator="true"
+                      ></lc-archive-button>
+                      @if (!ticks.has(line.id)) {
+                        <lc-todo-button
+                          [line]="line"
+                          [isTodo]="isTodo.has(line.id)"
+                          *isLoggedIn="true"
+                        ></lc-todo-button>
+                      }
+                      <lc-tick-button
+                        [line]="line"
+                        [ticked]="ticks.has(line.id)"
+                        *isLoggedIn="true"
+                      ></lc-tick-button>
+                    </div>
+                    <div class="flex gap-1">
+                      @if (line.closed) {
+                        <lc-closed-spot-tag></lc-closed-spot-tag>
+                      }
+                      @if (line.secret) {
+                        <lc-secret-spot-tag></lc-secret-spot-tag>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </a>
-      </div>
+            </a>
+          }
+        </div>
+      }
     </ng-template>
   </p-dataView>
 
-  <div class="flex justify-content-center mt-5" *ngIf="hasNextPage">
-    <p-button
-      label="{{ t('loadMore') }}"
-      (scrolled)="loadNextPage()"
-      (click)="loadNextPage()"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      [loading]="
-        loadingAdditionalPage === loadingStates.LOADING ||
-        loadingFirstPage === loadingStates.LOADING
-      "
-    ></p-button>
-  </div>
+  @if (hasNextPage) {
+    <div class="flex justify-content-center mt-5">
+      <p-button
+        label="{{ t('loadMore') }}"
+        (scrolled)="loadNextPage()"
+        (click)="loadNextPage()"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        [loading]="
+          loadingAdditionalPage === loadingStates.LOADING ||
+          loadingFirstPage === loadingStates.LOADING
+        "
+      ></p-button>
+    </div>
+  }
 </ng-container>

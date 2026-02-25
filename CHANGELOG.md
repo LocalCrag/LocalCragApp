@@ -1,3 +1,36 @@
+## [1.25.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.3...v1.25.4) (2026-02-21)
+
+
+### Bug Fixes
+
+* **comments:** add loading skeleton for comments in correct shape ([#970](https://github.com/LocalCrag/LocalCragApp/issues/970)) ([e1fc96c](https://github.com/LocalCrag/LocalCragApp/commit/e1fc96c8b01f94abb8f9064ccd3831b58fba46c6)), closes [#919](https://github.com/LocalCrag/LocalCragApp/issues/919)
+* **core:** don't render empty system group label in user menu for non moderators ([#972](https://github.com/LocalCrag/LocalCragApp/issues/972)) ([71735ef](https://github.com/LocalCrag/LocalCragApp/commit/71735ef9a1563fd182d890a22d9041a5514295f7)), closes [#904](https://github.com/LocalCrag/LocalCragApp/issues/904)
+* **topo:** fix broken label of starting position select in line form ([#969](https://github.com/LocalCrag/LocalCragApp/issues/969)) ([196f327](https://github.com/LocalCrag/LocalCragApp/commit/196f327b764ff2d8ef49d9b4d8486464348fb6fd)), closes [#962](https://github.com/LocalCrag/LocalCragApp/issues/962)
+* **topo:** fix incorrect rendering of user grades in line detail view ([#973](https://github.com/LocalCrag/LocalCragApp/issues/973)) ([16a0f15](https://github.com/LocalCrag/LocalCragApp/commit/16a0f156bb1471f3670fe00e7e39ffb92a6c9caf)), closes [#874](https://github.com/LocalCrag/LocalCragApp/issues/874)
+
+## [1.25.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.2...v1.25.3) (2026-02-09)
+
+
+### Bug Fixes
+
+* **topo:** left align topo image subtitles to fix inconsistent look when coordinates for image exist ([#955](https://github.com/LocalCrag/LocalCragApp/issues/955)) ([01cc6eb](https://github.com/LocalCrag/LocalCragApp/commit/01cc6eb195604e119568a89deabcd43bd25975e7))
+
+## [1.25.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.1...v1.25.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* **core:** add missing package to make release pipeline work ([#930](https://github.com/LocalCrag/LocalCragApp/issues/930)) ([128dae7](https://github.com/LocalCrag/LocalCragApp/commit/128dae76d8c7b15809fc7e0b1c2e43601325c3ef))
+* fix release sed command ([#931](https://github.com/LocalCrag/LocalCragApp/issues/931)) ([1a6d8b8](https://github.com/LocalCrag/LocalCragApp/commit/1a6d8b82eada83bfbc83030ce48d63a7772510de))
+* update helm chart structure to work with argocd ([#929](https://github.com/LocalCrag/LocalCragApp/issues/929)) ([3d17c58](https://github.com/LocalCrag/LocalCragApp/commit/3d17c586f528edb10db2b90309dd7c30c990cb4a))
+
+## [1.25.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.0...v1.25.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* **posts:** WYSIWYG editor file upload can now handle array responses ([#926](https://github.com/LocalCrag/LocalCragApp/issues/926)) ([b067527](https://github.com/LocalCrag/LocalCragApp/commit/b067527b52fe42d143885050e4992aaa2746a238))
+
 # [1.25.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.24.0...v1.25.0) (2025-12-06)
 
 

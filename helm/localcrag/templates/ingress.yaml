@@ -1,0 +1,71 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "localcrag.fullname" . }}
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.client.ingress.clusterIssuer | quote }}
+    traefik.ingress.kubernetes.io/router.middlewares: >-
+      {{ .Release.Namespace }}-{{ include "localcrag.fullname" . }}-redirect-https@kubernetescrd,
+      {{ .Release.Namespace }}-{{ include "localcrag.fullname" . }}-redirect-www@kubernetescrd
+spec:
+  tls:
+    - secretName: {{ printf "%s-tls" .Release.Name | quote }}
+      hosts:
+        - {{ .Values.client.ingress.host | quote }}
+        - {{ printf "www.%s" .Values.client.ingress.host | quote }}
+        - {{ .Values.s3.ingress.s3Host | quote }}
+        - {{ .Values.s3.ingress.consoleHost | quote }}
+  rules:
+    - host: {{ .Values.client.ingress.host | quote }}
+      http:
+        paths:
+          # Send API calls straight to the backend service.
+          - path: "/api"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "localcrag.fullname" . }}-server
+                port:
+                  number: 5000
+
+          # Everything else goes to the Angular client.
+          - path: {{ .Values.client.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "localcrag.fullname" . }}-client
+                port:
+                  number: 4200
+    # WWW subdomain - will be redirected to non-www by middleware
+    - host: {{ printf "www.%s" .Values.client.ingress.host | quote }}
+      http:
+        paths:
+          - path: {{ .Values.client.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "localcrag.fullname" . }}-client
+                port:
+                  number: 4200
+    - host: {{ .Values.s3.ingress.s3Host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "localcrag.s3.fullname" . }}
+                port:
+                  number: 9000
+    - host: {{ .Values.s3.ingress.consoleHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "localcrag.s3.fullname" . }}-console
+                port:
+                  number: 9001

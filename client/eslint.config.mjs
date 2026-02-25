@@ -25,7 +25,6 @@ export default defineConfig([
     ),
 
     rules: {
-      "@angular-eslint/prefer-standalone": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "no-unused-vars": "off",
 

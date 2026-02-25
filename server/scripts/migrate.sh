@@ -1,1 +1,0 @@
-pipenv run flask db migrate

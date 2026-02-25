@@ -53,7 +53,7 @@ import {
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Button } from 'primeng/button';
@@ -74,7 +74,6 @@ import { Tag } from 'primeng/tag';
     Select,
     TranslateSpecialGradesPipe,
     TranslocoPipe,
-    NgIf,
     Tag,
     AsyncPipe,
     Button,

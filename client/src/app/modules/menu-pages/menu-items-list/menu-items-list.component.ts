@@ -16,7 +16,7 @@ import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenuItemType } from '../../../enums/menu-item-type';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
@@ -37,8 +37,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NgClass,
     RouterLink,
     TranslocoDirective,
-    NgIf,
-    NgForOf,
     TranslocoPipe,
     MenuPagesListSkeletonComponent,
     Message,

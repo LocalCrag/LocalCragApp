@@ -120,12 +120,14 @@ export class MenuComponent implements OnInit {
       .pipe(take(1))
       .subscribe((authState) => {
         if (authState.user) {
-          this.userMenuItems = [
-            {
+          const items: MenuItem[] = [];
+
+          // Only add the system category for moderators
+          if (authState.user.moderator) {
+            items.push({
               label: this.translocoService.translate(
                 marker('menu.systemCategory'),
               ),
-              visible: authState.user.moderator,
               items: [
                 {
                   icon: 'pi pi-fw pi-file',
@@ -144,7 +146,6 @@ export class MenuComponent implements OnInit {
                   label: this.translocoService.translate(marker('menu.users')),
                   routerLink: '/users',
                   routerLinkActiveOptions: { exact: true },
-                  visible: authState.user.moderator,
                 },
                 {
                   icon: 'pi pi-fw pi-sliders-h',
@@ -159,46 +160,55 @@ export class MenuComponent implements OnInit {
                   routerLink: '/instance-settings',
                 },
               ],
-            },
-            {
-              label: this.translocoService.translate(
-                marker('menu.accountCategory'),
-              ),
-              items: [
-                {
-                  icon: 'pi pi-fw pi-user',
-                  label: this.translocoService.translate(
-                    marker('menu.accountDetail'),
-                  ),
-                  routerLink: `/users/${authState.user.slug}`,
-                },
-                {
-                  icon: 'pi pi-fw pi-check-circle',
-                  label: this.translocoService.translate(marker('menu.todos')),
-                  routerLink: `/todos`,
-                },
-                {
-                  icon: 'pi pi-fw pi-user-edit',
-                  label: this.translocoService.translate(
-                    marker('menu.account'),
-                  ),
-                  routerLink: '/account',
-                },
-                {
-                  icon: 'pi pi-fw pi-shield',
-                  label: this.translocoService.translate(
-                    marker('menu.changePassword'),
-                  ),
-                  routerLink: '/change-password',
-                },
-                {
-                  label: this.translocoService.translate(marker('menu.logout')),
-                  icon: 'pi pi-fw pi-sign-out',
-                  command: this.logout.bind(this),
-                },
-              ],
-            },
-          ];
+            });
+          }
+
+          // Account category is always present
+          items.push({
+            label: this.translocoService.translate(
+              marker('menu.accountCategory'),
+            ),
+            items: [
+              {
+                icon: 'pi pi-fw pi-user',
+                label: this.translocoService.translate(
+                  marker('menu.accountDetail'),
+                ),
+                routerLink: `/users/${authState.user.slug}`,
+              },
+              {
+                icon: 'pi pi-fw pi-check-circle',
+                label: this.translocoService.translate(marker('menu.todos')),
+                routerLink: `/todos`,
+              },
+              {
+                icon: 'pi pi-fw pi-user-edit',
+                label: this.translocoService.translate(marker('menu.account')),
+                routerLink: '/account',
+              },
+              {
+                icon: 'pi pi-fw pi-shield',
+                label: this.translocoService.translate(
+                  marker('menu.changePassword'),
+                ),
+                routerLink: '/change-password',
+              },
+              {
+                label: this.translocoService.translate(marker('menu.logout')),
+                icon: 'pi pi-fw pi-sign-out',
+                command: this.logout.bind(this),
+              },
+            ],
+          });
+
+          // If the only group present is the account category, unwrap it so
+          // the p-menu receives a flat list of MenuItem entries instead of
+          // a single grouped object with a label.
+          if (items.length === 1 && Array.isArray(items[0].items)) {
+            this.userMenuItems = items[0].items as MenuItem[];
+          } else {
+            this.userMenuItems = items;
+          }
         }
       });
   }
