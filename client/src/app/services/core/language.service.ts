@@ -21,6 +21,7 @@ export class LanguageService {
   private actions$ = inject(Actions);
   private destroyRef = inject(DestroyRef);
   private primeNG = inject(PrimeNG);
+
   private gymMode = false;
 
   // Language of the instance

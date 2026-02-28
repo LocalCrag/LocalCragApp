@@ -155,7 +155,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: LOCALE_ID,
-      useValue: localeFactory,
+      useFactory: localeFactory,
     },
     provideHttpClient(withInterceptorsFromDi()),
     providePrimeNG({
