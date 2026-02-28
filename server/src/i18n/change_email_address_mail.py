@@ -32,4 +32,18 @@ change_email_address_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "Change of your LocalCrag e-mail address",
     },
+    "it": {
+        "title": "",
+        "intro_text": "",
+        "LOCALCRAG": "",
+        "hello": "",
+        "text_1": "",
+        "text_2": "",
+        "change_email": "",
+        "copyright": "",
+        "hint": "",
+        "thanks": "",
+        "greetings": "",
+        "subject": "",
+    },
 }

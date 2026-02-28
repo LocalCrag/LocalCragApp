@@ -43,6 +43,7 @@ class UpdateAccountSettings(MethodView):
         data = parser.parse(account_settings_args)
         settings = user.account_settings
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
+        settings.language = data["language"]
         db.session.add(settings)
         db.session.commit()
         return account_settings_schema.dump(settings), 200

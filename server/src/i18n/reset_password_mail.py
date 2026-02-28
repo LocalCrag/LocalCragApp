@@ -31,4 +31,18 @@ reset_password_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "Reset LocalCrag password",
     },
+    "it": {
+        "title": "",
+        "intro_text": "",
+        "LOCALCRAG": "",
+        "hello": "",
+        "text_1": "",
+        "text_2": "",
+        "reset_password": "",
+        "copyright": "",
+        "hint": "",
+        "thanks": "",
+        "greetings": "",
+        "subject": "",
+    },
 }

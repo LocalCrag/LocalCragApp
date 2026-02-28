@@ -1,5 +1,6 @@
 import { AbstractModel } from './abstract-model';
 import { File } from './file';
+import { LanguageCode } from '../utility/types/language';
 
 /**
  * Model of a user.
@@ -18,6 +19,7 @@ export class User extends AbstractModel {
   member: boolean;
   activatedAt: Date;
   avatar: File;
+  accountLanguage: LanguageCode;
 
   fullname: string;
   routerLink: string;
@@ -46,6 +48,7 @@ export class User extends AbstractModel {
     user.fullname = `${user.firstname} ${user.lastname}`;
     user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;
     user.routerLink = `/users/${user.slug}`;
+    user.accountLanguage = payload.accountLanguage;
     return user;
   }
 

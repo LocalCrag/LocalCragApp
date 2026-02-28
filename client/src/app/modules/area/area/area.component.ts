@@ -99,7 +99,6 @@ export class AreaComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, sector, area, isLoggedIn]) => {
           this.crag = crag;
           this.sector = sector;

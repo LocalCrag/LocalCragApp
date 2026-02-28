@@ -86,8 +86,7 @@
                       @if (user.activated) {
                         <small class="mb-3">{{
                           t("userActivatedAt", {
-                            activationTime:
-                              user.activatedAt | date: "dd.MM.yyyy HH:mm",
+                            activationTime: user.activatedAt | date: "datetime",
                           })
                         }}</small>
                       }

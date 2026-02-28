@@ -25,7 +25,6 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -297,24 +296,22 @@ export class MenuItemsFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteMenuItem(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('menuItems.askReallyWantToDeleteMenuItem'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('menuItems.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('menuItems.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteMenuItem();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('menuItems.askReallyWantToDeleteMenuItem'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('menuItems.yesDelete'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('menuItems.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteMenuItem();
+      },
     });
   }
 

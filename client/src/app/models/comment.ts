@@ -72,17 +72,4 @@ export class Comment extends AbstractModel {
       parentId: comment.parentId ?? null,
     };
   }
-
-  // TODO not used
-  public static serializeForUpdate(comment: Comment): any {
-    return {
-      message: comment.message,
-    };
-  }
-}
-
-// TODO not used
-export interface PaginatedComments {
-  items: Comment[];
-  hasNext: boolean;
 }

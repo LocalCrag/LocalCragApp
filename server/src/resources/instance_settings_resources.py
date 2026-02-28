@@ -50,6 +50,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.arrow_highlight_color = instance_settings_data["arrowHighlightColor"]
         instance_settings.arrow_highlight_text_color = instance_settings_data["arrowHighlightTextColor"]
         instance_settings.bar_chart_color = instance_settings_data["barChartColor"]
+        instance_settings.language = instance_settings_data["language"]
         instance_settings.matomo_tracker_url = instance_settings_data["matomoTrackerUrl"]
         instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]
         instance_settings.maptiler_api_key = instance_settings_data["maptilerApiKey"]

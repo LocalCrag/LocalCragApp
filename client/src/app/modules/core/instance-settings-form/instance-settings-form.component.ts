@@ -41,6 +41,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { StartingPosition } from '../../../enums/starting-position';
+import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -65,6 +66,7 @@ import { StartingPosition } from '../../../enums/starting-position';
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
+    LanguageSelectComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -171,6 +173,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       faDefaultFormat: [null],
       defaultStartingPosition: [null, [Validators.required]],
       rankingPastWeeks: [null],
+      language: [null],
     });
   }
 
@@ -200,6 +203,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       faDefaultFormat: this.instanceSettings.faDefaultFormat,
       defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
       rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
+      language: this.instanceSettings.language,
     });
   }
 
@@ -254,6 +258,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       ).value;
       instanceSettings.rankingPastWeeks =
         this.instanceSettingsForm.get('rankingPastWeeks').value;
+      instanceSettings.language =
+        this.instanceSettingsForm.get('language').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

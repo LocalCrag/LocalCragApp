@@ -1,7 +1,7 @@
 import secrets
 from base64 import b64decode, b64encode
 from hashlib import pbkdf2_hmac
-from typing import Self
+from typing import Optional, Self
 
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -33,7 +33,6 @@ class User(HasSlug, IsSearchable, BaseEntity):
     activated_at = db.Column(db.DateTime(), nullable=True)
     reset_password_hash = db.Column(db.String(120), nullable=True, default=None)
     reset_password_hash_created = db.Column(db.DateTime(timezone=True), default=None, nullable=True)
-    language = db.Column(db.String, nullable=False, server_default="de")
     avatar_id = db.Column(UUID(), db.ForeignKey("files.id", name="fk_user_avatar_id"), nullable=True)
     avatar = db.relationship("File", foreign_keys=avatar_id)
     superadmin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
@@ -75,15 +74,15 @@ class User(HasSlug, IsSearchable, BaseEntity):
         return secrets.compare_digest(new_hash, known_hash)
 
     @classmethod
-    def find_by_reset_password_hash(cls, password_hash) -> Self | None:
+    def find_by_reset_password_hash(cls, password_hash) -> Optional[Self]:
         return cls.query.filter_by(reset_password_hash=password_hash).first()
 
     @classmethod
-    def find_by_new_email_hash(cls, new_email_hash) -> Self | None:
+    def find_by_new_email_hash(cls, new_email_hash) -> Optional[Self]:
         return cls.query.filter_by(new_email_hash=new_email_hash).first()
 
     @classmethod
-    def find_by_email(cls, email) -> Self | None:
+    def find_by_email(cls, email) -> Optional[Self]:
         user = cls.query.filter_by(email=email).first()
         return user
 

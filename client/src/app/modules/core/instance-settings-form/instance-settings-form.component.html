@@ -215,6 +215,22 @@
           ></p-select>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="language">{{ t("languageLabel") }}</label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('instanceLanguageTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
+          <lc-language-select
+            id="language"
+            formControlName="language"
+            lcFormControl
+          ></lc-language-select>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

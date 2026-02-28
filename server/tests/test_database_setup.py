@@ -1,9 +1,8 @@
-from importlib import import_module
-
 import pytest
 from flask import current_app
 
 from extensions import db
+from migrations.util_scripts.database_setup import database_setup
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.instance_settings import InstanceSettings
@@ -12,16 +11,9 @@ from models.menu_page import MenuPage
 from models.region import Region
 from models.user import User
 
-# We test the utils that are called by the migration script directly
-# Previously the database setup was done by a dedicated script run after migrations
-_migration = import_module(
-    "migrations.versions.28f64bea4755_database_setup"
-)  # Needed for importing module starting with a number
-upgrade = _migration.upgrade
-
 
 def test_database_setup(client, clean_db, smtp_mock):
-    upgrade()
+    database_setup()
     assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
     assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
     assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
@@ -85,4 +77,4 @@ def test_database_setup_with_missing_env_vars(client, clean_db):
     current_app.config["SUPERADMIN_LASTNAME"] = None
     current_app.config["SUPERADMIN_EMAIL"] = None
     with pytest.raises(ValueError):
-        upgrade()
+        database_setup()

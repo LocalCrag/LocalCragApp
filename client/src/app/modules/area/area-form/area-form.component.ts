@@ -27,7 +27,6 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -301,22 +300,18 @@ export class AreaFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteArea(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('area.askReallyWantToDeleteArea'),
-        ),
-        acceptLabel: this.translocoService.translate(marker('area.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('area.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteArea();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('area.askReallyWantToDeleteArea'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('area.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(marker('area.noDontDelete')),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteArea();
+      },
     });
   }
 

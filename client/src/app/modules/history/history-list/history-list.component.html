@@ -23,7 +23,7 @@
                 {{ getHeader(event) + ": " + event.object.name }}
               </ng-template>
               <ng-template #subtitle>
-                {{ event.timeCreated | date: "dd.MM.yyyy" }},
+                {{ event.timeCreated | date }},
                 <a
                   class="username"
                   routerLink="{{ event.createdBy.routerLink }}"

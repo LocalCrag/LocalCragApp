@@ -293,24 +293,20 @@ export class SectorFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteSector(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('sector.askReallyWantToDeleteSector'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('sector.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('sector.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteSector();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('sector.askReallyWantToDeleteSector'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('sector.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('sector.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteSector();
+      },
     });
   }
 
