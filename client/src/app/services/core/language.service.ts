@@ -8,6 +8,11 @@ import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { loginSuccess } from '../../ngrx/actions/auth.actions';
 import { map } from 'rxjs/operators';
+import { PrimeNG } from 'primeng/config';
+import { Locale } from 'primelocale/js/locale.js';
+import { de } from 'primelocale/js/de.js';
+import { it } from 'primelocale/js/it.js';
+import { en_GB } from 'primelocale/js/en_GB.js';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -15,6 +20,7 @@ export class LanguageService {
   private transloco = inject(TranslocoService);
   private actions$ = inject(Actions);
   private destroyRef = inject(DestroyRef);
+  private primeNG = inject(PrimeNG);
   private gymMode = false;
 
   // Language of the instance
@@ -27,6 +33,12 @@ export class LanguageService {
   readonly browserLanguage: LanguageCode;
   // Currently rendered language, can contain '-gym' suffix
   private renderedLanguage: string;
+
+  private primeNGTranslationMapping: Record<LanguageCode, Locale> = {
+    de: de,
+    en: en_GB,
+    it: it,
+  };
 
   constructor() {
     this.browserLanguage = navigator.language.slice(0, 2) as LanguageCode;
@@ -111,6 +123,7 @@ export class LanguageService {
     this.transloco.setFallbackLangForMissingTranslation({
       fallbackLang: lang,
     });
+    this.primeNG.setTranslation(this.primeNGTranslationMapping[lang]);
     return this.preloadScopes(lang);
   }
 

@@ -45,6 +45,7 @@ import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { LanguageService } from '../../services/core/language.service';
+import { de } from 'primelocale/js/de.js';
 
 /**
  * Transloco HTTP loader.
@@ -111,7 +112,7 @@ const initMatomo = (
 
 export function localeFactory(): string {
   return (
-    localStorage.getItem('preferredLanguage') || navigator.language || 'en-US'
+    localStorage.getItem('preferredLanguage') || navigator.language || 'de'
   );
 }
 
@@ -158,6 +159,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideHttpClient(withInterceptorsFromDi()),
     providePrimeNG({
+      translation: de,
       ripple: true,
       theme: {
         preset: LocalCragTheme,

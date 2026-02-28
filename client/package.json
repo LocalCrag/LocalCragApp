@@ -46,6 +46,7 @@
     "ngx-matomo-client": "^9.0.1",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
+    "primelocale": "^2.3.1",
     "primeng": "^21.1.1",
     "quill": "^1.3.7",
     "quill-blot-formatter": "^1.0.5",
