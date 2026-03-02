@@ -61,7 +61,7 @@
     "@angular-eslint/schematics": "21.2.0",
     "@angular-eslint/template-parser": "21.2.0",
     "@angular/build": "^21.1.3",
-    "@angular/cli": "~21.1.3",
+    "@angular/cli": "~21.2.0",
     "@angular/compiler-cli": "^21.1.3",
     "@jsverse/transloco-keys-manager": "^7.0.2",
     "@ngrx/store-devtools": "^21.0.1",
