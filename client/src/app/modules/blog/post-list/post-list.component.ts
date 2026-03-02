@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
@@ -22,6 +22,8 @@ import { PostListSkeletonComponent } from '../post-list-skeleton/post-list-skele
 import { Message } from 'primeng/message';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { LanguageService } from '../../../services/core/language.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * A component that shows a list of blog posts.
@@ -60,6 +62,8 @@ export class PostListComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Loads the posts on initialization.
@@ -81,18 +85,28 @@ export class PostListComponent implements OnInit {
     forkJoin([this.postsService.getPosts()]).subscribe(([posts]) => {
       this.posts = posts;
       this.loading = LoadingState.DEFAULT;
-      this.sortOptions = [
-        {
-          label: this.translocoService.translate(marker('sortNewToOld')),
-          value: 'timeCreated',
-        },
-        {
-          label: this.translocoService.translate(marker('sortOldToNew')),
-          value: '!timeCreated',
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
+      this.buildSortOptions();
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildSortOptions();
+        });
     });
+  }
+
+  private buildSortOptions() {
+    this.sortOptions = [
+      {
+        label: this.translocoService.translate(marker('sortNewToOld')),
+        value: 'timeCreated',
+      },
+      {
+        label: this.translocoService.translate(marker('sortOldToNew')),
+        value: '!timeCreated',
+      },
+    ];
+    this.sortKey = this.sortOptions[0];
   }
 
   /**

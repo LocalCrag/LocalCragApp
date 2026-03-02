@@ -43,6 +43,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-line',
@@ -79,6 +80,7 @@ export class LineComponent implements OnInit {
   private areasService = inject(AreasService);
   private linesService = inject(LinesService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
@@ -174,42 +176,57 @@ export class LineComponent implements OnInit {
                   });
               });
 
-            this.items = [
-              {
-                label: this.translocoService.translate(marker('line.infos')),
-                icon: 'pi pi-fw pi-info-circle',
-                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}`,
-                routerLinkActiveOptions: { exact: true },
-                visible: true,
-              },
-              {
-                label: this.translocoService.translate(marker('line.ascents')),
-                icon: 'pi pi-fw pi-check-square',
-                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
-                visible: true,
-              },
-              {
-                label: this.translocoService.translate(marker('line.gallery')),
-                icon: 'pi pi-fw pi-images',
-                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
-                visible: true,
-              },
-              {
-                label: this.translocoService.translate(marker('line.comments')),
-                icon: 'pi pi-fw pi-comments',
-                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/comments`,
-                visible: true,
-              },
-              {
-                label: this.translocoService.translate(marker('line.edit')),
-                icon: 'pi pi-fw pi-file-edit',
-                routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
-                visible: isModerator,
-              },
-            ];
+            // Build the tab/menu items for the line view
+            this.buildTabs(isModerator);
+            // Rebuild tabs if the rendered language changes
+            this.languageService.renderedLanguage$
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((rendered) => {
+                if (!rendered) return;
+                // only rebuild if data is loaded
+                if (this.line) {
+                  this.buildTabs(isModerator);
+                }
+              });
             this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
           },
         );
       });
+  }
+
+  private buildTabs(isModerator: boolean) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('line.infos')),
+        icon: 'pi pi-fw pi-info-circle',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('line.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('line.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('line.comments')),
+        icon: 'pi pi-fw pi-comments',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/comments`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('line.edit')),
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
+        visible: isModerator,
+      },
+    ];
   }
 }

@@ -1,13 +1,13 @@
 import { Injectable, inject, DestroyRef } from '@angular/core';
 import { Translation, TranslocoService } from '@jsverse/transloco';
 import { LANGUAGE_CODES, LanguageCode } from '../../utility/types/language';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectInstanceLanguage } from '../../ngrx/selectors/instance-settings.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { loginSuccess } from '../../ngrx/actions/auth.actions';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { PrimeNG } from 'primeng/config';
 import { Locale } from 'primelocale/js/locale.js';
 import { de } from 'primelocale/js/de.js';
@@ -34,6 +34,10 @@ export class LanguageService {
   readonly browserLanguage: LanguageCode;
   // Currently rendered language, can contain '-gym' suffix
   private renderedLanguage: string;
+
+  // Observable that emits whenever the currently rendered language changes.
+  private renderedLanguageSubject = new BehaviorSubject<string | null>(null);
+  readonly renderedLanguage$ = this.renderedLanguageSubject.asObservable();
 
   private primeNGTranslationMapping: Record<LanguageCode, Locale> = {
     de: de,
@@ -125,7 +129,12 @@ export class LanguageService {
       fallbackLang: lang,
     });
     this.primeNG.setTranslation(this.primeNGTranslationMapping[lang]);
-    return this.preloadScopes(lang);
+    return this.preloadScopes(lang).pipe(
+      tap(() => {
+        // Notify subscribers about the change
+        this.renderedLanguageSubject.next(this.renderedLanguage);
+      }),
+    );
   }
 
   /**

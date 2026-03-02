@@ -57,6 +57,7 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -145,10 +146,11 @@ export class AscentListComponent implements OnInit, OnChanges {
   private actions$ = inject(Actions);
   private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  protected scalesService = inject(ScalesService);
   private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
-
-  protected scalesService = inject(ScalesService);
+  private gradeDistribution: any = null;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['parentLoading']) {
@@ -159,25 +161,9 @@ export class AscentListComponent implements OnInit, OnChanges {
   ngOnInit() {
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
-      this.availableScales.push({
-        label: this.translocoService.translate('ALL'),
-        value: undefined,
-      });
-      for (const lineType in gradeDistribution) {
-        for (const gradeScale in gradeDistribution[lineType]) {
-          if (gradeDistribution[lineType][gradeScale]) {
-            this.availableScales.push({
-              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-              value: { lineType: lineType as LineType, gradeScale },
-            });
-          }
-        }
-      }
-      if (this.availableScales.length <= 2) {
-        this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
-      } else {
-        this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
-      }
+      // store distribution for later rebuilds and build initial available scales
+      this.gradeDistribution = gradeDistribution;
+      this.buildAvailableScales(gradeDistribution);
       this.regionGradesLoaded$.next(true);
     });
 
@@ -196,60 +182,30 @@ export class AscentListComponent implements OnInit, OnChanges {
         this.selectScale();
       });
 
-    this.orderOptions = [
-      {
-        label: this.translocoService.translate(marker('orderByTimeCreated')),
-        value: 'time_created',
-      },
-      {
-        label: this.translocoService.translate(marker('orderByAscentDate')),
-        value: 'ascent_date',
-      },
-    ];
-    if (!this.disableGradeOrderAndFiltering) {
-      this.orderOptions.push({
-        label: this.translocoService.translate(marker('orderByGrade')),
-        value: 'grade_value',
+    // use helpers to create order/direction/action options so they can be reused
+    this.buildOrderOptions();
+    this.buildDirectionOptions();
+    this.buildAscentActionItems();
+
+    // Rebuild menu labels and available scales when language changes
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildOrderOptions();
+        this.buildDirectionOptions();
+        this.buildAscentActionItems();
+        if (this.gradeDistribution) {
+          this.buildAvailableScalesFromCurrent();
+        }
+        this.cdr.markForCheck();
       });
-    }
-    this.orderKey = this.orderOptions[0];
-    this.orderDirectionOptions = [
-      {
-        label: this.translocoService.translate(marker('orderDescending')),
-        value: 'desc',
-      },
-      {
-        label: this.translocoService.translate(marker('orderAscending')),
-        value: 'asc',
-      },
-    ];
-    this.orderDirectionKey = this.orderDirectionOptions[0];
+
     this.actions$
       .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loadFirstPage();
       });
-    this.ascentActionItems = [
-      {
-        label: this.translocoService.translate('ascent.editAscent'),
-        icon: 'pi pi-pencil',
-        id: 'edit-ascent', // id is needed for cypress testing
-        command: () => {
-          this.editAscent(this.clickedAscentForAction);
-        },
-      },
-      {
-        label: this.translocoService.translate('ascent.deleteAscent'),
-        icon: 'pi pi-trash',
-        id: 'delete-ascent', // id is needed for cypress testing
-        command: (e) => {
-          this.confirmDeleteAscent(
-            e.originalEvent,
-            this.clickedAscentForAction,
-          );
-        },
-      },
-    ];
   }
 
   selectScale() {
@@ -373,6 +329,105 @@ export class AscentListComponent implements OnInit, OnChanges {
         reloadAfterAscent({ ascendedLineId: ascent.line.id }),
       );
     });
+  }
+
+  private buildOrderOptions() {
+    this.orderOptions = [
+      {
+        label: this.translocoService.translate(marker('orderByTimeCreated')),
+        value: 'time_created',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByAscentDate')),
+        value: 'ascent_date',
+      },
+    ];
+    if (!this.disableGradeOrderAndFiltering) {
+      this.orderOptions.push({
+        label: this.translocoService.translate(marker('orderByGrade')),
+        value: 'grade_value',
+      });
+    }
+    this.orderKey = this.orderOptions[0];
+  }
+
+  private buildDirectionOptions() {
+    this.orderDirectionOptions = [
+      {
+        label: this.translocoService.translate(marker('orderDescending')),
+        value: 'desc',
+      },
+      {
+        label: this.translocoService.translate(marker('orderAscending')),
+        value: 'asc',
+      },
+    ];
+    this.orderDirectionKey = this.orderDirectionOptions[0];
+  }
+
+  private buildAscentActionItems() {
+    this.ascentActionItems = [
+      {
+        label: this.translocoService.translate('ascent.editAscent'),
+        icon: 'pi pi-pencil',
+        id: 'edit-ascent',
+        command: () => {
+          this.editAscent(this.clickedAscentForAction);
+        },
+      },
+      {
+        label: this.translocoService.translate('ascent.deleteAscent'),
+        icon: 'pi pi-trash',
+        id: 'delete-ascent',
+        command: (e) => {
+          this.confirmDeleteAscent(
+            e.originalEvent,
+            this.clickedAscentForAction,
+          );
+        },
+      },
+    ];
+  }
+
+  private buildAvailableScales(gradeDistribution: any) {
+    this.availableScales = [];
+    this.availableScales.push({
+      label: this.translocoService.translate('ALL'),
+      value: undefined,
+    });
+    for (const lineType in gradeDistribution) {
+      for (const gradeScale in gradeDistribution[lineType]) {
+        if (gradeDistribution[lineType][gradeScale]) {
+          this.availableScales.push({
+            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            value: { lineType: lineType as LineType, gradeScale },
+          });
+        }
+      }
+    }
+    if (this.availableScales.length <= 2) {
+      this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
+    } else {
+      this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
+    }
+  }
+
+  private buildAvailableScalesFromCurrent() {
+    this.availableScales = this.availableScales.map((s) => {
+      if (!s.value)
+        return {
+          label: this.translocoService.translate('ALL'),
+          value: undefined,
+        };
+      const v = s.value as { lineType: LineType; gradeScale: string };
+      return {
+        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        value: v,
+      };
+    });
+    this.scaleKey =
+      this.availableScales.find((s) => s.value === this.scaleKey?.value) ||
+      this.availableScales[0];
   }
 
   protected readonly LineType = LineType;

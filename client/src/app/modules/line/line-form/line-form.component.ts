@@ -70,6 +70,7 @@ import { FormSkeletonComponent } from '../../shared/components/form-skeleton/for
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 /**
  * Form component for lines.
@@ -161,6 +162,7 @@ export class LineFormComponent implements OnInit {
   private sectorsService = inject(SectorsService);
   private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
 
@@ -204,12 +206,7 @@ export class LineFormComponent implements OnInit {
         sector.defaultTradScale ??
         crag.defaultTradScale;
 
-      this.typeOptions = Object.entries(this.groupedScales)
-        .filter(([_, v]) => v.length > 0)
-        .map(([k]) => ({
-          label: this.translocoService.translate(k),
-          value: k,
-        }));
+      this.buildTypeOptions();
 
       this.buildForm();
       this.lineForm
@@ -266,12 +263,7 @@ export class LineFormComponent implements OnInit {
           )
           .subscribe((line) => {
             this.line = line;
-            this.typeOptions = [
-              {
-                label: this.translocoService.translate(this.line.type),
-                value: this.line.type,
-              },
-            ];
+            this.buildTypeOptionsForLine();
             // find() must always find a result if the backend state is not corrupted
             const scale = this.groupedScales[this.line.type].find(
               (scale) => scale.name == this.line.gradeScale,
@@ -286,6 +278,17 @@ export class LineFormComponent implements OnInit {
             this.loadingState = LoadingState.DEFAULT;
             if (this.editor) {
               this.editor.getQuill()?.enable();
+            }
+          });
+        // Rebuild type/scale labels on language change
+        this.languageService.renderedLanguage$
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((rendered) => {
+            if (!rendered) return;
+            if (this.editMode) {
+              this.buildTypeOptionsForLine();
+            } else {
+              this.buildTypeOptions();
             }
           });
       } else {
@@ -641,6 +644,24 @@ export class LineFormComponent implements OnInit {
       this.faFormat = FaDefaultFormat.YEAR;
       this.lineForm.get('faYear').setValue(null);
     }
+  }
+
+  private buildTypeOptions() {
+    this.typeOptions = Object.entries(this.groupedScales)
+      .filter(([_, v]) => v.length > 0)
+      .map(([k]) => ({
+        label: this.translocoService.translate(k),
+        value: k,
+      }));
+  }
+
+  private buildTypeOptionsForLine() {
+    this.typeOptions = [
+      {
+        label: this.translocoService.translate(this.line.type),
+        value: this.line.type,
+      },
+    ];
   }
 
   protected readonly LineType = LineType;

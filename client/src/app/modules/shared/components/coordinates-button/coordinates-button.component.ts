@@ -5,6 +5,9 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
 import { ClipboardService } from '../../../../services/core/clipboard.service';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { LanguageService } from '../../../../services/core/language.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 
 @Component({
   selector: 'lc-coordinates-button',
@@ -20,8 +23,20 @@ export class CoordinatesButtonComponent {
 
   private clipboardService = inject(ClipboardService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
+    this.buildItems();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildItems();
+      });
+  }
+
+  private buildItems() {
     this.items = [
       {
         label: this.translocoService.translate(
