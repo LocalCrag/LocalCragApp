@@ -1,4 +1,7 @@
-@for (item of model; track item.item?.routerLink || item.item?.url || item.item?.label) {
+@for (
+  item of model;
+  track item.item?.routerLink || item.item?.url || item.item?.label
+) {
   <div
     class="item"
     (mouseenter)="onMouseenter(item, menuItem)"
