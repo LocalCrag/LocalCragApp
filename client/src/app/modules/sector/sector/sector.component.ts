@@ -28,6 +28,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-sector',
@@ -58,6 +59,7 @@ export class SectorComponent implements OnInit {
   private cragsService = inject(CragsService);
   private sectorsService = inject(SectorsService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
@@ -87,7 +89,6 @@ export class SectorComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, sector, isLoggedIn]) => {
           this.crag = crag;
           this.sector = sector;
@@ -108,63 +109,13 @@ export class SectorComponent implements OnInit {
                   ),
               };
             });
-          this.items = [
-            {
-              label: this.translocoService.translate(marker('sector.infos')),
-              icon: 'pi pi-fw pi-info-circle',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}`,
-              routerLinkActiveOptions: { exact: true },
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.rules')),
-              icon: 'pi pi-fw pi-exclamation-triangle',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/rules`,
-              visible: sector.rules !== null,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.areas')),
-              icon: 'pi pi-fw pi-sitemap',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.lines')),
-              icon: 'pi pi-fw pi-chart-line',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.ascents')),
-              icon: 'pi pi-fw pi-check-square',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.ranking')),
-              icon: 'pi pi-fw pi-trophy',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ranking`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.gallery')),
-              icon: 'pi pi-fw pi-images',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.comments')),
-              icon: 'pi pi-fw pi-comments',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('sector.edit')),
-              icon: 'pi pi-fw pi-file-edit',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,
-              visible: isLoggedIn,
-            },
-          ];
+          this.buildItems(isLoggedIn);
+          this.languageService.renderedLanguage$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rendered) => {
+              if (!rendered) return;
+              this.buildItems(isLoggedIn);
+            });
           this.breadcrumbs = [
             {
               label: crag.name,
@@ -178,6 +129,66 @@ export class SectorComponent implements OnInit {
           ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
         });
       });
+  }
+
+  private buildItems(isLoggedIn: boolean) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('sector.infos')),
+        icon: 'pi pi-fw pi-info-circle',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.rules')),
+        icon: 'pi pi-fw pi-exclamation-triangle',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/rules`,
+        visible: this.sector.rules !== null,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.areas')),
+        icon: 'pi pi-fw pi-sitemap',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.lines')),
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.ranking')),
+        icon: 'pi pi-fw pi-trophy',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ranking`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.comments')),
+        icon: 'pi pi-fw pi-comments',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.edit')),
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,
+        visible: isLoggedIn,
+      },
+    ];
   }
 
   protected readonly environment = environment;

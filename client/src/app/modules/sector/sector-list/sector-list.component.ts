@@ -3,7 +3,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Sector } from '../../../models/sector';
@@ -95,36 +94,35 @@ export class SectorListComponent implements OnInit {
    * Loads new data.
    */
   refreshData() {
-    forkJoin([
-      this.sectorsService.getSectors(this.cragSlug),
-      this.translocoService.load(`${environment.language}`),
-    ]).subscribe(([sectors]) => {
-      this.sectors = sectors;
-      this.loading = LoadingState.DEFAULT;
-      this.sortOptions = [
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-          label: this.translocoService.translate(marker('sortAscending')),
-          value: '!orderIndex',
-        },
-        {
-          icon: PrimeIcons.SORT_AMOUNT_DOWN,
-          label: this.translocoService.translate(marker('sortDescending')),
-          value: 'orderIndex',
-        },
-        {
-          icon: PrimeIcons.SORT_ALPHA_DOWN,
-          label: this.translocoService.translate(marker('sortAZ')),
-          value: '!name',
-        },
-        {
-          icon: 'pi pi-sort-alpha-down-alt',
-          label: this.translocoService.translate(marker('sortZA')),
-          value: 'name',
-        },
-      ];
-      this.sortKey = this.sortOptions[0];
-    });
+    forkJoin([this.sectorsService.getSectors(this.cragSlug)]).subscribe(
+      ([sectors]) => {
+        this.sectors = sectors;
+        this.loading = LoadingState.DEFAULT;
+        this.sortOptions = [
+          {
+            icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+            label: this.translocoService.translate(marker('sortAscending')),
+            value: '!orderIndex',
+          },
+          {
+            icon: PrimeIcons.SORT_AMOUNT_DOWN,
+            label: this.translocoService.translate(marker('sortDescending')),
+            value: 'orderIndex',
+          },
+          {
+            icon: PrimeIcons.SORT_ALPHA_DOWN,
+            label: this.translocoService.translate(marker('sortAZ')),
+            value: '!name',
+          },
+          {
+            icon: 'pi pi-sort-alpha-down-alt',
+            label: this.translocoService.translate(marker('sortZA')),
+            value: 'name',
+          },
+        ];
+        this.sortKey = this.sortOptions[0];
+      },
+    );
   }
 
   /**
