@@ -265,6 +265,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "secret": False,
             "closed": False,
             "closedReason": None,
+            "blocweatherUrl": None,
         }
 
         rv = client.post("/api/crags", token=user_token, json=crag_data)
@@ -297,6 +298,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": None,
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)

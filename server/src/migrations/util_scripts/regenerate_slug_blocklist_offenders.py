@@ -1,6 +1,8 @@
 from collections import defaultdict
 from typing import Iterable, List
 
+from sqlalchemy import text
+
 from app import app
 from extensions import db
 from models.mixins.has_slug import HasSlug
@@ -22,6 +24,12 @@ def regenerate_blocklisted_slugs():
     """
     Find all records whose slug is currently in their model's slug_blocklist and
     force regeneration via the existing before_flush hook (update_slugs).
+
+    Notes:
+    This utility may be executed at various points in the migration chain. Using
+    the ORM to load entities can break if model definitions contain columns that
+    aren't present in the DB yet. To stay compatible, we only select the minimal
+    columns needed (id, slug) via SQL and then load entities by primary key.
     """
     affected = 0
 
@@ -30,25 +38,27 @@ def regenerate_blocklisted_slugs():
         changes: dict[str, List[tuple[str, str]]] = defaultdict(list)
 
         for model_cls in _iter_has_slug_models():
-            # Query items that currently have a blocklisted slug
             blocklist = list(getattr(model_cls, "slug_blocklist", []))
             if not blocklist:
                 continue
 
-            # Use IN query to find offenders
-            offenders = model_cls.query.filter(model_cls.slug.in_(blocklist)).all()
-            if not offenders:
+            table = getattr(model_cls, "__tablename__", model_cls.__name__.lower())
+
+            # Select only the columns we need, to avoid referencing columns that
+            # might not exist yet at this migration state.
+            stmt = text(f"SELECT id, slug FROM {table} WHERE slug = ANY(:blocklist)")
+            rows = db.session.execute(stmt, {"blocklist": blocklist}).fetchall()
+            if not rows:
                 continue
 
-            for item in offenders:
-                # Force slug regeneration by marking the item as dirty with a slug
-                # that definitely doesn't start with the computed title slug.
-                # Empty string is safe here because the before_flush hook will compute
-                # and assign a valid unique slug before flush hits the DB.
-                old_slug = item.slug
+            for row in rows:
+                item_id, old_slug = row
+                item = db.session.get(model_cls, item_id)
+                if item is None:
+                    continue
+
                 item.slug = ""  # trigger update_slugs
-                table = getattr(model_cls, "__tablename__", model_cls.__name__.lower())
-                changes[table].append((str(getattr(item, "id", "?")), old_slug))
+                changes[table].append((str(item_id), old_slug))
                 affected += 1
 
         if affected:

@@ -32,6 +32,7 @@ class SectorDetailSchema(SectorSchema):
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")
     defaultSportScale = fields.String(attribute="default_sport_scale")
     defaultTradScale = fields.String(attribute="default_trad_scale")
+    blocweatherUrl = fields.String(attribute="blocweather_url")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
