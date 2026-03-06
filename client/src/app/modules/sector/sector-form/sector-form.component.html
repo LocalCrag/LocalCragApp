@@ -192,6 +192,26 @@
             </lc-single-image-upload>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="blocweatherUrl">
+              {{ t('blocweatherUrlLabel') }}
+              <span
+                class="pi pi-question-circle ml-2"
+                [pTooltip]="t('blocweatherTooltip')"
+                tooltipPosition="right"
+              ></span>
+            </label>
+            <input
+              id="blocweatherUrl"
+              type="text"
+              pInputText
+              formControlName="blocweatherUrl"
+              placeholder="https://blocweather.com/<country>/<region>/<spot>"
+              lcFormControl
+              data-cy="sector-form-blocweatherUrl"
+            />
+            <small class="lc-error" *lcIfError="'blocweatherUrl'">{{ t('invalidBlocweatherUrl') }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
               t("mapMarkersLabel")
             }}</label>

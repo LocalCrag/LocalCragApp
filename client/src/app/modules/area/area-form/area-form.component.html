@@ -11,8 +11,8 @@
         <form [formGroup]="areaForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-              t("areaNameLabel")
-            }}</label>
+                t("areaNameLabel")
+              }}</label>
             <input
               id="name"
               type="text"
@@ -23,16 +23,16 @@
               data-cy="area-form-name"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
+                t("required")
+              }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
+                t("maxlength120")
+              }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="short-description">{{
-              t("areaShortDescriptionLabel")
-            }}</label>
+                t("areaShortDescriptionLabel")
+              }}</label>
             <p-editor
               id="short-description"
               formControlName="shortDescription"
@@ -72,8 +72,8 @@
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-              t("areaDescriptionLabel")
-            }}</label>
+                t("areaDescriptionLabel")
+              }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -138,8 +138,8 @@
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
-              t("areaPortraitImageLabel")
-            }}</label>
+                t("areaPortraitImageLabel")
+              }}</label>
             <lc-single-image-upload
               id="portrait-image"
               lcFormControl
@@ -149,9 +149,29 @@
             </lc-single-image-upload>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="blocweatherUrl">
+              {{ t('blocweatherUrlLabel') }}
+              <span
+                class="pi pi-question-circle ml-2"
+                [pTooltip]="t('blocweatherTooltip')"
+                tooltipPosition="right"
+              ></span>
+            </label>
+            <input
+              id="blocweatherUrl"
+              type="text"
+              pInputText
+              formControlName="blocweatherUrl"
+              placeholder="https://blocweather.com/<country>/<region>/<spot>"
+              lcFormControl
+              data-cy="area-form-blocweatherUrl"
+            />
+            <small class="lc-error" *lcIfError="'blocweatherUrl'">{{ t('invalidBlocweatherUrl') }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
-              t("mapMarkersLabel")
-            }}</label>
+                t("mapMarkersLabel")
+              }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -172,8 +192,8 @@
                   lcFormControl
                 ></p-checkbox>
                 <label [for]="'secret'" class="ml-2">{{
-                  t("secretLabel")
-                }}</label>
+                    t("secretLabel")
+                  }}</label>
               </div>
               <div class="flex">
                 <p-checkbox
@@ -184,8 +204,8 @@
                   lcFormControl
                 ></p-checkbox>
                 <label [for]="'closed'" class="ml-2">{{
-                  t("closedLabel")
-                }}</label>
+                    t("closedLabel")
+                  }}</label>
               </div>
             </div>
           </div>
@@ -253,8 +273,8 @@
           @if (areaForm.get("closed").value) {
             <div class="flex flex-column gap-2" lcControlGroup>
               <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
+                  t("closedReasonLabel")
+                }}</label>
               <input
                 id="closedReason"
                 type="text"

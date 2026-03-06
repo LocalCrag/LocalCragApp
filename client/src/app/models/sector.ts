@@ -29,6 +29,7 @@ export class Sector extends IsClosable(AbstractModel) {
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
   defaultTradScale: string | null = null;
+  blocweatherUrl: string | null = null;
 
   /**
    * Parses a sector.
@@ -62,6 +63,7 @@ export class Sector extends IsClosable(AbstractModel) {
     sector.defaultBoulderScale = payload.defaultBoulderScale;
     sector.defaultSportScale = payload.defaultSportScale;
     sector.defaultTradScale = payload.defaultTradScale;
+    sector.blocweatherUrl = payload.blocweatherUrl ?? null;
     return sector;
   }
 
@@ -87,6 +89,7 @@ export class Sector extends IsClosable(AbstractModel) {
         defaultBoulderScale: sector.defaultBoulderScale,
         defaultSportScale: sector.defaultSportScale,
         defaultTradScale: sector.defaultTradScale,
+        blocweatherUrl: sector.blocweatherUrl,
       },
     };
   }

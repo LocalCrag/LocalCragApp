@@ -79,6 +79,7 @@ class CreateCrag(MethodView):
         new_crag.default_boulder_scale = crag_data["defaultBoulderScale"]
         new_crag.default_sport_scale = crag_data["defaultSportScale"]
         new_crag.default_trad_scale = crag_data["defaultTradScale"]
+        new_crag.blocweather_url = crag_data["blocweatherUrl"]
 
         db.session.add(new_crag)
         db.session.commit()
@@ -115,6 +116,7 @@ class UpdateCrag(MethodView):
         crag.default_boulder_scale = crag_data["defaultBoulderScale"]
         crag.default_sport_scale = crag_data["defaultSportScale"]
         crag.default_trad_scale = crag_data["defaultTradScale"]
+        crag.blocweather_url = crag_data["blocweatherUrl"]
 
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)

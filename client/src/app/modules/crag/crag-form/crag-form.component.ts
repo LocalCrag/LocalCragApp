@@ -54,6 +54,8 @@ import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { Tooltip } from 'primeng/tooltip';
 
 /**
  * A component for creating and editing crags.
@@ -80,6 +82,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Button,
     ConfirmPopup,
     SingleImageUploadComponent,
+    Tooltip,
   ],
 })
 export class CragFormComponent implements OnInit {
@@ -187,6 +190,7 @@ export class CragFormComponent implements OnInit {
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
+      blocweatherUrl: [null, [blocweatherUrlValidator]],
     });
     this.cragForm
       .get('closed')
@@ -216,6 +220,7 @@ export class CragFormComponent implements OnInit {
       defaultBoulderScale: this.crag.defaultBoulderScale,
       defaultSportScale: this.crag.defaultSportScale,
       defaultTradScale: this.crag.defaultTradScale,
+      blocweatherUrl: this.crag.blocweatherUrl,
     });
   }
 
@@ -249,6 +254,7 @@ export class CragFormComponent implements OnInit {
       crag.defaultBoulderScale = this.cragForm.get('defaultBoulderScale').value;
       crag.defaultSportScale = this.cragForm.get('defaultSportScale').value;
       crag.defaultTradScale = this.cragForm.get('defaultTradScale').value;
+      crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value;
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe((crag) => {

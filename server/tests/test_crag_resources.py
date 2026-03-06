@@ -27,6 +27,7 @@ def test_successful_create_crag(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
@@ -48,6 +49,28 @@ def test_successful_create_crag(client, moderator_token):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
+
+
+def test_create_crag_invalid_blocweather_url(client, moderator_token):
+    crag_data = {
+        "name": "Glees",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
+        "rules": "Parken nur Samstag und Sonntag.",
+        "portraitImage": None,
+        "mapMarkers": [],
+        "secret": False,
+        "closed": False,
+        "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+    }
+
+    rv = client.post("/api/crags", token=moderator_token, json=crag_data)
+    assert rv.status_code == 400
 
 
 def test_successful_get_crags(client):
@@ -90,6 +113,7 @@ def test_successful_get_crag(client):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == crag.blocweather_url
 
 
 def test_get_deleted_crag(client):
@@ -128,6 +152,7 @@ def test_successful_edit_crag(client, moderator_token):
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -149,6 +174,7 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
 
 
 def test_successful_order_crags(client, moderator_token):

@@ -24,6 +24,7 @@ export class Area extends IsClosable(AbstractModel) {
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
   defaultTradScale: string | null = null;
+  blocweatherUrl: string | null = null;
 
   sector: Sector;
   routerLink: string;
@@ -58,6 +59,7 @@ export class Area extends IsClosable(AbstractModel) {
     area.defaultBoulderScale = payload.defaultBoulderScale;
     area.defaultSportScale = payload.defaultSportScale;
     area.defaultTradScale = payload.defaultTradScale;
+    area.blocweatherUrl = payload.blocweatherUrl ?? null;
     return area;
   }
 
@@ -82,6 +84,7 @@ export class Area extends IsClosable(AbstractModel) {
         defaultBoulderScale: area.defaultBoulderScale,
         defaultSportScale: area.defaultSportScale,
         defaultTradScale: area.defaultTradScale,
+        blocweatherUrl: area.blocweatherUrl,
       },
     };
   }
