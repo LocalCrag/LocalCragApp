@@ -93,7 +93,7 @@ def blocweather_url_validator(url: Optional[str]):
     if not url.startswith(prefix):
         raise ValidationError("Invalid BlocWeather URL")
 
-    remainder = url[len(prefix)]
+    remainder = url.removeprefix(prefix)
 
     if "?" in remainder or "#" in remainder:
         raise ValidationError("Invalid BlocWeather URL")
