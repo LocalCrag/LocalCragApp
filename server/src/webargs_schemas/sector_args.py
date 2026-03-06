@@ -1,6 +1,7 @@
 from marshmallow import Schema, validate
 from webargs import fields
 
+from util.validators import blocweather_url_validator
 from webargs_schemas.map_marker_args import map_marker_args
 from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
@@ -16,6 +17,7 @@ class SectorArgsSchema(Schema, IsClosableWebargsMixin):
     defaultBoulderScale = fields.Str(required=True, allow_none=True)
     defaultSportScale = fields.Str(required=True, allow_none=True)
     defaultTradScale = fields.Str(required=True, allow_none=True)
+    blocweatherUrl = fields.Str(required=True, allow_none=True, validate=blocweather_url_validator)
 
 
 sector_args = SectorArgsSchema()

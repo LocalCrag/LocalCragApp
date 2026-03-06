@@ -1,7 +1,7 @@
 import secrets
 from base64 import b64decode, b64encode
 from hashlib import pbkdf2_hmac
-from typing import Self
+from typing import Optional, Self
 
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -75,15 +75,15 @@ class User(HasSlug, IsSearchable, BaseEntity):
         return secrets.compare_digest(new_hash, known_hash)
 
     @classmethod
-    def find_by_reset_password_hash(cls, password_hash) -> Self | None:
+    def find_by_reset_password_hash(cls, password_hash) -> Optional[Self]:
         return cls.query.filter_by(reset_password_hash=password_hash).first()
 
     @classmethod
-    def find_by_new_email_hash(cls, new_email_hash) -> Self | None:
+    def find_by_new_email_hash(cls, new_email_hash) -> Optional[Self]:
         return cls.query.filter_by(new_email_hash=new_email_hash).first()
 
     @classmethod
-    def find_by_email(cls, email) -> Self | None:
+    def find_by_email(cls, email) -> Optional[Self]:
         user = cls.query.filter_by(email=email).first()
         return user
 

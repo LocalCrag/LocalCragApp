@@ -87,6 +87,7 @@ class CreateSector(MethodView):
         new_sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         new_sector.default_sport_scale = sector_data["defaultSportScale"]
         new_sector.default_trad_scale = sector_data["defaultTradScale"]
+        new_sector.blocweather_url = sector_data["blocweatherUrl"]
 
         if not new_sector.secret:
             set_sector_parents_false(new_sector, "secret")
@@ -127,6 +128,7 @@ class UpdateSector(MethodView):
         sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         sector.default_sport_scale = sector_data["defaultSportScale"]
         sector.default_trad_scale = sector_data["defaultTradScale"]
+        sector.blocweather_url = sector_data["blocweatherUrl"]
 
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)

@@ -26,6 +26,7 @@ def test_successful_create_area(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -47,6 +48,7 @@ def test_successful_create_area(client, moderator_token):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
 
 
 def test_create_area_invalid_lat(client, moderator_token):
@@ -97,6 +99,26 @@ def test_create_area_invalid_lng(client, moderator_token):
     assert rv.status_code == 400
 
 
+def test_create_area_invalid_blocweather_url(client, moderator_token):
+    area_data = {
+        "name": "Kreuzfels",
+        "description": "Super Bereich",
+        "shortDescription": "Super Bereich Kurz",
+        "mapMarkers": [],
+        "portraitImage": None,
+        "secret": False,
+        "closed": False,
+        "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+    }
+
+    rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
+    assert rv.status_code == 400
+
+
 def test_successful_get_areas(client):
     rv = client.get("/api/sectors/schattental/areas")
     assert rv.status_code == 200
@@ -140,6 +162,7 @@ def test_successful_get_area(client):
     assert res["portraitImage"] is None or res["portraitImage"]["id"] == area.portrait_image_id
     assert res["closed"] == area.closed
     assert res["closedReason"] == area.closed_reason
+    assert res["blocweatherUrl"] == area.blocweather_url
 
 
 def test_get_deleted_area(client):
@@ -175,6 +198,7 @@ def test_successful_edit_area(client, moderator_token):
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/france/fontainebleau/bas-cuvier",
     }
 
     rv = client.put("/api/areas/dritter-block-von-links", token=moderator_token, json=area_data)
@@ -196,6 +220,7 @@ def test_successful_edit_area(client, moderator_token):
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/france/fontainebleau/bas-cuvier"
 
 
 def test_successful_order_areas(client, moderator_token):

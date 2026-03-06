@@ -87,6 +87,7 @@ def test_cascade_delete_comments(client, moderator_token, member_token):
             "defaultBoulderScale": None,
             "defaultSportScale": None,
             "defaultTradScale": None,
+            "blocweatherUrl": None,
         },
     )
     assert rv.status_code == 201
@@ -247,6 +248,7 @@ def test_create_comment_on_secret_area_returns_404_for_non_member(client, modera
             "defaultBoulderScale": None,
             "defaultSportScale": None,
             "defaultTradScale": None,
+            "blocweatherUrl": None,
         },
     )
     assert rv.status_code == 201
