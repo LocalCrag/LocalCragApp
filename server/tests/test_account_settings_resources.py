@@ -45,8 +45,8 @@ def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token
         },
     )
     assert rv.status_code == 201, rv.text
-    # Two new emails: one for root comment to admins, one for reply to member
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    # Four new emails: two for root comment to admin and superadmin, two for reply to member and superadmin
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 4
 
 
 def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_token, smtp_mock):
@@ -78,7 +78,8 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
         },
     )
     assert rv.status_code == 201, rv.text
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1  # Only admin notification
+    # Three mails: Two for root comment (admin and superadmin), one for replay (superadmin), member gets none
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 3
 
 
 def test_update_account_settings_invalid_language(client, member_token):

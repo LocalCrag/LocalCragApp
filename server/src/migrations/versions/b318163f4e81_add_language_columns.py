@@ -20,9 +20,20 @@ def upgrade():
     op.add_column("instance_settings", sa.Column("language", sa.String(length=10), nullable=False, server_default="en"))
     op.add_column("account_settings", sa.Column("language", sa.String(length=10), nullable=False, server_default="en"))
 
-    # set existing rows to 'de' to keep current behavior
-    op.execute("UPDATE instance_settings SET language='de' WHERE language IS NULL OR language='' ")
-    op.execute("UPDATE account_settings SET language='de' WHERE language IS NULL OR language='' ")
+    # set existing rows to 'de' to keep current behavior,
+    # but only for DBs that already have meaningful content
+    # (actively used instances have at least one line and are most probably German)
+    op.execute(
+        """
+        DO $$
+        BEGIN
+            IF (SELECT COUNT(*) FROM lines) > 0 THEN
+                UPDATE instance_settings SET language='de';
+                UPDATE account_settings SET language='de';
+            END IF;
+        END $$;
+        """
+    )
 
     op.drop_column("users", "language")
 

@@ -148,6 +148,13 @@ class ResetPassword(MethodView):
         user.password = User.generate_hash(data["newPassword"])
         user.reset_password_hash = None
         user.reset_password_hash_created = None
+
+        # If the user is not yet activated, we may need to activate him
+        # (could be that he used forgot password before first regular login)
+        user.activated = True
+        if not user.activated_at:
+            user.activated_at = datetime.now(pytz.utc)
+
         db.session.add(user)
         db.session.commit()
         access_token = create_access_token(identity=user.email, additional_claims=get_access_token_claims(user))
