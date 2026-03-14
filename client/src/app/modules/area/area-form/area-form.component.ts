@@ -272,7 +272,7 @@ export class AreaFormComponent implements OnInit {
       area.defaultBoulderScale = this.areaForm.get('defaultBoulderScale').value;
       area.defaultSportScale = this.areaForm.get('defaultSportScale').value;
       area.defaultTradScale = this.areaForm.get('defaultTradScale').value;
-      area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value;
+      area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea(area).subscribe((area) => {

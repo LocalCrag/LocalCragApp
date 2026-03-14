@@ -5,7 +5,7 @@ export const blocweatherUrlValidator: ValidatorFn = (
 ): ValidationErrors | null => {
   const value = control.value;
   // None is allowed
-  if (value === null || value === undefined) {
+  if (value === null || value === undefined || value === '') {
     return null;
   }
 

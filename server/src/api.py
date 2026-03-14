@@ -32,6 +32,7 @@ from resources.auth_resources import (
     UserLogoutRefresh,
 )
 from resources.batch_editor_resources import BatchCreateLines
+from resources.blocweather_resources import GetNearestBlocweatherUrl
 from resources.comment_resources import (
     CreateComment,
     DeleteComment,
@@ -285,6 +286,14 @@ def configure_api(app):
     maps_bp = Blueprint("maps", __name__)
     maps_bp.add_url_rule("/markers", view_func=GetMarkers.as_view("get_markers"))
     app.register_blueprint(maps_bp, url_prefix="/api/maps")
+
+    # BlocWeather API
+    blocweather_bp = Blueprint("blocweather", __name__)
+    blocweather_bp.add_url_rule(
+        "/nearest/<string:level>/<string:slug>",
+        view_func=GetNearestBlocweatherUrl.as_view("get_nearest_blocweather_url"),
+    )
+    app.register_blueprint(blocweather_bp, url_prefix="/api/blocweather")
 
     # Area API
     area_bp = Blueprint("areas", __name__)

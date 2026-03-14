@@ -272,7 +272,8 @@ export class SectorFormComponent implements OnInit {
       ).value;
       sector.defaultSportScale = this.sectorForm.get('defaultSportScale').value;
       sector.defaultTradScale = this.sectorForm.get('defaultTradScale').value;
-      sector.blocweatherUrl = this.sectorForm.get('blocweatherUrl').value;
+      sector.blocweatherUrl =
+        this.sectorForm.get('blocweatherUrl').value || null;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(sector).subscribe((sector) => {

@@ -28,6 +28,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 
 @Component({
   selector: 'lc-sector',
@@ -62,6 +63,7 @@ export class SectorComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
+  private blocWeatherService = inject(BlocWeatherService);
 
   ngOnInit() {
     this.route.paramMap
@@ -86,9 +88,10 @@ export class SectorComponent implements OnInit {
               return of(e);
             }),
           ),
+          this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
           this.translocoService.load(`${environment.language}`),
-        ]).subscribe(([crag, sector, isLoggedIn]) => {
+        ]).subscribe(([crag, sector, blocweatherConfig, isLoggedIn]) => {
           this.crag = crag;
           this.sector = sector;
           this.store
@@ -157,6 +160,12 @@ export class SectorComponent implements OnInit {
               icon: 'pi pi-fw pi-comments',
               routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
               visible: true,
+            },
+            {
+              label: this.translocoService.translate(marker('sector.weather')),
+              icon: 'pi pi-fw pi-sun',
+              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/weather`,
+              visible: !!blocweatherConfig,
             },
             {
               label: this.translocoService.translate(marker('sector.edit')),

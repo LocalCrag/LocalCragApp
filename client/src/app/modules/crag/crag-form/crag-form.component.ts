@@ -254,7 +254,7 @@ export class CragFormComponent implements OnInit {
       crag.defaultBoulderScale = this.cragForm.get('defaultBoulderScale').value;
       crag.defaultSportScale = this.cragForm.get('defaultSportScale').value;
       crag.defaultTradScale = this.cragForm.get('defaultTradScale').value;
-      crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value;
+      crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value || null;
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.cragsService.updateCrag(crag).subscribe((crag) => {
