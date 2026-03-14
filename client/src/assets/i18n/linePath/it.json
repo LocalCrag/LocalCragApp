@@ -1,0 +1,11 @@
+{
+  "linePathForm.addLinePathDescription": "Qui puoi tracciare un problema su un'immagine Topo. Seleziona il problema da tracciare dall'elenco, quindi fai clic sull'immagine per tracciare l'andamento della linea.",
+  "linePathForm.addLinePathTitle": "Traccia linea",
+  "linePathForm.lineLabel": "Linea",
+  "linePathForm.linePlaceholder": "Seleziona un Problema",
+  "linePathForm.required": "Campo obbligatorio",
+  "linePathForm.linePathLabel": "Tracciatura",
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Traccia una linea con almeno due punti di ancoraggio.",
+  "linePathForm.addLinePathButtonLabel": "Traccia linea",
+  "linePathForm.leaveEditorButtonLabel": "Esci dall'editor"
+}

@@ -185,7 +185,7 @@ main() {
   echo "Starting client"
   (
     cd "${CLIENT_DIR}"
-    npm run start -- --host 0.0.0.0 --port "${CLIENT_PORT}"
+    npm run start -- --configuration e2e --host 0.0.0.0 --port "${CLIENT_PORT}"
   ) >/tmp/localcrag-e2e-client.log 2>&1 &
   CLIENT_PID=$!
 
@@ -195,6 +195,7 @@ main() {
   echo "Running Cypress"
   (
     cd "${CLIENT_DIR}"
+    export FRONTEND_URL="http://${CLIENT_HOST}:${CLIENT_PORT}"
     # Prefer headless for a single command. Override with CYPRESS_MODE=open.
     if [[ "${CYPRESS_MODE:-run}" == "open" ]]; then
       npm run cypress

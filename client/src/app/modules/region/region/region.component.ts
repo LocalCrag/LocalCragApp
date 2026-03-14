@@ -1,16 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -24,7 +25,6 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
     BreadcrumbModule,
     CardModule,
     RouterOutlet,
-    TranslocoDirective,
     Tabs,
     TabList,
     Tab,
@@ -40,6 +40,8 @@ export class RegionComponent implements OnInit {
 
   private regionsService = inject(RegionService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
@@ -56,69 +58,78 @@ export class RegionComponent implements OnInit {
         }),
       ),
       this.store.pipe(select(selectIsLoggedIn), take(1)),
-      this.translocoService.load(`${environment.language}`),
     ]).subscribe(([region, isLoggedIn]) => {
       this.region = region;
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });
-      this.items = [
-        {
-          label: this.translocoService.translate(marker('region.infos')),
-          icon: 'pi pi-fw pi-info-circle',
-          routerLink: `/topo`,
-          routerLinkActiveOptions: { exact: true },
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.rules')),
-          icon: 'pi pi-fw pi-exclamation-triangle',
-          routerLink: `/topo/rules`,
-          visible: region.rules !== null,
-        },
-        {
-          label: this.translocoService.translate(marker('region.crags')),
-          icon: 'pi pi-fw pi-sitemap',
-          routerLink: `/topo/crags`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.lines')),
-          icon: 'pi pi-fw pi-chart-line',
-          routerLink: `/topo/lines`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.ascents')),
-          icon: 'pi pi-fw pi-check-square',
-          routerLink: `/topo/ascents`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.ranking')),
-          icon: 'pi pi-fw pi-trophy',
-          routerLink: `/topo/ranking`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.gallery')),
-          icon: 'pi pi-fw pi-images',
-          routerLink: `/topo/gallery`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.comments')),
-          icon: 'pi pi-fw pi-comments',
-          routerLink: `/topo/comments`,
-          visible: true,
-        },
-        {
-          label: this.translocoService.translate(marker('region.edit')),
-          icon: 'pi pi-fw pi-file-edit',
-          routerLink: `/topo/edit-region`,
-          visible: isLoggedIn,
-        },
-      ];
+      this.buildItems(region, isLoggedIn);
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildItems(region, isLoggedIn);
+        });
     });
+  }
+
+  private buildItems(region: Region, isLoggedIn: boolean) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('region.infos')),
+        icon: 'pi pi-fw pi-info-circle',
+        routerLink: `/topo`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.rules')),
+        icon: 'pi pi-fw pi-exclamation-triangle',
+        routerLink: `/topo/rules`,
+        visible: region.rules !== null,
+      },
+      {
+        label: this.translocoService.translate(marker('region.crags')),
+        icon: 'pi pi-fw pi-sitemap',
+        routerLink: `/topo/crags`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.lines')),
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: `/topo/lines`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/topo/ascents`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.ranking')),
+        icon: 'pi pi-fw pi-trophy',
+        routerLink: `/topo/ranking`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/topo/gallery`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.comments')),
+        icon: 'pi pi-fw pi-comments',
+        routerLink: `/topo/comments`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('region.edit')),
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: `/topo/edit-region`,
+        visible: isLoggedIn,
+      },
+    ];
   }
 }

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Observable } from 'rxjs';
@@ -14,6 +20,7 @@ import {
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
@@ -38,6 +45,11 @@ import { Menu } from 'primeng/menu';
 import { Avatar } from 'primeng/avatar';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Button } from 'primeng/button';
+import { FormControlDirective } from '../../shared/forms/form-control.directive';
+import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LanguageCode } from '../../../utility/types/language';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-menu',
@@ -54,6 +66,10 @@ import { Button } from 'primeng/button';
     Avatar,
     HasPermissionDirective,
     Button,
+    FormControlDirective,
+    LanguageSelectComponent,
+    ReactiveFormsModule,
+    FormsModule,
   ],
 })
 export class MenuComponent implements OnInit {
@@ -65,12 +81,15 @@ export class MenuComponent implements OnInit {
   currentUser$: Observable<User>;
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
+  language: LanguageCode;
 
   private menuItemsService = inject(MenuItemsService);
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private actions = inject(Actions);
   private store = inject(Store);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.logoImage$ = this.store.pipe(select(selectLogoImage));
@@ -80,10 +99,26 @@ export class MenuComponent implements OnInit {
     this.skippedHierarchyLayers$ = this.store.select(
       selectSkippedHierarchyLayers,
     );
+    this.language = this.languageService.calculatedLanguage;
     this.buildMenu();
     this.buildUserMenu();
+
+    // Recompute menus whenever the rendered language changes.
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        // update two-letter language selector for the UI (strip possible -gym suffix)
+        this.language = rendered.split('-')[0] as LanguageCode;
+        this.recomputeMenus();
+      });
+
+    // Also recompute menus when core actions update menus or auth credentials change.
     this.actions
-      .pipe(ofType(reloadMenus, newAuthCredentials, cleanupCredentials))
+      .pipe(
+        ofType(reloadMenus, newAuthCredentials, cleanupCredentials),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((action) => {
         // Prevent loading menus if new credentials come from token refresh
         if (
@@ -92,9 +127,21 @@ export class MenuComponent implements OnInit {
         ) {
           return;
         }
-        this.buildMenu();
-        this.buildUserMenu();
+        this.recomputeMenus();
       });
+  }
+
+  /**
+   * Recompute both the main and user menus.
+   */
+  private recomputeMenus() {
+    this.buildMenu();
+    this.buildUserMenu();
+  }
+
+  updateLanguage(language: LanguageCode) {
+    this.language = language;
+    this.languageService.setPreferredLanguage(language);
   }
 
   buildUserMenu() {

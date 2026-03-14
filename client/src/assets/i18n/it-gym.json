@@ -1,0 +1,16 @@
+{
+  "region.regionForm.regionNamePlaceholder": "ad es. nome dell'organizzazione",
+  "region.regionForm.regionDescriptionPlaceholder": "Informazioni generali sull'organizzazione.",
+  "region.regionForm.regionRulesPlaceholder": "Regolamento",
+  "region.regionForm.editRegionTitle": "Modifica organizzazione",
+  "notFound.title": "Errore 404 - Nessuna presa in vista!",
+  "projectClimbedForm.projectClimbedInfoMessage": "Hai chiuso un progetto? Grande! Che ne dici di inviarci alcune informazioni per inserire il nuovo problema nella guida? Sono essenziali il nome del problema e il grado di difficolta che proporresti. Se hai anche un video, inviacelo pure. Se vuoi essere inserito come persona che ha aperto il problema nella guida, inviaci il tuo nome e la data. Ti contatteremo noi - Grazie!",
+  "ascentForm.firstAscentExplanation": "Apertura: da selezionare solo se sei la persona che ha scalato questa linea per la prima volta in assoluto. Non si tratta della tua prima ripetizione!",
+  "top25Ranking": "Top 25 ripetizioni",
+  "top10FaRanking": "Top 10 aperture",
+  "totalFaCountRanking": "Numero di aperture",
+  "top10FaExponentialRanking": "Top 10 aperture (ponderate esponenzialmente)",
+  "totalFaRanking": "Tutte le aperture",
+  "totalFaExponentialRanking": "Tutte le aperture (ponderate esponenzialmente)",
+  "searchDialog.infoMessage": "La qualità della funzione di ricerca non è ancora ottimizzata."
+}

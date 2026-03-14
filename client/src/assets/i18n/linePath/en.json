@@ -1,0 +1,11 @@
+{
+  "linePathForm.addLinePathDescription": "Here you can draw a line on a Topo image. Select the line to be drawn from the list and then draw the line path by clicking on the image.",
+  "linePathForm.addLinePathTitle": "Draw line",
+  "linePathForm.lineLabel": "Line",
+  "linePathForm.linePlaceholder": "Select a line",
+  "linePathForm.required": "Mandatory field",
+  "linePathForm.linePathLabel": "Line path",
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Draw a line with at least two anchor points.",
+  "linePathForm.addLinePathButtonLabel": "Draw line",
+  "linePathForm.leaveEditorButtonLabel": "Exit Editor"
+}

@@ -1,7 +1,7 @@
 describe('Create crag', () => {
   it('creates a crag', () => {
     cy.login();
-    cy.visit('localhost:4200/topo/create-crag');
+    cy.visit('/topo/create-crag');
     cy.get('[data-cy="crag-form-name"]').type('Ferschweiler');
     cy.get('[data-cy="crag-form-shortDescription"] .ql-editor')
       .focus()
@@ -22,7 +22,7 @@ describe('Create crag', () => {
     cy.get('[data-cy="lng"]').focus().type('180');
     cy.get('[data-cy="save-marker"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('localhost:4200/topo/crags');
+    cy.visit('/topo/crags');
     cy.get('[data-cy="crag-list-item"]').last().contains('Ferschweiler');
   });
 });

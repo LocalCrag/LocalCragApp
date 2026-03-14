@@ -1,0 +1,12 @@
+{
+  "line.reorderLinePathsForLineButtonLabel": "Ordina le immagini Guida",
+  "line.ascentCount": "Ripetizioni",
+  "line.FA": "Tracciato",
+  "lineForm.lineDescriptionPlaceholder": "Descrivi qui gli aspetti generali del problema e altre cose a cui prestare attenzione. I bordi delle pareti non possono essere utilizzati? I volumi sono vietati?",
+  "lineForm.lineFANameLabel": "Tracciatore/Tracciatrice",
+  "batchLineForm.lineFANamePlaceholder": "Tracciatore/Tracciatrice",
+  "lineForm.lineFANamePlaceholder": "ad es. Wolfgang Güllich",
+  "lineForm.lineFAYearLabel": "Anno di tracciatura",
+  "lineForm.lineFADateLabel": "Data di tracciatura",
+  "lineForm.closedReasonPlaceholder": "ad es. lavori di manutenzione..."
+}

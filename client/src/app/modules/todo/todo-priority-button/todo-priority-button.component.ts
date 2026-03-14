@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  DestroyRef,
 } from '@angular/core';
 import { Todo } from '../../../models/todo';
 import { MenuItem } from 'primeng/api';
@@ -16,6 +17,8 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TodosService } from '../../../services/crud/todos.service';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { LanguageService } from '../../../services/core/language.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-todo-priority-button',
@@ -32,7 +35,9 @@ export class TodoPriorityButtonComponent implements OnInit {
 
   private todosService = inject(TodosService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private store = inject(Store);
+  private destroyRef = inject(DestroyRef);
 
   setPriority(priority: TodoPriority) {
     this.todosService
@@ -44,6 +49,16 @@ export class TodoPriorityButtonComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.buildItems();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildItems();
+      });
+  }
+
+  private buildItems() {
     this.items = [
       {
         label: this.translocoService.translate(

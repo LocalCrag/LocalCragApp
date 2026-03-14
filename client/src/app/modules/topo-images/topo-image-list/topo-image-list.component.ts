@@ -15,7 +15,6 @@ import {
   TranslocoDirective,
   TranslocoService,
 } from '@jsverse/transloco';
-import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { TopoImage } from '../../../models/topo-image';
@@ -189,7 +188,6 @@ export class TopoImageListComponent implements OnInit {
               '?' + filters.toString(),
             ),
             this.ticksService.getTicks(null, null, area.id),
-            this.translocoService.load(`${environment.language}`),
           ]);
         }),
       )
@@ -275,24 +273,22 @@ export class TopoImageListComponent implements OnInit {
    * @param topoImage Topo image to delete.
    */
   confirmDeleteTopoImage(event: Event, topoImage: TopoImage) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('topoImage.askReallyWantToDeleteTopoImage'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('topoImage.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('topoImage.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteTopoImage(topoImage);
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('topoImage.askReallyWantToDeleteTopoImage'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('topoImage.yesDelete'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('topoImage.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteTopoImage(topoImage);
+      },
     });
   }
 
@@ -325,24 +321,22 @@ export class TopoImageListComponent implements OnInit {
   ) {
     event.stopPropagation();
     event.preventDefault();
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('topoImage.askReallyWantToDeleteLinePath'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('topoImage.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('topoImage.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteLinePath(linePath, topoImage);
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('topoImage.askReallyWantToDeleteLinePath'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('topoImage.yesDelete'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('topoImage.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteLinePath(linePath, topoImage);
+      },
     });
   }
 

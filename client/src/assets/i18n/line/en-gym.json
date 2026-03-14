@@ -1,0 +1,12 @@
+{
+  "line.reorderLinePathsForLineButtonLabel": "Reorder Topo images",
+  "line.ascentCount": "Ascents",
+  "line.FA": "Set",
+  "lineForm.lineDescriptionPlaceholder": "Describe here general aspects of the line and other things to look out for. Are wall edges not allowed? Are volumes prohibited?",
+  "lineForm.lineFANameLabel": "Routesetter",
+  "batchLineForm.lineFANamePlaceholder": "Routesetter",
+  "lineForm.lineFANamePlaceholder": "e.g. Wolfgang Güllich",
+  "lineForm.lineFAYearLabel": "Year of setting",
+  "lineForm.lineFADateLabel": "Date of setting",
+  "lineForm.closedReasonPlaceholder": "e.g. maintenance work..."
+}

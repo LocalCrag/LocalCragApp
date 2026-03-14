@@ -14,11 +14,9 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
-import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -37,6 +35,8 @@ import { TickButtonComponent } from '../../ascent/tick-button/tick-button.compon
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { Crag } from '../../../models/crag';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
@@ -47,6 +47,7 @@ import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-todo-list',
@@ -120,6 +121,7 @@ export class TodoListComponent implements OnInit {
   private menuItemsService = inject(MenuItemsService);
   private actions$ = inject(Actions);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -128,28 +130,105 @@ export class TodoListComponent implements OnInit {
   ngOnInit() {
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
-      this.availableScales.push({
-        label: this.translocoService.translate('ALL'),
-        value: undefined,
-      });
-      for (const lineType in gradeDistribution) {
-        for (const gradeScale in gradeDistribution[lineType]) {
-          if (gradeDistribution[lineType][gradeScale]) {
-            this.availableScales.push({
-              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-              value: { lineType: lineType as LineType, gradeScale },
-            });
-          }
-        }
-      }
-      if (this.availableScales.length <= 2) {
-        this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
-      } else {
-        this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
-      }
+      this.buildAvailableScales(gradeDistribution);
+      // Rebuild labels on language change
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildAvailableScalesFromCurrent();
+          this.buildPriorityFilterOptions();
+          this.buildOrderOptions();
+          this.buildCragFilterOptions();
+          this.cdr.markForCheck();
+        });
       this.selectScale(); // Calls loadFirstPage()
     });
 
+    this.buildOrderOptions();
+    this.buildPriorityFilterOptions();
+
+    this.menuItemsService.getCragMenuStructure().subscribe((crags) => {
+      this.crags = crags;
+      this.buildCragFilterOptions();
+      // Recompute crag/sector/area filter labels when language changes
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildCragFilterOptions();
+          if (this.cragFilterKey?.value) this.buildSectorFilterOptions();
+          if (this.sectorFilterKey?.value) this.buildAreaFilterOptions();
+          this.cdr.markForCheck();
+        });
+    });
+
+    // Reload the list when relevant actions occur
+    this.actions$
+      .pipe(
+        ofType(todoAdded, reloadAfterAscent),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.loadFirstPage();
+      });
+  }
+
+  buildCragFilterOptions() {
+    this.cragFilterOptions = [
+      {
+        label: this.translocoService.translate(marker('allCrags')),
+        value: null,
+      },
+      ...this.crags.map((crag) => {
+        return { label: crag.name, value: crag.id };
+      }),
+    ];
+    this.cragFilterKey = this.cragFilterOptions[0];
+  }
+
+  private buildAvailableScales(gradeDistribution: any) {
+    this.availableScales = [];
+    this.availableScales.push({
+      label: this.translocoService.translate('ALL'),
+      value: undefined,
+    });
+    for (const lineType in gradeDistribution) {
+      for (const gradeScale in gradeDistribution[lineType]) {
+        if (gradeDistribution[lineType][gradeScale]) {
+          this.availableScales.push({
+            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            value: { lineType: lineType as LineType, gradeScale },
+          });
+        }
+      }
+    }
+    if (this.availableScales.length <= 2) {
+      this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
+    } else {
+      this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
+    }
+  }
+
+  private buildAvailableScalesFromCurrent() {
+    this.availableScales = this.availableScales.map((s) => {
+      if (!s.value)
+        return {
+          label: this.translocoService.translate('ALL'),
+          value: undefined,
+        };
+      const v = s.value as { lineType: LineType; gradeScale: string };
+      return {
+        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        value: v,
+      };
+    });
+    this.scaleKey =
+      this.availableScales.find((s) => s.value === this.scaleKey?.value) ||
+      this.availableScales[0];
+  }
+
+  private buildOrderOptions() {
     this.orderOptions = [
       {
         label: this.translocoService.translate(marker('orderByGrade')),
@@ -172,6 +251,9 @@ export class TodoListComponent implements OnInit {
       },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
+  }
+
+  private buildPriorityFilterOptions() {
     this.priorityFilterOptions = [
       {
         label: this.translocoService.translate(marker('allPriorities')),
@@ -191,31 +273,6 @@ export class TodoListComponent implements OnInit {
       },
     ];
     this.priorityFilterKey = this.priorityFilterOptions[0];
-    this.actions$
-      .pipe(
-        ofType(todoAdded, reloadAfterAscent),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.loadFirstPage();
-      });
-    this.menuItemsService.getCragMenuStructure().subscribe((crags) => {
-      this.crags = crags;
-      this.buildCragFilterOptions();
-    });
-  }
-
-  buildCragFilterOptions() {
-    this.cragFilterOptions = [
-      {
-        label: this.translocoService.translate(marker('allCrags')),
-        value: null,
-      },
-      ...this.crags.map((crag) => {
-        return { label: crag.name, value: crag.id };
-      }),
-    ];
-    this.cragFilterKey = this.cragFilterOptions[0];
   }
 
   buildSectorFilterOptions() {
