@@ -232,13 +232,22 @@ def test_change_password_password_old_pw_incorrect(client, member_token):
     assert res["message"] == ResponseMessage.OLD_PASSWORD_INCORRECT.value
 
 
-def test_cannot_promote_admins(client, admin_token):
-    user = User.find_by_email("admin@localcrag.invalid.org")
+def test_cannot_promote_superadmins(client, admin_token):
+    user = User.find_by_email("superadmin@localcrag.invalid.org")
     data = {
         "promotionTarget": "USER",
     }
     rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
     assert rv.status_code == 401
+
+
+def test_cannot_promote_own_user(client, admin_token):
+    user = User.find_by_email("admin@localcrag.invalid.org")
+    data = {
+        "promotionTarget": "USER",
+    }
+    rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
+    assert rv.status_code == 409
 
 
 def test_permission_levels(client, user_token, member_token, moderator_token):
