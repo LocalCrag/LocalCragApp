@@ -20,7 +20,7 @@ class DeleteOwnUser(MethodView):
         """
         user = User.find_by_email(get_jwt_identity())
         if user.superadmin:
-            raise BadRequest(ResponseMessage.CANNOT_DELETE_SUPERADMIN.value)
+            raise BadRequest(ResponseMessage.SUPERADMINS_CANNOT_DELETE_OWN_USER.value)
 
         db.session.delete(user)
         db.session.commit()

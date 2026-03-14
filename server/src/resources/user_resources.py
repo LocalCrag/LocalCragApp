@@ -128,16 +128,17 @@ class DeleteUser(MethodView):  # pragma: no cover
         :param user_id: ID of the User to delete.
         """
 
-        user: User = User.find_by_id(user_id)
+        user_to_delete: User = User.find_by_id(user_id)
+        request_user = User.find_by_email(get_jwt_identity())
 
-        if user.email == get_jwt_identity():
+        if user_to_delete.id == request_user.id:
             # Own user can only be deleted via account settings
             raise BadRequest(ResponseMessage.CANNOT_DELETE_OWN_USER.value)
 
-        if user.superadmin:
-            raise BadRequest(ResponseMessage.CANNOT_DELETE_SUPERADMIN.value)
+        if user_to_delete.admin and not request_user.superadmin:
+            raise Unauthorized(ResponseMessage.ONLY_SUPERADMINS_CAN_DELETE_OTHER_ADMINS.value)
 
-        db.session.delete(user)
+        db.session.delete(user_to_delete)
         db.session.commit()
         return jsonify(None), 204
 

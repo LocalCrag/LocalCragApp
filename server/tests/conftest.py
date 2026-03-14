@@ -134,10 +134,19 @@ def gym_mode():
 
 
 @pytest.fixture(scope="session")
+def superadmin_token():
+    return create_access_token(
+        identity="superadmin@localcrag.invalid.org",
+        additional_claims={"superadmin": True, "admin": True, "moderator": True, "member": True},
+        expires_delta=timedelta(days=1),
+    )
+
+
+@pytest.fixture(scope="session")
 def admin_token():
     return create_access_token(
         identity="admin@localcrag.invalid.org",
-        additional_claims={"admin": True, "moderator": True, "member": True},
+        additional_claims={"superadmin": False, "admin": True, "moderator": True, "member": True},
         expires_delta=timedelta(days=1),
     )
 
@@ -146,7 +155,7 @@ def admin_token():
 def admin_refresh_token():
     return create_refresh_token(
         identity="admin@localcrag.invalid.org",
-        additional_claims={"admin": True, "moderator": True, "member": True},
+        additional_claims={"superadmin": False, "admin": True, "moderator": True, "member": True},
         expires_delta=timedelta(days=1),
     )
 
@@ -155,7 +164,7 @@ def admin_refresh_token():
 def moderator_token():
     return create_access_token(
         identity="moderator@localcrag.invalid.org",
-        additional_claims={"admin": False, "moderator": True, "member": True},
+        additional_claims={"superadmin": False, "admin": False, "moderator": True, "member": True},
         expires_delta=timedelta(days=1),
     )
 
@@ -164,7 +173,7 @@ def moderator_token():
 def member_token():
     return create_access_token(
         identity="member@localcrag.invalid.org",
-        additional_claims={"admin": False, "moderator": False, "member": True},
+        additional_claims={"superadmin": False, "admin": False, "moderator": False, "member": True},
         expires_delta=timedelta(days=1),
     )
 
@@ -173,7 +182,7 @@ def member_token():
 def user_token():
     return create_access_token(
         identity="user@localcrag.invalid.org",
-        additional_claims={"admin": False, "moderator": False, "member": False},
+        additional_claims={"superadmin": False, "admin": False, "moderator": False, "member": False},
         expires_delta=timedelta(days=1),
     )
 
@@ -248,12 +257,26 @@ def fill_db_with_sample_data():
     add_scales()
 
     user = User()
+    user.email = "superadmin@localcrag.invalid.org"
+    user.password = User.generate_hash("superadmin")
+    user.firstname = "superadmin"
+    user.lastname = "superadmin"
+    user.activated = True
+    user.superadmin = True
+    user.admin = True
+    user.moderator = True
+    user.member = True
+    db.session.add(user)
+    db.session.flush()
+    db.session.add(AccountSettings(user_id=user.id))
+
+    user = User()
     user.email = "admin@localcrag.invalid.org"
     user.password = User.generate_hash("admin")
     user.firstname = "admin"
     user.lastname = "admin"
     user.activated = True
-    user.superadmin = True
+    user.superadmin = False
     user.admin = True
     user.moderator = True
     user.member = True

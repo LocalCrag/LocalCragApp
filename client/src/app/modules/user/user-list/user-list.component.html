@@ -64,7 +64,7 @@
                       @if (!user.avatar) {
                         <p-avatar
                           image="assets/user.png"
-                          styleClass="mr-2"
+                          class="mr-2"
                           size="xlarge"
                           shape="circle"
                         ></p-avatar>
@@ -72,7 +72,7 @@
                       @if (user.avatar) {
                         <p-avatar
                           image="{{ user.avatar.thumbnailM }}"
-                          styleClass="mr-2"
+                          class="mr-2"
                           size="xlarge"
                           shape="circle"
                         ></p-avatar>
@@ -124,7 +124,10 @@
                         [popup]="true"
                         appendTo="body"
                       ></p-menu>
-                      @if (currentUser.id !== user.id && !user.admin) {
+                      @if (
+                        currentUser.id !== user.id &&
+                        !(user.admin && !currentUser.superadmin)
+                      ) {
                         <p-button
                           icon="pi pi-wrench"
                           (click)="menu.toggle($event)"
