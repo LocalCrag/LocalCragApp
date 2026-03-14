@@ -56,6 +56,8 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { Tooltip } from 'primeng/tooltip';
 
 /**
  * Form component for creating and editing areas.
@@ -84,6 +86,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ConfirmPopup,
     FormSkeletonComponent,
     SingleImageUploadComponent,
+    Tooltip,
   ],
 })
 export class AreaFormComponent implements OnInit {
@@ -202,6 +205,7 @@ export class AreaFormComponent implements OnInit {
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
+      blocweatherUrl: [null, [blocweatherUrlValidator]],
     });
     this.areaForm
       .get('closed')
@@ -230,6 +234,7 @@ export class AreaFormComponent implements OnInit {
       defaultBoulderScale: this.area.defaultBoulderScale,
       defaultSportScale: this.area.defaultSportScale,
       defaultTradScale: this.area.defaultTradScale,
+      blocweatherUrl: this.area.blocweatherUrl,
     });
   }
 
@@ -267,6 +272,7 @@ export class AreaFormComponent implements OnInit {
       area.defaultBoulderScale = this.areaForm.get('defaultBoulderScale').value;
       area.defaultSportScale = this.areaForm.get('defaultSportScale').value;
       area.defaultTradScale = this.areaForm.get('defaultTradScale').value;
+      area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
       if (this.area) {
         area.slug = this.area.slug;
         this.areasService.updateArea(area).subscribe((area) => {

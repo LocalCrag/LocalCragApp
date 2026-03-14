@@ -27,6 +27,7 @@ export class Crag extends IsClosable(AbstractModel) {
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
   defaultTradScale: string | null = null;
+  blocweatherUrl: string | null = null;
 
   /**
    * Parses a crag.
@@ -59,6 +60,7 @@ export class Crag extends IsClosable(AbstractModel) {
     crag.defaultBoulderScale = payload.defaultBoulderScale;
     crag.defaultSportScale = payload.defaultSportScale;
     crag.defaultTradScale = payload.defaultTradScale;
+    crag.blocweatherUrl = payload.blocweatherUrl ?? null;
     return crag;
   }
 
@@ -84,6 +86,7 @@ export class Crag extends IsClosable(AbstractModel) {
         defaultBoulderScale: crag.defaultBoulderScale,
         defaultSportScale: crag.defaultSportScale,
         defaultTradScale: crag.defaultTradScale,
+        blocweatherUrl: crag.blocweatherUrl,
       },
     };
   }

@@ -2,6 +2,7 @@ from flask_marshmallow import Schema
 from marshmallow import validate
 from webargs import fields
 
+from util.validators import blocweather_url_validator
 from webargs_schemas.map_marker_args import map_marker_args
 from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
@@ -17,6 +18,7 @@ class CragArgsSchema(Schema, IsClosableWebargsMixin):
     defaultBoulderScale = fields.Str(required=True, allow_none=True)
     defaultSportScale = fields.Str(required=True, allow_none=True)
     defaultTradScale = fields.Str(required=True, allow_none=True)
+    blocweatherUrl = fields.Str(required=True, allow_none=True, validate=blocweather_url_validator)
 
 
 crag_args = CragArgsSchema()

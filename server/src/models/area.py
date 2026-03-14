@@ -39,6 +39,7 @@ class Area(HasSlug, IsSearchable, IsClosable, BaseEntity):
     default_boulder_scale = db.Column(db.String(32), nullable=True)
     default_sport_scale = db.Column(db.String(32), nullable=True)
     default_trad_scale = db.Column(db.String(32), nullable=True)
+    blocweather_url = db.Column(db.String(255), nullable=True)
 
     @hybrid_property
     def ascent_count(self):
