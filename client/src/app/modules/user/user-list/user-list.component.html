@@ -124,7 +124,10 @@
                         [popup]="true"
                         appendTo="body"
                       ></p-menu>
-                      @if (currentUser.id !== user.id && !(user.admin && !currentUser.superadmin)) {
+                      @if (
+                        currentUser.id !== user.id &&
+                        !(user.admin && !currentUser.superadmin)
+                      ) {
                         <p-button
                           icon="pi pi-wrench"
                           (click)="menu.toggle($event)"
