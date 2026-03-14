@@ -26,6 +26,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-user-detail',
@@ -53,6 +54,7 @@ export class UserDetailComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private languageService = inject(LanguageService);
 
   ngOnInit() {
     this.route.paramMap
@@ -70,29 +72,39 @@ export class UserDetailComponent implements OnInit {
           ),
         ]).subscribe(([user]) => {
           this.user = user;
-          this.items = [
-            {
-              label: this.translocoService.translate(marker('user.ascents')),
-              icon: 'pi pi-fw pi-check-square',
-              routerLink: `/users/${userSlug}/ascents`,
-              routerLinkActiveOptions: { exact: true },
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('user.charts')),
-              icon: 'pi pi-fw pi-chart-bar',
-              routerLink: `/users/${userSlug}/charts`,
-              routerLinkActiveOptions: { exact: true },
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('user.gallery')),
-              icon: 'pi pi-fw pi-images',
-              routerLink: `/users/${userSlug}/gallery`,
-              visible: true,
-            },
-          ];
+          this.buildItems(userSlug);
+          this.languageService.renderedLanguage$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rendered) => {
+              if (!rendered) return;
+              this.buildItems(userSlug);
+            });
         });
       });
+  }
+
+  private buildItems(userSlug: string) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('user.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/users/${userSlug}/ascents`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('user.charts')),
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLink: `/users/${userSlug}/charts`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('user.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/users/${userSlug}/gallery`,
+        visible: true,
+      },
+    ];
   }
 }

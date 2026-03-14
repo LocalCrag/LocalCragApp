@@ -56,6 +56,7 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-line-list',
@@ -138,6 +139,7 @@ export class LineListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private actions$ = inject(Actions);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
 
   protected scalesService = inject(ScalesService);
 
@@ -165,25 +167,8 @@ export class LineListComponent implements OnInit {
       gradeDistributionObserver = this.regionService.getRegionGrades();
     }
     gradeDistributionObserver.subscribe((gradeDistribution) => {
-      this.availableScales.push({
-        label: this.translocoService.translate('ALL'),
-        value: undefined,
-      });
-      for (const lineType in gradeDistribution) {
-        for (const gradeScale in gradeDistribution[lineType]) {
-          if (gradeDistribution[lineType][gradeScale]) {
-            this.availableScales.push({
-              label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-              value: { lineType: lineType as LineType, gradeScale },
-            });
-          }
-        }
-      }
-      if (this.availableScales.length <= 2) {
-        this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
-      } else {
-        this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
-      }
+      this.availableScales = [];
+      this.buildAvailableScales(gradeDistribution);
       this.selectScale(); // Calls loadFirstPage()
     });
 
@@ -193,32 +178,14 @@ export class LineListComponent implements OnInit {
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
       });
-    this.orderOptions = [
-      {
-        label: this.translocoService.translate(marker('orderByGrade')),
-        value: 'grade_value',
-      },
-      {
-        label: this.translocoService.translate(marker('orderByName')),
-        value: 'name',
-      },
-      {
-        label: this.translocoService.translate(marker('orderByRating')),
-        value: 'rating',
-      },
-    ];
-    this.orderKey = this.orderOptions[0];
-    this.orderDirectionOptions = [
-      {
-        label: this.translocoService.translate(marker('orderDescending')),
-        value: 'desc',
-      },
-      {
-        label: this.translocoService.translate(marker('orderAscending')),
-        value: 'asc',
-      },
-    ];
-    this.orderDirectionKey = this.orderDirectionOptions[0];
+    this.buildOrderOptions();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildOrderOptions();
+        this.buildAvailableScalesFromCurrent();
+      });
     this.actions$
       .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
@@ -341,6 +308,76 @@ export class LineListComponent implements OnInit {
     if (line.videos.length > 0) {
       window.open(line.videos[0].url);
     }
+  }
+
+  private buildAvailableScales(gradeDistribution: GradeDistribution) {
+    this.availableScales.push({
+      label: this.translocoService.translate('ALL'),
+      value: undefined,
+    });
+    for (const lineType in gradeDistribution) {
+      for (const gradeScale in gradeDistribution[lineType]) {
+        if (gradeDistribution[lineType][gradeScale]) {
+          this.availableScales.push({
+            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            value: { lineType: lineType as LineType, gradeScale },
+          });
+        }
+      }
+    }
+    if (this.availableScales.length <= 2) {
+      this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
+    } else {
+      this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
+    }
+  }
+
+  private buildAvailableScalesFromCurrent() {
+    // Recompute availableScales labels in-place when language changes.
+    this.availableScales = this.availableScales.map((s) => {
+      if (!s.value)
+        return {
+          label: this.translocoService.translate('ALL'),
+          value: undefined,
+        };
+      const v = s.value as { lineType: LineType; gradeScale: string };
+      return {
+        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        value: v,
+      };
+    });
+    this.scaleKey =
+      this.availableScales.find((s) => s.value === this.scaleKey?.value) ||
+      this.availableScales[0];
+  }
+
+  private buildOrderOptions() {
+    this.orderOptions = [
+      {
+        label: this.translocoService.translate(marker('orderByGrade')),
+        value: 'grade_value',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByName')),
+        value: 'name',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByRating')),
+        value: 'rating',
+      },
+    ];
+    this.orderKey = this.orderOptions[0];
+    this.orderDirectionOptions = [
+      {
+        label: this.translocoService.translate(marker('orderDescending')),
+        value: 'desc',
+      },
+      {
+        label: this.translocoService.translate(marker('orderAscending')),
+        value: 'asc',
+      },
+    ];
+    this.orderDirectionKey = this.orderDirectionOptions[0];
   }
 
   protected readonly LineType = LineType;

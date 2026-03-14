@@ -48,6 +48,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
+import { LanguageService } from '../../../services/core/language.service';
 import {
   selectGymMode,
   selectInstanceSettingsState,
@@ -140,13 +142,17 @@ export class LineEntryBatchLineFormComponent
   private sectorsService = inject(SectorsService);
   private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
   private scalesService = inject(ScalesService);
 
   private onChange: (value: Line) => void = () => {};
   private onTouched: () => void = () => {};
   private validatorChange: () => void = () => {};
 
-  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
+  public gymMode$ = this.store
+    .select(selectGymMode)
+    .pipe(takeUntilDestroyed(this.destroyRef));
 
   ngOnInit() {
     this.buildForm();
@@ -186,12 +192,13 @@ export class LineEntryBatchLineFormComponent
         sector.defaultTradScale ??
         crag.defaultTradScale;
 
-      this.typeOptions = Object.entries(this.groupedScales)
-        .filter(([_, v]) => v.length > 0)
-        .map(([k]) => ({
-          label: this.translocoService.translate(k),
-          value: k,
-        }));
+      this.buildTypeOptions();
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildTypeOptions();
+        });
     });
 
     this.control.events.subscribe((event) => {
@@ -278,5 +285,14 @@ export class LineEntryBatchLineFormComponent
 
   registerOnValidatorChange(fn: () => void): void {
     this.validatorChange = fn;
+  }
+
+  private buildTypeOptions() {
+    this.typeOptions = Object.entries(this.groupedScales)
+      .filter(([_, v]) => v.length > 0)
+      .map(([k]) => ({
+        label: this.translocoService.translate(k),
+        value: k,
+      }));
   }
 }

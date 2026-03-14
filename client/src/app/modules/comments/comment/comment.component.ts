@@ -34,6 +34,7 @@ import {
 import { select, Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { AsyncPipe } from '@angular/common';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-comment',
@@ -79,6 +80,7 @@ export class CommentComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
+  private languageService = inject(LanguageService);
 
   ngOnInit() {
     // Build ellipsis menu based on permissions
@@ -86,23 +88,13 @@ export class CommentComponent implements OnInit {
       this.store.select(selectCurrentUser).pipe(take(1)),
       this.store.select(selectIsModerator).pipe(take(1)),
     ]).subscribe(([currentUser, isModerator]) => {
-      const isAuthor = this.comment.createdBy?.id === currentUser.id;
-      if (isAuthor) {
-        this.ellipsisMenuItems.push({
-          label: this.translocoService.translate(marker('comments.edit')),
-          icon: 'pi pi-pencil',
-          command: () => {
-            this.editModeActive = true;
-          },
+      this.buildEllipsisMenu(currentUser, isModerator);
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildEllipsisMenu(currentUser, isModerator);
         });
-      }
-      if (isModerator || isAuthor) {
-        this.ellipsisMenuItems.push({
-          label: this.translocoService.translate(marker('comments.delete')),
-          icon: 'pi pi-trash',
-          command: () => this.deleteComment(),
-        });
-      }
     });
     // Determine if there are replies to load
     if (this.comment.replyCount > 0) {
@@ -196,8 +188,24 @@ export class CommentComponent implements OnInit {
     });
   }
 
-  onEditCancelled() {
-    console.log(42);
-    this.editModeActive = false;
+  private buildEllipsisMenu(currentUser: any, isModerator: boolean) {
+    this.ellipsisMenuItems = [];
+    const isAuthor = this.comment.createdBy?.id === currentUser.id;
+    if (isAuthor) {
+      this.ellipsisMenuItems.push({
+        label: this.translocoService.translate(marker('comments.edit')),
+        icon: 'pi pi-pencil',
+        command: () => {
+          this.editModeActive = true;
+        },
+      });
+    }
+    if (isModerator || isAuthor) {
+      this.ellipsisMenuItems.push({
+        label: this.translocoService.translate(marker('comments.delete')),
+        icon: 'pi pi-trash',
+        command: () => this.deleteComment(),
+      });
+    }
   }
 }

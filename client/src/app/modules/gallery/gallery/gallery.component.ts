@@ -21,7 +21,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
@@ -172,24 +171,20 @@ export class GalleryComponent implements OnInit {
   }
 
   confirmDeleteImage(event: Event, image: GalleryImage) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('gallery.askReallyWantToDeleteGalleryImage'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('gallery.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('gallery.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteImage(image);
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('gallery.askReallyWantToDeleteGalleryImage'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('gallery.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('gallery.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteImage(image);
+      },
     });
   }
 
