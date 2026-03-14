@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.4...v1.26.0) (2026-03-14)
+
+
+### Features
+
+* **core:** allow changing app language to english and italian ([#918](https://github.com/LocalCrag/LocalCragApp/issues/918)) ([5fc3d13](https://github.com/LocalCrag/LocalCragApp/commit/5fc3d13875cf3b1f96755f592c9309a8da917776))
+
 ## [1.25.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.25.3...v1.25.4) (2026-02-21)
 
 
