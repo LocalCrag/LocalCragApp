@@ -3,12 +3,10 @@ describe('Todo lifespan workflow', () => {
     cy.viewport(1920, 1080);
     cy.login();
 
-    cy.visit(
-      'localhost:4200/topo/brione/schattental/dritter-block-von-links/lines',
-    );
+    cy.visit('/topo/brione/schattental/dritter-block-von-links/lines');
     cy.get('[data-cy="todo-button"]').eq(0).click();
 
-    cy.visit('localhost:4200/todos');
+    cy.visit('/todos');
     cy.get('[data-cy="todo-list-item"]').should('have.length', 1);
 
     cy.get('[data-cy="delete-todo"]').eq(0).click();
