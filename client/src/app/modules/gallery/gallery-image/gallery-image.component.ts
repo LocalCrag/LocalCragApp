@@ -6,6 +6,7 @@ import {
   Output,
   ViewEncapsulation,
   inject,
+  DestroyRef,
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
@@ -22,7 +23,9 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { User } from '../../../models/user';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tooltip } from 'primeng/tooltip';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-gallery-image',
@@ -51,8 +54,24 @@ export class GalleryImageComponent implements OnInit {
 
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
+    this.buildSpeedDialItems();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildSpeedDialItems();
+      });
+    this.store
+      .select(selectCurrentUser)
+      .pipe(take(1))
+      .subscribe((user) => (this.loggedInUser = user));
+  }
+
+  private buildSpeedDialItems() {
     this.speedDialItems = [
       {
         label: this.translocoService.translate(marker('gallery.deleteImage')),
@@ -65,9 +84,5 @@ export class GalleryImageComponent implements OnInit {
         command: (event) => this.delete.emit(event.originalEvent),
       },
     ];
-    this.store
-      .select(selectCurrentUser)
-      .pipe(take(1))
-      .subscribe((user) => (this.loggedInUser = user));
   }
 }

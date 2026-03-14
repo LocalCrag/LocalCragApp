@@ -26,6 +26,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-crag',
@@ -54,6 +55,7 @@ export class CragComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
@@ -76,7 +78,6 @@ export class CragComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, isModerator]) => {
           this.crag = crag;
           this.store
@@ -94,63 +95,13 @@ export class CragComponent implements OnInit {
                   ),
               };
             });
-          this.items = [
-            {
-              label: this.translocoService.translate(marker('crag.infos')),
-              icon: 'pi pi-fw pi-info-circle',
-              routerLink: `/topo/${this.crag.slug}`,
-              routerLinkActiveOptions: { exact: true },
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.rules')),
-              icon: 'pi pi-fw pi-exclamation-triangle',
-              routerLink: `/topo/${this.crag.slug}/rules`,
-              visible: crag.rules !== null,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.sectors')),
-              icon: 'pi pi-fw pi-sitemap',
-              routerLink: `/topo/${this.crag.slug}/sectors`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.lines')),
-              icon: 'pi pi-fw pi-chart-line',
-              routerLink: `/topo/${this.crag.slug}/lines`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.ascents')),
-              icon: 'pi pi-fw pi-check-square',
-              routerLink: `/topo/${this.crag.slug}/ascents`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.ranking')),
-              icon: 'pi pi-fw pi-trophy',
-              routerLink: `/topo/${this.crag.slug}/ranking`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.gallery')),
-              icon: 'pi pi-fw pi-images',
-              routerLink: `/topo/${this.crag.slug}/gallery`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.comments')),
-              icon: 'pi pi-fw pi-comments',
-              routerLink: `/topo/${this.crag.slug}/comments`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('crag.edit')),
-              icon: 'pi pi-fw pi-file-edit',
-              routerLink: `/topo/${this.crag.slug}/edit`,
-              visible: isModerator,
-            },
-          ];
+          this.buildItems(crag, isModerator);
+          this.languageService.renderedLanguage$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rendered) => {
+              if (!rendered) return;
+              this.buildItems(crag, isModerator);
+            });
           this.breadcrumbs = [
             {
               label: crag.name,
@@ -159,6 +110,66 @@ export class CragComponent implements OnInit {
           ];
         });
       });
+  }
+
+  private buildItems(crag: Crag, isModerator: boolean) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('crag.infos')),
+        icon: 'pi pi-fw pi-info-circle',
+        routerLink: `/topo/${this.crag.slug}`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.rules')),
+        icon: 'pi pi-fw pi-exclamation-triangle',
+        routerLink: `/topo/${this.crag.slug}/rules`,
+        visible: crag.rules !== null,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.sectors')),
+        icon: 'pi pi-fw pi-sitemap',
+        routerLink: `/topo/${this.crag.slug}/sectors`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.lines')),
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: `/topo/${this.crag.slug}/lines`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/topo/${this.crag.slug}/ascents`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.ranking')),
+        icon: 'pi pi-fw pi-trophy',
+        routerLink: `/topo/${this.crag.slug}/ranking`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/topo/${this.crag.slug}/gallery`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.comments')),
+        icon: 'pi pi-fw pi-comments',
+        routerLink: `/topo/${this.crag.slug}/comments`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('crag.edit')),
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: `/topo/${this.crag.slug}/edit`,
+        visible: isModerator,
+      },
+    ];
   }
 
   protected readonly environment = environment;

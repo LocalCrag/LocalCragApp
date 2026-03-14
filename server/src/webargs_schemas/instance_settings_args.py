@@ -3,6 +3,7 @@ from webargs import fields
 
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from util.validators import validate_language
 
 instance_settings_args = {
     "instanceName": fields.Str(required=True, validate=validate.Length(max=120)),
@@ -17,6 +18,7 @@ instance_settings_args = {
     "arrowHighlightColor": fields.Str(required=True),
     "arrowHighlightTextColor": fields.Str(required=True),
     "barChartColor": fields.Str(required=True),
+    "language": fields.Str(required=True, validate=validate_language),
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True),
     "matomoSiteId": fields.Str(required=True, allow_none=True),
     "maptilerApiKey": fields.Str(required=True, allow_none=True),

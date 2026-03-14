@@ -1,7 +1,7 @@
 describe('Create sector', () => {
   it('creates a sector', () => {
     cy.login();
-    cy.visit('localhost:4200/topo/brione/create-sector');
+    cy.visit('/topo/brione/create-sector');
     cy.get('[data-cy="sector-form-name"]').type('Düsterwald');
     cy.get('[data-cy="sector-form-shortDescription"] .ql-editor')
       .focus()
@@ -22,7 +22,7 @@ describe('Create sector', () => {
     cy.get('[data-cy="lng"]').focus().type('180');
     cy.get('[data-cy="save-marker"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('localhost:4200/topo/brione/sectors');
+    cy.visit('/topo/brione/sectors');
     cy.get('[data-cy="sector-list-item"]').last().contains('Düsterwald');
   });
 });

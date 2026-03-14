@@ -1,7 +1,7 @@
 describe('Create area', () => {
   it('creates an area', () => {
     cy.login();
-    cy.visit('localhost:4200/topo/brione/schattental/create-area');
+    cy.visit('/topo/brione/schattental/create-area');
     cy.get('[data-cy="area-form-name"]').type('Oben');
     cy.get('[data-cy="area-form-shortDescription"] .ql-editor')
       .focus()
@@ -19,7 +19,7 @@ describe('Create area', () => {
     cy.get('[data-cy="lng"]').focus().type('180');
     cy.get('[data-cy="save-marker"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('localhost:4200/topo/brione/schattental/areas');
+    cy.visit('/topo/brione/schattental/areas');
     cy.get('[data-cy="area-list-item"]').last().contains('Oben');
   });
 });

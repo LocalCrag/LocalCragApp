@@ -24,4 +24,16 @@ comment_reply_mail = {
         "subject": "New reply to your comment",
         "copyright": "© LocalCrag. All rights reserved.",
     },
+    "it": {
+        "title": "",
+        "LOCALCRAG": "",
+        "hello": "",
+        "comment_reply_text": "",
+        "view": "",
+        "thanks": "",
+        "greetings": "",
+        "hint": "",
+        "subject": "",
+        "copyright": "",
+    },
 }
