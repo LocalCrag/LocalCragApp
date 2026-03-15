@@ -7,10 +7,11 @@ import { Skeleton } from 'primeng/skeleton';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { CurrentConditionsComponent } from '../current-conditions/current-conditions.component';
 
 @Component({
   selector: 'lc-blocweather',
-  imports: [Skeleton, Message, TranslocoDirective],
+  imports: [Skeleton, Message, TranslocoDirective, CurrentConditionsComponent],
   templateUrl: './blocweather.component.html',
   styleUrl: './blocweather.component.scss',
 })

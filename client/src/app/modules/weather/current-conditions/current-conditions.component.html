@@ -1,0 +1,35 @@
+<ng-container *transloco="let t; read: 'blocWeather'">
+
+  <p-message icon="pi pi-info-circle" class="mt-3 full-width-message">
+
+    <div class="flex justify-content-between">
+      <div class="flex align-items-center">
+        {{ t('currentConditions') }}:
+        @if (classification) {
+          @if (certaintyVerb) {
+            {{ t(certaintyVerb) }}
+          }
+          {{ t(classification.classification) }}
+        }
+        @if (!classification) {
+          {{ t('loadingConditions') }}
+        }
+      </div>
+
+      <div>
+        @if (blocWeatherConfig) {
+          <p-button
+            link
+            [label]="t('reportConditions')"
+            severity="secondary"
+            (onClick)="reportConditionsDialog.open(blocWeatherConfig)"
+          />
+        }
+      </div>
+    </div>
+
+  </p-message>
+
+  <lc-report-conditions-dialog #reportConditionsDialog></lc-report-conditions-dialog>
+
+</ng-container>
