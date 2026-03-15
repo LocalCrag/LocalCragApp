@@ -30,6 +30,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-area',
@@ -62,11 +63,13 @@ export class AreaComponent implements OnInit {
   private sectorsService = inject(SectorsService);
   private areasService = inject(AreasService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
+  private hasBlocweather = false;
 
   ngOnInit() {
     this.route.paramMap
@@ -102,8 +105,8 @@ export class AreaComponent implements OnInit {
           ),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
           this.blocWeatherService.getNearest('sector', sectorSlug),
-          this.translocoService.load(`${environment.language}`),
         ]).subscribe(([crag, sector, area, isLoggedIn, blocWeatherConfig]) => {
+          this.hasBlocweather = !!blocWeatherConfig;
           this.crag = crag;
           this.sector = sector;
           this.area = area;
@@ -125,57 +128,13 @@ export class AreaComponent implements OnInit {
                   ),
               };
             });
-          this.items = [
-            {
-              label: this.translocoService.translate(marker('area.infos')),
-              icon: 'pi pi-fw pi-info-circle',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}`,
-              routerLinkActiveOptions: { exact: true },
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.topoImages')),
-              icon: 'pi pi-fw pi-chart-line',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.lines')),
-              icon: 'pi pi-fw pi-chart-line',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.ascents')),
-              icon: 'pi pi-fw pi-check-square',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.gallery')),
-              icon: 'pi pi-fw pi-images',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.comments')),
-              icon: 'pi pi-fw pi-comments',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/comments`,
-              visible: true,
-            },
-            {
-              label: this.translocoService.translate(marker('area.weather')),
-              icon: 'pi pi-fw pi-sun',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/weather`,
-              visible: !!blocWeatherConfig,
-            },
-            {
-              label: this.translocoService.translate(marker('area.edit')),
-              icon: 'pi pi-fw pi-file-edit',
-              routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/edit`,
-              visible: isLoggedIn,
-            },
-          ];
+          this.buildItems(isLoggedIn);
+          this.languageService.renderedLanguage$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rendered) => {
+              if (!rendered) return;
+              this.buildItems(isLoggedIn);
+            });
           this.breadcrumbs = [
             {
               label: crag.name,
@@ -194,5 +153,59 @@ export class AreaComponent implements OnInit {
           ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
         });
       });
+  }
+
+  private buildItems(isLoggedIn: boolean) {
+    this.items = [
+      {
+        label: this.translocoService.translate(marker('area.infos')),
+        icon: 'pi pi-fw pi-info-circle',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}`,
+        routerLinkActiveOptions: { exact: true },
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.topoImages')),
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.lines')),
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.ascents')),
+        icon: 'pi pi-fw pi-check-square',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.gallery')),
+        icon: 'pi pi-fw pi-images',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.comments')),
+        icon: 'pi pi-fw pi-comments',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/comments`,
+        visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('area.weather')),
+        icon: 'pi pi-fw pi-sun',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/weather`,
+        visible: this.hasBlocweather,
+      },
+      {
+        label: this.translocoService.translate(marker('area.edit')),
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/edit`,
+        visible: isLoggedIn,
+      },
+    ];
   }
 }

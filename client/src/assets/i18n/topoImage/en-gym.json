@@ -1,0 +1,5 @@
+{
+  "topoImageForm.addTopoImageDescription": "Upload a new Topo image. Afterwards, available lines can be drawn on the image. The wall should take up most of the picture and the whole line should be easy to see. In some cases, it makes sense to draw the same line on multiple images. This is the case, for example, with traverses or lines that run around an edge.",
+  "topoImageForm.topoImageDescriptionPlaceholder": "Interesting things about the wall. Is there, for example, a typical line style? Does it have a special history?",
+  "batchUploadForm.lineFADateLabel": "Date of setting"
+}

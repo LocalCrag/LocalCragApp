@@ -489,10 +489,10 @@ def test_admins_receive_email_on_new_comment(client, user_token, smtp_mock):
         json={"message": "Admin notify", "objectType": "Line", "objectId": str(line_id)},
     )
     assert rv.status_code == 201, rv.text
-    # Expect exactly one email (to the single admin)
-    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
+    # Expect exactly two email (to the admin and superadmin)
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
 
 
 def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
@@ -523,7 +523,7 @@ def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
     )
     assert rv.status_code == 201, rv.text
 
-    # Two emails total: first to admin on root creation, second to parent on reply
-    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
-    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
+    # Four emails total: first to admin and superadmin on root creation, second to parent and superadmin on reply
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 4
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 4
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 4

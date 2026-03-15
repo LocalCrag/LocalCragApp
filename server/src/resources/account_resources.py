@@ -20,7 +20,7 @@ class DeleteOwnUser(MethodView):
         """
         user = User.find_by_email(get_jwt_identity())
         if user.superadmin:
-            raise BadRequest(ResponseMessage.CANNOT_DELETE_SUPERADMIN.value)
+            raise BadRequest(ResponseMessage.SUPERADMINS_CANNOT_DELETE_OWN_USER.value)
 
         db.session.delete(user)
         db.session.commit()
@@ -43,6 +43,7 @@ class UpdateAccountSettings(MethodView):
         data = parser.parse(account_settings_args)
         settings = user.account_settings
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
+        settings.language = data["language"]
         db.session.add(settings)
         db.session.commit()
         return account_settings_schema.dump(settings), 200

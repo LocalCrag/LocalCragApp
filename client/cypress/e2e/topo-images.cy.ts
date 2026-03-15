@@ -2,14 +2,12 @@ describe('Topo images test', () => {
   it('adds a topo image and draws a line on it', () => {
     cy.viewport(1920, 1080);
     cy.login();
-    cy.visit(
-      'localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images',
-    );
+    cy.visit('/topo/brione/schattental/dritter-block-von-links/topo-images');
     cy.get('[data-cy="topo-image-list-item"]')
       .its('length')
       .then((numBefore) => {
         cy.visit(
-          'localhost:4200/topo/brione/schattental/dritter-block-von-links/add-topo-image',
+          '/topo/brione/schattental/dritter-block-von-links/add-topo-image',
         );
         cy.get('[data-cy="topo-image-input"] input')
           .focus()
@@ -31,7 +29,7 @@ describe('Topo images test', () => {
           .type('Sehr großer Block eh');
         cy.get('[data-cy="submit"]').click();
         cy.visit(
-          'localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images',
+          '/topo/brione/schattental/dritter-block-von-links/topo-images',
         );
         cy.get('[data-cy="topo-image-list-item"]').should(
           'have.length',
@@ -44,7 +42,7 @@ describe('Topo images test', () => {
           .then((id) => {
             topoImageId = id;
             cy.visit(
-              `localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images/${topoImageId}/add-line-path`,
+              `/topo/brione/schattental/dritter-block-von-links/topo-images/${topoImageId}/add-line-path`,
             );
             cy.wait(2000);
             cy.get('[data-cy="line-dropdown"] > div').click();
@@ -55,7 +53,7 @@ describe('Topo images test', () => {
             cy.get('lc-line-path-editor').click(200, 250);
             cy.get('[data-cy="submit"]').click();
             cy.visit(
-              'localhost:4200/topo/brione/schattental/dritter-block-von-links/topo-images',
+              '/topo/brione/schattental/dritter-block-von-links/topo-images',
             );
             cy.get(
               '[data-cy="topo-image-list-item"]:nth-child(3) [data-cy="line-row"]',

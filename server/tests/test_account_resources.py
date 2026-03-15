@@ -13,10 +13,10 @@ def test_delete_own_user_success(client, member_token):
     assert User.find_by_email("member@localcrag.invalid.org") is None
 
 
-def test_delete_own_user_forbidden_for_superadmin(client, admin_token):
-    rv = client.delete("/api/users/account/delete-own-user", token=admin_token, json=None)
+def test_delete_own_user_forbidden_for_superadmin(client, superadmin_token):
+    rv = client.delete("/api/users/account/delete-own-user", token=superadmin_token, json=None)
     assert rv.status_code == 400, rv.text
-    assert rv.json["message"] == ResponseMessage.CANNOT_DELETE_SUPERADMIN.value
+    assert rv.json["message"] == ResponseMessage.SUPERADMINS_CANNOT_DELETE_OWN_USER.value
 
 
 def test_delete_own_user_unauthorized(client):

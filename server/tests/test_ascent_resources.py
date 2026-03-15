@@ -278,9 +278,9 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
     assert rv.status_code == 204
 
-    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 1
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1
-    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 1
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
 
     treppe = str(Line.get_id_by_slug("treppe"))
 
@@ -292,7 +292,7 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
     assert rv.status_code == 400
 
-    # Try for a non existing line
+    # Try for a non-existing line
     project_climbed_data = {
         "line": "1c39fd1f-6341-4161-a83f-e5de0f861c49",
         "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts",

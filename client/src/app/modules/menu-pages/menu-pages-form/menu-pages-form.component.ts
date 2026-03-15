@@ -15,7 +15,6 @@ import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -183,24 +182,22 @@ export class MenuPagesFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteMenuPage(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('menuPages.askReallyWantToDeleteMenuPage'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('menuPages.yesDelete'),
-        ),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('menuPages.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteMenuPage();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('menuPages.askReallyWantToDeleteMenuPage'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('menuPages.yesDelete'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('menuPages.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteMenuPage();
+      },
     });
   }
 

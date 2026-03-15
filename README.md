@@ -52,7 +52,7 @@ Save time while creating your topo by using a simple click-editor for drawing li
 
 ## Installation
 
-If you want to use LocalCrag for your own crag, either deploy [via docker](./docs/docker-compose-installation.md) or [helm on k8s](./helm/README.md) or join our cloud, it's up to you. If you join our cloud you will get automated updates, but you will have to pay a hosting fee (we will not make money charging this fee, it's 1:1 what our cloud provider charges us).
+If you want to use LocalCrag for your own crag, either deploy [via docker](./docs/docker-compose-installation.md) or [helm on k8s](./helm/localcrag/README.md) or join our cloud, it's up to you. If you join our cloud you will get automated updates, but you will have to pay a hosting fee (we will not make money charging this fee, it's 1:1 what our cloud provider charges us).
 
 ### Configuration
 

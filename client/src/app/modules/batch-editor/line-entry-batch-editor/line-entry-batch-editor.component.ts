@@ -58,6 +58,7 @@ import { LinePathFormComponent } from '../../line-path-editor/line-path-form/lin
 import { TopoImage } from '../../../models/topo-image';
 import { Image } from 'primeng/image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
   selector: 'lc-line-entry-batch-editor',
@@ -127,9 +128,12 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private sectorsService = inject(SectorsService);
   private cragsService = inject(CragsService);
   private scalesService = inject(ScalesService);
+  private languageService = inject(LanguageService);
   private batchEditorService = inject(BatchEditorService);
 
-  public gymMode$ = this.store.select(selectGymMode).pipe(takeUntilDestroyed());
+  public gymMode$ = this.store
+    .select(selectGymMode)
+    .pipe(takeUntilDestroyed(this.destroyRef));
 
   ngOnInit() {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
@@ -178,12 +182,18 @@ export class LineEntryBatchEditorComponent implements OnInit {
         sector.defaultTradScale ??
         crag.defaultTradScale;
 
-      this.typeOptions = Object.entries(this.groupedScales)
-        .filter(([_, v]) => v.length > 0)
-        .map(([k]) => ({
-          label: this.translocoService.translate(k),
-          value: k,
-        }));
+      this.buildTypeOptions();
+      this.languageService.renderedLanguage$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((rendered) => {
+          if (!rendered) return;
+          this.buildTypeOptions();
+        });
+
+      this.scaleOptions = this.groupedScales[LineType.BOULDER].map((scale) => ({
+        label: scale.name,
+        value: scale.name,
+      }));
 
       this.buildForm();
       this.topoImageBatchUploadForm
@@ -344,5 +354,14 @@ export class LineEntryBatchEditorComponent implements OnInit {
     } else {
       this.validateCurrentStep();
     }
+  }
+
+  private buildTypeOptions() {
+    this.typeOptions = Object.entries(this.groupedScales)
+      .filter(([_, v]) => v.length > 0)
+      .map(([k]) => ({
+        label: this.translocoService.translate(k),
+        value: k,
+      }));
   }
 }

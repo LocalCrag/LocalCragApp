@@ -5,19 +5,22 @@ def test_get_account_settings(client, member_token):
     rv = client.get("/api/users/account/settings", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["commentReplyMailsEnabled"] is True
+    assert rv.json["language"] in ("de", "en", "it")
 
 
 def test_update_account_settings(client, member_token):
     rv = client.put(
         "/api/users/account/settings",
         token=member_token,
-        json={"commentReplyMailsEnabled": False},
+        json={"commentReplyMailsEnabled": False, "language": "it"},
     )
     assert rv.status_code == 200, rv.text
     assert rv.json["commentReplyMailsEnabled"] is False
+    assert rv.json["language"] == "it"
     # Read again
     rv = client.get("/api/users/account/settings", token=member_token)
     assert rv.json["commentReplyMailsEnabled"] is False
+    assert rv.json["language"] == "it"
 
 
 def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token, smtp_mock):
@@ -42,8 +45,8 @@ def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token
         },
     )
     assert rv.status_code == 201, rv.text
-    # Two new emails: one for root comment to admins, one for reply to member
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
+    # Four new emails: two for root comment to admin and superadmin, two for reply to member and superadmin
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 4
 
 
 def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_token, smtp_mock):
@@ -51,7 +54,7 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
     rv = client.put(
         "/api/users/account/settings",
         token=member_token,
-        json={"commentReplyMailsEnabled": False},
+        json={"commentReplyMailsEnabled": False, "language": "de"},
     )
     assert rv.status_code == 200, rv.text
     line_id = Line.get_id_by_slug("treppe")
@@ -75,4 +78,14 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
         },
     )
     assert rv.status_code == 201, rv.text
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 1  # Only admin notification
+    # Three mails: Two for root comment (admin and superadmin), one for replay (superadmin), member gets none
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 3
+
+
+def test_update_account_settings_invalid_language(client, member_token):
+    rv = client.put(
+        "/api/users/account/settings",
+        token=member_token,
+        json={"commentReplyMailsEnabled": True, "language": "fr"},
+    )
+    assert rv.status_code == 400, rv.text

@@ -23,7 +23,7 @@ def test_successful_login(client):
     assert res["user"]["firstname"] == "admin"
     assert res["user"]["lastname"] == "admin"
     assert isinstance(res["user"]["id"], str)
-    assert res["user"]["language"] == "de"
+    assert res["user"]["accountLanguage"] == "en"
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["avatar"] is None
 
@@ -172,7 +172,7 @@ def test_reset_password_success(client):
     assert res["accessToken"] != res["refreshToken"]
     assert res["user"]["email"] == user.email
     assert res["user"]["id"] == str(user.id)
-    assert res["user"]["language"] == user.language
+    assert res["user"]["accountLanguage"] == user.account_settings.language
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["timeUpdated"] is not None
     assert res["user"]["avatar"] is None
@@ -232,13 +232,22 @@ def test_change_password_password_old_pw_incorrect(client, member_token):
     assert res["message"] == ResponseMessage.OLD_PASSWORD_INCORRECT.value
 
 
-def test_cannot_promote_admins(client, admin_token):
-    user = User.find_by_email("admin@localcrag.invalid.org")
+def test_cannot_promote_superadmins(client, admin_token):
+    user = User.find_by_email("superadmin@localcrag.invalid.org")
     data = {
         "promotionTarget": "USER",
     }
     rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
     assert rv.status_code == 401
+
+
+def test_cannot_promote_own_user(client, admin_token):
+    user = User.find_by_email("admin@localcrag.invalid.org")
+    data = {
+        "promotionTarget": "USER",
+    }
+    rv = client.put(f"/api/users/{user.id}/promote", token=admin_token, json=data)
+    assert rv.status_code == 409
 
 
 def test_permission_levels(client, user_token, member_token, moderator_token):

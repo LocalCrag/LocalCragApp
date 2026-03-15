@@ -11,6 +11,7 @@ import { AccountService } from '../../../services/crud/account.service';
 import { AccountSettings } from '../../../models/account-settings';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
+import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 
 @Component({
   selector: 'lc-account-settings-form',
@@ -22,6 +23,7 @@ import { Store } from '@ngrx/store';
     TranslocoDirective,
     FormDirective,
     Button,
+    LanguageSelectComponent,
   ],
   templateUrl: './account-settings-form.component.html',
   styleUrl: './account-settings-form.component.scss',
@@ -41,6 +43,7 @@ export class AccountSettingsFormComponent implements OnInit {
   private buildForm() {
     this.accountSettingsForm = this.fb.group({
       commentReplyMailsEnabled: [null],
+      language: [null],
     });
   }
 
@@ -58,6 +61,7 @@ export class AccountSettingsFormComponent implements OnInit {
     this.accountSettingsForm.enable();
     this.accountSettingsForm.patchValue({
       commentReplyMailsEnabled: this.accountSettings.commentReplyMailsEnabled,
+      language: this.accountSettings.language,
     });
   }
 
@@ -68,6 +72,7 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.commentReplyMailsEnabled = this.accountSettingsForm.get(
         'commentReplyMailsEnabled',
       ).value;
+      accountSettings.language = this.accountSettingsForm.get('language').value;
       this.accountService.updateAccountSettings(accountSettings).subscribe({
         next: () => {
           this.store.dispatch(toastNotification('ACCOUNT_SETTINGS_UPDATED'));

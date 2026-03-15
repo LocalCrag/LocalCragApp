@@ -28,7 +28,6 @@ import { ChipModule } from 'primeng/chip';
 import { MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { environment } from '../../../../environments/environment';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
@@ -204,25 +203,23 @@ export class UserListComponent implements OnInit {
   }
 
   confirmDeleteUser(user: User) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        header: this.translocoService.translate(
-          marker('users.askReallyWantToDeleteUserTitle'),
-        ),
-        message: this.translocoService.translate(
-          marker('users.askReallyWantToDeleteUser'),
-          { username: user.fullname },
-        ),
-        acceptLabel: this.translocoService.translate(marker('users.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('users.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteUser(user);
-        },
-      });
+    this.confirmationService.confirm({
+      header: this.translocoService.translate(
+        marker('users.askReallyWantToDeleteUserTitle'),
+      ),
+      message: this.translocoService.translate(
+        marker('users.askReallyWantToDeleteUser'),
+        { username: user.fullname },
+      ),
+      acceptLabel: this.translocoService.translate(marker('users.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(
+        marker('users.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteUser(user);
+      },
     });
   }
 

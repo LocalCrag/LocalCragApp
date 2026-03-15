@@ -88,6 +88,18 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "e2e": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.e2e.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -100,6 +112,9 @@
             },
             "development": {
               "buildTarget": "client:build:development"
+            },
+            "e2e": {
+              "buildTarget": "client:build:e2e"
             }
           },
           "defaultConfiguration": "development"

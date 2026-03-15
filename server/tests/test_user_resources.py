@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
+import pytest
 import pytz
 
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from messages.messages import ResponseMessage
 from models.file import File
@@ -19,7 +21,7 @@ def test_successful_get_user(client, member_token):
     assert res["firstname"] == member.firstname
     assert res["lastname"] == member.lastname
     assert res["email"] == member.email
-    assert res["language"] == member.language
+    assert res["accountLanguage"] == member.account_settings.language
     assert res["activated"] == member.activated
     assert res["admin"] == member.admin
     assert res["moderator"] == member.moderator
@@ -40,7 +42,7 @@ def test_successful_get_users(client, admin_token):
         assert isinstance(user["firstname"], str)
         assert isinstance(user["lastname"], str)
         assert isinstance(user["email"], str)
-        assert isinstance(user["language"], str)
+        assert isinstance(user["accountLanguage"], str)
         assert isinstance(user["activated"], bool)
         assert isinstance(user["admin"], bool)
         assert isinstance(user["moderator"], bool)
@@ -84,11 +86,11 @@ def test_successful_register_user(client, member_token, smtp_mock):
     assert res["lastname"] == "Test"
     assert res["email"] == "felix.engelmann@fengelmann.de"  # expect it to be changed to lowercase
     assert not res["activated"]
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["avatar"] is None
-    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 2
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
-    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 3
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 3
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 3
 
 
 def test_unsuccessful_create_user_email_taken(client, member_token):
@@ -120,8 +122,78 @@ def test_delete_own_user(client, admin_token):
 
 
 def test_delete_other_user(client, admin_token):
-    rv = client.delete(f'/api/users/{User.get_id_by_slug("member-member")}', token=admin_token, json=None)
+    user_id = User.get_id_by_slug("member-member")
+    rv = client.delete(f"/api/users/{user_id}", token=admin_token, json=None)
     assert rv.status_code == 204
+    with pytest.raises(NotFound):
+        User.get_id_by_slug("other-user")
+
+
+def test_delete_user_requires_jwt(client):
+    user_id = User.get_id_by_slug("member-member")
+    rv = client.delete(f"/api/users/{user_id}")
+    assert rv.status_code == 401
+
+
+def test_delete_user_forbidden_for_non_admin(client, member_token):
+    user_id = User.get_id_by_slug("user-user")
+    rv = client.delete(f"/api/users/{user_id}", token=member_token, json=None)
+    assert rv.status_code == 401
+
+
+def test_delete_user_forbidden_for_moderator(client, moderator_token):
+    user_id = User.get_id_by_slug("user-user")
+    rv = client.delete(f"/api/users/{user_id}", token=moderator_token, json=None)
+    assert rv.status_code == 401
+
+
+def test_admin_cannot_delete_other_admin(client, admin_token):
+    # Create a second admin user (not superadmin) to delete
+    admin_user = User(
+        email="other-admin@localcrag.invalid.org",
+        password=User.generate_hash("pw"),
+        firstname="Other",
+        lastname="Admin",
+        activated=True,
+        superadmin=False,
+        admin=True,
+        moderator=True,
+        member=True,
+    )
+    db.session.add(admin_user)
+    db.session.commit()
+
+    rv = client.delete(f"/api/users/{admin_user.id}", token=admin_token, json=None)
+    assert rv.status_code == 401
+    assert rv.json["message"] == ResponseMessage.ONLY_SUPERADMINS_CAN_DELETE_OTHER_ADMINS.value
+
+
+def test_superadmin_can_delete_other_admin(client, superadmin_token):
+    # admin_token fixture represents the superadmin user in seeded test data
+    admin_user = User(
+        email="other-admin-2@localcrag.invalid.org",
+        password=User.generate_hash("pw"),
+        firstname="Other2",
+        lastname="Admin2",
+        activated=True,
+        superadmin=False,
+        admin=True,
+        moderator=True,
+        member=True,
+    )
+    db.session.add(admin_user)
+    db.session.commit()
+
+    rv = client.delete(f"/api/users/{admin_user.id}", token=superadmin_token, json=None)
+    assert rv.status_code == 204
+    with pytest.raises(NotFound):
+        User.find_by_id(admin_user.id)
+
+
+def test_delete_nonexistent_user_returns_404(client, admin_token):
+    missing_id = str(uuid4())
+    rv = client.delete(f"/api/users/{missing_id}", token=admin_token, json=None)
+    assert rv.status_code == 404
 
 
 def test_update_user(client, admin_token):
@@ -136,7 +208,7 @@ def test_update_user(client, admin_token):
     rv = client.put("/api/users/account", token=admin_token, json=data)
     assert rv.status_code == 200, rv.text
     res = rv.json
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["firstname"] == "Thorsten"
     assert res["lastname"] == "Test"
     assert res["avatar"]["id"] == str(any_file.id)
@@ -156,7 +228,7 @@ def test_update_user_different_email(client, mocker, member_token):
     rv = client.put("/api/users/account", token=member_token, json=data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["language"] == "de"
+    assert res["accountLanguage"] == "en"
     assert res["firstname"] == "Thorsten"
     assert res["lastname"] == "Test"
     assert res["avatar"] is None
@@ -187,7 +259,7 @@ def test_change_email(client):
     assert res["accessToken"] != res["refreshToken"]
     assert res["user"]["email"] == "masteradmin@localcrag.invalid.org"
     assert isinstance(res["user"]["id"], str)
-    assert res["user"]["language"] == "de"
+    assert res["user"]["accountLanguage"] == "en"
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["timeUpdated"] is not None
     assert res["user"]["avatar"] is None

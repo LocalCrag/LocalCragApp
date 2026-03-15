@@ -56,6 +56,7 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
+import { LanguageService } from '../../../services/core/language.service';
 
 /**
  * A component for creating and editing crags.
@@ -110,6 +111,7 @@ export class CragFormComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
+  private languageService = inject(LanguageService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -120,21 +122,15 @@ export class CragFormComponent implements OnInit {
    */
   ngOnInit() {
     this.buildForm();
-    const scalesPopulated = this.scalesService
-      .getFormScaleSelectors([
-        {
-          label: this.translocoService.translate(marker('defaultScalesLabel')),
-          value: null,
-        },
-      ])
-      .pipe(
-        map((groupedScales) => {
-          this.boulderScales = groupedScales[LineType.BOULDER];
-          this.sportScales = groupedScales[LineType.SPORT];
-          this.tradScales = groupedScales[LineType.TRAD];
-          return true;
-        }),
-      );
+    const scalesPopulated = this.buildScaleSelectors();
+
+    // Rebuild scale labels when language changes
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.buildScaleSelectors().subscribe();
+      });
 
     const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
 
@@ -279,22 +275,18 @@ export class CragFormComponent implements OnInit {
    * @param event Click event.
    */
   confirmDeleteCrag(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          marker('crag.askReallyWantToDeleteCrag'),
-        ),
-        acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectLabel: this.translocoService.translate(
-          marker('crag.noDontDelete'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.deleteCrag();
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        marker('crag.askReallyWantToDeleteCrag'),
+      ),
+      acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.translocoService.translate(marker('crag.noDontDelete')),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteCrag();
+      },
     });
   }
 
@@ -307,6 +299,24 @@ export class CragFormComponent implements OnInit {
       this.router.navigate(['/topo']);
       this.loadingState = LoadingState.DEFAULT;
     });
+  }
+
+  private buildScaleSelectors() {
+    return this.scalesService
+      .getFormScaleSelectors([
+        {
+          label: this.translocoService.translate(marker('defaultScalesLabel')),
+          value: null,
+        },
+      ])
+      .pipe(
+        map((groupedScales) => {
+          this.boulderScales = groupedScales[LineType.BOULDER];
+          this.sportScales = groupedScales[LineType.SPORT];
+          this.tradScales = groupedScales[LineType.TRAD];
+          return true;
+        }),
+      );
   }
 
   protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;

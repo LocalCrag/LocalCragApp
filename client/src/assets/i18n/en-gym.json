@@ -1,0 +1,16 @@
+{
+  "region.regionForm.regionNamePlaceholder": "e.g. organisation name",
+  "region.regionForm.regionDescriptionPlaceholder": "General information about the organization.",
+  "region.regionForm.regionRulesPlaceholder": "Rules",
+  "region.regionForm.editRegionTitle": "Edit organization",
+  "notFound.title": "Error 404 - No hold in sight!",
+  "projectClimbedForm.projectClimbedInfoMessage": "You climbed a project? Congratulations! It would be great if you could send us some information so that we can include the new line in the topo. First and foremost are the line name and the proposed difficulty rating. If you have a video, feel free to send it to us. If you want to be mentioned in the Topo for the first ascent, send us your name and the date of the ascent. We will be in touch!",
+  "ascentForm.firstAscentExplanation": "First ascent: This is only to be ticked if you are the first person to climb this line. It's not your personal first ascent!",
+  "top25Ranking": "Top 25 ascents",
+  "top10FaRanking": "Top 10 first ascents",
+  "totalFaCountRanking": "Number of first ascents",
+  "top10FaExponentialRanking": "Top 10 first ascents (exponential weighting)",
+  "totalFaRanking": "All first ascents",
+  "totalFaExponentialRanking": "All first ascents (exponential weighting)",
+  "searchDialog.infoMessage": "The quality of the search function is not yet great."
+}

@@ -13,7 +13,6 @@ import { ArchiveService } from '../../../services/crud/archive.service';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmationService } from 'primeng/api';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'lc-archive-button',
@@ -92,30 +91,28 @@ export class ArchiveButtonComponent {
   }
 
   confirmArchiveTopoImage(event: Event) {
-    this.translocoService.load(`${environment.language}`).subscribe(() => {
-      this.confirmationService.confirm({
-        target: event.target,
-        message: this.translocoService.translate(
-          this.topoImage.archived
-            ? marker('archive.askAlsoUnArchiveLines')
-            : marker('archive.askAlsoArchiveLines'),
-        ),
-        acceptLabel: this.translocoService.translate(
-          marker('archive.yesWithLines'),
-        ),
-        acceptButtonStyleClass: 'p-button-primary',
-        rejectButtonStyleClass: 'p-button-secondary',
-        rejectLabel: this.translocoService.translate(
-          marker('archive.noWithoutLines'),
-        ),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.doArchiveTopoImage(true);
-        },
-        reject: () => {
-          this.doArchiveTopoImage(false);
-        },
-      });
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(
+        this.topoImage.archived
+          ? marker('archive.askAlsoUnArchiveLines')
+          : marker('archive.askAlsoArchiveLines'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('archive.yesWithLines'),
+      ),
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
+      rejectLabel: this.translocoService.translate(
+        marker('archive.noWithoutLines'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.doArchiveTopoImage(true);
+      },
+      reject: () => {
+        this.doArchiveTopoImage(false);
+      },
     });
   }
 
