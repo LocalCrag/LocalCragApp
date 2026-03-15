@@ -6,13 +6,14 @@
       [(visible)]="isOpen"
     >
       <form [formGroup]="form" lcForm class="flex flex-column pt-1">
-
         <p-message icon="pi pi-info-circle" class="mb-3">
-          {{ t('blocWeather.reportConditionsInfo') }}
+          {{ t("blocWeather.reportConditionsInfo") }}
         </p-message>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('blocWeather.reportConditionsStatusLabel') }}</label>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsStatusLabel")
+          }}</label>
           <div class="flex flex-wrap gap-2">
             <p-toggleButton
               fluid
@@ -48,12 +49,14 @@
             />
           </div>
           @if (submitted && form.errors?.noStatusSelected) {
-            <small class="lc-error">{{ t('blocWeather.required') }}</small>
+            <small class="lc-error">{{ t("blocWeather.required") }}</small>
           }
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('blocWeather.reportConditionsObservedAtLabel') }}</label>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsObservedAtLabel")
+          }}</label>
           <div class="flex gap-2">
             <p-datePicker
               formControlName="observedAt"
@@ -72,11 +75,15 @@
               (onClick)="setNow()"
             />
           </div>
-          <small class="lc-error" *lcIfError="'required'">{{ t('blocWeather.required') }}</small>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("blocWeather.required")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label">{{ t('blocWeather.reportConditionsCommentLabel') }}</label>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsCommentLabel")
+          }}</label>
           <textarea
             rows="3"
             pTextarea
@@ -86,7 +93,6 @@
             [placeholder]="t('blocWeather.reportConditionsCommentPlaceholder')"
           ></textarea>
         </div>
-
       </form>
 
       <ng-template #footer>
