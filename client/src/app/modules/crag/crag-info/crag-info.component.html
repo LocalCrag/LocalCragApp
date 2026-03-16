@@ -3,7 +3,10 @@
     @if (crag.closed) {
       <lc-closed-spot-alert [reason]="crag.closedReason"></lc-closed-spot-alert>
     }
-    <lc-current-conditions [slug]="crag.slug" [level]="'crag'"></lc-current-conditions>
+    <lc-current-conditions
+      [slug]="crag.slug"
+      [level]="'crag'"
+    ></lc-current-conditions>
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
       *isOutdoorMode="true"
