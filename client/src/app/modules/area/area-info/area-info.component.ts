@@ -15,6 +15,8 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { MapComponent } from '../../maps/map/map.component';
 import { Skeleton } from 'primeng/skeleton';
+import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 @Component({
   selector: 'lc-area-info',
@@ -28,6 +30,8 @@ import { Skeleton } from 'primeng/skeleton';
     CoordinatesButtonComponent,
     MapComponent,
     Skeleton,
+    CurrentConditionsComponent,
+    OutdoorModeDirective,
   ],
 })
 export class AreaInfoComponent implements OnInit {

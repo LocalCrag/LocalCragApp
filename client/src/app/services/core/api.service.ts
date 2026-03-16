@@ -47,6 +47,11 @@ export class ApiService {
       `${this.apiHost}maps/markers${filters}`,
   };
 
+  public blocweather = {
+    getNearest: (level: string, slug: string): string =>
+      `${this.apiHost}blocweather/nearest/${level}/${slug}`,
+  };
+
   public gallery = {
     getDetail: (id: string): string => `${this.apiHost}gallery/${id}`,
     create: (): string => `${this.apiHost}gallery`,

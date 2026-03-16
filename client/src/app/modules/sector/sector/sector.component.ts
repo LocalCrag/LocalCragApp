@@ -18,7 +18,10 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
-import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectGymMode,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
@@ -28,6 +31,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 
 @Component({
@@ -64,6 +68,8 @@ export class SectorComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
+  private blocWeatherService = inject(BlocWeatherService);
+  private hasBlocweather = false;
 
   ngOnInit() {
     this.route.paramMap
@@ -88,50 +94,55 @@ export class SectorComponent implements OnInit {
               return of(e);
             }),
           ),
+          this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
-        ]).subscribe(([crag, sector, isLoggedIn]) => {
-          this.crag = crag;
-          this.sector = sector;
-          this.store
-            .select(selectInstanceSettingsState)
-            .subscribe((instanceSettings) => {
-              this.title.setTitle(
-                cragSlug != environment.skippedSlug
-                  ? `${sector.name} / ${crag.name} - ${instanceSettings.instanceName}`
-                  : `${sector.name} - ${instanceSettings.instanceName}`,
-              );
-              this.breadcrumbHome = {
-                icon: 'pi pi-map',
-                routerLink:
-                  '/topo' +
-                  `/${environment.skippedSlug}`.repeat(
-                    instanceSettings.skippedHierarchyLayers,
-                  ),
-              };
-            });
-          this.buildItems(isLoggedIn);
-          this.languageService.renderedLanguage$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((rendered) => {
-              if (!rendered) return;
-              this.buildItems(isLoggedIn);
-            });
-          this.breadcrumbs = [
-            {
-              label: crag.name,
-              slug: crag.slug,
-              routerLink: `/topo/${crag.slug}/sectors`,
-            },
-            {
-              label: sector.name,
-              slug: sector.slug,
-            },
-          ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
-        });
+          this.store.pipe(select(selectGymMode), take(1)),
+        ]).subscribe(
+          ([crag, sector, blocweatherConfig, isLoggedIn, isGymMode]) => {
+            this.hasBlocweather = !!blocweatherConfig;
+            this.crag = crag;
+            this.sector = sector;
+            this.store
+              .select(selectInstanceSettingsState)
+              .subscribe((instanceSettings) => {
+                this.title.setTitle(
+                  cragSlug != environment.skippedSlug
+                    ? `${sector.name} / ${crag.name} - ${instanceSettings.instanceName}`
+                    : `${sector.name} - ${instanceSettings.instanceName}`,
+                );
+                this.breadcrumbHome = {
+                  icon: 'pi pi-map',
+                  routerLink:
+                    '/topo' +
+                    `/${environment.skippedSlug}`.repeat(
+                      instanceSettings.skippedHierarchyLayers,
+                    ),
+                };
+              });
+            this.buildItems(isLoggedIn, isGymMode);
+            this.languageService.renderedLanguage$
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((rendered) => {
+                if (!rendered) return;
+                this.buildItems(isLoggedIn, isGymMode);
+              });
+            this.breadcrumbs = [
+              {
+                label: crag.name,
+                slug: crag.slug,
+                routerLink: `/topo/${crag.slug}/sectors`,
+              },
+              {
+                label: sector.name,
+                slug: sector.slug,
+              },
+            ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+          },
+        );
       });
   }
 
-  private buildItems(isLoggedIn: boolean) {
+  private buildItems(isLoggedIn: boolean, isGymMode: boolean) {
     this.items = [
       {
         label: this.translocoService.translate(marker('sector.infos')),
@@ -181,6 +192,12 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
         visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('sector.weather')),
+        icon: 'pi pi-fw pi-sun',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/weather`,
+        visible: this.hasBlocweather && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('sector.edit')),

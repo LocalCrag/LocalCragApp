@@ -1,3 +1,5 @@
+from typing import Optional
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
@@ -59,7 +61,7 @@ class UpdateScale(MethodView):
     @jwt_required()
     @check_auth_claims(admin=True)
     def put(self, line_type, name):
-        scale: Scale | None = Scale.query.filter_by(name=name, type=line_type).first()
+        scale: Optional[Scale] = Scale.query.filter_by(name=name, type=line_type).first()
         if scale is None:
             raise NotFound()
 

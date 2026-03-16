@@ -58,6 +58,9 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { Tooltip } from 'primeng/tooltip';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 /**
  * Form component for creating and editing sectors.
@@ -86,6 +89,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
+    Tooltip,
+    OutdoorModeDirective,
   ],
 })
 export class SectorFormComponent implements OnInit {
@@ -203,6 +208,7 @@ export class SectorFormComponent implements OnInit {
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
+      blocweatherUrl: [null, [blocweatherUrlValidator]],
     });
     this.sectorForm
       .get('closed')
@@ -232,6 +238,7 @@ export class SectorFormComponent implements OnInit {
       defaultBoulderScale: this.sector.defaultBoulderScale,
       defaultSportScale: this.sector.defaultSportScale,
       defaultTradScale: this.sector.defaultTradScale,
+      blocweatherUrl: this.sector.blocweatherUrl,
     });
   }
 
@@ -267,6 +274,8 @@ export class SectorFormComponent implements OnInit {
       ).value;
       sector.defaultSportScale = this.sectorForm.get('defaultSportScale').value;
       sector.defaultTradScale = this.sectorForm.get('defaultTradScale').value;
+      sector.blocweatherUrl =
+        this.sectorForm.get('blocweatherUrl').value || null;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.sectorsService.updateSector(sector).subscribe((sector) => {

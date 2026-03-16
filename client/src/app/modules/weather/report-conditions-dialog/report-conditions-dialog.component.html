@@ -1,0 +1,113 @@
+<ng-container *transloco="let t">
+  @if (form) {
+    <p-dialog
+      [header]="t('blocWeather.reportConditions')"
+      [modal]="true"
+      [(visible)]="isOpen"
+    >
+      <form [formGroup]="form" lcForm class="flex flex-column pt-1">
+        <p-message icon="pi pi-info-circle" class="mb-3">
+          {{ t("blocWeather.reportConditionsInfo") }}
+        </p-message>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsStatusLabel")
+          }}</label>
+          <div class="flex flex-wrap gap-2">
+            <p-toggleButton
+              fluid
+              formControlName="dry"
+              [onLabel]="t('blocWeather.dry') + ' 😊'"
+              [offLabel]="t('blocWeather.dry') + ' 😊'"
+              [dt]="dryDt"
+              class="capitalize"
+            />
+            <p-toggleButton
+              fluid
+              formControlName="some_wet"
+              [onLabel]="t('blocWeather.some_wet') + ' 😐'"
+              [offLabel]="t('blocWeather.some_wet') + ' 😐'"
+              [dt]="someWetDt"
+              class="capitalize"
+            />
+            <p-toggleButton
+              fluid
+              formControlName="mostly_wet"
+              [onLabel]="t('blocWeather.mostly_wet') + ' 😢'"
+              [offLabel]="t('blocWeather.mostly_wet') + ' 😢'"
+              [dt]="mostlyWetDt"
+              class="capitalize"
+            />
+            <p-toggleButton
+              fluid
+              formControlName="wet"
+              [onLabel]="t('blocWeather.wet') + ' 😭'"
+              [offLabel]="t('blocWeather.wet') + ' 😭'"
+              [dt]="wetDt"
+              class="capitalize"
+            />
+          </div>
+          @if (submitted && form.errors?.noStatusSelected) {
+            <small class="lc-error">{{ t("blocWeather.required") }}</small>
+          }
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsObservedAtLabel")
+          }}</label>
+          <div class="flex gap-2">
+            <p-datePicker
+              formControlName="observedAt"
+              appendTo="body"
+              [showTime]="true"
+              [maxDate]="maxDate"
+              [showSeconds]="false"
+              [readonlyInput]="true"
+              inputId="datetime"
+              lcFormControl
+              class="flex-1"
+            />
+            <p-button
+              [label]="t('blocWeather.reportConditionsNow')"
+              severity="secondary"
+              (onClick)="setNow()"
+            />
+          </div>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("blocWeather.required")
+          }}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label">{{
+            t("blocWeather.reportConditionsCommentLabel")
+          }}</label>
+          <textarea
+            rows="3"
+            pTextarea
+            formControlName="comment"
+            lcFormControl
+            class="w-full"
+            [placeholder]="t('blocWeather.reportConditionsCommentPlaceholder')"
+          ></textarea>
+        </div>
+      </form>
+
+      <ng-template #footer>
+        <p-button
+          [label]="t('blocWeather.reportConditionsCancel')"
+          severity="secondary"
+          (onClick)="close()"
+        />
+        <p-button
+          [label]="t('blocWeather.reportConditionsSubmit')"
+          severity="primary"
+          [loading]="loading"
+          (onClick)="submit()"
+        />
+      </ng-template>
+    </p-dialog>
+  }
+</ng-container>
