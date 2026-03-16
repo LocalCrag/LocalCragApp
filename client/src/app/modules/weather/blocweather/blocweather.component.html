@@ -1,0 +1,33 @@
+<ng-container *transloco="let t; read: 'blocWeather'">
+  <lc-current-conditions
+    [disableDetailsLink]="true"
+    [level]="level"
+    [slug]="slug"
+  ></lc-current-conditions>
+  @if (blocWeatherConfig) {
+    <iframe
+      [src]="safeBlocWeatherUrl"
+      width="100%"
+      [height]="iframeHeight"
+      style="
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      "
+    ></iframe>
+    <p-message icon="pi pi-info-circle">
+      <div class="block">
+        {{ t("blocWeatherInfo") }}<br />
+        <small>{{ t("blocWeatherInfoModel") }}</small>
+      </div>
+    </p-message>
+  }
+  @if (!blocWeatherConfig) {
+    <p-skeleton
+      width="100%"
+      [height]="iframeHeight + 'px'"
+      borderRadius="8px"
+    ></p-skeleton>
+  }
+</ng-container>

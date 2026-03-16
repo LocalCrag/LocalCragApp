@@ -27,6 +27,7 @@ def test_successful_create_sector(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -48,6 +49,28 @@ def test_successful_create_sector(client, moderator_token):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
+
+
+def test_create_sector_invalid_blocweather_url(client, moderator_token):
+    sector_data = {
+        "name": "Kruzifix",
+        "description": "Der Klassikersektor",
+        "shortDescription": "Classic.",
+        "portraitImage": None,
+        "mapMarkers": [],
+        "rules": None,
+        "secret": False,
+        "closed": False,
+        "closedReason": None,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione?x=1",
+    }
+
+    rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
+    assert rv.status_code == 400
 
 
 def test_successful_get_sectors(client):
@@ -88,6 +111,7 @@ def test_successful_get_sector(client):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == Sector.find_by_slug("schattental").blocweather_url
 
 
 def test_get_deleted_sector(client):
@@ -125,6 +149,7 @@ def test_successful_edit_sector(client, moderator_token):
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
     }
 
     rv = client.put("/api/sectors/schattental", token=moderator_token, json=sector_data)
@@ -146,6 +171,7 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
+    assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
 
 
 def test_successful_order_sectors(client, moderator_token):

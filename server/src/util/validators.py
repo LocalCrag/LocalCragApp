@@ -1,3 +1,5 @@
+from typing import Optional
+
 from marshmallow import ValidationError
 
 from models.enums.line_type_enum import LineTypeEnum
@@ -72,3 +74,40 @@ def validate_default_scales(args: dict) -> tuple[bool, str]:
             return False, f"Scale Trad/{args['defaultTradScale']} does not exist."
 
     return True, ""
+
+
+def blocweather_url_validator(url: Optional[str]):
+    """Validate BlocWeather URLs.
+
+    Expected format:
+        https://blocweather.com/{country}/{region}/{spot}
+
+    Rules:
+    - None is allowed.
+    - Must start with https://blocweather.com/
+    - Must have exactly 3 non-empty path segments after the host.
+    - No query string or fragment.
+    """
+
+    if url is None:
+        return
+
+    if not isinstance(url, str):
+        raise ValidationError("Invalid BlocWeather URL")
+
+    url = url.strip()
+    if url == "":
+        raise ValidationError("Invalid BlocWeather URL")
+
+    prefix = "https://blocweather.com/"
+    if not url.startswith(prefix):
+        raise ValidationError("Invalid BlocWeather URL")
+
+    remainder = url.removeprefix(prefix)
+
+    if "?" in remainder or "#" in remainder:
+        raise ValidationError("Invalid BlocWeather URL")
+
+    parts = [p for p in remainder.split("/") if p != ""]
+    if len(parts) != 3:
+        raise ValidationError("Invalid BlocWeather URL")

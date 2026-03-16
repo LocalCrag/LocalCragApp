@@ -3,8 +3,13 @@
     @if (crag.closed) {
       <lc-closed-spot-alert [reason]="crag.closedReason"></lc-closed-spot-alert>
     }
+    <lc-current-conditions
+      [slug]="crag.slug"
+      [level]="'crag'"
+    ></lc-current-conditions>
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
+      *isOutdoorMode="true"
       [fetchingObservable]="fetchCragGrades"
     ></lc-grade-distribution-bar-chart>
     @if (crag.description) {
@@ -25,13 +30,13 @@
       <lc-season-chart [season]="season"></lc-season-chart>
     }
     @if (!crag && !season) {
-      <p-skeleton width="100%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="90%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="87%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="70%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="65%" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="45%" styleClass="mb-4"></p-skeleton>
-      <p-skeleton height="4rem" styleClass="mb-4"></p-skeleton>
+      <p-skeleton width="100%" class="mb-2"></p-skeleton>
+      <p-skeleton width="90%" class="mb-2"></p-skeleton>
+      <p-skeleton width="87%" class="mb-2"></p-skeleton>
+      <p-skeleton width="70%" class="mb-2"></p-skeleton>
+      <p-skeleton width="65%" class="mb-2"></p-skeleton>
+      <p-skeleton width="45%" class="mb-4"></p-skeleton>
+      <p-skeleton height="4rem" class="mb-4"></p-skeleton>
       <p-skeleton width="40%" height="4rem"></p-skeleton>
     }
   }

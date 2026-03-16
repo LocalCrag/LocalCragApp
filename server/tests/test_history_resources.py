@@ -15,6 +15,7 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": None,
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
@@ -97,6 +98,7 @@ def test_history_respects_secret_flag(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": None,
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201

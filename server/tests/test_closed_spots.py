@@ -94,6 +94,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -235,6 +236,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
+        "blocweatherUrl": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)

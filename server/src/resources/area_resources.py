@@ -85,6 +85,7 @@ class CreateArea(MethodView):
         new_area.default_boulder_scale = area_data["defaultBoulderScale"]
         new_area.default_sport_scale = area_data["defaultSportScale"]
         new_area.default_trad_scale = area_data["defaultTradScale"]
+        new_area.blocweather_url = area_data["blocweatherUrl"]
 
         if not new_area.secret:
             set_area_parents_false(new_area, "secret")
@@ -125,6 +126,7 @@ class UpdateArea(MethodView):
         area.default_boulder_scale = area_data["defaultBoulderScale"]
         area.default_sport_scale = area_data["defaultSportScale"]
         area.default_trad_scale = area_data["defaultTradScale"]
+        area.blocweather_url = area_data["blocweatherUrl"]
 
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)

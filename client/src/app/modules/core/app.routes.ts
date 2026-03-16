@@ -72,6 +72,9 @@ import { LineEntryBatchEditorComponent } from '../batch-editor/line-entry-batch-
 import { LinePathFormWrapperComponent } from '../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component';
 import { CommentsComponent } from '../comments/comments/comments.component';
 import { ObjectType } from '../../models/object';
+import { CragWeatherComponent } from '../crag/crag-weather/crag-weather.component';
+import { SectorWeatherComponent } from '../sector/sector-weather/sector-weather.component';
+import { AreaWeatherComponent } from '../area/area-weather/area-weather.component';
 
 export const appRoutes: Routes = [
   {
@@ -584,6 +587,17 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'weather',
+        canActivate: [skipHierarchy(2, ['/topo'], ['weather'])],
+        children: [
+          {
+            path: '',
+            component: CragWeatherComponent,
+            outlet: 'cragContent',
+          },
+        ],
+      },
+      {
         path: 'ranking',
         canActivate: [skipHierarchy(2, ['/topo'], ['ranking'])],
         children: [
@@ -700,6 +714,16 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: SectorAscentsComponent,
+            outlet: 'sectorContent',
+          },
+        ],
+      },
+      {
+        path: 'weather',
+        children: [
+          {
+            path: '',
+            component: SectorWeatherComponent,
             outlet: 'sectorContent',
           },
         ],
@@ -836,6 +860,16 @@ export const appRoutes: Routes = [
           {
             path: '',
             component: AreaAscentsComponent,
+            outlet: 'areaContent',
+          },
+        ],
+      },
+      {
+        path: 'weather',
+        children: [
+          {
+            path: '',
+            component: AreaWeatherComponent,
             outlet: 'areaContent',
           },
         ],

@@ -5,6 +5,11 @@
         [reason]="sector.closedReason"
       ></lc-closed-spot-alert>
     }
+    <lc-current-conditions
+      *isOutdoorMode="true"
+      [slug]="sector.slug"
+      [level]="'sector'"
+    ></lc-current-conditions>
     <h4>{{ t("gradeDistribution") }}:</h4>
     <lc-grade-distribution-bar-chart
       [fetchingObservable]="fetchSectorGrades"
