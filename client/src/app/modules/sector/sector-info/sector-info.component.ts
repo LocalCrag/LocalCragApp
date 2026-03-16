@@ -16,6 +16,8 @@ import { CoordinatesButtonComponent } from '../../shared/components/coordinates-
 import { MapComponent } from '../../maps/map/map.component';
 import { Skeleton } from 'primeng/skeleton';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 @Component({
   selector: 'lc-sector-info',
@@ -29,6 +31,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CoordinatesButtonComponent,
     MapComponent,
     Skeleton,
+    CurrentConditionsComponent,
+    OutdoorModeDirective,
   ],
 })
 export class SectorInfoComponent implements OnInit {

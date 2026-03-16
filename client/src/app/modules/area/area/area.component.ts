@@ -20,7 +20,10 @@ import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
-import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectGymMode,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -105,57 +108,60 @@ export class AreaComponent implements OnInit {
           ),
           this.store.pipe(select(selectIsLoggedIn), take(1)),
           this.blocWeatherService.getNearest('sector', sectorSlug),
-        ]).subscribe(([crag, sector, area, isLoggedIn, blocWeatherConfig]) => {
-          this.hasBlocweather = !!blocWeatherConfig;
-          this.crag = crag;
-          this.sector = sector;
-          this.area = area;
-          this.store
-            .select(selectInstanceSettingsState)
-            .subscribe((instanceSettings) => {
-              const components = [area, sector, crag]
-                .filter((e) => e.slug != environment.skippedSlug)
-                .map((e) => e.name);
-              this.title.setTitle(
-                `${components.join(' / ')} - ${instanceSettings.instanceName}`,
-              );
-              this.breadcrumbHome = {
-                icon: 'pi pi-map',
-                routerLink:
-                  '/topo' +
-                  `/${environment.skippedSlug}`.repeat(
-                    instanceSettings.skippedHierarchyLayers,
-                  ),
-              };
-            });
-          this.buildItems(isLoggedIn);
-          this.languageService.renderedLanguage$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((rendered) => {
-              if (!rendered) return;
-              this.buildItems(isLoggedIn);
-            });
-          this.breadcrumbs = [
-            {
-              label: crag.name,
-              slug: crag.slug,
-              routerLink: `/topo/${crag.slug}/sectors`,
-            },
-            {
-              label: sector.name,
-              slug: sector.slug,
-              routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
-            },
-            {
-              label: area.name,
-              slug: area.slug,
-            },
-          ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
-        });
+          this.store.pipe(select(selectGymMode), take(1)),
+        ]).subscribe(
+          ([crag, sector, area, isLoggedIn, blocWeatherConfig, isGymMode]) => {
+            this.hasBlocweather = !!blocWeatherConfig;
+            this.crag = crag;
+            this.sector = sector;
+            this.area = area;
+            this.store
+              .select(selectInstanceSettingsState)
+              .subscribe((instanceSettings) => {
+                const components = [area, sector, crag]
+                  .filter((e) => e.slug != environment.skippedSlug)
+                  .map((e) => e.name);
+                this.title.setTitle(
+                  `${components.join(' / ')} - ${instanceSettings.instanceName}`,
+                );
+                this.breadcrumbHome = {
+                  icon: 'pi pi-map',
+                  routerLink:
+                    '/topo' +
+                    `/${environment.skippedSlug}`.repeat(
+                      instanceSettings.skippedHierarchyLayers,
+                    ),
+                };
+              });
+            this.buildItems(isLoggedIn, isGymMode);
+            this.languageService.renderedLanguage$
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((rendered) => {
+                if (!rendered) return;
+                this.buildItems(isLoggedIn, isGymMode);
+              });
+            this.breadcrumbs = [
+              {
+                label: crag.name,
+                slug: crag.slug,
+                routerLink: `/topo/${crag.slug}/sectors`,
+              },
+              {
+                label: sector.name,
+                slug: sector.slug,
+                routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+              },
+              {
+                label: area.name,
+                slug: area.slug,
+              },
+            ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+          },
+        );
       });
   }
 
-  private buildItems(isLoggedIn: boolean) {
+  private buildItems(isLoggedIn: boolean, isGymMode: boolean) {
     this.items = [
       {
         label: this.translocoService.translate(marker('area.infos')),
@@ -198,7 +204,7 @@ export class AreaComponent implements OnInit {
         label: this.translocoService.translate(marker('area.weather')),
         icon: 'pi pi-fw pi-sun',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/weather`,
-        visible: this.hasBlocweather,
+        visible: this.hasBlocweather && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('area.edit')),

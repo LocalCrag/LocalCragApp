@@ -17,7 +17,10 @@ import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { Title } from '@angular/platform-browser';
 
-import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectGymMode,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -81,8 +84,9 @@ export class CragComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
+          this.store.pipe(select(selectGymMode), take(1)),
           this.blocWeatherService.getNearest('crag', cragSlug),
-        ]).subscribe(([crag, isModerator, blocweatherConfig]) => {
+        ]).subscribe(([crag, isModerator, isGymMode, blocweatherConfig]) => {
           this.hasBlocweather = !!blocweatherConfig;
           this.crag = crag;
           this.store
@@ -100,12 +104,12 @@ export class CragComponent implements OnInit {
                   ),
               };
             });
-          this.buildItems(crag, isModerator);
+          this.buildItems(crag, isModerator, isGymMode);
           this.languageService.renderedLanguage$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((rendered) => {
               if (!rendered) return;
-              this.buildItems(crag, isModerator);
+              this.buildItems(crag, isModerator, isGymMode);
             });
           this.breadcrumbs = [
             {
@@ -117,7 +121,7 @@ export class CragComponent implements OnInit {
       });
   }
 
-  private buildItems(crag: Crag, isModerator: boolean) {
+  private buildItems(crag: Crag, isModerator: boolean, isGymMode: boolean) {
     this.items = [
       {
         label: this.translocoService.translate(marker('crag.infos')),
@@ -172,7 +176,7 @@ export class CragComponent implements OnInit {
         label: this.translocoService.translate(marker('crag.weather')),
         icon: 'pi pi-fw pi-sun',
         routerLink: `/topo/${this.crag.slug}/weather`,
-        visible: this.hasBlocweather,
+        visible: this.hasBlocweather && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('crag.edit')),

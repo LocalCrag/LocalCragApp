@@ -57,6 +57,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 /**
  * A component for creating and editing crags.
@@ -84,6 +85,7 @@ import { LanguageService } from '../../../services/core/language.service';
     ConfirmPopup,
     SingleImageUploadComponent,
     Tooltip,
+    OutdoorModeDirective,
   ],
 })
 export class CragFormComponent implements OnInit {

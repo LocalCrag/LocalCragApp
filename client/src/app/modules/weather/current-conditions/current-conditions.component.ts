@@ -15,6 +15,7 @@ import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ReportConditionsDialogComponent } from '../report-conditions-dialog/report-conditions-dialog.component';
 import { Button } from 'primeng/button';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lc-current-conditions',
@@ -23,6 +24,7 @@ import { Button } from 'primeng/button';
     TranslocoDirective,
     ReportConditionsDialogComponent,
     Button,
+    RouterLink,
   ],
   templateUrl: './current-conditions.component.html',
   styleUrl: './current-conditions.component.scss',
@@ -31,7 +33,13 @@ import { Button } from 'primeng/button';
 export class CurrentConditionsComponent implements OnInit {
   @Input() level: string;
   @Input() slug: string;
+  @Input() disableDetailsLink = false;
   private blocWeatherService = inject(BlocWeatherService);
+  private router = inject(Router);
+
+  get weatherLink(): string {
+    return this.router.url.split('?')[0] + '/weather';
+  }
 
   public classification: BlocWeatherClassification;
   /** t(blocWeather.very_probably) **/

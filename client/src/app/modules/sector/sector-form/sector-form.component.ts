@@ -60,6 +60,7 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 /**
  * Form component for creating and editing sectors.
@@ -89,6 +90,7 @@ import { Tooltip } from 'primeng/tooltip';
     IfErrorDirective,
     SingleImageUploadComponent,
     Tooltip,
+    OutdoorModeDirective,
   ],
 })
 export class SectorFormComponent implements OnInit {

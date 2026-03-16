@@ -18,6 +18,9 @@ import { MapComponent } from '../../maps/map/map.component';
 import { SeasonChartComponent } from '../../shared/components/season-chart/season-chart.component';
 import { Skeleton } from 'primeng/skeleton';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 /**
  * Component that shows information about a crag.
@@ -35,6 +38,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MapComponent,
     SeasonChartComponent,
     Skeleton,
+    CurrentConditionsComponent,
+    GymModeDirective,
+    OutdoorModeDirective,
   ],
 })
 export class CragInfoComponent implements OnInit {

@@ -21,7 +21,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { Message } from 'primeng/message';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -193,19 +192,18 @@ export class ReportConditionsDialogComponent {
       (s) => this.form.get(s).value === true,
     ) as BlocWeatherReportStatus;
     this.loading = true;
-    // TODO: remove no-op and uncomment real call
-    // this.blocWeatherService
-    //   .reportConditions(this.config, status, this.form.get('observedAt').value)
-    of(status).subscribe({
-      next: () => {
-        this.notifications.toast('BLOCWEATHER_REPORT_SUCCESS');
-        this.loading = false;
-        this.close();
-      },
-      error: () => {
-        this.notifications.toast('BLOCWEATHER_REPORT_ERROR');
-        this.loading = false;
-      },
-    });
+    this.blocWeatherService
+      .reportConditions(this.config, status, this.form.get('observedAt').value)
+      .subscribe({
+        next: () => {
+          this.notifications.toast('BLOCWEATHER_REPORT_SUCCESS');
+          this.loading = false;
+          this.close();
+        },
+        error: () => {
+          this.notifications.toast('BLOCWEATHER_REPORT_ERROR');
+          this.loading = false;
+        },
+      });
   }
 }

@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   BlocWeatherConfig,
   BlocWeatherService,
@@ -15,16 +22,26 @@ import { CurrentConditionsComponent } from '../current-conditions/current-condit
   templateUrl: './blocweather.component.html',
   styleUrl: './blocweather.component.scss',
 })
-export class BlocweatherComponent implements OnInit {
+export class BlocweatherComponent implements OnInit, OnDestroy {
   @Input() level: string;
   @Input() slug: string;
   private blocWeatherService = inject(BlocWeatherService);
   private sanitizer = inject(DomSanitizer);
+  private el = inject(ElementRef);
 
   public blocWeatherConfig: BlocWeatherConfig;
   public safeBlocWeatherUrl: SafeResourceUrl | null = null;
+  public iframeHeight = 420;
+
+  private resizeObserver: ResizeObserver;
 
   ngOnInit() {
+    this.resizeObserver = new ResizeObserver((entries) => {
+      const width = entries[0].contentRect.width;
+      this.iframeHeight = this.calcHeight(width);
+    });
+    this.resizeObserver.observe(this.el.nativeElement);
+
     this.blocWeatherService
       .getNearest(this.level, this.slug)
       .subscribe((config) => {
@@ -37,5 +54,20 @@ export class BlocweatherComponent implements OnInit {
           this.safeBlocWeatherUrl = null;
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
+  }
+
+  /**
+   * Dynamic iframe height adjustment based on container width.
+   * Doesn't work really reliable.
+   * Will be hopefully made unnecessary by a blocweather update.
+   */
+  private calcHeight(width: number): number {
+    if (width < 480) return 560;
+    if (width <= 770) return 480;
+    return 466;
   }
 }
