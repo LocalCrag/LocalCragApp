@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.26.1...v1.27.0) (2026-03-16)
+
+
+### Features
+
+* **topo:** blocweather integration ([#984](https://github.com/LocalCrag/LocalCragApp/issues/984)) ([bcdea1a](https://github.com/LocalCrag/LocalCragApp/commit/bcdea1ae86a94da77499d35b978cc5f30c83b322))
+
 ## [1.26.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.26.0...v1.26.1) (2026-03-14)
 
 
