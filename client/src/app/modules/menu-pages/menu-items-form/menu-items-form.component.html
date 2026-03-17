@@ -67,12 +67,12 @@
               [options]="menuPages"
               lcFormControl
             >
-              <ng-template let-menuPage #item2>
+              <ng-template let-menuPage #item>
                 <div class="flex align-items-center gap-2">
                   <div>{{ menuPage.title }}</div>
                 </div>
               </ng-template>
-              <ng-template let-selectedItem #selectedItem2>
+              <ng-template let-selectedItem #selectedItem>
                 {{ selectedItem.title }}
               </ng-template>
             </p-select>
@@ -88,13 +88,13 @@
               [options]="icons"
               lcFormControl
             >
-              <ng-template let-icon #item3>
+              <ng-template let-icon #item>
                 <div class="flex align-items-center gap-2">
                   <i class="pi" [ngClass]="icon"></i>
                   <div>{{ icon | transloco }}</div>
                 </div>
               </ng-template>
-              <ng-template let-selectedIcon #selectedItem3>
+              <ng-template let-selectedIcon #selectedItem>
                 <i class="pi" [ngClass]="selectedIcon"></i>
                 {{ selectedIcon | transloco }}
               </ng-template>
