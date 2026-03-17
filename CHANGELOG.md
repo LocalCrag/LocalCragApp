@@ -1,3 +1,10 @@
+## [1.27.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.0...v1.27.1) (2026-03-17)
+
+
+### Bug Fixes
+
+* fix several small ui issues ([#1000](https://github.com/LocalCrag/LocalCragApp/issues/1000)) ([e74b4d4](https://github.com/LocalCrag/LocalCragApp/commit/e74b4d411248d0436fae86575bbd4c209f5be5f6))
+
 # [1.27.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.26.1...v1.27.0) (2026-03-16)
 
 
