@@ -18,12 +18,14 @@
       <div
         class="flex align-items-center justify-content-center sm:justify-content-start"
       >
-        <p-toggleswitch
-          id="display-user-grades"
-          class="mx-2 blue-green-switch"
-          formControlName="commentReplyMailsEnabled"
-          lcFormControl
-        />
+        <div>
+          <p-toggleswitch
+            id="display-user-grades"
+            class="mx-2 blue-green-switch"
+            formControlName="commentReplyMailsEnabled"
+            lcFormControl
+          />
+        </div>
         {{ t("commentReplyMailsEnabled") }}
       </div>
     </div>
@@ -33,7 +35,6 @@
     <p-button
       label="{{ t('saveAccountSettingsButtonLabel') }}"
       (click)="saveAccountSettings()"
-      class="responsive-button"
       [loading]="loadingState === loadingStates.LOADING"
     ></p-button>
   </div>
