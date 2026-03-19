@@ -23,7 +23,7 @@ import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,
 } from 'primeng/autocomplete';
-import { Searchable } from '../../../models/searchable';
+import { Searchable, SearchableObject } from '../../../models/searchable';
 import { SearchService } from '../../../services/crud/search.service';
 import { Tag } from '../../../models/tag';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -116,7 +116,7 @@ export class GalleryFormComponent implements OnInit {
     this.galleryImageForm.patchValue({
       image: this.galleryImage.image,
       searchables: this.galleryImage.tags.map((tag) => {
-        return Searchable.fromObject(tag.object);
+        return Searchable.fromObject(tag.object as SearchableObject);
       }),
     });
     this.galleryImageForm.get('image').disable(); // Images cannot be changed, only tags
