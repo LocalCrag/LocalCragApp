@@ -29,12 +29,6 @@ import { Tag } from '../../../models/tag';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
-import { EMPTY, Observable } from 'rxjs';
-import { LinesService } from '../../../services/crud/lines.service';
-import { AreasService } from '../../../services/crud/areas.service';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { CragsService } from '../../../services/crud/crags.service';
-import { UsersService } from '../../../services/crud/users.service';
 import { map } from 'rxjs/operators';
 import { SearchableComponent } from '../../core/searchable/searchable.component';
 import { Message } from 'primeng/message';
@@ -42,7 +36,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { ObjectType } from '../../../models/object';
+import { ObjectUtilsService } from '../../../services/utils/object-utils.service';
 
 @Component({
   selector: 'lc-gallery-form',
@@ -77,14 +71,10 @@ export class GalleryFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private searchService = inject(SearchService);
-  private linesService = inject(LinesService);
-  private areasService = inject(AreasService);
-  private sectorsService = inject(SectorsService);
-  private cragsService = inject(CragsService);
-  private usersService = inject(UsersService);
   private store = inject(Store);
   private ref = inject(DynamicDialogRef);
   private galleryService = inject(GalleryService);
+  private objectUtilsService = inject(ObjectUtilsService);
 
   ngOnInit() {
     this.buildForm();
@@ -97,45 +87,20 @@ export class GalleryFormComponent implements OnInit {
       this.loadingState = LoadingState.DEFAULT;
     } else {
       this.galleryImageForm.get('searchables').disable();
-      let defaultSearchableRequest: Observable<SearchableObject>;
-      // TODO use new util service
-      switch (this.config.data.defaultSearchableType) {
-        case ObjectType.Crag:
-          defaultSearchableRequest = this.cragsService.getCrag(
-            this.config.data.defaultSearchableSlug,
-          );
-          break;
-        case ObjectType.Sector:
-          defaultSearchableRequest = this.sectorsService.getSector(
-            this.config.data.defaultSearchableSlug,
-          );
-          break;
-        case ObjectType.Area:
-          defaultSearchableRequest = this.areasService.getArea(
-            this.config.data.defaultSearchableSlug,
-          );
-          break;
-        case ObjectType.Line:
-          defaultSearchableRequest = this.linesService.getLine(
-            this.config.data.defaultSearchableSlug,
-          );
-          break;
-        case ObjectType.User:
-          defaultSearchableRequest = this.usersService.getUser(
-            this.config.data.defaultSearchableSlug,
-          );
-          break;
-        default:
-          defaultSearchableRequest = EMPTY;
-      }
-      defaultSearchableRequest.pipe(map(Searchable.fromObject)).subscribe({
-        next: (searchable) => {
-          this.galleryImageForm.get('searchables').setValue([searchable]);
-        },
-        complete: () => {
-          this.galleryImageForm.get('searchables').enable();
-        },
-      });
+      this.objectUtilsService
+        .getObject(
+          this.config.data.defaultSearchableType,
+          this.config.data.defaultSearchableSlug,
+        )
+        .pipe(map(Searchable.fromObject))
+        .subscribe({
+          next: (searchable) => {
+            this.galleryImageForm.get('searchables').setValue([searchable]);
+          },
+          complete: () => {
+            this.galleryImageForm.get('searchables').enable();
+          },
+        });
     }
   }
 
@@ -151,7 +116,7 @@ export class GalleryFormComponent implements OnInit {
     this.galleryImageForm.patchValue({
       image: this.galleryImage.image,
       searchables: this.galleryImage.tags.map((tag) => {
-        return Searchable.fromObject(tag.object);
+        return Searchable.fromObject(tag.object as SearchableObject);
       }),
     });
     this.galleryImageForm.get('image').disable(); // Images cannot be changed, only tags

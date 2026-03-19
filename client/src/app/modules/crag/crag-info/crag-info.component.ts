@@ -19,7 +19,6 @@ import { SeasonChartComponent } from '../../shared/components/season-chart/seaso
 import { Skeleton } from 'primeng/skeleton';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
-import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 
 /**
@@ -39,7 +38,6 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
     SeasonChartComponent,
     Skeleton,
     CurrentConditionsComponent,
-    GymModeDirective,
     OutdoorModeDirective,
   ],
 })
