@@ -2,7 +2,9 @@ name: No TODOs in code
 
 on:
   pull_request:
-  push:
+    branches:
+      - main
+      - next
 
 permissions:
   contents: read
