@@ -1,0 +1,67 @@
+name: No TODOs in code
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  no-todos:
+    name: Check for TODO/FIXME comments
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for TODO/FIXME markers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # We check only tracked files to avoid scanning dependency caches.
+          # The regex requires a typical comment prefix before the marker to reduce false positives
+          # (e.g. translations with "ToDo" in JSON strings).
+          PATTERN='(^|[[:space:]])(//|#|/\*+|<!--|;|--|%)[[:space:]]*(TODO|FIXME)(\(|:|[[:space:]])'
+
+          echo "Scanning for forbidden markers (TODO/FIXME) in comments..."
+
+          # We only scan source directories:
+          # - client/src
+          # - client/cypress
+          # - server/src
+          # - server/tests
+          # We also exclude i18n JSON translations (may contain user-facing 'ToDo')
+          set +e
+          git grep -nI --heading -E "$PATTERN" -- \
+            'client/src' \
+            'client/cypress' \
+            'server/src' \
+            'server/tests' \
+            ':!client/src/assets/i18n/*.json'
+          STATUS=$?
+          set -e
+
+          if [ $STATUS -eq 0 ]; then
+            echo "Found forbidden TODO/FIXME markers."
+            echo
+            echo "WARNING: Please do not leave TODO/FIXME comments in the codebase."
+            echo "Convert leftover TODOs into GitHub Issues."
+            echo "Create an issue here: https://github.com/${GITHUB_REPOSITORY}/issues/new"
+            exit 1
+          fi
+
+          if [ $STATUS -eq 1 ]; then
+            echo "No TODO/FIXME markers found."
+            exit 0
+          fi
+
+          # Any other exit code means git grep failed
+          echo "git grep failed with status $STATUS" >&2
+          exit $STATUS
+
+
