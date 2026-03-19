@@ -1,19 +1,14 @@
 import { AbstractModel } from './abstract-model';
-import { Sector } from './sector';
 import { HistoryItemType } from '../enums/history-item-type';
-import { Crag } from './crag';
-import { Area } from './area';
-import { Line } from './line';
-import { deserializeObject } from './utils';
 import { User } from './user';
-import { ObjectType } from './object';
+import { deserializeLCObject, LCObject, ObjectType } from './object';
 
 export class HistoryItem extends AbstractModel {
   oldValue: string;
   newValue: string;
   attributeName: string;
   type: HistoryItemType;
-  object: Crag | Sector | Area | Line; // TODO use LCObject
+  object: LCObject;
   objectType: ObjectType;
   createdBy: User;
 
@@ -25,11 +20,7 @@ export class HistoryItem extends AbstractModel {
     historyItem.attributeName = payload.attributeName;
     historyItem.type = payload.type;
     historyItem.object = payload.object
-      ? (deserializeObject(payload.objectType, payload.object) as
-          | Crag
-          | Sector
-          | Area
-          | Line)
+      ? deserializeLCObject(payload.objectType, payload.object)
       : null;
     historyItem.objectType = payload.objectType;
     historyItem.createdBy = payload.createdBy
