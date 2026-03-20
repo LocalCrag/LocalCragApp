@@ -122,7 +122,7 @@ export class BlocWeatherService {
     status: BlocWeatherReportStatus,
     observedAt: Date = new Date(),
   ): Observable<void> {
-    const url = `https://blocweather.com/api/v1/data/${config.country}/${config.region}/${config.spot}/report`;
+    const url = `https://blocweather.com/api/v1/data/${config.country}/${config.region}/${config.spot}/reports`;
     return this.http.post<void>(url, {
       observed_at: observedAt.toISOString(),
       status,
