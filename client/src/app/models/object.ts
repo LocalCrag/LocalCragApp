@@ -37,3 +37,27 @@ export const getObjectType = (object: LCObject): ObjectType => {
     throw new Error('Unknown object type');
   }
 };
+
+export const deserializeLCObject = (
+  objectType: ObjectType,
+  payload: any,
+): LCObject => {
+  switch (objectType) {
+    case 'Line':
+      return Line.deserialize(payload);
+    case 'Area':
+      return Area.deserialize(payload);
+    case 'Sector':
+      return Sector.deserialize(payload);
+    case 'Crag':
+      return Crag.deserialize(payload);
+    case 'Region':
+      return Region.deserialize(payload);
+    case 'User':
+      return User.deserialize(payload);
+    case 'Post':
+      return Post.deserialize({ ...payload, text: '' }); // PostSearchSchema has no text
+    default:
+      return null;
+  }
+};

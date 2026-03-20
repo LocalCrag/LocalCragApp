@@ -11,7 +11,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
 import { EntityLinkPipe } from '../../pipes/entity-link.pipe';
 import { SearchableComponent } from '../../../core/searchable/searchable.component';
-import { Searchable } from '../../../../models/searchable';
+import { Searchable, SearchableObject } from '../../../../models/searchable';
 
 @Component({
   selector: 'lc-tag',
@@ -33,7 +33,9 @@ export class TagComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.tag) {
-      this.searchable = Searchable.fromObject(this.tag.object);
+      this.searchable = Searchable.fromObject(
+        this.tag.object as SearchableObject,
+      );
     }
   }
 }
