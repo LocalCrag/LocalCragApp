@@ -23,14 +23,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: client/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Extract translations
-        run: npm run i18n:extract
+        run: cd client && npm run i18n:extract
 
       - name: Fail if there are empty translation strings
         shell: bash
@@ -44,7 +42,7 @@ jobs:
           import pathlib
           import sys
 
-          base = pathlib.Path('src/assets/i18n')
+          base = pathlib.Path('client/src/assets/i18n')
           if not base.exists():
             print(f"Directory not found: {base}", file=sys.stderr)
             sys.exit(2)
