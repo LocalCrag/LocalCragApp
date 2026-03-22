@@ -13,6 +13,7 @@
   "areaForm.areaShortDescriptionPlaceholder": "Infos zum Bereich, kurz und knackig zusammengefasst...",
   "areaForm.areaDescriptionLabel": "Beschreibung",
   "areaForm.areaDescriptionPlaceholder": "Allgemeine Infos zum Bereich.",
+  "areaForm.areaPortraitImageLabel": "Bild",
   "areaForm.blocweatherUrlLabel": "BlocWeather URL",
   "areaForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Bereich auf der Detailseite, kannst Du hier die URL zum entsprechenden Bereich auf blocweather.com hinterlegen.",
   "areaForm.invalidBlocweatherUrl": "Die URL muss das Schema https://blocweather.com/<country>/<region>/<spot> haben",
