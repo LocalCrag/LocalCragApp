@@ -32,6 +32,7 @@ jobs:
 
       - name: Fail if there are empty translation strings
         shell: bash
+        working-directory: ./client
         run: |
           set -euo pipefail
 
@@ -42,8 +43,8 @@ jobs:
           import pathlib
           import sys
 
-          # This step runs from the repository root, so use the full path.
-          base = pathlib.Path('client/src/assets/i18n')
+          # This step runs from ./client
+          base = pathlib.Path('src/assets/i18n')
           if not base.exists():
             print(f"Directory not found: {base}", file=sys.stderr)
             sys.exit(2)
