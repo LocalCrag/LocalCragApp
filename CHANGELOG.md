@@ -1,3 +1,10 @@
+## [1.27.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.1...v1.27.2) (2026-03-20)
+
+
+### Bug Fixes
+
+* **weather:** fix weather reports that didnt work because of a typo ([#1003](https://github.com/LocalCrag/LocalCragApp/issues/1003)) ([29919a2](https://github.com/LocalCrag/LocalCragApp/commit/29919a2e1cb164e6ab9be406efe63956d23ffc16))
+
 ## [1.27.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.0...v1.27.1) (2026-03-17)
 
 
