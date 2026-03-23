@@ -10,12 +10,16 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.topo_image_schema import topo_image_schema, topo_images_schema
 from models.area import Area
+from models.line import Line
+from models.line_path import LinePath
 from models.topo_image import TopoImage
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
+from webargs_schemas.move_args import move_topo_image_args
 from webargs_schemas.topo_image_args import topo_image_args
 
 
@@ -58,6 +62,76 @@ class UpdateTopoImage(MethodView):
         db.session.add(topo_image)
         db.session.commit()
 
+        return topo_image_schema.dump(topo_image), 200
+
+
+class MoveTopoImage(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def put(self, image_id):
+        """Move a topo image to a different area.
+
+        - Moves the topo image to the target area (appends at end).
+        - Moves all lines connected via line paths of this topo image to the target area.
+        - Deletes any line paths for those moved lines that still belong to topo images in the *old* area.
+        """
+        payload = parser.parse(move_topo_image_args, request)
+        target_area_slug = payload["areaSlug"]
+
+        topo_image: TopoImage = TopoImage.find_by_id(image_id)
+        old_area_id = topo_image.area_id
+        target_area_id = Area.get_id_by_slug(target_area_slug)
+
+        if target_area_id == old_area_id:
+            return topo_image_schema.dump(topo_image), 200
+
+        # Determine affected line ids (lines connected to this topo image)
+        affected_line_ids = [lp.line_id for lp in topo_image.line_paths]
+
+        # Close the ordering gap in old area
+        db.session.execute(
+            text(
+                "UPDATE topo_images SET order_index=order_index - 1 "
+                "WHERE order_index > :order_index AND area_id = :area_id"
+            ),
+            {"order_index": topo_image.order_index, "area_id": old_area_id},
+        )
+
+        # Move topo image (append to end in new area)
+        topo_image.area_id = target_area_id
+        topo_image.order_index = TopoImage.find_max_order_index(target_area_id) + 1
+        db.session.add(topo_image)
+
+        # Move connected lines to target area
+        if affected_line_ids:
+            Line.query.filter(Line.id.in_(affected_line_ids)).update(
+                {Line.area_id: target_area_id},
+                synchronize_session=False,
+            )
+
+            # Apply secret/closed handling for moved lines:
+            # if parent (target area) is secret/closed -> line must be secret/closed.
+            target_area = Area.find_by_id(target_area_id)
+            if target_area.secret or target_area.closed:
+                moved_lines = Line.query.filter(Line.id.in_(affected_line_ids)).all()
+                for line in moved_lines:
+                    if target_area.secret and not line.secret:
+                        update_line_propagating_boolean_attr(line, True, "secret")
+                    if target_area.closed and not line.closed:
+                        update_line_propagating_boolean_attr(line, True, "closed")
+
+                    db.session.add(line)
+
+            # Delete line paths for moved lines that still point to topo images in the old area
+            # (i.e. the topo_image referenced by the line path still belongs to old_area_id).
+            (
+                db.session.query(LinePath)
+                .filter(LinePath.line_id.in_(affected_line_ids))
+                .filter(LinePath.topo_image.has(TopoImage.area_id == old_area_id))
+                .delete(synchronize_session=False)
+            )
+
+        db.session.commit()
         return topo_image_schema.dump(topo_image), 200
 
 

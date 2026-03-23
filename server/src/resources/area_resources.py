@@ -29,6 +29,50 @@ from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.area_args import area_args
+from webargs_schemas.move_args import move_area_args
+
+
+class MoveArea(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def put(self, area_slug):
+        """
+        Move an area to a different sector.
+        """
+        payload = parser.parse(move_area_args, request)
+        target_sector_slug = payload["sectorSlug"]
+
+        area: Area = Area.find_by_slug(area_slug)
+        old_sector_id = area.sector_id
+        target_sector_id = Sector.get_id_by_slug(target_sector_slug)
+
+        if target_sector_id == old_sector_id:
+            return area_schema.dump(area), 200
+
+        # Close the gap in the old sector order
+        db.session.execute(
+            text(
+                "UPDATE areas SET order_index=order_index - 1 "
+                "WHERE order_index > :order_index AND sector_id = :sector_id"
+            ),
+            {"order_index": area.order_index, "sector_id": old_sector_id},
+        )
+
+        # Append to the end in the new sector
+        area.sector_id = target_sector_id
+        area.order_index = Area.find_max_order_index(target_sector_id) + 1
+
+        # Secret/closed handling (see MoveLine for rules).
+        target_sector: Sector = Sector.find_by_id(target_sector_id)
+        if target_sector.secret and not area.secret:
+            update_area_propagating_boolean_attr(area, True, "secret")
+        if target_sector.closed and not area.closed:
+            update_area_propagating_boolean_attr(area, True, "closed")
+
+        db.session.add(area)
+        db.session.commit()
+
+        return area_schema.dump(area), 200
 
 
 class GetAreas(MethodView):

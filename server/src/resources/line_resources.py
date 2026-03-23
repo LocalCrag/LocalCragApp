@@ -18,6 +18,7 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.line_path import LinePath
 from models.sector import Sector
 from models.user import User
 from util.propagating_boolean_attrs import (
@@ -28,6 +29,44 @@ from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import line_args
+from webargs_schemas.move_args import move_line_args
+
+
+class MoveLine(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def put(self, line_slug):
+        """
+        Move a line to a different area.
+        """
+        payload = parser.parse(move_line_args, request)
+        target_area_slug = payload["areaSlug"]
+
+        line: Line = Line.find_by_slug(line_slug)
+        old_area_id = line.area_id
+        target_area_id = Area.get_id_by_slug(target_area_slug)
+
+        if target_area_id == old_area_id:
+            return line_schema.dump(line), 200
+
+        # Moving a line invalidates existing line paths (they belong to topo images of the old area).
+        # Delete all LinePath entries for this line.
+        LinePath.query.filter_by(line_id=line.id).delete(synchronize_session=False)
+
+        line.area_id = target_area_id
+
+        # Secret/closed handling:
+        # - If parent (target area) is secret/closed -> child must be secret/closed.
+        # - If parent is not secret/closed -> keep child as-is.
+        target_area: Area = Area.find_by_id(target_area_id)
+        if target_area.secret and not line.secret:
+            update_line_propagating_boolean_attr(line, True, "secret")
+        if target_area.closed and not line.closed:
+            update_line_propagating_boolean_attr(line, True, "closed")
+
+        db.session.add(line)
+        db.session.commit()
+        return line_schema.dump(line), 200
 
 
 class GetLinesForLineEditor(MethodView):
