@@ -30,6 +30,7 @@
   "sectorForm.createSectorButtonLabel": "Sektor erstellen",
   "sectorForm.editSectorButtonLabel": "Änderungen speichern",
   "sectorForm.cancelButtonLabel": "Abbrechen",
+  "sectorForm.moveSectorButtonLabel": "Verschieben",
   "sectorForm.deleteSectorButtonLabel": "Sektor löschen",
   "sectorForm.editSectorTitle": "Sektor bearbeiten",
   "sectorForm.createSectorTitle": "Sektor erstellen"

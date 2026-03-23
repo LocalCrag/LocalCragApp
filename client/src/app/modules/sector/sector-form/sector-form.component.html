@@ -196,7 +196,6 @@
             lcControlGroup
             *isOutdoorMode="true"
           >
-            >
             <label class="form-label" for="blocweatherUrl">
               {{ t("blocweatherUrlLabel") }}
               <span
@@ -312,12 +311,12 @@
               ></p-select>
             </div>
           </div>
-          @if (parentSecret && !sectorForm.get("secret").value) {
+          @if (parentCrag?.secret && !sectorForm.get("secret").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicSectorWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentClosed && !sectorForm.get("closed").value) {
+          @if (parentCrag?.closed && !sectorForm.get("closed").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("openingAClosedSectorWillSetParentsToOpen") }}
             </p-message>
@@ -365,7 +364,14 @@
             styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
-          @if (editMode && sector?.slug !== environment.skippedSlug) {
+          @if (editMode) {
+            <p-button
+              icon="pi pi-arrow-right-arrow-left"
+              label="{{ t('moveSectorButtonLabel') }}"
+              styleClass="p-button-secondary"
+              class="ml-3 responsive-button"
+              (click)="openMoveDialog()"
+            ></p-button>
             <p-button
               label="{{ t('deleteSectorButtonLabel') }}"
               (click)="confirmDeleteSector($event)"
@@ -377,6 +383,9 @@
           }
           <p-confirmpopup></p-confirmpopup>
         </div>
+        <lc-move-object-dialog #moveDialog
+                               [hasUnsavedChanges]="sectorForm.dirty"
+                               (objectMoved)="onObjectMoved($event)"></lc-move-object-dialog>
       }
 
       @if (!sectorForm) {

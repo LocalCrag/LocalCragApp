@@ -127,4 +127,22 @@ export class AreasService {
       .get(this.api.areas.getGrades(areaSlug))
       .pipe(map(deserializeGradeList));
   }
+
+  /**
+   * Moves the area to a new sector.
+   *
+   * @param areaSlug Slug of the area to move.
+   * @param targetSectorId ID of the sector to move the area to.
+   */
+  public moveArea(areaSlug: string, targetSectorId: string): Observable<Area> {
+    return this.http
+      .put(this.api.areas.move(areaSlug), { sectorId: targetSectorId })
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+          this.blocWeatherService.clearCache();
+        }),
+        map(Area.deserialize),
+      );
+  }
 }

@@ -8,6 +8,7 @@ from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
+from marshmallow_schemas.search_schema import topo_image_search_schema
 from marshmallow_schemas.topo_image_schema import topo_image_schema, topo_images_schema
 from models.area import Area
 from models.line import Line
@@ -76,11 +77,11 @@ class MoveTopoImage(MethodView):
         - Deletes any line paths for those moved lines that still belong to topo images in the *old* area.
         """
         payload = parser.parse(move_topo_image_args, request)
-        target_area_slug = payload["areaSlug"]
+        target_area_id = payload["areaId"]
 
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
         old_area_id = topo_image.area_id
-        target_area_id = Area.get_id_by_slug(target_area_slug)
+        target_area_id = Area.find_by_id(target_area_id).id
 
         if target_area_id == old_area_id:
             return topo_image_schema.dump(topo_image), 200
@@ -132,7 +133,7 @@ class MoveTopoImage(MethodView):
             )
 
         db.session.commit()
-        return topo_image_schema.dump(topo_image), 200
+        return topo_image_search_schema.dump(topo_image), 200
 
 
 class DeleteTopoImage(MethodView):

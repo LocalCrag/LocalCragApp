@@ -28,6 +28,7 @@
   "areaForm.createAreaButtonLabel": "Create area",
   "areaForm.editAreaButtonLabel": "Save Changes",
   "areaForm.cancelButtonLabel": "Cancel",
+  "areaForm.moveAreaButtonLabel": "Move",
   "areaForm.deleteAreaButtonLabel": "Delete area",
   "areaForm.editAreaTitle": "Editing area",
   "areaForm.createAreaTitle": "Create new area"

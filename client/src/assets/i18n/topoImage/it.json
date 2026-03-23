@@ -21,6 +21,7 @@
   "topoImageForm.coordinatesLabel": "GPS (opzionale)",
   "topoImageForm.addTopoImageButtonLabel": "Salva",
   "topoImageForm.cancelButtonLabel": "Annulla",
+  "topoImageForm.moveTopoImageButtonLabel": "Spostare",
   "topoImageForm.addTopoImageTitle": "Aggiungi immagine Guida",
   "topoImageForm.editTopoImageTitle": "Modifica immagine Guida",
   "batchUploadForm.batchImageUploadDescription": "Carica più immagini Guida contemporaneamente e crea problemi con informazioni di base e tracciatura. Se in seguito desideri aggiungere dettagli aggiuntivi ai problemi, puoi farlo modificandoli singolarmente.",

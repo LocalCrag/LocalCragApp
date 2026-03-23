@@ -11,6 +11,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
+from marshmallow_schemas.search_schema import area_search_schema
 from models.area import Area
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
@@ -40,11 +41,11 @@ class MoveArea(MethodView):
         Move an area to a different sector.
         """
         payload = parser.parse(move_area_args, request)
-        target_sector_slug = payload["sectorSlug"]
+        target_sector_id = payload["sectorId"]
 
         area: Area = Area.find_by_slug(area_slug)
         old_sector_id = area.sector_id
-        target_sector_id = Sector.get_id_by_slug(target_sector_slug)
+        target_sector_id = Sector.find_by_id(target_sector_id).id
 
         if target_sector_id == old_sector_id:
             return area_schema.dump(area), 200
@@ -72,7 +73,7 @@ class MoveArea(MethodView):
         db.session.add(area)
         db.session.commit()
 
-        return area_schema.dump(area), 200
+        return area_search_schema.dump(area), 200
 
 
 class GetAreas(MethodView):

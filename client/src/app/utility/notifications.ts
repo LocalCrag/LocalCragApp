@@ -397,6 +397,16 @@ export const NOTIFICATIONS = {
     title: marker('notifications.BLOCWEATHER_REPORT_ERROR_TITLE'),
     message: marker('notifications.BLOCWEATHER_REPORT_ERROR_MESSAGE'),
   },
+  OBJECT_MOVED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.OBJECT_MOVED_TITLE'),
+    message: marker('notifications.OBJECT_MOVED_MESSAGE'),
+  },
+  OBJECT_MOVE_ERROR: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.OBJECT_MOVE_ERROR_TITLE'),
+    message: marker('notifications.OBJECT_MOVE_ERROR_MESSAGE'),
+  },
 } satisfies { [key: string]: NotificationDefinition };
 
 export type NotificationKey = keyof typeof NOTIFICATIONS;

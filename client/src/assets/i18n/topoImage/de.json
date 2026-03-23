@@ -21,6 +21,7 @@
   "topoImageForm.coordinatesLabel": "GPS (optional)",
   "topoImageForm.addTopoImageButtonLabel": "Speichern",
   "topoImageForm.cancelButtonLabel": "Abbrechen",
+  "topoImageForm.moveTopoImageButtonLabel": "Verschieben",
   "topoImageForm.addTopoImageTitle": "Topo Bild hinzufügen",
   "topoImageForm.editTopoImageTitle": "Topo Bild bearbeiten",
   "batchUploadForm.batchImageUploadDescription": "Lade mehrere Topo-Bilder gleichzeitig hoch und erstelle Linien mit Basisinformationen und deren Verläufe direkt im Anschluss. Möchtest Du später detaillierte Einzelheiten zu Linien hinzufügen, ist dies über die Bearbeitung der einzelnen Linien möglich.",

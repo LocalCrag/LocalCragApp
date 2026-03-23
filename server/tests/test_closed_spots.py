@@ -236,7 +236,7 @@ def test_move_line_into_closed_area_forces_line_closed(client, moderator_token):
     rv = client.put(
         f"/api/lines/{line.slug}/move",
         token=moderator_token,
-        json={"areaSlug": target_area.slug},
+        json={"areaId": str(target_area.id)},
     )
     assert rv.status_code == 200
 
@@ -260,7 +260,7 @@ def test_move_area_into_closed_sector_forces_area_closed(client, moderator_token
     rv = client.put(
         f"/api/areas/{area.slug}/move",
         token=moderator_token,
-        json={"sectorSlug": target_sector.slug},
+        json={"sectorId": str(target_sector.id)},
     )
     assert rv.status_code == 200
 
@@ -284,7 +284,7 @@ def test_move_sector_into_closed_crag_forces_sector_closed(client, moderator_tok
     rv = client.put(
         f"/api/sectors/{sector.slug}/move",
         token=moderator_token,
-        json={"cragSlug": target_crag.slug},
+        json={"cragId": str(target_crag.id)},
     )
     assert rv.status_code == 200
 
@@ -329,7 +329,7 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
     rv = client.put(
         f"/api/topo-images/{topo_image.id}/move",
         token=moderator_token,
-        json={"areaSlug": target_area.slug},
+        json={"areaId": str(target_area.id)},
     )
     assert rv.status_code == 200
 

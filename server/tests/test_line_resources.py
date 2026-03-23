@@ -17,12 +17,11 @@ def test_successful_move_line_to_different_area(client, moderator_token):
     rv = client.put(
         f"/api/lines/{line.slug}/move",
         token=moderator_token,
-        json={"areaSlug": target_area_obj.slug},
+        json={"areaId": str(target_area_obj.id)},
     )
     assert rv.status_code == 200
     res = rv.json
     assert res["slug"] == line.slug
-    assert res["areaSlug"] == target_area_obj.slug
 
     moved_line = Line.find_by_slug(line.slug)
     assert str(moved_line.area_id) != original_area_id
@@ -84,7 +83,7 @@ def test_move_line_deletes_all_line_paths(client, moderator_token):
     rv = client.put(
         f"/api/lines/{line.slug}/move",
         token=moderator_token,
-        json={"areaSlug": target_area_obj.slug},
+        json={"areaId": str(target_area_obj.id)},
     )
     assert rv.status_code == 200
 

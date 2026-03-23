@@ -82,6 +82,7 @@
   "lineForm.createLineButtonLabel": "Create line",
   "lineForm.editLineButtonLabel": "Edit line",
   "lineForm.cancelButtonLabel": "Cancel",
+  "lineForm.moveLineButtonLabel": "Move",
   "lineForm.deleteLineButtonLabel": "Delete line",
   "lineForm.editLineTitle": "Edit line",
   "lineForm.createLineTitle": "Create line",

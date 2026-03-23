@@ -113,7 +113,7 @@ def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client
     rv = client.put(
         f"/api/topo-images/{image_id}/move",
         token=moderator_token,
-        json={"areaSlug": target_area_slug},
+        json={"areaId": str(target_area.id)},
     )
     assert rv.status_code == 200
 

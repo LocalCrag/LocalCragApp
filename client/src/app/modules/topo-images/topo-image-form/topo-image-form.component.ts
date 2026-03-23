@@ -22,10 +22,13 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TopoImage } from '../../../models/topo-image';
+import { Sector } from '../../../models/sector';
+import { Area } from '../../../models/area';
+import { Line } from '../../../models/line';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
@@ -39,6 +42,9 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { InputText } from 'primeng/inputtext';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { Button } from 'primeng/button';
+import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { AreasService } from '../../../services/crud/areas.service';
 
 /**
  * Component for uploading topo images.
@@ -60,12 +66,15 @@ import { Button } from 'primeng/button';
     Editor,
     CoordinatesComponent,
     Button,
+    MoveObjectDialogComponent,
+    HasPermissionDirective,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
+  @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public topoImageForm: FormGroup;
   public loadingState = LoadingState.DEFAULT;
@@ -84,6 +93,8 @@ export class TopoImageFormComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private router = inject(Router);
   private topoImagesService = inject(TopoImagesService);
+  private areasService = inject(AreasService);
+  private parentArea: Area;
 
   /**
    * Builds the form on component initialization.
@@ -97,24 +108,25 @@ export class TopoImageFormComponent implements OnInit {
     if (imageId) {
       this.editMode = true;
       this.topoImageForm.disable();
-      this.topoImagesService
-        .getTopoImage(imageId)
-        .pipe(
+      forkJoin([
+        this.topoImagesService.getTopoImage(imageId).pipe(
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
             }
             return of(e);
           }),
-        )
-        .subscribe((topoImage) => {
-          this.topoImage = topoImage;
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-          this.editors?.map((editor) => {
-            editor.getQuill()?.enable();
-          });
+        ),
+        this.areasService.getArea(this.areaSlug),
+      ]).subscribe(([topoImage, area]) => {
+        this.topoImage = topoImage;
+        this.parentArea = area;
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+        this.editors?.map((editor) => {
+          editor.getQuill()?.enable();
         });
+      });
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('editTopoImageBrowserTitle'))} - ${instanceName}`,
@@ -208,5 +220,15 @@ export class TopoImageFormComponent implements OnInit {
     } else {
       this.formDirective.markAsTouched();
     }
+  }
+
+  openMoveDialog() {
+    this.moveDialog.open(this.topoImage, this.parentArea.id);
+  }
+
+  onObjectMoved(obj: TopoImage | Sector | Area | Line) {
+    const movedImage = obj as TopoImage;
+    console.log(movedImage.area.routerLink);
+    this.router.navigate([movedImage.area.routerLink, 'topo-images']);
   }
 }

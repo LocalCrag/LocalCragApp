@@ -16,7 +16,7 @@ def test_successful_move_area_to_different_sector(client, moderator_token):
     rv = client.put(
         "/api/areas/dritter-block-von-links/move",
         token=moderator_token,
-        json={"sectorSlug": target_sector.slug},
+        json={"sectorId": str(target_sector.id)},
     )
     assert rv.status_code == 200
     res = rv.json

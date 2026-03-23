@@ -44,6 +44,7 @@ export class TopoImage extends AbstractModel {
       ? payload.linePaths.map(LinePath.deserialize)
       : null;
     topoImage.archived = payload.archived;
+    topoImage.area = payload.area ? Area.deserialize(payload.area) : null;
     return topoImage;
   }
 

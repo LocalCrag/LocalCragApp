@@ -712,12 +712,12 @@
               </div>
             </div>
           </div>
-          @if (parentSecret && !lineForm.get("secret").value) {
+          @if (parentArea?.secret && !lineForm.get("secret").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicLineWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentClosed && !lineForm.get("closed").value) {
+          @if (parentArea?.closed && !lineForm.get("closed").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("openingAClosedLineWillSetParentsToOpen") }}
             </p-message>
@@ -767,6 +767,13 @@
           ></p-button>
           @if (editMode) {
             <p-button
+              icon="pi pi-arrow-right-arrow-left"
+              label="{{ t('moveLineButtonLabel') }}"
+              styleClass="p-button-secondary"
+              class="ml-3 responsive-button"
+              (click)="openMoveDialog()"
+            ></p-button>
+            <p-button
               label="{{ t('deleteLineButtonLabel') }}"
               (click)="confirmDeleteLine($event)"
               icon="pi pi-trash"
@@ -777,6 +784,9 @@
           }
           <p-confirmpopup></p-confirmpopup>
         </div>
+        <lc-move-object-dialog #moveDialog
+                               [hasUnsavedChanges]="lineForm.dirty"
+                               (objectMoved)="onObjectMoved($event)"></lc-move-object-dialog>
       }
 
       @if (!lineForm) {

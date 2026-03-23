@@ -10,6 +10,7 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
+from marshmallow_schemas.search_schema import sector_search_schema
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
@@ -41,11 +42,11 @@ class MoveSector(MethodView):
         Move a sector to a different crag.
         """
         payload = parser.parse(move_sector_args, request)
-        target_crag_slug = payload["cragSlug"]
+        target_crag_id = payload["cragId"]
 
         sector: Sector = Sector.find_by_slug(sector_slug)
         old_crag_id = sector.crag_id
-        target_crag_id = Crag.get_id_by_slug(target_crag_slug)
+        target_crag_id = Crag.find_by_id(target_crag_id).id
 
         if target_crag_id == old_crag_id:
             return sector_schema.dump(sector), 200
@@ -73,7 +74,7 @@ class MoveSector(MethodView):
         db.session.add(sector)
         db.session.commit()
 
-        return sector_schema.dump(sector), 200
+        return sector_search_schema.dump(sector), 200
 
 
 class GetSectors(MethodView):

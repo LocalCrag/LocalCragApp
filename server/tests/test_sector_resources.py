@@ -15,7 +15,7 @@ def test_successful_move_sector_to_different_crag(client, moderator_token):
     rv = client.put(
         "/api/sectors/schattental/move",
         token=moderator_token,
-        json={"cragSlug": target_crag.slug},
+        json={"cragId": str(target_crag.id)},
     )
     assert rv.status_code == 200
     res = rv.json

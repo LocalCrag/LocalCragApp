@@ -3,6 +3,7 @@ from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.file_schema import file_schema
+from marshmallow_schemas.topo_image_schema import TopoImageSchema
 from models.enums.line_type_enum import LineTypeEnum
 
 
@@ -61,3 +62,10 @@ class UserSearchSchema(ma.SQLAlchemySchema):
 
 
 user_search_schema = UserSearchSchema()
+
+
+class TopoImageSearchSchema(TopoImageSchema):
+    area = fields.Nested(area_search_schema)
+
+
+topo_image_search_schema = TopoImageSearchSchema()
