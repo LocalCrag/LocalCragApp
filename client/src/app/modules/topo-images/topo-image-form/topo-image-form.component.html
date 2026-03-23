@@ -130,9 +130,11 @@
           ></p-button>
         }
       </div>
-      <lc-move-object-dialog #moveDialog
-                             [hasUnsavedChanges]="topoImageForm.dirty"
-                             (objectMoved)="onObjectMoved($event)"></lc-move-object-dialog>
+      <lc-move-object-dialog
+        #moveDialog
+        [hasUnsavedChanges]="topoImageForm.dirty"
+        (objectMoved)="onObjectMoved($event)"
+      ></lc-move-object-dialog>
     </p-card>
   </div>
 </ng-container>

@@ -6,13 +6,9 @@
       [(visible)]="isOpen"
       [style]="{ width: '30rem' }"
     >
-
       @if (objectToMoveIsTopoImage) {
-        <p-message
-          severity="info"
-          class="mt-1 mb-3"
-          icon="pi pi-info-circle"
-        >{{ t('topoImageMoveInfo') }}
+        <p-message severity="info" class="mt-1 mb-3" icon="pi pi-info-circle"
+          >{{ t("topoImageMoveInfo") }}
         </p-message>
       }
 
@@ -21,15 +17,13 @@
           severity="warn"
           class="mb-3"
           icon="pi pi-exclamation-triangle"
-        >{{ t('unsavedChangesAreLost') }}
+          >{{ t("unsavedChangesAreLost") }}
         </p-message>
       }
 
       <form [formGroup]="form" lcForm class="flex flex-column pt-1">
         <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label mt-0" for="target">{{
-              t(labelKey)
-            }}</label>
+          <label class="form-label mt-0" for="target">{{ t(labelKey) }}</label>
           <p-autoComplete
             id="target"
             formControlName="target"
@@ -43,8 +37,8 @@
             lcFormControl
           ></p-autoComplete>
           <small class="lc-error" *lcIfError="'required'">{{
-              t("moveObjectDialog.required")
-            }}</small>
+            t("moveObjectDialog.required")
+          }}</small>
         </div>
       </form>
 

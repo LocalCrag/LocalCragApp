@@ -784,9 +784,11 @@
           }
           <p-confirmpopup></p-confirmpopup>
         </div>
-        <lc-move-object-dialog #moveDialog
-                               [hasUnsavedChanges]="lineForm.dirty"
-                               (objectMoved)="onObjectMoved($event)"></lc-move-object-dialog>
+        <lc-move-object-dialog
+          #moveDialog
+          [hasUnsavedChanges]="lineForm.dirty"
+          (objectMoved)="onObjectMoved($event)"
+        ></lc-move-object-dialog>
       }
 
       @if (!lineForm) {
