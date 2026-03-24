@@ -26,6 +26,9 @@ class CreateTodo(MethodView):
         todo_data = parser.parse(todo_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
+        # Check if the line exists (raises 404 if not)
+        Line.find_by_id(todo_data["line"])
+
         if (
             db.session.query(Todo.line_id)
             .filter(Todo.created_by_id == created_by.id)
