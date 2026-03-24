@@ -33,13 +33,13 @@
             </p-select>
           </ng-container>
           <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
+            t("required")
+          }}</small>
         </div>
         <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="coordinates">{{
-              t("coordinatesLabel")
-            }}</label>
+            t("coordinatesLabel")
+          }}</label>
           <lc-coordinates
             id="coordinates"
             formControlName="coordinates"
@@ -51,8 +51,8 @@
         @if (!nameAndDescriptionHidden) {
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-                t("markerNameLabel")
-              }}</label>
+              t("markerNameLabel")
+            }}</label>
             <input
               id="name"
               type="text"
@@ -63,15 +63,15 @@
               data-cy="marker-form-name"
             />
             <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
+              t("maxlength120")
+            }}</small>
           </div>
         }
         @if (!nameAndDescriptionHidden) {
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-                t("markerDescriptionLabel")
-              }}</label>
+              t("markerDescriptionLabel")
+            }}</label>
             <p-editor
               id="description"
               formControlName="description"
