@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import ColumnElement
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -13,7 +14,6 @@ from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
-from models.sector import Sector
 from models.todo import Todo
 from models.user import User
 from util.secret_spots_auth import get_show_secret
@@ -26,7 +26,6 @@ class CreateTodo(MethodView):
         todo_data = parser.parse(todo_args, request)
         created_by = User.find_by_email(get_jwt_identity())
 
-        line: Line = Line.find_by_id(todo_data["line"])
         if (
             db.session.query(Todo.line_id)
             .filter(Todo.created_by_id == created_by.id)
@@ -45,9 +44,6 @@ class CreateTodo(MethodView):
         todo: Todo = Todo()
         todo.line_id = todo_data["line"]
         todo.created_by_id = created_by.id
-        todo.area_id = line.area_id
-        todo.sector_id = Area.find_by_id(line.area_id).sector_id
-        todo.crag_id = Sector.find_by_id(todo.sector_id).crag_id
 
         db.session.add(todo)
         db.session.commit()
@@ -82,16 +78,16 @@ class GetTodos(MethodView):
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
-        query = select(Todo).join(Line).options(joinedload(Todo.line))
+        query = select(Todo).join(Line).join(Area, Line.area_id == Area.id).options(joinedload(Todo.line))
 
         # Filter for user, crag, sector or area
         query = query.filter(Todo.created_by_id == user.id, Line.archived.is_(False))
         if crag_id:
-            query = query.filter(Todo.crag_id == crag_id)
+            query = query.join(Area.sector).filter_by(crag_id=crag_id)
         if sector_id:
-            query = query.filter(Todo.sector_id == sector_id)
+            query = query.filter(Area.sector_id == sector_id)
         if area_id:
-            query = query.filter(Todo.area_id == area_id)
+            query = query.filter(Line.area_id == area_id)
         if line_type:
             query = query.filter(Line.type == line_type)
         if grade_scale:
@@ -115,16 +111,15 @@ class GetTodos(MethodView):
             query = query.filter(Todo.line.has(secret=False))
 
         # Apply ordering
-        order_function = None
-        if order_by in {"grade_value"}:
-            if instance_settings.display_user_grades:
-                order_function = getattr(Line.user_grade_value, order_direction)
-            else:
-                order_function = getattr(Line.author_grade_value, order_direction)
-        if order_by in {"time_created"}:
-            order_function = getattr(Todo.time_created, order_direction)
+        order_col: ColumnElement
+        if order_by == "time_created":
+            order_col = Todo.time_created
+        else:
+            order_col = Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value
+
+        order_expr = order_col.asc() if order_direction == "asc" else order_col.desc()
         # Order by To-do.id as a tie-breaker to prevent duplicate entries in paginate
-        query = query.order_by(order_function(), Todo.id)
+        query = query.order_by(order_expr, Todo.id)
 
         paginated_todos = db.paginate(query, page=page, per_page=per_page)
 
@@ -166,13 +161,18 @@ class GetIsTodo(MethodView):
         line_ids = request.args.get("line_ids")
         if not user_id or not (crag_id or sector_id or area_id or line_ids):
             raise BadRequest("Filter query params are not properly defined.")
-        query = db.session.query(Todo.line_id).filter(Todo.created_by_id == user_id)
+        query = (
+            db.session.query(Todo.line_id)
+            .join(Line)
+            .join(Area, Line.area_id == Area.id)
+            .filter(Todo.created_by_id == user_id)
+        )
         if crag_id:
-            query = query.filter(Todo.crag_id == crag_id)
+            query = query.join(Area.sector).filter_by(crag_id=crag_id)
         if sector_id:
-            query = query.filter(Todo.sector_id == sector_id)
+            query = query.filter(Area.sector_id == sector_id)
         if area_id:
-            query = query.filter(Todo.area_id == area_id)
+            query = query.filter(Line.area_id == area_id)
         if line_ids:
             line_ids = line_ids.split(",")
             query = query.filter(Todo.line_id.in_(line_ids))

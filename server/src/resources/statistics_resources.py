@@ -74,18 +74,24 @@ class GetCompletion(MethodView):
         lines = lines_query.all()
 
         # Query for all ascents and their associated crag, sector, and area for the user
-        ascents_query = db.session.query(Ascent.area_id, Ascent.sector_id, Ascent.crag_id).filter(
-            Ascent.created_by_id == user_id
+        ascents_query = (
+            db.session.query(Area.id, Sector.id, Crag.id)
+            .select_from(Ascent)
+            .join(Line, Ascent.line_id == Line.id)
+            .join(Area, Line.area_id == Area.id)
+            .join(Sector, Area.sector_id == Sector.id)
+            .join(Crag, Sector.crag_id == Crag.id)
+            .filter(Ascent.created_by_id == user_id)
         )
 
         # Filter ascents for grades
         if min_grade_value is not None and max_grade_value is not None:
             if instance_settings.display_user_grades:
-                ascents_query = ascents_query.join(Ascent.line).filter(
+                ascents_query = ascents_query.filter(
                     Line.user_grade_value >= min_grade_value, Line.user_grade_value <= max_grade_value
                 )
             else:
-                ascents_query = ascents_query.join(Ascent.line).filter(
+                ascents_query = ascents_query.filter(
                     Line.author_grade_value >= min_grade_value, Line.author_grade_value <= max_grade_value
                 )
 

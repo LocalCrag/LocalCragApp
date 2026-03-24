@@ -5,11 +5,13 @@ from sqlalchemy import select
 from sqlalchemy.orm.attributes import flag_modified
 
 from extensions import db
+from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.ranking import Ranking
+from models.sector import Sector
 from models.user import User
 
 
@@ -118,11 +120,13 @@ def build_rankings():
                 Line.type.label("line_type"),
                 Line.secret.label("line_secret"),
                 grade_col.label("grade_value"),
-                Ascent.crag_id.label("crag_id"),
-                Ascent.sector_id.label("sector_id"),
+                Sector.crag_id.label("crag_id"),
+                Area.sector_id.label("sector_id"),
             )
             .select_from(Ascent)
             .join(Line, Line.id == Ascent.line_id)
+            .join(Area, Line.area_id == Area.id)
+            .join(Sector, Area.sector_id == Sector.id)
             .filter(Ascent.created_by_id == user_id)
             .filter(Line.archived.is_(False))
             .order_by(Line.id, Ascent.id)

@@ -207,7 +207,15 @@ class GetCragSeason(MethodView):
         crag_id = Crag.get_id_by_slug(crag_slug)
 
         # Query for all ascent dates for the crag
-        ascents = db.session.query(Ascent.date).filter(Ascent.date.isnot(None)).filter(Ascent.crag_id == crag_id).all()
+        ascents = (
+            db.session.query(Ascent.date)
+            .join(Line)
+            .join(Area)
+            .join(Sector)
+            .filter(Ascent.date.isnot(None))
+            .filter(Sector.crag_id == crag_id)
+            .all()
+        )
 
         # Initialize dictionary to store counts
         season_counts = {i: 0 for i in range(1, 13)}

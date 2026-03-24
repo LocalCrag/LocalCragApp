@@ -426,9 +426,6 @@ def fill_db_with_sample_data():
     ascent.created_by_id = admin_id
     ascent.with_kneepad = True
     ascent.line_id = Line.get_id_by_slug("super-spreader")
-    ascent.area_id = Area.get_id_by_slug("dritter-block-von-links")
-    ascent.sector_id = Sector.get_id_by_slug("schattental")
-    ascent.crag_id = Crag.get_id_by_slug("brione")
     db.session.add(ascent)
 
     post = Post()
