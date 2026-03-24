@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.2...v1.28.0) (2026-03-24)
+
+
+### Features
+
+* **topo:** add possibility to move lines, topo images, areas and sectors to new parent objects ([#1007](https://github.com/LocalCrag/LocalCragApp/issues/1007)) ([717f9a8](https://github.com/LocalCrag/LocalCragApp/commit/717f9a8eb7a49eab2225800da2159e473ebcb756))
+
 ## [1.27.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.1...v1.27.2) (2026-03-20)
 
 
