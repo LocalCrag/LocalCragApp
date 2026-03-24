@@ -13,8 +13,8 @@
         <form [formGroup]="sectorForm" lcForm>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
-              t("sectorNameLabel")
-            }}</label>
+                t("sectorNameLabel")
+              }}</label>
             <input
               id="name"
               type="text"
@@ -25,16 +25,16 @@
               data-cy="sector-form-name"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
-            }}</small>
+                t("required")
+              }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
+                t("maxlength120")
+              }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="shortDescription">{{
-              t("sectorShortDescriptionLabel")
-            }}</label>
+                t("sectorShortDescriptionLabel")
+              }}</label>
             <p-editor
               id="shortDescription"
               formControlName="shortDescription"
@@ -74,8 +74,8 @@
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
-              t("sectorDescriptionLabel")
-            }}</label>
+                t("sectorDescriptionLabel")
+              }}</label>
             <p-editor
               id="description"
               formControlName="description"
@@ -140,8 +140,8 @@
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="rules">{{
-              t("sectorRulesLabel")
-            }}</label>
+                t("sectorRulesLabel")
+              }}</label>
             <p-editor
               id="rules"
               formControlName="rules"
@@ -181,8 +181,8 @@
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
-              t("sectorPortraitImageLabel")
-            }}</label>
+                t("sectorPortraitImageLabel")
+              }}</label>
             <lc-single-image-upload
               id="portrait-image"
               lcFormControl
@@ -214,13 +214,13 @@
               data-cy="sector-form-blocweatherUrl"
             />
             <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
-              t("invalidBlocweatherUrl")
-            }}</small>
+                t("invalidBlocweatherUrl")
+              }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
-              t("mapMarkersLabel")
-            }}</label>
+                t("mapMarkersLabel")
+              }}</label>
             <lc-map-marker-form-array
               id="map-markers"
               formControlName="mapMarkers"
@@ -242,8 +242,8 @@
                     lcFormControl
                   ></p-checkbox>
                   <label [for]="'secret'" class="ml-2">{{
-                    t("secretLabel")
-                  }}</label>
+                      t("secretLabel")
+                    }}</label>
                 </div>
                 <div class="flex">
                   <p-checkbox
@@ -254,8 +254,8 @@
                     lcFormControl
                   ></p-checkbox>
                   <label [for]="'closed'" class="ml-2">{{
-                    t("closedLabel")
-                  }}</label>
+                      t("closedLabel")
+                    }}</label>
                 </div>
               </div>
             </div>
@@ -324,8 +324,8 @@
           @if (sectorForm.get("closed").value) {
             <div class="flex flex-column gap-2" lcControlGroup>
               <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
+                  t("closedReasonLabel")
+                }}</label>
               <input
                 id="closedReason"
                 type="text"
@@ -365,13 +365,15 @@
             icon="pi pi-ban"
           ></p-button>
           @if (editMode) {
-            <p-button
-              icon="pi pi-arrow-right-arrow-left"
-              label="{{ t('moveSectorButtonLabel') }}"
-              styleClass="p-button-secondary"
-              class="ml-3 responsive-button"
-              (click)="openMoveDialog()"
-            ></p-button>
+            @if (parentCrag.slug !== environment.skippedSlug) {
+              <p-button
+                icon="pi pi-arrow-right-arrow-left"
+                label="{{ t('moveSectorButtonLabel') }}"
+                styleClass="p-button-secondary"
+                class="ml-3 responsive-button"
+                (click)="openMoveDialog()"
+              ></p-button>
+            }
             <p-button
               label="{{ t('deleteSectorButtonLabel') }}"
               (click)="confirmDeleteSector($event)"

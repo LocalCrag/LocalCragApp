@@ -62,6 +62,7 @@ import { blocweatherUrlValidator } from '../../../utility/validators/blocweather
 import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
+import { environment } from '../../../../environments/environment';
 
 /**
  * Form component for creating and editing areas.
@@ -348,4 +349,6 @@ export class AreaFormComponent implements OnInit {
   onObjectMoved(obj: Sector | Area | Line | TopoImage) {
     this.router.navigate([(obj as Area).routerLink]);
   }
+
+  protected readonly environment = environment;
 }
