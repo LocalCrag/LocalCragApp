@@ -43,7 +43,7 @@ class Area(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     @hybrid_property
     def ascent_count(self):
-        query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.area_id == self.id)
+        query = db.session.query(func.count(Ascent.id)).join(Line).where(Line.area_id == self.id)
         if not get_show_secret():
             query = query.where(Line.secret.is_(False))
         return query.scalar()

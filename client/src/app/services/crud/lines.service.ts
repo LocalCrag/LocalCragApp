@@ -76,4 +76,16 @@ export class LinesService {
       .put(this.api.lines.update(line.slug), Line.serialize(line))
       .pipe(map(Line.deserialize));
   }
+
+  /**
+   * Moves the line to a new area.
+   *
+   * @param lineSlug Slug of the line to move.
+   * @param targetAreaId ID of the area to move the line to.
+   */
+  public moveLine(lineSlug: string, targetAreaId: string): Observable<Line> {
+    return this.http
+      .put(this.api.lines.move(lineSlug), { areaId: targetAreaId })
+      .pipe(map(Line.deserialize));
+  }
 }

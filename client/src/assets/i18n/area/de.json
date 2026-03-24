@@ -28,6 +28,7 @@
   "areaForm.createAreaButtonLabel": "Bereich erstellen",
   "areaForm.editAreaButtonLabel": "Änderungen speichern",
   "areaForm.cancelButtonLabel": "Abbrechen",
+  "areaForm.moveAreaButtonLabel": "Verschieben",
   "areaForm.deleteAreaButtonLabel": "Bereich löschen",
   "areaForm.editAreaTitle": "Bereich bearbeiten",
   "areaForm.createAreaTitle": "Neuen Bereich erstellen"

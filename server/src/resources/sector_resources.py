@@ -10,6 +10,7 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
+from marshmallow_schemas.search_schema import sector_search_schema
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
@@ -29,7 +30,51 @@ from util.propagating_boolean_attrs import (
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
+from webargs_schemas.move_args import move_sector_args
 from webargs_schemas.sector_args import sector_args
+
+
+class MoveSector(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def put(self, sector_slug):
+        """
+        Move a sector to a different crag.
+        """
+        payload = parser.parse(move_sector_args, request)
+        target_crag_id = payload["cragId"]
+
+        sector: Sector = Sector.find_by_slug(sector_slug)
+        old_crag_id = sector.crag_id
+        target_crag_id = Crag.find_by_id(target_crag_id).id
+
+        if target_crag_id == old_crag_id:
+            return sector_schema.dump(sector), 200
+
+        # Close the gap in the old crag order
+        db.session.execute(
+            text(
+                "UPDATE sectors SET order_index=order_index - 1 "
+                "WHERE order_index > :order_index AND crag_id = :crag_id"
+            ),
+            {"order_index": sector.order_index, "crag_id": old_crag_id},
+        )
+
+        # Append to the end in the new crag
+        sector.crag_id = target_crag_id
+        sector.order_index = Sector.find_max_order_index(target_crag_id) + 1
+
+        # Secret/closed handling (see MoveLine for rules).
+        target_crag: Crag = Crag.find_by_id(target_crag_id)
+        if target_crag.secret and not sector.secret:
+            update_sector_propagating_boolean_attr(sector, True, "secret")
+        if target_crag.closed and not sector.closed:
+            update_sector_propagating_boolean_attr(sector, True, "closed")
+
+        db.session.add(sector)
+        db.session.commit()
+
+        return sector_search_schema.dump(sector), 200
 
 
 class GetSectors(MethodView):

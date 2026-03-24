@@ -1,6 +1,34 @@
 from models.area import Area
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.file import File
+from models.sector import Sector
+
+
+def test_successful_move_area_to_different_sector(client, moderator_token):
+    area: Area = Area.find_by_slug("dritter-block-von-links")
+    old_sector_id = area.sector_id
+
+    # pick a target sector that is different from the current one
+    target_sector = Sector.query.filter(Sector.id != old_sector_id).first()
+    assert target_sector is not None
+
+    # move to an existing sector in fixtures
+    rv = client.put(
+        "/api/areas/dritter-block-von-links/move",
+        token=moderator_token,
+        json={"sectorId": str(target_sector.id)},
+    )
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["slug"] == "dritter-block-von-links"
+
+    moved = Area.find_by_slug("dritter-block-von-links")
+    assert moved.sector_id != old_sector_id
+
+    # ensure old sector indices have no gap
+    remaining = Area.query.filter_by(sector_id=old_sector_id).order_by(Area.order_index.asc()).all()
+    if remaining:
+        assert [a.order_index for a in remaining] == list(range(len(remaining)))
 
 
 def test_successful_create_area(client, moderator_token):

@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
+from models.area import Area
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
@@ -10,6 +11,7 @@ from models.line import Line
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
+from models.sector import Sector
 from util.secret_spots_auth import get_show_secret
 
 
@@ -41,7 +43,13 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     @hybrid_property
     def ascent_count(self):
-        query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.crag_id == self.id)
+        query = (
+            db.session.query(func.count(Ascent.id))
+            .join(Line)
+            .join(Area, Line.area_id == Area.id)
+            .join(Sector, Area.sector_id == Sector.id)
+            .where(Sector.crag_id == self.id)
+        )
         if not get_show_secret():
             query = query.where(Line.secret.is_(False))
         return query.scalar()

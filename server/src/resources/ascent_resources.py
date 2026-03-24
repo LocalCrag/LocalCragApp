@@ -6,6 +6,7 @@ from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import ColumnElement
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -66,15 +67,21 @@ class GetAscents(MethodView):
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
 
-        query = select(Ascent).join(Line).options(joinedload(Ascent.line))
+        query = (
+            select(Ascent)
+            .join(Line)
+            .join(Area, Line.area_id == Area.id)
+            .options(joinedload(Ascent.line))
+            .options(joinedload(Ascent.line).joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag))
+        )
 
         # Filter for user, crag, sector, area or line
         if crag_id:
-            query = query.filter(Ascent.crag_id == crag_id)
+            query = query.join(Area.sector).filter_by(crag_id=crag_id)
         if sector_id:
-            query = query.filter(Ascent.sector_id == sector_id)
+            query = query.filter(Area.sector_id == sector_id)
         if area_id:
-            query = query.filter(Ascent.area_id == area_id)
+            query = query.filter(Line.area_id == area_id)
         if user_id:
             query = query.filter(Ascent.created_by_id == user_id)
         if line_id:
@@ -98,17 +105,16 @@ class GetAscents(MethodView):
             query = query.filter(Ascent.line.has(secret=False))
 
         # Apply ordering
-        order_function = None
+        order_col: ColumnElement
         if order_by in {"time_created", "ascent_date"}:
-            order_function = getattr(getattr(Ascent, order_by), order_direction)
-        if order_by in {"grade_value"}:
-            if instance_settings.display_user_grades:
-                order_function = getattr(getattr(Line, "user_grade_value"), order_direction)
-            else:
-                order_function = getattr(getattr(Line, "author_grade_value"), order_direction)
+            order_col = getattr(Ascent, order_by)
+        else:
+            order_col = Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value
+
+        order_expr = order_col.asc() if order_direction == "asc" else order_col.desc()
 
         # Order by Ascent.id as a tie-breaker to prevent duplicate entries in paginate
-        query = query.order_by(order_function(), Ascent.id)
+        query = query.order_by(order_expr, Ascent.id)
 
         paginated_ascents = db.paginate(query, page=page, per_page=per_page)
 
@@ -125,13 +131,18 @@ class GetTicks(MethodView):
         line_ids = request.args.get("line_ids")
         if not user_id or not (crag_id or sector_id or area_id or line_ids):
             raise BadRequest("Filter query params are not properly defined.")
-        query = db.session.query(Ascent.line_id).filter(Ascent.created_by_id == user_id)
+        query = (
+            db.session.query(Ascent.line_id)
+            .join(Line)
+            .join(Area, Line.area_id == Area.id)
+            .filter(Ascent.created_by_id == user_id)
+        )
         if crag_id:
-            query = query.filter(Ascent.crag_id == crag_id)
+            query = query.join(Area.sector).filter_by(crag_id=crag_id)
         if sector_id:
-            query = query.filter(Ascent.sector_id == sector_id)
+            query = query.filter(Area.sector_id == sector_id)
         if area_id:
-            query = query.filter(Ascent.area_id == area_id)
+            query = query.filter(Line.area_id == area_id)
         if line_ids:
             line_ids = line_ids.split(",")
             query = query.filter(Ascent.line_id.in_(line_ids))
@@ -177,9 +188,6 @@ class CreateAscent(MethodView):
         ascent.year = ascent_data["year"]
         ascent.date = ascent_data["date"]
         ascent.created_by_id = created_by.id
-        ascent.area_id = line.area_id
-        ascent.sector_id = Area.find_by_id(line.area_id).sector_id
-        ascent.crag_id = Sector.find_by_id(ascent.sector_id).crag_id
 
         # Set ascent date for ordering
         if ascent.date:

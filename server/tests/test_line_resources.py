@@ -1,4 +1,93 @@
+from extensions import db
+from models.area import Area
+from models.file import File
 from models.line import Line
+from models.line_path import LinePath
+from models.topo_image import TopoImage
+
+
+def test_successful_move_line_to_different_area(client, moderator_token):
+    """A line can be re-parented to another area."""
+    line: Line = Line.find_by_slug("super-spreader")
+    original_area_id = str(line.area_id)
+
+    target_area_obj = Area.query.filter(Area.id != line.area_id).first()
+    assert target_area_obj is not None
+
+    rv = client.put(
+        f"/api/lines/{line.slug}/move",
+        token=moderator_token,
+        json={"areaId": str(target_area_obj.id)},
+    )
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["slug"] == line.slug
+
+    moved_line = Line.find_by_slug(line.slug)
+    assert str(moved_line.area_id) != original_area_id
+
+
+def test_move_line_deletes_all_line_paths(client, moderator_token):
+    line: Line = Line.find_by_slug("super-spreader")
+
+    # Ensure two topo images exist in the source area.
+    topo_images = TopoImage.query.filter_by(area_id=line.area_id).order_by(TopoImage.order_index.asc()).all()
+    assert len(topo_images) > 0
+    topo_image_1 = topo_images[0]
+    if len(topo_images) > 1:
+        topo_image_2 = topo_images[1]
+    else:
+        other_file = File.query.filter(File.id != topo_image_1.file_id).first()
+        assert other_file is not None
+        topo_image_2 = TopoImage(
+            area_id=line.area_id,
+            file_id=other_file.id,
+            created_by_id=topo_image_1.created_by_id,
+            order_index=topo_image_1.order_index + 1,
+            title=None,
+            description=None,
+            archived=False,
+        )
+
+        db.session.add(topo_image_2)
+        db.session.commit()
+
+    # Create two line paths for this line
+    LinePath.query.filter_by(line_id=line.id).delete(synchronize_session=False)
+
+    lp1 = LinePath(
+        topo_image_id=topo_image_1.id,
+        line_id=line.id,
+        created_by_id=topo_image_1.created_by_id,
+        order_index=0,
+        order_index_for_line=0,
+        path=[1.0, 1.0, 2.0, 2.0],
+    )
+    lp2 = LinePath(
+        topo_image_id=topo_image_2.id,
+        line_id=line.id,
+        created_by_id=topo_image_2.created_by_id,
+        order_index=0,
+        order_index_for_line=1,
+        path=[3.0, 3.0, 4.0, 4.0],
+    )
+    db.session.add(lp1)
+    db.session.add(lp2)
+    db.session.commit()
+
+    assert LinePath.query.filter_by(line_id=line.id).count() == 2
+
+    target_area_obj = Area.query.filter(Area.id != line.area_id).first()
+    assert target_area_obj is not None
+
+    rv = client.put(
+        f"/api/lines/{line.slug}/move",
+        token=moderator_token,
+        json={"areaId": str(target_area_obj.id)},
+    )
+    assert rv.status_code == 200
+
+    assert LinePath.query.filter_by(line_id=line.id).count() == 0
 
 
 def test_successful_create_line(client, moderator_token):

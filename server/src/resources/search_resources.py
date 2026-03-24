@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask.views import MethodView
 from sqlalchemy import func
 
@@ -26,10 +26,24 @@ class Search(MethodView):
     def get(self, query):
         if not query:
             raise BadRequest("A search query is required.")
+
+        # Optional filter: restrict search results to a single object type.
+        # API expects values like: Crag, Sector, Area, Line, User (case-insensitive).
+        object_type = request.args.get("objectType")
+        type_filter = None
+        if object_type:
+            normalized = object_type.strip().upper()
+            try:
+                type_filter = SearchableItemTypeEnum[normalized]
+            except KeyError as e:
+                allowed = ", ".join([t.name.title() for t in SearchableItemTypeEnum])
+                raise BadRequest(f"Invalid objectType '{object_type}'. Allowed values: {allowed}.") from e
         instance_settings = InstanceSettings.return_it()
         db_query = db.session.query(Searchable)
         if not get_show_secret():
             db_query = db_query.filter(Searchable.secret.is_(False))
+        if type_filter is not None:
+            db_query = db_query.filter(Searchable.type == type_filter)
         if instance_settings.skipped_hierarchical_layers > 0:
             db_query = db_query.filter(Searchable.type != SearchableItemTypeEnum.CRAG.value)
         if instance_settings.skipped_hierarchical_layers > 1:

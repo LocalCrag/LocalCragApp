@@ -4,6 +4,33 @@ from models.file import File
 from models.sector import Sector
 
 
+def test_successful_move_sector_to_different_crag(client, moderator_token):
+    sector: Sector = Sector.find_by_slug("schattental")
+    old_crag_id = sector.crag_id
+
+    # pick a target crag that is different from the current one
+    target_crag = Crag.query.filter(Crag.id != old_crag_id).first()
+    assert target_crag is not None
+
+    rv = client.put(
+        "/api/sectors/schattental/move",
+        token=moderator_token,
+        json={"cragId": str(target_crag.id)},
+    )
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["slug"] == "schattental"
+
+    moved = Sector.find_by_slug(res["slug"])
+    assert moved.crag_id != old_crag_id
+    assert moved.crag_slug == target_crag.slug
+
+    # ensure old crag indices have no gap
+    remaining = Sector.query.filter_by(crag_id=old_crag_id).order_by(Sector.order_index.asc()).all()
+    if remaining:
+        assert [s.order_index for s in remaining] == list(range(len(remaining)))
+
+
 def test_successful_create_sector(client, moderator_token):
     any_file = File.query.first()
     sector_data = {

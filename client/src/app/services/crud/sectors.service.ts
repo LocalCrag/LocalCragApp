@@ -128,4 +128,25 @@ export class SectorsService {
       .get(this.api.sectors.getGrades(sectorSlug))
       .pipe(map(deserializeGradeList));
   }
+
+  /**
+   * Moves the sector to a new crag.
+   *
+   * @param sectorSlug Slug of the sector to move.
+   * @param targetCragId ID of the crag to move the sector to.
+   */
+  public moveSector(
+    sectorSlug: string,
+    targetCragId: string,
+  ): Observable<Sector> {
+    return this.http
+      .put(this.api.sectors.move(sectorSlug), { cragId: targetCragId })
+      .pipe(
+        tap(() => {
+          this.store.dispatch(reloadMenus());
+          this.blocWeatherService.clearCache();
+        }),
+        map(Sector.deserialize),
+      );
+  }
 }

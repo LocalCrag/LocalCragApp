@@ -155,6 +155,7 @@ export class ApiService {
       `${this.apiHost}crags/${cragSlug}/sectors/update-order`,
     getSeason: (cragSlug: string): string =>
       `${this.apiHost}crags/${cragSlug}/season`,
+    move: (slug: string): string => `${this.apiHost}sectors/${slug}/move`,
   };
 
   public areas = {
@@ -170,6 +171,7 @@ export class ApiService {
       `${this.apiHost}sectors/${sectorSlug}/areas/update-order`,
     batchCreate: (slug: string): string =>
       `${this.apiHost}areas/${slug}/batch-create`,
+    move: (slug: string): string => `${this.apiHost}areas/${slug}/move`,
   };
 
   public ascents = {
@@ -195,6 +197,7 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,
     updateOrder: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
+    move: (id: string): string => `${this.apiHost}topo-images/${id}/move`,
   };
 
   public linePaths = {
@@ -216,6 +219,7 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    move: (id: string): string => `${this.apiHost}lines/${id}/move`,
   };
 
   public uploader = {

@@ -109,4 +109,19 @@ export class TopoImagesService {
       .put(this.api.topoImages.updateOrder(areaSlug), newOrder)
       .pipe(map(() => null));
   }
+
+  /**
+   * Moves the line to a new area.
+   *
+   * @param imageId ID of the topo image to move.
+   * @param targetAreaId ID of the area to move the topo image to.
+   */
+  public moveTopImage(
+    imageId: string,
+    targetAreaId: string,
+  ): Observable<TopoImage> {
+    return this.http
+      .put(this.api.topoImages.move(imageId), { areaId: targetAreaId })
+      .pipe(map(TopoImage.deserialize));
+  }
 }

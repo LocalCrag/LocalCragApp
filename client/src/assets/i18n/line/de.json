@@ -82,6 +82,7 @@
   "lineForm.createLineButtonLabel": "Linie erstellen",
   "lineForm.editLineButtonLabel": "Linie bearbeiten",
   "lineForm.cancelButtonLabel": "Abbrechen",
+  "lineForm.moveLineButtonLabel": "Verschieben",
   "lineForm.deleteLineButtonLabel": "Linie löschen",
   "lineForm.editLineTitle": "Linie bearbeiten",
   "lineForm.createLineTitle": "Linie erstellen",

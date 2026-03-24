@@ -29,6 +29,9 @@ import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
+import { Sector } from '../../../models/sector';
+import { Line } from '../../../models/line';
+import { TopoImage } from '../../../models/topo-image';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
@@ -58,6 +61,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
+import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
+import { environment } from '../../../../environments/environment';
 
 /**
  * Form component for creating and editing areas.
@@ -88,11 +93,13 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
     SingleImageUploadComponent,
     Tooltip,
     OutdoorModeDirective,
+    MoveObjectDialogComponent,
   ],
 })
 export class AreaFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
+  @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public areaForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -103,8 +110,7 @@ export class AreaFormComponent implements OnInit {
   public sportScales: SelectItem<string | null>[] = [];
   public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
-  public parentSecret = false;
-  public parentClosed = false;
+  public parentSector: Sector;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -150,8 +156,7 @@ export class AreaFormComponent implements OnInit {
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
 
     this.sectorsService.getSector(this.sectorSlug).subscribe((sector) => {
-      this.parentSecret = sector.secret;
-      this.parentClosed = sector.closed;
+      this.parentSector = sector;
       this.buildForm();
       if (areaSlug) {
         this.editMode = true;
@@ -183,7 +188,7 @@ export class AreaFormComponent implements OnInit {
         this.areaForm.disable();
         scalesPopulated.subscribe(() => {
           this.areaForm.enable();
-          this.areaForm.get('secret').setValue(this.parentSecret);
+          this.areaForm.get('secret').setValue(this.parentSector.secret);
           this.loadingState = LoadingState.DEFAULT;
         });
       }
@@ -336,4 +341,14 @@ export class AreaFormComponent implements OnInit {
 
   protected readonly disabledMarkerTypesArea = disabledMarkerTypesArea;
   protected readonly MapMarkerType = MapMarkerType;
+
+  openMoveDialog() {
+    this.moveDialog.open(this.area, this.parentSector.id);
+  }
+
+  onObjectMoved(obj: Sector | Area | Line | TopoImage) {
+    this.router.navigate([(obj as Area).routerLink]);
+  }
+
+  protected readonly environment = environment;
 }
