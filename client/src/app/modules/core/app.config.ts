@@ -172,7 +172,16 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideTransloco({
       config: {
-        availableLangs: ['de', 'de-gym', 'en', 'en-gym', 'it', 'it-gym'],
+        availableLangs: [
+          'de',
+          'de-gym',
+          'en',
+          'en-gym',
+          'it',
+          'it-gym',
+          'nl',
+          'nl-gym',
+        ],
         defaultLang: 'de',
         fallbackLang: 'en',
         prodMode: environment.production,
