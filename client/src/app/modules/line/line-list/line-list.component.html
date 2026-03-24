@@ -89,16 +89,16 @@
                 [disabled]="loadingFirstPage === loadingStates.LOADING"
                 optionLabel="label"
                 (onChange)="selectScale()"
-                styleClass="md:mb-0"
+                class="md:mb-0"
               >
-                <ng-template #selectedItem2>
+                <ng-template #selectedItem>
                   @if (scaleKey) {
                     <div class="flex align-items-center gap-2">
                       <div>{{ scaleKey.label }}</div>
                     </div>
                   }
                 </ng-template>
-                <ng-template let-option #item2>
+                <ng-template let-option #item>
                   <div class="flex align-items-center gap-2">
                     <div>{{ option.label }}</div>
                   </div>
