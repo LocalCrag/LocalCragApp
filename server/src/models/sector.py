@@ -4,6 +4,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
+from models.area import Area
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
@@ -44,7 +45,12 @@ class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     @hybrid_property
     def ascent_count(self):
-        query = db.session.query(func.count(Ascent.id)).join(Line).where(Ascent.sector_id == self.id)
+        query = (
+            db.session.query(func.count(Ascent.id))
+            .join(Line)
+            .join(Area, Line.area_id == Area.id)
+            .where(Area.sector_id == self.id)
+        )
         if not get_show_secret():
             query = query.where(Line.secret.is_(False))
         return query.scalar()

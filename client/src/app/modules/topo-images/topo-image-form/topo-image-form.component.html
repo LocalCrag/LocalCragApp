@@ -119,7 +119,22 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
+        @if (editMode) {
+          <p-button
+            icon="pi pi-arrow-right-arrow-left"
+            label="{{ t('moveTopoImageButtonLabel') }}"
+            styleClass="p-button-secondary"
+            class="ml-3 responsive-button"
+            (click)="openMoveDialog()"
+            *isModerator="true"
+          ></p-button>
+        }
       </div>
+      <lc-move-object-dialog
+        #moveDialog
+        [hasUnsavedChanges]="topoImageForm.dirty"
+        (objectMoved)="onObjectMoved($event)"
+      ></lc-move-object-dialog>
     </p-card>
   </div>
 </ng-container>

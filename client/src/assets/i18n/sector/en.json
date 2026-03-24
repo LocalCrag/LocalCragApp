@@ -30,6 +30,7 @@
   "sectorForm.createSectorButtonLabel": "Create sector",
   "sectorForm.editSectorButtonLabel": "Save Changes",
   "sectorForm.cancelButtonLabel": "Cancel",
+  "sectorForm.moveSectorButtonLabel": "Move",
   "sectorForm.deleteSectorButtonLabel": "Delete sector",
   "sectorForm.editSectorTitle": "Edit sector",
   "sectorForm.createSectorTitle": "Create sector"

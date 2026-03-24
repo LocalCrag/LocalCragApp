@@ -30,6 +30,7 @@
   "sectorForm.createSectorButtonLabel": "Crea settore",
   "sectorForm.editSectorButtonLabel": "Salva modifiche",
   "sectorForm.cancelButtonLabel": "Annulla",
+  "sectorForm.moveSectorButtonLabel": "Spostare",
   "sectorForm.deleteSectorButtonLabel": "Elimina settore",
   "sectorForm.editSectorTitle": "Modifica settore",
   "sectorForm.createSectorTitle": "Crea settore"

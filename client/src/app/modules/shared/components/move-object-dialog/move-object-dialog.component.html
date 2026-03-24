@@ -1,0 +1,60 @@
+<ng-container *transloco="let t">
+  @if (form) {
+    <p-dialog
+      [header]="t(titleKey)"
+      [modal]="true"
+      [(visible)]="isOpen"
+      [style]="{ width: '30rem' }"
+    >
+      @if (objectToMoveIsTopoImage) {
+        <p-message severity="info" class="mt-1 mb-3" icon="pi pi-info-circle"
+          >{{ t("topoImageMoveInfo") }}
+        </p-message>
+      }
+
+      @if (hasUnsavedChanges) {
+        <p-message
+          severity="warn"
+          class="mb-3"
+          icon="pi pi-exclamation-triangle"
+          >{{ t("unsavedChangesAreLost") }}
+        </p-message>
+      }
+
+      <form [formGroup]="form" lcForm class="flex flex-column pt-1">
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label mt-0" for="target">{{ t(labelKey) }}</label>
+          <p-autoComplete
+            id="target"
+            formControlName="target"
+            [suggestions]="suggestions"
+            optionLabel="name"
+            [forceSelection]="true"
+            (completeMethod)="searchSuggestions($event)"
+            [placeholder]="t(placeholderKey)"
+            appendTo="body"
+            fluid
+            lcFormControl
+          ></p-autoComplete>
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("moveObjectDialog.required")
+          }}</small>
+        </div>
+      </form>
+
+      <ng-template #footer>
+        <p-button
+          [label]="t('moveObjectDialog.cancel')"
+          severity="secondary"
+          (onClick)="close()"
+          [disabled]="loading"
+        />
+        <p-button
+          [label]="t('moveObjectDialog.submit')"
+          (onClick)="submit()"
+          [loading]="loading"
+        />
+      </ng-template>
+    </p-dialog>
+  }
+</ng-container>

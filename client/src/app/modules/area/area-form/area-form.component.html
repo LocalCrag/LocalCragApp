@@ -153,7 +153,6 @@
             lcControlGroup
             *isOutdoorMode="true"
           >
-            >
             <label class="form-label" for="blocweatherUrl">
               {{ t("blocweatherUrlLabel") }}
               <span
@@ -267,12 +266,12 @@
               ></p-select>
             </div>
           </div>
-          @if (parentSecret && !areaForm.get("secret").value) {
+          @if (parentSector?.secret && !areaForm.get("secret").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicAreaWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentClosed && !areaForm.get("closed").value) {
+          @if (parentSector?.closed && !areaForm.get("closed").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("openingAClosedAreaWillSetParentsToOpen") }}
             </p-message>
@@ -321,6 +320,15 @@
             icon="pi pi-ban"
           ></p-button>
           @if (editMode) {
+            @if (parentSector.slug !== environment.skippedSlug) {
+              <p-button
+                icon="pi pi-arrow-right-arrow-left"
+                label="{{ t('moveAreaButtonLabel') }}"
+                styleClass="p-button-secondary"
+                class="ml-3 responsive-button"
+                (click)="openMoveDialog()"
+              ></p-button>
+            }
             <p-button
               label="{{ t('deleteAreaButtonLabel') }}"
               (click)="confirmDeleteArea($event)"
@@ -332,6 +340,11 @@
           }
           <p-confirmpopup></p-confirmpopup>
         </div>
+        <lc-move-object-dialog
+          #moveDialog
+          [hasUnsavedChanges]="areaForm.dirty"
+          (objectMoved)="onObjectMoved($event)"
+        ></lc-move-object-dialog>
       }
 
       @if (!areaForm) {

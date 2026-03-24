@@ -21,6 +21,7 @@
   "topoImageForm.coordinatesLabel": "GPS (optional)",
   "topoImageForm.addTopoImageButtonLabel": "Save",
   "topoImageForm.cancelButtonLabel": "Cancel",
+  "topoImageForm.moveTopoImageButtonLabel": "Move",
   "topoImageForm.addTopoImageTitle": "Add Topo image",
   "topoImageForm.editTopoImageTitle": "Edit Topo image",
   "batchUploadForm.batchImageUploadDescription": "Upload several topo images at the same time and create lines and their paths with basic information right away. If you want to add details to the lines later, you can do so by editing them individually.",

@@ -29,6 +29,9 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
+import { Area } from '../../../models/area';
+import { Line } from '../../../models/line';
+import { TopoImage } from '../../../models/topo-image';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
@@ -36,7 +39,6 @@ import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { CragsService } from '../../../services/crud/crags.service';
 import {
-  disabledMarkerTypesCrag,
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
@@ -61,6 +63,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
+import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
+import { Crag } from '../../../models/crag';
 
 /**
  * Form component for creating and editing sectors.
@@ -91,11 +95,13 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
     SingleImageUploadComponent,
     Tooltip,
     OutdoorModeDirective,
+    MoveObjectDialogComponent,
   ],
 })
 export class SectorFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChildren(Editor) editors: QueryList<Editor>;
+  @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public sectorForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -106,8 +112,7 @@ export class SectorFormComponent implements OnInit {
   public sportScales: SelectItem<string | null>[] = [];
   public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
-  public parentSecret = false;
-  public parentClosed = false;
+  public parentCrag: Crag;
 
   private cragSlug: string;
   private destroyRef = inject(DestroyRef);
@@ -151,8 +156,7 @@ export class SectorFormComponent implements OnInit {
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
 
     this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
-      this.parentSecret = crag.secret;
-      this.parentClosed = crag.closed;
+      this.parentCrag = crag;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
@@ -183,7 +187,7 @@ export class SectorFormComponent implements OnInit {
         });
         this.sectorForm.disable();
         scalesPopulated.subscribe(() => {
-          this.sectorForm.get('secret').setValue(this.parentSecret);
+          this.sectorForm.get('secret').setValue(this.parentCrag.secret);
           this.sectorForm.enable();
           this.loadingState = LoadingState.DEFAULT;
         });
@@ -330,8 +334,15 @@ export class SectorFormComponent implements OnInit {
     });
   }
 
-  protected readonly disabledMarkerTypesCrag = disabledMarkerTypesCrag;
   protected readonly disabledMarkerTypesSector = disabledMarkerTypesSector;
   protected readonly MapMarkerType = MapMarkerType;
   protected readonly environment = environment;
+
+  openMoveDialog() {
+    this.moveDialog.open(this.sector, this.parentCrag.id);
+  }
+
+  onObjectMoved(obj: Sector | Area | Line | TopoImage) {
+    this.router.navigate([(obj as Sector).routerLink]);
+  }
 }

@@ -82,6 +82,7 @@
   "lineForm.createLineButtonLabel": "Aggiungi Problema",
   "lineForm.editLineButtonLabel": "Modifica Problema",
   "lineForm.cancelButtonLabel": "Annulla",
+  "lineForm.moveLineButtonLabel": "Spostare",
   "lineForm.deleteLineButtonLabel": "Elimina Problema",
   "lineForm.editLineTitle": "Modifica Problema",
   "lineForm.createLineTitle": "Aggiungi Problema",

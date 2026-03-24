@@ -45,6 +45,7 @@ import { LineType } from '../../../enums/line-type';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { Area } from '../../../models/area';
+import { TopoImage } from '../../../models/topo-image';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Scale } from '../../../models/scale';
@@ -71,6 +72,7 @@ import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 
 /**
  * Form component for lines.
@@ -106,11 +108,13 @@ import { LanguageService } from '../../../services/core/language.service';
     FormSkeletonComponent,
     AsyncPipe,
     FormsModule,
+    MoveObjectDialogComponent,
   ],
 })
 export class LineFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild(Editor) editor: Editor;
+  @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public lineForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
@@ -132,8 +136,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.CANDLE,
   ];
   public today = new Date(new Date().getFullYear(), 11, 31);
-  public parentSecret = false;
-  public parentClosed = false;
+  public parentArea: Area;
   public faFormat = FaDefaultFormat.YEAR;
   public faFormats = FaDefaultFormat;
   public groupedScales: Record<LineType, Scale[]> = null;
@@ -181,8 +184,7 @@ export class LineFormComponent implements OnInit {
       this.areasService.getArea(this.areaSlug),
       this.scalesService.getScales(),
     ]).subscribe(([crag, sector, area, scales]) => {
-      this.parentSecret = area.secret;
-      this.parentClosed = area.closed;
+      this.parentArea = area;
 
       this.groupedScales = {
         [LineType.BOULDER]: [],
@@ -297,7 +299,7 @@ export class LineFormComponent implements OnInit {
             `${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`,
           );
         });
-        this.lineForm.get('secret').setValue(this.parentSecret);
+        this.lineForm.get('secret').setValue(this.parentArea.secret);
         this.lineForm.get('type').setValue(LineType.BOULDER);
         this.loadingState = LoadingState.DEFAULT;
       }
@@ -665,4 +667,12 @@ export class LineFormComponent implements OnInit {
   }
 
   protected readonly LineType = LineType;
+
+  openMoveDialog() {
+    this.moveDialog.open(this.line, this.parentArea.id);
+  }
+
+  onObjectMoved(obj: Sector | Area | Line | TopoImage) {
+    this.router.navigate([(obj as Line).routerLink]);
+  }
 }
