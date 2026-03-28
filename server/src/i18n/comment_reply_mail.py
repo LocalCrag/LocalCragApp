@@ -36,4 +36,16 @@ comment_reply_mail = {
         "subject": "",
         "copyright": "",
     },
+    "nl": {
+        "title": "Nieuwe reactie op je opmerking",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Hallo",
+        "comment_reply_text": "Er is een nieuwe reactie van",
+        "view": "Gesprek weergeven",
+        "thanks": "Dankjewel,",
+        "greetings": "Je LocalCrag-team",
+        "hint": "Als de knop hierboven niet werkt, kopieer de onderstaande URL naar de adresbalk van je browser.",
+        "subject": "Nieuwe reactie op je opmerking",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+    },
 }

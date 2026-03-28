@@ -40,4 +40,17 @@ user_registered_mail = {
         "greetings": "",
         "subject": "",
     },
+    "nl": {
+        "title": "Nieuwe gebruiker!",
+        "new_user_text": "Gefeliciteerd, een nieuwe gebruiker heeft zich net geregistreerd op je LocalCrag server",
+        "LOCALCRAG": "LocalCrag",
+        "user_count_text": "Deze gebruiker is gebruiker nummer",
+        "hello": "Hallo",
+        "view_user": "Gebruiker weergeven",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+        "hint": "Als de knop hierboven niet werkt, kopieer de onderstaande URL dan rechtstreeks naar de adresbalk van je browser.",
+        "thanks": "Groeten,",
+        "greetings": "Je LocalCrag-team",
+        "subject": "Nieuwe gebruiker",
+    },
 }

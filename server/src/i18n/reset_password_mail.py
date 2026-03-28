@@ -45,4 +45,18 @@ reset_password_mail = {
         "greetings": "",
         "subject": "",
     },
+    "nl": {
+        "title": "Nieuw wachtwoord voor LocalCrag",
+        "intro_text": "Gebruik deze link om je wachtwoord opnieuw in te stellen. De link is 24 uur geldig.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Hallo",
+        "text_1": "Je hebt onlangs een wachtwoord-reset aangevraagd voor je LocalCrag-account. Gebruik deze knop om je wachtwoord opnieuw in te stellen.",
+        "text_2": "Deze link is alleen geldig voor de komende 24 uur",
+        "reset_password": "Wachtwoord opnieuw instellen",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+        "hint": "Als de knop hierboven niet werkt, kopieer de onderstaande URL dan rechtstreeks naar de adresbalk van je browser.",
+        "thanks": "Dankuwel,",
+        "greetings": "Je LocalCrag-team",
+        "subject": "LocalCrag-wachtwoord opnieuw instellen",
+    },
 }
