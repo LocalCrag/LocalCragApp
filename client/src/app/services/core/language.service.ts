@@ -13,6 +13,7 @@ import { Locale } from 'primelocale/js/locale.js';
 import { de } from 'primelocale/js/de.js';
 import { it } from 'primelocale/js/it.js';
 import { en_GB } from 'primelocale/js/en_GB.js';
+import { nl } from 'primelocale/js/nl.js';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -43,6 +44,7 @@ export class LanguageService {
     de: de,
     en: en_GB,
     it: it,
+    nl: nl,
   };
 
   constructor() {
