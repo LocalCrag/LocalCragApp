@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.28.1...v1.29.0) (2026-03-28)
+
+
+### Features
+
+* **core:** add dutch translations ([#1010](https://github.com/LocalCrag/LocalCragApp/issues/1010)) ([dca9681](https://github.com/LocalCrag/LocalCragApp/commit/dca96817afb5ad80d412d996c0601f1869b450be))
+
 ## [1.28.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.28.0...v1.28.1) (2026-03-24)
 
 
