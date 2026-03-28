@@ -46,4 +46,20 @@ change_email_address_mail = {
         "greetings": "",
         "subject": "",
     },
+    "nl": {
+        "title": "Wijzig je LocalCrag e-mailadres",
+        "intro_text": "Gebruik deze link om je e-mailadres te wijzigen. De link is 24 uur geldig.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Hallo",
+        "text_1": "Je hebt onlangs gevraagd om je e-mailadres voor je LocalCrag-account te wijzigen. "
+        "Het nieuwe adres is het ontvangstadres van deze e-mail. Gebruik deze knop om het proces af te ronden.",
+        "text_2": "Deze link is alleen geldig voor de komende 24 uur.",
+        "change_email": "E-mailadres wijzigen",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+        "hint": "Als de knop hierboven niet werkt, kopieer dan de onderstaande URL rechtstreeks "
+        "naar de adresbalk van je browser.",
+        "thanks": "Bedankt",
+        "greetings": "Je LocalCrag-team",
+        "subject": "Wijziging van je LocalCrag e-mailadres",
+    },
 }

@@ -78,14 +78,14 @@
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
                 >
-                  <ng-template #selectedItem2>
+                  <ng-template #selectedItem>
                     @if (priorityFilterKey) {
                       <div class="flex align-items-center gap-2">
                         <div>{{ priorityFilterKey.label }}</div>
                       </div>
                     }
                   </ng-template>
-                  <ng-template let-option #item2>
+                  <ng-template let-option #item>
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
@@ -99,14 +99,14 @@
                     optionLabel="label"
                     (onChange)="buildSectorFilterOptions(); loadFirstPage()"
                   >
-                    <ng-template #selectedItem3>
+                    <ng-template #selectedItem>
                       @if (cragFilterKey) {
                         <div class="flex align-items-center gap-2">
                           <div>{{ cragFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
-                    <ng-template let-option #item3>
+                    <ng-template let-option #item>
                       <div class="flex align-items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
@@ -121,14 +121,14 @@
                     optionLabel="label"
                     (onChange)="buildAreaFilterOptions(); loadFirstPage()"
                   >
-                    <ng-template #selectedItem4>
+                    <ng-template #selectedItem>
                       @if (sectorFilterKey) {
                         <div class="flex align-items-center gap-2">
                           <div>{{ sectorFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
-                    <ng-template let-option #item4>
+                    <ng-template let-option #item>
                       <div class="flex align-items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
@@ -143,14 +143,14 @@
                     [disabled]="loadingFirstPage === loadingStates.LOADING"
                     (onChange)="loadFirstPage()"
                   >
-                    <ng-template #selectedItem5>
+                    <ng-template #selectedItem>
                       @if (areaFilterKey) {
                         <div class="flex align-items-center gap-2">
                           <div>{{ areaFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
-                    <ng-template let-option #item5>
+                    <ng-template let-option #item>
                       <div class="flex align-items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
@@ -174,14 +174,14 @@
                     (onChange)="selectScale()"
                     styleClass="md:mb-0"
                   >
-                    <ng-template #selectedItem6>
+                    <ng-template #selectedItem>
                       @if (scaleKey) {
                         <div class="flex align-items-center gap-2">
                           <div>{{ scaleKey.label }}</div>
                         </div>
                       }
                     </ng-template>
-                    <ng-template let-option #item6>
+                    <ng-template let-option #item>
                       <div class="flex align-items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>

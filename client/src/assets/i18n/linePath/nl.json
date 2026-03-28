@@ -1,11 +1,11 @@
 {
-  "linePathForm.addLinePathDescription": "",
-  "linePathForm.addLinePathTitle": "",
-  "linePathForm.lineLabel": "",
-  "linePathForm.linePlaceholder": "",
-  "linePathForm.required": "",
-  "linePathForm.linePathLabel": "",
-  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "",
-  "linePathForm.addLinePathButtonLabel": "",
-  "linePathForm.leaveEditorButtonLabel": ""
+  "linePathForm.addLinePathDescription": "Hier kunt u een route op een Topo-afbeelding tekenen. Selecteer de route die u wilt tekenen uit de lijst en teken vervolgens het pad van de route door op de afbeelding te klikken.",
+  "linePathForm.addLinePathTitle": "Route tekenen",
+  "linePathForm.lineLabel": "Route",
+  "linePathForm.linePlaceholder": "Selecteer een route",
+  "linePathForm.required": "Verplicht veld",
+  "linePathForm.linePathLabel": "Routepad",
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
+  "linePathForm.addLinePathButtonLabel": "Route tekenen",
+  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten"
 }

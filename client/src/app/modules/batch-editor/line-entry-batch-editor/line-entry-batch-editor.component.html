@@ -183,7 +183,7 @@
                 </ng-template>
               </p-step-panel>
               <p-step-panel [value]="3">
-                <ng-template #content2>
+                <ng-template #content>
                   <div class="flex flex-column gap-2" lcControlGroup>
                     <label class="form-label" for="topoImage">{{
                       t("topoImageLabel")
@@ -196,7 +196,7 @@
                       placeholder="{{ t('topoImagePlaceholder') }}"
                     >
                       <ng-template #selectedItem>
-                        <!--                    We show the placeholder as selected item as the actual image is displayed in the line path editor-->
+                        <!--We show the placeholder as selected item as the actual image is displayed in the line path editor-->
                         {{ t("topoImagePlaceholder") }}
                       </ng-template>
                       <ng-template let-topoImage #item>

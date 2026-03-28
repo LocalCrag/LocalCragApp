@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.28.0...v1.28.1) (2026-03-24)
+
+
+### Bug Fixes
+
+* **topo:** fix broken line entry batch editor ([#1009](https://github.com/LocalCrag/LocalCragApp/issues/1009)) ([abff4be](https://github.com/LocalCrag/LocalCragApp/commit/abff4be0717110492b129a0e76b7043bd5fe2b7c))
+
 # [1.28.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.27.2...v1.28.0) (2026-03-24)
 
 

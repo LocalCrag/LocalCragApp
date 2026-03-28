@@ -45,4 +45,20 @@ project_climbed_mail = {
         "subject": "",
         "reply_to": "",
     },
+    "nl": {
+        "title": "Een project is beklommen!",
+        "intro": "Een project is zojuist als beklommen gerapporteerd op je LocalCrag-exemplaar.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Hallo",
+        "message": "Bericht",
+        "view_user": "Gebruiker weergeven",
+        "view_project": "Project weergeven",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+        "hint": "Als de knoppen hierboven niet werken, kopieer de onderstaande URL's dan rechtstreeks naar de adresbalk"
+        " van je browser.",
+        "thanks": "Groeten,",
+        "greetings": "Je LocalCrag-team",
+        "subject": "Een project is beklommen!",
+        "reply_to": "Stuur een e-mail naar",
+    },
 }
