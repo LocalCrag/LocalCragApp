@@ -23,6 +23,11 @@ class AscentSchema(BaseEntitySchema):
     crag = fields.Nested(AscentAndTodoCragSchema())
     sector = fields.Nested(AscentAndTodoSectorSchema())
     area = fields.Nested(AscentAndTodoAreaSchema())
+    reactions = fields.Method(serialize="get_reactions")
+
+    def get_reactions(self, obj):
+        # Set by GetAscents resource (fallback to empty dict)
+        return getattr(obj, "reaction_counts", {}) or {}
 
 
 class PaginatedAscentsSchema(ma.SQLAlchemySchema):

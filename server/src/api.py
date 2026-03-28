@@ -103,6 +103,7 @@ from resources.post_resources import (
     UpdatePost,
 )
 from resources.ranking_resources import GetRanking
+from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateReaction
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.scale_resources import (
     CreateScale,
@@ -427,3 +428,16 @@ def configure_api(app):
     comments_bp.add_url_rule("/<string:comment_id>", view_func=UpdateComment.as_view("update_comment"))
     comments_bp.add_url_rule("/<string:comment_id>", view_func=DeleteComment.as_view("delete_comment"))
     app.register_blueprint(comments_bp, url_prefix="/api/comments")
+
+    # Reactions API (generic)
+    reactions_bp = Blueprint("reactions", __name__)
+    reactions_bp.add_url_rule(
+        "/<string:target_type>/<string:target_id>", view_func=CreateReaction.as_view("create_reaction")
+    )
+    reactions_bp.add_url_rule(
+        "/<string:target_type>/<string:target_id>", view_func=UpdateReaction.as_view("update_reaction")
+    )
+    reactions_bp.add_url_rule(
+        "/<string:target_type>/<string:target_id>", view_func=DeleteReaction.as_view("delete_reaction")
+    )
+    app.register_blueprint(reactions_bp, url_prefix="/api/reactions")
