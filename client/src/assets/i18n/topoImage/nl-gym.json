@@ -1,5 +1,5 @@
 {
-  "topoImageForm.addTopoImageDescription": "",
-  "topoImageForm.topoImageDescriptionPlaceholder": "",
-  "batchUploadForm.lineFADateLabel": ""
+  "topoImageForm.addTopoImageDescription": "Upload een nieuwe Topo-afbeelding. Daarna kunnen beschikbare routes op de afbeelding worden getekend. De muur moet het grootste deel van de afbeelding innemen en de hele route moet gemakkelijk zichtbaar zijn. In sommige gevallen is het zinvol om dezelfde route op meerdere afbeeldingen te tekenen. Dit is bijvoorbeeld het geval met traverses of routes die om een hoek gaan.",
+  "topoImageForm.topoImageDescriptionPlaceholder": "Interessante dingen over de muur. Is er bijvoorbeeld een typische routestijl? Heeft het een bijzondere geschiedenis?",
+  "batchUploadForm.lineFADateLabel": "Datum van aanpassing"
 }

@@ -1,12 +1,12 @@
 {
-  "line.reorderLinePathsForLineButtonLabel": "",
-  "line.ascentCount": "",
-  "line.FA": "",
-  "lineForm.lineDescriptionPlaceholder": "",
-  "lineForm.lineFANameLabel": "",
-  "batchLineForm.lineFANamePlaceholder": "",
-  "lineForm.lineFANamePlaceholder": "",
-  "lineForm.lineFAYearLabel": "",
-  "lineForm.lineFADateLabel": "",
-  "lineForm.closedReasonPlaceholder": ""
+  "line.reorderLinePathsForLineButtonLabel": "Topo-afbeeldingen herschikken",
+  "line.ascentCount": "Pogingen",
+  "line.FA": "Ingesteld",
+  "lineForm.lineDescriptionPlaceholder": "Beschrijf hier algemene aspecten van de route en andere dingen waar je op moet letten. Is het toegestaan om de rand of de volumes te gebruiken?",
+  "lineForm.lineFANameLabel": "Routebouwer",
+  "batchLineForm.lineFANamePlaceholder": "Routebouwer",
+  "lineForm.lineFANamePlaceholder": "bijv. Wolfgang Güllich",
+  "lineForm.lineFAYearLabel": "Bouwjaar",
+  "lineForm.lineFADateLabel": "Bouwdatum",
+  "lineForm.closedReasonPlaceholder": "bijv. onderhoudswerkzaamheden..."
 }
