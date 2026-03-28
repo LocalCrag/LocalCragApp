@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from models.enums.line_type_enum import LineTypeEnum
 from models.scale import Scale
 
-ALLOWED_LANGUAGES = {"de", "en", "it"}
+ALLOWED_LANGUAGES = {"de", "en", "it", "nl"}
 
 
 def validate_language(value: str):

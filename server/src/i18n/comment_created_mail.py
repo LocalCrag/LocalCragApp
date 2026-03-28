@@ -36,4 +36,16 @@ comment_created_mail = {
         "subject": "",
         "copyright": "",
     },
+    "nl": {
+        "title": "Nieuw opmerkingen",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Hallo",
+        "new_comment_text": "Een nieuw opmerking is geplaatst door",
+        "view": "Weergeven",
+        "thanks": "Dankjewel,",
+        "greetings": "Je LocalCrag-team",
+        "hint": "Als de knop hierboven niet werkt, kopieer de onderstaande URL naar de adresbalk van je browser.",
+        "subject": "Nieuw opmerkingen",
+        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
+    },
 }

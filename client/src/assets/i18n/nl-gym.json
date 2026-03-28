@@ -1,0 +1,16 @@
+{
+  "region.regionForm.regionNamePlaceholder": "z.B. Organisatienaam",
+  "region.regionForm.regionDescriptionPlaceholder": "Algemene info over de organisatie.",
+  "region.regionForm.regionRulesPlaceholder": "Regels",
+  "region.regionForm.editRegionTitle": "Organisatie bewerken",
+  "notFound.title": "Error 404 - Geen rotsblok in het zicht!",
+  "projectClimbedForm.projectClimbedInfoMessage": "Je hebt een project geklommen? Gefeliciteerd! Het zou fantastisch zijn als je ons wat informatie kunt sturen, zodat we de nieuwe route aan de topo kunnen toevoegen. We hebben met name de naam van de route en je moeilijkheidsgraad nodig. Als je een video hebt, stuur die dan ook gerust toe. Als je als eerste beklimmer in de topo vermeld wilt worden, stuur ons dan ook je naam en de datum van de beklimming. We nemen dan zo snel mogelijk contact met je op – alvast bedankt!",
+  "ascentForm.firstAscentExplanation": "Eerste beklimming: Vink dit vakje alleen aan als u de allereerste persoon bent die deze route beklimt. Het gaat niet om uw persoonlijke eerste beklimming!",
+  "top25Ranking": "Top 25 beklimmingen",
+  "top10FaRanking": "Top 10 beklimmingen",
+  "totalFaCountRanking": "Aantal beklimmingen",
+  "top10FaExponentialRanking": "Top 10 beklimmingen (exponentiële rangschikking)",
+  "totalFaRanking": "Alle beklimmingen",
+  "totalFaExponentialRanking": "Alle beklimmingen (exponentiële rangschikking)",
+  "searchDialog.infoMessage": "De kwaliteit van de zoekfunctie is nog niet erg goed."
+}
