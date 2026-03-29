@@ -58,6 +58,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -89,6 +90,7 @@ import { LanguageService } from '../../../services/core/language.service';
     DatePipe,
     TranslateSpecialGradesPipe,
     LineGradePipe,
+    ReactionWrapperComponent,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',

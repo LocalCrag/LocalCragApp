@@ -1,0 +1,38 @@
+<div class="reaction-wrapper"
+     (touchstart)="onTouchStart()"
+     (touchend)="onTouchEnd()"
+     (touchcancel)="onTouchEnd()"
+     (touchmove)="onTouchEnd()"
+     (contextmenu)="$event.preventDefault()">
+  <ng-content></ng-content>
+
+  <div #reactionBar class="reaction-bar"
+       [class.picker-open]="isPickerOpen"
+       [class.has-reactions]="totalReactions > 0"
+       (click)="openPicker($event)">
+    @if (totalReactions > 0) {
+      <span class="reaction-default">
+        @for (reaction of sortedReactions; track reaction.emoji) {
+          <span class="reaction-item">
+            <span class="reaction-emoji">{{ reaction.emoji }}</span>
+          </span>
+        }
+        <span class="reaction-total">{{ totalReactions }}</span>
+      </span>
+    }
+    <span class="reaction-hover-hint">
+      <span class="reaction-emoji">😊</span>
+      <i class="pi pi-plus"></i>
+    </span>
+  </div>
+</div>
+
+<p-popover #popover appendTo="body" (onShow)="onPickerShow()" (onHide)="onPickerHide()">
+  <div class="reaction-picker">
+    @for (emoji of availableReactions; track emoji) {
+      <button class="reaction-option" [class.active]="myReaction === emoji" (click)="selectReaction(emoji)">
+        {{ emoji }}
+      </button>
+    }
+  </div>
+</p-popover>
