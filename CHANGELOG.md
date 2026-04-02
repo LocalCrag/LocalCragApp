@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.29.0...v1.30.0) (2026-04-02)
+
+
+### Features
+
+* **ascents:** add ascent reactions ([#1012](https://github.com/LocalCrag/LocalCragApp/issues/1012)) ([ab61b5f](https://github.com/LocalCrag/LocalCragApp/commit/ab61b5ffa4084246be588b15e5fb0044f9202443))
+
 # [1.29.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.28.1...v1.29.0) (2026-03-28)
 
 
