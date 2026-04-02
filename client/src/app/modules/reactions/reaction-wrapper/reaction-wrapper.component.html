@@ -8,13 +8,14 @@
 >
   <ng-content></ng-content>
 
-  <div
-    #reactionBar
-    class="reaction-bar"
-    [class.picker-open]="isPickerOpen"
-    [class.has-reactions]="totalReactions > 0"
-    (click)="openPicker($event)"
-  >
+    <div
+      #reactionBar
+      class="reaction-bar"
+      [class.picker-open]="isPickerOpen"
+      [class.has-reactions]="totalReactions > 0"
+      [class.disabled]="isDisabled"
+      (click)="openPicker($event)"
+    >
     @if (totalReactions > 0) {
       <span class="reaction-default">
         @for (reaction of sortedReactions; track reaction.emoji) {

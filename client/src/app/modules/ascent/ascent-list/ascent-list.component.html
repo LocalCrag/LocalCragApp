@@ -151,6 +151,7 @@
                 [reactions]="ascent.reactions"
                 [targetType]="'ascent'"
                 [targetId]="ascent.id"
+                [createdById]="ascent.createdBy?.id"
                 (reactionsChange)="ascent.reactions = $event"
               >
                 <div

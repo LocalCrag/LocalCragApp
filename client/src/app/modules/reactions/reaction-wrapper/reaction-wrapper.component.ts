@@ -31,6 +31,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   @Input() reactions: Reactions;
   @Input() targetType: string;
   @Input() targetId: string;
+  @Input() createdById: string;
   @Output() reactionsChange = new EventEmitter<Reactions>();
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
@@ -84,6 +85,14 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       .sort((a, b) => b.count - a.count);
   }
 
+  get isDisabled(): boolean {
+    return (
+      !!this.currentUser &&
+      !!this.createdById &&
+      this.currentUser.id === this.createdById
+    );
+  }
+
   get totalReactions(): number {
     return this.reactions?.length ?? 0;
   }
@@ -93,6 +102,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       this.longPressFired = false;
       return;
     }
+    if (this.isDisabled) return;
     this.popover.toggle(event, this.reactionBar.nativeElement);
   }
 
@@ -111,7 +121,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       this.longPressFired = true;
       if (this.totalReactions > 0) {
         this.openInfoModal();
-      } else {
+      } else if (!this.isDisabled) {
         const fakeEvent = { stopPropagation: () => {} };
         this.popover.toggle(fakeEvent as any, this.reactionBar.nativeElement);
       }

@@ -38,13 +38,13 @@
   }
 
   @media (hover: hover) {
-    .reaction-wrapper:hover &:not(.has-reactions):not(.picker-open) {
+    .reaction-wrapper:hover &:not(.has-reactions):not(.picker-open):not(.disabled) {
       opacity: 1;
       pointer-events: auto;
     }
 
     &:hover,
-    .reaction-wrapper:hover &:not(.has-reactions) {
+    .reaction-wrapper:hover &:not(.has-reactions):not(.disabled) {
       background: var(--p-surface-hover, #f8fafc);
 
       .reaction-default {
@@ -70,6 +70,27 @@
     .reaction-hover-hint {
       opacity: 1;
       visibility: visible;
+    }
+  }
+
+  &.disabled {
+    cursor: default;
+
+    @media (hover: hover) {
+      &:hover,
+      .reaction-wrapper:hover & {
+        background: var(--p-surface-card, #ffffff);
+
+        .reaction-default {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .reaction-hover-hint {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
     }
   }
 }
