@@ -14,6 +14,7 @@
     [class.picker-open]="isPickerOpen"
     [class.has-reactions]="totalReactions > 0"
     [class.disabled]="isDisabled"
+    tabindex="0"
     (click)="openPicker($event)"
   >
     @if (totalReactions > 0) {
