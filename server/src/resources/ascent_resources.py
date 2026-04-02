@@ -23,7 +23,7 @@ from models.sector import Sector
 from models.todo import Todo
 from models.user import User
 from util.email import send_project_climbed_email
-from util.reactions import get_reaction_counts
+from util.reactions import get_reactions_by_user
 from util.secret_spots_auth import get_show_secret
 from util.validators import cross_validate_grade
 from util.voting import update_grades_and_rating
@@ -119,11 +119,11 @@ class GetAscents(MethodView):
 
         paginated_ascents = db.paginate(query, page=page, per_page=per_page)
 
-        # Attach reaction counts (generic reactions currently used for ascents)
+        # Attach reactions (generic reactions currently used for ascents)
         ascent_ids = [str(a.id) for a in paginated_ascents.items]
-        reaction_counts = get_reaction_counts("ascent", ascent_ids)
+        reactions_by_user = get_reactions_by_user("ascent", ascent_ids)
         for ascent in paginated_ascents.items:
-            ascent.reaction_counts = reaction_counts.get(str(ascent.id), {})
+            ascent.reactions_by_user = reactions_by_user.get(str(ascent.id), [])
 
         return jsonify(paginated_ascents_schema.dump(paginated_ascents)), 200
 

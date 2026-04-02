@@ -2,21 +2,36 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   inject,
   Input,
+  OnChanges,
+  OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Reactions } from '../../../models/reactions';
 import { Popover } from 'primeng/popover';
+import { ReactionsService } from '../../../services/crud/reactions.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
+import { take } from 'rxjs/operators';
+import { User } from '../../../models/user';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ReactionsInfoModalComponent } from '../reactions-info-modal/reactions-info-modal.component';
 
 @Component({
   selector: 'lc-reaction-wrapper',
   imports: [Popover],
   templateUrl: './reaction-wrapper.component.html',
   styleUrl: './reaction-wrapper.component.scss',
+  providers: [DialogService],
 })
-export class ReactionWrapperComponent {
+export class ReactionWrapperComponent implements OnInit, OnChanges {
   @Input() reactions: Reactions;
+  @Input() targetType: string;
+  @Input() targetId: string;
+  @Output() reactionsChange = new EventEmitter<Reactions>();
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
 
@@ -24,20 +39,53 @@ export class ReactionWrapperComponent {
   myReaction: string | null = null;
   isPickerOpen = false;
 
+  private currentUser: User | null = null;
   private longPressTimer: ReturnType<typeof setTimeout> | null = null;
   private longPressFired = false;
   private cdr = inject(ChangeDetectorRef);
+  private reactionsService = inject(ReactionsService);
+  private store = inject(Store);
+  private dialogService = inject(DialogService);
+  private ref: DynamicDialogRef | undefined;
+
+  ngOnInit(): void {
+    this.store
+      .select(selectCurrentUser)
+      .pipe(take(1))
+      .subscribe((user) => {
+        this.currentUser = user;
+        this.syncMyReaction();
+      });
+  }
+
+  ngOnChanges(): void {
+    this.syncMyReaction();
+  }
+
+  private syncMyReaction(): void {
+    if (!this.reactions || !this.currentUser) {
+      this.myReaction = null;
+      return;
+    }
+    const existing = this.reactions.find(
+      (r) => r.user.id === this.currentUser.id,
+    );
+    this.myReaction = existing ? existing.emoji : null;
+  }
 
   get sortedReactions(): { emoji: string; count: number }[] {
     if (!this.reactions) return [];
-    return Object.entries(this.reactions)
+    const counts = new Map<string, number>();
+    for (const r of this.reactions) {
+      counts.set(r.emoji, (counts.get(r.emoji) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
       .map(([emoji, count]) => ({ emoji, count }))
       .sort((a, b) => b.count - a.count);
   }
 
   get totalReactions(): number {
-    if (!this.reactions) return 0;
-    return Object.values(this.reactions).reduce((sum, c) => sum + c, 0);
+    return this.reactions?.length ?? 0;
   }
 
   openPicker(event: MouseEvent): void {
@@ -61,11 +109,12 @@ export class ReactionWrapperComponent {
     this.longPressFired = false;
     this.longPressTimer = setTimeout(() => {
       this.longPressFired = true;
-      // toggle calls stopPropagation, so we need to provide a mock function for it not to fail
-      const fakeEvent = {
-        stopPropagation: () => {},
-      };
-      this.popover.toggle(fakeEvent as any, this.reactionBar.nativeElement);
+      if (this.totalReactions > 0) {
+        this.openInfoModal();
+      } else {
+        const fakeEvent = { stopPropagation: () => {} };
+        this.popover.toggle(fakeEvent as any, this.reactionBar.nativeElement);
+      }
     }, 500);
   }
 
@@ -76,13 +125,43 @@ export class ReactionWrapperComponent {
     }
   }
 
+  openInfoModal(event?: MouseEvent): void {
+    event?.stopPropagation();
+    this.ref = this.dialogService.open(ReactionsInfoModalComponent, {
+      modal: true,
+      closable: true,
+      draggable: false,
+      dismissableMask: true,
+      focusOnShow: false,
+      header: 'Reactions',
+      data: {
+        reactions: this.reactions,
+      },
+    });
+  }
+
   selectReaction(emoji: string): void {
     if (this.myReaction === emoji) {
-      // TODO: DELETE /api/reactions/{id}
-      this.myReaction = null;
+      this.reactionsService
+        .deleteReaction(this.targetType, this.targetId)
+        .subscribe((reactions) => {
+          this.reactionsChange.emit(reactions);
+        });
     } else {
-      // TODO: POST /api/reactions { emoji }
-      this.myReaction = emoji;
+      const request$ = this.myReaction
+        ? this.reactionsService.updateReaction(
+            this.targetType,
+            this.targetId,
+            emoji,
+          )
+        : this.reactionsService.createReaction(
+            this.targetType,
+            this.targetId,
+            emoji,
+          );
+      request$.subscribe((reactions) => {
+        this.reactionsChange.emit(reactions);
+      });
     }
     this.popover.hide();
   }

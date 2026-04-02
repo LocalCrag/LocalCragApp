@@ -1,0 +1,9 @@
+<ul class="reactions-info-list">
+  @for (reaction of reactions; track reaction.user.id) {
+    <li class="reactions-info-item">
+      <span class="reactions-info-emoji">{{ reaction.emoji }}</span>
+      <span class="reactions-info-name">{{ reaction.user.firstname }} {{ reaction.user.lastname }}</span>
+    </li>
+  }
+</ul>
+

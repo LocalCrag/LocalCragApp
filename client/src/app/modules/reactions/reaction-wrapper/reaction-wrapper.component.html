@@ -48,5 +48,10 @@
         {{ emoji }}
       </button>
     }
+    @if (totalReactions > 0) {
+      <button class="reaction-info-btn" (click)="openInfoModal($event)">
+        <i class="pi pi-info-circle"></i>
+      </button>
+    }
   </div>
 </p-popover>

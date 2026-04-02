@@ -147,7 +147,7 @@
         <div class="grid grid-nogutter">
           @for (ascent of ascents; track ascent; let first = $first) {
             <div class="col-12" data-cy="ascent-list-item">
-              <lc-reaction-wrapper [reactions]="ascent.reactions">
+              <lc-reaction-wrapper [reactions]="ascent.reactions" [targetType]="'ascent'" [targetId]="ascent.id" (reactionsChange)="ascent.reactions = $event">
                 <div
                   class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
                   [ngClass]="{ 'border-top-1 surface-border': !first }"

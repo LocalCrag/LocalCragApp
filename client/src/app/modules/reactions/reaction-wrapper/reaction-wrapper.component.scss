@@ -12,6 +12,7 @@
   bottom: 0.333rem;
   right: 8px;
   transform: translateY(50%);
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -23,7 +24,6 @@
   font-size: 0.8rem;
   line-height: 1;
   white-space: nowrap;
-  z-index: 1;
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -44,7 +44,7 @@
     }
 
     &:hover,
-    .reaction-wrapper:hover & {
+    .reaction-wrapper:hover &:not(.has-reactions) {
       background: var(--p-surface-hover, #f8fafc);
 
       .reaction-default {
@@ -85,7 +85,10 @@
 
 .reaction-hover-hint {
   position: absolute;
+  left: 0;
+  right: 0;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 6px;
   color: var(--p-text-muted-color, #64748b);
@@ -97,6 +100,33 @@
 
   .pi-plus {
     font-size: 0.7rem;
+  }
+}
+
+.reaction-info-btn {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--p-surface-border, #e2e8f0);
+  margin-left: 4px;
+  padding: 6px 6px 6px 10px;
+  cursor: pointer;
+  color: var(--p-text-muted-color, #64748b);
+  display: flex;
+  align-items: center;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.1rem;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease;
+  line-height: 1;
+
+  &:hover {
+    background: var(--p-surface-hover, #f1f5f9);
+    color: var(--p-text-color);
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    display: none;
   }
 }
 
@@ -121,6 +151,7 @@
   display: flex;
   gap: 4px;
   padding: 4px;
+  align-items: center;
 }
 
 .reaction-option {

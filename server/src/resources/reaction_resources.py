@@ -6,9 +6,11 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
+from marshmallow_schemas.reactions_schema import ReactionUserListSchema
 from models.ascent import Ascent
 from models.reaction import Reaction
 from models.user import User
+from util.reactions import get_reactions_by_user
 from webargs_schemas.reaction_args import reaction_args
 
 
@@ -36,6 +38,10 @@ class CreateReaction(MethodView):
         if not target:
             raise NotFound("Target does not exist.")
 
+        # Disallow reacting to own content
+        if getattr(target, "created_by_id", None) == user.id:
+            raise BadRequest("Cannot react to your own content.")
+
         # One-per-user-per-target: create only if missing
         existing = (
             Reaction.query.filter(Reaction.created_by_id == user.id)
@@ -54,7 +60,9 @@ class CreateReaction(MethodView):
 
         db.session.add(reaction)
         db.session.commit()
-        return jsonify(None), 201
+
+        reactions = get_reactions_by_user(target_type, [str(target.id)]).get(str(target.id), [])
+        return jsonify(ReactionUserListSchema(many=True).dump(reactions)), 201
 
 
 class UpdateReaction(MethodView):
@@ -69,6 +77,10 @@ class UpdateReaction(MethodView):
         if not target:
             raise NotFound("Target does not exist.")
 
+        # Disallow reacting to own content
+        if getattr(target, "created_by_id", None) == user.id:
+            raise BadRequest("Cannot react to your own content.")
+
         reaction = (
             Reaction.query.filter(Reaction.created_by_id == user.id)
             .filter(Reaction.target_type == target_type)
@@ -82,13 +94,19 @@ class UpdateReaction(MethodView):
         reaction.emoji = emoji
         db.session.add(reaction)
         db.session.commit()
-        return jsonify(None), 200
+
+        reactions = get_reactions_by_user(target_type, [str(target.id)]).get(str(target.id), [])
+        return jsonify(ReactionUserListSchema(many=True).dump(reactions)), 200
 
 
 class DeleteReaction(MethodView):
     @jwt_required()
     def delete(self, target_type: str, target_id: str):
         user: User = User.find_by_email(get_jwt_identity())
+
+        target = _resolve_target(target_type, target_id)
+        if not target:
+            raise NotFound("Target does not exist.")
 
         reaction = (
             Reaction.query.filter(Reaction.created_by_id == user.id)
@@ -101,4 +119,5 @@ class DeleteReaction(MethodView):
             db.session.delete(reaction)
             db.session.commit()
 
-        return jsonify(None), 204
+        reactions = get_reactions_by_user(target_type, [str(target.id)]).get(str(target.id), [])
+        return jsonify(ReactionUserListSchema(many=True).dump(reactions)), 200

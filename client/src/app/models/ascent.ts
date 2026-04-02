@@ -5,7 +5,7 @@ import { User } from './user';
 import { Area } from './area';
 import { Sector } from './sector';
 import { Crag } from './crag';
-import { Reactions } from './reactions';
+import { Reaction, Reactions } from './reactions';
 
 export class Ascent extends AbstractModel {
   flash: boolean;
@@ -50,7 +50,9 @@ export class Ascent extends AbstractModel {
     ascent.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
     ascent.area = payload.area ? Area.deserialize(payload.area) : null;
     ascent.createdBy = User.deserialize(payload.createdBy);
-    ascent.reactions = payload.reactions;
+    ascent.reactions = payload.reactions
+      ? payload.reactions.map(Reaction.deserialize)
+      : [];
 
     ascent.routerLinkCrag = `/topo/${ascent.crag.slug}`;
     ascent.routerLinkSector = `${ascent.routerLinkCrag}/${ascent.sector.slug}`;

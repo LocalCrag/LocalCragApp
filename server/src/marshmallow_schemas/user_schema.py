@@ -5,12 +5,17 @@ from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.file_schema import FileSchema
 
 
-class UserMinSchema(ma.SQLAlchemySchema):
+class UserTinySchema(ma.SQLAlchemySchema):
+    """Small user representation (no avatar)."""
+
+    id = fields.String()
+    slug = fields.String()
     firstname = fields.String()
     lastname = fields.String()
-    slug = fields.String()
+
+
+class UserMinSchema(UserTinySchema):
     avatar = ma.Nested(FileSchema)
-    id = fields.String()
 
 
 class UserSchema(BaseEntitySchema):
