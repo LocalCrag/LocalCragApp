@@ -38,7 +38,8 @@
   }
 
   @media (hover: hover) {
-    .reaction-wrapper:hover &:not(.has-reactions):not(.picker-open):not(.disabled) {
+    .reaction-wrapper:hover
+      &:not(.has-reactions):not(.picker-open):not(.disabled) {
       opacity: 1;
       pointer-events: auto;
     }
