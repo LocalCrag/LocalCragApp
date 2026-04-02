@@ -245,5 +245,15 @@ export class ApiService {
     delete: (id: string): string => `${this.apiHost}comments/${id}`,
   };
 
+  // Reactions API
+  public reactions = {
+    create: (targetType: string, targetId: string): string =>
+      `${this.apiHost}reactions/${targetType}/${targetId}`,
+    update: (targetType: string, targetId: string): string =>
+      `${this.apiHost}reactions/${targetType}/${targetId}`,
+    delete: (targetType: string, targetId: string): string =>
+      `${this.apiHost}reactions/${targetType}/${targetId}`,
+  };
+
   private apiHost = `${environment.apiHost}/api/`;
 }

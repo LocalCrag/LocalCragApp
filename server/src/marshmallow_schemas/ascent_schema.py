@@ -5,6 +5,7 @@ from marshmallow_schemas.area_schema import AscentAndTodoAreaSchema
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.crag_schema import AscentAndTodoCragSchema
 from marshmallow_schemas.line_schema import AscentAndTodoLineSchema
+from marshmallow_schemas.reactions_schema import ReactionUserListSchema
 from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
 
 
@@ -23,6 +24,11 @@ class AscentSchema(BaseEntitySchema):
     crag = fields.Nested(AscentAndTodoCragSchema())
     sector = fields.Nested(AscentAndTodoSectorSchema())
     area = fields.Nested(AscentAndTodoAreaSchema())
+    reactions = fields.Method(serialize="get_reactions")
+
+    def get_reactions(self, obj):
+        # Set by GetAscents resource (fallback to empty list)
+        return ReactionUserListSchema(many=True).dump(getattr(obj, "reactions_by_user", []) or [])
 
 
 class PaginatedAscentsSchema(ma.SQLAlchemySchema):

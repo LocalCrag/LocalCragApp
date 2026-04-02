@@ -7,7 +7,7 @@ from marshmallow_schemas.search_schema import (
     LineSearchSchema,
     SectorSearchSchema,
 )
-from marshmallow_schemas.user_schema import UserMinSchema
+from marshmallow_schemas.user_schema import UserMinWithAvatarSchema
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
@@ -18,7 +18,7 @@ from models.user import User
 class GenericRelatedTagField(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         if isinstance(value, User):
-            return UserMinSchema().dump(value)
+            return UserMinWithAvatarSchema().dump(value)
         if isinstance(value, Line):
             return LineSearchSchema().dump(value)
         if isinstance(value, Area):
