@@ -6,11 +6,14 @@ from marshmallow_schemas.file_schema import FileSchema
 
 
 class UserMinSchema(ma.SQLAlchemySchema):
+    id = fields.String()
+    slug = fields.String()
     firstname = fields.String()
     lastname = fields.String()
-    slug = fields.String()
+
+
+class UserMinWithAvatarSchema(UserMinSchema):
     avatar = ma.Nested(FileSchema)
-    id = fields.String()
 
 
 class UserSchema(BaseEntitySchema):
@@ -30,4 +33,4 @@ class UserSchema(BaseEntitySchema):
 
 user_list_schema = UserSchema(many=True)
 user_schema = UserSchema()
-user_min_schema = UserMinSchema()
+user_min_with_avatar_schema = UserMinWithAvatarSchema()
