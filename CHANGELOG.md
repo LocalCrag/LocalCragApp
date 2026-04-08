@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.30.0...v1.31.0) (2026-04-08)
+
+
+### Features
+
+* **topo:** support sorting line lists by ascent count ([#1022](https://github.com/LocalCrag/LocalCragApp/issues/1022)) ([65f1046](https://github.com/LocalCrag/LocalCragApp/commit/65f1046b903e797007466e7b72ae44a2fe4b1b7f))
+
 # [1.30.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.29.0...v1.30.0) (2026-04-02)
 
 
