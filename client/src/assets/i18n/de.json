@@ -734,6 +734,7 @@
   "addLinePathBrowserTitle": "Linie einzeichnen",
   "orderByName": "Name",
   "orderByRating": "Sterne",
+  "orderByAscentCount": "Begehungen",
   "reorderLinePathsForLineDialogTitle": "Topo Bilder für Linie ordnen",
   "reorderLinePathsForLineDialogItemsName": "Topo Bilder",
   "lineFormBrowserTitle": "Linie erstellen",
