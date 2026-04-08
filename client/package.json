@@ -1,6 +1,6 @@
 {
   "name": "localcrag-client",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -70,8 +70,8 @@
     "@types/geojson": "^7946.0.16",
     "@types/jasmine": "~5.1.8",
     "@types/mapbox-gl": "^3.1.0",
-    "@typescript-eslint/eslint-plugin": "8.58.0",
-    "@typescript-eslint/parser": "8.58.0",
+    "@typescript-eslint/eslint-plugin": "8.58.1",
+    "@typescript-eslint/parser": "8.58.1",
     "cypress": "^13.6.6",
     "eslint": "^9.38.0",
     "jasmine-core": "~5.13.0",
