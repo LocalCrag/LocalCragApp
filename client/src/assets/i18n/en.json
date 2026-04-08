@@ -734,6 +734,7 @@
   "addLinePathBrowserTitle": "Draw line",
   "orderByName": "Name",
   "orderByRating": "Stars",
+  "orderByAscentCount": "Ascents",
   "reorderLinePathsForLineDialogTitle": "Reorder Topo images for lines",
   "reorderLinePathsForLineDialogItemsName": "Topo images",
   "lineFormBrowserTitle": "Create line",

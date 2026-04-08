@@ -13,6 +13,7 @@ from marshmallow_schemas.line_schema import (
 )
 from marshmallow_schemas.search_schema import line_search_schema
 from models.area import Area
+from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
@@ -103,7 +104,10 @@ class GetLines(MethodView):
         line_type = request.args.get("line_type", None, type=LineTypeEnum)
         grade_scale = request.args.get("grade_scale", None)
 
-        if order_by not in ["grade_value", "name", "rating", None] or order_direction not in ["asc", "desc"]:
+        if order_by not in ["grade_value", "name", "rating", "ascent_count", None] or order_direction not in [
+            "asc",
+            "desc",
+        ]:
             raise BadRequest("Invalid order by query parameters")
 
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
@@ -141,7 +145,10 @@ class GetLines(MethodView):
                 order_by = "user_grade_value" if instance_settings.display_user_grades else "author_grade_value"
             elif order_by == "rating":
                 order_by = "user_rating" if instance_settings.display_user_ratings else "author_rating"
-            order_attribute = getattr(Line, order_by)
+            if order_by == "ascent_count":
+                order_attribute = select(func.count(Ascent.id)).where(Ascent.line_id == Line.id).scalar_subquery()
+            else:
+                order_attribute = getattr(Line, order_by)
             if order_by == "name":
                 order_attribute = func.lower(order_attribute)
             # Order by Line.id as a tie-breaker to prevent duplicate entries in paginate

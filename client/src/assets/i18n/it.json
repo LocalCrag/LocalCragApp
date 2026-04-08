@@ -734,6 +734,7 @@
   "addLinePathBrowserTitle": "Traccia linea",
   "orderByName": "Nome",
   "orderByRating": "Stelle",
+  "orderByAscentCount": "Ripetizioni",
   "reorderLinePathsForLineDialogTitle": "Ordina immagini Guida per problema",
   "reorderLinePathsForLineDialogItemsName": "Immagini Guida",
   "lineFormBrowserTitle": "Aggiungi Problema",
