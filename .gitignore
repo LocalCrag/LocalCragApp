@@ -5,3 +5,4 @@ docker-compose.override.yml
 .env
 helm/localcrag/charts
 .planning/
+.cursor/

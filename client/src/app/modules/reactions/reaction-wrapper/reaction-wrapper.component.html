@@ -11,6 +11,7 @@
   <div
     #reactionBar
     class="reaction-bar"
+    [class.logged-in]="isLoggedIn"
     [class.picker-open]="isPickerOpen"
     [class.has-reactions]="totalReactions > 0"
     [class.disabled]="isDisabled"
@@ -27,7 +28,7 @@
         <span class="reaction-total">{{ totalReactions }}</span>
       </span>
     }
-    <span class="reaction-hover-hint">
+    <span class="reaction-hover-hint" *isLoggedIn="true">
       <span class="reaction-emoji">😊</span>
       <i class="pi pi-plus"></i>
     </span>
@@ -35,6 +36,7 @@
 </div>
 
 <p-popover
+  *isLoggedIn="true"
   #popover
   appendTo="body"
   (onShow)="onPickerShow()"
