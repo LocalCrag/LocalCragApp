@@ -796,6 +796,27 @@ def test_successful_get_lines(client):
         assert r["closedReason"] == line.closed_reason
 
 
+def test_successful_get_lines_order_by_ascent_count_ascending(client):
+    rv = client.get("/api/lines?order_by=ascent_count&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+
+
+def test_successful_get_lines_order_by_ascent_count_descending(client):
+    rv = client.get("/api/lines?order_by=ascent_count&order_direction=desc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
+def test_successful_get_lines_order_by_name_ascending_regression(client):
+    rv = client.get("/api/lines?order_by=name&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
 def test_successful_get_line(client):
     rv = client.get("/api/lines/super-spreader")
     assert rv.status_code == 200

@@ -365,6 +365,10 @@ export class LineListComponent implements OnInit {
         label: this.translocoService.translate(marker('orderByRating')),
         value: 'rating',
       },
+      {
+        label: this.translocoService.translate(marker('orderByAscentCount')),
+        value: 'ascent_count',
+      },
     ];
     this.orderKey = this.orderOptions[0];
     this.orderDirectionOptions = [
