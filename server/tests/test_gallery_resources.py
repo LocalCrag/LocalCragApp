@@ -1,8 +1,5 @@
-from uuid import uuid4
-
 from models.file import File
 from models.gallery_image import GalleryImage
-from models.tag import Tag
 from models.user import User
 
 
@@ -15,6 +12,8 @@ def test_successful_create_gallery_image(client, user_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["image"]["id"] == str(image_id)
+    assert res.get("createdBy") is not None
+    assert "avatar" in res["createdBy"]
     assert res["tags"][0]["objectType"] == "User"
     assert res["tags"][0]["object"]["id"] == str(user.id)
     assert res["id"] is not None
@@ -28,7 +27,7 @@ def test_successful_create_gallery_image(client, user_token):
     assert res["items"][0]["id"] == expected_id
 
     # Check, that the image is not shown in the line gallery of e.g. superspreader
-    rv = client.get(f"/api/gallery?page=1&tag-object-type=Line&tag-object-slug=super-spreader")
+    rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=super-spreader")
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 1
@@ -74,6 +73,8 @@ def test_get_gallery_images_for_line(client):
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 1
+    assert res["items"][0].get("createdBy") is not None
+    assert "avatar" in res["items"][0]["createdBy"]
     assert res["items"][0]["tags"][0]["objectType"] == "Line"
 
     rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=treppe")

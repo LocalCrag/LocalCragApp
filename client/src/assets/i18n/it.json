@@ -29,6 +29,7 @@
   "user.charts.gradeDistribution": "Ripartizione dei gradi",
   "user.charts.completion": "Progresso",
   "user.charts.lineType": "Tipo di problema",
+  "user.charts.includeClosedSpots": "Includi settori interdetti",
   "user.charts.noLinesInThisGradeRange": "Nessuna linea di questa difficoltà.",
   "todos.priorityButton.mediumPriority": "Priorità media",
   "todos.priorityButton.lowPriority": "Priorità bassa",

@@ -29,6 +29,7 @@
   "user.charts.gradeDistribution": "Gradverteilung",
   "user.charts.completion": "Fortschritt",
   "user.charts.lineType": "Linienart",
+  "user.charts.includeClosedSpots": "Gesperrte Spots einbeziehen",
   "user.charts.noLinesInThisGradeRange": "Keine Linien in diesem Schwierigkeitsbereich.",
   "todos.priorityButton.mediumPriority": "Normale Priorität",
   "todos.priorityButton.lowPriority": "Niedrige Priorität",

@@ -29,6 +29,7 @@
   "user.charts.gradeDistribution": "Grade distribution",
   "user.charts.completion": "Completion",
   "user.charts.lineType": "Line type",
+  "user.charts.includeClosedSpots": "Include closed spots",
   "user.charts.noLinesInThisGradeRange": "No lines in this difficulty range.",
   "todos.priorityButton.mediumPriority": "Normal Priority",
   "todos.priorityButton.lowPriority": "Low priority",

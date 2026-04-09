@@ -39,13 +39,13 @@
 
   @media (hover: hover) {
     .reaction-wrapper:hover
-      &:not(.has-reactions):not(.picker-open):not(.disabled) {
+      &:not(.has-reactions):not(.picker-open):not(.disabled).logged-in {
       opacity: 1;
       pointer-events: auto;
     }
 
-    &:hover,
-    .reaction-wrapper:hover &:not(.has-reactions):not(.disabled) {
+    &.logged-in:hover,
+    .reaction-wrapper:hover &:not(.has-reactions):not(.disabled).logged-in {
       background: var(--p-surface-hover, #f8fafc);
 
       .reaction-default {

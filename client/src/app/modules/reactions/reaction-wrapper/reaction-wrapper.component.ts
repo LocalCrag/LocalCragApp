@@ -19,10 +19,11 @@ import { take } from 'rxjs/operators';
 import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReactionsInfoModalComponent } from '../reactions-info-modal/reactions-info-modal.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-reaction-wrapper',
-  imports: [Popover],
+  imports: [Popover, HasPermissionDirective],
   templateUrl: './reaction-wrapper.component.html',
   styleUrl: './reaction-wrapper.component.scss',
   providers: [DialogService],
@@ -93,6 +94,14 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
     );
   }
 
+  get canOpenPicker(): boolean {
+    return !!this.currentUser && !this.isDisabled;
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.currentUser;
+  }
+
   get totalReactions(): number {
     return this.reactions?.length ?? 0;
   }
@@ -102,7 +111,13 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       this.longPressFired = false;
       return;
     }
-    if (this.isDisabled) return;
+    if (!this.currentUser) {
+      if (this.totalReactions > 0) {
+        this.openInfoModal(event);
+      }
+      return;
+    }
+    if (!this.canOpenPicker || !this.popover) return;
     this.popover.toggle(event, this.reactionBar.nativeElement);
   }
 
@@ -121,7 +136,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       this.longPressFired = true;
       if (this.totalReactions > 0) {
         this.openInfoModal();
-      } else if (!this.isDisabled) {
+      } else if (this.canOpenPicker && this.popover) {
         const fakeEvent = { stopPropagation: () => {} };
         this.popover.toggle(fakeEvent as any, this.reactionBar.nativeElement);
       }

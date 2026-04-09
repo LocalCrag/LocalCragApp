@@ -159,6 +159,7 @@ class UpdateMenuItemBottomOrder(MethodView):
 class GetCragMenuStructure(MethodView):
 
     def get(self):
+        exclude_closed = request.args.get("exclude_closed", False, type=bool)
 
         # If the user is not at least a logged in member, we have to filter out secret spots
         filter_out_secret_spots_crag_clause = ""
@@ -169,6 +170,16 @@ class GetCragMenuStructure(MethodView):
             filter_out_secret_spots_sector_clause = "AND sectors.secret = FALSE"
             filter_out_secret_spots_area_clause = "AND areas.secret = FALSE"
 
+        filter_out_closed_spots_crag_clause = ""
+        filter_out_closed_spots_sector_clause = ""
+        filter_out_closed_spots_area_clause = ""
+        if exclude_closed:
+            filter_out_closed_spots_crag_clause = (
+                "AND crags.closed = FALSE" if filter_out_secret_spots_crag_clause else "WHERE crags.closed = FALSE"
+            )
+            filter_out_closed_spots_sector_clause = "AND sectors.closed = FALSE"
+            filter_out_closed_spots_area_clause = "AND areas.closed = FALSE"
+
         # We use custom SQL to optimize the query. This sped up the query by a factor of 10!
         res = db.session.execute(
             text(
@@ -176,14 +187,17 @@ class GetCragMenuStructure(MethodView):
         SELECT crags.name, crags.slug, crags.id, sectors.name, sectors.slug,
         sectors.id, areas.name, areas.slug , areas.id
         FROM crags
-        LEFT OUTER JOIN sectors ON crags.id = sectors.crag_id {}
-        LEFT OUTER JOIN areas ON sectors.id = areas.sector_id {}
-        {}
+        LEFT OUTER JOIN sectors ON crags.id = sectors.crag_id {} {}
+        LEFT OUTER JOIN areas ON sectors.id = areas.sector_id {} {}
+        {} {}
         ORDER BY crags.order_index ASC, sectors.order_index ASC, areas.order_index ASC;
         """.format(
                     filter_out_secret_spots_sector_clause,
+                    filter_out_closed_spots_sector_clause,
                     filter_out_secret_spots_area_clause,
+                    filter_out_closed_spots_area_clause,
                     filter_out_secret_spots_crag_clause,
+                    filter_out_closed_spots_crag_clause,
                 )
             )
         )

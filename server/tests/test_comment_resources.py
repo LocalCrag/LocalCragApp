@@ -14,6 +14,8 @@ def test_create_comment_on_line(client, member_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["message"] == "Nice climb!"
+    assert res.get("createdBy") is not None
+    assert "avatar" in res["createdBy"]
     assert res.get("rootId") is None
     assert res.get("isDeleted") in (False, None)
 
@@ -68,6 +70,9 @@ def test_get_comments_for_line(client):
     rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
     assert rv.status_code == 200
     assert "items" in rv.json
+    if rv.json["items"]:
+        assert rv.json["items"][0].get("createdBy") is not None
+        assert "avatar" in rv.json["items"][0]["createdBy"]
 
 
 def test_cascade_delete_comments(client, moderator_token, member_token):

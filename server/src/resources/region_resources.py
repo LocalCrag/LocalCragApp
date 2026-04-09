@@ -56,6 +56,7 @@ class GetRegionGrades(MethodView):
         Returns the grades of all lines of the region.
         """
         instance_settings = InstanceSettings.return_it()
+        exclude_closed = request.args.get("exclude_closed", False, type=bool)
         query = (
             db.session.query(
                 Line.type,
@@ -67,6 +68,13 @@ class GetRegionGrades(MethodView):
             .join(Crag)
             .filter(Line.archived.is_(False))
         )
+        if exclude_closed:
+            query = query.filter(
+                Line.closed.is_(False),
+                Area.closed.is_(False),
+                Sector.closed.is_(False),
+                Crag.closed.is_(False),
+            )
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
         result = query.all()
