@@ -104,9 +104,18 @@ export class MenuItemsService {
       .pipe(map(() => null));
   }
 
-  public getCragMenuStructure(): Observable<Crag[]> {
+  public getCragMenuStructure(excludeClosed = false): Observable<Crag[]> {
+    const filters = new URLSearchParams();
+    if (excludeClosed) {
+      filters.set('exclude_closed', '1');
+    }
+    const query = filters.toString();
     return this.http
-      .get(this.api.menuItems.getCragMenuStructure())
+      .get(
+        query
+          ? `${this.api.menuItems.getCragMenuStructure()}?${query}`
+          : this.api.menuItems.getCragMenuStructure(),
+      )
       .pipe(map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }
 }

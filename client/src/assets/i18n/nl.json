@@ -29,6 +29,7 @@
   "user.charts.gradeDistribution": "Graad verdeling",
   "user.charts.completion": "Vooruitgang",
   "user.charts.lineType": "Lijntype",
+  "user.charts.includeClosedSpots": "Gesloten spots meenemen",
   "user.charts.noLinesInThisGradeRange": "Geen routes in deze moeilijkheidsgraag.",
   "todos.priorityButton.mediumPriority": "Normale prioriteit",
   "todos.priorityButton.lowPriority": "Lage prioriteit",
