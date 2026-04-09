@@ -1,3 +1,17 @@
+# [1.32.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.31.0...v1.32.0) (2026-04-09)
+
+
+### Bug Fixes
+
+* **ascents:** context menu is working again for ascent entries ([#1025](https://github.com/LocalCrag/LocalCragApp/issues/1025)) ([4f16b93](https://github.com/LocalCrag/LocalCragApp/commit/4f16b9390eced390e307b10ac078985b1a63fbc8))
+* **core:** include avatars in non-reaction user-min payloads ([#1024](https://github.com/LocalCrag/LocalCragApp/issues/1024)) ([39962ef](https://github.com/LocalCrag/LocalCragApp/commit/39962ef8ce91d3ba258c3f19abe38eb3de717294))
+* **reactions:** hide empty logged-out reaction bar and open info modal ([#1023](https://github.com/LocalCrag/LocalCragApp/issues/1023)) ([800ebfb](https://github.com/LocalCrag/LocalCragApp/commit/800ebfbf0d6ee267264a0faedc5b7aad2acdd213))
+
+
+### Features
+
+* **topo:** add option to exlude closed spots in completion statistics ([#1026](https://github.com/LocalCrag/LocalCragApp/issues/1026)) ([eac6afb](https://github.com/LocalCrag/LocalCragApp/commit/eac6afbdb3106d36584502613459140973d8afae))
+
 # [1.31.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.30.0...v1.31.0) (2026-04-08)
 
 
