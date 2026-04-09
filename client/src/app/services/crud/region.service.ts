@@ -44,9 +44,18 @@ export class RegionService {
    *
    * @return Observable of a list of Grades.
    */
-  public getRegionGrades(): Observable<GradeDistribution> {
+  public getRegionGrades(excludeClosed = false): Observable<GradeDistribution> {
+    const filters = new URLSearchParams();
+    if (excludeClosed) {
+      filters.set('exclude_closed', '1');
+    }
+    const query = filters.toString();
     return this.http
-      .get(this.api.region.getGrades())
+      .get(
+        query
+          ? `${this.api.region.getGrades()}?${query}`
+          : this.api.region.getGrades(),
+      )
       .pipe(map(deserializeGradeList));
   }
 }

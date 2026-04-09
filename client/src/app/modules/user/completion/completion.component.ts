@@ -26,6 +26,7 @@ import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { Checkbox } from 'primeng/checkbox';
 
 @Component({
   selector: 'lc-completion',
@@ -42,12 +43,14 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
     Select,
     Message,
     TranslateSpecialGradesPipe,
+    Checkbox,
   ],
   templateUrl: './completion.component.html',
   styleUrl: './completion.component.scss',
 })
 export class CompletionComponent implements OnInit {
   private user: User;
+  private userSlug: string;
 
   public crags: Crag[];
   public completion: Completion;
@@ -67,6 +70,7 @@ export class CompletionComponent implements OnInit {
   public minGradeValue = 0; // Skip project grades
   public maxGradeValue = null;
   public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
+  public includeClosed = false;
 
   private loadedGradeFilterRange: number[] = null;
   private statisticsService = inject(StatisticsService);
@@ -79,52 +83,8 @@ export class CompletionComponent implements OnInit {
   protected scalesService = inject(ScalesService);
 
   ngOnInit() {
-    const userSlug =
-      this.route.snapshot.parent.parent.paramMap.get('user-slug');
-    this.usersService
-      .getUser(userSlug)
-      .pipe(
-        switchMap((user) => {
-          this.user = user;
-          return forkJoin({
-            menuItems: this.menuItemsService.getCragMenuStructure(),
-            gradeDistribution: this.regionService.getRegionGrades(),
-          });
-        }),
-      )
-      .subscribe(({ menuItems, gradeDistribution }) => {
-        this.crags = menuItems;
-        this.crags.map((crag) => {
-          this.cragMap.set(crag.id, crag);
-          crag.sectors.map((sector) => {
-            this.sectorMap.set(sector.id, sector);
-            sector.areas.map((area) => {
-              this.areaMap.set(area.id, area);
-            });
-          });
-        });
-
-        this.availableScales.push({
-          label: this.translocoService.translate('ALL'),
-          value: undefined,
-        });
-        for (const lineType in gradeDistribution) {
-          for (const gradeScale in gradeDistribution[lineType]) {
-            if (gradeDistribution[lineType][gradeScale]) {
-              this.availableScales.push({
-                label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
-                value: { lineType: lineType as LineType, gradeScale },
-              });
-            }
-          }
-        }
-        if (this.availableScales.length <= 2) {
-          this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
-        } else {
-          this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
-        }
-        this.selectScale();
-      });
+    this.userSlug = this.route.snapshot.parent.parent.paramMap.get('user-slug');
+    this.reloadCompletionContext();
   }
 
   selectScale() {
@@ -164,11 +124,18 @@ export class CompletionComponent implements OnInit {
       filters.set('line_type', this.scaleKey.value.lineType);
       filters.set('grade_scale', this.scaleKey.value.gradeScale);
     }
+    if (this.includeClosed) {
+      filters.set('include_closed', '1');
+    }
     return this.statisticsService
       .getCompletion(`?${filters.toString()}`)
       .subscribe((completion) => {
         this.completion = completion;
       });
+  }
+
+  public onIncludeClosedChange() {
+    this.reloadCompletionContext();
   }
 
   public addOrRemove(set: Set<string>, id: string) {
@@ -177,6 +144,65 @@ export class CompletionComponent implements OnInit {
     } else {
       set.add(id);
     }
+  }
+
+  private reloadCompletionContext() {
+    this.usersService
+      .getUser(this.userSlug)
+      .pipe(
+        switchMap((user) => {
+          this.user = user;
+          return forkJoin({
+            menuItems: this.menuItemsService.getCragMenuStructure(
+              !this.includeClosed,
+            ),
+            gradeDistribution: this.regionService.getRegionGrades(
+              !this.includeClosed,
+            ),
+          });
+        }),
+      )
+      .subscribe(({ menuItems, gradeDistribution }) => {
+        this.crags = menuItems;
+        this.cragMap.clear();
+        this.sectorMap.clear();
+        this.areaMap.clear();
+        this.crags.forEach((crag) => {
+          this.cragMap.set(crag.id, crag);
+          crag.sectors.forEach((sector) => {
+            this.sectorMap.set(sector.id, sector);
+            sector.areas.forEach((area) => {
+              this.areaMap.set(area.id, area);
+            });
+          });
+        });
+
+        this.availableScales = [
+          {
+            label: this.translocoService.translate('ALL'),
+            value: undefined,
+          },
+        ];
+        for (const lineType in gradeDistribution) {
+          for (const gradeScale in gradeDistribution[lineType]) {
+            if (gradeDistribution[lineType][gradeScale]) {
+              this.availableScales.push({
+                label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+                value: { lineType: lineType as LineType, gradeScale },
+              });
+            }
+          }
+        }
+
+        if (this.availableScales.length <= 2) {
+          this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
+        } else {
+          this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
+        }
+        this.selectScale();
+
+        this.selectScale();
+      });
   }
 
   protected readonly Object = Object;

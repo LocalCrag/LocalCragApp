@@ -1,3 +1,5 @@
+from extensions import db
+from models.area import Area
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
@@ -161,3 +163,27 @@ def test_successful_get_crag_menu_structure(client):
     assert res[0]["sectors"][0]["areas"][0]["name"] == "Dritter Block von links"
     assert res[0]["sectors"][0]["areas"][1]["slug"] == "noch-ein-bereich"
     assert res[0]["sectors"][0]["areas"][1]["name"] == "Noch ein Bereich"
+
+
+def test_get_crag_menu_structure_excludes_closed_with_filter(client):
+    area = Area.find_by_slug("dritter-block-von-links")
+    area.closed = True
+    area.closed_reason = "Temporarily closed"
+    db.session.add(area)
+    db.session.commit()
+
+    rv = client.get("/api/menu-items/crag-menu-structure")
+    assert rv.status_code == 200
+    all_areas = []
+    for crag in rv.json:
+        for sector in crag["sectors"]:
+            all_areas.extend([a["slug"] for a in sector["areas"]])
+    assert "dritter-block-von-links" in all_areas
+
+    rv = client.get("/api/menu-items/crag-menu-structure?exclude_closed=1")
+    assert rv.status_code == 200
+    filtered_areas = []
+    for crag in rv.json:
+        for sector in crag["sectors"]:
+            filtered_areas.extend([a["slug"] for a in sector["areas"]])
+    assert "dritter-block-von-links" not in filtered_areas

@@ -26,6 +26,7 @@ class GetCompletion(MethodView):
         min_grade_value = request.args.get("min_grade") or None
         line_type = request.args.get("line_type") or None
         grade_scale = request.args.get("grade_scale") or None
+        include_closed = request.args.get("include_closed", False, type=bool)
 
         if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
             raise BadRequest("When filtering for grades, a min and max grade is required.")
@@ -70,6 +71,13 @@ class GetCompletion(MethodView):
             lines_query = lines_query.filter(Line.type == line_type)
         if grade_scale is not None:
             lines_query = lines_query.filter(Line.grade_scale == grade_scale)
+        if not include_closed:
+            lines_query = lines_query.filter(
+                Line.closed.is_(False),
+                Area.closed.is_(False),
+                Sector.closed.is_(False),
+                Crag.closed.is_(False),
+            )
 
         lines = lines_query.all()
 
@@ -98,6 +106,13 @@ class GetCompletion(MethodView):
         # Filter secret spots
         if not get_show_secret():
             ascents_query = ascents_query.filter(Ascent.line.has(secret=False))
+        if not include_closed:
+            ascents_query = ascents_query.filter(
+                Line.closed.is_(False),
+                Area.closed.is_(False),
+                Sector.closed.is_(False),
+                Crag.closed.is_(False),
+            )
 
         ascents = ascents_query.all()
 

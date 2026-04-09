@@ -69,6 +69,18 @@
             />
           </div>
         }
+        <div class="w-full flex align-items-center mt-3">
+          <p-checkbox
+            inputId="includeClosedSpots"
+            name="includeClosedSpots"
+            [binary]="true"
+            [(ngModel)]="includeClosed"
+            (onChange)="onIncludeClosedChange()"
+          ></p-checkbox>
+          <label [for]="'includeClosedSpots'" class="ml-2">{{
+            t("includeClosedSpots")
+          }}</label>
+        </div>
       </div>
     </div>
   }
