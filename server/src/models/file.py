@@ -30,7 +30,7 @@ class File(BaseEntity):
         endpoint = current_app.config["S3_ENDPOINT"]
         if current_app.config["S3_ACCESS_ENDPOINT"]:
             endpoint = current_app.config["S3_ACCESS_ENDPOINT"]
-        protocol, host = endpoint.split("://")
+        protocol, host = endpoint.split("://", 1)
         if current_app.config["S3_ADDRESSING"] == "path":
             result = "{}://{}/{}/{}".format(protocol, host, current_app.config["S3_BUCKET"], self.filename)
         else:  # S3_ADDRESSING = 'virtual'
