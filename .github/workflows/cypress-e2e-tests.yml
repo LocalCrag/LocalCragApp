@@ -8,6 +8,7 @@ on:
       - next
 jobs:
   cypress-run:
+    environment: Cypress
     runs-on: ubuntu-latest
     # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
@@ -73,8 +74,8 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          S3_PASSWORD: ${{ secrets.SPACES_SECRET_KEY }}
-          S3_USER: ${{ secrets.SPACES_ACCESS_KEY }}
-          S3_ENDPOINT: ${{ secrets.SPACES_ENDPOINT }}
-          S3_REGION: ${{ secrets.SPACES_REGION }}
-          S3_BUCKET: ${{ secrets.SPACES_BUCKET }}
+          S3_PASSWORD: ${{ secrets.S3_PASSWORD }}
+          S3_USER: ${{ secrets.S3_USER }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
