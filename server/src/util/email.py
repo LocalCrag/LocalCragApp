@@ -4,6 +4,7 @@ from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import html2text
 from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
@@ -246,29 +247,61 @@ def send_comment_reply_email(replier: User, receiver: User, comment: Comment):
         frontend_host=current_app.config["FRONTEND_HOST"],
         **i18n_keyword_arg_dict,
     )
-    print(template)
     msg.attach(MIMEText(template, "html"))
     send_generic_mail(msg)
 
 
-def print_decoded_email_parts(email_message: Message):
-    """
-    Print all the parts of an email message including any attachments.
-    """
+def _html_to_plain_text(html: str) -> str:
+    """HTML email body to readable text for console (uses html2text)."""
+    h = html2text.HTML2Text()
+    h.body_width = 0  # keep long URLs on one line
+    h.ignore_images = True
+    h.single_line_break = True
+    return h.handle(html).strip()
+
+
+def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
     if email_message.is_multipart():
         for part in email_message.walk():
-            content_type = part.get_content_type()
             content_disposition = part.get("Content-Disposition")
             if content_disposition is not None:
-                # This is an attachment
+                # This is an attachment (may be multipart, e.g. forwarded message)
                 print(f"Attachment: {part.get_filename()}")
                 continue
+            content_type = part.get_content_type()
+            if part.is_multipart():
+                # Inner MIME containers have no single raw body; walk() yields leaves next.
+                continue
             try:
-                body = part.get_payload(decode=True).decode(part.get_content_charset())
+                charset = part.get_content_charset() or "utf-8"
+                raw = part.get_payload(decode=True)
+                if raw is None:
+                    continue
+                body = raw.decode(charset)
+                if strip_html and content_type == "text/html":
+                    body = _html_to_plain_text(body)
                 print(f"Content Type: {content_type}\nBody:\n{body}\n")
             except Exception as e:
                 print(f"Could not decode part: {e}")
     else:
-        # For non-multipart messages
-        body = email_message.get_payload(decode=True).decode(email_message.get_content_charset())
+        charset = email_message.get_content_charset() or "utf-8"
+        raw = email_message.get_payload(decode=True)
+        if raw is None:
+            print("Body:\n(empty)\n")
+            return
+        body = raw.decode(charset)
+        ct = email_message.get_content_type()
+        if strip_html and ct == "text/html":
+            body = _html_to_plain_text(body)
         print(f"Body:\n{body}\n")
+
+
+def print_decoded_email_parts(email_message: Message):
+    """
+    Print all parts of an email message twice: first as decoded HTML (with markup), then the same
+    bodies run through html2text so values like temporary passwords are easy to spot in the console.
+    """
+    print("--- Mail (with markup) ---")
+    _print_decoded_email_parts_once(email_message, strip_html=False)
+    print("--- Mail (plain text) ---")
+    _print_decoded_email_parts_once(email_message, strip_html=True)
