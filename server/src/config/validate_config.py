@@ -1,13 +1,22 @@
+def normalize_config_urls(config):
+    """Strip trailing slashes from URL-like settings after env / file load.
+
+    Callers join paths explicitly (e.g. mail code and S3 URL builders).
+    """
+    for key in ("FRONTEND_HOST", "S3_ENDPOINT", "S3_ACCESS_ENDPOINT"):
+        url = config.get(key)
+        if url:
+            config[key] = url.rstrip("/")
+
+
 def validate_config(config):
+    normalize_config_urls(config)
+
     # Check token presence
     if not config["SECRET_KEY"]:
         raise Exception("Invalid config: SECRET_KEY needs to be set.")
     if not config["JWT_SECRET_KEY"]:
         raise Exception("Invalid config: JWT_SECRET_KEY needs to be set.")
-
-    # Validate frontend host matches format
-    if config["FRONTEND_HOST"][-1] != "/":
-        raise Exception("Invalid config: FRONTEND_HOST needs to end in a slash.")
 
     # Check Sentry configuration
     if config["SENTRY_ENABLED"] and not config["SENTRY_DSN"]:

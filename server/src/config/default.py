@@ -17,7 +17,7 @@ class DefaultConfig(object):
     SMTP_PASSWORD = "YOUR_SMTP_PASSWORD"
     SMTP_PORT = "YOUR_SMTP_PORT"
     SMTP_TYPE = None  # smtps, starttls, plain, disabled
-    FRONTEND_HOST = None  # URL ending in slash, e.g. http://localhost:3000/
+    FRONTEND_HOST = None  # Base URL of the SPA
     SUPERADMIN_FIRSTNAME = ""
     SUPERADMIN_LASTNAME = ""
     SUPERADMIN_EMAIL = ""
