@@ -2,7 +2,6 @@ name: Cypress Tests
 run-name: Run Cypress end-to-end tests 🧪
 
 on:
-  push:
   pull_request_target:
     branches:
       - main
