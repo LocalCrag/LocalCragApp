@@ -30,6 +30,7 @@ moto = "==5.*"
 sentry-sdk = {extras = ["flask"], version = "==2.*"}
 sqlalchemy-utils = "==0.*"
 apscheduler = "==3.*"
+html2text = "==2024.*"
 
 [dev-packages]
 flake8 = "==7.*"
