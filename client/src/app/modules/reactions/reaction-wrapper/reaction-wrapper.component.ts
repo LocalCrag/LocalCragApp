@@ -37,7 +37,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
 
-  readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉'];
+  readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉', '😀'];
   myReaction: string | null = null;
   isPickerOpen = false;
 
