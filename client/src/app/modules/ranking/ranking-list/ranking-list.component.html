@@ -119,16 +119,12 @@
                 <div class="ranking-table-row">
                   <div class="ranking-table-rank">{{ index + 1 }}.</div>
                   <div class="ranking-table-user-info">
-                    <p-avatar
-                      [image]="
-                        ranking.user.avatar
-                          ? ranking.user.avatar.thumbnailS
-                          : 'assets/user.png'
-                      "
+                    <lc-user-avatar
+                      [user]="ranking.user"
                       styleClass="mr-2"
                       size="large"
                       shape="circle"
-                    ></p-avatar>
+                    />
                     <a
                       class="username"
                       routerLink="{{ ranking.routerLinkUser }}"

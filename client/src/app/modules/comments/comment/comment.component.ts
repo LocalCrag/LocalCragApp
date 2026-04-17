@@ -10,7 +10,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Comment } from '../../../models/comment';
-import { Avatar } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { Button } from 'primeng/button';
@@ -39,7 +39,7 @@ import { LanguageService } from '../../../services/core/language.service';
 @Component({
   selector: 'lc-comment',
   imports: [
-    Avatar,
+    UserAvatarComponent,
     RouterLink,
     TimeAgoPipe,
     Button,

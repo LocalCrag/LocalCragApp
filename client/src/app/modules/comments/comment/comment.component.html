@@ -1,14 +1,11 @@
 <ng-container *transloco="let t; read: 'comments'">
   <div class="flex flex-row gap-3" [id]="comment.id">
-    <p-avatar
-      [image]="
-        comment.createdBy?.avatar && !comment.isDeleted
-          ? comment.createdBy.avatar.thumbnailS
-          : 'assets/user.png'
-      "
+    <lc-user-avatar
+      [user]="comment.createdBy"
+      [imageFallback]="comment.isDeleted ? 'assets/user.png' : null"
       size="large"
       shape="circle"
-    ></p-avatar>
+    />
     <div class="flex flex-column gap-1 flex-grow-1">
       <div class="flex justify-content-between">
         <div>

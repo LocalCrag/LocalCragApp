@@ -1,0 +1,18 @@
+@if (imageUrl) {
+  <p-avatar
+    [image]="imageUrl"
+    [size]="size"
+    [shape]="shape"
+    [styleClass]="styleClass"
+    [attr.aria-label]="ariaLabel"
+  />
+} @else {
+  <p-avatar
+    [label]="initials"
+    [style]="gradientStyle"
+    [size]="size"
+    [shape]="shape"
+    [styleClass]="fallbackClasses"
+    [attr.aria-label]="ariaLabel"
+  />
+}

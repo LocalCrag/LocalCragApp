@@ -25,7 +25,7 @@ import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { RatingModule } from 'primeng/rating';
-import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { UpgradePipe } from '../pipes/upgrade.pipe';
 import { DowngradePipe } from '../pipes/downgrade.pipe';
 import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
@@ -74,7 +74,7 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     ConfirmPopupModule,
     RatingModule,
     AsyncPipe,
-    AvatarModule,
+    UserAvatarComponent,
     UpgradePipe,
     DowngradePipe,
     ConsensusGradePipe,
