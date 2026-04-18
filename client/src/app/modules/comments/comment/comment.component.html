@@ -118,11 +118,7 @@
         comment.parentId !== comment.rootId &&
         !commentsContextService.getCommentById(comment.parentId).isDeleted
       ) {
-        <div
-          class="reply-to-indicator"
-          (click)="scrollToParent()"
-          tabindex="0"
-        >
+        <div class="reply-to-indicator" (click)="scrollToParent()" tabindex="0">
           &#64;
           {{
             commentsContextService.getCommentById(comment.parentId).createdBy
