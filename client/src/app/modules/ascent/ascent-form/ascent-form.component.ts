@@ -50,6 +50,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
 import { Grade } from '../../../models/scale';
+import {
+  daysBackToLastSaturday,
+  daysBackToLastSunday,
+  subtractLocalCalendarDays,
+} from './ascent-quick-preset-dates';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -288,23 +293,21 @@ export class AscentFormComponent implements OnInit {
   }
 
   setToLastSunday() {
-    const lastSaturday = new Date(
-      new Date().setDate(
-        this.today.getDate() -
-          (this.today.getDay() == 0 ? 7 : this.today.getDay()),
-      ),
+    const ref = new Date();
+    const lastSunday = subtractLocalCalendarDays(
+      ref,
+      daysBackToLastSunday(ref),
     );
-    this.ascentForm.get('date').setValue(lastSaturday);
-    this.ascentForm.get('year').setValue(lastSaturday);
+    this.ascentForm.get('date').setValue(lastSunday);
+    this.ascentForm.get('year').setValue(lastSunday);
     this.ascentForm.get('yearOnly').setValue(false);
   }
 
   setToLastSaturday() {
-    const lastSaturday = new Date(
-      new Date().setDate(
-        this.today.getDate() -
-          (this.today.getDay() == 0 ? 7 : this.today.getDay() + 1),
-      ),
+    const ref = new Date();
+    const lastSaturday = subtractLocalCalendarDays(
+      ref,
+      daysBackToLastSaturday(ref),
     );
     this.ascentForm.get('date').setValue(lastSaturday);
     this.ascentForm.get('year').setValue(lastSaturday);
