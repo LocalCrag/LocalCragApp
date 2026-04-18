@@ -22,6 +22,7 @@ from models.region import Region
 from models.sector import Sector
 from models.user import User
 from util.email import send_comment_created_email, send_comment_reply_email
+from util.reactions import get_reactions_by_user
 from util.secret_spots_auth import get_show_secret
 from webargs_schemas.comment_args import comment_args, comment_update_args
 
@@ -217,6 +218,11 @@ class GetComments(MethodView):
 
         # Paginate once
         paginated = db.paginate(query, page=page, per_page=per_page)
+
+        comment_ids = [str(c.id) for c in paginated.items]
+        reactions_by_target = get_reactions_by_user("comment", comment_ids) if comment_ids else {}
+        for c in paginated.items:
+            c.reactions_by_user = reactions_by_target.get(str(c.id), [])
 
         # Serialize depending on mode
         if is_replies_mode:

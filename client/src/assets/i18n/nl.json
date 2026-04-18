@@ -367,6 +367,7 @@
   "comments.reply": "Reactie",
   "comments.viewReplies": "{count, plural, =1{1 Antwort} other{# Antworten}}",
   "comments.loadMoreReplies": "Zie meer reacties",
+  "reactions.infoModalTitle": "Reacties",
   "posts.postList.noPostsFoundEmptyMessage": "Geen berichten gevonden",
   "posts.postList.newPostButtonLabel": "Nieuw bericht",
   "posts.postList.editPostButtonLabel": "Berich bewerken",
