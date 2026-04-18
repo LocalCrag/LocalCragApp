@@ -445,3 +445,65 @@ def test_successful_validate_soft_hard(client, member_token):
 
     rv = client.post("/api/ascents", token=member_token, json=ascent_data)
     assert rv.status_code == 400
+
+
+def test_moderator_clear_ascent_fa(client, moderator_token):
+    ascent = Ascent.query.filter_by(fa=True).first()
+    assert ascent is not None
+
+    rv = client.post(f"/api/ascents/{ascent.id}/clear-fa", token=moderator_token, json={})
+    assert rv.status_code == 200
+    assert rv.json["fa"] is False
+
+    ascent = Ascent.find_by_id(ascent.id)
+    assert ascent.fa is False
+
+
+def test_non_moderator_cannot_clear_ascent_fa(client, member_token):
+    ascent_data = {
+        "flash": False,
+        "fa": True,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 4,
+        "comment": "FA ascent",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("treppe")),
+        "date": "2024-04-13",
+    }
+    rv = client.post("/api/ascents", token=member_token, json=ascent_data)
+    assert rv.status_code == 201
+    ascent_id = rv.json["id"]
+
+    rv = client.post(f"/api/ascents/{ascent_id}/clear-fa", token=member_token, json={})
+    assert rv.status_code == 401
+
+    ascent = Ascent.find_by_id(ascent_id)
+    assert ascent.fa is True
+
+
+def test_moderator_clear_ascent_fa_idempotent(client, moderator_token, admin_token):
+    # Seed data only has FA ascents; create a non-FA tick (admin has super-spreader, not treppe).
+    ascent_data = {
+        "flash": False,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 3,
+        "comment": "no FA",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("treppe")),
+        "date": "2024-04-14",
+    }
+    rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
+    assert rv.status_code == 201
+    ascent_id = rv.json["id"]
+    assert rv.json["fa"] is False
+
+    rv = client.post(f"/api/ascents/{ascent_id}/clear-fa", token=moderator_token, json={})
+    assert rv.status_code == 200
+    assert rv.json["fa"] is False
