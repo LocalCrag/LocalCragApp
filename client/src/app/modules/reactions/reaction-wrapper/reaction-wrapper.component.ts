@@ -20,6 +20,8 @@ import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReactionsInfoModalComponent } from '../reactions-info-modal/reactions-info-modal.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'lc-reaction-wrapper',
@@ -37,7 +39,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
 
-  readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉'];
+  readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉', '😀'];
   myReaction: string | null = null;
   isPickerOpen = false;
 
@@ -48,6 +50,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   private reactionsService = inject(ReactionsService);
   private store = inject(Store);
   private dialogService = inject(DialogService);
+  private translocoService = inject(TranslocoService);
   private ref: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
@@ -158,7 +161,9 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       draggable: false,
       dismissableMask: true,
       focusOnShow: false,
-      header: 'Reactions',
+      header: this.translocoService.translate(
+        marker('reactions.infoModalTitle'),
+      ),
       data: {
         reactions: this.reactions,
       },

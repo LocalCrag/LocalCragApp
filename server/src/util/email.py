@@ -4,6 +4,7 @@ from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import html2text
 from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
@@ -17,9 +18,15 @@ from models.area import Area
 from models.comment import Comment
 from models.crag import Crag
 from models.line import Line
+from models.post import Post
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+
+
+def _frontend_url(path: str) -> str:
+    path = path.lstrip("/")
+    return f"{current_app.config['FRONTEND_HOST']}/{path}"
 
 
 def build_i18n_keyword_arg_dict(locale, i18n_source_dict):
@@ -91,7 +98,7 @@ def send_forgot_password_email(user: User):
     """
     msg, i18n_keyword_arg_dict = prepare_message(user, reset_password_mail)
     msg["To"] = user.email
-    action_link = "{}reset-password/{}".format(current_app.config["FRONTEND_HOST"], user.reset_password_hash)
+    action_link = _frontend_url(f"reset-password/{user.reset_password_hash}")
     template = render_template(
         "reset-password-mail.html",
         name="{} {}".format(user.firstname, user.lastname),
@@ -111,7 +118,7 @@ def send_change_email_address_email(user: User):
     """
     msg, i18n_keyword_arg_dict = prepare_message(user, change_email_address_mail)
     msg["To"] = user.email
-    action_link = "{}change-email/{}".format(current_app.config["FRONTEND_HOST"], user.new_email_hash)
+    action_link = _frontend_url(f"change-email/{user.new_email_hash}")
     template = render_template(
         "change-email-address-mail.html",
         name="{} {}".format(user.firstname, user.lastname),
@@ -130,7 +137,7 @@ def send_create_user_email(password: str, created_user: User):
     """
     msg, i18n_keyword_arg_dict = prepare_message(created_user, create_user_mail)
     msg["To"] = created_user.email
-    action_link = "{}activate-account".format(current_app.config["FRONTEND_HOST"])
+    action_link = _frontend_url("activate-account")
     template = render_template(
         "create-user-mail.html",
         firstname=created_user.firstname,
@@ -149,7 +156,7 @@ def send_create_user_email(password: str, created_user: User):
 def send_user_registered_email(registered_user: User, receiver: User, user_count: int):
     msg, i18n_keyword_arg_dict = prepare_message(registered_user, user_registered_mail)
     msg["To"] = receiver.email
-    action_link = "{}users/{}".format(current_app.config["FRONTEND_HOST"], registered_user.slug)
+    action_link = _frontend_url(f"users/{registered_user.slug}")
     template = render_template(
         "user-registered-mail.html",
         firstname=registered_user.firstname,
@@ -168,11 +175,10 @@ def send_user_registered_email(registered_user: User, receiver: User, user_count
 def send_project_climbed_email(climber: User, receiver: User, message: str, line: Line):
     msg, i18n_keyword_arg_dict = prepare_message(climber, project_climbed_mail)
     msg["To"] = receiver.email
-    action_link_project = (
-        f"{current_app.config['FRONTEND_HOST']}topo/{line.area.sector.crag.slug}/"
-        f"{line.area.sector.slug}/{line.area.slug}/{line.slug}"
+    action_link_project = _frontend_url(
+        f"topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}"
     )
-    action_link_user = f"{current_app.config['FRONTEND_HOST']}users/{climber.slug}"
+    action_link_user = _frontend_url(f"users/{climber.slug}")
     template = render_template(
         "project-climbed-mail.html",
         message=message,
@@ -193,25 +199,24 @@ def _build_comment_action_link(comment: Comment) -> str:
     obj = comment.object
     # Lines
     if isinstance(obj, Line):
-        return (
-            f"{current_app.config['FRONTEND_HOST']}topo/{obj.area.sector.crag.slug}/"
-            f"{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments#{comment.id}"
+        return _frontend_url(
+            f"topo/{obj.area.sector.crag.slug}/{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments#{comment.id}"
         )
     # Areas
     if isinstance(obj, Area):
-        return (
-            f"{current_app.config['FRONTEND_HOST']}topo/{obj.sector.crag.slug}/"
-            f"{obj.sector.slug}/{obj.slug}/comments#{comment.id}"
-        )
+        return _frontend_url(f"topo/{obj.sector.crag.slug}/{obj.sector.slug}/{obj.slug}/comments#{comment.id}")
     # Sectors
     if isinstance(obj, Sector):
-        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.crag.slug}/{obj.slug}/comments#{comment.id}"
+        return _frontend_url(f"topo/{obj.crag.slug}/{obj.slug}/comments#{comment.id}")
     # Crags
     if isinstance(obj, Crag):
-        return f"{current_app.config['FRONTEND_HOST']}topo/{obj.slug}/comments#{comment.id}"
+        return _frontend_url(f"topo/{obj.slug}/comments#{comment.id}")
     # Region
     if isinstance(obj, Region):
-        return f"{current_app.config['FRONTEND_HOST']}topo/comments#{comment.id}"
+        return _frontend_url(f"topo/comments#{comment.id}")
+    # Blog posts
+    if isinstance(obj, Post):
+        return _frontend_url(f"news/{obj.slug}#{comment.id}")
     # Fallback
     return current_app.config["FRONTEND_HOST"]
 
@@ -246,29 +251,61 @@ def send_comment_reply_email(replier: User, receiver: User, comment: Comment):
         frontend_host=current_app.config["FRONTEND_HOST"],
         **i18n_keyword_arg_dict,
     )
-    print(template)
     msg.attach(MIMEText(template, "html"))
     send_generic_mail(msg)
 
 
-def print_decoded_email_parts(email_message: Message):
-    """
-    Print all the parts of an email message including any attachments.
-    """
+def _html_to_plain_text(html: str) -> str:
+    """HTML email body to readable text for console (uses html2text)."""
+    h = html2text.HTML2Text()
+    h.body_width = 0  # keep long URLs on one line
+    h.ignore_images = True
+    h.single_line_break = True
+    return h.handle(html).strip()
+
+
+def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
     if email_message.is_multipart():
         for part in email_message.walk():
-            content_type = part.get_content_type()
             content_disposition = part.get("Content-Disposition")
             if content_disposition is not None:
-                # This is an attachment
+                # This is an attachment (may be multipart, e.g. forwarded message)
                 print(f"Attachment: {part.get_filename()}")
                 continue
+            content_type = part.get_content_type()
+            if part.is_multipart():
+                # Inner MIME containers have no single raw body; walk() yields leaves next.
+                continue
             try:
-                body = part.get_payload(decode=True).decode(part.get_content_charset())
+                charset = part.get_content_charset() or "utf-8"
+                raw = part.get_payload(decode=True)
+                if raw is None:
+                    continue
+                body = raw.decode(charset)
+                if strip_html and content_type == "text/html":
+                    body = _html_to_plain_text(body)
                 print(f"Content Type: {content_type}\nBody:\n{body}\n")
             except Exception as e:
                 print(f"Could not decode part: {e}")
     else:
-        # For non-multipart messages
-        body = email_message.get_payload(decode=True).decode(email_message.get_content_charset())
+        charset = email_message.get_content_charset() or "utf-8"
+        raw = email_message.get_payload(decode=True)
+        if raw is None:
+            print("Body:\n(empty)\n")
+            return
+        body = raw.decode(charset)
+        ct = email_message.get_content_type()
+        if strip_html and ct == "text/html":
+            body = _html_to_plain_text(body)
         print(f"Body:\n{body}\n")
+
+
+def print_decoded_email_parts(email_message: Message):
+    """
+    Print all parts of an email message twice: first as decoded HTML (with markup), then the same
+    bodies run through html2text so values like temporary passwords are easy to spot in the console.
+    """
+    print("--- Mail (with markup) ---")
+    _print_decoded_email_parts_once(email_message, strip_html=False)
+    print("--- Mail (plain text) ---")
+    _print_decoded_email_parts_once(email_message, strip_html=True)

@@ -17,6 +17,7 @@ from resources.area_resources import (
     UpdateAreaOrder,
 )
 from resources.ascent_resources import (
+    ClearAscentFa,
     CreateAscent,
     DeleteAscent,
     GetAscents,
@@ -266,6 +267,11 @@ def configure_api(app):
     ascent_bp = Blueprint("ascents", __name__)
     ascent_bp.add_url_rule("", view_func=CreateAscent.as_view("create_ascent"))
     ascent_bp.add_url_rule("", view_func=GetAscents.as_view("get_ascents"))
+    ascent_bp.add_url_rule(
+        "/<string:ascent_id>/clear-fa",
+        view_func=ClearAscentFa.as_view("clear_ascent_fa"),
+        methods=["POST"],
+    )
     ascent_bp.add_url_rule("/<string:ascent_id>", view_func=DeleteAscent.as_view("delete_ascent"))
     ascent_bp.add_url_rule("/<string:ascent_id>", view_func=UpdateAscent.as_view("update_ascent"))
     ascent_bp.add_url_rule(

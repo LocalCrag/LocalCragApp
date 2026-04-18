@@ -177,6 +177,7 @@ export class ApiService {
   public ascents = {
     create: (): string => `${this.apiHost}ascents`,
     update: (id: string): string => `${this.apiHost}ascents/${id}`,
+    clearFa: (id: string): string => `${this.apiHost}ascents/${id}/clear-fa`,
     delete: (id: string): string => `${this.apiHost}ascents/${id}`,
     getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
     sendProjectClimbedMessage: (): string =>

@@ -27,6 +27,7 @@ import { isLoggedOut } from '../../guards/is-logged-out';
 import { isLoggedIn } from '../../guards/is-logged-in';
 import { PostListComponent } from '../blog/post-list/post-list.component';
 import { PostFormComponent } from '../blog/post-form/post-form.component';
+import { PostDetailComponent } from '../blog/post-detail/post-detail.component';
 import { StaticBackgroundImages } from './background-image/background-image.component';
 import { RegionComponent } from '../region/region/region.component';
 import { RegionInfoComponent } from '../region/region-info/region-info.component';
@@ -110,6 +111,14 @@ export const appRoutes: Routes = [
     canActivate: [isModerator],
     data: {
       backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'news/:post-slug',
+    component: PostDetailComponent,
+    data: {
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+      objectType: ObjectType.Post,
     },
   },
   {

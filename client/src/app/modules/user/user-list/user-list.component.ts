@@ -22,7 +22,7 @@ import {
 import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
 import { FormsModule } from '@angular/forms';
-import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { MenuModule } from 'primeng/menu';
@@ -47,7 +47,7 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     RatingModule,
     NgClass,
     FormsModule,
-    AvatarModule,
+    UserAvatarComponent,
     TagModule,
     ChipModule,
     MenuModule,

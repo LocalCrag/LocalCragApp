@@ -7,6 +7,10 @@ from util.bucket_placeholders import replace_bucket_placeholders
 class PostSearchSchema(BaseEntitySchema):
     title = fields.String()
     slug = fields.String()
+    commentCount = fields.Method("get_comment_count")
+
+    def get_comment_count(self, obj):
+        return int(getattr(obj, "_comment_count", 0))
 
 
 class PostSchema(PostSearchSchema):

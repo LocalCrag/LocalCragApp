@@ -15,7 +15,7 @@ import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { RouterLink } from '@angular/router';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { FormsModule } from '@angular/forms';
@@ -42,7 +42,7 @@ import { Observable } from 'rxjs';
     NgClass,
     ButtonModule,
     ConfirmPopupModule,
-    AvatarModule,
+    UserAvatarComponent,
     RouterLink,
     FormsModule,
     DialogModule,

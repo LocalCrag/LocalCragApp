@@ -1,14 +1,11 @@
 <ng-container *transloco="let t; read: 'comments'">
   <div class="flex flex-row gap-3" [id]="comment.id">
-    <p-avatar
-      [image]="
-        comment.createdBy?.avatar && !comment.isDeleted
-          ? comment.createdBy.avatar.thumbnailS
-          : 'assets/user.png'
-      "
+    <lc-user-avatar
+      [user]="comment.createdBy"
+      [imageFallback]="comment.isDeleted ? 'assets/user.png' : null"
       size="large"
       shape="circle"
-    ></p-avatar>
+    />
     <div class="flex flex-column gap-1 flex-grow-1">
       <div class="flex justify-content-between">
         <div>
@@ -41,67 +38,18 @@
           </div>
         }
       </div>
-      <div>
-        @if (
-          !isRootComment &&
-          comment.parentId !== comment.rootId &&
-          !commentsContextService.getCommentById(comment.parentId).isDeleted
-        ) {
-          <div
-            class="reply-to-indicator"
-            (click)="scrollToParent()"
-            tabindex="0"
-          >
-            &#64;
-            {{
-              commentsContextService.getCommentById(comment.parentId).createdBy
-                .firstname
-            }}
-            {{
-              commentsContextService.getCommentById(comment.parentId).createdBy
-                .lastname
-            }}
-          </div>
-        }
-        @if (!comment.isDeleted) {
-          @if (!editModeActive) {
-            {{ comment.message }}
-          } @else {
-            <lc-comment-editor
-              [autoFocus]="true"
-              [cancelable]="true"
-              [commentToEdit]="comment"
-              (cancelled)="editModeActive = false"
-            ></lc-comment-editor>
-          }
-        } @else {
-          <em class="opacity-60"> {{ t("commentDeleted") }}</em>
-        }
-      </div>
-      @if (
-        !replyActive && !comment.isDeleted && !editModeActive && isLoggedIn$
-          | async
-      ) {
-        <div>
-          <p-button
-            variant="text"
-            size="small"
-            severity="primary"
-            styleClass="reply-button"
-            (click)="setReplyActive()"
-          >
-            {{ t("reply") }}
-          </p-button>
-        </div>
-      }
-      @if (replyActive) {
-        <lc-comment-editor
-          [parentId]="comment.id"
-          (cancelled)="replyActive = false"
-          (created)="onReplyCreated($event)"
-          [autoFocus]="true"
-          [cancelable]="true"
-        ></lc-comment-editor>
+      @if (!comment.isDeleted) {
+        <lc-reaction-wrapper
+          [reactions]="comment.reactions"
+          [targetType]="'comment'"
+          [targetId]="comment.id"
+          [createdById]="comment.createdBy?.id"
+          (reactionsChange)="comment.reactions = $event"
+        >
+          <ng-container *ngTemplateOutlet="commentMain" />
+        </lc-reaction-wrapper>
+      } @else {
+        <ng-container *ngTemplateOutlet="commentMain" />
       }
       @if (comment.replyCount > 0) {
         <div>
@@ -159,4 +107,65 @@
       }
     </div>
   </div>
+
+  <ng-template #commentMain>
+    <div>
+      @if (
+        !isRootComment &&
+        comment.parentId !== comment.rootId &&
+        !commentsContextService.getCommentById(comment.parentId).isDeleted
+      ) {
+        <div class="reply-to-indicator" (click)="scrollToParent()" tabindex="0">
+          &#64;
+          {{
+            commentsContextService.getCommentById(comment.parentId).createdBy
+              .firstname
+          }}
+          {{
+            commentsContextService.getCommentById(comment.parentId).createdBy
+              .lastname
+          }}
+        </div>
+      }
+      @if (!comment.isDeleted) {
+        @if (!editModeActive) {
+          {{ comment.message }}
+        } @else {
+          <lc-comment-editor
+            [autoFocus]="true"
+            [cancelable]="true"
+            [commentToEdit]="comment"
+            (cancelled)="editModeActive = false"
+          ></lc-comment-editor>
+        }
+      } @else {
+        <em class="opacity-60"> {{ t("commentDeleted") }}</em>
+      }
+    </div>
+    @if (
+      !replyActive && !comment.isDeleted && !editModeActive && isLoggedIn$
+        | async
+    ) {
+      <div>
+        <p-button
+          variant="text"
+          size="small"
+          severity="primary"
+          styleClass="reply-button"
+          (click)="setReplyActive()"
+        >
+          {{ t("reply") }}
+        </p-button>
+      </div>
+    }
+    @if (replyActive) {
+      <lc-comment-editor
+        [parentId]="comment.id"
+        (cancelled)="replyActive = false"
+        (created)="onReplyCreated($event)"
+        [autoFocus]="true"
+        [cancelable]="true"
+      ></lc-comment-editor>
+    }
+  </ng-template>
 </ng-container>

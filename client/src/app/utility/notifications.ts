@@ -103,6 +103,11 @@ export const NOTIFICATIONS = {
     title: marker('notifications.ASCENT_DELETED_TITLE'),
     message: marker('notifications.ASCENT_DELETED_MESSAGE'),
   },
+  ASCENT_FA_REMOVED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.ASCENT_FA_REMOVED_TITLE'),
+    message: marker('notifications.ASCENT_FA_REMOVED_MESSAGE'),
+  },
   ARCHIVED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.ARCHIVED_TITLE'),

@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Searchable } from '../../../models/searchable';
 import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { AsyncPipe } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -22,6 +23,7 @@ import { map } from 'rxjs/operators';
   selector: 'lc-searchable',
   imports: [
     AvatarModule,
+    UserAvatarComponent,
     TranslocoDirective,
     RouterLink,
     LineGradePipe,

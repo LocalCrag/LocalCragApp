@@ -3,6 +3,7 @@ from marshmallow import fields
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.post_schema import PostSearchSchema
+from marshmallow_schemas.reactions_schema import ReactionUserListSchema
 from marshmallow_schemas.search_schema import (
     AreaSearchSchema,
     CragSearchSchema,
@@ -37,6 +38,12 @@ class CommentSchema(BaseEntitySchema):
     parentId = fields.String(attribute="parent_id")
     rootId = fields.String(attribute="root_id")
     isDeleted = fields.Boolean(attribute="is_deleted")
+    reactions = fields.Method(serialize="get_reactions")
+
+    def get_reactions(self, obj):
+        if getattr(obj, "is_deleted", False):
+            return []
+        return ReactionUserListSchema(many=True).dump(getattr(obj, "reactions_by_user", []) or [])
 
 
 class CommentWithRepliesSchema(CommentSchema):

@@ -17,20 +17,21 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { Ascent } from '../../../models/ascent';
 import { ButtonModule } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 import { DataViewModule } from 'primeng/dataview';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { RatingModule } from 'primeng/rating';
-import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { UpgradePipe } from '../pipes/upgrade.pipe';
 import { DowngradePipe } from '../pipes/downgrade.pipe';
 import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
 import { TagModule } from 'primeng/tag';
 import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
@@ -68,13 +69,12 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     TranslocoDirective,
     ButtonModule,
     DataViewModule,
-    HasPermissionDirective,
     FormsModule,
     NgClass,
     ConfirmPopupModule,
     RatingModule,
     AsyncPipe,
-    AvatarModule,
+    UserAvatarComponent,
     UpgradePipe,
     DowngradePipe,
     ConsensusGradePipe,
@@ -137,8 +137,9 @@ export class AscentListComponent implements OnInit, OnChanges {
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
-  public ascentActionItems: MenuItem[];
+  public ascentActionItems: MenuItem[] = [];
   public clickedAscentForAction: Ascent;
+  private currentUser: User | null = null;
 
   private loadedGradeFilterRange: number[] = null;
   private destroyRef = inject(DestroyRef);
@@ -187,7 +188,14 @@ export class AscentListComponent implements OnInit, OnChanges {
     // use helpers to create order/direction/action options so they can be reused
     this.buildOrderOptions();
     this.buildDirectionOptions();
-    this.buildAscentActionItems();
+
+    this.store
+      .select(selectCurrentUser)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        this.currentUser = user;
+        this.cdr.markForCheck();
+      });
 
     // Rebuild menu labels and available scales when language changes
     this.languageService.renderedLanguage$
@@ -196,7 +204,6 @@ export class AscentListComponent implements OnInit, OnChanges {
         if (!rendered) return;
         this.buildOrderOptions();
         this.buildDirectionOptions();
-        this.buildAscentActionItems();
         if (this.gradeDistribution) {
           this.buildAvailableScalesFromCurrent();
         }
@@ -333,6 +340,95 @@ export class AscentListComponent implements OnInit, OnChanges {
     });
   }
 
+  public canShowAscentActions(ascent: Ascent): boolean {
+    if (!this.currentUser || !ascent.createdBy) {
+      return false;
+    }
+    if (this.currentUser.id === ascent.createdBy.id) {
+      return true;
+    }
+    return !!(this.currentUser.moderator && ascent.fa);
+  }
+
+  public openAscentActionsMenu(event: Event, ascent: Ascent, menu: Menu): void {
+    this.clickedAscentForAction = ascent;
+    this.ascentActionItems = this.buildAscentActionItemsFor(ascent);
+    menu.toggle(event);
+  }
+
+  public confirmRemoveFaTag(event: Event, ascent: Ascent) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: this.translocoService.translate(
+        marker('ascent.askReallyWantToRemoveFaTag'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('ascent.yesRemoveFa'),
+      ),
+      acceptButtonStyleClass: 'p-button-warning',
+      rejectLabel: this.translocoService.translate(
+        marker('ascent.noDontDelete'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.removeFaTag(ascent);
+      },
+    });
+  }
+
+  private removeFaTag(ascent: Ascent) {
+    this.ascentsService.clearAscentFa(ascent.id).subscribe((updated) => {
+      ascent.fa = updated.fa;
+      this.store.dispatch(toastNotification('ASCENT_FA_REMOVED'));
+      this.store.dispatch(
+        reloadAfterAscent({ ascendedLineId: ascent.line.id }),
+      );
+      this.cdr.markForCheck();
+    });
+  }
+
+  private buildAscentActionItemsFor(ascent: Ascent): MenuItem[] {
+    const items: MenuItem[] = [];
+    if (this.currentUser && ascent.createdBy?.id === this.currentUser.id) {
+      items.push(
+        {
+          label: this.translocoService.translate('ascent.editAscent'),
+          icon: 'pi pi-pencil',
+          id: 'edit-ascent',
+          command: () => {
+            this.editAscent(this.clickedAscentForAction);
+          },
+        },
+        {
+          label: this.translocoService.translate('ascent.deleteAscent'),
+          icon: 'pi pi-trash',
+          id: 'delete-ascent',
+          command: (e) => {
+            this.confirmDeleteAscent(
+              e.originalEvent,
+              this.clickedAscentForAction,
+            );
+          },
+        },
+      );
+    }
+    if (
+      this.currentUser?.moderator &&
+      ascent.fa &&
+      ascent.createdBy?.id !== this.currentUser.id
+    ) {
+      items.push({
+        label: this.translocoService.translate(marker('ascent.removeFaTag')),
+        icon: 'pi pi-star',
+        id: 'remove-fa-tag',
+        command: (e) => {
+          this.confirmRemoveFaTag(e.originalEvent, this.clickedAscentForAction);
+        },
+      });
+    }
+    return items;
+  }
+
   private buildOrderOptions() {
     this.orderOptions = [
       {
@@ -365,30 +461,6 @@ export class AscentListComponent implements OnInit, OnChanges {
       },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
-  }
-
-  private buildAscentActionItems() {
-    this.ascentActionItems = [
-      {
-        label: this.translocoService.translate('ascent.editAscent'),
-        icon: 'pi pi-pencil',
-        id: 'edit-ascent',
-        command: () => {
-          this.editAscent(this.clickedAscentForAction);
-        },
-      },
-      {
-        label: this.translocoService.translate('ascent.deleteAscent'),
-        icon: 'pi pi-trash',
-        id: 'delete-ascent',
-        command: (e) => {
-          this.confirmDeleteAscent(
-            e.originalEvent,
-            this.clickedAscentForAction,
-          );
-        },
-      },
-    ];
   }
 
   private buildAvailableScales(gradeDistribution: any) {

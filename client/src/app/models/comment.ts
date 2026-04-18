@@ -1,6 +1,7 @@
 import { AbstractModel } from './abstract-model';
 import { User } from './user';
 import { deserializeLCObject, LCObject, ObjectType } from './object';
+import { Reaction, Reactions } from './reactions';
 
 export class Comment extends AbstractModel {
   message: string;
@@ -12,6 +13,7 @@ export class Comment extends AbstractModel {
   replyCount?: number;
   isDeleted: boolean;
   routerLinkCreatedBy: string;
+  reactions: Reactions;
 
   public static deserialize(payload: any): Comment {
     const comment = new Comment();
@@ -32,6 +34,9 @@ export class Comment extends AbstractModel {
     comment.routerLinkCreatedBy = comment.createdBy
       ? `/users/${comment.createdBy.slug}`
       : null;
+    comment.reactions = payload.reactions
+      ? payload.reactions.map(Reaction.deserialize)
+      : [];
 
     return comment;
   }
