@@ -51,7 +51,11 @@
                   >
                     <div class="text-2xl font-bold text-900 flex w-full">
                       <div class="flex-grow-1 flex align-items-center">
-                        {{ post.title }}
+                        <a
+                          class="text-900 no-underline hover:underline cursor-pointer"
+                          [routerLink]="['/news', post.slug]"
+                          >{{ post.title }}</a
+                        >
                       </div>
                       <div class="flex flex-grow-0 gap-3">
                         <p-button
@@ -65,15 +69,21 @@
                         ></p-button>
                       </div>
                     </div>
-                    <div class="text-xs mb-2">
-                      {{
+                    <div
+                      class="text-xs mb-2 flex flex-wrap align-items-center column-gap-2 row-gap-1"
+                    >
+                      <span>{{
                         t("byUserAtDate", {
                           user: post.createdBy
                             ? post.createdBy.fullname
                             : t("deletedUser"),
                           date: post.timeCreated | date,
                         })
-                      }}
+                      }}</span>
+                      <span class="text-500 hidden sm:inline">·</span>
+                      <span class="text-600">{{
+                        t("totalComments", { count: post.commentCount })
+                      }}</span>
                     </div>
                     <div
                       [innerHTML]="post.text | sanitizeHtml"

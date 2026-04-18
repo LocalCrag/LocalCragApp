@@ -1,15 +1,37 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import func
 from webargs.flaskparser import parser
 
 from extensions import db
 from marshmallow_schemas.post_schema import post_schema, posts_schema
+from models.comment import Comment
 from models.post import Post
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
 from util.security_util import check_auth_claims
 from webargs_schemas.post_args import post_args
+
+
+def _attach_post_comment_counts(posts: list[Post]) -> None:
+    """Sets transient `_comment_count` on each post (non-deleted comments, including replies)."""
+    if not posts:
+        return
+    ids = [p.id for p in posts]
+    rows = (
+        db.session.query(Comment.object_id, func.count(Comment.id))
+        .filter(
+            Comment.object_type == "Post",
+            Comment.object_id.in_(ids),
+            Comment.is_deleted.is_(False),
+        )
+        .group_by(Comment.object_id)
+        .all()
+    )
+    count_by_id = {oid: n for oid, n in rows}
+    for p in posts:
+        p._comment_count = int(count_by_id.get(p.id, 0))
 
 
 class GetPosts(MethodView):
@@ -19,6 +41,7 @@ class GetPosts(MethodView):
         Returns all posts.
         """
         posts: Post = Post.return_all(order_by=lambda: Post.time_created.desc())
+        _attach_post_comment_counts(posts)
         return jsonify(posts_schema.dump(posts)), 200
 
 
@@ -29,6 +52,7 @@ class GetPost(MethodView):
         @param post_slug: Slug of the post to return.
         """
         post: Post = Post.find_by_slug(slug=post_slug)
+        _attach_post_comment_counts([post])
         return post_schema.dump(post), 200
 
 
@@ -69,6 +93,7 @@ class UpdatePost(MethodView):
         db.session.add(post)
         db.session.commit()
 
+        _attach_post_comment_counts([post])
         return post_schema.dump(post), 200
 
 

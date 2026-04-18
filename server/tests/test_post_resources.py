@@ -1,3 +1,4 @@
+from models.comment import Comment
 from models.post import Post
 
 
@@ -14,6 +15,7 @@ def test_successful_create_post(client, moderator_token):
     assert res["slug"] == "glees-ist-gesperrt"
     assert res["text"] == "<p>Haha, verarscht!</p>"
     assert res["id"] is not None
+    assert res["commentCount"] == 0
 
 
 def test_successful_get_posts(client):
@@ -28,6 +30,9 @@ def test_successful_get_posts(client):
         assert r["slug"] == p.slug
         assert r["title"] == p.title
         assert r["text"] == p.text
+        assert (
+            r["commentCount"] == Comment.query.filter_by(object_type="Post", object_id=p.id, is_deleted=False).count()
+        )
 
 
 def test_successful_get_post(client):
@@ -38,6 +43,11 @@ def test_successful_get_post(client):
     assert res["slug"] == "noch-ein-post"
     assert res["title"] == "Noch ein Post"
     assert res["text"] == "<p>Was steht hier nur für ein Quatsch?</p>"
+    post_row = Post.find_by_slug("noch-ein-post")
+    assert (
+        res["commentCount"]
+        == Comment.query.filter_by(object_type="Post", object_id=post_row.id, is_deleted=False).count()
+    )
 
 
 def test_get_deleted_post(client):

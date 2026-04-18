@@ -63,7 +63,11 @@ export class CommentsComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         switchMap((data) => {
           this.objectType = data['objectType'];
-          return this.route.parent!.parent!.paramMap.pipe(
+          const paramSource =
+            this.objectType === ObjectType.Post
+              ? this.route
+              : this.route.parent!.parent!;
+          return paramSource.paramMap.pipe(
             takeUntilDestroyed(this.destroyRef),
             switchMap((params) => {
               switch (this.objectType) {
@@ -85,6 +89,9 @@ export class CommentsComponent implements OnInit {
                   break;
                 case ObjectType.User:
                   this.objectSlug = params.get('user-slug');
+                  break;
+                case ObjectType.Post:
+                  this.objectSlug = params.get('post-slug');
               }
               return this.objectUtilsService.getObject(
                 this.objectType,
