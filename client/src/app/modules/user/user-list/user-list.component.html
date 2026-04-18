@@ -61,22 +61,13 @@
                     [ngClass]="{ 'border-top-1 surface-border': !first }"
                   >
                     <div>
-                      @if (!user.avatar) {
-                        <p-avatar
-                          image="assets/user.png"
-                          class="mr-2"
-                          size="xlarge"
-                          shape="circle"
-                        ></p-avatar>
-                      }
-                      @if (user.avatar) {
-                        <p-avatar
-                          image="{{ user.avatar.thumbnailM }}"
-                          class="mr-2"
-                          size="xlarge"
-                          shape="circle"
-                        ></p-avatar>
-                      }
+                      <lc-user-avatar
+                        [user]="user"
+                        thumbnail="thumbnailM"
+                        size="xlarge"
+                        shape="circle"
+                        styleClass="mr-2"
+                      />
                     </div>
                     <div class="flex flex-column flex-grow-1">
                       <div class="text-xl font-bold text-900 mb-1">

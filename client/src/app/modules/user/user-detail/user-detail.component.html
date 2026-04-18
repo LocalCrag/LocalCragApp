@@ -3,12 +3,12 @@
     <ng-template #header>
       <div class="card-header p-card-title">
         @if (user) {
-          <p-avatar
-            [image]="user.avatar ? user.avatar.thumbnailS : 'assets/user.png'"
-            styleClass="mr-3"
+          <lc-user-avatar
+            [user]="user"
             size="xlarge"
             shape="circle"
-          ></p-avatar>
+            styleClass="mr-3"
+          />
         }
         {{ user?.firstname }} {{ user?.lastname }}
       </div>

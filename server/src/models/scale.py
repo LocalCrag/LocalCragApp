@@ -37,6 +37,7 @@ GRADES = {
             {"name": "8C", "value": 26},
             {"name": "8C+", "value": 27},
             {"name": "9A", "value": 28},
+            {"name": "9A+", "value": 29},
         ]
     },
     LineTypeEnum.SPORT: {

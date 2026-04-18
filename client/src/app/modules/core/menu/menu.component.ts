@@ -42,7 +42,7 @@ import { HeaderMenuComponent } from '../../shared/components/header-menu/header-
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Menu } from 'primeng/menu';
-import { Avatar } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Button } from 'primeng/button';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -63,7 +63,7 @@ import { LanguageService } from '../../../services/core/language.service';
     RouterLink,
     TranslocoDirective,
     Menu,
-    Avatar,
+    UserAvatarComponent,
     HasPermissionDirective,
     Button,
     FormControlDirective,

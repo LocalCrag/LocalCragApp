@@ -39,19 +39,18 @@
           data-cy="auth-menu"
           styleClass="wide-menu"
         ></p-menu>
-        <p-avatar
-          [image]="
-            (currentUser$ | async).avatar
-              ? (currentUser$ | async).avatar.thumbnailS
-              : 'assets/user.png'
-          "
-          (click)="menu.toggle($event)"
-          *isLoggedIn="true"
-          data-cy="auth-menu-button"
-          styleClass="mr-2"
-          size="normal"
-          shape="circle"
-        ></p-avatar>
+        <ng-container *isLoggedIn="true">
+          @if (currentUser$ | async; as authUser) {
+            <lc-user-avatar
+              [user]="authUser"
+              (click)="menu.toggle($event)"
+              data-cy="auth-menu-button"
+              styleClass="mr-2"
+              size="normal"
+              shape="circle"
+            />
+          }
+        </ng-container>
         <p-button
           icon="pi pi-user"
           routerLink="login"

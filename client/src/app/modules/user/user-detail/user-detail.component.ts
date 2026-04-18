@@ -21,7 +21,7 @@ import { catchError } from 'rxjs/operators';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
-import { AvatarModule } from 'primeng/avatar';
+import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
@@ -34,7 +34,7 @@ import { LanguageService } from '../../../services/core/language.service';
     BreadcrumbModule,
     CardModule,
     RouterOutlet,
-    AvatarModule,
+    UserAvatarComponent,
     SetActiveTabDirective,
     Tab,
     TabList,

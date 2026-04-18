@@ -129,16 +129,12 @@
       class="search-result"
       [routerLink]="disableNavigation ? null : searchable.user.routerLink"
     >
-      <p-avatar
-        [image]="
-          searchable.user.avatar
-            ? searchable.user.avatar.thumbnailS
-            : 'assets/user.png'
-        "
+      <lc-user-avatar
+        [user]="searchable.user"
         styleClass="mr-2"
         size="normal"
         shape="circle"
-      ></p-avatar>
+      />
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.user.fullname }}</div>
         <div class="search-result-meta">
