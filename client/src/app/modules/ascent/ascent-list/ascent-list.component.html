@@ -276,21 +276,22 @@
                       }
                     </div>
                     <div class="ascent-actions">
-                      <p-menu
-                        #menu
-                        [model]="ascentActionItems"
-                        [popup]="true"
-                        [appendTo]="'body'"
-                      ></p-menu>
-                      <p-button
-                        icon="pi pi-ellipsis-v"
-                        styleClass="p-button-rounded p-button-text"
-                        data-cy="ascent-actions-button"
-                        *isOwnUser="ascent.createdBy"
-                        (click)="
-                          clickedAscentForAction = ascent; menu.toggle($event)
-                        "
-                      ></p-button>
+                      @if (canShowAscentActions(ascent)) {
+                        <p-menu
+                          #menuLarge
+                          [model]="ascentActionItems"
+                          [popup]="true"
+                          [appendTo]="'body'"
+                        ></p-menu>
+                        <p-button
+                          icon="pi pi-ellipsis-v"
+                          styleClass="p-button-rounded p-button-text"
+                          data-cy="ascent-actions-button"
+                          (click)="
+                            openAscentActionsMenu($event, ascent, menuLarge)
+                          "
+                        ></p-button>
+                      }
                     </div>
                   </div>
                   <!-- DISPLAY FOR MEDIUM SCREENS -->
@@ -412,20 +413,21 @@
                       }
                     </div>
                     <div class="ascent-actions">
-                      <p-menu
-                        #menu
-                        [model]="ascentActionItems"
-                        [popup]="true"
-                        [appendTo]="'body'"
-                      ></p-menu>
-                      <p-button
-                        icon="pi pi-ellipsis-v"
-                        styleClass="p-button-rounded p-button-text"
-                        *isOwnUser="ascent.createdBy"
-                        (click)="
-                          clickedAscentForAction = ascent; menu.toggle($event)
-                        "
-                      ></p-button>
+                      @if (canShowAscentActions(ascent)) {
+                        <p-menu
+                          #menuMedium
+                          [model]="ascentActionItems"
+                          [popup]="true"
+                          [appendTo]="'body'"
+                        ></p-menu>
+                        <p-button
+                          icon="pi pi-ellipsis-v"
+                          styleClass="p-button-rounded p-button-text"
+                          (click)="
+                            openAscentActionsMenu($event, ascent, menuMedium)
+                          "
+                        ></p-button>
+                      }
                     </div>
                   </div>
                   <!-- DISPLAY FOR SMALL SCREENS -->
@@ -475,20 +477,21 @@
                         </div>
                       </div>
                       <div class="ascent-actions">
-                        <p-menu
-                          #menu
-                          [model]="ascentActionItems"
-                          [popup]="true"
-                          [appendTo]="'body'"
-                        ></p-menu>
-                        <p-button
-                          icon="pi pi-ellipsis-v"
-                          styleClass="p-button-rounded p-button-text"
-                          *isOwnUser="ascent.createdBy"
-                          (click)="
-                            clickedAscentForAction = ascent; menu.toggle($event)
-                          "
-                        ></p-button>
+                        @if (canShowAscentActions(ascent)) {
+                          <p-menu
+                            #menuSmall
+                            [model]="ascentActionItems"
+                            [popup]="true"
+                            [appendTo]="'body'"
+                          ></p-menu>
+                          <p-button
+                            icon="pi pi-ellipsis-v"
+                            styleClass="p-button-rounded p-button-text"
+                            (click)="
+                              openAscentActionsMenu($event, ascent, menuSmall)
+                            "
+                          ></p-button>
+                        }
                       </div>
                     </div>
                     <div class="ascent-table-comment">
