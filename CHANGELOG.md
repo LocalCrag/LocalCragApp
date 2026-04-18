@@ -1,3 +1,20 @@
+# [1.33.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.32.0...v1.33.0) (2026-04-18)
+
+
+### Bug Fixes
+
+* **ascents:** fix issue where last saturday was selecting the wrong week when used on a sunday ([#1039](https://github.com/LocalCrag/LocalCragApp/issues/1039)) ([f827026](https://github.com/LocalCrag/LocalCragApp/commit/f8270262f21d9f7e0b4cc45eb16e7c8488025dbb))
+
+
+### Features
+
+* **ascents:** add possibility for moderators to remove FA tags from other users ascents ([#1040](https://github.com/LocalCrag/LocalCragApp/issues/1040)) ([4279329](https://github.com/LocalCrag/LocalCragApp/commit/42793296b5f253bfc9db6747a273a9e435a5f791))
+* **comments:** add reaction functionality to comments ([#1038](https://github.com/LocalCrag/LocalCragApp/issues/1038)) ([476be6c](https://github.com/LocalCrag/LocalCragApp/commit/476be6c3a6398cbe178beb54e06206da9f52d0f1))
+* **core:** add gradient style avatars for user without uploaded profile picture ([#1037](https://github.com/LocalCrag/LocalCragApp/issues/1037)) ([d38c66f](https://github.com/LocalCrag/LocalCragApp/commit/d38c66fb05e7c69867d2a21fca370475a4fe7ffd))
+* **posts:** add possibility to add comments to posts ([#1041](https://github.com/LocalCrag/LocalCragApp/issues/1041)) ([fbb84a4](https://github.com/LocalCrag/LocalCragApp/commit/fbb84a42b346f38c019d3a3239223eb554094c2b))
+* **reactions:** add new reaction emoji '😀' to available reactions ([#1035](https://github.com/LocalCrag/LocalCragApp/issues/1035)) ([2b4f29c](https://github.com/LocalCrag/LocalCragApp/commit/2b4f29c5736ca87b0de5e4d16989623c74a63f76))
+* **scale:** add new grade "9A+" to the FB scale ([#1036](https://github.com/LocalCrag/LocalCragApp/issues/1036)) ([f6daff1](https://github.com/LocalCrag/LocalCragApp/commit/f6daff16f6594bb4f0638a52254f7498ad09ff5b))
+
 # [1.32.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.31.0...v1.32.0) (2026-04-09)
 
 
