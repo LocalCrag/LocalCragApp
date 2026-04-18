@@ -268,13 +268,10 @@ class ClearAscentFa(MethodView):
     @check_auth_claims(moderator=True)
     def post(self, ascent_id):
         ascent: Ascent = Ascent.find_by_id(ascent_id)
-        line_id = ascent.line_id
         if ascent.fa:
             ascent.fa = False
             db.session.add(ascent)
             db.session.commit()
-            thread = threading.Thread(target=_ctx_update_grades_and_rating, args=(line_id,))
-            thread.start()
         return ascent_schema.dump(ascent), 200
 
 
