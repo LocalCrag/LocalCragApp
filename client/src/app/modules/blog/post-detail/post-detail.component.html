@@ -16,10 +16,10 @@
         </div>
         <div class="text-xs mb-3">
           {{
-            t('postList.byUserAtDate', {
+            t("postList.byUserAtDate", {
               user: post.createdBy
                 ? post.createdBy.fullname
-                : t('postList.deletedUser'),
+                : t("postList.deletedUser"),
               date: post.timeCreated | date,
             })
           }}
