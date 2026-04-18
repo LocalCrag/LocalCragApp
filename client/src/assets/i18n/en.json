@@ -367,6 +367,7 @@
   "comments.reply": "Reply",
   "comments.viewReplies": "{count, plural, =1{1 answer} other{# answers}}",
   "comments.loadMoreReplies": "Load more replies",
+  "reactions.infoModalTitle": "Reactions",
   "posts.postList.noPostsFoundEmptyMessage": "No posts found",
   "posts.postList.newPostButtonLabel": "New post",
   "posts.postList.editPostButtonLabel": "Edit post",

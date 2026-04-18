@@ -33,8 +33,9 @@ import {
 } from '../../../ngrx/selectors/auth.selectors';
 import { select, Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { LanguageService } from '../../../services/core/language.service';
+import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
 
 @Component({
   selector: 'lc-comment',
@@ -48,6 +49,8 @@ import { LanguageService } from '../../../services/core/language.service';
     ProgressSpinner,
     Menu,
     AsyncPipe,
+    NgTemplateOutlet,
+    ReactionWrapperComponent,
   ],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',

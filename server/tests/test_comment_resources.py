@@ -70,6 +70,9 @@ def test_get_comments_for_line(client):
     rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
     assert rv.status_code == 200
     assert "items" in rv.json
+    for item in rv.json["items"]:
+        assert "reactions" in item
+        assert item["reactions"] == []
     if rv.json["items"]:
         assert rv.json["items"][0].get("createdBy") is not None
         assert "avatar" in rv.json["items"][0]["createdBy"]
@@ -532,3 +535,71 @@ def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
     assert smtp_mock.return_value.__enter__.return_value.login.call_count == 4
     assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 4
     assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 4
+
+
+def test_reaction_post_put_delete_on_comment(client, member_token, admin_token):
+    line_id = Line.get_id_by_slug("treppe")
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "React target", "objectType": "Line", "objectId": str(line_id)},
+    )
+    assert rv.status_code == 201
+    comment_id = rv.json["id"]
+    assert rv.json.get("reactions") == []
+
+    rv = client.put(
+        f"/api/reactions/comment/{comment_id}",
+        token=admin_token,
+        json={"emoji": "💪"},
+    )
+    assert rv.status_code == 404
+
+    rv = client.post(
+        f"/api/reactions/comment/{comment_id}",
+        token=admin_token,
+        json={"emoji": "🔥"},
+    )
+    assert rv.status_code == 201
+    assert len(rv.json) == 1
+    assert rv.json[0]["emoji"] == "🔥"
+
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    item = next(i for i in rv.json["items"] if i["id"] == comment_id)
+    assert len(item["reactions"]) == 1
+    assert item["reactions"][0]["emoji"] == "🔥"
+
+    rv = client.put(
+        f"/api/reactions/comment/{comment_id}",
+        token=admin_token,
+        json={"emoji": "💪"},
+    )
+    assert rv.status_code == 200
+    assert rv.json[0]["emoji"] == "💪"
+
+    rv = client.delete(f"/api/reactions/comment/{comment_id}", token=admin_token)
+    assert rv.status_code == 200
+    assert rv.json == []
+
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
+    item = next(i for i in rv.json["items"] if i["id"] == comment_id)
+    assert item["reactions"] == []
+
+
+def test_cannot_react_to_own_comment(client, member_token):
+    line_id = Line.get_id_by_slug("treppe")
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Own comment", "objectType": "Line", "objectId": str(line_id)},
+    )
+    assert rv.status_code == 201
+    comment_id = rv.json["id"]
+
+    rv = client.post(
+        f"/api/reactions/comment/{comment_id}",
+        token=member_token,
+        json={"emoji": "🔥"},
+    )
+    assert rv.status_code == 400

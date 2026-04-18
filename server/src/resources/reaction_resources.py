@@ -8,6 +8,7 @@ from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.reactions_schema import ReactionUserListSchema
 from models.ascent import Ascent
+from models.comment import Comment
 from models.reaction import Reaction
 from models.user import User
 from util.reactions import get_reactions_by_user
@@ -22,6 +23,12 @@ def _resolve_target(target_type: str, target_id: str):
 
     if target_type == "ascent":
         return Ascent.find_by_id(target_id)
+
+    if target_type == "comment":
+        comment = Comment.find_by_id(target_id)
+        if comment and comment.is_deleted:
+            return None
+        return comment
 
     raise BadRequest("Unsupported target type")
 
