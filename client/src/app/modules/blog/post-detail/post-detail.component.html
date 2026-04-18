@@ -1,0 +1,44 @@
+<ng-container *transloco="let t; read: 'posts'">
+  <div class="content">
+    <p-card>
+      <div class="mb-3">
+        <p-button
+          [routerLink]="['/news']"
+          [label]="t('postDetail.backToNews')"
+          icon="pi pi-arrow-left"
+          [text]="true"
+          styleClass="p-0"
+        ></p-button>
+      </div>
+      @if (post) {
+        <div class="text-2xl font-bold text-900 mb-2">
+          {{ post.title }}
+        </div>
+        <div class="text-xs mb-3">
+          {{
+            t('postList.byUserAtDate', {
+              user: post.createdBy
+                ? post.createdBy.fullname
+                : t('postList.deletedUser'),
+              date: post.timeCreated | date,
+            })
+          }}
+        </div>
+        <div
+          [innerHTML]="post.text | sanitizeHtml"
+          class="quill-content mb-4"
+        ></div>
+        <p-button
+          *isModerator="true"
+          label="{{ t('postList.editPostButtonLabel') }}"
+          icon="pi pi-file-edit"
+          [routerLink]="['/news', post.slug, 'edit']"
+          [text]="true"
+          styleClass="mb-0"
+        ></p-button>
+        <p-divider type="solid"></p-divider>
+      }
+      <lc-comments></lc-comments>
+    </p-card>
+  </div>
+</ng-container>

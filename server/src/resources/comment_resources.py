@@ -18,6 +18,7 @@ from models.area import Area
 from models.comment import Comment
 from models.crag import Crag
 from models.line import Line
+from models.post import Post
 from models.region import Region
 from models.sector import Sector
 from models.user import User
@@ -47,6 +48,8 @@ class CreateComment(MethodView):
             target = Crag.find_by_id(obj_id)
         elif obj_type == "Region":
             target = Region.find_by_id(obj_id)
+        elif obj_type == "Post":
+            target = Post.find_by_id(obj_id)
         else:
             raise BadRequest("Unsupported object type")
 

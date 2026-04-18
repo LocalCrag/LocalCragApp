@@ -18,6 +18,7 @@ from models.area import Area
 from models.comment import Comment
 from models.crag import Crag
 from models.line import Line
+from models.post import Post
 from models.region import Region
 from models.sector import Sector
 from models.user import User
@@ -213,6 +214,9 @@ def _build_comment_action_link(comment: Comment) -> str:
     # Region
     if isinstance(obj, Region):
         return _frontend_url(f"topo/comments#{comment.id}")
+    # Blog posts
+    if isinstance(obj, Post):
+        return _frontend_url(f"news/{obj.slug}#{comment.id}")
     # Fallback
     return current_app.config["FRONTEND_HOST"]
 

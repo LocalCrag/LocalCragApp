@@ -9,6 +9,7 @@ export class Post extends AbstractModel {
   text: string;
   slug: string;
   createdBy: User;
+  commentCount: number;
 
   /**
    * Parses a post.
@@ -25,6 +26,7 @@ export class Post extends AbstractModel {
     post.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;
+    post.commentCount = payload.commentCount ?? 0;
     return post;
   }
 

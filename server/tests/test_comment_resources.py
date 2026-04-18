@@ -1,5 +1,6 @@
 from models.area import Area
 from models.line import Line
+from models.post import Post
 
 
 def test_create_comment_on_line(client, member_token):
@@ -63,6 +64,37 @@ def test_update_and_delete_comment(client, member_token):
 
     rv = client.delete(f"/api/comments/{comment_id}", token=member_token)
     assert rv.status_code == 204
+
+
+def test_create_comment_on_post(client, member_token):
+    post_id = Post.get_id_by_slug("mein-erster-post")
+    payload = {
+        "message": "Nice article!",
+        "objectType": "Post",
+        "objectId": str(post_id),
+        "parentId": None,
+    }
+    rv = client.post("/api/comments", token=member_token, json=payload)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["message"] == "Nice article!"
+    assert res.get("createdBy") is not None
+
+
+def test_get_comments_for_post(client, member_token):
+    post_id = Post.get_id_by_slug("noch-ein-post")
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "On topic", "objectType": "Post", "objectId": str(post_id)},
+    )
+    assert rv.status_code == 201
+
+    rv = client.get(f"/api/comments?object-type=Post&object-id={post_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    assert "items" in rv.json
+    assert len(rv.json["items"]) >= 1
+    assert rv.json["items"][0]["message"] == "On topic"
 
 
 def test_get_comments_for_line(client):
