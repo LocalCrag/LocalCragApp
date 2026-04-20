@@ -120,7 +120,12 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       }
       return;
     }
-    if (!this.canOpenPicker || !this.popover) return;
+    if (!this.canOpenPicker || !this.popover) {
+      if (this.totalReactions > 0) {
+        this.openInfoModal(event);
+      }
+      return;
+    }
     this.popover.toggle(event, this.reactionBar.nativeElement);
   }
 
