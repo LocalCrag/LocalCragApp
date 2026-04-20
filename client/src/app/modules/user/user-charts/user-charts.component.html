@@ -21,7 +21,10 @@
           {{ stats.ascentTotals.flashCount }}
           <span class="stat-sub">({{ stats.ascentTotals.flashPercent }}%)</span>
         </div>
-        @if (stats.ascentTotals.flashCount > 0 && stats.ascentTotals.hardestFlashGrades.length > 0) {
+        @if (
+          stats.ascentTotals.flashCount > 0 &&
+          stats.ascentTotals.hardestFlashGrades.length > 0
+        ) {
           @if (hardestFlashLabel$ | async; as hf) {
             @if (hf) {
               <p class="stat-note">{{ t("hardestFlash", { grade: hf }) }}</p>
@@ -53,18 +56,32 @@
       <div class="stat-card">
         <div class="stat-label">{{ t("upgrades") }}</div>
         <div class="stat-value">{{ stats.ascentTotals.upgradeCount }}</div>
-        @if (stats.ascentTotals.upgradeCount > 0 && stats.ascentTotals.biggestUpgradeGrades > 0) {
+        @if (
+          stats.ascentTotals.upgradeCount > 0 &&
+          stats.ascentTotals.biggestUpgradeGrades > 0
+        ) {
           <p class="stat-note">
-            {{ t("biggestUpgradeGrades", { grades: stats.ascentTotals.biggestUpgradeGrades }) }}
+            {{
+              t("biggestUpgradeGrades", {
+                grades: stats.ascentTotals.biggestUpgradeGrades,
+              })
+            }}
           </p>
         }
       </div>
       <div class="stat-card">
         <div class="stat-label">{{ t("downgrades") }}</div>
         <div class="stat-value">{{ stats.ascentTotals.downgradeCount }}</div>
-        @if (stats.ascentTotals.downgradeCount > 0 && stats.ascentTotals.biggestDowngradeGrades > 0) {
+        @if (
+          stats.ascentTotals.downgradeCount > 0 &&
+          stats.ascentTotals.biggestDowngradeGrades > 0
+        ) {
           <p class="stat-note">
-            {{ t("biggestDowngradeGrades", { grades: stats.ascentTotals.biggestDowngradeGrades }) }}
+            {{
+              t("biggestDowngradeGrades", {
+                grades: stats.ascentTotals.biggestDowngradeGrades,
+              })
+            }}
           </p>
         }
       </div>
@@ -79,7 +96,9 @@
           @if (stats.globalRankByLineType[lt] != null) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-              <div class="stat-value">{{ stats.globalRankByLineType[lt] }}.</div>
+              <div class="stat-value">
+                {{ stats.globalRankByLineType[lt] }}.
+              </div>
               <p class="stat-note">{{ t("globalRankTop10Short") }}</p>
             </div>
           }
@@ -88,7 +107,9 @@
           @if (stats.globalRankTop50ByLineType[lt] != null) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-              <div class="stat-value">{{ stats.globalRankTop50ByLineType[lt] }}.</div>
+              <div class="stat-value">
+                {{ stats.globalRankTop50ByLineType[lt] }}.
+              </div>
               <p class="stat-note">{{ t("globalRankTop50Short") }}</p>
             </div>
           }
@@ -97,7 +118,9 @@
           @if (stats.globalRankTotalCountByLineType[lt] != null) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-              <div class="stat-value">{{ stats.globalRankTotalCountByLineType[lt] }}.</div>
+              <div class="stat-value">
+                {{ stats.globalRankTotalCountByLineType[lt] }}.
+              </div>
               <p class="stat-note">{{ t("globalRankTotalCountShort") }}</p>
             </div>
           }
