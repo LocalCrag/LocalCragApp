@@ -93,7 +93,10 @@
       </h3>
       <div class="stat-grid stat-grid--rankings">
         @for (lt of lineTypes; track lt) {
-          @if (stats.globalRankByLineType[lt] !== null && stats.globalRankByLineType[lt] !== undefined) {
+          @if (
+            stats.globalRankByLineType[lt] !== null &&
+            stats.globalRankByLineType[lt] !== undefined
+          ) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
               <div class="stat-value">
@@ -104,7 +107,10 @@
           }
         }
         @for (lt of lineTypes; track lt) {
-          @if (stats.globalRankTop50ByLineType[lt] !== null && stats.globalRankTop50ByLineType[lt] !== undefined) {
+          @if (
+            stats.globalRankTop50ByLineType[lt] !== null &&
+            stats.globalRankTop50ByLineType[lt] !== undefined
+          ) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
               <div class="stat-value">
@@ -115,7 +121,10 @@
           }
         }
         @for (lt of lineTypes; track lt) {
-          @if (stats.globalRankTotalCountByLineType[lt] !== null && stats.globalRankTotalCountByLineType[lt] !== undefined) {
+          @if (
+            stats.globalRankTotalCountByLineType[lt] !== null &&
+            stats.globalRankTotalCountByLineType[lt] !== undefined
+          ) {
             <div class="stat-card">
               <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
               <div class="stat-value">
