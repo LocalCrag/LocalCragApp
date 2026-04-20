@@ -1,9 +1,258 @@
 <ng-container *transloco="let t; read: 'user.charts'">
-  <h3>{{ t("gradeDistribution") }}:</h3>
-  <lc-grade-distribution-bar-chart
-    [fetchingObservable]="fetchUserGrades"
-    [excludeProjects]="true"
-  ></lc-grade-distribution-bar-chart>
-  <h3>{{ t("completion") }}:</h3>
-  <lc-completion></lc-completion>
+  @if (stats) {
+    <h3 class="charts-section-title charts-section-title--achievements">
+      {{ t("achievements") }}
+    </h3>
+    <div class="stat-grid stat-grid--achievements">
+      <div class="stat-card">
+        <div class="stat-label">{{ t("totalAscents") }}</div>
+        <div class="stat-value">{{ stats.ascentTotals.total }}</div>
+        @if (stats.ascentTotals.hardestAscentGrades.length > 0) {
+          @if (hardestAscentLabel$ | async; as ha) {
+            @if (ha) {
+              <p class="stat-note">{{ t("hardestAscent", { grade: ha }) }}</p>
+            }
+          }
+        }
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("flashes") }}</div>
+        <div class="stat-value">
+          {{ stats.ascentTotals.flashCount }}
+          <span class="stat-sub">({{ stats.ascentTotals.flashPercent }}%)</span>
+        </div>
+        @if (
+          stats.ascentTotals.flashCount > 0 &&
+          stats.ascentTotals.hardestFlashGrades.length > 0
+        ) {
+          @if (hardestFlashLabel$ | async; as hf) {
+            @if (hf) {
+              <p class="stat-note">{{ t("hardestFlash", { grade: hf }) }}</p>
+            }
+          }
+        }
+      </div>
+      @if (stats.ascentTotals.faCount > 0) {
+        <div class="stat-card">
+          <div class="stat-label">{{ t("firstAscents") }}</div>
+          <div class="stat-value">{{ stats.ascentTotals.faCount }}</div>
+          @if (stats.ascentTotals.hardestFaGrades.length > 0) {
+            @if (hardestFaLabel$ | async; as hfa) {
+              @if (hfa) {
+                <p class="stat-note">{{ t("hardestFa", { grade: hfa }) }}</p>
+              }
+            }
+          }
+        </div>
+      }
+      <div class="stat-card">
+        <div class="stat-label">{{ t("softGrades") }}</div>
+        <div class="stat-value">{{ stats.ascentTotals.softPercent }}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("hardGrades") }}</div>
+        <div class="stat-value">{{ stats.ascentTotals.hardPercent }}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("upgrades") }}</div>
+        <div class="stat-value">{{ stats.ascentTotals.upgradeCount }}</div>
+        @if (
+          stats.ascentTotals.upgradeCount > 0 &&
+          stats.ascentTotals.biggestUpgradeGrades > 0
+        ) {
+          <p class="stat-note">
+            {{
+              t("biggestUpgradeGrades", {
+                grades: stats.ascentTotals.biggestUpgradeGrades,
+              })
+            }}
+          </p>
+        }
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("downgrades") }}</div>
+        <div class="stat-value">{{ stats.ascentTotals.downgradeCount }}</div>
+        @if (
+          stats.ascentTotals.downgradeCount > 0 &&
+          stats.ascentTotals.biggestDowngradeGrades > 0
+        ) {
+          <p class="stat-note">
+            {{
+              t("biggestDowngradeGrades", {
+                grades: stats.ascentTotals.biggestDowngradeGrades,
+              })
+            }}
+          </p>
+        }
+      </div>
+    </div>
+
+    @if (hasRankingTiles(stats)) {
+      <h3 class="charts-section-title charts-section-title--rankings">
+        {{ t("rankings") }}
+      </h3>
+      <div class="stat-grid stat-grid--rankings">
+        @for (lt of lineTypes; track lt) {
+          @if (
+            stats.globalRankByLineType[lt] !== null &&
+            stats.globalRankByLineType[lt] !== undefined
+          ) {
+            <div class="stat-card">
+              <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
+              <div class="stat-value">
+                {{ stats.globalRankByLineType[lt] }}.
+              </div>
+              <p class="stat-note">{{ t("globalRankTop10Short") }}</p>
+            </div>
+          }
+        }
+        @for (lt of lineTypes; track lt) {
+          @if (
+            stats.globalRankTop50ByLineType[lt] !== null &&
+            stats.globalRankTop50ByLineType[lt] !== undefined
+          ) {
+            <div class="stat-card">
+              <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
+              <div class="stat-value">
+                {{ stats.globalRankTop50ByLineType[lt] }}.
+              </div>
+              <p class="stat-note">{{ t("globalRankTop50Short") }}</p>
+            </div>
+          }
+        }
+        @for (lt of lineTypes; track lt) {
+          @if (
+            stats.globalRankTotalCountByLineType[lt] !== null &&
+            stats.globalRankTotalCountByLineType[lt] !== undefined
+          ) {
+            <div class="stat-card">
+              <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
+              <div class="stat-value">
+                {{ stats.globalRankTotalCountByLineType[lt] }}.
+              </div>
+              <p class="stat-note">{{ t("globalRankTotalCountShort") }}</p>
+            </div>
+          }
+        }
+      </div>
+    }
+
+    <h3 class="charts-section-title charts-section-title--social">
+      {{ t("social") }}
+    </h3>
+    <div class="stat-grid stat-grid--social">
+      <div class="stat-card">
+        <div class="stat-label">{{ t("commentsPosted") }}</div>
+        <div class="stat-value">{{ stats.social.commentsCount }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("reactionsCreated") }}</div>
+        <div class="stat-value">{{ stats.social.reactionsCount }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">{{ t("galleryImagesUploaded") }}</div>
+        <div class="stat-value">{{ stats.social.galleryImagesUploaded }}</div>
+      </div>
+    </div>
+
+    <ng-container *isModerator="true">
+      <h3 class="charts-section-title charts-section-title--moderation">
+        {{ t("moderation") }}
+      </h3>
+      <div class="stat-grid stat-grid--moderation">
+        <div class="stat-card">
+          <div class="stat-label">{{ t("cragsCreated") }}</div>
+          <div class="stat-value">{{ stats.moderation.cragsCreated }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("sectorsCreated") }}</div>
+          <div class="stat-value">{{ stats.moderation.sectorsCreated }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("areasCreated") }}</div>
+          <div class="stat-value">{{ stats.moderation.areasCreated }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("linesCreated") }}</div>
+          <div class="stat-value">{{ stats.moderation.linesCreated }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("postsWritten") }}</div>
+          <div class="stat-value">{{ stats.moderation.postsWritten }}</div>
+        </div>
+      </div>
+    </ng-container>
+
+    <h3 class="charts-section-title charts-section-title--ascentsPerYear">
+      {{ t("ascentsPerYear") }}
+    </h3>
+    <lc-ascents-per-year-chart
+      [ascentsPerYear]="stats.ascentsPerYear"
+      [barChartColor]="barChartColor"
+    />
+    <h3 class="charts-section-title charts-section-title--gradeDistribution">
+      {{ t("gradeDistribution") }}
+    </h3>
+    <div class="charts-section-box charts-section-box--blue">
+      <lc-grade-distribution-bar-chart
+        [fetchingObservable]="fetchUserGrades"
+        [fetchingFlashObservable]="fetchUserFlashGrades"
+        [excludeProjects]="true"
+        [showDetailedTooltip]="true"
+      ></lc-grade-distribution-bar-chart>
+    </div>
+    <h3 class="charts-section-title charts-section-title--completion">
+      {{ t("completion") }}
+    </h3>
+    <div class="charts-section-box charts-section-box--blue">
+      <lc-completion></lc-completion>
+    </div>
+  } @else {
+    <h3 class="charts-section-title charts-section-title--achievements">
+      <p-skeleton width="12rem" height="1.25rem" />
+    </h3>
+    <div class="stat-grid stat-grid--achievements">
+      @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
+        <div class="stat-card">
+          <p-skeleton width="55%" height="0.85rem" />
+          <div style="height: 0.45rem"></div>
+          <p-skeleton width="35%" height="1.35rem" />
+        </div>
+      }
+    </div>
+
+    <h3 class="charts-section-title charts-section-title--rankings">
+      <p-skeleton width="10rem" height="1.2rem" />
+    </h3>
+    <div class="stat-grid stat-grid--rankings">
+      @for (_ of [1, 2, 3]; track $index) {
+        <div class="stat-card">
+          <p-skeleton width="45%" height="0.85rem" />
+          <div style="height: 0.45rem"></div>
+          <p-skeleton width="25%" height="1.35rem" />
+        </div>
+      }
+    </div>
+
+    <h3 class="charts-section-title charts-section-title--ascentsPerYear">
+      <p-skeleton width="11rem" height="1.2rem" />
+    </h3>
+    <div class="charts-section-box charts-section-box--blue">
+      <p-skeleton width="100%" height="220px" />
+    </div>
+
+    <h3 class="charts-section-title charts-section-title--gradeDistribution">
+      <p-skeleton width="11rem" height="1.2rem" />
+    </h3>
+    <div class="charts-section-box charts-section-box--blue">
+      <p-skeleton width="100%" height="220px" />
+    </div>
+
+    <h3 class="charts-section-title charts-section-title--completion">
+      <p-skeleton width="8rem" height="1.2rem" />
+    </h3>
+    <div class="charts-section-box charts-section-box--blue">
+      <p-skeleton width="100%" height="120px" />
+    </div>
+  }
 </ng-container>

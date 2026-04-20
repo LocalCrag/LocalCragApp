@@ -1,0 +1,162 @@
+:host {
+  display: block;
+
+  .charts-section-title {
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    /* First block inside the tab (achievements): keep air above the heading. */
+    &--achievements:first-child {
+      margin-top: 1.25rem;
+    }
+
+    &--achievements {
+      border-left: 4px solid var(--p-primary-500, #6366f1);
+      padding-left: 0.65rem;
+    }
+
+    &--social {
+      border-left: 4px solid var(--p-orange-500, #f97316);
+      padding-left: 0.65rem;
+    }
+
+    &--moderation {
+      border-left: 4px solid var(--p-teal-500, #14b8a6);
+      padding-left: 0.65rem;
+    }
+
+    &--rankings {
+      border-left: 4px solid var(--p-blue-500, #3b82f6);
+      padding-left: 0.65rem;
+    }
+
+    &--ascentsPerYear {
+      border-left: 4px solid var(--p-blue-500, #3b82f6);
+      padding-left: 0.65rem;
+    }
+
+    &--gradeDistribution {
+      border-left: 4px solid var(--p-blue-500, #3b82f6);
+      padding-left: 0.65rem;
+    }
+
+    &--completion {
+      border-left: 4px solid var(--p-blue-500, #3b82f6);
+      padding-left: 0.65rem;
+    }
+  }
+
+  .charts-section-box {
+    padding: 0.65rem 0.75rem 0.75rem 0.85rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--p-border-radius-md, 6px);
+    border: 1px solid var(--p-content-border-color, rgba(0, 0, 0, 0.08));
+    border-left-width: 4px;
+    border-left-style: solid;
+    box-sizing: border-box;
+
+    &--red {
+      border-left-color: var(--p-red-500, #ef4444);
+      background: var(--p-red-50, rgba(239, 68, 68, 0.1));
+    }
+
+    &--blue {
+      border-left-color: var(--p-blue-500, #3b82f6);
+      background: var(--p-blue-50, rgba(59, 130, 246, 0.1));
+    }
+  }
+
+  .charts-section-box lc-grade-distribution-bar-chart,
+  .charts-section-box lc-completion {
+    display: block;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    border: 1px solid var(--p-content-border-color, rgba(0, 0, 0, 0.08));
+    border-radius: var(--p-border-radius-md, 6px);
+    padding: 0.75rem 1rem;
+    background: var(--p-surface-card, var(--p-content-background, #fff));
+    border-left-width: 4px;
+    border-left-style: solid;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    }
+  }
+
+  /* One accent per section (matches each h3 block). */
+  .stat-grid--rankings .stat-card {
+    border-left-color: var(--p-blue-500, #3b82f6);
+    background: var(--p-blue-50, rgba(59, 130, 246, 0.1));
+  }
+
+  .stat-grid--achievements .stat-card {
+    border-left-color: var(--p-primary-500, #6366f1);
+    background: var(--p-primary-50, rgba(99, 102, 241, 0.1));
+  }
+
+  .stat-grid--social .stat-card {
+    border-left-color: var(--p-orange-500, #f97316);
+    background: var(--p-orange-50, rgba(249, 115, 22, 0.11));
+  }
+
+  .stat-grid--moderation .stat-card {
+    border-left-color: var(--p-teal-500, #14b8a6);
+    background: var(--p-teal-50, rgba(20, 184, 166, 0.11));
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--p-text-color, inherit);
+  }
+
+  .stat-sub {
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  .stat-note {
+    margin: 0.35rem 0 0;
+    font-size: 0.75rem;
+    opacity: 0.75;
+    line-height: 1.35;
+  }
+
+  .year-chart-wrap {
+    height: 220px;
+  }
+
+  .year-chart-wrap.charts-section-box {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .year-chart-wrap p-chart,
+  .year-chart-wrap p-chart > div {
+    display: block;
+    height: 100%;
+  }
+}

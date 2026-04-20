@@ -70,6 +70,8 @@ def test_database_setup(client, clean_db, smtp_mock):
     instance_settings = instance_settings_s[0]
     assert instance_settings.instance_name == "My LocalCrag"
     assert instance_settings.copyright_owner == "Your name goes here"
+    assert instance_settings.bar_chart_color == "rgb(213, 30, 38)"
+    assert instance_settings.bar_chart_accent_color == "rgb(250, 204, 21)"
 
 
 def test_database_setup_with_missing_env_vars(client, clean_db):

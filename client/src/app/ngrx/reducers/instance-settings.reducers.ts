@@ -17,6 +17,7 @@ export interface InstanceSettingsState {
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
+  barChartAccentColor: string;
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
@@ -43,6 +44,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   arrowHighlightColor: null,
   arrowHighlightTextColor: null,
   barChartColor: null,
+  barChartAccentColor: null,
   maptilerApiKey: null,
   maxFileSize: 0,
   maxImageSize: 0,
@@ -72,6 +74,7 @@ const instanceSettingsReducer = createReducer(
     arrowHighlightColor: action.settings.arrowHighlightColor,
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
+    barChartAccentColor: action.settings.barChartAccentColor,
     maptilerApiKey: action.settings.maptilerApiKey,
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,

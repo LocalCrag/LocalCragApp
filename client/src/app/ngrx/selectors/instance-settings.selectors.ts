@@ -46,6 +46,11 @@ export const selectBarChartColor = createSelector(
   (instanceSettingsState) => instanceSettingsState.barChartColor,
 );
 
+export const selectBarChartAccentColor = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.barChartAccentColor,
+);
+
 export const selectRankingPastWeeks = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.rankingPastWeeks,
