@@ -15,7 +15,7 @@ import { Comment } from '../../../models/comment';
 import { LoadingState } from '../../../enums/loading-state';
 import { CommentsService } from '../../../services/crud/comments.service';
 import { Button } from 'primeng/button';
-import { GalleryImageSkeletonComponent } from '../../gallery/gallery-image-skeleton/gallery-image-skeleton.component';
+import { CommentsSkeletonComponent } from '../comments-skeleton/comments-skeleton.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { Message } from 'primeng/message';
@@ -28,7 +28,7 @@ import { CommentsContextService } from '../comments-context.service';
   imports: [
     CommentEditorComponent,
     Button,
-    GalleryImageSkeletonComponent,
+    CommentsSkeletonComponent,
     HasPermissionDirective,
     InfiniteScrollDirective,
     Message,
@@ -114,7 +114,9 @@ export class CommentsComponent implements OnInit {
   }
 
   loadNextPage() {
+    const objectId = this.commentsContextService.object?.id;
     if (
+      !!objectId &&
       this.loadingFirstPage !== LoadingState.LOADING &&
       this.loadingAdditionalPage !== LoadingState.LOADING &&
       this.hasNextPage
@@ -132,7 +134,7 @@ export class CommentsComponent implements OnInit {
       });
       if (this.objectType) {
         filters.set('object-type', this.objectType);
-        filters.set('object-id', this.commentsContextService.object.id);
+        filters.set('object-id', objectId);
       }
       const filterString = `?${filters.toString()}`;
       this.commentsService
