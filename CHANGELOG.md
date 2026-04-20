@@ -1,3 +1,10 @@
+# [1.34.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.33.0...v1.34.0) (2026-04-20)
+
+
+### Features
+
+* **account:** add detailed statistics to users account pages ([#1047](https://github.com/LocalCrag/LocalCragApp/issues/1047)) ([bb977b3](https://github.com/LocalCrag/LocalCragApp/commit/bb977b30461e1238e07e4310659ecef455ad2128))
+
 # [1.33.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.32.0...v1.33.0) (2026-04-18)
 
 
