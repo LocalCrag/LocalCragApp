@@ -375,4 +375,34 @@ def test_successful_get_user_grades(client):
     rv = client.get("/api/users/admin-admin/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert res["BOULDER"]["FB"] == {"22": 1}
+    assert "distribution" in res
+    assert "flashDistribution" in res
+    assert res["distribution"]["BOULDER"]["FB"] == {"22": 1}
+
+
+def test_successful_get_user_statistics(client):
+    rv = client.get("/api/users/admin-admin/statistics")
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["ascentsPerYear"] == {"2024": 1}
+    totals = res["ascentTotals"]
+    assert totals["total"] == 1
+    assert totals["flashCount"] == 0
+    assert totals["flashPercent"] == 0.0
+    assert totals["faCount"] == 1
+    assert totals["upgradeCount"] == 0
+    assert totals["downgradeCount"] == 0
+    assert totals["biggestUpgradeGrades"] == 0
+    assert totals["biggestDowngradeGrades"] == 0
+    assert totals["softPercent"] == 0.0
+    assert totals["hardPercent"] == 100.0
+    assert totals["hardestAscentGrades"] == [{"lineType": "BOULDER", "gradeScale": "FB", "gradeValue": 22}]
+    assert totals["hardestFlashGrades"] == []
+    assert totals["hardestFaGrades"] == [{"lineType": "BOULDER", "gradeScale": "FB", "gradeValue": 22}]
+    assert res["globalRankByLineType"]["BOULDER"] == 1
+    assert res["globalRankTop50ByLineType"]["BOULDER"] == 1
+    assert res["globalRankTotalCountByLineType"]["BOULDER"] == 1
+    assert "social" in res
+    assert "galleryImagesUploaded" in res["social"]
+    assert "moderation" in res
+    assert res["moderation"]["cragsCreated"] >= 0

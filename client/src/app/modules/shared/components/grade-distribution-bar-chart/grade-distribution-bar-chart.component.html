@@ -17,7 +17,7 @@
         <p-chart
           type="bar"
           [data]="chartDataElement.data"
-          [options]="options"
+          [options]="chartDataElement.chartOptions ?? options"
         ></p-chart>
       }
       <div class="total">

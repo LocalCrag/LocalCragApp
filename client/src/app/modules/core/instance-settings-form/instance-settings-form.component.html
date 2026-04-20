@@ -338,6 +338,17 @@
           ></p-colorPicker>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="bar-chart-accent-color">{{
+            t("barChartAccentColorLabel")
+          }}</label>
+          <p-colorPicker
+            id="bar-chart-accent-color"
+            formControlName="barChartAccentColor"
+            format="rgb"
+          ></p-colorPicker>
+        </div>
+
         <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("matomoSettings") }}</b></p-divider
         >

@@ -24,6 +24,7 @@ def test_successful_get_instance_settings(client):
     assert res["arrowHighlightColor"] == instance_settings.arrow_highlight_color
     assert res["arrowHighlightTextColor"] == instance_settings.arrow_highlight_text_color
     assert res["barChartColor"] == instance_settings.bar_chart_color
+    assert res["barChartAccentColor"] == instance_settings.bar_chart_accent_color
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
@@ -54,6 +55,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
+        "barChartAccentColor": "rgb(250, 204, 21)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
@@ -82,6 +84,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["arrowHighlightColor"] == "#CCCCCC"
     assert res["arrowHighlightTextColor"] == "#DDDDDD"
     assert res["barChartColor"] == "rgb(213, 30, 39)"
+    assert res["barChartAccentColor"] == "rgb(250, 204, 21)"
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
@@ -117,6 +120,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
+        "barChartAccentColor": "rgb(250, 204, 21)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
@@ -155,6 +159,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
+        "barChartAccentColor": "rgb(250, 204, 21)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",

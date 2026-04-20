@@ -150,6 +150,7 @@ from resources.user_resources import (
     GetUser,
     GetUserGrades,
     GetUsers,
+    GetUserStatistics,
     PromoteUser,
     RegisterUser,
     ResendUserCreateMail,
@@ -234,6 +235,7 @@ def configure_api(app):
     )
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
+    user_bp.add_url_rule("/<string:user_slug>/statistics", view_func=GetUserStatistics.as_view("get_user_statistics"))
     user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
     user_bp.add_url_rule("/account/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
     user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))

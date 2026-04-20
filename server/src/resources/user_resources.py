@@ -12,6 +12,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
+from sqlalchemy import func
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -24,11 +25,19 @@ from marshmallow_schemas.simple_message_schema import simple_message_schema
 from marshmallow_schemas.user_schema import user_list_schema, user_schema
 from messages.marshalling_objects import AuthResponse, SimpleMessage
 from messages.messages import ResponseMessage
+from models.area import Area
 from models.ascent import Ascent
+from models.comment import Comment
+from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.user_promotion_enum import UserPromotionEnum
+from models.gallery_image import GalleryImage
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.post import Post
+from models.ranking import Ranking
+from models.reaction import Reaction
+from models.sector import Sector
 from models.user import User
 from util.auth import get_access_token_claims
 from util.email import (
@@ -38,6 +47,7 @@ from util.email import (
 )
 from util.password_util import generate_password
 from util.regexes import email_regex
+from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from webargs_schemas.change_password_args import change_password_args
 from webargs_schemas.new_email_args import new_email_args
@@ -46,6 +56,24 @@ from webargs_schemas.user_args import (
     user_promotion_args,
     user_registration_args,
 )
+
+
+def _hardest_grade_bump(hardest: dict, line: Line, display_user_grades: bool) -> None:
+    """Track max displayed line grade per (line_type, grade_scale)."""
+    gv = line.user_grade_value if display_user_grades else line.author_grade_value
+    if gv is None or gv <= 0:
+        return
+    line_type = line.type.value if line.type is not None else None
+    if not line_type or not line.grade_scale:
+        return
+    key = (line_type, line.grade_scale)
+    prev = hardest.get(key)
+    if prev is None or gv > prev:
+        hardest[key] = gv
+
+
+def _hardest_grades_to_list(hardest: dict) -> list:
+    return [{"lineType": lt, "gradeScale": scale, "gradeValue": val} for (lt, scale), val in sorted(hardest.items())]
 
 
 class GetUser(MethodView):
@@ -264,23 +292,185 @@ class GetUserGrades(MethodView):
     def get(self, user_slug):
         instance_settings = InstanceSettings.return_it()
         user_id = User.get_id_by_slug(user_slug)
-        result = (
-            db.session.query(
-                Line.type,
-                Line.grade_scale,
-                Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
-                Ascent.line_id,
-                Ascent.created_by_id,
-            )
-            .filter(Line.id == Ascent.line_id, Ascent.created_by_id == user_id, Line.archived.is_(False))
-            .all()
+        grade_col = Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value
+        query = (
+            db.session.query(Line.type, Line.grade_scale, grade_col, Ascent.flash)
+            .join(Ascent, Ascent.line_id == Line.id)
+            .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
         )
+        if not get_show_secret():
+            query = query.filter(Line.secret.is_(False))
+        result = query.all()
         response_data = {
             LineTypeEnum.BOULDER.value: defaultdict(Counter),
             LineTypeEnum.SPORT.value: defaultdict(Counter),
             LineTypeEnum.TRAD.value: defaultdict(Counter),
         }
-        for lineType, gradeScale, gradeValue, _id, _created_by in result:
+        flash_data = {
+            LineTypeEnum.BOULDER.value: defaultdict(Counter),
+            LineTypeEnum.SPORT.value: defaultdict(Counter),
+            LineTypeEnum.TRAD.value: defaultdict(Counter),
+        }
+        for lineType, gradeScale, gradeValue, flash in result:
             response_data[lineType.value][gradeScale].update({gradeValue: 1})
+            if flash:
+                flash_data[lineType.value][gradeScale].update({gradeValue: 1})
 
-        return jsonify(response_data), 200
+        return jsonify({"distribution": response_data, "flashDistribution": flash_data}), 200
+
+
+class GetUserStatistics(MethodView):
+    """Aggregate climbing, social, and moderation stats for the public user profile."""
+
+    def get(self, user_slug):
+        user_id = User.get_id_by_slug(user_slug)
+        instance_settings = InstanceSettings.return_it()
+        display_user_grades = bool(instance_settings.display_user_grades)
+
+        ascents_query = (
+            db.session.query(Ascent, Line)
+            .join(Line, Ascent.line_id == Line.id)
+            .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
+        )
+        if not get_show_secret():
+            ascents_query = ascents_query.filter(Line.secret.is_(False))
+        pairs = ascents_query.all()
+
+        hardest_ascent: dict = {}
+        hardest_flash: dict = {}
+        hardest_fa: dict = {}
+
+        ascents_per_year: dict[str, int] = {}
+        total = 0
+        flash_count = 0
+        fa_count = 0
+        soft_count = 0
+        hard_count = 0
+        upgrades = 0
+        downgrades = 0
+        biggest_upgrade_grades = 0
+        biggest_downgrade_grades = 0
+
+        for ascent, line in pairs:
+            total += 1
+            _hardest_grade_bump(hardest_ascent, line, display_user_grades)
+            if ascent.flash:
+                flash_count += 1
+                _hardest_grade_bump(hardest_flash, line, display_user_grades)
+            if ascent.fa:
+                fa_count += 1
+                _hardest_grade_bump(hardest_fa, line, display_user_grades)
+            if ascent.soft:
+                soft_count += 1
+            if ascent.hard:
+                hard_count += 1
+            if ascent.ascent_date is not None:
+                y = str(ascent.ascent_date.year)
+                ascents_per_year[y] = ascents_per_year.get(y, 0) + 1
+
+            ref = line.user_grade_value if display_user_grades else line.author_grade_value
+            if ref > 0 and ascent.grade_value > 0:
+                if ascent.grade_value > ref:
+                    upgrades += 1
+                    biggest_upgrade_grades = max(biggest_upgrade_grades, ascent.grade_value - ref)
+                elif ascent.grade_value < ref:
+                    downgrades += 1
+                    biggest_downgrade_grades = max(biggest_downgrade_grades, ref - ascent.grade_value)
+
+        flash_percent = round((flash_count / total) * 100, 1) if total else 0.0
+        soft_percent = round((soft_count / total) * 100, 1) if total else 0.0
+        hard_percent = round((hard_count / total) * 100, 1) if total else 0.0
+
+        global_rank_top10_by_line_type = {}
+        global_rank_top50_by_line_type = {}
+        global_rank_total_count_by_line_type = {}
+        for lt in LineTypeEnum:
+            rankings = Ranking.query.filter(
+                Ranking.crag_id.is_(None),
+                Ranking.sector_id.is_(None),
+                Ranking.secret.is_(False),
+                Ranking.type == lt,
+            ).all()
+            rankings_top10 = list(rankings)
+            rankings_top10.sort(
+                key=lambda r: (r.top_10 or 0, r.top_50 or 0, r.total_count or 0),
+                reverse=True,
+            )
+            rank_top10 = None
+            for idx, r in enumerate(rankings_top10):
+                if r.user_id == user_id:
+                    rank_top10 = idx + 1
+                    break
+            global_rank_top10_by_line_type[lt.value] = rank_top10
+
+            rankings_top50 = list(rankings)
+            rankings_top50.sort(
+                key=lambda r: (r.top_50 or 0, r.top_10 or 0, r.total_count or 0),
+                reverse=True,
+            )
+            rank_top50 = None
+            for idx, r in enumerate(rankings_top50):
+                if r.user_id == user_id:
+                    rank_top50 = idx + 1
+                    break
+            global_rank_top50_by_line_type[lt.value] = rank_top50
+
+            rankings_total = list(rankings)
+            rankings_total.sort(
+                key=lambda r: (r.total_count or 0, r.top_10 or 0, r.top_50 or 0),
+                reverse=True,
+            )
+            rank_total = None
+            for idx, r in enumerate(rankings_total):
+                if r.user_id == user_id:
+                    rank_total = idx + 1
+                    break
+            global_rank_total_count_by_line_type[lt.value] = rank_total
+
+        comments_count = (
+            db.session.query(func.count(Comment.id))
+            .filter(Comment.created_by_id == user_id, Comment.is_deleted.is_(False))
+            .scalar()
+        )
+        # Emoji reactions this user placed (Reaction.created_by_id), not reactions on their own content.
+        reactions_count = db.session.query(func.count(Reaction.id)).filter(Reaction.created_by_id == user_id).scalar()
+        gallery_images_uploaded = (
+            db.session.query(func.count(GalleryImage.id)).filter(GalleryImage.created_by_id == user_id).scalar()
+        )
+
+        moderation = {
+            "cragsCreated": Crag.query.filter(Crag.created_by_id == user_id).count(),
+            "sectorsCreated": Sector.query.filter(Sector.created_by_id == user_id).count(),
+            "areasCreated": Area.query.filter(Area.created_by_id == user_id).count(),
+            "linesCreated": Line.query.filter(Line.created_by_id == user_id).count(),
+            "postsWritten": Post.query.filter(Post.created_by_id == user_id).count(),
+        }
+
+        payload = {
+            "ascentsPerYear": dict(sorted(ascents_per_year.items(), key=lambda kv: kv[0])),
+            "ascentTotals": {
+                "total": total,
+                "flashCount": flash_count,
+                "flashPercent": flash_percent,
+                "faCount": fa_count,
+                "upgradeCount": upgrades,
+                "downgradeCount": downgrades,
+                "biggestUpgradeGrades": biggest_upgrade_grades,
+                "biggestDowngradeGrades": biggest_downgrade_grades,
+                "hardestAscentGrades": _hardest_grades_to_list(hardest_ascent),
+                "hardestFlashGrades": _hardest_grades_to_list(hardest_flash),
+                "hardestFaGrades": _hardest_grades_to_list(hardest_fa),
+                "softPercent": soft_percent,
+                "hardPercent": hard_percent,
+            },
+            "globalRankByLineType": global_rank_top10_by_line_type,
+            "globalRankTop50ByLineType": global_rank_top50_by_line_type,
+            "globalRankTotalCountByLineType": global_rank_total_count_by_line_type,
+            "social": {
+                "commentsCount": int(comments_count or 0),
+                "reactionsCount": int(reactions_count or 0),
+                "galleryImagesUploaded": int(gallery_images_uploaded or 0),
+            },
+            "moderation": moderation,
+        }
+        return jsonify(payload), 200
