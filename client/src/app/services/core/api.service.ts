@@ -85,6 +85,8 @@ export class ApiService {
     getEmailTaken: (email: string): string =>
       `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
+    getStatistics: (slug: string): string =>
+      `${this.apiHost}users/${slug}/statistics`,
     deleteOwnUser: (): string => `${this.apiHost}users/account/delete-own-user`,
   };
 

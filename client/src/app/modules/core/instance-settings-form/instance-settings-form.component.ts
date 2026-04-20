@@ -167,6 +167,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       arrowHighlightColor: [null],
       arrowHighlightTextColor: [null],
       barChartColor: [null],
+      barChartAccentColor: [null],
       matomoTrackerUrl: [null],
       matomoSiteId: [null],
       maptilerApiKey: [null],
@@ -197,6 +198,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
       arrowHighlightTextColor: this.instanceSettings.arrowHighlightTextColor,
       barChartColor: getRgbObject(this.instanceSettings.barChartColor),
+      barChartAccentColor: getRgbObject(
+        this.instanceSettings.barChartAccentColor,
+      ),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
       maptilerApiKey: this.instanceSettings.maptilerApiKey,
@@ -244,6 +248,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       ).value;
       instanceSettings.barChartColor = this.getCSSRgbValue(
         this.instanceSettingsForm.get('barChartColor').value,
+      );
+      instanceSettings.barChartAccentColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('barChartAccentColor').value,
       );
       instanceSettings.matomoSiteId =
         this.instanceSettingsForm.get('matomoSiteId').value;

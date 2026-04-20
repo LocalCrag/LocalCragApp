@@ -1,0 +1,13 @@
+<ng-container *transloco="let t; read: 'user.charts'">
+  @if (yearChartData?.labels?.length) {
+    <div class="year-chart-wrap charts-section-box charts-section-box--blue">
+      <p-chart type="bar" [data]="yearChartData" [options]="yearChartOptions" />
+    </div>
+  } @else {
+    <p-message
+      severity="info"
+      icon="pi pi-info-circle"
+      [text]="t('noAscentYearData')"
+    />
+  }
+</ng-container>

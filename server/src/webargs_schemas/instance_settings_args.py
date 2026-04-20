@@ -18,6 +18,7 @@ instance_settings_args = {
     "arrowHighlightColor": fields.Str(required=True),
     "arrowHighlightTextColor": fields.Str(required=True),
     "barChartColor": fields.Str(required=True),
+    "barChartAccentColor": fields.Str(required=True),
     "language": fields.Str(required=True, validate=validate_language),
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True),
     "matomoSiteId": fields.Str(required=True, allow_none=True),

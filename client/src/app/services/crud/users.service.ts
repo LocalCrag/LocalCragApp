@@ -7,6 +7,10 @@ import { User } from '../../models/user';
 import { LoginResponse } from '../../models/login-response';
 import { UserPromotionTargets } from '../../enums/user-promotion-targets';
 import { deserializeGradeList, GradeDistribution } from '../../models/scale';
+import {
+  UserStatistics,
+  UserStatisticsModel,
+} from '../../models/user-statistics';
 
 @Injectable({
   providedIn: 'root',
@@ -78,9 +82,23 @@ export class UsersService {
       .pipe(map(User.deserialize));
   }
 
-  public getUserGrades(userSlug: string): Observable<GradeDistribution> {
+  public getUserGrades(userSlug: string): Observable<{
+    distribution: GradeDistribution;
+    flashDistribution: GradeDistribution;
+  }> {
+    return this.http.get(this.api.users.getGrades(userSlug)).pipe(
+      map((payload: any) => ({
+        distribution: deserializeGradeList(payload.distribution ?? {}),
+        flashDistribution: deserializeGradeList(
+          payload.flashDistribution ?? {},
+        ),
+      })),
+    );
+  }
+
+  public getUserStatistics(userSlug: string): Observable<UserStatistics> {
     return this.http
-      .get(this.api.users.getGrades(userSlug))
-      .pipe(map(deserializeGradeList));
+      .get(this.api.users.getStatistics(userSlug))
+      .pipe(map(UserStatisticsModel.deserialize));
   }
 }

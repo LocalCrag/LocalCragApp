@@ -16,6 +16,7 @@ export class InstanceSettings {
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
+  barChartAccentColor: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
@@ -53,6 +54,7 @@ export class InstanceSettings {
     instanceSettings.arrowHighlightColor = payload.arrowHighlightColor;
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
     instanceSettings.barChartColor = payload.barChartColor;
+    instanceSettings.barChartAccentColor = payload.barChartAccentColor;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
@@ -92,6 +94,7 @@ export class InstanceSettings {
       arrowHighlightColor: instanceSettings.arrowHighlightColor,
       arrowHighlightTextColor: instanceSettings.arrowHighlightTextColor,
       barChartColor: instanceSettings.barChartColor,
+      barChartAccentColor: instanceSettings.barChartAccentColor,
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
