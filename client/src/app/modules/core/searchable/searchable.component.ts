@@ -1,7 +1,9 @@
 import {
   Component,
+  EventEmitter,
   HostBinding,
   Input,
+  Output,
   ViewEncapsulation,
   inject,
 } from '@angular/core';
@@ -18,6 +20,9 @@ import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RecentSearchHistoryService } from '../../../services/core/recent-search-history.service';
+import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-searchable',
@@ -35,11 +40,17 @@ import { map } from 'rxjs/operators';
 })
 export class SearchableComponent {
   private store = inject(Store);
+  private recentSearchHistory = inject(RecentSearchHistoryService);
 
   protected scalesService = inject(ScalesService);
 
   @Input() disableNavigation = false;
+  /**
+   * When true, clicking a navigable result is stored as a recent search selection (search dialog only).
+   */
+  @Input() recordRecentSearchHistory = false;
   @Input() searchable: Searchable;
+  @Output() selected = new EventEmitter<void>();
   /**
    * Set to true if searchable is displayed in a small container. Will apply ellipsis to texts and force a single line.
    */
@@ -47,6 +58,28 @@ export class SearchableComponent {
   @Input()
   ellipsis = false;
   protected readonly environment = environment;
+
+  protected rememberSearchSelection(): void {
+    if (
+      this.recordRecentSearchHistory &&
+      !this.disableNavigation &&
+      this.searchable
+    ) {
+      this.store
+        .select(selectIsLoggedIn)
+        .pipe(take(1))
+        .subscribe((isLoggedIn) => {
+          if (isLoggedIn) {
+            this.recentSearchHistory.recordSelection(this.searchable);
+          }
+        });
+    }
+  }
+
+  protected onSearchResultClick(): void {
+    this.rememberSearchSelection();
+    this.selected.emit();
+  }
 
   public lineGradeValue() {
     if (!this.searchable.line) return of(undefined);

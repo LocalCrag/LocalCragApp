@@ -20,10 +20,28 @@
     </p-inputgroup-addon>
   </p-inputgroup>
 
-  @if (searchables?.length > 0) {
+  @if (
+    (showLiveSearchResults() && searchables?.length > 0) || showRecentSearches()
+  ) {
     <div class="spacer"></div>
   }
-  @for (searchable of searchables; track searchable) {
-    <lc-searchable [searchable]="searchable"> </lc-searchable>
+  @if (showRecentSearches()) {
+    <div class="search-recent-heading">{{ t("recentSearches") }}</div>
+    @for (searchable of recentSearchables; track searchable.id) {
+      <lc-searchable
+        [searchable]="searchable"
+        [recordRecentSearchHistory]="true"
+        (selected)="close()"
+      ></lc-searchable>
+    }
+  }
+  @if (showLiveSearchResults()) {
+    @for (searchable of searchables; track searchable.id) {
+      <lc-searchable
+        [searchable]="searchable"
+        [recordRecentSearchHistory]="true"
+        (selected)="close()"
+      ></lc-searchable>
+    }
   }
 </ng-container>

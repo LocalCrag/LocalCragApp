@@ -235,6 +235,7 @@
   "searchDialog.crag": "Gebiet",
   "searchDialog.user": "Benutzer",
   "searchDialog.searchInputPlaceholder": "Suche nach Linien, Gebieten, Benutzern...",
+  "searchDialog.recentSearches": "Zuletzt besucht",
   "resetPassword.title": "Passwort zurücksetzen",
   "resetPassword.description": "Wähle ein neues Passwort für Deinen Account.",
   "resetPassword.newPasswordPlaceholder": "Neues Passwort",

@@ -234,6 +234,7 @@
   "searchDialog.crag": "Zona",
   "searchDialog.user": "Utente",
   "searchDialog.searchInputPlaceholder": "Ricerca problemi, aree, utenti...",
+  "searchDialog.recentSearches": "Recenti",
   "resetPassword.title": "Reimposta password",
   "resetPassword.description": "Scegli una nuova password per il tuo account.",
   "resetPassword.newPasswordPlaceholder": "Nuova password",

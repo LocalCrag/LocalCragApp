@@ -235,6 +235,7 @@
   "searchDialog.crag": "Crag",
   "searchDialog.user": "User",
   "searchDialog.searchInputPlaceholder": "Search for lines, crags, users...",
+  "searchDialog.recentSearches": "Recent",
   "resetPassword.title": "Reset Password",
   "resetPassword.description": "Choose a new password for your account.",
   "resetPassword.newPasswordPlaceholder": "New password",
