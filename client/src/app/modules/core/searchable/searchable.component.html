@@ -6,7 +6,9 @@
   @if (searchable.line) {
     <div
       class="search-result"
+      tabindex="0"
       [routerLink]="disableNavigation ? null : searchable.line.routerLink"
+      (click)="onSearchResultClick()"
     >
       <div class="grade-circle">
         @if ((lineGradeValue() | async) > 0) {
@@ -43,7 +45,9 @@
   @if (searchable.area) {
     <div
       class="search-result"
+      tabindex="0"
       [routerLink]="disableNavigation ? null : searchable.area.routerLink"
+      (click)="onSearchResultClick()"
     >
       <p-avatar
         [image]="
@@ -76,7 +80,9 @@
   @if (searchable.sector) {
     <div
       class="search-result"
+      tabindex="0"
       [routerLink]="disableNavigation ? null : searchable.sector.routerLink"
+      (click)="onSearchResultClick()"
     >
       <p-avatar
         [image]="
@@ -104,7 +110,9 @@
   @if (searchable.crag) {
     <div
       class="search-result"
+      tabindex="0"
       [routerLink]="disableNavigation ? null : searchable.crag.routerLink"
+      (click)="onSearchResultClick()"
     >
       <p-avatar
         [image]="
@@ -127,7 +135,9 @@
   @if (searchable.user) {
     <div
       class="search-result"
+      tabindex="0"
       [routerLink]="disableNavigation ? null : searchable.user.routerLink"
+      (click)="onSearchResultClick()"
     >
       <lc-user-avatar
         [user]="searchable.user"

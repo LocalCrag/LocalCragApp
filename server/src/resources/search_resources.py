@@ -1,25 +1,42 @@
+import datetime
+
+import pytz
 from flask import jsonify, request
 from flask.views import MethodView
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func
+from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.search_schema import (
-    area_search_schema,
-    crag_search_schema,
-    line_search_schema,
-    sector_search_schema,
-    user_search_schema,
-)
-from models.area import Area
-from models.crag import Crag
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.instance_settings import InstanceSettings
-from models.line import Line
+from models.recent_search import RecentSearch
 from models.searchable import Searchable
-from models.sector import Sector
 from models.user import User
+from util.generic_relationships import check_object_exists, get_object_secret
+from util.search_result_serialization import serialize_search_result
 from util.secret_spots_auth import get_show_secret
+from webargs_schemas.recent_search_args import recent_search_create_args
+
+MAX_RECENT_SEARCHES = 10
+
+
+def _normalize_object_type(value: object) -> str:
+    if not isinstance(value, str):
+        raise BadRequest("objectType must be a string.")
+    normalized = value.strip().lower()
+    mapping = {
+        "line": "Line",
+        "area": "Area",
+        "sector": "Sector",
+        "crag": "Crag",
+        "user": "User",
+    }
+    if normalized not in mapping:
+        allowed = ", ".join(sorted(mapping.keys()))
+        raise BadRequest(f"Invalid objectType '{value}'. Allowed values: {allowed}.")
+    return mapping[normalized]
 
 
 class Search(MethodView):
@@ -55,16 +72,72 @@ class Search(MethodView):
         )
         result = []
         for searchable in searchables:
-            item = None
-            if searchable.type == SearchableItemTypeEnum.CRAG:
-                item = crag_search_schema.dump(Crag.find_by_id(searchable.id))
-            if searchable.type == SearchableItemTypeEnum.SECTOR:
-                item = sector_search_schema.dump(Sector.find_by_id(searchable.id))
-            if searchable.type == SearchableItemTypeEnum.AREA:
-                item = area_search_schema.dump(Area.find_by_id(searchable.id))
-            if searchable.type == SearchableItemTypeEnum.LINE:
-                item = line_search_schema.dump(Line.find_by_id(searchable.id))
-            if searchable.type == SearchableItemTypeEnum.USER:
-                item = user_search_schema.dump(User.find_by_id(searchable.id))
-            result.append({"type": searchable.type.value, "item": item})
+            serialized = serialize_search_result(searchable.type.value.title(), searchable.id)
+            if serialized:
+                result.append(serialized)
         return jsonify(result), 200
+
+
+class GetRecentSearches(MethodView):
+
+    @jwt_required()
+    def get(self):
+        user = User.find_by_email(get_jwt_identity())
+        recent_entries = (
+            RecentSearch.query.filter_by(user_id=user.id)
+            .order_by(RecentSearch.time_created.desc())
+            .limit(MAX_RECENT_SEARCHES)
+            .all()
+        )
+        result = []
+        for entry in recent_entries:
+            if not entry.object or (not get_show_secret() and get_object_secret(entry.object_type, entry.object_id)):
+                continue
+            serialized = serialize_search_result(entry.object_type, entry.object_id)
+            if serialized:
+                result.append(serialized)
+        return jsonify(result), 200
+
+
+class CreateRecentSearch(MethodView):
+
+    @jwt_required()
+    def post(self):
+        user = User.find_by_email(get_jwt_identity())
+        data = parser.parse(recent_search_create_args)
+
+        object_type = _normalize_object_type(data["objectType"])
+        object_id = data["objectId"]
+        if not check_object_exists(object_type, object_id):
+            raise BadRequest("Referenced object does not exist.")
+        if object_type != "User" and (not get_show_secret()) and get_object_secret(object_type, object_id):
+            raise BadRequest("Referenced object is not visible.")
+
+        existing = RecentSearch.query.filter_by(
+            user_id=user.id,
+            object_type=object_type,
+            object_id=object_id,
+        ).first()
+        if existing:
+            existing.time_created = datetime.datetime.now(pytz.utc)
+            db.session.add(existing)
+        else:
+            entry = RecentSearch()
+            entry.user_id = user.id
+            entry.object_type = object_type
+            entry.object_id = object_id
+            db.session.add(entry)
+        db.session.commit()
+
+        # Keep only the most recent MAX_RECENT_SEARCHES items.
+        to_delete = (
+            RecentSearch.query.filter_by(user_id=user.id)
+            .order_by(RecentSearch.time_created.desc())
+            .offset(MAX_RECENT_SEARCHES)
+            .all()
+        )
+        for entry in to_delete:
+            db.session.delete(entry)
+        if to_delete:
+            db.session.commit()
+        return jsonify(None), 204

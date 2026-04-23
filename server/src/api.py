@@ -113,7 +113,7 @@ from resources.scale_resources import (
     GetScales,
     UpdateScale,
 )
-from resources.search_resources import Search
+from resources.search_resources import CreateRecentSearch, GetRecentSearches, Search
 from resources.sector_resources import (
     CreateSector,
     DeleteSector,
@@ -239,6 +239,8 @@ def configure_api(app):
     user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
     user_bp.add_url_rule("/account/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
     user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
+    user_bp.add_url_rule("/account/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
+    user_bp.add_url_rule("/account/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
     # Gallery API

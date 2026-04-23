@@ -31,6 +31,15 @@ lc-search-dialog {
     height: 1.5rem;
   }
 
+  .search-recent-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--p-text-muted-color, var(--p-gray-500));
+    margin-bottom: 0.5rem;
+  }
+
   lc-searchable .search-result {
     border-radius: 0.5rem;
 

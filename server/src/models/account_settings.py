@@ -16,5 +16,4 @@ class AccountSettings(db.Model):
     comment_reply_mails_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
     # Preferred language for the account
     language = db.Column(db.String(10), nullable=False, default="en", server_default="en")
-
     user = db.relationship("User", back_populates="account_settings")

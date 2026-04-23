@@ -235,6 +235,7 @@
   "searchDialog.crag": "Gebied",
   "searchDialog.user": "Gebruiker",
   "searchDialog.searchInputPlaceholder": "Zoek naar routes, gebieden, gebruikers...",
+  "searchDialog.recentSearches": "Recent",
   "resetPassword.title": "Wachtwoord opnieuw instellen",
   "resetPassword.description": "Kies een nieuw wachtwoord voor uw account.",
   "resetPassword.newPasswordPlaceholder": "Nieuw wachtwoord",
