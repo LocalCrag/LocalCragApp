@@ -69,17 +69,18 @@
                         ></p-button>
                       </div>
                     </div>
-                    <div
-                      class="text-xs mb-2 flex flex-wrap align-items-center column-gap-2 row-gap-1"
-                    >
-                      <span>{{
-                        t("byUserAtDate", {
-                          user: post.createdBy
-                            ? post.createdBy.fullname
-                            : t("deletedUser"),
-                          date: post.timeCreated | date,
-                        })
-                      }}</span>
+                    <div class="text-xs mb-2">
+                      {{ t("byUser") }}
+                      @if (post.createdBy) {
+                        <a
+                          class="text-primary no-underline hover:underline"
+                          [routerLink]="post.createdBy.routerLink"
+                          >{{ post.createdBy.fullname }}</a
+                        >
+                      } @else {
+                        {{ t("deletedUser") }}
+                      }
+                      {{ t("atDate", { date: post.timeCreated | date }) }}
                       <span class="text-500 hidden sm:inline">·</span>
                       <span class="text-600">{{
                         t("totalComments", { count: post.commentCount })
