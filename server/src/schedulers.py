@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import datetime
 import zlib
 from typing import Optional
 
@@ -9,6 +10,13 @@ from apscheduler.triggers.interval import IntervalTrigger
 from sqlalchemy import text
 
 from extensions import db
+from models.enums.notification_digest_frequency_enum import (
+    NotificationDigestFrequencyEnum,
+)
+from models.notification import Notification
+from models.user import User
+from util.email import send_notification_digest_email
+from util.notifications import should_send_notification_mail
 
 # Keep a module-level reference so we don't start multiple schedulers per process
 _scheduler: Optional[BackgroundScheduler] = None
@@ -78,9 +86,60 @@ def init_schedulers(app) -> None:
         coalesce=True,
         replace_existing=True,
     )
+    scheduler.add_job(
+        func=lambda: _run_send_notification_digests(app),
+        trigger=IntervalTrigger(hours=24),
+        id="send_notification_digests_daily",
+        max_instances=1,
+        coalesce=True,
+        replace_existing=True,
+    )
 
     scheduler.start()
     _scheduler = scheduler
 
     # Ensure graceful shutdown on process exit
     atexit.register(lambda: _scheduler and _scheduler.shutdown(wait=False))
+
+
+def _run_send_notification_digests(app):
+    with app.app_context():
+        notifications = (
+            Notification.query.filter(Notification.delivered_at.is_(None), Notification.dismissed_at.is_(None))
+            .order_by(Notification.time_created.asc())
+            .all()
+        )
+        if not notifications:
+            return
+
+        notifications_by_user: dict[str, list[Notification]] = {}
+        for notification in notifications:
+            notifications_by_user.setdefault(str(notification.user_id), []).append(notification)
+
+        for user_id, user_notifications in notifications_by_user.items():
+            user = User.find_by_id(user_id)
+            settings = user.account_settings
+            frequency = settings.notification_digest_frequency
+            if frequency == NotificationDigestFrequencyEnum.WEEKLY and not _is_monday_utc():
+                continue
+
+            mail_notifications = [
+                notification
+                for notification in user_notifications
+                if should_send_notification_mail(settings, notification.type)
+            ]
+            if not mail_notifications:
+                continue
+
+            send_notification_digest_email(user, mail_notifications)
+            now_ts = text("CURRENT_TIMESTAMP")
+            for notification in mail_notifications:
+                db.session.query(Notification).filter(Notification.id == notification.id).update(
+                    {"delivered_at": now_ts}, synchronize_session=False
+                )
+        db.session.commit()
+
+
+def _is_monday_utc() -> bool:
+    # Monday is weekday 0 in Python's datetime API.
+    return datetime.datetime.now(datetime.timezone.utc).weekday() == 0

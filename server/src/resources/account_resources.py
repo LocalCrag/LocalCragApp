@@ -7,6 +7,9 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.account_settings_schema import account_settings_schema
 from messages.messages import ResponseMessage
+from models.enums.notification_digest_frequency_enum import (
+    NotificationDigestFrequencyEnum,
+)
 from models.user import User
 from webargs_schemas.account_settings_args import account_settings_args
 
@@ -43,6 +46,9 @@ class UpdateAccountSettings(MethodView):
         data = parser.parse(account_settings_args)
         settings = user.account_settings
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
+        settings.reaction_notifications_enabled = data["reactionNotificationsEnabled"]
+        settings.system_notifications_enabled = data["systemNotificationsEnabled"]
+        settings.notification_digest_frequency = NotificationDigestFrequencyEnum(data["notificationDigestFrequency"])
         settings.language = data["language"]
         db.session.add(settings)
         db.session.commit()

@@ -96,6 +96,7 @@ from resources.menu_page_resources import (
     GetMenuPages,
     UpdateMenuPage,
 )
+from resources.notification_resources import GetNotifications, MarkNotificationsRead
 from resources.post_resources import (
     CreatePost,
     DeletePost,
@@ -241,6 +242,10 @@ def configure_api(app):
     user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
     user_bp.add_url_rule("/account/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
     user_bp.add_url_rule("/account/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
+    user_bp.add_url_rule("/account/notifications", view_func=GetNotifications.as_view("get_notifications"))
+    user_bp.add_url_rule(
+        "/account/notifications/read", view_func=MarkNotificationsRead.as_view("mark_notifications_read")
+    )
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
     # Gallery API

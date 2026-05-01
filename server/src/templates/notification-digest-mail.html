@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>{{ i18n_title }}</title>
+</head>
+<body bgcolor="#F2F4F6" style="-webkit-text-size-adjust: none; box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; height: 100%; line-height: 1.4; margin: 0; width: 100% !important;">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#F2F4F6">
+    <tr><td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:25px 0;">
+                <a href="{{ frontend_host }}" style="color:#bbbfc3;font-size:16px;font-weight:bold;text-decoration:none;">{{ instance_name }}</a>
+            </td></tr>
+            <tr><td width="100%" bgcolor="#FFFFFF" style="border-top:1px solid #EDEFF2;border-bottom:1px solid #EDEFF2;">
+                <table align="center" width="570" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+                    <tr><td style="padding:35px;">
+                        <h1 style="color:#2F3133;font-size:19px;font-weight:bold;margin-top:0;">{{ i18n_hello }} {{ receiver_firstname }},</h1>
+                        <p style="font-size:16px;line-height:1.5em;">{{ i18n_intro }}</p>
+                        <ul>
+                            {% for item in digest_items %}
+                            <li>{{ item.html | safe }}</li>
+                            {% endfor %}
+                        </ul>
+                        <p>
+                            <a href="{{ notifications_link }}" target="_blank">{{ i18n_open_notifications }}</a>
+                        </p>
+                        <p style="font-size:16px;line-height:1.5em;">{{ i18n_thanks }}<br/>{{ i18n_greetings }}</p>
+                    </td></tr>
+                </table>
+            </td></tr>
+            <tr><td>
+                <table align="center" width="570" cellpadding="0" cellspacing="0" style="text-align:center">
+                    <tr><td align="center" style="padding:35px;">
+                        <p style="color:#AEAEAE;font-size:12px;">{{ i18n_copyright }}</p>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</body>
+</html>

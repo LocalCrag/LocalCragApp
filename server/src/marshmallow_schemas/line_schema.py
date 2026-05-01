@@ -96,3 +96,4 @@ class PaginatedLinesSchema(ma.SQLAlchemySchema):
 line_schema = LineSchema()
 paginated_lines_schema = PaginatedLinesSchema()
 lines_schema = LineSchemaMin(many=True)
+ascent_and_todo_lines_schema = AscentAndTodoLineSchema()

@@ -26,8 +26,67 @@
             lcFormControl
           />
         </div>
-        {{ t("commentReplyMailsEnabled") }}
+        <div class="flex flex-column">
+          <span>{{ t("commentReplyMailsEnabled") }}</span>
+          <small class="text-color-secondary">{{
+            t("commentReplyMailsEnabledDescription")
+          }}</small>
+        </div>
       </div>
+      <div
+        class="flex align-items-center justify-content-center sm:justify-content-start"
+      >
+        <div>
+          <p-toggleswitch
+            id="reaction-notifications-enabled"
+            class="mx-2 blue-green-switch"
+            formControlName="reactionNotificationsEnabled"
+            lcFormControl
+          />
+        </div>
+        <div class="flex flex-column">
+          <span>{{ t("reactionNotificationsEnabled") }}</span>
+          <small class="text-color-secondary">{{
+            t("reactionNotificationsEnabledDescription")
+          }}</small>
+        </div>
+      </div>
+      <div
+        class="flex align-items-center justify-content-center sm:justify-content-start"
+      >
+        <div>
+          <p-toggleswitch
+            id="fa-moderation-notifications-enabled"
+            class="mx-2 blue-green-switch"
+            formControlName="systemNotificationsEnabled"
+            lcFormControl
+          />
+        </div>
+        <div class="flex flex-column">
+          <span>{{ t("systemNotificationsEnabled") }}</span>
+          <small class="text-color-secondary">{{
+            t("systemNotificationsEnabledDescription")
+          }}</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2 form-label" lcControlGroup>
+      <label for="notification-digest-frequency">{{
+        t("notificationDigestFrequencyLabel")
+      }}</label>
+      <select
+        id="notification-digest-frequency"
+        class="p-inputtext"
+        formControlName="notificationDigestFrequency"
+      >
+        <option value="daily">
+          {{ t("notificationDigestFrequencyDaily") }}
+        </option>
+        <option value="weekly">
+          {{ t("notificationDigestFrequencyWeekly") }}
+        </option>
+      </select>
     </div>
   </form>
 

@@ -31,6 +31,10 @@ export class ApiService {
       `${this.apiHost}users/account/recent-searches`,
     createRecentSearch: (): string =>
       `${this.apiHost}users/account/recent-searches`,
+    getNotifications: (): string =>
+      `${this.apiHost}users/account/notifications`,
+    markNotificationsRead: (): string =>
+      `${this.apiHost}users/account/notifications/read`,
   };
 
   public statistics = {

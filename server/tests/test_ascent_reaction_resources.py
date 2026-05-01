@@ -1,4 +1,6 @@
 from models.ascent import Ascent
+from models.enums.notification_type_enum import NotificationTypeEnum
+from models.notification import Notification
 
 
 def test_ascents_include_reactions_empty_by_default(client):
@@ -34,6 +36,12 @@ def test_reaction_post_put_delete_on_ascent(client, member_token):
     assert len(rv.json) == 1
     assert rv.json[0]["emoji"] == "🔥"
     assert rv.json[0]["user"]["id"]
+    assert (
+        Notification.query.filter(
+            Notification.type == NotificationTypeEnum.REACTION, Notification.entity_id == ascent.id
+        ).count()
+        == 1
+    )
 
     # Ascents list should now expose aggregated counts
     rv = client.get("/api/ascents?page=1")

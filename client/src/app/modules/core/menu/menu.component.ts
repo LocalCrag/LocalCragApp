@@ -50,6 +50,7 @@ import { LanguageSelectComponent } from '../../shared/forms/controls/language-se
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LanguageCode } from '../../../utility/types/language';
 import { LanguageService } from '../../../services/core/language.service';
+import { NotificationBellComponent } from '../notification-bell/notification-bell.component';
 
 @Component({
   selector: 'lc-menu',
@@ -70,6 +71,7 @@ import { LanguageService } from '../../../services/core/language.service';
     LanguageSelectComponent,
     ReactiveFormsModule,
     FormsModule,
+    NotificationBellComponent,
   ],
 })
 export class MenuComponent implements OnInit {
