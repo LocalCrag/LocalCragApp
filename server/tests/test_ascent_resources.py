@@ -1,8 +1,10 @@
 from extensions import db
 from models.ascent import Ascent
 from models.crag import Crag
+from models.enums.notification_type_enum import NotificationTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.notification import Notification
 from models.user import User
 from util.voting import update_grades_and_rating
 
@@ -457,6 +459,12 @@ def test_moderator_clear_ascent_fa(client, moderator_token):
 
     ascent = Ascent.find_by_id(ascent.id)
     assert ascent.fa is False
+    assert (
+        Notification.query.filter(
+            Notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED, Notification.entity_id == ascent.id
+        ).count()
+        == 1
+    )
 
 
 def test_non_moderator_cannot_clear_ascent_fa(client, member_token):

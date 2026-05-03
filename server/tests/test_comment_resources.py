@@ -563,10 +563,11 @@ def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
     )
     assert rv.status_code == 201, rv.text
 
-    # Four emails total: first to admin and superadmin on root creation, second to parent and superadmin on reply
-    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 4
-    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 4
-    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 4
+    # Three emails total: first to admin and superadmin on root creation, then only superadmin on reply.
+    # The parent user receives a persisted notification instead of an immediate reply mail.
+    assert smtp_mock.return_value.__enter__.return_value.login.call_count == 3
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 3
+    assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 3
 
 
 def test_reaction_post_put_delete_on_comment(client, member_token, admin_token):

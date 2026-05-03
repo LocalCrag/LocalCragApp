@@ -43,6 +43,9 @@ export class AccountSettingsFormComponent implements OnInit {
   private buildForm() {
     this.accountSettingsForm = this.fb.group({
       commentReplyMailsEnabled: [null],
+      reactionNotificationsEnabled: [null],
+      systemNotificationsEnabled: [null],
+      notificationDigestFrequency: [null],
       language: [null],
     });
   }
@@ -61,6 +64,12 @@ export class AccountSettingsFormComponent implements OnInit {
     this.accountSettingsForm.enable();
     this.accountSettingsForm.patchValue({
       commentReplyMailsEnabled: this.accountSettings.commentReplyMailsEnabled,
+      reactionNotificationsEnabled:
+        this.accountSettings.reactionNotificationsEnabled,
+      systemNotificationsEnabled:
+        this.accountSettings.systemNotificationsEnabled,
+      notificationDigestFrequency:
+        this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
     });
   }
@@ -72,6 +81,13 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.commentReplyMailsEnabled = this.accountSettingsForm.get(
         'commentReplyMailsEnabled',
       ).value;
+      accountSettings.reactionNotificationsEnabled =
+        this.accountSettingsForm.get('reactionNotificationsEnabled').value;
+      accountSettings.systemNotificationsEnabled = this.accountSettingsForm.get(
+        'systemNotificationsEnabled',
+      ).value;
+      accountSettings.notificationDigestFrequency =
+        this.accountSettingsForm.get('notificationDigestFrequency').value;
       accountSettings.language = this.accountSettingsForm.get('language').value;
       this.accountService.updateAccountSettings(accountSettings).subscribe({
         next: () => {

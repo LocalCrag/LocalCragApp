@@ -1,0 +1,69 @@
+<ng-container *transloco="let t; read: 'menu'">
+  <p-popover
+    #notificationsPopover
+    appendTo="body"
+    styleClass="notifications-popover-panel"
+  >
+    <div class="notifications-popover">
+      @if (clusters.length === 0) {
+        <div class="notifications-empty">{{ t("notificationsEmpty") }}</div>
+      } @else {
+        @for (cluster of clusters; track cluster.clusterKey) {
+          <div
+            class="notifications-item"
+            role="button"
+            tabindex="0"
+            (click)="openCluster(cluster, notificationsPopover)"
+            (keydown.enter)="openCluster(cluster, notificationsPopover)"
+          >
+            <div class="notifications-item-icon">
+              @if (isReaction(cluster)) {
+                <span>{{ cluster.reactionEmoji || "😊" }}</span>
+              } @else if (cluster.type === "comment_reply") {
+                <i class="pi pi-comment"></i>
+              } @else {
+                <i class="pi pi-cog"></i>
+              }
+            </div>
+            <div class="notifications-item-main">
+              <div class="notifications-item-text">
+                {{ notificationText(cluster) }}
+              </div>
+            </div>
+            <div class="notifications-item-actions">
+              <button
+                type="button"
+                class="notifications-item-more"
+                (click)="$event.stopPropagation(); itemActions.toggle($event)"
+              >
+                <i class="pi pi-ellipsis-h"></i>
+              </button>
+            </div>
+            <p-popover #itemActions appendTo="body">
+              <button
+                type="button"
+                class="notifications-item-action"
+                (click)="markClusterRead(cluster, false); itemActions.hide()"
+              >
+                {{ t("notificationsMarkReadOnly") }}
+              </button>
+            </p-popover>
+          </div>
+        }
+      }
+    </div>
+  </p-popover>
+
+  <button
+    type="button"
+    class="notifications-bell"
+    (click)="notificationsPopover.toggle($event)"
+  >
+    <i class="pi pi-bell"></i>
+    @if (clusters.length > 0) {
+      <span class="notifications-badge">{{
+        clusters.length > 99 ? "99+" : clusters.length
+      }}</span>
+    }
+  </button>
+</ng-container>

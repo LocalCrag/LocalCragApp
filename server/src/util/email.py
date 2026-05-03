@@ -9,24 +9,22 @@ from flask import current_app, render_template
 
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.comment_created_mail import comment_created_mail
-from i18n.comment_reply_mail import comment_reply_mail
 from i18n.create_user_mail import create_user_mail
+from i18n.notification_digest_mail import notification_digest_mail
 from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
 from i18n.user_registered_mail import user_registered_mail
-from models.area import Area
 from models.comment import Comment
-from models.crag import Crag
+from models.enums.notification_digest_frequency_enum import (
+    NotificationDigestFrequencyEnum,
+)
+from models.instance_settings import InstanceSettings
 from models.line import Line
-from models.post import Post
-from models.region import Region
-from models.sector import Sector
+from models.notification import Notification
 from models.user import User
-
-
-def _frontend_url(path: str) -> str:
-    path = path.lstrip("/")
-    return f"{current_app.config['FRONTEND_HOST']}/{path}"
+from util.email_helpers import build_comment_action_link as _build_comment_action_link
+from util.email_helpers import frontend_url as _frontend_url
+from util.notification_digest_builder import build_digest_items
 
 
 def build_i18n_keyword_arg_dict(locale, i18n_source_dict):
@@ -194,33 +192,6 @@ def send_project_climbed_email(climber: User, receiver: User, message: str, line
     send_generic_mail(msg)
 
 
-def _build_comment_action_link(comment: Comment) -> str:
-    """Return a frontend link matching the commented object to view the conversation."""
-    obj = comment.object
-    # Lines
-    if isinstance(obj, Line):
-        return _frontend_url(
-            f"topo/{obj.area.sector.crag.slug}/{obj.area.sector.slug}/{obj.area.slug}/{obj.slug}/comments#{comment.id}"
-        )
-    # Areas
-    if isinstance(obj, Area):
-        return _frontend_url(f"topo/{obj.sector.crag.slug}/{obj.sector.slug}/{obj.slug}/comments#{comment.id}")
-    # Sectors
-    if isinstance(obj, Sector):
-        return _frontend_url(f"topo/{obj.crag.slug}/{obj.slug}/comments#{comment.id}")
-    # Crags
-    if isinstance(obj, Crag):
-        return _frontend_url(f"topo/{obj.slug}/comments#{comment.id}")
-    # Region
-    if isinstance(obj, Region):
-        return _frontend_url(f"topo/comments#{comment.id}")
-    # Blog posts
-    if isinstance(obj, Post):
-        return _frontend_url(f"news/{obj.slug}#{comment.id}")
-    # Fallback
-    return current_app.config["FRONTEND_HOST"]
-
-
 def send_comment_created_email(author: User, receiver: User, comment: Comment):
     msg, i18n_keyword_arg_dict = prepare_message(author, comment_created_mail)
     msg["To"] = receiver.email
@@ -238,17 +209,27 @@ def send_comment_created_email(author: User, receiver: User, comment: Comment):
     send_generic_mail(msg)
 
 
-def send_comment_reply_email(replier: User, receiver: User, comment: Comment):
-    msg, i18n_keyword_arg_dict = prepare_message(replier, comment_reply_mail)
+def send_notification_digest_email(receiver: User, notifications: list[Notification]):
+    if not notifications:
+        return
+
+    msg, i18n_keyword_arg_dict = prepare_message(receiver, notification_digest_mail)
     msg["To"] = receiver.email
-    action_link = _build_comment_action_link(comment)
+    instance_name = InstanceSettings.return_it().instance_name
+    msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"].format(instance_name=instance_name)
+    i18n_keyword_arg_dict["i18n_title"] = i18n_keyword_arg_dict["i18n_title"].format(instance_name=instance_name)
+    if receiver.account_settings.notification_digest_frequency == NotificationDigestFrequencyEnum.WEEKLY:
+        i18n_keyword_arg_dict["i18n_intro"] = i18n_keyword_arg_dict["i18n_intro_weekly"]
+    digest_i18n = notification_digest_mail[receiver.account_settings.language]
+    digest_items = build_digest_items(notifications, digest_i18n)
+
     template = render_template(
-        "comment-reply-mail.html",
+        "notification-digest-mail.html",
         receiver_firstname=receiver.firstname,
-        author_name=f"{replier.firstname} {replier.lastname}".strip(),
-        message=comment.message or "",
-        action_link=action_link,
+        instance_name=instance_name,
+        digest_items=digest_items,
         frontend_host=current_app.config["FRONTEND_HOST"],
+        notifications_link=current_app.config["FRONTEND_HOST"],
         **i18n_keyword_arg_dict,
     )
     msg.attach(MIMEText(template, "html"))
