@@ -1,3 +1,18 @@
+# [1.35.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.34.0...v1.35.0) (2026-05-03)
+
+
+### Bug Fixes
+
+* **comments:** fix undefined issue when loading comments ([#1048](https://github.com/LocalCrag/LocalCragApp/issues/1048)) ([7e45e20](https://github.com/LocalCrag/LocalCragApp/commit/7e45e206987261b46fb33297f33c8da575f674af))
+* **reactions:** update cursor behavior for disabled reactions and ope… ([#1049](https://github.com/LocalCrag/LocalCragApp/issues/1049)) ([012dbf7](https://github.com/LocalCrag/LocalCragApp/commit/012dbf7c62a759a85bbcfdf3f21f6ac2a86e2c69))
+
+
+### Features
+
+* **news:** authors of blog posts can be clicked to navigate to user page ([#1051](https://github.com/LocalCrag/LocalCragApp/issues/1051)) ([4fc5586](https://github.com/LocalCrag/LocalCragApp/commit/4fc5586be13ab8c6c553fe5d94416b669a033515))
+* **notifications:** add notifications ([#1059](https://github.com/LocalCrag/LocalCragApp/issues/1059)) ([b67dadb](https://github.com/LocalCrag/LocalCragApp/commit/b67dadb8b549a63684bc16ec42d0d0c48c768ac8))
+* **search:** recent searches are remembered and displayed in search dialog ([#1050](https://github.com/LocalCrag/LocalCragApp/issues/1050)) ([034bb89](https://github.com/LocalCrag/LocalCragApp/commit/034bb89d3eb4b585a393b6a0ea28db13364efa19))
+
 # [1.34.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.33.0...v1.34.0) (2026-04-20)
 
 
