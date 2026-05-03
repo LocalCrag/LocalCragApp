@@ -77,6 +77,10 @@
   &.disabled {
     cursor: default;
 
+    &.has-reactions {
+      cursor: pointer;
+    }
+
     @media (hover: hover) {
       &:hover,
       .reaction-wrapper:hover & {

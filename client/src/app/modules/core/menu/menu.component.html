@@ -20,6 +20,13 @@
       </a>
     </ng-template>
     <ng-template #end>
+      <p-menu
+        #menu
+        [model]="userMenuItems"
+        [popup]="true"
+        data-cy="auth-menu"
+        styleClass="wide-menu"
+      ></p-menu>
       <div class="flex justify-content-center gap-2">
         <div class="search-fake-input" (click)="openSearch()" tabindex="0">
           <i class="pi pi-search mr-2"></i>
@@ -32,14 +39,9 @@
           (ngModelChange)="updateLanguage($event)"
           lcFormControl
         ></lc-language-select>
-        <p-menu
-          #menu
-          [model]="userMenuItems"
-          [popup]="true"
-          data-cy="auth-menu"
-          styleClass="wide-menu"
-        ></p-menu>
+
         <ng-container *isLoggedIn="true">
+          <lc-notification-bell></lc-notification-bell>
           @if (currentUser$ | async; as authUser) {
             <lc-user-avatar
               [user]="authUser"

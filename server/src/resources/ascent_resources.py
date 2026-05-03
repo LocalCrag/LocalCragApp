@@ -17,12 +17,14 @@ from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_s
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.notification_type_enum import NotificationTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
 from models.user import User
 from util.email import send_project_climbed_email
+from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
@@ -267,10 +269,23 @@ class ClearAscentFa(MethodView):
     @jwt_required()
     @check_auth_claims(moderator=True)
     def post(self, ascent_id):
+        moderator = User.find_by_email(get_jwt_identity())
         ascent: Ascent = Ascent.find_by_id(ascent_id)
         if ascent.fa:
             ascent.fa = False
             db.session.add(ascent)
+
+            owner = User.find_by_id(ascent.created_by_id) if ascent.created_by_id else None
+            if owner and owner.id != moderator.id:
+                db.session.add(
+                    create_notification_for_user(
+                        owner.id,
+                        NotificationTypeEnum.FA_MODERATION_REMOVED,
+                        actor_id=moderator.id,
+                        entity_type="ascent",
+                        entity_id=ascent.id,
+                    )
+                )
             db.session.commit()
         return ascent_schema.dump(ascent), 200
 

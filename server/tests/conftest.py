@@ -37,6 +37,7 @@ from models.mixins.has_slug import update_slugs
 from models.mixins.is_searchable import create_searchables, update_searchables
 from models.post import Post
 from models.ranking import Ranking
+from models.recent_search import RecentSearch
 from models.region import Region
 from models.revoked_token import RevokedToken
 from models.sector import Sector
@@ -736,6 +737,19 @@ def fill_db_with_sample_data():
     crag_gallery_image.tags = [crag_tag]
     crag_gallery_image.created_by = User.query.filter_by(email="moderator@localcrag.invalid.org").first()
     db.session.add(crag_gallery_image)
+
+    member_id = User.find_by_email("member@localcrag.invalid.org").id
+    recent_search = RecentSearch()
+    recent_search.user_id = member_id
+    recent_search.object_type = "Line"
+    recent_search.object_id = Line.get_id_by_slug("treppe")
+    db.session.add(recent_search)
+
+    recent_search = RecentSearch()
+    recent_search.user_id = member_id
+    recent_search.object_type = "Crag"
+    recent_search.object_id = Crag.get_id_by_slug("brione")
+    db.session.add(recent_search)
 
     db.session.commit()
 

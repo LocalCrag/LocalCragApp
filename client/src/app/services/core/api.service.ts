@@ -27,6 +27,14 @@ export class ApiService {
   public account = {
     getSettings: (): string => `${this.apiHost}users/account/settings`,
     updateSettings: (): string => `${this.apiHost}users/account/settings`,
+    getRecentSearches: (): string =>
+      `${this.apiHost}users/account/recent-searches`,
+    createRecentSearch: (): string =>
+      `${this.apiHost}users/account/recent-searches`,
+    getNotifications: (): string =>
+      `${this.apiHost}users/account/notifications`,
+    markNotificationsRead: (): string =>
+      `${this.apiHost}users/account/notifications/read`,
   };
 
   public statistics = {
