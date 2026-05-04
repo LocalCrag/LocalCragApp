@@ -5,6 +5,14 @@
   padding-bottom: 14px;
   user-select: none;
   touch-action: manipulation;
+
+  &.reaction-bar-suppressed {
+    padding-bottom: 0;
+
+    .reaction-bar {
+      display: none;
+    }
+  }
 }
 
 .reaction-bar {

@@ -44,6 +44,7 @@
           [targetType]="'comment'"
           [targetId]="comment.id"
           [createdById]="comment.createdBy?.id"
+          [hideReactionBar]="replyActive || editModeActive"
           (reactionsChange)="comment.reactions = $event"
         >
           <ng-container *ngTemplateOutlet="commentMain" />
