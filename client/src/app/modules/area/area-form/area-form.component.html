@@ -215,6 +215,21 @@
               </div>
             </div>
           </div>
+          @if (areaForm.get("closed").value) {
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label" for="closedReason">{{
+                t("closedReasonLabel")
+              }}</label>
+              <input
+                id="closedReason"
+                type="text"
+                pInputText
+                formControlName="closedReason"
+                placeholder="{{ t('closedReasonPlaceholder') }}"
+                lcFormControl
+              />
+            </div>
+          }
           <div class="grid align-items-center">
             <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
             <label
@@ -275,21 +290,6 @@
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("openingAClosedAreaWillSetParentsToOpen") }}
             </p-message>
-          }
-          @if (areaForm.get("closed").value) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
-              <input
-                id="closedReason"
-                type="text"
-                pInputText
-                formControlName="closedReason"
-                placeholder="{{ t('closedReasonPlaceholder') }}"
-                lcFormControl
-              />
-            </div>
           }
         </form>
         <div class="form-actions">
