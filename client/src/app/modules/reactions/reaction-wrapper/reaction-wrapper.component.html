@@ -1,5 +1,6 @@
 <div
   class="reaction-wrapper"
+  [class.reaction-bar-suppressed]="hideReactionBar"
   (touchstart)="onTouchStart()"
   (touchend)="onTouchEnd()"
   (touchcancel)="onTouchEnd()"
