@@ -2,6 +2,9 @@ describe('Topo images test', () => {
   it('adds a topo image and draws a line on it', () => {
     cy.viewport(1920, 1080);
     cy.login();
+    cy.intercept('POST', '**/upload').as('uploadFile');
+    cy.intercept('POST', '**/areas/*/topo-images').as('createTopoImage');
+    cy.intercept('POST', '**/topo-images/*/line-paths').as('createLinePath');
     cy.visit('/topo/brione/schattental/dritter-block-von-links/topo-images');
     cy.get('[data-cy="topo-image-list-item"]')
       .its('length')
@@ -12,7 +15,7 @@ describe('Topo images test', () => {
         cy.get('[data-cy="topo-image-input"] input')
           .focus()
           .selectFile('cypress/fixtures/images/peter.jpeg', { force: true });
-        cy.wait(2000); // As we are testing the live DO Spaces, we should wait a little extra...
+        cy.wait('@uploadFile');
         cy.get('[data-cy="topo-image-form-coordinates"] input')
           .eq(0)
           .focus()
@@ -28,7 +31,9 @@ describe('Topo images test', () => {
           .focus()
           .type('Sehr großer Block eh');
         cy.get('[data-cy="submit"]').click();
-        cy.visit(
+        cy.wait('@createTopoImage');
+        cy.url().should(
+          'include',
           '/topo/brione/schattental/dritter-block-von-links/topo-images',
         );
         cy.get('[data-cy="topo-image-list-item"]').should(
@@ -52,7 +57,10 @@ describe('Topo images test', () => {
             cy.get('lc-line-path-editor').click(100, 200);
             cy.get('lc-line-path-editor').click(200, 250);
             cy.get('[data-cy="submit"]').click();
-            cy.visit(
+            cy.wait('@createLinePath');
+            cy.get('[data-cy="leave-editor"]').click();
+            cy.url().should(
+              'include',
               '/topo/brione/schattental/dritter-block-von-links/topo-images',
             );
             cy.get(
