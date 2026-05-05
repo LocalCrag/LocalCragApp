@@ -29,7 +29,7 @@
       [hidden]="showProgressBar"
       [name]="'upload'"
       [url]="uploadUrl"
-      accept=".jpg, .jpeg, .png, .gif, .bmp;capture=camera"
+      accept="image/jpeg,image/png,image/gif,image/bmp"
       [multiple]="true"
       [maxFileSize]="maxImageSize"
       (onError)="showProgressBar = false"
