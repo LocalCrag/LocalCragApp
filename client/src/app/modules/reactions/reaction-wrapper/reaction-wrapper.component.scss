@@ -31,7 +31,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
   font-size: 0.8rem;
   line-height: 1;
-  white-space: nowrap;
+  white-space: normal;
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -39,6 +39,7 @@
   min-width: 52px;
   min-height: 26px;
   justify-content: center;
+  max-width: min(calc(100% - 8px), calc(100vw - 16px));
 
   &:not(.has-reactions):not(.picker-open) {
     opacity: 0;
@@ -111,7 +112,9 @@
 .reaction-default {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
+  min-width: 0;
   transition:
     opacity 0.15s ease,
     visibility 0.15s ease;
@@ -168,6 +171,7 @@
   display: inline-flex;
   align-items: center;
   line-height: normal;
+  flex: 0 0 auto;
 }
 
 .reaction-emoji {
@@ -179,13 +183,25 @@
   font-weight: 600;
   font-size: 0.75rem;
   margin-left: 2px;
+  flex: 0 0 auto;
 }
 
 .reaction-picker {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   padding: 4px;
   align-items: center;
+  max-width: calc(100vw - 32px);
+}
+
+:host ::ng-deep .reaction-popover {
+  max-width: calc(100vw - 16px);
+}
+
+:host ::ng-deep .reaction-popover .p-popover-content {
+  max-width: calc(100vw - 16px);
+  overflow-x: hidden;
 }
 
 .reaction-option {
