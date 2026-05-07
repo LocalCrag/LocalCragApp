@@ -155,7 +155,7 @@
       </div>
     </div>
 
-    <ng-container *isModerator="true">
+    @if (shouldShowModerationTiles()) {
       <h3 class="charts-section-title charts-section-title--moderation">
         {{ t("moderation") }}
       </h3>
@@ -181,7 +181,7 @@
           <div class="stat-value">{{ stats.moderation.postsWritten }}</div>
         </div>
       </div>
-    </ng-container>
+    }
 
     <h3 class="charts-section-title charts-section-title--ascentsPerYear">
       {{ t("ascentsPerYear") }}

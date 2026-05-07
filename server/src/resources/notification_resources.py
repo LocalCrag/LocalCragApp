@@ -14,7 +14,7 @@ from models.post import Post
 from models.reaction import Reaction
 from models.user import User
 from util.email import _build_comment_action_link
-from webargs_schemas.notification_args import mark_notifications_read_args
+from webargs_schemas.notification_args import get_notifications_args
 
 
 def _line_from_comment(comment: Comment) -> Line | None:
@@ -55,16 +55,20 @@ class GetNotifications(MethodView):
     @jwt_required()
     def get(self):
         user = User.find_by_email(get_jwt_identity())
-        notifications = (
-            Notification.query.filter(
-                Notification.user_id == user.id,
-                Notification.dismissed_at.is_(None),
-            )
-            .order_by(Notification.time_created.desc())
-            .all()
+        args = parser.parse(get_notifications_args, request, location="query")
+        page = args["page"]
+        per_page = args["per_page"]
+        include_dismissed = args["include_dismissed"]
+        query = Notification.query.filter(Notification.user_id == user.id)
+        if not include_dismissed:
+            query = query.filter(Notification.dismissed_at.is_(None))
+        notifications = query.order_by(Notification.time_created.desc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False,
         )
         payload = []
-        for notification in notifications:
+        for notification in notifications.items:
             actor_name = None
             if notification.actor:
                 actor_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
@@ -111,23 +115,40 @@ class GetNotifications(MethodView):
                     "line": line_payload,
                     "topicName": topic_name,
                     "reactionEmoji": reaction_emoji,
+                    "isDismissed": notification.dismissed_at is not None,
                 }
             )
 
-        return jsonify(payload), 200
+        return jsonify({"items": payload, "hasNext": notifications.has_next}), 200
 
 
-class MarkNotificationsRead(MethodView):
+class GetNotificationsCount(MethodView):
+    @jwt_required()
+    def get(self):
+        user = User.find_by_email(get_jwt_identity())
+        count = Notification.query.filter(Notification.user_id == user.id, Notification.dismissed_at.is_(None)).count()
+        return jsonify({"count": count}), 200
+
+
+class DismissNotification(MethodView):
+    @jwt_required()
+    def post(self, notification_id):
+        user = User.find_by_email(get_jwt_identity())
+        now_ts = text("CURRENT_TIMESTAMP")
+        db.session.query(Notification).filter(
+            Notification.user_id == user.id, Notification.id == notification_id
+        ).update({"dismissed_at": now_ts, "delivered_at": now_ts}, synchronize_session=False)
+        db.session.commit()
+        return jsonify(None), 204
+
+
+class DismissAllNotifications(MethodView):
     @jwt_required()
     def post(self):
         user = User.find_by_email(get_jwt_identity())
-        data = parser.parse(mark_notifications_read_args, request)
-        notification_ids = data["notificationIds"]
-        if not notification_ids:
-            return jsonify(None), 204
         now_ts = text("CURRENT_TIMESTAMP")
         db.session.query(Notification).filter(
-            Notification.user_id == user.id, Notification.id.in_(notification_ids)
+            Notification.user_id == user.id, Notification.dismissed_at.is_(None)
         ).update({"dismissed_at": now_ts, "delivered_at": now_ts}, synchronize_session=False)
         db.session.commit()
         return jsonify(None), 204

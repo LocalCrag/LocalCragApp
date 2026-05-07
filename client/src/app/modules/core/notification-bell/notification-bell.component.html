@@ -4,22 +4,40 @@
     appendTo="body"
     styleClass="notifications-popover-panel"
   >
-    <div class="notifications-popover">
-      @if (clusters.length === 0) {
+    <div class="notifications-popover" (scroll)="onPopoverScroll($event)">
+      <div class="notifications-popover-header">
+        <button
+          type="button"
+          class="notifications-footer-link"
+          (click)="notificationsPopover.hide(); $event.stopPropagation()"
+          routerLink="/notifications"
+        >
+          {{ t("notificationsOpenDetailPage") }}
+        </button>
+        <button
+          type="button"
+          class="notifications-footer-link"
+          (click)="markAllRead(notificationsPopover)"
+        >
+          {{ t("notificationsMarkAllRead") }}
+        </button>
+      </div>
+      @if (notifications.length === 0 && !loading) {
         <div class="notifications-empty">{{ t("notificationsEmpty") }}</div>
       } @else {
-        @for (cluster of clusters; track cluster.clusterKey) {
+        @for (item of notifications; track item.id) {
           <div
             class="notifications-item"
+            [class.is-read]="item.isDismissed"
             role="button"
             tabindex="0"
-            (click)="openCluster(cluster, notificationsPopover)"
-            (keydown.enter)="openCluster(cluster, notificationsPopover)"
+            (click)="openNotification(item, notificationsPopover)"
+            (keydown.enter)="openNotification(item, notificationsPopover)"
           >
             <div class="notifications-item-icon">
-              @if (isReaction(cluster)) {
-                <span>{{ cluster.reactionEmoji || "😊" }}</span>
-              } @else if (cluster.type === "comment_reply") {
+              @if (notificationUi.isReaction(item)) {
+                <span>{{ item.reactionEmoji || "😊" }}</span>
+              } @else if (item.type === "comment_reply") {
                 <i class="pi pi-comment"></i>
               } @else {
                 <i class="pi pi-cog"></i>
@@ -27,29 +45,33 @@
             </div>
             <div class="notifications-item-main">
               <div class="notifications-item-text">
-                {{ notificationText(cluster) }}
+                {{ notificationUi.notificationText(item) }}
               </div>
             </div>
-            <div class="notifications-item-actions">
-              <button
-                type="button"
-                class="notifications-item-more"
-                (click)="$event.stopPropagation(); itemActions.toggle($event)"
-              >
-                <i class="pi pi-ellipsis-h"></i>
-              </button>
-            </div>
-            <p-popover #itemActions appendTo="body">
-              <button
-                type="button"
-                class="notifications-item-action"
-                (click)="markClusterRead(cluster, false); itemActions.hide()"
-              >
-                {{ t("notificationsMarkReadOnly") }}
-              </button>
-            </p-popover>
+            @if (!item.isDismissed) {
+              <div class="notifications-item-actions">
+                <button
+                  type="button"
+                  class="notifications-item-more"
+                  [attr.aria-label]="t('notificationsMarkReadOnly')"
+                  [title]="t('notificationsMarkReadOnly')"
+                  (click)="$event.stopPropagation(); markNotificationRead(item)"
+                >
+                  <i class="pi pi-check"></i>
+                </button>
+              </div>
+            }
           </div>
         }
+      }
+      @if (loading) {
+        <div class="notifications-loading">
+          <p-progressSpinner
+            strokeWidth="6"
+            animationDuration=".8s"
+            [style]="{ width: '1.5rem', height: '1.5rem' }"
+          />
+        </div>
       }
     </div>
   </p-popover>
@@ -57,12 +79,12 @@
   <button
     type="button"
     class="notifications-bell"
-    (click)="notificationsPopover.toggle($event)"
+    (click)="onBellClick($event, notificationsPopover)"
   >
     <i class="pi pi-bell"></i>
-    @if (clusters.length > 0) {
+    @if (unreadCount > 0) {
       <span class="notifications-badge">{{
-        clusters.length > 99 ? "99+" : clusters.length
+        unreadCount > 99 ? "99+" : unreadCount
       }}</span>
     }
   </button>

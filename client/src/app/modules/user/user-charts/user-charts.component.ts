@@ -20,7 +20,6 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { LineType } from '../../../enums/line-type';
 import { selectBarChartColor } from '../../../ngrx/selectors/instance-settings.selectors';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-user-charts',
@@ -31,7 +30,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
     TranslocoDirective,
     SkeletonModule,
     CompletionComponent,
-    HasPermissionDirective,
   ],
   templateUrl: './user-charts.component.html',
   styleUrl: './user-charts.component.scss',
@@ -120,5 +118,9 @@ export class UserChartsComponent implements OnInit {
         stats.globalRankTop50ByLineType[lt] != null ||
         stats.globalRankTotalCountByLineType[lt] != null,
     );
+  }
+
+  shouldShowModerationTiles(): boolean {
+    return !!this.user?.moderator;
   }
 }

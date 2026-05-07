@@ -37,6 +37,27 @@ lc-notification-bell {
   flex-direction: column;
 }
 
+.notifications-popover-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.notifications-footer-link {
+  border: none;
+  border-radius: 9999px;
+  background: none;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+}
+
 .notifications-item {
   display: flex;
   align-items: center;
@@ -45,6 +66,10 @@ lc-notification-bell {
   padding: 0.65rem;
   text-align: left;
   cursor: pointer;
+}
+
+.notifications-item.is-read {
+  background: #ffffff;
 }
 
 .notifications-item:not(:last-child) {
@@ -87,15 +112,25 @@ lc-notification-bell {
   padding: 0.65rem;
 }
 
+.notifications-loading {
+  display: flex;
+  justify-content: center;
+  padding: 0.65rem;
+}
+
+.notifications-popover-panel .p-popover-content {
+  padding: 0;
+}
+
+.notifications-popover-panel.p-popover:after {
+  border-bottom-color: #f8fafc;
+}
+
 .notifications-item-actions {
   display: flex;
   align-items: center;
   margin-left: auto;
   flex-shrink: 0;
-}
-
-.notifications-popover-panel .p-popover-content {
-  padding: 0;
 }
 
 .notifications-item-more {
@@ -113,17 +148,4 @@ lc-notification-bell {
 
 .notifications-item-more:hover {
   background: #e5e7eb;
-}
-
-.notifications-item-action {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0.35rem 0.5rem;
-  width: 100%;
-  text-align: left;
-}
-
-.notifications-item-action:hover {
-  background: #f3f4f6;
 }

@@ -1,5 +1,7 @@
 from webargs import fields
 
-mark_notifications_read_args = {
-    "notificationIds": fields.List(fields.UUID(required=True), required=True),
+get_notifications_args = {
+    "page": fields.Integer(load_default=1),
+    "per_page": fields.Integer(load_default=10),
+    "include_dismissed": fields.Boolean(load_default=False),
 }

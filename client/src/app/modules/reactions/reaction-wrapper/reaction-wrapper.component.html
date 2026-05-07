@@ -1,5 +1,6 @@
 <div
   class="reaction-wrapper"
+  [class.reaction-bar-suppressed]="hideReactionBar"
   (touchstart)="onTouchStart()"
   (touchend)="onTouchEnd()"
   (touchcancel)="onTouchEnd()"
@@ -38,6 +39,7 @@
   *isLoggedIn="true"
   #popover
   appendTo="body"
+  styleClass="reaction-popover"
   (onShow)="onPickerShow()"
   (onHide)="onPickerHide()"
 >

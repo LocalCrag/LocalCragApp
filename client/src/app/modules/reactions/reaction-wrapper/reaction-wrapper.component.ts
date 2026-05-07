@@ -8,6 +8,7 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Reactions } from '../../../models/reactions';
@@ -35,6 +36,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   @Input() targetType: string;
   @Input() targetId: string;
   @Input() createdById: string;
+  @Input() hideReactionBar = false;
   @Output() reactionsChange = new EventEmitter<Reactions>();
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
@@ -63,8 +65,11 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
       });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.syncMyReaction();
+    if (changes['hideReactionBar']?.currentValue && this.popover) {
+      this.popover.hide();
+    }
   }
 
   private syncMyReaction(): void {
@@ -98,7 +103,7 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   }
 
   get canOpenPicker(): boolean {
-    return !!this.currentUser && !this.isDisabled;
+    return !!this.currentUser && !this.isDisabled && !this.hideReactionBar;
   }
 
   get isLoggedIn(): boolean {
@@ -110,6 +115,9 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   }
 
   openPicker(event: MouseEvent): void {
+    if (this.hideReactionBar) {
+      return;
+    }
     if (this.longPressFired) {
       this.longPressFired = false;
       return;
@@ -139,6 +147,9 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
   }
 
   onTouchStart(): void {
+    if (this.hideReactionBar) {
+      return;
+    }
     this.longPressFired = false;
     this.longPressTimer = setTimeout(() => {
       this.longPressFired = true;

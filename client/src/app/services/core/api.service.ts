@@ -31,10 +31,14 @@ export class ApiService {
       `${this.apiHost}users/account/recent-searches`,
     createRecentSearch: (): string =>
       `${this.apiHost}users/account/recent-searches`,
-    getNotifications: (): string =>
-      `${this.apiHost}users/account/notifications`,
-    markNotificationsRead: (): string =>
-      `${this.apiHost}users/account/notifications/read`,
+    getNotifications: (filters = ''): string =>
+      `${this.apiHost}users/account/notifications${filters}`,
+    getNotificationsCount: (): string =>
+      `${this.apiHost}users/account/notifications/count`,
+    dismissNotification: (id: string): string =>
+      `${this.apiHost}users/account/notifications/${id}/dismiss`,
+    dismissAllNotifications: (): string =>
+      `${this.apiHost}users/account/notifications/dismiss-all`,
   };
 
   public statistics = {

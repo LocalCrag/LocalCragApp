@@ -44,6 +44,7 @@
           [targetType]="'comment'"
           [targetId]="comment.id"
           [createdById]="comment.createdBy?.id"
+          [hideReactionBar]="replyActive || editModeActive"
           (reactionsChange)="comment.reactions = $event"
         >
           <ng-container *ngTemplateOutlet="commentMain" />
@@ -159,13 +160,15 @@
       </div>
     }
     @if (replyActive) {
-      <lc-comment-editor
-        [parentId]="comment.id"
-        (cancelled)="replyActive = false"
-        (created)="onReplyCreated($event)"
-        [autoFocus]="true"
-        [cancelable]="true"
-      ></lc-comment-editor>
+      <div class="mt-3">
+        <lc-comment-editor
+          [parentId]="comment.id"
+          (cancelled)="replyActive = false"
+          (created)="onReplyCreated($event)"
+          [autoFocus]="true"
+          [cancelable]="true"
+        ></lc-comment-editor>
+      </div>
     }
   </ng-template>
 </ng-container>

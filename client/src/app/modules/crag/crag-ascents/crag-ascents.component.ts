@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -27,27 +28,35 @@ export class CragAscentsComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    const cragSlug =
-      this.route.snapshot.parent.parent.paramMap.get('crag-slug');
-    this.cragsService
-      .getCrag(cragSlug)
-      .pipe(
-        catchError((e) => {
-          if (e.status === 404) {
-            this.router.navigate(['/not-found']);
-          }
-          return of(e);
-        }),
-      )
-      .subscribe((crag) => {
-        this.crag = crag;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(
-            `${crag.name} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
-          );
-        });
+    this.route.parent.parent.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const cragSlug =
+          this.route.parent.parent.snapshot.paramMap.get('crag-slug');
+        this.cragsService
+          .getCrag(cragSlug)
+          .pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          )
+          .subscribe((crag) => {
+            this.crag = crag;
+            this.store
+              .select(selectInstanceName)
+              .pipe(take(1))
+              .subscribe((instanceName) => {
+                this.title.setTitle(
+                  `${crag.name} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
+                );
+              });
+          });
       });
   }
 }

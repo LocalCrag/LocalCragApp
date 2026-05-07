@@ -1,0 +1,103 @@
+.notifications-page {
+  .notifications-page-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.notifications-page-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.notifications-page-item {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.notifications-page-item:last-child {
+  border-bottom: none;
+}
+
+.notifications-page-item.is-read {
+  background: #ffffff;
+}
+
+.notifications-page-item-main {
+  border: none;
+  background: transparent;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notifications-page-item-content {
+  min-width: 0;
+}
+
+.notifications-page-item-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.notifications-page-item-text {
+  line-height: 1.35;
+}
+
+.notifications-page-item-time {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.notifications-page-item-mark {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0 0.75rem;
+}
+
+.notifications-page-load-more {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .notifications-page .p-card-body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .notifications-page .p-card-title {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .notifications-page .p-card-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .notifications-page-list {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}

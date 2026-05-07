@@ -2,6 +2,7 @@ describe('Create line', () => {
   it('creates a line', () => {
     cy.login();
     cy.visit('/topo/brione/schattental/dritter-block-von-links/create-line');
+    cy.intercept('POST', '**/areas/*/lines').as('createLine');
     cy.get('[data-cy="line-form-name"]').focus().type('Alphane');
     cy.get('[data-cy="line-form-description"] .ql-editor')
       .focus()
@@ -16,7 +17,11 @@ describe('Create line', () => {
     cy.get('.p-datepicker-year').eq(0).click();
     cy.get('[data-cy="line-form-highball"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('/topo/brione/schattental/dritter-block-von-links/lines');
-    cy.get('[data-cy="line-list-item"]').first().contains('Alphane');
+    cy.wait('@createLine');
+    cy.url().should(
+      'include',
+      '/topo/brione/schattental/dritter-block-von-links/lines',
+    );
+    cy.contains('[data-cy="line-list-item"]', 'Alphane');
   });
 });
