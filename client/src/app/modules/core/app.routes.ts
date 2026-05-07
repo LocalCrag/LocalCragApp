@@ -76,6 +76,7 @@ import { ObjectType } from '../../models/object';
 import { CragWeatherComponent } from '../crag/crag-weather/crag-weather.component';
 import { SectorWeatherComponent } from '../sector/sector-weather/sector-weather.component';
 import { AreaWeatherComponent } from '../area/area-weather/area-weather.component';
+import { NotificationListComponent } from './notification-list/notification-list.component';
 
 export const appRoutes: Routes = [
   {
@@ -258,6 +259,14 @@ export const appRoutes: Routes = [
   {
     path: 'change-email/:hash',
     component: ChangeEmailComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
+    path: 'notifications',
+    component: NotificationListComponent,
     canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH,

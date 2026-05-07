@@ -12,4 +12,5 @@ export interface NotificationItem {
   line: Line | null;
   topicName: string | null;
   reactionEmoji: string | null;
+  isDismissed: boolean;
 }

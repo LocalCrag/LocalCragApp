@@ -96,7 +96,12 @@ from resources.menu_page_resources import (
     GetMenuPages,
     UpdateMenuPage,
 )
-from resources.notification_resources import GetNotifications, MarkNotificationsRead
+from resources.notification_resources import (
+    DismissAllNotifications,
+    DismissNotification,
+    GetNotifications,
+    GetNotificationsCount,
+)
 from resources.post_resources import (
     CreatePost,
     DeletePost,
@@ -244,7 +249,15 @@ def configure_api(app):
     user_bp.add_url_rule("/account/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
     user_bp.add_url_rule("/account/notifications", view_func=GetNotifications.as_view("get_notifications"))
     user_bp.add_url_rule(
-        "/account/notifications/read", view_func=MarkNotificationsRead.as_view("mark_notifications_read")
+        "/account/notifications/count", view_func=GetNotificationsCount.as_view("get_notifications_count")
+    )
+    user_bp.add_url_rule(
+        "/account/notifications/<string:notification_id>/dismiss",
+        view_func=DismissNotification.as_view("dismiss_notification"),
+    )
+    user_bp.add_url_rule(
+        "/account/notifications/dismiss-all",
+        view_func=DismissAllNotifications.as_view("dismiss_all_notifications"),
     )
     app.register_blueprint(user_bp, url_prefix="/api/users")
 
