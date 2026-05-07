@@ -11,7 +11,7 @@ import { forkJoin, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
-import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -57,23 +57,23 @@ export class RegionComponent implements OnInit {
           return of(e);
         }),
       ),
-      this.store.pipe(select(selectIsLoggedIn), take(1)),
-    ]).subscribe(([region, isLoggedIn]) => {
+      this.store.pipe(select(selectIsModerator), take(1)),
+    ]).subscribe(([region, isModerator]) => {
       this.region = region;
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });
-      this.buildItems(region, isLoggedIn);
+      this.buildItems(region, isModerator);
       this.languageService.renderedLanguage$
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((rendered) => {
           if (!rendered) return;
-          this.buildItems(region, isLoggedIn);
+          this.buildItems(region, isModerator);
         });
     });
   }
 
-  private buildItems(region: Region, isLoggedIn: boolean) {
+  private buildItems(region: Region, isModerator: boolean) {
     this.items = [
       {
         label: this.translocoService.translate(marker('region.infos')),
@@ -128,7 +128,7 @@ export class RegionComponent implements OnInit {
         label: this.translocoService.translate(marker('region.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/edit-region`,
-        visible: isLoggedIn,
+        visible: isModerator,
       },
     ];
   }

@@ -13,7 +13,7 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
-import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
@@ -95,10 +95,10 @@ export class SectorComponent implements OnInit {
             }),
           ),
           this.blocWeatherService.getNearest('sector', sectorSlug),
-          this.store.pipe(select(selectIsLoggedIn), take(1)),
+          this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
         ]).subscribe(
-          ([crag, sector, blocweatherConfig, isLoggedIn, isGymMode]) => {
+          ([crag, sector, blocweatherConfig, isModerator, isGymMode]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
             this.sector = sector;
@@ -119,12 +119,12 @@ export class SectorComponent implements OnInit {
                     ),
                 };
               });
-            this.buildItems(isLoggedIn, isGymMode);
+            this.buildItems(isModerator, isGymMode);
             this.languageService.renderedLanguage$
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe((rendered) => {
                 if (!rendered) return;
-                this.buildItems(isLoggedIn, isGymMode);
+                this.buildItems(isModerator, isGymMode);
               });
             this.breadcrumbs = [
               {
@@ -142,7 +142,7 @@ export class SectorComponent implements OnInit {
       });
   }
 
-  private buildItems(isLoggedIn: boolean, isGymMode: boolean) {
+  private buildItems(isModerator: boolean, isGymMode: boolean) {
     this.items = [
       {
         label: this.translocoService.translate(marker('sector.infos')),
@@ -203,7 +203,7 @@ export class SectorComponent implements OnInit {
         label: this.translocoService.translate(marker('sector.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,
-        visible: isLoggedIn,
+        visible: isModerator,
       },
     ];
   }
