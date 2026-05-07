@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { UsersService } from '../../../services/crud/users.service';
 import { TranslocoService } from '@jsverse/transloco';
@@ -8,7 +9,7 @@ import { Title } from '@angular/platform-browser';
 import { User } from '../../../models/user';
 
 import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -28,27 +29,35 @@ export class UserAscentsComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    const userSlug =
-      this.route.snapshot.parent.parent.paramMap.get('user-slug');
-    this.usersService
-      .getUser(userSlug)
-      .pipe(
-        catchError((e) => {
-          if (e.status === 404) {
-            this.router.navigate(['/not-found']);
-          }
-          return of(e);
-        }),
-      )
-      .subscribe((user) => {
-        this.user = user;
-        this.store.select(selectInstanceName).subscribe((instanceName) => {
-          this.title.setTitle(
-            `${user.firstname} ${user.lastname} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
-          );
-        });
+    this.route.parent.parent.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const userSlug =
+          this.route.parent.parent.snapshot.paramMap.get('user-slug');
+        this.usersService
+          .getUser(userSlug)
+          .pipe(
+            catchError((e) => {
+              if (e.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
+              return of(e);
+            }),
+          )
+          .subscribe((user) => {
+            this.user = user;
+            this.store
+              .select(selectInstanceName)
+              .pipe(take(1))
+              .subscribe((instanceName) => {
+                this.title.setTitle(
+                  `${user.firstname} ${user.lastname} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
+                );
+              });
+          });
       });
   }
 
