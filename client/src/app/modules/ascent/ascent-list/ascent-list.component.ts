@@ -159,6 +159,28 @@ export class AscentListComponent implements OnInit, OnChanges {
     if (changes['parentLoading']) {
       this.parentLoading$.next(changes['parentLoading'].currentValue);
     }
+
+    // Parent ascent routes reuse this component across param-only navigations (e.g. clicking a
+    // notification jumps from one line’s ascents to another). Initial load runs only once via
+    // combineLatest(…take(1)) in ngOnInit, so we must refetch when scoped inputs identity changes.
+    const scopeKeys = [
+      'lineId',
+      'cragId',
+      'sectorId',
+      'areaId',
+      'user',
+    ] as const;
+    const scopeChanged = scopeKeys.some((key) => {
+      const ch = changes[key];
+      return ch && !ch.firstChange && ch.currentValue !== ch.previousValue;
+    });
+    if (
+      scopeChanged &&
+      this.regionGradesLoaded$.value &&
+      !this.parentLoading$.value
+    ) {
+      this.loadFirstPage();
+    }
   }
 
   ngOnInit() {
