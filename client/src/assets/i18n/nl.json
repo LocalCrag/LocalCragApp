@@ -926,5 +926,8 @@
   "menu.notificationsOpenAndRead": "Openen",
   "menu.notificationsMarkReadOnly": "Markeer als gelezen",
   "accountSettingsForm.systemNotificationsEnabled": "Systeemmeldingen",
-  "accountSettingsForm.systemNotificationsEnabledDescription": "Ontvang meldingen wanneer moderatie je inhoud wijzigt."
+  "accountSettingsForm.systemNotificationsEnabledDescription": "Ontvang meldingen wanneer moderatie je inhoud wijzigt.",
+  "menu.notificationsMarkAllRead": "Alles als gelezen markeren",
+  "menu.notificationsOpenDetailPage": "Alle meldingen bekijken",
+  "menu.notificationsDetailTitle": "Meldingen"
 }

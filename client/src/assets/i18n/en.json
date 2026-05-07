@@ -925,6 +925,9 @@
   "menu.notificationTextFaRemoved": "Moderator {{actor}} removed the FA tag of your ascent of {{label}}",
   "menu.notificationsOpenAndRead": "Open",
   "menu.notificationsMarkReadOnly": "Mark as read",
+  "menu.notificationsMarkAllRead": "Mark all as read",
+  "menu.notificationsOpenDetailPage": "View all notifications",
+  "menu.notificationsDetailTitle": "Notifications",
   "accountSettingsForm.systemNotificationsEnabled": "System notifications",
   "accountSettingsForm.systemNotificationsEnabledDescription": "Get notified about moderator changes to your content."
 }

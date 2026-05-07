@@ -926,5 +926,8 @@
   "menu.notificationsOpenAndRead": "Öffnen",
   "menu.notificationsMarkReadOnly": "Als gelesen markieren",
   "accountSettingsForm.systemNotificationsEnabled": "Systembenachrichtigungen",
-  "accountSettingsForm.systemNotificationsEnabledDescription": "Benachrichtigung bei Moderationsänderungen an deinen Inhalten."
+  "accountSettingsForm.systemNotificationsEnabledDescription": "Benachrichtigung bei Moderationsänderungen an deinen Inhalten.",
+  "menu.notificationsMarkAllRead": "Alle als gelesen markieren",
+  "menu.notificationsOpenDetailPage": "Alle Benachrichtigungen anzeigen",
+  "menu.notificationsDetailTitle": "Benachrichtigungen"
 }

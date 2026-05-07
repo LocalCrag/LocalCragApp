@@ -925,5 +925,8 @@
   "menu.notificationsOpenAndRead": "Apri",
   "menu.notificationsMarkReadOnly": "Segna come letta",
   "accountSettingsForm.systemNotificationsEnabled": "Notifiche di sistema",
-  "accountSettingsForm.systemNotificationsEnabledDescription": "Ricevi notifiche quando la moderazione modifica i tuoi contenuti."
+  "accountSettingsForm.systemNotificationsEnabledDescription": "Ricevi notifiche quando la moderazione modifica i tuoi contenuti.",
+  "menu.notificationsMarkAllRead": "Segna tutte come lette",
+  "menu.notificationsOpenDetailPage": "Visualizza tutte le notifiche",
+  "menu.notificationsDetailTitle": "Notifiche"
 }

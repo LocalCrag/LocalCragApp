@@ -1,0 +1,69 @@
+<ng-container *transloco="let t; read: 'menu'">
+  <div class="content notifications-page">
+    <p-card [header]="t('notificationsDetailTitle')">
+      <div class="notifications-page-actions">
+        <p-button
+          [label]="t('notificationsMarkAllRead')"
+          [text]="true"
+          (click)="markAllRead()"
+        />
+      </div>
+
+      @if (notifications.length === 0) {
+        <p-message severity="info" styleClass="w-full" [text]="t('notificationsEmpty')" />
+      } @else {
+        <div class="notifications-page-list">
+          @for (notification of notifications; track notification.id) {
+            <div
+              class="notifications-page-item"
+              [class.is-read]="notification.isDismissed"
+            >
+              <button
+                type="button"
+                class="notifications-page-item-main"
+                (click)="openNotification(notification)"
+              >
+                <div class="notifications-page-item-icon">
+                  @if (notificationUi.isReaction(notification)) {
+                    <span>{{ notification.reactionEmoji || "😊" }}</span>
+                  } @else if (notification.type === "comment_reply") {
+                    <i class="pi pi-comment"></i>
+                  } @else {
+                    <i class="pi pi-cog"></i>
+                  }
+                </div>
+                <div class="notifications-page-item-content">
+                  <div class="notifications-page-item-text">
+                    {{ notificationUi.notificationText(notification) }}
+                  </div>
+                  <div class="notifications-page-item-time">
+                    {{ notification.timeCreated | date }}
+                  </div>
+                </div>
+              </button>
+              @if (!notification.isDismissed) {
+                <button
+                  type="button"
+                  class="notifications-page-item-mark"
+                  (click)="markNotificationRead(notification)"
+                >
+                  {{ t("notificationsMarkReadOnly") }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (hasNextPage) {
+        <div class="notifications-page-load-more">
+          <p-button
+            [label]="t('history.loadMore')"
+            [loading]="loading"
+            (click)="loadNextPage()"
+          />
+        </div>
+      }
+    </p-card>
+  </div>
+</ng-container>
