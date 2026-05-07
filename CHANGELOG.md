@@ -1,3 +1,23 @@
+# [1.36.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.35.0...v1.36.0) (2026-05-07)
+
+
+### Bug Fixes
+
+* **account:** show topo moderation tiles only for moderator accounts but to every user ([#1076](https://github.com/LocalCrag/LocalCragApp/issues/1076)) ([57f4ec3](https://github.com/LocalCrag/LocalCragApp/commit/57f4ec37adf5397ba045ca59fa3a973cf8156db7)), closes [#1066](https://github.com/LocalCrag/LocalCragApp/issues/1066)
+* **ascents:** fix ascent list refetching on scope changes ([#1087](https://github.com/LocalCrag/LocalCragApp/issues/1087)) ([c3b85d6](https://github.com/LocalCrag/LocalCragApp/commit/c3b85d66d154143635717cfbd61dd990c2ef2018)), closes [#1083](https://github.com/LocalCrag/LocalCragApp/issues/1083)
+* **auth:** replace isLoggedIn selector with isModerator in area, region, and sector components ([#1085](https://github.com/LocalCrag/LocalCragApp/issues/1085)) ([c56f8e4](https://github.com/LocalCrag/LocalCragApp/commit/c56f8e4a6f1605e9e77c634219285c5b9cafeebe)), closes [#1081](https://github.com/LocalCrag/LocalCragApp/issues/1081)
+* **comments:** wrap comment editor in a div for improved layout when replying ([#1086](https://github.com/LocalCrag/LocalCragApp/issues/1086)) ([ed067bc](https://github.com/LocalCrag/LocalCragApp/commit/ed067bcc64ed40aa8f63c7510ea248c3af7f9959)), closes [#1082](https://github.com/LocalCrag/LocalCragApp/issues/1082)
+* **core:** update accepted file types for image uploads to use MIME types ([#1080](https://github.com/LocalCrag/LocalCragApp/issues/1080)) ([6e863da](https://github.com/LocalCrag/LocalCragApp/commit/6e863da23b181921bcf81417499376288e12fe32)), closes [#1053](https://github.com/LocalCrag/LocalCragApp/issues/1053)
+* **reactions:** adjust reaction bar position for improved layout ([#1079](https://github.com/LocalCrag/LocalCragApp/issues/1079)) ([69bf9ff](https://github.com/LocalCrag/LocalCragApp/commit/69bf9ff0706ddfd34b7ff3fe423c7572d17beedf))
+* **reactions:** fix reactionbar clipping on mobile devices ([#1077](https://github.com/LocalCrag/LocalCragApp/issues/1077)) ([b8a9c1b](https://github.com/LocalCrag/LocalCragApp/commit/b8a9c1b2644e8ff1d1a35593f49bd8c74e60b6ff)), closes [#1052](https://github.com/LocalCrag/LocalCragApp/issues/1052)
+* **topo:** correctly place closure reason input below the closed checkbox ([#1075](https://github.com/LocalCrag/LocalCragApp/issues/1075)) ([78ac8f8](https://github.com/LocalCrag/LocalCragApp/commit/78ac8f88d4e46d0f2755b4acb4ab3ba0e36a774a))
+
+
+### Features
+
+* **notifications:** add notifications detail page ([#1084](https://github.com/LocalCrag/LocalCragApp/issues/1084)) ([1395ef9](https://github.com/LocalCrag/LocalCragApp/commit/1395ef97c2ff8cdd697db850644b711f3b82b651)), closes [#1063](https://github.com/LocalCrag/LocalCragApp/issues/1063)
+* **reactions:** disable comment reaction bar when reply editor is open ([#1073](https://github.com/LocalCrag/LocalCragApp/issues/1073)) ([a325b9f](https://github.com/LocalCrag/LocalCragApp/commit/a325b9f6251f7aa611a78d7488ec8c0e635f33b8))
+
 # [1.35.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.34.0...v1.35.0) (2026-05-03)
 
 
