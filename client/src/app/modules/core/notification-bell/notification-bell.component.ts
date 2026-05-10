@@ -13,8 +13,12 @@ import { NotificationsService } from '../../../services/crud/notifications.servi
 import { NotificationItem } from '../../../models/notification-item';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../utility/misc/breakpoints';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 import { NotificationPresentationService } from '../notification-presentation.service';
+import { AppNotificationsService } from '../../../services/core/app-notifications.service';
+import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
+import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
 
 @Component({
   selector: 'lc-notification-bell',
@@ -26,7 +30,6 @@ import { NotificationPresentationService } from '../notification-presentation.se
 })
 export class NotificationBellComponent implements OnInit {
   notifications: NotificationItem[] = [];
-  unreadCount = 0;
   currentPage = 0;
   hasNextPage = true;
   loading = false;
@@ -35,12 +38,19 @@ export class NotificationBellComponent implements OnInit {
   private readonly perPage = 20;
 
   public notificationUi = inject(NotificationPresentationService);
+  private appNotifications = inject(AppNotificationsService);
   private notificationsService = inject(NotificationsService);
   private router = inject(Router);
+  private store = inject(Store);
   private destroyRef = inject(DestroyRef);
 
+  readonly unreadCount = toSignal(
+    this.store.select(selectUnreadNotificationCount),
+    { initialValue: 0 },
+  );
+
   ngOnInit(): void {
-    this.loadUnreadCount();
+    this.store.dispatch(loadUnreadNotificationCount());
     this.loadFirstPage();
     this.notificationsService.notificationUpdates$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -49,7 +59,6 @@ export class NotificationBellComponent implements OnInit {
           this.skipNextRefresh = false;
           return;
         }
-        this.loadUnreadCount();
         this.loadFirstPage();
       });
   }
@@ -108,15 +117,15 @@ export class NotificationBellComponent implements OnInit {
   }
 
   public markAllRead(popover?: Popover): void {
-    if (this.unreadCount === 0) {
+    if (this.unreadCount() === 0) {
       return;
     }
     this.notificationsService.dismissAll().subscribe(() => {
       this.notifications = [];
-      this.unreadCount = 0;
       this.currentPage = 0;
       this.hasNextPage = false;
       popover?.hide();
+      this.appNotifications.toast('NOTIFICATIONS_MARK_ALL_READ_SUCCESS');
     });
   }
 
@@ -137,12 +146,5 @@ export class NotificationBellComponent implements OnInit {
 
   private markItemDismissed(id: string): void {
     this.notifications = this.notifications.filter((item) => item.id !== id);
-    this.unreadCount = Math.max(0, this.unreadCount - 1);
-  }
-
-  private loadUnreadCount(): void {
-    this.notificationsService.getNotificationCount().subscribe((count) => {
-      this.unreadCount = count;
-    });
   }
 }

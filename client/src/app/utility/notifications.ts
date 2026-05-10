@@ -402,6 +402,13 @@ export const NOTIFICATIONS = {
     title: marker('notifications.BLOCWEATHER_REPORT_ERROR_TITLE'),
     message: marker('notifications.BLOCWEATHER_REPORT_ERROR_MESSAGE'),
   },
+  NOTIFICATIONS_MARK_ALL_READ_SUCCESS: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE'),
+    message: marker(
+      'notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_MESSAGE',
+    ),
+  },
   OBJECT_MOVED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.OBJECT_MOVED_TITLE'),

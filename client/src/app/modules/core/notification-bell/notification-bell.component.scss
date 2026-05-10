@@ -56,6 +56,12 @@ lc-notification-bell {
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   font-size: 0.85rem;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    color: #94a3b8;
+  }
 }
 
 .notifications-item {

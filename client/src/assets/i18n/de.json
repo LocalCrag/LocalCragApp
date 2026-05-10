@@ -628,6 +628,8 @@
   "notifications.OBJECT_MOVED_MESSAGE": "Das Objekt wurde erfolgreich in das neue übergeordnete Element verschoben.",
   "notifications.OBJECT_MOVE_ERROR_TITLE": "Verschieben fehlgeschlagen",
   "notifications.OBJECT_MOVE_ERROR_MESSAGE": "Beim Verschieben ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE": "Benachrichtigungen aktualisiert",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_MESSAGE": "Alle Benachrichtigungen wurden als gelesen markiert.",
   "de": "Deutsch",
   "en": "Englisch",
   "it": "Italienisch",
