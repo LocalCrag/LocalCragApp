@@ -11,12 +11,12 @@
 * **reactions:** adjust reaction bar position for improved layout ([#1079](https://github.com/LocalCrag/LocalCragApp/issues/1079)) ([69bf9ff](https://github.com/LocalCrag/LocalCragApp/commit/69bf9ff0706ddfd34b7ff3fe423c7572d17beedf))
 * **reactions:** fix reactionbar clipping on mobile devices ([#1077](https://github.com/LocalCrag/LocalCragApp/issues/1077)) ([b8a9c1b](https://github.com/LocalCrag/LocalCragApp/commit/b8a9c1b2644e8ff1d1a35593f49bd8c74e60b6ff)), closes [#1052](https://github.com/LocalCrag/LocalCragApp/issues/1052)
 * **topo:** correctly place closure reason input below the closed checkbox ([#1075](https://github.com/LocalCrag/LocalCragApp/issues/1075)) ([78ac8f8](https://github.com/LocalCrag/LocalCragApp/commit/78ac8f88d4e46d0f2755b4acb4ab3ba0e36a774a))
+* **reactions:** disable comment reaction bar when reply editor is open ([#1073](https://github.com/LocalCrag/LocalCragApp/issues/1073)) ([a325b9f](https://github.com/LocalCrag/LocalCragApp/commit/a325b9f6251f7aa611a78d7488ec8c0e635f33b8))
 
 
 ### Features
 
 * **notifications:** add notifications detail page ([#1084](https://github.com/LocalCrag/LocalCragApp/issues/1084)) ([1395ef9](https://github.com/LocalCrag/LocalCragApp/commit/1395ef97c2ff8cdd697db850644b711f3b82b651)), closes [#1063](https://github.com/LocalCrag/LocalCragApp/issues/1063)
-* **reactions:** disable comment reaction bar when reply editor is open ([#1073](https://github.com/LocalCrag/LocalCragApp/issues/1073)) ([a325b9f](https://github.com/LocalCrag/LocalCragApp/commit/a325b9f6251f7aa611a78d7488ec8c0e635f33b8))
 
 # [1.35.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.34.0...v1.35.0) (2026-05-03)
 

@@ -628,6 +628,8 @@
   "notifications.OBJECT_MOVED_MESSAGE": "L'oggetto è stato spostato con successo nel nuovo elemento padre.",
   "notifications.OBJECT_MOVE_ERROR_TITLE": "Spostamento fallito",
   "notifications.OBJECT_MOVE_ERROR_MESSAGE": "Si è verificato un errore durante lo spostamento. Riprova.",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE": "Notifiche aggiornate",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_MESSAGE": "Tutte le notifiche sono state segnate come lette.",
   "de": "Tedesco",
   "en": "Inglese",
   "it": "Italiano",

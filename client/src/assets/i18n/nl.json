@@ -628,6 +628,8 @@
   "notifications.OBJECT_MOVED_MESSAGE": "Het object werd succesvol verplaatst.",
   "notifications.OBJECT_MOVE_ERROR_TITLE": "Fout bij verplaatsing",
   "notifications.OBJECT_MOVE_ERROR_MESSAGE": "Het object kon niet worden verplaatst. Probeer het later opnieuw.",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE": "Meldingen bijgewerkt",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_MESSAGE": "Alle meldingen zijn als gelezen gemarkeerd.",
   "de": "Duits",
   "en": "Engels",
   "it": "Italiaans",

@@ -628,6 +628,8 @@
   "notifications.OBJECT_MOVED_MESSAGE": "The object was moved to the new parent successfully.",
   "notifications.OBJECT_MOVE_ERROR_TITLE": "Move failed",
   "notifications.OBJECT_MOVE_ERROR_MESSAGE": "An error occurred while moving the object. Please try again.",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE": "Notifications updated",
+  "notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_MESSAGE": "All notifications were marked as read.",
   "de": "German",
   "en": "English",
   "it": "Italian",

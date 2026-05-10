@@ -5,6 +5,7 @@
         <p-button
           [label]="t('notificationsMarkAllRead')"
           [text]="true"
+          [disabled]="unreadCount() === 0"
           (click)="markAllRead()"
         />
       </div>

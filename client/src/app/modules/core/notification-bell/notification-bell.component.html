@@ -17,6 +17,7 @@
         <button
           type="button"
           class="notifications-footer-link"
+          [disabled]="unreadCount() === 0"
           (click)="markAllRead(notificationsPopover)"
         >
           {{ t("notificationsMarkAllRead") }}
@@ -82,9 +83,9 @@
     (click)="onBellClick($event, notificationsPopover)"
   >
     <i class="pi pi-bell"></i>
-    @if (unreadCount > 0) {
+    @if (unreadCount() > 0) {
       <span class="notifications-badge">{{
-        unreadCount > 99 ? "99+" : unreadCount
+        unreadCount() > 99 ? "99+" : unreadCount()
       }}</span>
     }
   </button>
