@@ -8,6 +8,7 @@ from extensions import db
 from marshmallow_schemas.line_schema import ascent_and_todo_lines_schema
 from models.ascent import Ascent
 from models.comment import Comment
+from models.enums.notification_type_enum import NotificationTypeEnum
 from models.line import Line
 from models.notification import Notification
 from models.post import Post
@@ -48,6 +49,12 @@ def _notification_action_link(notification: Notification) -> str | None:
         if ascent and ascent.line:
             line = ascent.line
             return f"/topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}/ascents"
+    if (
+        notification.type == NotificationTypeEnum.RELEASE_NOTES
+        and notification.entity_type == "release_note_bundle"
+        and notification.entity_id
+    ):
+        return f"/release-notes/{notification.entity_id}"
     return None
 
 

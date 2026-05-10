@@ -9,6 +9,7 @@ def test_get_account_settings(client, member_token):
     assert rv.json["commentReplyMailsEnabled"] is True
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is True
+    assert rv.json["releaseNotesNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] in ("de", "en", "it")
 
@@ -21,6 +22,7 @@ def test_update_account_settings(client, member_token):
             "commentReplyMailsEnabled": False,
             "reactionNotificationsEnabled": False,
             "systemNotificationsEnabled": False,
+            "releaseNotesNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "it",
         },
@@ -29,6 +31,7 @@ def test_update_account_settings(client, member_token):
     assert rv.json["commentReplyMailsEnabled"] is False
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is False
+    assert rv.json["releaseNotesNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] == "it"
 
@@ -41,6 +44,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
             "commentReplyMailsEnabled": True,
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
+            "releaseNotesNotificationsEnabled": False,
             "notificationDigestFrequency": "weekly",
             "language": "en",
         },
@@ -52,6 +56,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
     assert rv.json["commentReplyMailsEnabled"] is True
     assert rv.json["reactionNotificationsEnabled"] is True
     assert rv.json["systemNotificationsEnabled"] is True
+    assert rv.json["releaseNotesNotificationsEnabled"] is False
     assert rv.json["notificationDigestFrequency"] == "weekly"
     assert rv.json["language"] == "en"
 
@@ -92,6 +97,7 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
             "commentReplyMailsEnabled": False,
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
+            "releaseNotesNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "de",
         },
@@ -131,6 +137,7 @@ def test_update_account_settings_invalid_language(client, member_token):
             "commentReplyMailsEnabled": True,
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
+            "releaseNotesNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "fr",
         },

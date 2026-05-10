@@ -39,6 +39,8 @@ export class ApiService {
       `${this.apiHost}users/account/notifications/${id}/dismiss`,
     dismissAllNotifications: (): string =>
       `${this.apiHost}users/account/notifications/dismiss-all`,
+    releaseNoteBundle: (bundleId: string): string =>
+      `${this.apiHost}users/account/release-notes/${bundleId}`,
   };
 
   public statistics = {

@@ -36,6 +36,7 @@ html2text = "==2024.*"
 flake8 = "==7.*"
 black = "==25.*"
 isort = "==6.*"
+jsonschema = "==4.*"
 
 [requires]
 python_version = "3.14"

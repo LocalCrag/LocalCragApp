@@ -112,6 +112,7 @@ from resources.post_resources import (
 from resources.ranking_resources import GetRanking
 from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateReaction
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
+from resources.release_note_resources import GetReleaseNoteBundle
 from resources.scale_resources import (
     CreateScale,
     DeleteScale,
@@ -247,6 +248,10 @@ def configure_api(app):
     user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
     user_bp.add_url_rule("/account/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
     user_bp.add_url_rule("/account/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
+    user_bp.add_url_rule(
+        "/account/release-notes/<string:bundle_id>",
+        view_func=GetReleaseNoteBundle.as_view("get_release_note_bundle"),
+    )
     user_bp.add_url_rule("/account/notifications", view_func=GetNotifications.as_view("get_notifications"))
     user_bp.add_url_rule(
         "/account/notifications/count", view_func=GetNotificationsCount.as_view("get_notifications_count")

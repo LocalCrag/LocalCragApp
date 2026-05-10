@@ -55,6 +55,12 @@ export class NotificationPresentationService {
         .trim();
     }
 
+    if (notification.type === 'release_notes') {
+      return this.translocoService
+        .translate('menu.notificationTextReleaseNotes')
+        .trim();
+    }
+
     return notification.actorName || notification.type;
   }
 

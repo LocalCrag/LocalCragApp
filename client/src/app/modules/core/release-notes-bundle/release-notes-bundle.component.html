@@ -1,0 +1,37 @@
+<ng-container *transloco="let t">
+  @if (loadError) {
+    <p-message
+      severity="error"
+      [text]="t('releaseNotes.loadError')"
+    ></p-message>
+  } @else if (bundle) {
+    <div class="flex flex-column gap-3 release-notes-bundle">
+      <div
+        class="flex align-items-center justify-content-between flex-wrap gap-2"
+      >
+        <h1 class="m-0 text-2xl">{{ t("releaseNotes.heading") }}</h1>
+        <p-button
+          [label]="t('releaseNotes.backToNotifications')"
+          [routerLink]="['/notifications']"
+          [outlined]="true"
+        ></p-button>
+      </div>
+      <div class="flex flex-column gap-4">
+        @for (section of bundleSections; track section.type) {
+          <div class="flex flex-column gap-3">
+            <h2 class="m-0 text-xl font-bold text-900">
+              {{ t("releaseNotes.section." + section.type) }}
+            </h2>
+            @for (item of section.items; track item.key) {
+              <p-card>
+                <p class="m-0 line-height-3">
+                  {{ t("releaseNotes.notes." + item.key) }}
+                </p>
+              </p-card>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</ng-container>

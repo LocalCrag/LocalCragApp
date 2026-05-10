@@ -1,0 +1,32 @@
+name: Validate release notes manifest
+
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+
+permissions:
+  contents: read
+
+jobs:
+  validate-manifest:
+    name: release_notes_manifest.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          cd server
+          pipenv install --dev
+
+      - name: Validate manifest
+        run: |
+          cd server
+          pipenv run python src/util/scripts/validate_release_notes_manifest.py
