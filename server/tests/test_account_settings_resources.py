@@ -9,7 +9,7 @@ def test_get_account_settings(client, member_token):
     assert rv.json["commentReplyMailsEnabled"] is True
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is True
-    assert rv.json["releaseNotesNotificationsEnabled"] is True
+    assert rv.json["releaseNotesNotificationsEnabled"] is False
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] in ("de", "en", "it")
 

@@ -5,6 +5,7 @@ import pytz
 from sqlalchemy.dialects.postgresql import UUID
 
 from extensions import db
+from models.release_note_item import ReleaseNoteItem
 
 
 class ReleaseNoteBundle(db.Model):
@@ -18,7 +19,7 @@ class ReleaseNoteBundle(db.Model):
     )
 
     items = db.relationship(
-        "ReleaseNoteItem",
+        ReleaseNoteItem,
         back_populates="bundle",
         cascade="all, delete-orphan",
     )

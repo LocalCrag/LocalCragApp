@@ -1,3 +1,5 @@
+import pytest
+
 from app import app
 from extensions import db
 from models.enums.notification_type_enum import NotificationTypeEnum
@@ -8,6 +10,15 @@ from models.release_note_bundle import ReleaseNoteBundle
 from models.release_note_item import ReleaseNoteItem
 from models.user import User
 from util.release_notes_sync import sync_release_notes_catalog
+
+
+@pytest.fixture(autouse=True)
+def _release_notes_sync_commit_flushes_only(monkeypatch):
+    """``sync_release_notes_catalog`` calls ``session.commit()``; tests use a single outer
+    transaction (see ``conftest.db_session``). A real commit would end that transaction and
+    leak rows into later tests — flush keeps work visible in-session and lets teardown rollback.
+    """
+    monkeypatch.setattr(db.session, "commit", db.session.flush)
 
 
 def test_release_notes_first_sync_seeds_without_notifications(monkeypatch):
@@ -44,7 +55,7 @@ def test_release_notes_second_sync_creates_bundle_and_notifications(monkeypatch)
         existing.note_type = ReleaseNoteItemTypeEnum.FIX
         existing.bundle_id = None
         db.session.add(existing)
-        db.session.commit()
+        db.session.flush()
 
         sync_release_notes_catalog()
 
@@ -74,9 +85,10 @@ def test_release_notes_creates_in_app_notification_when_mail_opted_out(monkeypat
         existing.bundle_id = None
         db.session.add(existing)
         member = User.query.filter_by(email="member@localcrag.invalid.org").first()
+        member_id = member.id
         member.account_settings.release_notes_notifications_enabled = False
         db.session.add(member.account_settings)
-        db.session.commit()
+        db.session.flush()
 
         sync_release_notes_catalog()
 
@@ -84,7 +96,7 @@ def test_release_notes_creates_in_app_notification_when_mail_opted_out(monkeypat
         assert (
             Notification.query.filter(
                 Notification.type == NotificationTypeEnum.RELEASE_NOTES,
-                Notification.user_id == member.id,
+                Notification.user_id == member_id,
             ).count()
             == 1
         )
