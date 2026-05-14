@@ -1,3 +1,15 @@
+# [1.37.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.36.0...v1.37.0) (2026-05-14)
+
+
+### Bug Fixes
+
+* **notifications:** disable read all notifications button if none are unread ([#1089](https://github.com/LocalCrag/LocalCragApp/issues/1089)) ([896f5b9](https://github.com/LocalCrag/LocalCragApp/commit/896f5b944fd6039872a4eecdb6cf03f5a3b4c16b)), closes [#1088](https://github.com/LocalCrag/LocalCragApp/issues/1088)
+
+
+### Features
+
+* **notifications:** add release note notification system ([#1090](https://github.com/LocalCrag/LocalCragApp/issues/1090)) ([63f3acc](https://github.com/LocalCrag/LocalCragApp/commit/63f3accf216b10482d235fa6d68a318d528b347e)), closes [#1062](https://github.com/LocalCrag/LocalCragApp/issues/1062)
+
 # [1.36.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.35.0...v1.36.0) (2026-05-07)
 
 
