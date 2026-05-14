@@ -86,15 +86,23 @@ export class NotificationListComponent implements OnInit {
   }
 
   public openNotification(notification: NotificationItem): void {
+    const link = notification.actionLink as string | undefined;
+
+    const go = (): void => {
+      if (link) {
+        this.router.navigateByUrl(link);
+      }
+    };
+
     if (notification.isDismissed) {
-      this.router.navigateByUrl(notification.actionLink as string);
+      go();
       return;
     }
     this.notificationsService.dismiss(notification.id).subscribe(() => {
       this.notifications = this.notifications.map((item) =>
         item.id === notification.id ? { ...item, isDismissed: true } : item,
       );
-      this.router.navigateByUrl(notification.actionLink as string);
+      go();
     });
   }
 

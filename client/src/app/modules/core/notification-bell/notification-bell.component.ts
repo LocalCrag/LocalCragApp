@@ -93,15 +93,22 @@ export class NotificationBellComponent implements OnInit {
   }
 
   public openNotification(item: NotificationItem, popover: Popover): void {
-    if (item.isDismissed) {
+    const link = item.actionLink as string | undefined;
+
+    const go = (): void => {
       popover.hide();
-      this.router.navigateByUrl(item.actionLink as string);
+      if (link) {
+        this.router.navigateByUrl(link);
+      }
+    };
+
+    if (item.isDismissed) {
+      go();
       return;
     }
     this.notificationsService.dismiss(item.id).subscribe(() => {
       this.markItemDismissed(item.id);
-      popover.hide();
-      this.router.navigateByUrl(item.actionLink as string);
+      go();
     });
   }
 

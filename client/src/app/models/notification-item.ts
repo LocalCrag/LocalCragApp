@@ -13,4 +13,5 @@ export interface NotificationItem {
   topicName: string | null;
   reactionEmoji: string | null;
   isDismissed: boolean;
+  releaseNoteItemKeys?: string[];
 }

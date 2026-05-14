@@ -77,6 +77,7 @@ import { CragWeatherComponent } from '../crag/crag-weather/crag-weather.componen
 import { SectorWeatherComponent } from '../sector/sector-weather/sector-weather.component';
 import { AreaWeatherComponent } from '../area/area-weather/area-weather.component';
 import { NotificationListComponent } from './notification-list/notification-list.component';
+import { ReleaseNotesBundleComponent } from './release-notes-bundle/release-notes-bundle.component';
 
 export const appRoutes: Routes = [
   {
@@ -267,6 +268,14 @@ export const appRoutes: Routes = [
   {
     path: 'notifications',
     component: NotificationListComponent,
+    canActivate: [isLoggedIn],
+    data: {
+      backgroundImagePath: StaticBackgroundImages.AUTH,
+    },
+  },
+  {
+    path: 'release-notes/:bundleId',
+    component: ReleaseNotesBundleComponent,
     canActivate: [isLoggedIn],
     data: {
       backgroundImagePath: StaticBackgroundImages.AUTH,

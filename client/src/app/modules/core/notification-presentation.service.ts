@@ -55,6 +55,27 @@ export class NotificationPresentationService {
         .trim();
     }
 
+    if (notification.type === 'release_notes') {
+      const lead = this.translocoService
+        .translate('menu.notificationTextReleaseNotesLead')
+        .trim();
+      const keys = notification.releaseNoteItemKeys ?? [];
+      if (keys.length === 0) {
+        return lead;
+      }
+      const titles = keys
+        .map((k) =>
+          this.translocoService
+            .translate(`releaseNotes.notes.${k}_title`)
+            .trim(),
+        )
+        .filter(Boolean);
+      if (titles.length === 0) {
+        return lead;
+      }
+      return `${lead}: ${titles.join(', ')}`;
+    }
+
     return notification.actorName || notification.type;
   }
 

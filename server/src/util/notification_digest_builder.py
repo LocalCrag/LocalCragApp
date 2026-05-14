@@ -35,6 +35,7 @@ def build_digest_items(
 
     FA moderation rows are never merged; other types are grouped by
     ``(type, entity_type, entity_id)`` with a combined count.
+    Release-note notifications are filtered out before digest send and are not rendered here.
     """
     instance_settings = InstanceSettings.return_it()
     display_user_grades = bool(instance_settings.display_user_grades) if instance_settings else False
