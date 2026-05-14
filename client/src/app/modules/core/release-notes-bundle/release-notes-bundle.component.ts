@@ -1,40 +1,48 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { ReleaseNotesService } from '../../../services/crud/release-notes.service';
-import { ReleaseNoteBundlePayload } from '../../../models/release-note-bundle';
 import {
-  releaseNoteBundleSections,
-  type ReleaseNoteBundleSection,
-} from '../../../utility/release-note-bundle-sections';
+  ReleaseNoteBundleItem,
+  ReleaseNoteBundlePayload,
+} from '../../../models/release-note-bundle';
+import { releaseNoteBundleItemsInDisplayOrder } from '../../../utility/release-note-bundle-sections';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 
 /** Loads manifest-synced `marker()` keys for transloco-keys-manager extract. */
 import '../../../utility/release-note-transloco-keys';
 
 @Component({
   selector: 'lc-release-notes-bundle',
-  imports: [
-    TranslocoDirective,
-    CardModule,
-    ButtonModule,
-    MessageModule,
-    RouterLink,
-  ],
+  imports: [TranslocoDirective, CardModule, MessageModule],
   templateUrl: './release-notes-bundle.component.html',
   styleUrl: './release-notes-bundle.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class ReleaseNotesBundleComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private releaseNotesService = inject(ReleaseNotesService);
   private transloco = inject(TranslocoService);
   private title = inject(Title);
@@ -43,19 +51,39 @@ export class ReleaseNotesBundleComponent implements OnInit {
   bundle: ReleaseNoteBundlePayload | null = null;
   loadError = false;
 
-  get bundleSections(): ReleaseNoteBundleSection[] {
-    return releaseNoteBundleSections(this.bundle);
+  get bundleItems(): ReleaseNoteBundleItem[] {
+    return releaseNoteBundleItemsInDisplayOrder(this.bundle);
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('bundleId');
-    if (!id) {
-      this.loadError = true;
-      return;
-    }
-    this.releaseNotesService.getBundle(id).subscribe({
-      next: (b) => {
+    this.route.paramMap
+      .pipe(
+        map((pm) => pm.get('bundleId')),
+        distinctUntilChanged(),
+        switchMap((id) => {
+          if (!id) {
+            this.bundle = null;
+            this.loadError = true;
+            return EMPTY;
+          }
+          this.bundle = null;
+          this.loadError = false;
+          return this.releaseNotesService.getBundle(id).pipe(
+            catchError(() => {
+              this.loadError = true;
+              this.bundle = null;
+              return of(undefined);
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((b) => {
+        if (b === undefined) {
+          return;
+        }
         this.bundle = b;
+        this.loadError = false;
         this.store
           .select(selectInstanceName)
           .pipe(take(1))
@@ -64,10 +92,6 @@ export class ReleaseNotesBundleComponent implements OnInit {
               `${this.transloco.translate(marker('releaseNotes.browserTitle'))} - ${instanceName}`,
             );
           });
-      },
-      error: () => {
-        this.loadError = true;
-      },
-    });
+      });
   }
 }

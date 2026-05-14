@@ -842,12 +842,9 @@
   "menu.notificationTextCommentReply": "{{actor}} hat auf deinen Kommentar zu {{label}} geantwortet",
   "menu.notificationTextFaRemoved": "Moderator {{actor}} hat den FA-Tag deiner Begehung von {{label}} entfernt",
   "menu.notificationTextReleaseNotesLead": "Neue App Updates",
-  "releaseNotes.browserTitle": "Neuigkeiten",
-  "releaseNotes.heading": "Neuigkeiten",
+  "releaseNotes.browserTitle": "Neue App Updates",
+  "releaseNotes.heading": "Neue App Updates",
   "releaseNotes.loadError": "Diese Release-Notes konnten nicht geladen werden.",
-  "releaseNotes.backToNotifications": "Benachrichtigungen",
-  "releaseNotes.section.FEATURE": "Neue Funktionen",
-  "releaseNotes.section.FIX": "Fehlerbehebungen",
   "releaseNotes.type.FEATURE": "Neu",
   "releaseNotes.type.FIX": "Fehlerbehebung",
   "resetPasswordBrowserTitle": "Passwort zurücksetzen",
@@ -934,7 +931,5 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Datum",
-  "YEAR": "Jahr",
-  "releaseNotes.notes.notifications_title": "In-App-Benachrichtigungen",
-  "releaseNotes.notes.notifications": "Bleib immer auf dem Laufenden: Mit den neuen In-App-Benachrichtigungen verpasst du keine wichtigen Updates mehr. Ab sofort informieren wir dich direkt in der App über Neuigkeiten, relevante Aktivitäten und wichtige Änderungen. In deinem Profil kannst du einstellen, welche Benachrichtigungen du auch per E-Mail erhalten willst."
+  "YEAR": "Jahr"
 }

@@ -32,3 +32,10 @@ export function releaseNoteBundleSections(
   }
   return sections;
 }
+
+/** All bundle items in display order (FEATURE groups first, then FIX). */
+export function releaseNoteBundleItemsInDisplayOrder(
+  bundle: ReleaseNoteBundlePayload | null,
+): ReleaseNoteBundleItem[] {
+  return releaseNoteBundleSections(bundle).flatMap((s) => s.items);
+}

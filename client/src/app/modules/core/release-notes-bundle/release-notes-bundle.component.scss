@@ -1,3 +1,4 @@
-.release-notes-bundle {
-  max-width: 42rem;
+.release-notes-bundle-item:not(:last-child) {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--surface-border, rgba(0, 0, 0, 0.08));
 }
