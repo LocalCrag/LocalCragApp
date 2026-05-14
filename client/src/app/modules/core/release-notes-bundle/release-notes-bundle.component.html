@@ -1,28 +1,28 @@
 <ng-container *transloco="let t">
   <div class="content">
     <p-card>
-  @if (loadError) {
-    <p-message
-      severity="error"
-      [text]="t('releaseNotes.loadError')"
-    ></p-message>
-  } @else if (bundle) {
-    <div class="flex flex-column gap-3 release-notes-bundle">
-      <h1 class="m-0 text-2xl">{{ t("releaseNotes.heading") }}</h1>
-      <div class="flex flex-column gap-4 release-notes-bundle-items">
-        @for (item of bundleItems; track item.key) {
-          <article class="release-notes-bundle-item flex flex-column gap-2">
-            <h2 class="m-0 text-xl font-bold text-900">
-              {{ t("releaseNotes.notes." + item.key + "_title") }}
-            </h2>
-            <p class="m-0 line-height-3">
-              {{ t("releaseNotes.notes." + item.key) }}
-            </p>
-          </article>
-        }
-      </div>
-    </div>
-  }
+      @if (loadError) {
+        <p-message
+          severity="error"
+          [text]="t('releaseNotes.loadError')"
+        ></p-message>
+      } @else if (bundle) {
+        <div class="flex flex-column gap-3 release-notes-bundle">
+          <h1 class="m-0 text-2xl">{{ t("releaseNotes.heading") }}</h1>
+          <div class="flex flex-column gap-4 release-notes-bundle-items">
+            @for (item of bundleItems; track item.key) {
+              <article class="release-notes-bundle-item flex flex-column gap-2">
+                <h2 class="m-0 text-xl font-bold text-900">
+                  {{ t("releaseNotes.notes." + item.key + "_title") }}
+                </h2>
+                <p class="m-0 line-height-3">
+                  {{ t("releaseNotes.notes." + item.key) }}
+                </p>
+              </article>
+            }
+          </div>
+        </div>
+      }
     </p-card>
   </div>
 </ng-container>
