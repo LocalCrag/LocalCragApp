@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "release_notes_manifest.schema.json",
+  "title": "Release notes shipped manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "type"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+            "description": "Single JSON segment; same rules as add_release_note_item.py"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FEATURE", "FIX"]
+          }
+        }
+      }
+    }
+  }
+}

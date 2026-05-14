@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
@@ -10,6 +12,9 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { finalize } from 'rxjs/operators';
 import { NotificationPresentationService } from '../notification-presentation.service';
+import { AppNotificationsService } from '../../../services/core/app-notifications.service';
+import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
+import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
 
 @Component({
   selector: 'lc-notification-list',
@@ -33,10 +38,18 @@ export class NotificationListComponent implements OnInit {
 
   private readonly perPage = 20;
   public notificationUi = inject(NotificationPresentationService);
+  private appNotifications = inject(AppNotificationsService);
   private notificationsService = inject(NotificationsService);
   private router = inject(Router);
+  private store = inject(Store);
+
+  readonly unreadCount = toSignal(
+    this.store.select(selectUnreadNotificationCount),
+    { initialValue: 0 },
+  );
 
   ngOnInit(): void {
+    this.store.dispatch(loadUnreadNotificationCount());
     this.loadFirstPage();
   }
 
@@ -73,15 +86,23 @@ export class NotificationListComponent implements OnInit {
   }
 
   public openNotification(notification: NotificationItem): void {
+    const link = notification.actionLink as string | undefined;
+
+    const go = (): void => {
+      if (link) {
+        this.router.navigateByUrl(link);
+      }
+    };
+
     if (notification.isDismissed) {
-      this.router.navigateByUrl(notification.actionLink as string);
+      go();
       return;
     }
     this.notificationsService.dismiss(notification.id).subscribe(() => {
       this.notifications = this.notifications.map((item) =>
         item.id === notification.id ? { ...item, isDismissed: true } : item,
       );
-      this.router.navigateByUrl(notification.actionLink as string);
+      go();
     });
   }
 
@@ -97,10 +118,7 @@ export class NotificationListComponent implements OnInit {
   }
 
   public markAllRead(): void {
-    const hasUnread = this.notifications.some(
-      (notification) => !notification.isDismissed,
-    );
-    if (!hasUnread) {
+    if (this.unreadCount() === 0) {
       return;
     }
     this.notificationsService.dismissAll().subscribe(() => {
@@ -108,6 +126,7 @@ export class NotificationListComponent implements OnInit {
         ...item,
         isDismissed: true,
       }));
+      this.appNotifications.toast('NOTIFICATIONS_MARK_ALL_READ_SUCCESS');
     });
   }
 }

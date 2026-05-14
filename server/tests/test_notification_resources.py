@@ -1,6 +1,49 @@
+from extensions import db
+from models.enums.notification_type_enum import NotificationTypeEnum
+from models.enums.release_note_item_type_enum import ReleaseNoteItemTypeEnum
 from models.line import Line
 from models.notification import Notification
 from models.post import Post
+from models.release_note_bundle import ReleaseNoteBundle
+from models.release_note_item import ReleaseNoteItem
+from models.user import User
+
+
+def test_get_notifications_includes_release_note_item_keys(client, member_token):
+    member = User.find_by_email("member@localcrag.invalid.org")
+    bundle = ReleaseNoteBundle()
+    db.session.add(bundle)
+    db.session.flush()
+
+    fix_item = ReleaseNoteItem()
+    fix_item.item_key = "rnApiTestFix"
+    fix_item.note_type = ReleaseNoteItemTypeEnum.FIX
+    fix_item.bundle_id = bundle.id
+    db.session.add(fix_item)
+
+    feat_item = ReleaseNoteItem()
+    feat_item.item_key = "rnApiTestFeat"
+    feat_item.note_type = ReleaseNoteItemTypeEnum.FEATURE
+    feat_item.bundle_id = bundle.id
+    db.session.add(feat_item)
+
+    note = Notification()
+    note.user_id = member.id
+    note.type = NotificationTypeEnum.RELEASE_NOTES
+    note.entity_type = "release_note_bundle"
+    note.entity_id = bundle.id
+    db.session.add(note)
+    db.session.commit()
+
+    rv = client.get(
+        "/api/users/account/notifications?include_dismissed=1",
+        token=member_token,
+    )
+    assert rv.status_code == 200, rv.text
+    release_rows = [i for i in rv.json["items"] if i["type"] == "release_notes"]
+    assert len(release_rows) >= 1
+    ours = next(r for r in release_rows if r.get("entityId") == str(bundle.id))
+    assert ours["releaseNoteItemKeys"] == ["rnApiTestFeat", "rnApiTestFix"]
 
 
 def test_get_notifications_lists_unread(client, admin_token, member_token):

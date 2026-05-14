@@ -5,6 +5,7 @@
         <p-button
           [label]="t('notificationsMarkAllRead')"
           [text]="true"
+          [disabled]="unreadCount() === 0"
           (click)="markAllRead()"
         />
       </div>
@@ -32,6 +33,8 @@
                     <span>{{ notification.reactionEmoji || "😊" }}</span>
                   } @else if (notification.type === "comment_reply") {
                     <i class="pi pi-comment"></i>
+                  } @else if (notification.type === "release_notes") {
+                    <i class="pi pi-megaphone"></i>
                   } @else {
                     <i class="pi pi-cog"></i>
                   }

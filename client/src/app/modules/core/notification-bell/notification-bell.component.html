@@ -17,6 +17,7 @@
         <button
           type="button"
           class="notifications-footer-link"
+          [disabled]="unreadCount() === 0"
           (click)="markAllRead(notificationsPopover)"
         >
           {{ t("notificationsMarkAllRead") }}
@@ -39,6 +40,8 @@
                 <span>{{ item.reactionEmoji || "😊" }}</span>
               } @else if (item.type === "comment_reply") {
                 <i class="pi pi-comment"></i>
+              } @else if (item.type === "release_notes") {
+                <i class="pi pi-megaphone"></i>
               } @else {
                 <i class="pi pi-cog"></i>
               }
@@ -82,9 +85,9 @@
     (click)="onBellClick($event, notificationsPopover)"
   >
     <i class="pi pi-bell"></i>
-    @if (unreadCount > 0) {
+    @if (unreadCount() > 0) {
       <span class="notifications-badge">{{
-        unreadCount > 99 ? "99+" : unreadCount
+        unreadCount() > 99 ? "99+" : unreadCount()
       }}</span>
     }
   </button>

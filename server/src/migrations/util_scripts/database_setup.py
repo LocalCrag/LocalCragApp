@@ -5,6 +5,7 @@ from migrations.util_scripts.add_initial_instance_settings import (
 )
 from migrations.util_scripts.add_scales import add_scales
 from migrations.util_scripts.add_superadmin import add_superadmin
+from util.release_notes_sync import sync_release_notes_catalog
 
 
 def database_setup():
@@ -16,3 +17,4 @@ def database_setup():
     add_initial_data()
     add_scales()
     add_backup_user()
+    sync_release_notes_catalog()
