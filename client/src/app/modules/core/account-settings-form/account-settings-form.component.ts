@@ -45,7 +45,6 @@ export class AccountSettingsFormComponent implements OnInit {
       commentReplyMailsEnabled: [null],
       reactionNotificationsEnabled: [null],
       systemNotificationsEnabled: [null],
-      releaseNotesNotificationsEnabled: [null],
       notificationDigestFrequency: [null],
       language: [null],
     });
@@ -69,8 +68,6 @@ export class AccountSettingsFormComponent implements OnInit {
         this.accountSettings.reactionNotificationsEnabled,
       systemNotificationsEnabled:
         this.accountSettings.systemNotificationsEnabled,
-      releaseNotesNotificationsEnabled:
-        this.accountSettings.releaseNotesNotificationsEnabled,
       notificationDigestFrequency:
         this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
@@ -89,8 +86,6 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.systemNotificationsEnabled = this.accountSettingsForm.get(
         'systemNotificationsEnabled',
       ).value;
-      accountSettings.releaseNotesNotificationsEnabled =
-        this.accountSettingsForm.get('releaseNotesNotificationsEnabled').value;
       accountSettings.notificationDigestFrequency =
         this.accountSettingsForm.get('notificationDigestFrequency').value;
       accountSettings.language = this.accountSettingsForm.get('language').value;

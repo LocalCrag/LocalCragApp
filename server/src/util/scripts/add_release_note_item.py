@@ -5,7 +5,8 @@ translation string to a chosen client locale file (e.g. en.json, de.json).
 
 You enter only the short note key (one JSON object key segment). The manifest
 stores ``key`` and ``type`` only; translations live at
-``releaseNotes.notes.<key>`` in locale JSON. Also refreshes
+``releaseNotes.notes.<key>`` (body) and ``releaseNotes.notes.<key>_title``
+(short title for cards) in locale JSON. Also refreshes
 ``client/src/app/utility/release-note-transloco-keys.ts`` with ``marker()``
 calls so transloco-keys-manager extract keeps those keys.
 
@@ -32,6 +33,10 @@ RELEASE_NOTE_ITEM_I18N_PREFIX = "releaseNotes.notes."
 
 def release_note_item_translation_key(item_key: str) -> str:
     return f"{RELEASE_NOTE_ITEM_I18N_PREFIX}{item_key}"
+
+
+def release_note_item_title_translation_key(item_key: str) -> str:
+    return f"{RELEASE_NOTE_ITEM_I18N_PREFIX}{item_key}_title"
 
 
 NOTE_TYPES = ("FEATURE", "FIX")
@@ -86,6 +91,7 @@ def _write_release_note_transloco_keys(root: Path) -> None:
     ]
     for k in keys:
         lines.append(f"  marker('releaseNotes.notes.{k}'),")
+        lines.append(f"  marker('releaseNotes.notes.{k}_title'),")
     lines.append("] as const;")
     lines.append("")
     out_path.write_text("\n".join(lines), encoding="utf-8")
@@ -179,7 +185,8 @@ def main() -> int:
     print("Add release note item (Ctrl+C to cancel).\n")
     print(
         "Note key — short id only (same as manifest ``key``). "
-        "Translation will be stored under releaseNotes.notes.<key>.\n"
+        "Translations: releaseNotes.notes.<key> (body) and "
+        "releaseNotes.notes.<key>_title (short title).\n"
         "Do not type that prefix — e.g. enter betterMaps only.\n"
     )
     item_key = _prompt_nonempty("Note key")
@@ -189,12 +196,16 @@ def main() -> int:
         return 1
 
     translation_key = release_note_item_translation_key(item_key)
+    title_translation_key = release_note_item_title_translation_key(item_key)
 
     note_type = _prompt_choice("Note type", NOTE_TYPES, default="FEATURE")
 
     i18n_path = _prompt_language(code_to_file)
 
-    print(f"\nTranslation for {translation_key!r} in {i18n_path.name} (single line):")
+    print(f"\nShort title for {title_translation_key!r} in {i18n_path.name} (single line):")
+    title_translation = _prompt_nonempty("Title text")
+
+    print(f"\nBody text for {translation_key!r} in {i18n_path.name} (single line):")
     translation = _prompt_nonempty("Translation text")
 
     manifest = _load_json(manifest_path)
@@ -218,9 +229,15 @@ def main() -> int:
         print(f"{i18n_path} must be a JSON object.", file=sys.stderr)
         return 1
 
-    if translation_key in i18n_data:
+    existing_keys = [k for k in (translation_key, title_translation_key) if k in i18n_data]
+    if existing_keys:
         replace = (
-            input(f"\nKey {translation_key!r} already exists in {i18n_path.name}. Overwrite? [y/N]: ").strip().lower()
+            input(
+                f"\nKey(s) already exist in {i18n_path.name}: {', '.join(repr(k) for k in existing_keys)}. "
+                "Overwrite all listed? [y/N]: "
+            )
+            .strip()
+            .lower()
         )
         if replace != "y":
             print("Aborted.")
@@ -232,6 +249,7 @@ def main() -> int:
             "type": note_type,
         }
     )
+    i18n_data[title_translation_key] = title_translation
     i18n_data[translation_key] = translation
 
     _write_json(manifest_path, manifest)
@@ -240,10 +258,11 @@ def main() -> int:
 
     print("\nDone.")
     print(f"  Manifest key:      {item_key}")
-    print(f"  Translation key:   {translation_key}")
+    print(f"  Title key:         {title_translation_key}")
+    print(f"  Body key:          {translation_key}")
     print(f"  Manifest:          {manifest_path}")
     print(f"  Locale:            {i18n_path}")
-    print("\nAdd the same translation key to other locale files when you are ready.")
+    print("\nAdd the same title and body keys to other locale files when you are ready.")
     print(f"  Transloco markers: {_release_note_transloco_keys_ts_path(root)}")
     return 0
 

@@ -23,7 +23,7 @@
               {{ t("releaseNotes.section." + section.type) }}
             </h2>
             @for (item of section.items; track item.key) {
-              <p-card>
+              <p-card [header]="t('releaseNotes.notes.' + item.key + '_title')">
                 <p class="m-0 line-height-3">
                   {{ t("releaseNotes.notes." + item.key) }}
                 </p>

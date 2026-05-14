@@ -381,8 +381,6 @@
   "accountSettingsForm.reactionNotificationsEnabledDescription": "Benachrichtigung bei Reaktionen auf deine Inhalte.",
   "accountSettingsForm.systemNotificationsEnabled": "Systembenachrichtigungen",
   "accountSettingsForm.systemNotificationsEnabledDescription": "Benachrichtigung bei Moderationsänderungen an deinen Inhalten.",
-  "accountSettingsForm.releaseNotesNotificationsEnabled": "App-Updates",
-  "accountSettingsForm.releaseNotesNotificationsEnabledDescription": "Benachrichtigungen über neue Funktionen und Fehlerbehebungen in der App.",
   "accountSettingsForm.notificationDigestFrequencyLabel": "E-Mail-Benachrichtigungszeitplan",
   "accountSettingsForm.notificationDigestFrequencyDaily": "Einmal täglich",
   "accountSettingsForm.notificationDigestFrequencyWeekly": "Wöchentlich (montags)",
@@ -843,7 +841,7 @@
   "menu.notificationTextReactionSingle": "{{actor}} hat auf {{subject}} reagiert",
   "menu.notificationTextCommentReply": "{{actor}} hat auf deinen Kommentar zu {{label}} geantwortet",
   "menu.notificationTextFaRemoved": "Moderator {{actor}} hat den FA-Tag deiner Begehung von {{label}} entfernt",
-  "menu.notificationTextReleaseNotes": "Es gibt neue Updates für diese App.",
+  "menu.notificationTextReleaseNotesLead": "Neue App Updates",
   "releaseNotes.browserTitle": "Neuigkeiten",
   "releaseNotes.heading": "Neuigkeiten",
   "releaseNotes.loadError": "Diese Release-Notes konnten nicht geladen werden.",
@@ -936,5 +934,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Datum",
-  "YEAR": "Jahr"
+  "YEAR": "Jahr",
+  "releaseNotes.notes.notifications_title": "In-App-Benachrichtigungen",
+  "releaseNotes.notes.notifications": "Bleib immer auf dem Laufenden: Mit den neuen In-App-Benachrichtigungen verpasst du keine wichtigen Updates mehr. Ab sofort informieren wir dich direkt in der App über Neuigkeiten, relevante Aktivitäten und wichtige Änderungen. In deinem Profil kannst du einstellen, welche Benachrichtigungen du auch per E-Mail erhalten willst."
 }

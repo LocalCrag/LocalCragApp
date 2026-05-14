@@ -21,8 +21,6 @@ class AccountSettings(db.Model):
     reaction_notifications_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     # Whether system notifications should create notifications (e.g. moderator FA removals)
     system_notifications_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
-    # Notifications for bundled release notes
-    release_notes_notifications_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     # Digest schedule for email delivery ("daily", "weekly")
     notification_digest_frequency = db.Column(
         db.Enum(

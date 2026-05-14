@@ -12,7 +12,8 @@ def should_send_notification_mail(settings, notification_type: NotificationTypeE
     if notification_type == NotificationTypeEnum.FA_MODERATION_REMOVED:
         return settings.system_notifications_enabled
     if notification_type == NotificationTypeEnum.RELEASE_NOTES:
-        return settings.release_notes_notifications_enabled
+        # Never include release notes in notifications; they're always in-app only
+        return False
     return True
 
 

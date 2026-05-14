@@ -24,8 +24,6 @@ notification_digest_mail = {
         ),
         "view_comment_label": "Kommentar ansehen",
         "open_account_label": "Konto öffnen",
-        "release_notes_digest_text_single": "Neue Release-Notes: {target_link}",
-        "release_notes_link_label": "Was ist neu?",
     },
     "en": {
         "title": "Notifications for {instance_name}",
@@ -52,8 +50,6 @@ notification_digest_mail = {
         ),
         "view_comment_label": "View comment",
         "open_account_label": "Open account",
-        "release_notes_digest_text_single": "New release updates: {target_link}",
-        "release_notes_link_label": "What's new",
     },
     "it": {
         "title": "Notifiche per {instance_name}",
@@ -80,8 +76,6 @@ notification_digest_mail = {
         ),
         "view_comment_label": "Vedi commento",
         "open_account_label": "Apri account",
-        "release_notes_digest_text_single": "Novità di rilascio: {target_link}",
-        "release_notes_link_label": "Novità",
     },
     "nl": {
         "title": "Meldingen voor {instance_name}",
@@ -108,7 +102,5 @@ notification_digest_mail = {
         ),
         "view_comment_label": "Opmerking bekijken",
         "open_account_label": "Account openen",
-        "release_notes_digest_text_single": "Nieuwe release-updates: {target_link}",
-        "release_notes_link_label": "Wat is er nieuw?",
     },
 }

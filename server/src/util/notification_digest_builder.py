@@ -11,7 +11,6 @@ from models.line import Line
 from models.notification import Notification
 from models.post import Post
 from models.region import Region
-from models.release_note_bundle import ReleaseNoteBundle
 from models.scale import Scale
 from models.sector import Sector
 from util.email_helpers import build_comment_action_link, frontend_url
@@ -36,6 +35,7 @@ def build_digest_items(
 
     FA moderation rows are never merged; other types are grouped by
     ``(type, entity_type, entity_id)`` with a combined count.
+    Release-note notifications are filtered out before digest send and are not rendered here.
     """
     instance_settings = InstanceSettings.return_it()
     display_user_grades = bool(instance_settings.display_user_grades) if instance_settings else False
@@ -44,20 +44,6 @@ def build_digest_items(
     explicit_items: list[dict] = []
     for notification in notifications:
         if notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED:
-            entry = _build_digest_item(
-                notification.type,
-                notification.entity_type,
-                str(notification.entity_id) if notification.entity_id else None,
-                1,
-                notification=notification,
-                digest_i18n=digest_i18n,
-                display_user_grades=display_user_grades,
-                grade_name_cache=grade_name_cache,
-            )
-            if entry:
-                explicit_items.append(entry)
-            continue
-        if notification.type == NotificationTypeEnum.RELEASE_NOTES:
             entry = _build_digest_item(
                 notification.type,
                 notification.entity_type,
@@ -131,19 +117,6 @@ def _build_digest_item(
         return {
             "html": digest_i18n[comment_reply_text_key].format(count=count, target_link=target_link),
         }
-    if notification_type == NotificationTypeEnum.RELEASE_NOTES:
-        if (
-            entity_type == "release_note_bundle"
-            and notification
-            and notification.entity_id
-            and ReleaseNoteBundle.query.filter_by(id=notification.entity_id).first()
-        ):
-            bundle_link = frontend_url(f"release-notes/{notification.entity_id}")
-            target_link = _target_anchor(bundle_link, digest_i18n["release_notes_link_label"])
-            return {
-                "html": digest_i18n["release_notes_digest_text_single"].format(target_link=target_link),
-            }
-        return None
     if notification_type == NotificationTypeEnum.FA_MODERATION_REMOVED:
         if entity_type == "ascent" and entity_id:
             ascent = Ascent.query.filter_by(id=entity_id).first()

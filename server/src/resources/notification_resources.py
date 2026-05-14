@@ -9,10 +9,12 @@ from marshmallow_schemas.line_schema import ascent_and_todo_lines_schema
 from models.ascent import Ascent
 from models.comment import Comment
 from models.enums.notification_type_enum import NotificationTypeEnum
+from models.enums.release_note_item_type_enum import release_note_type_display_rank
 from models.line import Line
 from models.notification import Notification
 from models.post import Post
 from models.reaction import Reaction
+from models.release_note_item import ReleaseNoteItem
 from models.user import User
 from util.email import _build_comment_action_link
 from webargs_schemas.notification_args import get_notifications_args
@@ -56,6 +58,17 @@ def _notification_action_link(notification: Notification) -> str | None:
     ):
         return f"/release-notes/{notification.entity_id}"
     return None
+
+
+def _release_note_item_keys_for_bundle(bundle_id) -> list[str]:
+    rows = ReleaseNoteItem.query.filter(ReleaseNoteItem.bundle_id == bundle_id).all()
+    if not rows:
+        return []
+    ordered = sorted(
+        rows,
+        key=lambda item: (release_note_type_display_rank(item.note_type), item.item_key),
+    )
+    return [row.item_key for row in ordered]
 
 
 class GetNotifications(MethodView):
@@ -109,22 +122,25 @@ class GetNotifications(MethodView):
                 )
                 if reaction:
                     reaction_emoji = reaction.emoji
-            payload.append(
-                {
-                    "id": str(notification.id),
-                    "type": notification.type.value,
-                    "timeCreated": notification.time_created,
-                    "actorId": str(notification.actor_id) if notification.actor_id else None,
-                    "actorName": actor_name,
-                    "entityType": notification.entity_type,
-                    "entityId": str(notification.entity_id) if notification.entity_id else None,
-                    "actionLink": _notification_action_link(notification),
-                    "line": line_payload,
-                    "topicName": topic_name,
-                    "reactionEmoji": reaction_emoji,
-                    "isDismissed": notification.dismissed_at is not None,
-                }
-            )
+            row: dict = {
+                "id": str(notification.id),
+                "type": notification.type.value,
+                "timeCreated": notification.time_created,
+                "actorId": str(notification.actor_id) if notification.actor_id else None,
+                "actorName": actor_name,
+                "entityType": notification.entity_type,
+                "entityId": str(notification.entity_id) if notification.entity_id else None,
+                "actionLink": _notification_action_link(notification),
+                "line": line_payload,
+                "topicName": topic_name,
+                "reactionEmoji": reaction_emoji,
+                "isDismissed": notification.dismissed_at is not None,
+            }
+            if notification.type.value == "release_notes" and notification.entity_id:
+                row["releaseNoteItemKeys"] = _release_note_item_keys_for_bundle(
+                    notification.entity_id,
+                )
+            payload.append(row)
 
         return jsonify({"items": payload, "hasNext": notifications.has_next}), 200
 

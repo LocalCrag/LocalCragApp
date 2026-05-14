@@ -40,6 +40,8 @@
                 <span>{{ item.reactionEmoji || "😊" }}</span>
               } @else if (item.type === "comment_reply") {
                 <i class="pi pi-comment"></i>
+              } @else if (item.type === "release_notes") {
+                <i class="pi pi-megaphone"></i>
               } @else {
                 <i class="pi pi-cog"></i>
               }

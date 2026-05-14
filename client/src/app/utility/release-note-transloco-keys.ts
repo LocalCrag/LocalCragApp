@@ -8,4 +8,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 export const RELEASE_NOTE_TRANSLOCO_KEYS_FOR_EXTRACT = [
   marker('releaseNotes.section.FEATURE'),
   marker('releaseNotes.section.FIX'),
+  marker('releaseNotes.notes.notifications'),
+  marker('releaseNotes.notes.notifications_title'),
 ] as const;

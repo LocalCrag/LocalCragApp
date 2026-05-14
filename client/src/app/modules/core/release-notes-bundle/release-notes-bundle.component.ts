@@ -7,12 +7,11 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { ReleaseNotesService } from '../../../services/crud/release-notes.service';
+import { ReleaseNoteBundlePayload } from '../../../models/release-note-bundle';
 import {
-  ReleaseNoteBundleItem,
-  ReleaseNoteBundlePayload,
-  ReleaseNoteItemType,
-  RELEASE_NOTE_ITEM_TYPE_DISPLAY_ORDER,
-} from '../../../models/release-note-bundle';
+  releaseNoteBundleSections,
+  type ReleaseNoteBundleSection,
+} from '../../../utility/release-note-bundle-sections';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -44,32 +43,8 @@ export class ReleaseNotesBundleComponent implements OnInit {
   bundle: ReleaseNoteBundlePayload | null = null;
   loadError = false;
 
-  /** One block per item type present in the bundle (FEATURE, then FIX). */
-  get bundleSections(): {
-    type: ReleaseNoteItemType;
-    items: ReleaseNoteBundleItem[];
-  }[] {
-    if (!this.bundle?.items?.length) {
-      return [];
-    }
-    const byType = new Map<ReleaseNoteItemType, ReleaseNoteBundleItem[]>();
-    for (const item of this.bundle.items) {
-      if (!byType.has(item.type)) {
-        byType.set(item.type, []);
-      }
-      byType.get(item.type)!.push(item);
-    }
-    const sections: {
-      type: ReleaseNoteItemType;
-      items: ReleaseNoteBundleItem[];
-    }[] = [];
-    for (const type of RELEASE_NOTE_ITEM_TYPE_DISPLAY_ORDER) {
-      const items = byType.get(type);
-      if (items?.length) {
-        sections.push({ type, items });
-      }
-    }
-    return sections;
+  get bundleSections(): ReleaseNoteBundleSection[] {
+    return releaseNoteBundleSections(this.bundle);
   }
 
   ngOnInit(): void {

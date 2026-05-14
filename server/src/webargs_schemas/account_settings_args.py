@@ -10,7 +10,6 @@ account_settings_args = {
     "commentReplyMailsEnabled": fields.Boolean(required=True),
     "reactionNotificationsEnabled": fields.Boolean(required=True),
     "systemNotificationsEnabled": fields.Boolean(required=True),
-    "releaseNotesNotificationsEnabled": fields.Boolean(required=True),
     "notificationDigestFrequency": fields.Str(
         required=True,
         validate=validate.OneOf([member.value for member in NotificationDigestFrequencyEnum]),

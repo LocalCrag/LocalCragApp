@@ -65,7 +65,7 @@ def test_release_notes_second_sync_creates_bundle_and_notifications(monkeypatch)
         assert n == User.query.count()
 
 
-def test_release_notes_creates_in_app_notification_when_mail_opted_out(monkeypatch):
+def test_release_notes_creates_in_app_notification_for_member(monkeypatch):
     monkeypatch.setattr(
         "util.release_notes_sync._load_manifest",
         lambda: {
@@ -86,13 +86,11 @@ def test_release_notes_creates_in_app_notification_when_mail_opted_out(monkeypat
         db.session.add(existing)
         member = User.query.filter_by(email="member@localcrag.invalid.org").first()
         member_id = member.id
-        member.account_settings.release_notes_notifications_enabled = False
-        db.session.add(member.account_settings)
         db.session.flush()
 
         sync_release_notes_catalog()
 
-        # Mail/digest respects release_notes_notifications_enabled; in-app notification is always created.
+        # Release notes are always in-app only; digest email never includes this type.
         assert (
             Notification.query.filter(
                 Notification.type == NotificationTypeEnum.RELEASE_NOTES,
