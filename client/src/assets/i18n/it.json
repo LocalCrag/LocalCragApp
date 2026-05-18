@@ -803,7 +803,7 @@
   "line.askReallyWantToDeleteLine": "Confermi? Questa è un'azione estremamente distruttiva e non si può tornare indietro. Vengono eliminati anche tutte le ripetizioni del problema, ecc. Procedere?",
   "line.yesDelete": "Elimina tutto!",
   "line.noDontDelete": "No, vabbè dai...",
-  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "",
+  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "Qualsiasi posizione",
   "line.lineList.advancedFiltersVideoAny": "Qualsiasi",
   "line.lineList.advancedFiltersVideoYes": "Con video",
   "line.lineList.advancedFiltersVideoNo": "Senza video",

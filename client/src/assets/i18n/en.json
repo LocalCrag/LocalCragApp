@@ -803,7 +803,7 @@
   "line.askReallyWantToDeleteLine": "Are you certain? This is an extremely destructive action and cannot be undone. All logged line ascents etc. will also be deleted. Proceed?",
   "line.yesDelete": "Yes, delete everything!",
   "line.noDontDelete": "Maybe not.",
-  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "",
+  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "Any position",
   "line.lineList.advancedFiltersVideoAny": "Any",
   "line.lineList.advancedFiltersVideoYes": "With video",
   "line.lineList.advancedFiltersVideoNo": "Without video",

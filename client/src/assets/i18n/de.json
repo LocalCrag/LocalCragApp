@@ -803,7 +803,7 @@
   "line.askReallyWantToDeleteLine": "Bist Du Dir sicher? Dies ist eine extrem destruktive Aktion und kann nicht rückgängig gemacht werden. Alle Begehungen der Linie etc. werden ebenfalls gelöscht. Fortfahren?",
   "line.yesDelete": "Ja, alles löschen!",
   "line.noDontDelete": "Nee, doch nicht.",
-  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "",
+  "line.lineList.advancedFiltersStartingPositionsPlaceholder": "Beliebige Position",
   "line.lineList.advancedFiltersVideoAny": "Beliebig",
   "line.lineList.advancedFiltersVideoYes": "Mit Video",
   "line.lineList.advancedFiltersVideoNo": "Ohne Video",
