@@ -1,3 +1,10 @@
+## [1.38.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.0...v1.38.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **topo:** enhance advanced filters dialog with slider for rating range and update translations ([#1102](https://github.com/LocalCrag/LocalCragApp/issues/1102)) ([23bb83d](https://github.com/LocalCrag/LocalCragApp/commit/23bb83dd3f40cfd4d21ab087eab27243675a5d71)), closes [#1101](https://github.com/LocalCrag/LocalCragApp/issues/1101)
+
 # [1.38.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.37.0...v1.38.0) (2026-05-18)
 
 
