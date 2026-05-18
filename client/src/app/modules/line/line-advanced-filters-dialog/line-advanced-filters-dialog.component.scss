@@ -1,0 +1,25 @@
+.line-adv-filters-dialog {
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  padding-right: 0.25rem;
+
+  p-slider {
+    width: 100%;
+  }
+
+  .slider-container {
+    margin-left: 0.5715rem;
+    margin-right: 0.5715rem;
+    display: grid;
+  }
+}
+
+.fa-year-range .fa-year-field {
+  min-width: 0;
+}
+
+.bool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.35rem 0.75rem;
+}
