@@ -29,7 +29,7 @@ import { SliderLabelsComponent } from '../../shared/components/slider-labels/sli
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, take } from 'rxjs/operators';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
@@ -57,6 +57,26 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Tag } from 'primeng/tag';
+import {
+  LineAdvancedFiltersDialogComponent,
+  type LineAdvancedFiltersDialogData,
+} from '../line-advanced-filters-dialog/line-advanced-filters-dialog.component';
+import {
+  advancedLineListFiltersActive,
+  defaultLineListAdvancedFilters,
+  defaultLineListScaleKey,
+  LineListAdvancedFilters,
+  LineListFiltersDialogResult,
+  LineListFiltersPersisted,
+  sanitizeLineListAdvancedFilters,
+} from '../line-list-filters/line-list-filter.logic';
+import { appendLineListQueryParams } from '../line-list-filters/line-list-api-query';
+import {
+  loadLineListFilters,
+  saveLineListFilters,
+} from '../line-list-filters/line-list-filters.storage';
 
 @Component({
   selector: 'lc-line-list',
@@ -89,8 +109,9 @@ import { LanguageService } from '../../../services/core/language.service';
     LineGradePipe,
     TopoImageComponent,
     TranslateSpecialGradesPipe,
+    Tag,
   ],
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, DialogService],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -119,14 +140,21 @@ export class LineListComponent implements OnInit {
 
   public minGradeValue = -2;
   public maxGradeValue = null;
-  public gradeFilterRange = [this.minGradeValue, this.maxGradeValue];
+  public gradeScaleBoundsLoading = false;
+  public gradeFilterRange: (number | null)[] = [
+    this.minGradeValue,
+    this.maxGradeValue,
+  ];
   public orderOptions: SelectItem[];
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
   public showArchive = false;
+  public advancedFilters: LineListAdvancedFilters =
+    defaultLineListAdvancedFilters();
+  public ref: DynamicDialogRef | undefined;
 
-  private loadedGradeFilterRange: number[] = null;
+  private loadedGradeFilterRange: (number | null)[] | null = null;
   private destroyRef = inject(DestroyRef);
   private linesService = inject(LinesService);
   private areasService = inject(AreasService);
@@ -140,6 +168,7 @@ export class LineListComponent implements OnInit {
   private actions$ = inject(Actions);
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
+  private dialogService = inject(DialogService);
 
   protected scalesService = inject(ScalesService);
 
@@ -148,6 +177,8 @@ export class LineListComponent implements OnInit {
     this.sectorSlug =
       this.route.parent.parent.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.parent.parent.snapshot.paramMap.get('area-slug');
+
+    this.applyStoredAdvancedFilters();
 
     // Only offer lineType/gradeScales for filtering that are indeed available
     let gradeDistributionObserver: Observable<GradeDistribution>;
@@ -169,7 +200,9 @@ export class LineListComponent implements OnInit {
     gradeDistributionObserver.subscribe((gradeDistribution) => {
       this.availableScales = [];
       this.buildAvailableScales(gradeDistribution);
-      this.selectScale(); // Calls loadFirstPage()
+      this.applyPersistedGradeState(loadLineListFilters(), () =>
+        this.loadFirstPage(),
+      );
     });
 
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
@@ -190,6 +223,9 @@ export class LineListComponent implements OnInit {
       .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
+        if (this.advancedFilters.climbState !== 'any') {
+          this.loadFirstPage();
+        }
       });
     this.actions$
       .pipe(ofType(todoAdded), takeUntilDestroyed(this.destroyRef))
@@ -205,6 +241,7 @@ export class LineListComponent implements OnInit {
 
   selectScale() {
     if (this.scaleKey?.value) {
+      this.gradeScaleBoundsLoading = true;
       this.scalesService
         .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
         .subscribe((scale) => {
@@ -212,19 +249,75 @@ export class LineListComponent implements OnInit {
             ...scale.grades.map((grade) => grade.value),
           );
           this.gradeFilterRange = [-2, this.maxGradeValue];
+          this.loadedGradeFilterRange = [...this.gradeFilterRange];
+          this.gradeScaleBoundsLoading = false;
+          this.persistLineListFilters();
+          this.loadFirstPage();
         });
+    } else {
+      this.gradeScaleBoundsLoading = false;
+      this.maxGradeValue = null;
+      this.gradeFilterRange = [-2, null];
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.persistLineListFilters();
+      this.loadFirstPage();
     }
-    this.loadFirstPage();
   }
 
   reloadOnSlideEnd() {
-    if (
-      !this.loadedGradeFilterRange ||
-      this.gradeFilterRange[0] !== this.loadedGradeFilterRange[0] ||
-      this.gradeFilterRange[1] !== this.loadedGradeFilterRange[1]
-    ) {
+    const lo = this.gradeFilterRange[0];
+    const hi = this.gradeFilterRange[1];
+    const prev = this.loadedGradeFilterRange;
+    const changed = !prev || prev[0] !== lo || prev[1] !== hi;
+    if (changed) {
+      this.persistLineListFilters();
       this.loadFirstPage();
     }
+  }
+
+  filtersMayHideLines(): boolean {
+    return advancedLineListFiltersActive(this.advancedFilters);
+  }
+
+  openAdvancedFiltersDialog() {
+    const data: LineAdvancedFiltersDialogData = {
+      initial: this.advancedFilters,
+      availableScales: this.availableScales,
+      scaleKey: this.scaleKey,
+      gradeFilterRange: [...this.gradeFilterRange],
+      maxGradeValue: this.maxGradeValue,
+    };
+    this.ref = this.dialogService.open(LineAdvancedFiltersDialogComponent, {
+      modal: true,
+      width: 'min(640px, 95vw)',
+      header: this.translocoService.translate(
+        'line.lineList.advancedFiltersDialogTitle',
+      ),
+      data,
+    });
+    this.ref.onClose
+      .pipe(take(1))
+      .subscribe((result: LineListFiltersDialogResult | undefined) => {
+        if (result) {
+          this.advancedFilters = sanitizeLineListAdvancedFilters(
+            result.advanced,
+          );
+          const match = this.availableScales.find(
+            (s) =>
+              (s.value == null && result.scaleKey?.value == null) ||
+              (s.value != null &&
+                result.scaleKey?.value != null &&
+                s.value.lineType === result.scaleKey.value.lineType &&
+                s.value.gradeScale === result.scaleKey.value.gradeScale),
+          );
+          this.scaleKey = match ?? result.scaleKey;
+          this.gradeFilterRange = [...result.gradeFilterRange];
+          this.maxGradeValue = result.maxGradeValue;
+          this.gradeScaleBoundsLoading = false;
+          this.persistLineListFilters();
+          this.loadFirstPage();
+        }
+      });
   }
 
   loadFirstPage() {
@@ -261,14 +354,12 @@ export class LineListComponent implements OnInit {
       if (this.areaSlug) {
         filters.set('area_slug', this.areaSlug);
       }
-      if (this.scaleKey?.value) {
-        filters.set('line_type', this.scaleKey.value.lineType);
-        filters.set('grade_scale', this.scaleKey.value.gradeScale);
-      }
-      if (this.gradeFilterRange[1] !== null) {
-        filters.set('min_grade', this.gradeFilterRange[0].toString());
-        filters.set('max_grade', this.gradeFilterRange[1].toString());
-      }
+      appendLineListQueryParams(
+        filters,
+        this.advancedFilters,
+        this.scaleKey,
+        this.gradeFilterRange,
+      );
       filters.set('order_by', this.orderKey.value);
       filters.set('order_direction', this.orderDirectionKey.value);
       filters.set('per_page', '10');
@@ -325,11 +416,7 @@ export class LineListComponent implements OnInit {
         }
       }
     }
-    if (this.availableScales.length <= 2) {
-      this.scaleKey = this.availableScales[1]; // Default: Select first scale, so range slider is available
-    } else {
-      this.scaleKey = this.availableScales[0]; // Default: Select "ALL" if multiple scales are available
-    }
+    this.scaleKey = defaultLineListScaleKey(this.availableScales);
   }
 
   private buildAvailableScalesFromCurrent() {
@@ -348,7 +435,7 @@ export class LineListComponent implements OnInit {
     });
     this.scaleKey =
       this.availableScales.find((s) => s.value === this.scaleKey?.value) ||
-      this.availableScales[0];
+      defaultLineListScaleKey(this.availableScales);
   }
 
   private buildOrderOptions() {
@@ -382,6 +469,113 @@ export class LineListComponent implements OnInit {
       },
     ];
     this.orderDirectionKey = this.orderDirectionOptions[0];
+  }
+
+  private applyStoredAdvancedFilters(): void {
+    const persisted = loadLineListFilters();
+    this.advancedFilters = sanitizeLineListAdvancedFilters(
+      persisted?.advanced ?? defaultLineListAdvancedFilters(),
+    );
+  }
+
+  /**
+   * Applies header grade filter state after `availableScales` is built on init.
+   *
+   * Restores scale selection and slider range from `persisted` when still valid for
+   * this list, otherwise falls back to {@link defaultLineListScaleKey}. Fetches scale
+   * bounds asynchronously when a concrete scale is selected so the slider can render.
+   *
+   * Syncs resolved state back to localStorage and sets `loadedGradeFilterRange` so
+   * later slider moves are only persisted when the range actually changes.
+   *
+   * @param persisted Saved filters from {@link loadLineListFilters}, or null.
+   * @param onReady Called once grade state is ready (e.g. to load the first page).
+   */
+  private applyPersistedGradeState(
+    persisted: ReturnType<typeof loadLineListFilters>,
+    onReady: () => void,
+  ): void {
+    // Nothing to filter by when this crag/sector/area has no grade distribution.
+    const defaultScale = defaultLineListScaleKey(this.availableScales);
+    if (!defaultScale) {
+      onReady();
+      return;
+    }
+    this.scaleKey = defaultScale;
+
+    // Prefer the scale from localStorage if it still exists in this list's options.
+    if (persisted?.grade?.scale) {
+      const match = this.availableScales.find(
+        (s) =>
+          s.value?.lineType === persisted.grade.scale.lineType &&
+          s.value?.gradeScale === persisted.grade.scale.gradeScale,
+      );
+      if (match) {
+        this.scaleKey = match;
+      }
+    }
+
+    if (this.scaleKey?.value) {
+      // Concrete scale: load max grade for the slider, then restore or default the range.
+      this.gradeScaleBoundsLoading = true;
+      this.scalesService
+        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+        .subscribe((scale) => {
+          this.maxGradeValue = Math.max(
+            ...scale.grades.map((grade) => grade.value),
+          );
+          if (
+            persisted?.grade?.range?.length === 2 &&
+            typeof persisted.grade.range[0] === 'number' &&
+            typeof persisted.grade.range[1] === 'number'
+          ) {
+            // Clamp stored range to current scale bounds (list context may have changed).
+            this.gradeFilterRange = [
+              Math.max(
+                -2,
+                Math.min(persisted.grade.range[0], this.maxGradeValue),
+              ),
+              Math.max(
+                -2,
+                Math.min(persisted.grade.range[1], this.maxGradeValue),
+              ),
+            ];
+          } else {
+            this.gradeFilterRange = [-2, this.maxGradeValue];
+          }
+          this.loadedGradeFilterRange = [...this.gradeFilterRange];
+          this.gradeScaleBoundsLoading = false;
+          this.persistLineListFilters();
+          onReady();
+        });
+    } else {
+      // "ALL" scale: no slider bounds; grade range is not sent to the API.
+      this.gradeScaleBoundsLoading = false;
+      this.maxGradeValue = null;
+      this.gradeFilterRange = [-2, null];
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.persistLineListFilters();
+      onReady();
+    }
+  }
+
+  private persistLineListFilters(): void {
+    const lo = Number(this.gradeFilterRange[0] ?? -2);
+    const hi = this.gradeFilterRange[1];
+    const hiNum = typeof hi === 'number' ? hi : lo;
+    const payload: LineListFiltersPersisted = {
+      advanced: this.advancedFilters,
+      grade: {
+        scale: this.scaleKey?.value
+          ? {
+              lineType: this.scaleKey.value.lineType,
+              gradeScale: this.scaleKey.value.gradeScale,
+            }
+          : null,
+        range: [lo, hiNum],
+      },
+    };
+    saveLineListFilters(payload);
   }
 
   protected readonly LineType = LineType;

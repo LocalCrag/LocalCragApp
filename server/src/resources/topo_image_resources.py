@@ -179,6 +179,7 @@ class GetTopoImages(MethodView):
                 ti["linePaths"] = [lp for lp in ti["linePaths"] if not lp["line"]["secret"]]
         for ti in unfiltered_response:
             ti["linePaths"] = [lp for lp in ti["linePaths"] if ti["archived"] or not lp["line"]["archived"]]
+
         return jsonify(unfiltered_response), 200
 
 

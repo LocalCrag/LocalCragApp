@@ -1,0 +1,300 @@
+<ng-container *transloco="let t; read: 'line.lineList'">
+  <div class="line-adv-filters-dialog flex flex-column gap-3">
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersGradeSection") }}
+      </div>
+      @if (availableScales.length > 2) {
+        <div class="mb-3">
+          <label class="block text-sm mb-1">{{ t("lineType") }}</label>
+          <p-select
+            [options]="availableScales"
+            [(ngModel)]="dialogScaleKey"
+            optionLabel="label"
+            (onChange)="onDialogScaleChange()"
+            class="w-full"
+          >
+            <ng-template #selectedItem>
+              @if (dialogScaleKey) {
+                <div class="flex align-items-center gap-2">
+                  <div>{{ dialogScaleKey.label }}</div>
+                </div>
+              }
+            </ng-template>
+            <ng-template let-option #item>
+              <div class="flex align-items-center gap-2">
+                <div>{{ option.label }}</div>
+              </div>
+            </ng-template>
+          </p-select>
+        </div>
+      }
+      @if (dialogScaleKey?.value && maxGrade !== null) {
+        <div class="slider-container">
+          <lc-slider-labels
+            [rangeMin]="gradeRange[0]"
+            [rangeMax]="gradeRange[1]"
+            [min]="minGradeValue"
+            [max]="maxGrade"
+            [minLabel]="
+              scalesService.gradeNameByValue(
+                dialogScaleKey.value.lineType,
+                dialogScaleKey.value.gradeScale,
+                gradeRange[0]
+              )
+                | async
+                | translateSpecialGrades
+            "
+            [maxLabel]="
+              scalesService.gradeNameByValue(
+                dialogScaleKey.value.lineType,
+                dialogScaleKey.value.gradeScale,
+                gradeRange[1]
+              )
+                | async
+                | translateSpecialGrades
+            "
+          ></lc-slider-labels>
+          <p-slider
+            [(ngModel)]="gradeRange"
+            [min]="minGradeValue"
+            [max]="maxGrade"
+            [range]="true"
+            [step]="1"
+          />
+        </div>
+      }
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersRatingSection") }}
+      </div>
+      <div class="flex align-items-center gap-2 mb-2">
+        <span class="text-sm">{{ draft.minRating }}</span>
+        <p-slider
+          class="flex-grow-1"
+          [ngModel]="[draft.minRating, draft.maxRating]"
+          (ngModelChange)="onRatingRangeChange($event)"
+          [min]="0"
+          [max]="5"
+          [range]="true"
+          [step]="1"
+        ></p-slider>
+        <span class="text-sm">{{ draft.maxRating }}</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersFaYearSection") }}
+      </div>
+      <div class="fa-year-range grid w-full">
+        <div class="fa-year-field col-6 flex flex-column gap-1">
+          <label class="block text-sm mb-1" for="advancedFiltersFaYearFrom">{{
+            t("advancedFiltersFaYearFrom")
+          }}</label>
+          <p-date-picker
+            inputId="advancedFiltersFaYearFrom"
+            [ngModel]="yearToDate(draft.faYearFrom)"
+            (ngModelChange)="onFaYearFromChange($event)"
+            view="year"
+            dateFormat="yy"
+            [readonlyInput]="true"
+            [showClear]="true"
+            [minDate]="faYearMinDate"
+            [maxDate]="faYearMaxDate"
+            appendTo="body"
+            [placeholder]="t('advancedFiltersFaYearPlaceholder')"
+            class="w-full"
+          ></p-date-picker>
+        </div>
+        <div class="fa-year-field col-6 flex flex-column gap-1">
+          <label class="block text-sm mb-1" for="advancedFiltersFaYearTo">{{
+            t("advancedFiltersFaYearTo")
+          }}</label>
+          <p-date-picker
+            inputId="advancedFiltersFaYearTo"
+            [ngModel]="yearToDate(draft.faYearTo)"
+            (ngModelChange)="onFaYearToChange($event)"
+            view="year"
+            dateFormat="yy"
+            [readonlyInput]="true"
+            [showClear]="true"
+            [minDate]="faYearMinDate"
+            [maxDate]="faYearMaxDate"
+            appendTo="body"
+            [placeholder]="t('advancedFiltersFaYearPlaceholder')"
+            class="w-full"
+          ></p-date-picker>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersVideoSection") }}
+      </div>
+      <p-select
+        [options]="videoOptions"
+        [(ngModel)]="draft.hasVideo"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full md:w-20rem"
+      ></p-select>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersClimbSection") }}
+      </div>
+      <p-select
+        [options]="climbOptions"
+        [(ngModel)]="draft.climbState"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full md:w-20rem"
+      ></p-select>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersStartingPositionSection") }}
+      </div>
+      <p-select
+        [options]="startingPositionOptions"
+        [(ngModel)]="draft.startingPosition"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full md:w-20rem"
+        [placeholder]="t('advancedFiltersStartingPositionsPlaceholder')"
+      ></p-select>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
+        {{ t("advancedFiltersBoolSection") }}
+      </div>
+      <ng-container *transloco="let bt; read: 'line.lineBoolPropList'">
+        <div class="text-sm font-medium mb-2 mt-3">
+          {{ t("advancedFiltersBoolSectionGeneral") }}
+        </div>
+        <div class="bool-grid">
+          @for (key of boolGeneralKeys; track key) {
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [inputId]="'bool-' + key"
+                [ngModel]="boolRequired(key)"
+                (ngModelChange)="toggleBool(key, $event)"
+                [binary]="true"
+              ></p-checkbox>
+              <label [attr.for]="'bool-' + key" class="cursor-pointer">{{
+                bt(key)
+              }}</label>
+            </div>
+          }
+        </div>
+
+        <div class="text-sm font-medium mb-2 mt-3">
+          {{ t("advancedFiltersBoolSectionAngles") }}
+        </div>
+        <div class="bool-grid">
+          @for (key of boolAngleKeys; track key) {
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [inputId]="'bool-' + key"
+                [ngModel]="boolRequired(key)"
+                (ngModelChange)="toggleBool(key, $event)"
+                [binary]="true"
+              ></p-checkbox>
+              <label [attr.for]="'bool-' + key" class="cursor-pointer">{{
+                bt(key)
+              }}</label>
+            </div>
+          }
+        </div>
+
+        <div class="text-sm font-medium mb-2 mt-3">
+          {{ t("advancedFiltersBoolSectionMovement") }}
+        </div>
+        <div class="bool-grid">
+          @for (key of boolMovementKeys; track key) {
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [inputId]="'bool-' + key"
+                [ngModel]="boolRequired(key)"
+                (ngModelChange)="toggleBool(key, $event)"
+                [binary]="true"
+              ></p-checkbox>
+              <label [attr.for]="'bool-' + key" class="cursor-pointer">{{
+                bt(key)
+              }}</label>
+            </div>
+          }
+        </div>
+
+        <div class="text-sm font-medium mb-2 mt-3">
+          {{ t("advancedFiltersBoolSectionHolds") }}
+        </div>
+        <div class="bool-grid">
+          @for (key of boolHoldKeys; track key) {
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [inputId]="'bool-' + key"
+                [ngModel]="boolRequired(key)"
+                (ngModelChange)="toggleBool(key, $event)"
+                [binary]="true"
+              ></p-checkbox>
+              <label [attr.for]="'bool-' + key" class="cursor-pointer">{{
+                bt(key)
+              }}</label>
+            </div>
+          }
+        </div>
+
+        <div class="text-sm font-medium mb-2 mt-3">
+          {{ t("advancedFiltersBoolSectionStructure") }}
+        </div>
+        <div class="bool-grid">
+          @for (key of boolStructureKeys; track key) {
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [inputId]="'bool-' + key"
+                [ngModel]="boolRequired(key)"
+                (ngModelChange)="toggleBool(key, $event)"
+                [binary]="true"
+              ></p-checkbox>
+              <label [attr.for]="'bool-' + key" class="cursor-pointer">{{
+                bt(key)
+              }}</label>
+            </div>
+          }
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="flex flex-wrap justify-content-between gap-2 mt-2">
+      <p-button
+        [label]="t('advancedFiltersReset')"
+        icon="pi pi-refresh"
+        severity="secondary"
+        class="responsive-button"
+        (click)="reset()"
+      ></p-button>
+      <div class="flex gap-2">
+        <p-button
+          [label]="t('advancedFiltersCancel')"
+          icon="pi pi-times"
+          severity="secondary"
+          class="responsive-button"
+          (click)="cancel()"
+        ></p-button>
+        <p-button
+          [label]="t('advancedFiltersApply')"
+          icon="pi pi-check"
+          (click)="apply()"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</ng-container>
