@@ -58,7 +58,6 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Tag } from 'primeng/tag';
 import {
   LineAdvancedFiltersDialogComponent,
   type LineAdvancedFiltersDialogData,
@@ -109,7 +108,6 @@ import {
     LineGradePipe,
     TopoImageComponent,
     TranslateSpecialGradesPipe,
-    Tag,
   ],
   providers: [ConfirmationService, DialogService],
   templateUrl: './line-list.component.html',

@@ -70,10 +70,16 @@
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersRatingSection") }}
       </div>
-      <div class="flex align-items-center gap-2 mb-2">
-        <span class="text-sm">{{ draft.minRating }}</span>
+      <div class="slider-container">
+        <lc-slider-labels
+          [rangeMin]="draft.minRating"
+          [rangeMax]="draft.maxRating"
+          [min]="0"
+          [max]="5"
+          [minLabel]="'' + draft.minRating"
+          [maxLabel]="'' + draft.maxRating"
+        ></lc-slider-labels>
         <p-slider
-          class="flex-grow-1"
           [ngModel]="[draft.minRating, draft.maxRating]"
           (ngModelChange)="onRatingRangeChange($event)"
           [min]="0"
@@ -81,7 +87,6 @@
           [range]="true"
           [step]="1"
         ></p-slider>
-        <span class="text-sm">{{ draft.maxRating }}</span>
       </div>
     </div>
 
