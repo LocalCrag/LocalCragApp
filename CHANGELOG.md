@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.37.0...v1.38.0) (2026-05-18)
+
+
+### Features
+
+* **topo:** implement advanced filters dialog for line list ([#1097](https://github.com/LocalCrag/LocalCragApp/issues/1097)) ([708fc4a](https://github.com/LocalCrag/LocalCragApp/commit/708fc4a8351424998537bfcdc51b51972b27cf2b))
+
 # [1.37.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.36.0...v1.37.0) (2026-05-14)
 
 
