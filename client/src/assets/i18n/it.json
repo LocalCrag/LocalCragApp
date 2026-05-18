@@ -931,5 +931,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Data",
-  "YEAR": "Anno"
+  "YEAR": "Anno",
+  "releaseNotes.notes.lineFilters_title": "Filtri linee avanzati",
+  "releaseNotes.notes.lineFilters": "Nella vista elenco puoi ora filtrare le linee per qualsiasi proprietà, ad esempio posizione di partenza o tipo di prese, con un clic sul pulsante filtro. I filtri selezionati vengono memorizzati e sono subito disponibili in tutte le liste."
 }

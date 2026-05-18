@@ -931,5 +931,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Date",
-  "YEAR": "Year"
+  "YEAR": "Year",
+  "releaseNotes.notes.lineFilters_title": "Advanced line filters",
+  "releaseNotes.notes.lineFilters": "In list view, you can now filter lines by any property—such as starting position or hold type—with one click on the filter button. Selected filters are saved locally and are available immediately in all lists."
 }

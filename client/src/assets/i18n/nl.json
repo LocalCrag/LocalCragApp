@@ -931,5 +931,7 @@
   "BOTTOM": "Voettekst",
   "TOP": "Koptekst",
   "DATE": "Datum",
-  "YEAR": "Jaar"
+  "YEAR": "Jaar",
+  "releaseNotes.notes.lineFilters_title": "Geavanceerde lijnfilters",
+  "releaseNotes.notes.lineFilters": "In de lijstweergave kun je routes nu filteren op elke eigenschap, zoals startpositie of greptype, met één klik op de filterknop. Geselecteerde filters worden opgeslagen en zijn meteen beschikbaar in alle lijsten."
 }

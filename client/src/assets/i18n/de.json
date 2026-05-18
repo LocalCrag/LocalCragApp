@@ -931,5 +931,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Datum",
-  "YEAR": "Jahr"
+  "YEAR": "Jahr",
+  "releaseNotes.notes.lineFilters_title": "Erweiterte Linienfilter",
+  "releaseNotes.notes.lineFilters": "Linien können in der Listenansicht nun mit einem Klick auf den Filterbutton nach beliebigen Eigenschaften wie z.B. Startposition oder Griffart gefiltert werden. Ausgewählte Filter bleiben zwischengespeichert und sind somit direkt in allen Listen verfügbar."
 }
