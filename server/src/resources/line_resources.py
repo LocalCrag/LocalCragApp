@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from sqlalchemy import func, nullslast, select
 from webargs.flaskparser import parser
 
@@ -16,13 +16,14 @@ from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
-from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.line_path import LinePath
 from models.sector import Sector
 from models.user import User
+from util.line_list_query_args import parse_line_list_filters
+from util.line_list_sql_filters import apply_get_lines_advanced_filters
 from util.propagating_boolean_attrs import (
     set_line_parents_false,
     update_line_propagating_boolean_attr,
@@ -88,6 +89,7 @@ class GetLines(MethodView):
         Returns all lines in a paginated manner.
         """
         instance_settings = InstanceSettings.return_it()
+        list_filters = parse_line_list_filters(request)
 
         crag_slug = request.args.get("crag_slug")
         sector_slug = request.args.get("sector_slug")
@@ -98,20 +100,13 @@ class GetLines(MethodView):
             per_page = int(per_page)
         order_by = request.args.get("order_by") or None
         order_direction = request.args.get("order_direction") or "asc"
-        max_grade_value = request.args.get("max_grade") or None
-        min_grade_value = request.args.get("min_grade") or None
         archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
-        line_type = request.args.get("line_type", None, type=LineTypeEnum)
-        grade_scale = request.args.get("grade_scale", None)
 
         if order_by not in ["grade_value", "name", "rating", "ascent_count", None] or order_direction not in [
             "asc",
             "desc",
         ]:
             raise BadRequest("Invalid order by query parameters")
-
-        if sum(x is None for x in [max_grade_value, min_grade_value]) == 1:
-            raise BadRequest("When filtering for grades, a min and max grade is required.")
 
         # Filter for crag, sector or area
         query = select(Line).filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
@@ -121,23 +116,17 @@ class GetLines(MethodView):
             query = query.filter(Sector.slug == sector_slug)
         if area_slug:
             query = query.filter(Area.slug == area_slug)
-        if line_type:
-            query = query.filter(Line.type == line_type)
-        if grade_scale:
-            query = query.filter(Line.grade_scale == grade_scale)
-
-        # Filter by grades
-        if min_grade_value and max_grade_value:
-            if instance_settings.display_user_grades:
-                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
-            else:
-                query = query.filter(
-                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
-                )
-
         # Filter secret spots
         if not get_show_secret():
             query = query.filter(Line.secret.is_(False))
+
+        user_for_filters = None
+        if list_filters.climb_filter != "any":
+            verify_jwt_in_request(optional=True)
+            identity = get_jwt_identity()
+            user_for_filters = User.find_by_email(identity) if identity else None
+
+        query = apply_get_lines_advanced_filters(query, list_filters, instance_settings, user_for_filters)
 
         # Handle order
         if order_by and order_direction:

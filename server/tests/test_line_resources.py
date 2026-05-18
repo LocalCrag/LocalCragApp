@@ -1139,3 +1139,44 @@ def test_create_line_with_fa_date_and_year_raises_400(client, moderator_token):
     }
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
+
+
+def test_get_lines_rejects_invalid_required_bool(client):
+    rv = client.get("/api/lines?required_bools=notARealKey")
+    assert rv.status_code == 400
+
+
+def test_get_lines_required_bools_highball_filters_lines(client):
+    """required_bools must constrain to lines where the flag is true in the database."""
+    rv = client.get("/api/lines?required_bools=highball&per_page=50")
+    assert rv.status_code == 200
+    assert rv.json["items"] == []
+
+    line: Line = Line.find_by_slug("treppe")
+    line.highball = True
+    db.session.add(line)
+    db.session.commit()
+
+    rv2 = client.get("/api/lines?required_bools=highball&per_page=50")
+    assert rv2.status_code == 200
+    slugs = {item["slug"] for item in rv2.json["items"]}
+    assert slugs == {"treppe"}
+    assert all(item["highball"] is True for item in rv2.json["items"])
+
+
+def test_get_lines_rejects_partial_grade_filter(client):
+    rv = client.get("/api/lines?min_grade=0")
+    assert rv.status_code == 400
+
+
+def test_get_lines_rejects_invalid_starting_position(client):
+    rv = client.get("/api/lines?starting_position=NOT_A_POSITION")
+    assert rv.status_code == 400
+
+
+def test_get_lines_starting_position_filters_lines(client):
+    rv = client.get("/api/lines?starting_position=SIT&per_page=50")
+    assert rv.status_code == 200
+    slugs = {item["slug"] for item in rv.json["items"]}
+    assert slugs == {"super-spreader"}
+    assert all(item["startingPosition"] == "SIT" for item in rv.json["items"])
