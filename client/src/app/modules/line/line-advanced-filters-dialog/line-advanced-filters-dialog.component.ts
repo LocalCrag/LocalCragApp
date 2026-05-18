@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
@@ -148,20 +149,51 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const t = (k: string) => this.transloco.translate('line.lineList.' + k);
     this.videoOptions = [
-      { label: t('advancedFiltersVideoAny'), value: 'any' },
-      { label: t('advancedFiltersVideoYes'), value: 'yes' },
-      { label: t('advancedFiltersVideoNo'), value: 'no' },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersVideoAny'),
+        ),
+        value: 'any',
+      },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersVideoYes'),
+        ),
+        value: 'yes',
+      },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersVideoNo'),
+        ),
+        value: 'no',
+      },
     ];
     this.climbOptions = [
-      { label: t('advancedFiltersClimbAny'), value: 'any' },
-      { label: t('advancedFiltersClimbClimbed'), value: 'climbed' },
-      { label: t('advancedFiltersClimbNotClimbed'), value: 'notClimbed' },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersClimbAny'),
+        ),
+        value: 'any',
+      },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersClimbClimbed'),
+        ),
+        value: 'climbed',
+      },
+      {
+        label: this.transloco.translate(
+          marker('line.lineList.advancedFiltersClimbNotClimbed'),
+        ),
+        value: 'notClimbed',
+      },
     ];
     this.startingPositionOptions = [
       {
-        label: t('advancedFiltersStartingPositionsPlaceholder'),
+        label: this.transloco.translate(
+          'line.lineList.advancedFiltersStartingPositionsPlaceholder',
+        ),
         value: null,
       },
       ...Object.values(StartingPosition).map((value) => ({
