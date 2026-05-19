@@ -416,6 +416,12 @@ export class LineFormComponent implements OnInit {
    * Sets the form value based on an input crag and enables the form afterward.
    */
   private setFormValue() {
+    if (this.line.faDate) {
+      this.faFormat = FaDefaultFormat.DATE;
+    } else if (this.line.faYear) {
+      this.faFormat = FaDefaultFormat.YEAR;
+    }
+
     this.line.videos.map(() => {
       this.addLineVideoFormControl();
     });
