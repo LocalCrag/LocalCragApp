@@ -1,3 +1,11 @@
+## [1.38.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.1...v1.38.2) (2026-05-20)
+
+
+### Bug Fixes
+
+* **topo:** fix line filter translations for German language ([#1105](https://github.com/LocalCrag/LocalCragApp/issues/1105)) ([8944557](https://github.com/LocalCrag/LocalCragApp/commit/89445577db9c6234185ad0a9cea31f5478ad2f61)), closes [#1104](https://github.com/LocalCrag/LocalCragApp/issues/1104)
+* **topo:** set format of first ascent based on faDate or faYear ([#1103](https://github.com/LocalCrag/LocalCragApp/issues/1103)) ([df4439b](https://github.com/LocalCrag/LocalCragApp/commit/df4439b9e0507442ce4c7e4e38c7634b44c9b539)), closes [#1100](https://github.com/LocalCrag/LocalCragApp/issues/1100)
+
 ## [1.38.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.0...v1.38.1) (2026-05-18)
 
 
