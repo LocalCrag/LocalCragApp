@@ -3,3 +3,43 @@
   font-weight: 600;
   border: none;
 }
+
+:host ::ng-deep p-image.lc-user-avatar-preview {
+  display: inline-flex;
+  width: fit-content;
+  cursor: pointer;
+  line-height: 0;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+
+  > img {
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &.lc-user-avatar-preview--normal > img {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &.lc-user-avatar-preview--large > img {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  &.lc-user-avatar-preview--xlarge > img {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .p-image-preview-mask {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50%;
+    margin: 0;
+  }
+}
