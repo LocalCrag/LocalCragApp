@@ -1,8 +1,21 @@
-@if (imageUrl) {
+@if (previewEnabled) {
+  <p-image
+    [src]="previewImageUrl"
+    [preview]="true"
+    [previewImageSrc]="previewImageUrl"
+    [alt]="ariaLabel"
+    imageClass="lc-user-avatar-preview-thumb"
+    [styleClass]="previewStyleClass"
+  >
+    <ng-template #indicator>
+      <i class="pi pi-eye"></i>
+    </ng-template>
+  </p-image>
+} @else if (imageUrl) {
   <p-avatar
     [image]="imageUrl"
     [size]="size"
-    [shape]="shape"
+    shape="circle"
     [styleClass]="styleClass"
     [attr.aria-label]="ariaLabel"
   />
@@ -11,7 +24,7 @@
     [label]="initials"
     [style]="gradientStyle"
     [size]="size"
-    [shape]="shape"
+    shape="circle"
     [styleClass]="fallbackClasses"
     [attr.aria-label]="ariaLabel"
   />
