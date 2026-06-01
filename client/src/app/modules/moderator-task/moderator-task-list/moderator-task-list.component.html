@@ -2,9 +2,15 @@
   <p-dataView [value]="dataViewRows">
     <ng-template #emptymessage>
       @if (
-        loadingFirstPage !== loadingStates.LOADING && tasks.length === 0 && !filtersActive
+        loadingFirstPage !== loadingStates.LOADING &&
+        tasks.length === 0 &&
+        !filtersActive
       ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          class="m-4 mb-1 block"
+        >
           {{ t("emptyList") }}
         </p-message>
       }
@@ -13,30 +19,44 @@
         tasks.length === 0 &&
         filtersActive
       ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          class="m-4 mb-1 block"
+        >
           {{ t("emptyFilterList") }}
         </p-message>
       }
     </ng-template>
     <ng-template #header>
-      <div class="task-list-header-row flex flex-wrap align-items-end gap-2 w-full">
-        <div class="task-list-filters-row flex flex-wrap align-items-end gap-2 flex-grow-1 min-w-0">
+      <div
+        class="task-list-header-row flex flex-wrap align-items-end gap-2 w-full"
+      >
+        <div
+          class="task-list-filters-row flex flex-wrap align-items-end gap-2 flex-grow-1 min-w-0"
+        >
           <p-button
             [label]="t('myTasksButton')"
             icon="pi pi-user"
             class="responsive-button"
             [outlined]="!myTasksActive"
-            [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+            [disabled]="
+              usersLoading || loadingFirstPage === loadingStates.LOADING
+            "
             (click)="toggleMyTasksFilter()"
           ></p-button>
           <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{ t("filterAssignee") }}</span>
+            <span class="task-list-filter-label">{{
+              t("filterAssignee")
+            }}</span>
             <p-select
               [options]="assigneeFilterOptions"
               [(ngModel)]="filterAssigneeId"
               optionLabel="label"
               optionValue="value"
-              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                usersLoading || loadingFirstPage === loadingStates.LOADING
+              "
               (onChange)="onFilterChange()"
               class="md:mb-0"
             ></p-select>
@@ -48,19 +68,25 @@
               [(ngModel)]="filterCreatorId"
               optionLabel="label"
               optionValue="value"
-              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                usersLoading || loadingFirstPage === loadingStates.LOADING
+              "
               (onChange)="onFilterChange()"
               class="md:mb-0"
             ></p-select>
           </div>
           <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{ t("filterFinisher") }}</span>
+            <span class="task-list-filter-label">{{
+              t("filterFinisher")
+            }}</span>
             <p-select
               [options]="userFilterOptions"
               [(ngModel)]="filterFinisherId"
               optionLabel="label"
               optionValue="value"
-              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                usersLoading || loadingFirstPage === loadingStates.LOADING
+              "
               (onChange)="onFilterChange()"
               class="md:mb-0"
             ></p-select>
@@ -94,7 +120,11 @@
         <div class="task-list-section flex flex-column gap-3">
           @for (row of rows; track trackListRow($index, row)) {
             @if (row.kind === "divider") {
-              <p-divider align="center" type="solid" class="task-section-divider">
+              <p-divider
+                align="center"
+                type="solid"
+                class="task-section-divider"
+              >
                 <b>{{ t("completedSection") }}</b>
               </p-divider>
             } @else {
@@ -131,9 +161,8 @@
                           track link.routerLink;
                           let last = $last
                         ) {
-                          <a [routerLink]="link.routerLink">{{ link.name }}</a>@if (
-                            !last
-                          ) {
+                          <a [routerLink]="link.routerLink">{{ link.name }}</a>
+                          @if (!last) {
                             <span>, </span>
                           }
                         }

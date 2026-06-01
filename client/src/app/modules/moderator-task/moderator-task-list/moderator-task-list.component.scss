@@ -53,8 +53,8 @@
   column-gap: var(--task-row-col-gap);
   row-gap: 0.75rem;
   align-items: start;
-  padding: var(--task-row-pad-top) var(--task-row-pad-right) var(--task-row-pad-bottom)
-    var(--task-row-pad-left);
+  padding: var(--task-row-pad-top) var(--task-row-pad-right)
+    var(--task-row-pad-bottom) var(--task-row-pad-left);
 
   @media (min-width: 992px) {
     grid-template-columns: auto 1fr 16.5rem;
