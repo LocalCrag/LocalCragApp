@@ -104,7 +104,7 @@
   ],
   "postUpdateOptions": ["npmInstallTwice"],
   "constraints": {
-    "npm": "11.15.0",
+    "npm": "11.16.0",
     "node": "24.16.0"
   },
   "schedule": ["every monday"],
