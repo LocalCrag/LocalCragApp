@@ -22,6 +22,18 @@ notification_digest_mail = {
             "{moderator_name} hat das FA-Label von deiner Begehung von {target_link} "
             "entfernt. Im Zweifel kontaktiere uns bitte per E-Mail unter {moderator_email}."
         ),
+        "moderator_task_completed_text": "{count} Aufgaben abgeschlossen: {title} ({target_link})",
+        "moderator_task_completed_text_single": "Aufgabe abgeschlossen: {title} ({target_link})",
+        "moderator_task_created_text": "{count} neue Aufgaben: {title} ({target_link})",
+        "moderator_task_created_text_single": "Neue Aufgabe: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": (
+            "{count} neue Aufgaben erstellt und dir zugewiesen: {title} ({target_link})"
+        ),
+        "moderator_task_created_and_assigned_text_single": (
+            "Neue Aufgabe erstellt und dir zugewiesen: {title} ({target_link})"
+        ),
+        "moderator_task_assigned_text": "{count} Aufgaben dir zugewiesen: {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Aufgabe dir zugewiesen: {title} ({target_link})",
         "view_comment_label": "Kommentar ansehen",
         "open_account_label": "Konto öffnen",
     },
@@ -48,6 +60,18 @@ notification_digest_mail = {
             "{moderator_name} removed the FA label from your ascent of {target_link}. "
             "In doubt, please contact us via email {moderator_email}."
         ),
+        "moderator_task_completed_text": "{count} tasks completed: {title} ({target_link})",
+        "moderator_task_completed_text_single": "Task completed: {title} ({target_link})",
+        "moderator_task_created_text": "{count} new tasks: {title} ({target_link})",
+        "moderator_task_created_text_single": "New task: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": (
+            "{count} new tasks created and assigned to you: {title} ({target_link})"
+        ),
+        "moderator_task_created_and_assigned_text_single": (
+            "New task created and assigned to you: {title} ({target_link})"
+        ),
+        "moderator_task_assigned_text": "{count} tasks assigned to you: {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Task assigned to you: {title} ({target_link})",
         "view_comment_label": "View comment",
         "open_account_label": "Open account",
     },
@@ -74,6 +98,18 @@ notification_digest_mail = {
             "{moderator_name} ha rimosso l'etichetta FA dalla tua salita di {target_link}. "
             "In caso di dubbi, contattaci via email a {moderator_email}."
         ),
+        "moderator_task_completed_text": "{count} attività completate: {title} ({target_link})",
+        "moderator_task_completed_text_single": "Attività completata: {title} ({target_link})",
+        "moderator_task_created_text": "{count} nuove attività: {title} ({target_link})",
+        "moderator_task_created_text_single": "Nuova attività: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": (
+            "{count} nuove attività create e assegnate a te: {title} ({target_link})"
+        ),
+        "moderator_task_created_and_assigned_text_single": (
+            "Nuova attività creata e assegnata a te: {title} ({target_link})"
+        ),
+        "moderator_task_assigned_text": "{count} attività assegnate a te: {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Attività assegnata a te: {title} ({target_link})",
         "view_comment_label": "Vedi commento",
         "open_account_label": "Apri account",
     },
@@ -100,6 +136,18 @@ notification_digest_mail = {
             "{moderator_name} heeft het FA-label van je beklimming van {target_link} "
             "verwijderd. Neem bij twijfel contact met ons op via e-mail {moderator_email}."
         ),
+        "moderator_task_completed_text": "{count} taken afgerond: {title} ({target_link})",
+        "moderator_task_completed_text_single": "Taak afgerond: {title} ({target_link})",
+        "moderator_task_created_text": "{count} nieuwe taken: {title} ({target_link})",
+        "moderator_task_created_text_single": "Nieuwe taak: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": (
+            "{count} nieuwe taken aangemaakt en aan jou toegewezen: {title} ({target_link})"
+        ),
+        "moderator_task_created_and_assigned_text_single": (
+            "Nieuwe taak aangemaakt en aan jou toegewezen: {title} ({target_link})"
+        ),
+        "moderator_task_assigned_text": "{count} taken aan jou toegewezen: {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Taak aan jou toegewezen: {title} ({target_link})",
         "view_comment_label": "Opmerking bekijken",
         "open_account_label": "Account openen",
     },

@@ -13,17 +13,13 @@ export class EntityLinkPipe implements PipeTransform {
     if (value instanceof User) {
       return `/users/${value.slug}`;
     }
-    if (value instanceof Crag) {
-      return `/topo/${value.slug}`;
-    }
-    if (value instanceof Sector) {
-      return `/topo/${value.crag.slug}/${value.slug}`;
-    }
-    if (value instanceof Area) {
-      return `/topo/${value.sector.crag.slug}/${value.sector.slug}/${value.slug}`;
-    }
-    if (value instanceof Line) {
-      return `/topo/${value.area.sector.crag.slug}/${value.area.sector.slug}/${value.area.slug}/${value.slug}`;
+    if (
+      value instanceof Crag ||
+      value instanceof Sector ||
+      value instanceof Area ||
+      value instanceof Line
+    ) {
+      return value.routerLink ?? '/';
     }
     return '/';
   }

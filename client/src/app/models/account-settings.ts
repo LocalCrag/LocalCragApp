@@ -4,6 +4,7 @@ export class AccountSettings {
   commentReplyMailsEnabled: boolean;
   reactionNotificationsEnabled: boolean;
   systemNotificationsEnabled: boolean;
+  moderatorTaskNotificationsEnabled: boolean;
   notificationDigestFrequency: 'daily' | 'weekly';
   language: LanguageCode;
 
@@ -14,6 +15,8 @@ export class AccountSettings {
       payload.reactionNotificationsEnabled;
     accountSettings.systemNotificationsEnabled =
       payload.systemNotificationsEnabled;
+    accountSettings.moderatorTaskNotificationsEnabled =
+      payload.moderatorTaskNotificationsEnabled;
     accountSettings.notificationDigestFrequency =
       payload.notificationDigestFrequency;
     accountSettings.language = payload.language;
@@ -26,6 +29,8 @@ export class AccountSettings {
       reactionNotificationsEnabled:
         accountSettings.reactionNotificationsEnabled,
       systemNotificationsEnabled: accountSettings.systemNotificationsEnabled,
+      moderatorTaskNotificationsEnabled:
+        accountSettings.moderatorTaskNotificationsEnabled,
       notificationDigestFrequency: accountSettings.notificationDigestFrequency,
       language: accountSettings.language,
     };

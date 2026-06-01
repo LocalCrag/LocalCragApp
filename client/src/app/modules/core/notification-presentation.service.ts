@@ -55,6 +55,46 @@ export class NotificationPresentationService {
         .trim();
     }
 
+    if (notification.type === 'moderator_task_completed') {
+      return this.translocoService
+        .translate('menu.notificationTextModeratorTaskCompleted', {
+          actor: notification.actorName || '',
+          title: notification.taskTitle || '',
+          label: notification.topicName || '',
+        })
+        .trim();
+    }
+
+    if (notification.type === 'moderator_task_created') {
+      return this.translocoService
+        .translate('menu.notificationTextModeratorTaskCreated', {
+          actor: notification.actorName || '',
+          title: notification.taskTitle || '',
+          label: notification.topicName || '',
+        })
+        .trim();
+    }
+
+    if (notification.type === 'moderator_task_created_and_assigned') {
+      return this.translocoService
+        .translate('menu.notificationTextModeratorTaskCreatedAndAssigned', {
+          actor: notification.actorName || '',
+          title: notification.taskTitle || '',
+          label: notification.topicName || '',
+        })
+        .trim();
+    }
+
+    if (notification.type === 'moderator_task_assigned') {
+      return this.translocoService
+        .translate('menu.notificationTextModeratorTaskAssigned', {
+          actor: notification.actorName || '',
+          title: notification.taskTitle || '',
+          label: notification.topicName || '',
+        })
+        .trim();
+    }
+
     if (notification.type === 'release_notes') {
       const lead = this.translocoService
         .translate('menu.notificationTextReleaseNotesLead')

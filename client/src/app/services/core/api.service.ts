@@ -104,6 +104,17 @@ export class ApiService {
     deleteOwnUser: (): string => `${this.apiHost}users/account/delete-own-user`,
   };
 
+  public moderatorTasks = {
+    getList: (filters: string): string =>
+      `${this.apiHost}moderator-tasks${filters}`,
+    getDetail: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    create: (): string => `${this.apiHost}moderator-tasks`,
+    update: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    delete: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    toggleComplete: (id: string): string =>
+      `${this.apiHost}moderator-tasks/${id}/toggle-complete`,
+  };
+
   public todos = {
     create: (): string => `${this.apiHost}todos`,
     getList: (filters: string): string => `${this.apiHost}todos${filters}`,

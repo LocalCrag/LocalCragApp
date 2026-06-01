@@ -45,8 +45,11 @@ export class DatePipe implements PipeTransform {
     const locale = this.languageService.calculatedLanguage;
     const localeObj = DatePipe.DATE_FNS_LOCALES[locale];
 
-    // Ensure we pass a Date object to date-fns format
-    const date = value instanceof Date ? value : new Date(value as any);
+    const date =
+      value instanceof Date ? value : new Date(value as string | number);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
 
     return format(date, formattingString, { locale: localeObj });
   }

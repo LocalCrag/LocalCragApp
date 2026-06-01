@@ -11,12 +11,17 @@ from models.comment import Comment
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.enums.release_note_item_type_enum import release_note_type_display_rank
 from models.line import Line
+from models.moderator_task import ModeratorTask
 from models.notification import Notification
 from models.post import Post
 from models.reaction import Reaction
 from models.release_note_item import ReleaseNoteItem
 from models.user import User
 from util.email import _build_comment_action_link
+from util.moderator_task_links import (
+    moderator_task_list_link,
+    moderator_task_target_label,
+)
 from webargs_schemas.notification_args import get_notifications_args
 
 
@@ -57,6 +62,10 @@ def _notification_action_link(notification: Notification) -> str | None:
         and notification.entity_id
     ):
         return f"/release-notes/{notification.entity_id}"
+    if notification.entity_type == "moderator_task" and notification.entity_id:
+        task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+        if task:
+            return moderator_task_list_link(task)
     return None
 
 
@@ -140,6 +149,11 @@ class GetNotifications(MethodView):
                 row["releaseNoteItemKeys"] = _release_note_item_keys_for_bundle(
                     notification.entity_id,
                 )
+            if notification.entity_type == "moderator_task" and notification.entity_id:
+                task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+                if task:
+                    row["topicName"] = moderator_task_target_label(task)
+                    row["taskTitle"] = task.title
             payload.append(row)
 
         return jsonify({"items": payload, "hasNext": notifications.has_next}), 200

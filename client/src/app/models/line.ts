@@ -9,6 +9,7 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import { topoLineRouterLink } from './topo-router-link';
 
 export interface LineVideo {
   url: string;
@@ -70,7 +71,7 @@ export class Line extends IsClosable(AbstractModel) {
   mantle: boolean;
 
   topoImages: TopoImage[];
-  area: Area;
+  area: Area | null;
   ascentCount: number;
 
   areaSlug: string;
@@ -80,7 +81,7 @@ export class Line extends IsClosable(AbstractModel) {
   // UI specific attributes, not related to data model
   disabled = false;
   blockOrderIndex: number; // Set after ordering for easy efficient reuse of ng prime data view order feature
-  routerLink: string;
+  routerLink: string | null;
 
   constructor() {
     super();
@@ -162,9 +163,7 @@ export class Line extends IsClosable(AbstractModel) {
       : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
     line.ascentCount = payload.ascentCount;
-    line.routerLink = line.area
-      ? `/topo/${line.area.sector.crag.slug}/${line.area.sector.slug}/${line.area.slug}/${line.slug}`
-      : null;
+    line.routerLink = topoLineRouterLink(line);
 
     return line;
   }

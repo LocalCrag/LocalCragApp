@@ -102,7 +102,14 @@ def init_schedulers(app) -> None:
     atexit.register(lambda: _scheduler and _scheduler.shutdown(wait=False))
 
 
-def _run_send_notification_digests(app):
+def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> dict[str, int]:
+    """Send pending notification digest emails and mark them as delivered.
+
+    When ``respect_digest_schedule`` is True (scheduler), weekly-digest users are skipped
+    on non-Mondays. When False (dev trigger), all pending mail is sent immediately.
+
+    Returns counts of users and notifications included in digest mails.
+    """
     with app.app_context():
         notifications = (
             Notification.query.filter(Notification.delivered_at.is_(None), Notification.dismissed_at.is_(None))
@@ -110,17 +117,22 @@ def _run_send_notification_digests(app):
             .all()
         )
         if not notifications:
-            return
+            return {"usersMailed": 0, "notificationsMailed": 0}
 
         notifications_by_user: dict[str, list[Notification]] = {}
         for notification in notifications:
             notifications_by_user.setdefault(str(notification.user_id), []).append(notification)
 
+        users_mailed = 0
+        notifications_mailed = 0
         for user_id, user_notifications in notifications_by_user.items():
             user = User.find_by_id(user_id)
             settings = user.account_settings
-            frequency = settings.notification_digest_frequency
-            if frequency == NotificationDigestFrequencyEnum.WEEKLY and not _is_monday_utc():
+            if (
+                respect_digest_schedule
+                and settings.notification_digest_frequency == NotificationDigestFrequencyEnum.WEEKLY
+                and not _is_monday_utc()
+            ):
                 continue
 
             mail_notifications = [
@@ -137,7 +149,14 @@ def _run_send_notification_digests(app):
                 db.session.query(Notification).filter(Notification.id == notification.id).update(
                     {"delivered_at": now_ts}, synchronize_session=False
                 )
+            users_mailed += 1
+            notifications_mailed += len(mail_notifications)
         db.session.commit()
+        return {"usersMailed": users_mailed, "notificationsMailed": notifications_mailed}
+
+
+def _run_send_notification_digests(app):
+    send_notification_digests(app)
 
 
 def _is_monday_utc() -> bool:

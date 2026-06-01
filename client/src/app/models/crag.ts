@@ -7,6 +7,7 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import { topoCragRouterLink } from './topo-router-link';
 
 /**
  * Model of a climbing crag.
@@ -21,7 +22,7 @@ export class Crag extends IsClosable(AbstractModel) {
   orderIndex: number;
   sectors: Sector[];
   ascentCount: number;
-  routerLink: string;
+  routerLink: string | null;
   secret: boolean;
   mapMarkers: MapMarker[];
   defaultBoulderScale: string | null = null;
@@ -56,7 +57,7 @@ export class Crag extends IsClosable(AbstractModel) {
     crag.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
-    crag.routerLink = `/topo/${crag.slug}`;
+    crag.routerLink = topoCragRouterLink(crag);
     crag.defaultBoulderScale = payload.defaultBoulderScale;
     crag.defaultSportScale = payload.defaultSportScale;
     crag.defaultTradScale = payload.defaultTradScale;

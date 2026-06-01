@@ -1,0 +1,246 @@
+<ng-container *transloco="let t; read: 'moderatorTasks'">
+  <p-dataView [value]="dataViewRows">
+    <ng-template #emptymessage>
+      @if (
+        loadingFirstPage !== loadingStates.LOADING && tasks.length === 0 && !filtersActive
+      ) {
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">
+          {{ t("emptyList") }}
+        </p-message>
+      }
+      @if (
+        loadingFirstPage !== loadingStates.LOADING &&
+        tasks.length === 0 &&
+        filtersActive
+      ) {
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block">
+          {{ t("emptyFilterList") }}
+        </p-message>
+      }
+    </ng-template>
+    <ng-template #header>
+      <div class="task-list-header-row flex flex-wrap align-items-end gap-2 w-full">
+        <div class="task-list-filters-row flex flex-wrap align-items-end gap-2 flex-grow-1 min-w-0">
+          <p-button
+            [label]="t('myTasksButton')"
+            icon="pi pi-user"
+            class="responsive-button"
+            [outlined]="!myTasksActive"
+            [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+            (click)="toggleMyTasksFilter()"
+          ></p-button>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{ t("filterAssignee") }}</span>
+            <p-select
+              [options]="assigneeFilterOptions"
+              [(ngModel)]="filterAssigneeId"
+              optionLabel="label"
+              optionValue="value"
+              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              (onChange)="onFilterChange()"
+              class="md:mb-0"
+            ></p-select>
+          </div>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{ t("filterCreator") }}</span>
+            <p-select
+              [options]="userFilterOptions"
+              [(ngModel)]="filterCreatorId"
+              optionLabel="label"
+              optionValue="value"
+              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              (onChange)="onFilterChange()"
+              class="md:mb-0"
+            ></p-select>
+          </div>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{ t("filterFinisher") }}</span>
+            <p-select
+              [options]="userFilterOptions"
+              [(ngModel)]="filterFinisherId"
+              optionLabel="label"
+              optionValue="value"
+              [disabled]="usersLoading || loadingFirstPage === loadingStates.LOADING"
+              (onChange)="onFilterChange()"
+              class="md:mb-0"
+            ></p-select>
+          </div>
+        </div>
+        <div class="task-list-header-actions flex-shrink-0">
+          <p-button
+            [label]="t('createTaskButton')"
+            icon="pi pi-plus"
+            [routerLink]="createLink"
+            class="responsive-button"
+          ></p-button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template let-rows #list>
+      @if (loadingFirstPage === loadingStates.LOADING) {
+        <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
+      }
+      @if (loadingFirstPage !== loadingStates.LOADING) {
+        @if (rows.length > 0) {
+          <p-menu
+            #taskMenu
+            [model]="taskActionItems"
+            [popup]="true"
+            [appendTo]="'body'"
+          ></p-menu>
+          <p-confirmpopup></p-confirmpopup>
+        }
+
+        <div class="task-list-section flex flex-column gap-3">
+          @for (row of rows; track trackListRow($index, row)) {
+            @if (row.kind === "divider") {
+              <p-divider align="center" type="solid" class="task-section-divider">
+                <b>{{ t("completedSection") }}</b>
+              </p-divider>
+            } @else {
+              @let task = row.task;
+              <div
+                class="task-row border-1 surface-border border-round"
+                [ngClass]="{ 'task-row-completed': task.completed }"
+              >
+                <p-button
+                  class="task-row-actions-button"
+                  icon="pi pi-ellipsis-v"
+                  styleClass="p-button-rounded p-button-text p-button-secondary"
+                  (click)="openTaskActions($event, task)"
+                ></p-button>
+                <div class="task-row-inner">
+                  <p-checkbox
+                    class="task-row-checkbox"
+                    [binary]="true"
+                    [ngModel]="task.completed"
+                    [disabled]="isToggling(task.id)"
+                    (onChange)="toggleComplete(task)"
+                  ></p-checkbox>
+                  <div class="task-row-main min-w-0">
+                    <h3 class="m-0 task-row-title">{{ task.title }}</h3>
+                    <div
+                      class="text-sm text-color-secondary mt-1 task-target-location"
+                    >
+                      <span>{{ t("belongsTo") }}: </span>
+                      @if (getTargetLinks(task).length === 0) {
+                        {{ task.objectType }}
+                      } @else {
+                        @for (
+                          link of getTargetLinks(task);
+                          track link.routerLink;
+                          let last = $last
+                        ) {
+                          <a [routerLink]="link.routerLink">{{ link.name }}</a>@if (
+                            !last
+                          ) {
+                            <span>, </span>
+                          }
+                        }
+                      }
+                    </div>
+                    @if (task.description) {
+                      <div
+                        class="mt-2"
+                        [innerHTML]="task.description | sanitizeHtml"
+                      ></div>
+                    }
+                  </div>
+                  <div class="task-row-people flex flex-column gap-3 text-sm">
+                    @if (task.assignedTo) {
+                      <div class="task-person flex align-items-start gap-2">
+                        <lc-user-avatar
+                          [user]="task.assignedTo"
+                          thumbnail="thumbnailS"
+                        ></lc-user-avatar>
+                        <div class="task-person-content flex-1 min-w-0">
+                          <div class="task-person-label text-color-secondary">
+                            {{ t("assignedTo") }}
+                          </div>
+                          <div class="task-person-detail">
+                            <a [routerLink]="task.assignedTo.routerLink">
+                              {{ task.assignedTo.firstname }}
+                              {{ task.assignedTo.lastname }}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    <div class="task-person flex align-items-start gap-2">
+                      <lc-user-avatar
+                        [user]="task.createdBy"
+                        thumbnail="thumbnailS"
+                      ></lc-user-avatar>
+                      <div class="task-person-content flex-1 min-w-0">
+                        <div class="task-person-label text-color-secondary">
+                          {{ t("createdBy") }}
+                        </div>
+                        <div class="task-person-detail">
+                          @if (task.createdBy?.routerLink) {
+                            <a [routerLink]="task.createdBy.routerLink">
+                              {{ task.createdBy.firstname }}
+                              {{ task.createdBy.lastname }}
+                            </a>
+                          } @else {
+                            {{ task.createdBy?.firstname }}
+                            {{ task.createdBy?.lastname }}
+                          }
+                          @if (task.timeCreated) {
+                            <span class="task-person-date">{{
+                              task.timeCreated | date: "datetime"
+                            }}</span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                    @if (task.completed && task.finishedBy) {
+                      <div class="task-person flex align-items-start gap-2">
+                        <lc-user-avatar
+                          [user]="task.finishedBy"
+                          thumbnail="thumbnailS"
+                        ></lc-user-avatar>
+                        <div class="task-person-content flex-1 min-w-0">
+                          <div class="task-person-label text-color-secondary">
+                            {{ t("finishedBy") }}
+                          </div>
+                          <div class="task-person-detail">
+                            <a [routerLink]="task.finishedBy.routerLink">
+                              {{ task.finishedBy.firstname }}
+                              {{ task.finishedBy.lastname }}
+                            </a>
+                            @if (task.timeFinished) {
+                              <span class="task-person-date">{{
+                                task.timeFinished | date: "datetime"
+                              }}</span>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      }
+    </ng-template>
+  </p-dataView>
+
+  @if (hasNextPage) {
+    <div class="flex justify-content-center mt-5">
+      <p-button
+        [label]="t('loadMore')"
+        (scrolled)="loadNextPage()"
+        (click)="loadNextPage()"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        [loading]="
+          loadingAdditionalPage === loadingStates.LOADING ||
+          loadingFirstPage === loadingStates.LOADING
+        "
+      ></p-button>
+    </div>
+  }
+</ng-container>
