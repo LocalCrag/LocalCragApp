@@ -1,6 +1,9 @@
 import { AbstractModel } from './abstract-model';
 import { Line } from './line';
-import { formatISO, parseISO } from 'date-fns';
+import {
+  formatLocalCalendarDate,
+  parseLocalCalendarDate,
+} from '../utility/local-calendar-date';
 import { User } from './user';
 import { Area } from './area';
 import { Sector } from './sector';
@@ -44,7 +47,7 @@ export class Ascent extends AbstractModel {
     ascent.rating = payload.rating;
     ascent.comment = payload.comment;
     ascent.year = payload.year;
-    ascent.date = payload.date ? parseISO(payload.date) : null;
+    ascent.date = payload.date ? parseLocalCalendarDate(payload.date) : null;
     ascent.line = payload.line ? Line.deserialize(payload.line) : null;
     ascent.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     ascent.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
@@ -64,11 +67,6 @@ export class Ascent extends AbstractModel {
   }
 
   public static serialize(ascent: Ascent): any {
-    const utcDate = ascent.date
-      ? new Date(
-          ascent.date.getTime() + ascent.date.getTimezoneOffset() * 60000,
-        )
-      : null;
     return {
       flash: ascent.flash,
       fa: ascent.fa,
@@ -80,11 +78,7 @@ export class Ascent extends AbstractModel {
       year: ascent.year,
       gradeValue: ascent.gradeValue,
       line: ascent.line.id,
-      date: ascent.date
-        ? formatISO(utcDate, {
-            representation: 'date',
-          })
-        : null,
+      date: ascent.date ? formatLocalCalendarDate(ascent.date) : null,
     };
   }
 }
