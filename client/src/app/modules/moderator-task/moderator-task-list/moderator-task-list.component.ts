@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { forkJoin, switchMap } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
@@ -28,7 +28,9 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 import { LoadingState } from '../../../enums/loading-state';
 import { ModeratorTask } from '../../../models/moderator-task';
+import { Region } from '../../../models/region';
 import { User } from '../../../models/user';
+import { RegionService } from '../../../services/crud/region.service';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { UsersService } from '../../../services/crud/users.service';
 import { ObjectType } from '../../../models/object';
@@ -39,7 +41,7 @@ import {
   getModeratorTaskTargetLinks,
   ModeratorTaskListQuery,
   ModeratorTaskScope,
-} from '../../../utility/moderator-task-target';
+} from '../moderator-task-target';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
@@ -83,7 +85,7 @@ export class ModeratorTaskListComponent implements OnInit {
   public hasNextPage = true;
   public currentPage = 0;
   public createLink: string;
-  public getTargetLinks = getModeratorTaskTargetLinks;
+  public region: Region | null = null;
   public taskActionItems: MenuItem[] = [];
   public assigneeFilterOptions: SelectItem<string | null>[] = [];
   public userFilterOptions: SelectItem<string | null>[] = [];
@@ -104,7 +106,11 @@ export class ModeratorTaskListComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private moderatorTasksService = inject(ModeratorTasksService);
   private usersService = inject(UsersService);
+  private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
+
+  public getTargetLinks = (task: ModeratorTask) =>
+    getModeratorTaskTargetLinks(task, this.region);
 
   public get filtersActive(): boolean {
     return (
@@ -163,11 +169,15 @@ export class ModeratorTaskListComponent implements OnInit {
         switchMap((data) => {
           this.scope = this.resolveScope(data['scopeType']);
           this.createLink = this.buildCreateLink();
-          return this.usersService.getUsers();
+          return forkJoin({
+            users: this.usersService.getUsers({ isModerator: true }),
+            region: this.regionService.getRegion(),
+          });
         }),
       )
       .subscribe({
-        next: (users) => {
+        next: ({ users, region }) => {
+          this.region = region;
           this.buildUserFilterOptions(users);
           this.usersLoading = false;
           this.loadFirstPage();
@@ -308,6 +318,7 @@ export class ModeratorTaskListComponent implements OnInit {
       message: this.translocoService.translate(
         marker('moderatorTasks.deleteConfirm'),
       ),
+      acceptButtonStyleClass: 'p-button-danger',
       accept: () => this.deleteTask(task),
     });
   }
@@ -449,12 +460,10 @@ export class ModeratorTaskListComponent implements OnInit {
     const unassignedLabel = this.translocoService.translate(
       marker('moderatorTasks.unassigned'),
     );
-    const moderatorUsers = users
-      .filter((user) => user.moderator || user.admin || user.superadmin)
-      .sort((a, b) =>
-        this.formatUserName(a).localeCompare(this.formatUserName(b)),
-      );
-    const userOptions = moderatorUsers.map((user) => ({
+    const sortedUsers = [...users].sort((a, b) =>
+      this.formatUserName(a).localeCompare(this.formatUserName(b)),
+    );
+    const userOptions = sortedUsers.map((user) => ({
       label: this.formatUserName(user),
       value: user.id,
     }));

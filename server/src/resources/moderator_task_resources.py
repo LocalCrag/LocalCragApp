@@ -4,6 +4,7 @@ import pytz
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import and_, or_, select
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -14,15 +15,17 @@ from marshmallow_schemas.moderator_task_schema import (
 )
 from models.area import Area
 from models.crag import Crag
-from models.enums.notification_type_enum import NotificationTypeEnum
 from models.line import Line
 from models.moderator_task import ModeratorTask
 from models.region import Region
 from models.sector import Sector
 from models.user import User
 from util.bucket_placeholders import add_bucket_placeholders
-from util.moderator_task_scope import filter_tasks_by_scope
-from util.notifications import create_notification_for_user
+from util.moderator_task_notifications import (
+    notify_task_assigned,
+    notify_task_completed,
+    notify_task_created,
+)
 from util.security_util import check_auth_claims
 from webargs_schemas.moderator_task_args import (
     moderator_task_args,
@@ -49,6 +52,7 @@ def _resolve_target(object_type: str, object_id):
 
 
 def _resolve_scope_from_request():
+    """Resolve list scope from query params."""
     scope_type = request.args.get("scope-type")
     if scope_type not in HIERARCHY_TYPES:
         raise BadRequest("scope-type is required and must be valid")
@@ -59,25 +63,22 @@ def _resolve_scope_from_request():
             raise BadRequest("Region not found")
         return scope_type, region.id
 
-    crag_slug = request.args.get("crag-slug")
-    if not crag_slug:
-        raise BadRequest("crag-slug is required")
-
     if scope_type == "Crag":
+        crag_slug = request.args.get("crag-slug")
+        if not crag_slug:
+            raise BadRequest("crag-slug is required")
         return scope_type, Crag.get_id_by_slug(crag_slug)
 
-    sector_slug = request.args.get("sector-slug")
-    if scope_type in {"Sector", "Area", "Line"} and not sector_slug:
-        raise BadRequest("sector-slug is required")
-
     if scope_type == "Sector":
+        sector_slug = request.args.get("sector-slug")
+        if not sector_slug:
+            raise BadRequest("sector-slug is required")
         return scope_type, Sector.get_id_by_slug(sector_slug)
 
-    area_slug = request.args.get("area-slug")
-    if scope_type in {"Area", "Line"} and not area_slug:
-        raise BadRequest("area-slug is required")
-
     if scope_type == "Area":
+        area_slug = request.args.get("area-slug")
+        if not area_slug:
+            raise BadRequest("area-slug is required")
         return scope_type, Area.get_id_by_slug(area_slug)
 
     line_slug = request.args.get("line-slug")
@@ -92,61 +93,78 @@ def _resolve_assigned_to(assigned_to_id):
     assignee = User.find_by_id(assigned_to_id)
     if not assignee.activated:
         raise BadRequest("Assignee must be an activated user")
+    if not assignee.moderator:
+        raise BadRequest("Assignee must be a moderator")
     return assignee
 
 
-def _moderator_recipient_ids_excluding(actor: User, *also_exclude):
-    exclude = {actor.id, *also_exclude}
-    recipient_ids = set()
-    moderators = User.query.filter(
-        (User.moderator.is_(True)) | (User.admin.is_(True)) | (User.superadmin.is_(True))
-    ).all()
-    for moderator in moderators:
-        if moderator.id not in exclude:
-            recipient_ids.add(moderator.id)
-    return recipient_ids
+def _scope_pairs_for_crag(crag_id):
+    pairs = [("Crag", crag_id)]
+    sector_rows = db.session.execute(select(Sector.id).where(Sector.crag_id == crag_id)).all()
+    sector_ids = [row[0] for row in sector_rows]
+    for sector_id in sector_ids:
+        pairs.append(("Sector", sector_id))
+    if sector_ids:
+        area_rows = db.session.execute(select(Area.id).where(Area.sector_id.in_(sector_ids))).all()
+        area_ids = [row[0] for row in area_rows]
+        for area_id in area_ids:
+            pairs.append(("Area", area_id))
+        if area_ids:
+            line_rows = db.session.execute(select(Line.id).where(Line.area_id.in_(area_ids))).all()
+            for (line_id,) in line_rows:
+                pairs.append(("Line", line_id))
+    return pairs
 
 
-def _task_notification_recipient_ids(task: ModeratorTask, actor: User):
-    recipient_ids = _moderator_recipient_ids_excluding(actor)
-    if task.assigned_to_id and task.assigned_to_id != actor.id:
-        recipient_ids.add(task.assigned_to_id)
-    return recipient_ids
+def _scope_pairs_for_sector(sector_id):
+    pairs = [("Sector", sector_id)]
+    area_rows = db.session.execute(select(Area.id).where(Area.sector_id == sector_id)).all()
+    area_ids = [row[0] for row in area_rows]
+    for area_id in area_ids:
+        pairs.append(("Area", area_id))
+    if area_ids:
+        line_rows = db.session.execute(select(Line.id).where(Line.area_id.in_(area_ids))).all()
+        for (line_id,) in line_rows:
+            pairs.append(("Line", line_id))
+    return pairs
 
 
-def _add_task_notification(task: ModeratorTask, actor: User, user_id, notification_type: NotificationTypeEnum):
-    db.session.add(
-        create_notification_for_user(
-            user_id,
-            notification_type,
-            actor_id=actor.id,
-            entity_type="moderator_task",
-            entity_id=task.id,
-        )
-    )
+def _scope_pairs_for_area(area_id):
+    pairs = [("Area", area_id)]
+    line_rows = db.session.execute(select(Line.id).where(Line.area_id == area_id)).all()
+    for (line_id,) in line_rows:
+        pairs.append(("Line", line_id))
+    return pairs
 
 
-def _notify_task_created(task: ModeratorTask, actor: User):
-    assignee_id = task.assigned_to_id
-    for user_id in _moderator_recipient_ids_excluding(actor, assignee_id):
-        _add_task_notification(task, actor, user_id, NotificationTypeEnum.MODERATOR_TASK_CREATED)
-    if assignee_id and assignee_id != actor.id:
-        _add_task_notification(
-            task,
-            actor,
-            assignee_id,
-            NotificationTypeEnum.MODERATOR_TASK_CREATED_AND_ASSIGNED,
-        )
+def _get_scope_pairs(scope_type: str, scope_id):
+    if scope_type == "Region":
+        region = Region.find_by_id(scope_id)
+        pairs = [("Region", region.id)]
+        crag_rows = db.session.execute(select(Crag.id)).all()
+        for (crag_id,) in crag_rows:
+            pairs.extend(_scope_pairs_for_crag(crag_id))
+        return pairs
+    if scope_type == "Crag":
+        return _scope_pairs_for_crag(scope_id)
+    if scope_type == "Sector":
+        return _scope_pairs_for_sector(scope_id)
+    if scope_type == "Area":
+        return _scope_pairs_for_area(scope_id)
+    if scope_type == "Line":
+        return [("Line", scope_id)]
+    raise ValueError(f"Unsupported scope type: {scope_type}")
 
 
-def _notify_task_assigned(task: ModeratorTask, actor: User, previous_assignee_id):
-    if task.assigned_to_id and task.assigned_to_id != actor.id and task.assigned_to_id != previous_assignee_id:
-        _add_task_notification(
-            task,
-            actor,
-            task.assigned_to_id,
-            NotificationTypeEnum.MODERATOR_TASK_ASSIGNED,
-        )
+def _filter_tasks_by_scope(query, scope_type: str, scope_id):
+    pairs = _get_scope_pairs(scope_type, scope_id)
+    if not pairs:
+        return query.filter(False)
+    conditions = [
+        and_(ModeratorTask.object_type == object_type, ModeratorTask.object_id == object_id)
+        for object_type, object_id in pairs
+    ]
+    return query.filter(or_(*conditions))
 
 
 def _apply_task_list_filters(query):
@@ -175,21 +193,8 @@ def _order_tasks_for_list(query):
     )
 
 
-def _notify_for_task(task: ModeratorTask, actor: User, notification_type: NotificationTypeEnum):
-    for user_id in _task_notification_recipient_ids(task, actor):
-        db.session.add(
-            create_notification_for_user(
-                user_id,
-                notification_type,
-                actor_id=actor.id,
-                entity_type="moderator_task",
-                entity_id=task.id,
-            )
-        )
-
-
 class GetModeratorTasks(MethodView):
-    """List tasks in the hierarchical scope for the current topo page (see util/moderator_task_scope)."""
+    """List tasks in the hierarchical scope for the current topo page."""
 
     @jwt_required()
     @check_auth_claims(moderator=True)
@@ -198,7 +203,7 @@ class GetModeratorTasks(MethodView):
         page = int(request.args.get("page") or 1)
         per_page = int(request.args.get("per_page") or 10)
         query = ModeratorTask.query
-        query = filter_tasks_by_scope(query, scope_type, scope_id)
+        query = _filter_tasks_by_scope(query, scope_type, scope_id)
         query = _apply_task_list_filters(query)
         query = _order_tasks_for_list(query)
         paginated_tasks = db.paginate(query, page=page, per_page=per_page)
@@ -231,7 +236,7 @@ class CreateModeratorTask(MethodView):
 
         db.session.add(task)
         db.session.flush()
-        _notify_task_created(task, created_by)
+        notify_task_created(task, created_by, db.session.add)
         db.session.commit()
         return moderator_task_schema.dump(task), 201
 
@@ -250,7 +255,7 @@ class UpdateModeratorTask(MethodView):
         task.assigned_to_id = assignee.id if assignee else None
         db.session.add(task)
         db.session.flush()
-        _notify_task_assigned(task, actor, previous_assignee_id)
+        notify_task_assigned(task, actor, previous_assignee_id, db.session.add)
         db.session.commit()
         return moderator_task_schema.dump(task), 200
 
@@ -266,7 +271,7 @@ class ToggleModeratorTaskComplete(MethodView):
         if task.completed and not was_completed:
             task.time_finished = datetime.datetime.now(pytz.utc)
             task.finished_by_id = user.id
-            _notify_for_task(task, user, NotificationTypeEnum.MODERATOR_TASK_COMPLETED)
+            notify_task_completed(task, user, db.session.add)
         elif not task.completed:
             task.time_finished = None
             task.finished_by_id = None

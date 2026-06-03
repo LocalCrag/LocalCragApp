@@ -57,5 +57,4 @@ class PaginatedModeratorTasksSchema(ma.SQLAlchemySchema):
 
 
 moderator_task_schema = ModeratorTaskSchema()
-moderator_tasks_schema = ModeratorTaskSchema(many=True)
 paginated_moderator_tasks_schema = PaginatedModeratorTasksSchema()

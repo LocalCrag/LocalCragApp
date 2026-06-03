@@ -26,16 +26,22 @@
           }}</label>
           <p-select
             id="assigned-to"
-            formControlName="assignedToId"
-            [options]="assigneeOptions"
-            optionLabel="label"
-            optionValue="value"
+            formControlName="assignedTo"
+            [options]="assigneeUsers"
+            dataKey="id"
             [showClear]="true"
             [disabled]="usersLoading"
             placeholder="{{ t('assignedToPlaceholder') }}"
             lcFormControl
             styleClass="w-full"
-          ></p-select>
+          >
+            <ng-template let-user pTemplate="item">
+              {{ assigneeLabel(user) }}
+            </ng-template>
+            <ng-template let-user pTemplate="selectedItem">
+              {{ assigneeLabel(user) }}
+            </ng-template>
+          </p-select>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>

@@ -49,9 +49,14 @@ export class UsersService {
       .pipe(map(LoginResponse.deserialize));
   }
 
-  public getUsers(): Observable<User[]> {
+  public getUsers(options?: { isModerator?: boolean }): Observable<User[]> {
+    const params = new URLSearchParams();
+    if (options?.isModerator) {
+      params.set('isModerator', '1');
+    }
+    const query = params.toString();
     return this.http
-      .get(this.api.users.getList())
+      .get(this.api.users.getList(query ? `?${query}` : ''))
       .pipe(map((userListJson: any) => userListJson.map(User.deserialize)));
   }
 

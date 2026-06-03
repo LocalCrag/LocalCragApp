@@ -8,7 +8,7 @@ import { ModeratorTask } from '../../models/moderator-task';
 import {
   buildModeratorTaskListQuery,
   ModeratorTaskListQuery,
-} from '../../utility/moderator-task-target';
+} from '../../modules/moderator-task/moderator-task-target';
 
 @Injectable({ providedIn: 'root' })
 export class ModeratorTasksService {

@@ -37,7 +37,7 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     assert rv.json["createdBy"] is not None
     assert rv.json["assignedTo"] is None
 
-    member = User.find_by_email("member@localcrag.invalid.org")
+    admin = User.find_by_email("admin@localcrag.invalid.org")
     rv = client.post(
         "/api/moderator-tasks",
         token=moderator_token,
@@ -45,24 +45,24 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
             "title": "Assigned task",
             "objectType": "Region",
             "objectId": str(region.id),
-            "assignedToId": str(member.id),
+            "assignedToId": str(admin.id),
         },
     )
     assert rv.status_code == 201
     assigned_task_id = rv.json["id"]
-    assert rv.json["assignedTo"]["id"] == str(member.id)
+    assert rv.json["assignedTo"]["id"] == str(admin.id)
 
     assignee_notification = Notification.query.filter(
         Notification.type == NotificationTypeEnum.MODERATOR_TASK_CREATED_AND_ASSIGNED,
         Notification.entity_id == assigned_task_id,
-        Notification.user_id == member.id,
+        Notification.user_id == admin.id,
     ).first()
     assert assignee_notification is not None
 
     assignee_created_notification = Notification.query.filter(
         Notification.type == NotificationTypeEnum.MODERATOR_TASK_CREATED,
         Notification.entity_id == assigned_task_id,
-        Notification.user_id == member.id,
+        Notification.user_id == admin.id,
     ).first()
     assert assignee_created_notification is None
 
@@ -79,6 +79,14 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     line_task_id = rv.json["id"]
 
     rv = client.get(
+        "/api/moderator-tasks?scope-type=Line&line-slug=treppe&page=1&per_page=50",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    line_scope_ids = {task["id"] for task in rv.json["items"]}
+    assert line_task_id in line_scope_ids
+
+    rv = client.get(
         "/api/moderator-tasks?scope-type=Region&page=1&per_page=50",
         token=moderator_token,
     )
@@ -90,7 +98,7 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     assert rv.json["items"][0]["completed"] is False
 
     rv = client.get(
-        f"/api/moderator-tasks?scope-type=Region&assigned-to-id={member.id}",
+        f"/api/moderator-tasks?scope-type=Region&assigned-to-id={admin.id}",
         token=moderator_token,
     )
     assert rv.status_code == 200
@@ -120,15 +128,15 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
         json={
             "title": "Updated region task",
             "description": "<p>Updated</p>",
-            "assignedToId": str(member.id),
+            "assignedToId": str(admin.id),
         },
     )
     assert rv.status_code == 200
-    assert rv.json["assignedTo"]["id"] == str(member.id)
+    assert rv.json["assignedTo"]["id"] == str(admin.id)
     assigned_notification = Notification.query.filter(
         Notification.type == NotificationTypeEnum.MODERATOR_TASK_ASSIGNED,
         Notification.entity_id == region_task_id,
-        Notification.user_id == member.id,
+        Notification.user_id == admin.id,
     ).first()
     assert assigned_notification is not None
 

@@ -37,6 +37,15 @@ def test_successful_get_users(client, admin_token):
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == len(users)
+
+
+def test_get_users_is_moderator_filter(client, admin_token):
+    rv = client.get("/api/users?isModerator=1", token=admin_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) >= 1
+    assert all(user["moderator"] for user in res)
+    assert all(not user["email"].startswith("member@") for user in res)
     for user in res:
         assert isinstance(user["id"], str)
         assert isinstance(user["firstname"], str)

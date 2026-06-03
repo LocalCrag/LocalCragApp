@@ -12,6 +12,7 @@ import { AccountSettings } from '../../../models/account-settings';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-account-settings-form',
@@ -24,6 +25,7 @@ import { LanguageSelectComponent } from '../../shared/forms/controls/language-se
     FormDirective,
     Button,
     LanguageSelectComponent,
+    HasPermissionDirective,
   ],
   templateUrl: './account-settings-form.component.html',
   styleUrl: './account-settings-form.component.scss',

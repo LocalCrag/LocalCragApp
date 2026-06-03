@@ -16,6 +16,7 @@ from models.enums.notification_digest_frequency_enum import (
 from models.notification import Notification
 from models.user import User
 from util.email import send_notification_digest_email
+from util.moderator_task_notifications import should_show_notification_to_user
 from util.notifications import should_send_notification_mail
 
 # Keep a module-level reference so we don't start multiple schedulers per process
@@ -138,7 +139,8 @@ def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> d
             mail_notifications = [
                 notification
                 for notification in user_notifications
-                if should_send_notification_mail(settings, notification.type)
+                if should_show_notification_to_user(user, notification.type)
+                and should_send_notification_mail(settings, notification.type)
             ]
             if not mail_notifications:
                 continue

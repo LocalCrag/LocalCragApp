@@ -88,7 +88,7 @@ export class ApiService {
 
   public users = {
     register: (): string => `${this.apiHost}users`,
-    getList: (): string => `${this.apiHost}users`,
+    getList: (filters = ''): string => `${this.apiHost}users${filters}`,
     getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
     updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string =>

@@ -1,10 +1,10 @@
-import { Area } from '../models/area';
-import { Crag } from '../models/crag';
-import { Line } from '../models/line';
-import { ModeratorTask } from '../models/moderator-task';
-import { ObjectType } from '../models/object';
-import { Region } from '../models/region';
-import { Sector } from '../models/sector';
+import { Area } from '../../models/area';
+import { Crag } from '../../models/crag';
+import { Line } from '../../models/line';
+import { ModeratorTask } from '../../models/moderator-task';
+import { ObjectType } from '../../models/object';
+import { Region } from '../../models/region';
+import { Sector } from '../../models/sector';
 
 /**
  * Query parameters for `GET /api/moderator-tasks` at the current topo page.
@@ -14,13 +14,13 @@ import { Sector } from '../models/sector';
 export interface ModeratorTaskScope {
   /** Topo level of the Tasks tab (Region … Line). */
   scopeType: ObjectType;
-  /** Required for Crag and below. */
+  /** Sent for Crag scope only. */
   cragSlug?: string;
-  /** Required for Sector and below. */
+  /** Sent for Sector scope only. */
   sectorSlug?: string;
-  /** Required for Area and below. */
+  /** Sent for Area scope only. */
   areaSlug?: string;
-  /** Required for Line scope. */
+  /** Sent for Line scope only. */
   lineSlug?: string;
 }
 
@@ -44,33 +44,43 @@ export interface ModeratorTaskListQuery {
   finishedById?: string | null;
 }
 
-function appendModeratorTaskScopeParams(
+const appendModeratorTaskScopeParams = (
   params: URLSearchParams,
   scope: ModeratorTaskScope,
-): void {
+): void => {
   params.set('scope-type', scope.scopeType);
-  if (scope.cragSlug) {
-    params.set('crag-slug', scope.cragSlug);
+  switch (scope.scopeType) {
+    case ObjectType.Crag:
+      if (scope.cragSlug) {
+        params.set('crag-slug', scope.cragSlug);
+      }
+      break;
+    case ObjectType.Sector:
+      if (scope.sectorSlug) {
+        params.set('sector-slug', scope.sectorSlug);
+      }
+      break;
+    case ObjectType.Area:
+      if (scope.areaSlug) {
+        params.set('area-slug', scope.areaSlug);
+      }
+      break;
+    case ObjectType.Line:
+      if (scope.lineSlug) {
+        params.set('line-slug', scope.lineSlug);
+      }
+      break;
   }
-  if (scope.sectorSlug) {
-    params.set('sector-slug', scope.sectorSlug);
-  }
-  if (scope.areaSlug) {
-    params.set('area-slug', scope.areaSlug);
-  }
-  if (scope.lineSlug) {
-    params.set('line-slug', scope.lineSlug);
-  }
-}
+};
 
 /**
  * Builds the query string appended to `GET /api/moderator-tasks`.
  *
- * Example: `?scope-type=Crag&crag-slug=example-crag&page=1&per_page=10`
+ * Example: `?scope-type=Line&line-slug=example-line&page=1&per_page=10`
  */
-export function buildModeratorTaskListQuery(
+export const buildModeratorTaskListQuery = (
   query: ModeratorTaskListQuery,
-): string {
+): string => {
   const params = new URLSearchParams();
   appendModeratorTaskScopeParams(params, query.scope);
   params.set('page', String(query.page));
@@ -87,26 +97,26 @@ export function buildModeratorTaskListQuery(
     params.set('finished-by-id', query.finishedById);
   }
   return `?${params.toString()}`;
-}
+};
 
-function entityLink(entity: {
+const entityLink = (entity: {
   name: string;
   routerLink: string | null;
-}): ModeratorTaskTargetLink | null {
+}): ModeratorTaskTargetLink | null => {
   if (!entity.routerLink) {
     return null;
   }
   return { name: entity.name, routerLink: entity.routerLink };
-}
+};
 
-function appendLink(
+const appendLink = (
   links: ModeratorTaskTargetLink[],
   link: ModeratorTaskTargetLink | null,
-): void {
+): void => {
   if (link) {
     links.push(link);
   }
-}
+};
 
 /**
  * Comma-separated clickable breadcrumb for the topo node a task is attached to.
@@ -114,9 +124,21 @@ function appendLink(
  * Uses `routerLink` from Crag, Sector, Area, and Line models (set in deserialize).
  * Returns an empty array when `task.object` is not loaded.
  */
-export function getModeratorTaskTargetLinks(
+const prependRegionLink = (
+  links: ModeratorTaskTargetLink[],
+  region: Region | null | undefined,
   task: ModeratorTask,
-): ModeratorTaskTargetLink[] {
+): ModeratorTaskTargetLink[] => {
+  if (task.objectType === ObjectType.Region || !region) {
+    return links;
+  }
+  return [{ name: region.name, routerLink: '/topo' }, ...links];
+};
+
+export const getModeratorTaskTargetLinks = (
+  task: ModeratorTask,
+  region?: Region | null,
+): ModeratorTaskTargetLink[] => {
   const target = task.object;
   if (!target) {
     return [];
@@ -128,14 +150,14 @@ export function getModeratorTaskTargetLinks(
 
   if (task.objectType === ObjectType.Crag && target instanceof Crag) {
     const link = entityLink(target);
-    return link ? [link] : [];
+    return prependRegionLink(link ? [link] : [], region, task);
   }
 
   if (task.objectType === ObjectType.Sector && target instanceof Sector) {
     const links: ModeratorTaskTargetLink[] = [];
     appendLink(links, target.crag ? entityLink(target.crag) : null);
     appendLink(links, entityLink(target));
-    return links;
+    return prependRegionLink(links, region, task);
   }
 
   if (task.objectType === ObjectType.Area && target instanceof Area) {
@@ -146,7 +168,7 @@ export function getModeratorTaskTargetLinks(
     );
     appendLink(links, target.sector ? entityLink(target.sector) : null);
     appendLink(links, entityLink(target));
-    return links;
+    return prependRegionLink(links, region, task);
   }
 
   if (task.objectType === ObjectType.Line && target instanceof Line) {
@@ -156,15 +178,8 @@ export function getModeratorTaskTargetLinks(
     appendLink(links, area?.sector ? entityLink(area.sector) : null);
     appendLink(links, area ? entityLink(area) : null);
     appendLink(links, entityLink(target));
-    return links;
+    return prependRegionLink(links, region, task);
   }
 
   return [];
-}
-
-/** Comma-separated plain-text breadcrumb (same segments as `getModeratorTaskTargetLinks`). */
-export function formatModeratorTaskTarget(task: ModeratorTask): string {
-  return getModeratorTaskTargetLinks(task)
-    .map((link) => link.name)
-    .join(', ');
-}
+};

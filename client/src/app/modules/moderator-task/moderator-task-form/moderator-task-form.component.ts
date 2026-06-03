@@ -10,7 +10,6 @@ import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
-import { SelectItem } from 'primeng/api';
 import { Select } from 'primeng/select';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -67,7 +66,7 @@ export class ModeratorTaskFormComponent implements OnInit {
   public editMode = false;
   public quillModules: any;
   public listLink: string;
-  public assigneeOptions: SelectItem<string | null>[] = [];
+  public assigneeUsers: User[] = [];
   public usersLoading = true;
 
   private taskId: string;
@@ -110,18 +109,21 @@ export class ModeratorTaskFormComponent implements OnInit {
             return of(null);
           }),
         ),
-        this.usersService.getUsers(),
+        this.usersService.getUsers({ isModerator: true }),
       ]).subscribe({
         next: ([task, users]) => {
           this.usersLoading = false;
           if (!task) return;
           this.objectType = task.objectType;
           this.objectId = task.objectId;
-          this.buildAssigneeOptions(users);
+          this.assigneeUsers = users;
           this.taskForm.patchValue({
             title: task.title,
             description: task.description,
-            assignedToId: task.assignedTo?.id ?? null,
+            assignedTo: task.assignedTo
+              ? (users.find((user) => user.id === task.assignedTo.id) ??
+                task.assignedTo)
+              : null,
           });
           this.loadingState = LoadingState.DEFAULT;
         },
@@ -135,11 +137,11 @@ export class ModeratorTaskFormComponent implements OnInit {
 
     forkJoin([
       this.resolveTargetObjectId(),
-      this.usersService.getUsers(),
+      this.usersService.getUsers({ isModerator: true }),
     ]).subscribe({
       next: ([objectId, users]) => {
         this.objectId = objectId;
-        this.buildAssigneeOptions(users);
+        this.assigneeUsers = users;
         this.usersLoading = false;
         this.loadingState = LoadingState.DEFAULT;
       },
@@ -159,10 +161,9 @@ export class ModeratorTaskFormComponent implements OnInit {
     const task = new ModeratorTask();
     task.title = this.taskForm.get('title').value;
     task.description = this.taskForm.get('description').value;
-    const assignedToId = this.taskForm.get('assignedToId').value;
-    if (assignedToId) {
-      task.assignedTo = new User();
-      task.assignedTo.id = assignedToId;
+    const assignedTo = this.taskForm.get('assignedTo').value as User | null;
+    if (assignedTo) {
+      task.assignedTo = assignedTo;
     }
 
     const request$ = this.editMode
@@ -201,6 +202,7 @@ export class ModeratorTaskFormComponent implements OnInit {
       message: this.translocoService.translate(
         marker('moderatorTasks.deleteConfirm'),
       ),
+      acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
         this.loadingState = LoadingState.LOADING;
         this.moderatorTasksService.deleteTask(this.taskId).subscribe({
@@ -217,23 +219,12 @@ export class ModeratorTaskFormComponent implements OnInit {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(120)]],
       description: [''],
-      assignedToId: [null],
+      assignedTo: [null],
     });
   }
 
-  private buildAssigneeOptions(users: User[]): void {
-    const unassignedLabel = this.translocoService.translate(
-      marker('moderatorTasks.unassigned'),
-    );
-    this.assigneeOptions = [
-      { label: unassignedLabel, value: null },
-      ...users
-        .filter((user) => user.moderator || user.admin || user.superadmin)
-        .map((user) => ({
-          label: `${user.firstname} ${user.lastname}`.trim(),
-          value: user.id,
-        })),
-    ];
+  public assigneeLabel(user: User): string {
+    return `${user.firstname} ${user.lastname}`.trim();
   }
 
   private resolveTargetObjectId() {

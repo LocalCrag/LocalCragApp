@@ -22,6 +22,7 @@ from util.moderator_task_links import (
     moderator_task_list_link,
     moderator_task_target_label,
 )
+from util.moderator_task_notifications import should_show_notification_to_user
 from webargs_schemas.notification_args import get_notifications_args
 
 
@@ -98,6 +99,8 @@ class GetNotifications(MethodView):
         )
         payload = []
         for notification in notifications.items:
+            if not should_show_notification_to_user(user, notification.type):
+                continue
             actor_name = None
             if notification.actor:
                 actor_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
@@ -163,7 +166,14 @@ class GetNotificationsCount(MethodView):
     @jwt_required()
     def get(self):
         user = User.find_by_email(get_jwt_identity())
-        count = Notification.query.filter(Notification.user_id == user.id, Notification.dismissed_at.is_(None)).count()
+        count = sum(
+            1
+            for notification in Notification.query.filter(
+                Notification.user_id == user.id,
+                Notification.dismissed_at.is_(None),
+            ).all()
+            if should_show_notification_to_user(user, notification.type)
+        )
         return jsonify({"count": count}), 200
 
 
