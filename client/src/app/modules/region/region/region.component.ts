@@ -125,6 +125,12 @@ export class RegionComponent implements OnInit {
         visible: true,
       },
       {
+        label: this.translocoService.translate(marker('region.tasks')),
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: `/topo/moderator-tasks`,
+        visible: isModerator,
+      },
+      {
         label: this.translocoService.translate(marker('region.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/edit-region`,

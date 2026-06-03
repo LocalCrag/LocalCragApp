@@ -12,6 +12,7 @@ import { AccountSettings } from '../../../models/account-settings';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'lc-account-settings-form',
@@ -24,6 +25,7 @@ import { LanguageSelectComponent } from '../../shared/forms/controls/language-se
     FormDirective,
     Button,
     LanguageSelectComponent,
+    HasPermissionDirective,
   ],
   templateUrl: './account-settings-form.component.html',
   styleUrl: './account-settings-form.component.scss',
@@ -45,6 +47,7 @@ export class AccountSettingsFormComponent implements OnInit {
       commentReplyMailsEnabled: [null],
       reactionNotificationsEnabled: [null],
       systemNotificationsEnabled: [null],
+      moderatorTaskNotificationsEnabled: [null],
       notificationDigestFrequency: [null],
       language: [null],
     });
@@ -68,6 +71,8 @@ export class AccountSettingsFormComponent implements OnInit {
         this.accountSettings.reactionNotificationsEnabled,
       systemNotificationsEnabled:
         this.accountSettings.systemNotificationsEnabled,
+      moderatorTaskNotificationsEnabled:
+        this.accountSettings.moderatorTaskNotificationsEnabled,
       notificationDigestFrequency:
         this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
@@ -86,6 +91,8 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.systemNotificationsEnabled = this.accountSettingsForm.get(
         'systemNotificationsEnabled',
       ).value;
+      accountSettings.moderatorTaskNotificationsEnabled =
+        this.accountSettingsForm.get('moderatorTaskNotificationsEnabled').value;
       accountSettings.notificationDigestFrequency =
         this.accountSettingsForm.get('notificationDigestFrequency').value;
       accountSettings.language = this.accountSettingsForm.get('language').value;

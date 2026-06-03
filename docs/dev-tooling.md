@@ -35,6 +35,16 @@ docker exec -it minio sh -c "
 "
 ```
 
+## Notification digest mails (dev)
+
+Pending notification digest emails are normally sent by a daily scheduler. To trigger the mailer immediately during local development (`FLASK_ENV=development`, or `flask run` with `FLASK_DEBUG=1` as in Docker Compose), call:
+
+```bash
+curl -X POST http://localhost:5000/api/dev/notification-digest-mails
+```
+
+The endpoint is unauthenticated, returns `404` outside development (`FLASK_ENV=production`, or neither `FLASK_ENV=development` nor `FLASK_DEBUG`), and sends all pending digest mails immediately (including weekly-digest users).
+
 ## Docker development setup
 
 LocalCrag alternatively provides a Docker Compose setup for development. This allows you to run the frontend, backend, and MinIO in isolated containers.

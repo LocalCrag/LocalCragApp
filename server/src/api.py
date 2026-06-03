@@ -96,6 +96,14 @@ from resources.menu_page_resources import (
     GetMenuPages,
     UpdateMenuPage,
 )
+from resources.moderator_task_resources import (
+    CreateModeratorTask,
+    DeleteModeratorTask,
+    GetModeratorTask,
+    GetModeratorTasks,
+    ToggleModeratorTaskComplete,
+    UpdateModeratorTask,
+)
 from resources.notification_resources import (
     DismissAllNotifications,
     DismissNotification,
@@ -166,6 +174,18 @@ from resources.user_resources import (
 from resources.util_resources import SentryTest
 
 
+def _register_dev_routes(app):
+    from resources.dev_resources import TriggerNotificationDigestMails
+
+    dev_bp = Blueprint("dev", __name__)
+    dev_bp.add_url_rule(
+        "/notification-digest-mails",
+        view_func=TriggerNotificationDigestMails.as_view("trigger_notification_digest_mails"),
+        methods=["POST"],
+    )
+    app.register_blueprint(dev_bp, url_prefix="/api/dev")
+
+
 def configure_api(app):
     """
     Sets up all routes of the app by using flask blueprints.
@@ -216,6 +236,19 @@ def configure_api(app):
         "/<string:todo_id>/update-priority", view_func=UpdateTodoPriority.as_view("update_todo_priority")
     )
     app.register_blueprint(todo_bp, url_prefix="/api/todos")
+
+    # Moderator tasks API
+    moderator_tasks_bp = Blueprint("moderator-tasks", __name__)
+    moderator_tasks_bp.add_url_rule("", view_func=GetModeratorTasks.as_view("get_moderator_tasks"))
+    moderator_tasks_bp.add_url_rule("", view_func=CreateModeratorTask.as_view("create_moderator_task"))
+    moderator_tasks_bp.add_url_rule("/<string:task_id>", view_func=GetModeratorTask.as_view("get_moderator_task"))
+    moderator_tasks_bp.add_url_rule("/<string:task_id>", view_func=UpdateModeratorTask.as_view("update_moderator_task"))
+    moderator_tasks_bp.add_url_rule("/<string:task_id>", view_func=DeleteModeratorTask.as_view("delete_moderator_task"))
+    moderator_tasks_bp.add_url_rule(
+        "/<string:task_id>/toggle-complete",
+        view_func=ToggleModeratorTaskComplete.as_view("toggle_moderator_task_complete"),
+    )
+    app.register_blueprint(moderator_tasks_bp, url_prefix="/api/moderator-tasks")
 
     # Auth API
     auth_bp = Blueprint("auth", __name__)
@@ -474,3 +507,5 @@ def configure_api(app):
         "/<string:target_type>/<string:target_id>", view_func=DeleteReaction.as_view("delete_reaction")
     )
     app.register_blueprint(reactions_bp, url_prefix="/api/reactions")
+
+    _register_dev_routes(app)

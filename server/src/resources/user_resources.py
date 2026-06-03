@@ -50,6 +50,7 @@ from util.regexes import email_regex
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims
 from webargs_schemas.change_password_args import change_password_args
+from webargs_schemas.get_users_args import get_users_args
 from webargs_schemas.new_email_args import new_email_args
 from webargs_schemas.user_args import (
     user_args,
@@ -110,7 +111,12 @@ class GetUsers(MethodView):
         """
         Returns the list of users.
         """
-        return jsonify(user_list_schema.dump(User.return_all(order_by=[User.firstname.asc, User.lastname.asc]))), 200
+        args = parser.parse(get_users_args, request, location="query")
+        query = User.query
+        if args["isModerator"]:
+            query = query.filter(User.moderator.is_(True))
+        users = query.order_by(User.firstname.asc(), User.lastname.asc()).all()
+        return jsonify(user_list_schema.dump(users)), 200
 
 
 class GetEmailTaken(MethodView):

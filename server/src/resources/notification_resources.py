@@ -11,12 +11,18 @@ from models.comment import Comment
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.enums.release_note_item_type_enum import release_note_type_display_rank
 from models.line import Line
+from models.moderator_task import ModeratorTask
 from models.notification import Notification
 from models.post import Post
 from models.reaction import Reaction
 from models.release_note_item import ReleaseNoteItem
 from models.user import User
 from util.email import _build_comment_action_link
+from util.moderator_task_links import (
+    moderator_task_list_link,
+    moderator_task_target_label,
+)
+from util.moderator_task_notifications import should_show_notification_to_user
 from webargs_schemas.notification_args import get_notifications_args
 
 
@@ -57,6 +63,10 @@ def _notification_action_link(notification: Notification) -> str | None:
         and notification.entity_id
     ):
         return f"/release-notes/{notification.entity_id}"
+    if notification.entity_type == "moderator_task" and notification.entity_id:
+        task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+        if task:
+            return moderator_task_list_link(task)
     return None
 
 
@@ -89,6 +99,8 @@ class GetNotifications(MethodView):
         )
         payload = []
         for notification in notifications.items:
+            if not should_show_notification_to_user(user, notification.type):
+                continue
             actor_name = None
             if notification.actor:
                 actor_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
@@ -140,6 +152,11 @@ class GetNotifications(MethodView):
                 row["releaseNoteItemKeys"] = _release_note_item_keys_for_bundle(
                     notification.entity_id,
                 )
+            if notification.entity_type == "moderator_task" and notification.entity_id:
+                task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+                if task:
+                    row["topicName"] = moderator_task_target_label(task)
+                    row["taskTitle"] = task.title
             payload.append(row)
 
         return jsonify({"items": payload, "hasNext": notifications.has_next}), 200
@@ -149,7 +166,14 @@ class GetNotificationsCount(MethodView):
     @jwt_required()
     def get(self):
         user = User.find_by_email(get_jwt_identity())
-        count = Notification.query.filter(Notification.user_id == user.id, Notification.dismissed_at.is_(None)).count()
+        count = sum(
+            1
+            for notification in Notification.query.filter(
+                Notification.user_id == user.id,
+                Notification.dismissed_at.is_(None),
+            ).all()
+            if should_show_notification_to_user(user, notification.type)
+        )
         return jsonify({"count": count}), 200
 
 

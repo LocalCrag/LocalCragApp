@@ -1,0 +1,11 @@
+<div class="task-list-section flex flex-column gap-3">
+  @for (_ of [1, 2, 3]; track _) {
+    <div
+      class="task-row-skeleton border-1 surface-border border-round p-4 flex flex-column gap-3"
+    >
+      <p-skeleton width="55%" height="1.5rem" />
+      <p-skeleton width="35%" height="1rem" />
+      <p-skeleton width="100%" height="3rem" class="lc-p-full-width-skeleton" />
+    </div>
+  }
+</div>

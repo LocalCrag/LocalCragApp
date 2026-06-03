@@ -207,6 +207,12 @@ export class AreaComponent implements OnInit {
         visible: this.hasBlocweather && !isGymMode,
       },
       {
+        label: this.translocoService.translate(marker('area.tasks')),
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/moderator-tasks`,
+        visible: isModerator,
+      },
+      {
         label: this.translocoService.translate(marker('area.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/edit`,

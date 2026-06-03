@@ -200,6 +200,12 @@ export class SectorComponent implements OnInit {
         visible: this.hasBlocweather && !isGymMode,
       },
       {
+        label: this.translocoService.translate(marker('sector.tasks')),
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/moderator-tasks`,
+        visible: isModerator,
+      },
+      {
         label: this.translocoService.translate(marker('sector.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/edit`,

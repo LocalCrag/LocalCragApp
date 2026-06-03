@@ -20,10 +20,10 @@ export class AbstractModel {
   ): void {
     model.id = payload.id;
     model.timeCreated = payload.timeCreated
-      ? new Date(payload.timeCreated + 'Z')
+      ? new Date(payload.timeCreated)
       : null;
     model.timeUpdated = payload.timeUpdated
-      ? new Date(payload.timeUpdated + 'Z')
+      ? new Date(payload.timeUpdated)
       : null;
   }
 }

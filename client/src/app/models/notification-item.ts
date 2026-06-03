@@ -11,6 +11,7 @@ export interface NotificationItem {
   actionLink: string | null;
   line: Line | null;
   topicName: string | null;
+  taskTitle?: string | null;
   reactionEmoji: string | null;
   isDismissed: boolean;
   releaseNoteItemKeys?: string[];

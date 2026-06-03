@@ -7,6 +7,7 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import { topoAreaRouterLink } from './topo-router-link';
 
 /**
  * Model of a climbing sector's area.
@@ -26,8 +27,8 @@ export class Area extends IsClosable(AbstractModel) {
   defaultTradScale: string | null = null;
   blocweatherUrl: string | null = null;
 
-  sector: Sector;
-  routerLink: string;
+  sector: Sector | null;
+  routerLink: string | null;
 
   /**
    * Parses an area.
@@ -53,9 +54,7 @@ export class Area extends IsClosable(AbstractModel) {
     area.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
-    area.routerLink = area.sector
-      ? `/topo/${area.sector.crag.slug}/${area.sector.slug}/${area.slug}`
-      : null;
+    area.routerLink = topoAreaRouterLink(area);
     area.defaultBoulderScale = payload.defaultBoulderScale;
     area.defaultSportScale = payload.defaultSportScale;
     area.defaultTradScale = payload.defaultTradScale;
