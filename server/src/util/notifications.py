@@ -14,6 +14,13 @@ def should_send_notification_mail(settings, notification_type: NotificationTypeE
     if notification_type == NotificationTypeEnum.RELEASE_NOTES:
         # Never include release notes in notifications; they're always in-app only
         return False
+    if notification_type in (
+        NotificationTypeEnum.MODERATOR_TASK_COMPLETED,
+        NotificationTypeEnum.MODERATOR_TASK_CREATED,
+        NotificationTypeEnum.MODERATOR_TASK_CREATED_AND_ASSIGNED,
+        NotificationTypeEnum.MODERATOR_TASK_ASSIGNED,
+    ):
+        return settings.moderator_task_notifications_enabled
     return True
 
 

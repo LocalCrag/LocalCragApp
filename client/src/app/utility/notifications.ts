@@ -342,6 +342,31 @@ export const NOTIFICATIONS = {
     title: marker('notifications.MENU_PAGE_CREATED_TITLE'),
     message: marker('notifications.MENU_PAGE_CREATED_MESSAGE'),
   },
+  MODERATOR_TASK_CREATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.MODERATOR_TASK_CREATED_TITLE'),
+    message: marker('notifications.MODERATOR_TASK_CREATED_MESSAGE'),
+  },
+  MODERATOR_TASK_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.MODERATOR_TASK_UPDATED_TITLE'),
+    message: marker('notifications.MODERATOR_TASK_UPDATED_MESSAGE'),
+  },
+  MODERATOR_TASK_DELETED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.MODERATOR_TASK_DELETED_TITLE'),
+    message: marker('notifications.MODERATOR_TASK_DELETED_MESSAGE'),
+  },
+  MODERATOR_TASK_COMPLETED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.MODERATOR_TASK_COMPLETED_TITLE'),
+    message: marker('notifications.MODERATOR_TASK_COMPLETED_MESSAGE'),
+  },
+  MODERATOR_TASK_REOPENED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.MODERATOR_TASK_REOPENED_TITLE'),
+    message: marker('notifications.MODERATOR_TASK_REOPENED_MESSAGE'),
+  },
   MENU_ITEM_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MENU_ITEM_DELETED_TITLE'),

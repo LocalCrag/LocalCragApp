@@ -1,0 +1,136 @@
+<ng-container *transloco="let t; read: 'moderatorTasks'">
+  <div class="content">
+    <p-card header="{{ editMode ? t('editTaskTitle') : t('createTaskTitle') }}">
+      <form [formGroup]="taskForm" lcForm>
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="title">{{ t("titleLabel") }}</label>
+          <input
+            type="text"
+            pInputText
+            id="title"
+            formControlName="title"
+            placeholder="{{ t('titlePlaceholder') }}"
+            lcFormControl
+          />
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="assigned-to">{{
+            t("assignedToLabel")
+          }}</label>
+          <p-select
+            id="assigned-to"
+            formControlName="assignedTo"
+            [options]="assigneeUsers"
+            dataKey="id"
+            [showClear]="true"
+            [disabled]="usersLoading"
+            placeholder="{{ t('assignedToPlaceholder') }}"
+            lcFormControl
+            styleClass="w-full"
+          >
+            <ng-template let-user pTemplate="item">
+              {{ assigneeLabel(user) }}
+            </ng-template>
+            <ng-template let-user pTemplate="selectedItem">
+              {{ assigneeLabel(user) }}
+            </ng-template>
+          </p-select>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="description">{{
+            t("descriptionLabel")
+          }}</label>
+          <p-editor
+            id="description"
+            formControlName="description"
+            lcFormControl
+            [modules]="quillModules"
+            [style]="{ height: '320px' }"
+            [readonly]="loadingState === loadingStates.LOADING"
+          >
+            <ng-template #header>
+              <span class="ql-formats">
+                <button
+                  type="button"
+                  class="ql-bold"
+                  aria-label="Bold"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-italic"
+                  aria-label="Italic"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-underline"
+                  aria-label="Underline"
+                ></button>
+              </span>
+              <span class="ql-formats">
+                <button
+                  type="button"
+                  value="ordered"
+                  class="ql-list"
+                  aria-label="Ordered List"
+                ></button>
+                <button
+                  type="button"
+                  value="bullet"
+                  class="ql-list"
+                  aria-label="Unordered List"
+                ></button>
+              </span>
+              <span class="ql-formats">
+                <button
+                  type="button"
+                  class="ql-link"
+                  aria-label="Link"
+                ></button>
+                <button
+                  type="button"
+                  class="ql-image"
+                  aria-label="Image"
+                ></button>
+              </span>
+            </ng-template>
+          </p-editor>
+        </div>
+      </form>
+
+      <div class="form-actions">
+        <p-button
+          [label]="editMode ? t('saveTaskButton') : t('createTaskButton')"
+          (click)="saveTask()"
+          icon="pi pi-save"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+        <p-button
+          [label]="t('cancelButton')"
+          (click)="cancel()"
+          class="ml-3"
+          styleClass="p-button-secondary"
+          icon="pi pi-ban"
+        ></p-button>
+        @if (editMode) {
+          <p-button
+            [label]="t('deleteTaskButton')"
+            (click)="confirmDelete($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="ml-3"
+            [loading]="loadingState === loadingStates.LOADING"
+          ></p-button>
+        }
+        <p-confirmpopup></p-confirmpopup>
+      </div>
+    </p-card>
+  </div>
+</ng-container>

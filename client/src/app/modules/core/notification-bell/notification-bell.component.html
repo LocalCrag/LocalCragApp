@@ -42,6 +42,13 @@
                 <i class="pi pi-comment"></i>
               } @else if (item.type === "release_notes") {
                 <i class="pi pi-megaphone"></i>
+              } @else if (
+                item.type === "moderator_task_completed" ||
+                item.type === "moderator_task_created" ||
+                item.type === "moderator_task_created_and_assigned" ||
+                item.type === "moderator_task_assigned"
+              ) {
+                <i class="pi pi-list-check"></i>
               } @else {
                 <i class="pi pi-cog"></i>
               }

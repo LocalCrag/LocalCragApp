@@ -48,6 +48,7 @@ class UpdateAccountSettings(MethodView):
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
         settings.reaction_notifications_enabled = data["reactionNotificationsEnabled"]
         settings.system_notifications_enabled = data["systemNotificationsEnabled"]
+        settings.moderator_task_notifications_enabled = data["moderatorTaskNotificationsEnabled"]
         settings.notification_digest_frequency = NotificationDigestFrequencyEnum(data["notificationDigestFrequency"])
         settings.language = data["language"]
         db.session.add(settings)

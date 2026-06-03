@@ -78,6 +78,8 @@ import { SectorWeatherComponent } from '../sector/sector-weather/sector-weather.
 import { AreaWeatherComponent } from '../area/area-weather/area-weather.component';
 import { NotificationListComponent } from './notification-list/notification-list.component';
 import { ReleaseNotesBundleComponent } from './release-notes-bundle/release-notes-bundle.component';
+import { ModeratorTaskListComponent } from '../moderator-task/moderator-task-list/moderator-task-list.component';
+import { ModeratorTaskFormComponent } from '../moderator-task/moderator-task-form/moderator-task-form.component';
 
 export const appRoutes: Routes = [
   {
@@ -470,6 +472,20 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'moderator-tasks',
+        canActivate: [isModerator],
+        children: [
+          {
+            path: '',
+            component: ModeratorTaskListComponent,
+            outlet: 'regionContent',
+            data: {
+              scopeType: ObjectType.Region,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
         children: [
@@ -492,6 +508,24 @@ export const appRoutes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'topo/moderator-tasks/create',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Region,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'topo/moderator-tasks/:task-id/edit',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Region,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/edit-region',
@@ -603,6 +637,20 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'moderator-tasks',
+        canActivate: [isModerator],
+        children: [
+          {
+            path: '',
+            component: ModeratorTaskListComponent,
+            outlet: 'cragContent',
+            data: {
+              scopeType: ObjectType.Crag,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
         children: [
@@ -636,6 +684,24 @@ export const appRoutes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'topo/:crag-slug/moderator-tasks/create',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Crag,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'topo/:crag-slug/moderator-tasks/:task-id/edit',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Crag,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/edit',
@@ -736,6 +802,20 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'moderator-tasks',
+        canActivate: [isModerator],
+        children: [
+          {
+            path: '',
+            component: ModeratorTaskListComponent,
+            outlet: 'sectorContent',
+            data: {
+              scopeType: ObjectType.Sector,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         children: [
           {
@@ -766,6 +846,24 @@ export const appRoutes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/moderator-tasks/create',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Sector,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/moderator-tasks/:task-id/edit',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Sector,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/edit',
@@ -882,6 +980,20 @@ export const appRoutes: Routes = [
         ],
       },
       {
+        path: 'moderator-tasks',
+        canActivate: [isModerator],
+        children: [
+          {
+            path: '',
+            component: ModeratorTaskListComponent,
+            outlet: 'areaContent',
+            data: {
+              scopeType: ObjectType.Area,
+            },
+          },
+        ],
+      },
+      {
         path: 'ascents',
         children: [
           {
@@ -902,6 +1014,24 @@ export const appRoutes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/moderator-tasks/create',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Area,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/moderator-tasks/:task-id/edit',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Area,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/edit',
@@ -960,7 +1090,39 @@ export const appRoutes: Routes = [
           },
         ],
       },
+      {
+        path: 'moderator-tasks',
+        canActivate: [isModerator],
+        children: [
+          {
+            path: '',
+            component: ModeratorTaskListComponent,
+            outlet: 'lineContent',
+            data: {
+              scopeType: ObjectType.Line,
+            },
+          },
+        ],
+      },
     ],
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/moderator-tasks/create',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Line,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
+  },
+  {
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/moderator-tasks/:task-id/edit',
+    component: ModeratorTaskFormComponent,
+    canActivate: [isModerator],
+    data: {
+      scopeType: ObjectType.Line,
+      backgroundImagePath: StaticBackgroundImages.DEFAULT,
+    },
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/:line-slug/edit',

@@ -8,12 +8,17 @@ from models.crag import Crag
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.moderator_task import ModeratorTask
 from models.notification import Notification
 from models.post import Post
 from models.region import Region
 from models.scale import Scale
 from models.sector import Sector
 from util.email_helpers import build_comment_action_link, frontend_url
+from util.moderator_task_links import (
+    moderator_task_list_link,
+    moderator_task_target_label,
+)
 
 
 def _target_anchor(href: str, label: str, *, quote: bool = False) -> str:
@@ -117,6 +122,36 @@ def _build_digest_item(
         return {
             "html": digest_i18n[comment_reply_text_key].format(count=count, target_link=target_link),
         }
+    if notification_type in (
+        NotificationTypeEnum.MODERATOR_TASK_COMPLETED,
+        NotificationTypeEnum.MODERATOR_TASK_CREATED,
+        NotificationTypeEnum.MODERATOR_TASK_CREATED_AND_ASSIGNED,
+        NotificationTypeEnum.MODERATOR_TASK_ASSIGNED,
+    ):
+        if entity_type == "moderator_task" and entity_id:
+            task = ModeratorTask.query.filter_by(id=entity_id).first()
+            if task:
+                target = moderator_task_target_label(task)
+                href = frontend_url(moderator_task_list_link(task).lstrip("/"))
+                target_link = _target_anchor(href, target, quote=True)
+                if notification_type == NotificationTypeEnum.MODERATOR_TASK_CREATED:
+                    text_key = "moderator_task_created_text_single" if count == 1 else "moderator_task_created_text"
+                elif notification_type == NotificationTypeEnum.MODERATOR_TASK_CREATED_AND_ASSIGNED:
+                    text_key = (
+                        "moderator_task_created_and_assigned_text_single"
+                        if count == 1
+                        else "moderator_task_created_and_assigned_text"
+                    )
+                elif notification_type == NotificationTypeEnum.MODERATOR_TASK_ASSIGNED:
+                    text_key = "moderator_task_assigned_text_single" if count == 1 else "moderator_task_assigned_text"
+                else:
+                    text_key = "moderator_task_completed_text_single" if count == 1 else "moderator_task_completed_text"
+                return {
+                    "html": digest_i18n[text_key].format(
+                        count=count, target_link=target_link, title=html.escape(task.title)
+                    ),
+                }
+        return None
     if notification_type == NotificationTypeEnum.FA_MODERATION_REMOVED:
         if entity_type == "ascent" and entity_id:
             ascent = Ascent.query.filter_by(id=entity_id).first()

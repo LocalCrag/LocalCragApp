@@ -88,7 +88,7 @@ export class ApiService {
 
   public users = {
     register: (): string => `${this.apiHost}users`,
-    getList: (): string => `${this.apiHost}users`,
+    getList: (filters = ''): string => `${this.apiHost}users${filters}`,
     getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
     updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string =>
@@ -102,6 +102,17 @@ export class ApiService {
     getStatistics: (slug: string): string =>
       `${this.apiHost}users/${slug}/statistics`,
     deleteOwnUser: (): string => `${this.apiHost}users/account/delete-own-user`,
+  };
+
+  public moderatorTasks = {
+    getList: (filters: string): string =>
+      `${this.apiHost}moderator-tasks${filters}`,
+    getDetail: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    create: (): string => `${this.apiHost}moderator-tasks`,
+    update: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    delete: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
+    toggleComplete: (id: string): string =>
+      `${this.apiHost}moderator-tasks/${id}/toggle-complete`,
   };
 
   public todos = {
