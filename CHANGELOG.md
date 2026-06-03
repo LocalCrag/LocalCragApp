@@ -1,3 +1,12 @@
+# [1.39.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.2...v1.39.0) (2026-06-03)
+
+
+### Features
+
+* **account:** add possibility to preview a users avatar in gallery mode ([#1106](https://github.com/LocalCrag/LocalCragApp/issues/1106)) ([eeae87e](https://github.com/LocalCrag/LocalCragApp/commit/eeae87eb99d66c8ec186a840aa9210c2276b669b)), closes [#1099](https://github.com/LocalCrag/LocalCragApp/issues/1099)
+* **ascent:** fix date selection in ascents storing wrong date ([#1117](https://github.com/LocalCrag/LocalCragApp/issues/1117)) ([d66a615](https://github.com/LocalCrag/LocalCragApp/commit/d66a61564f4a52de5ba90b8c4c245b8cdafbefd2)), closes [#1112](https://github.com/LocalCrag/LocalCragApp/issues/1112)
+* **tasks:** add moderator task feature ([#1116](https://github.com/LocalCrag/LocalCragApp/issues/1116)) ([c3b89c2](https://github.com/LocalCrag/LocalCragApp/commit/c3b89c2b29b776039ed0c6405eaedf69397b00f9))
+
 ## [1.38.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.1...v1.38.2) (2026-05-20)
 
 
