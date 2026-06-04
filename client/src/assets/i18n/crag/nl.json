@@ -1,5 +1,6 @@
 {
   "cragList.noCragsFoundEmptyMessage": "Geen klimgebieden gevonden",
+  "cragList.orderByLabel": "Sorteren op:",
   "cragList.newCragButtonLabel": "Nieuw klimgebied",
   "cragList.reorderCragsButtonLabel": "Klimgebieden ordenen",
   "crag.gradeDistribution": "Graadverdeling",

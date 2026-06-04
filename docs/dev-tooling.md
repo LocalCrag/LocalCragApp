@@ -45,6 +45,45 @@ curl -X POST http://localhost:5000/api/dev/notification-digest-mails
 
 The endpoint is unauthenticated, returns `404` outside development (`FLASK_ENV=production`, or neither `FLASK_ENV=development` nor `FLASK_DEBUG`), and sends all pending digest mails immediately (including weekly-digest users).
 
+## Release notes
+
+In-app release notes are driven by `server/src/data/release_notes_manifest.json`. Each item has a short `key`, a `type` (`FEATURE` or `FIX`), and translations in the client locale files under `releaseNotes.notes.<key>` (body) and `releaseNotes.notes.<key>_title` (title).
+
+### Add a release note item
+
+Use the interactive script (no extra dependencies; run from anywhere in the repo):
+
+```bash
+cd server/src && python3 util/scripts/add_release_note_item.py
+```
+
+The script will prompt for:
+
+- **Note key** — short id only (e.g. `lineFilters`), not the `releaseNotes.notes.` prefix
+- **Note type** — `FEATURE` or `FIX`
+- **Language** — which top-level locale file to update first (`en`, `de`, `it`, `nl`, …)
+- **Title and body** — one line each for that locale
+
+It then:
+
+1. Appends the item to `release_notes_manifest.json`
+2. Writes the title and body strings into the chosen `client/src/assets/i18n/<locale>.json`
+3. Regenerates `client/src/app/utility/release-note-transloco-keys.ts` (do not edit the marker list by hand)
+
+Copy the same `releaseNotes.notes.<key>` and `releaseNotes.notes.<key>_title` entries into the other locale files when you are ready.
+
+After deploy, the server syncs the manifest into the database (`sync_release_notes_catalog` on startup / migrations). Users receive in-app notifications for new bundles on the next sync.
+
+### Validate the manifest
+
+CI checks the manifest against `release_notes_manifest.schema.json` (duplicate keys, required fields, etc.):
+
+```bash
+cd server && pipenv install --dev && pipenv run python src/util/scripts/validate_release_notes_manifest.py
+```
+
+Run this before pushing if you edited `release_notes_manifest.json` by hand.
+
 ## Docker development setup
 
 LocalCrag alternatively provides a Docker Compose setup for development. This allows you to run the frontend, backend, and MinIO in isolated containers.

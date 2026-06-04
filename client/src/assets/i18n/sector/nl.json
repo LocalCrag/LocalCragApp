@@ -1,5 +1,6 @@
 {
   "sectorList.noSectorsFoundEmptyMessage": "Geen sectoren gevonden",
+  "sectorList.orderByLabel": "Sorteren op:",
   "sectorList.newSectorButtonLabel": "Nieuwe sector",
   "sectorList.reorderSectorsButtonLabel": "Sectoren ordenen",
   "sector.gradeDistribution": "Graadverdeling",

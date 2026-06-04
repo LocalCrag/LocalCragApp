@@ -1,5 +1,6 @@
 {
   "cragList.noCragsFoundEmptyMessage": "No crags found",
+  "cragList.orderByLabel": "Sort by:",
   "cragList.newCragButtonLabel": "New crag",
   "cragList.reorderCragsButtonLabel": "Reorder crags",
   "crag.gradeDistribution": "Grade distribution",
