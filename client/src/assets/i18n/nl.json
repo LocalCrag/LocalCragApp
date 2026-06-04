@@ -308,7 +308,7 @@
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel1": "Regio -> Sector -> Bereik",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel2": "Regio -> Gebied",
   "instanceSettings.instanceSettingsForm.faDefaultFormat": "Datum standaard formaat voor eerste beklimming",
-  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "In de halmodus wordt het datumformaat aanbevolen als de standaardinstelling. Het formaat is individueel instelbaar in de vorm van de betreffende route.",
+  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "Het datumformaat wordt aanbevolen als de standaardinstelling. Het formaat is individueel instelbaar in de vorm van de betreffende route.",
   "instanceSettings.instanceSettingsForm.YEAR": "Jaar",
   "instanceSettings.instanceSettingsForm.DATE": "Datum",
   "instanceSettings.instanceSettingsForm.defaultStartingPosition": "Standaard startspositie",

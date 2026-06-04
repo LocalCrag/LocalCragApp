@@ -308,7 +308,7 @@
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel1": "Regione -> Settore -> Area",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel2": "Regione -> Area",
   "instanceSettings.instanceSettingsForm.faDefaultFormat": "Formato data standard per aperture",
-  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "In modalità indoor, si consiglia di standardizzare il formato della data. Il formato può essere personalizzato nel menu del rispettivo problema.",
+  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "Si consiglia di standardizzare il formato della data. Il formato può essere personalizzato nel menu del rispettivo problema.",
   "instanceSettings.instanceSettingsForm.YEAR": "Anno",
   "instanceSettings.instanceSettingsForm.DATE": "Data",
   "instanceSettings.instanceSettingsForm.defaultStartingPosition": "Posizione di partenza predefinita",

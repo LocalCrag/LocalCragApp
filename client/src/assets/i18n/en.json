@@ -308,7 +308,7 @@
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel1": "Region -> Sector -> Area",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel2": "Region -> Area",
   "instanceSettings.instanceSettingsForm.faDefaultFormat": "Standard date format for first ascents",
-  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "In gym mode, the date format is recommended as the default setting. The format can be individually adjusted inside the specific form of each line.",
+  "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "The date format is recommended as the default setting. The format can be individually adjusted inside the specific form of each line.",
   "instanceSettings.instanceSettingsForm.YEAR": "Year",
   "instanceSettings.instanceSettingsForm.DATE": "Date",
   "instanceSettings.instanceSettingsForm.defaultStartingPosition": "Start position",
