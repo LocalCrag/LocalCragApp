@@ -57,6 +57,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Rating } from 'primeng/rating';
@@ -94,6 +95,7 @@ import { MoveObjectDialogComponent } from '../../shared/components/move-object-d
     Editor,
     AdvancedColorPickerComponent,
     GymModeDirective,
+    OutdoorModeDirective,
     Select,
     TranslateSpecialGradesPipe,
     TranslocoPipe,
