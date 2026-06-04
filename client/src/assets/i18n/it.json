@@ -800,6 +800,7 @@
   "orderByName": "Nome",
   "orderByRating": "Stelle",
   "orderByAscentCount": "Ripetizioni",
+  "orderByTopoPosition": "Blocco / Foto",
   "reorderLinePathsForLineDialogTitle": "Ordina immagini Guida per problema",
   "reorderLinePathsForLineDialogItemsName": "Immagini Guida",
   "lineFormBrowserTitle": "Aggiungi Problema",
