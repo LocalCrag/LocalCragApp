@@ -102,7 +102,14 @@ class GetLines(MethodView):
         order_direction = request.args.get("order_direction") or "asc"
         archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
 
-        if order_by not in ["grade_value", "name", "rating", "ascent_count", None] or order_direction not in [
+        if order_by not in [
+            "grade_value",
+            "name",
+            "rating",
+            "ascent_count",
+            "time_created",
+            None,
+        ] or order_direction not in [
             "asc",
             "desc",
         ]:

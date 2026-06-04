@@ -1,3 +1,7 @@
+import datetime
+
+import pytz
+
 from extensions import db
 from models.area import Area
 from models.file import File
@@ -812,6 +816,32 @@ def test_successful_get_lines_order_by_ascent_count_descending(client):
 
 def test_successful_get_lines_order_by_name_ascending_regression(client):
     rv = client.get("/api/lines?order_by=name&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
+def test_successful_get_lines_order_by_time_created_ascending(client):
+    treppe = Line.find_by_slug("treppe")
+    super_spreader = Line.find_by_slug("super-spreader")
+    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
+    db.session.commit()
+
+    rv = client.get("/api/lines?order_by=time_created&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+
+
+def test_successful_get_lines_order_by_time_created_descending(client):
+    treppe = Line.find_by_slug("treppe")
+    super_spreader = Line.find_by_slug("super-spreader")
+    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
+    db.session.commit()
+
+    rv = client.get("/api/lines?order_by=time_created&order_direction=desc")
     assert rv.status_code == 200
     res = rv.json["items"]
     assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
