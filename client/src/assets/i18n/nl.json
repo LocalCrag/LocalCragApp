@@ -800,6 +800,7 @@
   "orderByName": "Naam",
   "orderByRating": "Sterren",
   "orderByAscentCount": "Beklimmingen",
+  "orderByTopoPosition": "Blok / Foto",
   "reorderLinePathsForLineDialogTitle": "Topo sorteer foto's op lijn",
   "reorderLinePathsForLineDialogItemsName": "Topo Foto's",
   "lineFormBrowserTitle": "Creëer lijn",

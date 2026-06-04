@@ -447,6 +447,10 @@ export class LineListComponent implements OnInit {
         value: 'name',
       },
       {
+        label: this.translocoService.translate(marker('orderByTopoPosition')),
+        value: 'topo_position',
+      },
+      {
         label: this.translocoService.translate(marker('orderByRating')),
         value: 'rating',
       },

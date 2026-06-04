@@ -800,6 +800,7 @@
   "orderByName": "Name",
   "orderByRating": "Stars",
   "orderByAscentCount": "Ascents",
+  "orderByTopoPosition": "Block / Photo",
   "reorderLinePathsForLineDialogTitle": "Reorder Topo images for lines",
   "reorderLinePathsForLineDialogItemsName": "Topo images",
   "lineFormBrowserTitle": "Create line",
