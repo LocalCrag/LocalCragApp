@@ -168,7 +168,11 @@ class GetLines(MethodView):
                 topo_image_order, line_path_order = _primary_topo_sort_subqueries()
                 # UI asc/desc is inverted vs topo guide order (lower order_index = later in list).
                 topo_sort_direction = "desc" if order_direction == "asc" else "asc"
+                # Topo indices are scoped per area; parent order_index breaks ties across areas/sectors/crags.
                 query = query.order_by(
+                    nullslast(getattr(Crag.order_index, topo_sort_direction)()),
+                    nullslast(getattr(Sector.order_index, topo_sort_direction)()),
+                    nullslast(getattr(Area.order_index, topo_sort_direction)()),
                     nullslast(getattr(topo_image_order, topo_sort_direction)()),
                     nullslast(getattr(line_path_order, topo_sort_direction)()),
                     Line.id,

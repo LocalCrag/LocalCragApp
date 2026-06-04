@@ -863,6 +863,73 @@ def test_successful_get_lines_order_by_topo_position_descending(client):
     assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
 
 
+def test_get_lines_order_by_topo_position_respects_area_order_within_sector(client):
+    """Topo image order_index is per-area; sector/crag lists must sort by area order first."""
+    first_area = Area.find_by_slug("dritter-block-von-links")
+    second_area = Area.find_by_slug("noch-ein-bereich")
+    template_topo = TopoImage.query.filter_by(area_id=first_area.id).first()
+    admin_id = template_topo.created_by_id
+
+    second_area_topo = TopoImage(
+        area_id=second_area.id,
+        file_id=template_topo.file_id,
+        created_by_id=admin_id,
+        order_index=0,
+        title=None,
+        description=None,
+        archived=False,
+    )
+    db.session.add(second_area_topo)
+    db.session.flush()
+
+    second_area_line = Line()
+    second_area_line.name = "Second Area Topo First"
+    second_area_line.area_id = second_area.id
+    second_area_line.grade_scale = "FB"
+    second_area_line.author_grade_value = 10
+    second_area_line.user_grade_value = 10
+    second_area_line.type = LineTypeEnum.BOULDER
+    second_area_line.starting_position = StartingPositionEnum.SIT
+    db.session.add(second_area_line)
+    db.session.flush()
+
+    db.session.add(
+        LinePath(
+            topo_image_id=second_area_topo.id,
+            line_id=second_area_line.id,
+            created_by_id=admin_id,
+            order_index=0,
+            order_index_for_line=0,
+            path=[1.0, 1.0, 2.0, 2.0],
+        )
+    )
+    db.session.commit()
+
+    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        second_area_line.slug,
+        "treppe",
+        "super-spreader",
+    ]
+
+    rv = client.get("/api/lines?crag_slug=brione&order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        second_area_line.slug,
+        "treppe",
+        "super-spreader",
+    ]
+
+    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=desc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        "super-spreader",
+        "treppe",
+        second_area_line.slug,
+    ]
+
+
 def test_get_lines_order_by_topo_position_lines_without_paths_last(client):
     template = Line.find_by_slug("super-spreader")
     line_without_paths = Line()
