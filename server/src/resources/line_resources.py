@@ -133,6 +133,7 @@ class GetLines(MethodView):
             "name",
             "rating",
             "ascent_count",
+            "time_created",
             "topo_position",
             None,
         ] or order_direction not in [
