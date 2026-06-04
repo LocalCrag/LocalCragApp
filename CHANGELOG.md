@@ -1,3 +1,10 @@
+## [1.40.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.40.0...v1.40.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* **topo:** add missing crag, sector and area tiebreakers for ordering lines by topo image position ([#1123](https://github.com/LocalCrag/LocalCragApp/issues/1123)) ([edb1068](https://github.com/LocalCrag/LocalCragApp/commit/edb1068ca7da997054d520ed1ef6a092fc51824b))
+
 # [1.40.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.39.0...v1.40.0) (2026-06-04)
 
 
