@@ -3,6 +3,10 @@
     {
       "key": "lineFilters",
       "type": "FEATURE"
+    },
+    {
+      "key": "newOrderOptions",
+      "type": "FEATURE"
     }
   ]
 }

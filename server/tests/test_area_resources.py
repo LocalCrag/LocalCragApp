@@ -171,6 +171,8 @@ def test_successful_get_areas(client):
             assert r["portraitImage"] is None
         assert r["closed"] == a.closed
         assert r["closedReason"] == a.closed_reason
+        assert r["lineCount"] == a.line_count
+        assert r["ascentCount"] == a.ascent_count
 
 
 def test_successful_get_area(client):

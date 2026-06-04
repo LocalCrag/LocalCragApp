@@ -19,6 +19,7 @@ export class Area extends IsClosable(AbstractModel) {
   slug: string;
   portraitImage: File;
   orderIndex: number;
+  lineCount: number;
   ascentCount: number;
   secret: boolean;
   mapMarkers: MapMarker[];
@@ -49,6 +50,7 @@ export class Area extends IsClosable(AbstractModel) {
       ? File.deserialize(payload.portraitImage)
       : null;
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
+    area.lineCount = payload.lineCount;
     area.ascentCount = payload.ascentCount;
     area.secret = payload.secret;
     area.mapMarkers = payload.mapMarkers

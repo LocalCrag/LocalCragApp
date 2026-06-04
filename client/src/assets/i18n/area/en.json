@@ -1,5 +1,6 @@
 {
   "areaList.noAreasFoundEmptyMessage": "No areas found",
+  "areaList.orderByLabel": "Sort by:",
   "areaList.newAreaButtonLabel": "New area",
   "areaList.reorderAreasButtonLabel": "Reorder areas",
   "area.gradeDistribution": "Grade distribution",

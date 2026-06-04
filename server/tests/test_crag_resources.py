@@ -42,6 +42,7 @@ def test_successful_create_crag(client, moderator_token):
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["portraitImage"]["id"] == any_file_id
     assert res["id"] is not None
+    assert res["lineCount"] == 0
     assert res["ascentCount"] == 0
     assert res["secret"] is False
     assert res["closed"] is False
@@ -90,6 +91,8 @@ def test_successful_get_crags(client):
         assert r["portraitImage"] is None or r["portraitImage"]["id"] == crag.portrait_image_id
         assert r["closed"] == crag.closed
         assert r["closedReason"] == crag.closed_reason
+        assert r["lineCount"] == crag.line_count
+        assert r["ascentCount"] == crag.ascent_count
 
 
 def test_successful_get_crag(client):

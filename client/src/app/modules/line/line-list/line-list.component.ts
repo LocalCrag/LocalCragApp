@@ -447,12 +447,20 @@ export class LineListComponent implements OnInit {
         value: 'name',
       },
       {
+        label: this.translocoService.translate(marker('orderByTopoPosition')),
+        value: 'topo_position',
+      },
+      {
         label: this.translocoService.translate(marker('orderByRating')),
         value: 'rating',
       },
       {
         label: this.translocoService.translate(marker('orderByAscentCount')),
         value: 'ascent_count',
+      },
+      {
+        label: this.translocoService.translate(marker('orderByTimeCreated')),
+        value: 'time_created',
       },
     ];
     this.orderKey = this.orderOptions[0];

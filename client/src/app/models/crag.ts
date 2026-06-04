@@ -21,6 +21,7 @@ export class Crag extends IsClosable(AbstractModel) {
   portraitImage: File;
   orderIndex: number;
   sectors: Sector[];
+  lineCount: number;
   ascentCount: number;
   routerLink: string | null;
   secret: boolean;
@@ -53,6 +54,7 @@ export class Crag extends IsClosable(AbstractModel) {
     crag.sectors = payload.sectors
       ? payload.sectors.map(Sector.deserialize)
       : null;
+    crag.lineCount = payload.lineCount;
     crag.ascentCount = payload.ascentCount;
     crag.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
