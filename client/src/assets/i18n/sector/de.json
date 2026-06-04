@@ -1,5 +1,6 @@
 {
   "sectorList.noSectorsFoundEmptyMessage": "Keine Sektoren gefunden",
+  "sectorList.orderByLabel": "Sortieren nach:",
   "sectorList.newSectorButtonLabel": "Neuer Sektor",
   "sectorList.reorderSectorsButtonLabel": "Sektoren ordnen",
   "sector.gradeDistribution": "Gradverteilung",

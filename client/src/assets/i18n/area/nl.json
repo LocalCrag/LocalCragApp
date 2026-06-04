@@ -1,5 +1,6 @@
 {
   "areaList.noAreasFoundEmptyMessage": "Geen klimwand gevonden",
+  "areaList.orderByLabel": "Sorteren op:",
   "areaList.newAreaButtonLabel": "Nieuwe klimwand",
   "areaList.reorderAreasButtonLabel": "Klimwanden herschikken",
   "area.gradeDistribution": "Graadverdeling",

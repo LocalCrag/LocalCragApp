@@ -1,5 +1,6 @@
 {
   "cragList.noCragsFoundEmptyMessage": "Keine Gebiete gefunden",
+  "cragList.orderByLabel": "Sortieren nach:",
   "cragList.newCragButtonLabel": "Neues Gebiet",
   "cragList.reorderCragsButtonLabel": "Gebiete ordnen",
   "crag.gradeDistribution": "Gradverteilung",

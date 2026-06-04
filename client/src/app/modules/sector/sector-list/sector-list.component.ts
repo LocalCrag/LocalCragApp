@@ -8,8 +8,14 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
+import {
+  buildTopoListOrderDirectionOptions,
+  buildTopoListOrderOptions,
+  topoListSortFieldAndOrder,
+  TopoListSortSelectOption,
+} from '../../../utility/topo-list-sort';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DataView } from 'primeng/dataview';
@@ -61,8 +67,10 @@ export class SectorListComponent implements OnInit {
   public sectors: Sector[];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
-  public sortOptions: SelectItem[];
-  public sortKey: SelectItem;
+  public orderOptions: TopoListSortSelectOption[];
+  public orderKey: TopoListSortSelectOption;
+  public orderDirectionOptions: TopoListSortSelectOption[];
+  public orderDirectionKey: TopoListSortSelectOption;
   public sortOrder: number;
   public sortField: string;
   public isMobile$: Observable<boolean>;
@@ -98,46 +106,13 @@ export class SectorListComponent implements OnInit {
       ([sectors]) => {
         this.sectors = sectors;
         this.loading = LoadingState.DEFAULT;
-        this.sortOptions = [
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-            label: this.translocoService.translate(marker('sortAscending')),
-            value: '!orderIndex',
-          },
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN,
-            label: this.translocoService.translate(marker('sortDescending')),
-            value: 'orderIndex',
-          },
-          {
-            icon: PrimeIcons.SORT_ALPHA_DOWN,
-            label: this.translocoService.translate(marker('sortAZ')),
-            value: '!name',
-          },
-          {
-            icon: 'pi pi-sort-alpha-down-alt',
-            label: this.translocoService.translate(marker('sortZA')),
-            value: 'name',
-          },
-        ];
-        this.sortKey = this.sortOptions[0];
+        this.initSortControls();
       },
     );
   }
 
-  /**
-   * Sets the sort field and order.
-   * @param event Sort change event.
-   */
-  onSortChange(event: any) {
-    const value = event.value.value;
-    if (value.indexOf('!') === 0) {
-      this.sortOrder = 1;
-      this.sortField = value.substring(1, value.length);
-    } else {
-      this.sortOrder = -1;
-      this.sortField = value;
-    }
+  onSortControlsChange() {
+    this.applySort();
   }
 
   /**
@@ -163,5 +138,27 @@ export class SectorListComponent implements OnInit {
     this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
+  }
+
+  private initSortControls() {
+    this.orderOptions = buildTopoListOrderOptions(this.translocoService);
+    this.orderDirectionOptions = buildTopoListOrderDirectionOptions(
+      this.translocoService,
+    );
+    this.orderKey = this.orderOptions[0];
+    this.orderDirectionKey = this.orderDirectionOptions[1];
+    this.applySort();
+  }
+
+  private applySort() {
+    if (!this.orderKey || !this.orderDirectionKey) {
+      return;
+    }
+    const { sortField, sortOrder } = topoListSortFieldAndOrder(
+      this.orderKey,
+      this.orderDirectionKey,
+    );
+    this.sortField = sortField;
+    this.sortOrder = sortOrder;
   }
 }

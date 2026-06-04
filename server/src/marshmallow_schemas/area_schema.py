@@ -20,6 +20,7 @@ class AreaSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     shortDescription = fields.String(attribute="short_description")
     portraitImage = fields.Nested(file_schema, attribute="portrait_image")
     orderIndex = fields.Int(attribute="order_index")
+    lineCount = fields.Integer(attribute="line_count")
     ascentCount = fields.Integer(attribute="ascent_count")
     secret = fields.Boolean()
 

@@ -1,5 +1,6 @@
 {
   "sectorList.noSectorsFoundEmptyMessage": "Nessun settore trovato",
+  "sectorList.orderByLabel": "Ordina per:",
   "sectorList.newSectorButtonLabel": "Nuovo settore",
   "sectorList.reorderSectorsButtonLabel": "Ordina settori",
   "sector.gradeDistribution": "Ripartizione dei gradi",
