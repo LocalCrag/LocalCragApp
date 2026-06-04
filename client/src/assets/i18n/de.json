@@ -307,7 +307,7 @@
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel0": "Region -> Gebiet -> Sektor -> Bereich",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel1": "Region -> Sektor -> Bereich",
   "instanceSettings.instanceSettingsForm.skippedHierarchicalLayersItemLabel2": "Region -> Bereich",
-  "instanceSettings.instanceSettingsForm.faDefaultFormat": "Datums Standard-Format für Erstbegehungen / Beschraubungen",
+  "instanceSettings.instanceSettingsForm.faDefaultFormat": "Datums Standard-Format für Erstbegehungen",
   "instanceSettings.instanceSettingsForm.faDefaultFormatTooltip": "Im Hallenmodus wird das Datumsformat als Standardeinstellung empfohlen. Das Format ist im Formular der jeweiligen Linie individuell anpassbar.",
   "instanceSettings.instanceSettingsForm.YEAR": "Jahr",
   "instanceSettings.instanceSettingsForm.DATE": "Datum",
