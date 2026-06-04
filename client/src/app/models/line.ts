@@ -38,6 +38,8 @@ export class Line extends IsClosable(AbstractModel) {
   faYear: number;
   faDate: Date;
   faName: string;
+  routesetter: string;
+  setDate: Date;
   startingPosition: StartingPosition;
   secret: boolean;
   archived?: boolean;
@@ -119,6 +121,10 @@ export class Line extends IsClosable(AbstractModel) {
       ? parseLocalCalendarDate(payload.faDate)
       : null;
     line.faName = payload.faName;
+    line.routesetter = payload.routesetter;
+    line.setDate = payload.setDate
+      ? parseLocalCalendarDate(payload.setDate)
+      : null;
     line.startingPosition = payload.startingPosition;
     line.secret = payload.secret;
     line.archived = payload.archived;
@@ -195,6 +201,8 @@ export class Line extends IsClosable(AbstractModel) {
         faYear: line.faYear,
         faDate: line.faDate ? formatLocalCalendarDate(line.faDate) : null,
         faName: line.faName ? line.faName : null,
+        routesetter: line.routesetter ? line.routesetter : null,
+        setDate: line.setDate ? formatLocalCalendarDate(line.setDate) : null,
         startingPosition: line.startingPosition,
         secret: line.secret,
 

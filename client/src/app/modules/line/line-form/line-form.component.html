@@ -337,6 +337,42 @@
             />
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="routesetter">{{
+              t("lineRoutesetterLabel")
+            }}</label>
+            <input
+              id="routesetter"
+              type="text"
+              pInputText
+              formControlName="routesetter"
+              placeholder="{{ t('lineRoutesetterPlaceholder') }}"
+              lcFormControl
+              data-cy="line-form-routesetter"
+            />
+            <small class="lc-error" *lcIfError="'maxlength'">{{
+              t("maxlength120")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label" for="set-date">{{
+              t("lineSetDateLabel")
+            }}</label>
+            <p-date-picker
+              id="set-date"
+              formControlName="setDate"
+              view="date"
+              dateFormat="dd.mm.yy"
+              inputId="setDate"
+              lcFormControl
+              [maxDate]="today"
+              [readonlyInput]="true"
+              data-cy="line-form-setDate"
+            ></p-date-picker>
+            <small class="lc-error" *lcIfError="'dateInFuture'">{{
+              t("dateInFutureValidationError")
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("linePropertiesLabel") }}</label>
             <div class="flex flex-column gap-2">
               <div class="flex">

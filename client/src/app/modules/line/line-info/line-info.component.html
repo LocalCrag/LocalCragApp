@@ -92,6 +92,17 @@
             }
           </div>
         }
+        @if (line.routesetter || line.setDate) {
+          <div class="routesetter">
+            {{ t("routesetter") }}
+            @if (line.routesetter) {
+              <span>{{ line.routesetter }}</span>
+            }
+            @if (line.setDate) {
+              <span>{{ line.setDate | date }}</span>
+            }
+          </div>
+        }
         <lc-archive-button
           [line]="line"
           [showLabel]="true"

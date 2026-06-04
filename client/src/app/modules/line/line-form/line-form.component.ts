@@ -331,6 +331,8 @@ export class LineFormComponent implements OnInit {
           faYear: [null, [yearOfDateNotInFutureValidator()]],
           faDate: [null, [dateNotInFutureValidator()]],
           faName: [null, [Validators.maxLength(120)]],
+          routesetter: [null, [Validators.maxLength(120)]],
+          setDate: [null, [dateNotInFutureValidator()]],
           startingPosition: [
             instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
             [Validators.required],
@@ -437,6 +439,8 @@ export class LineFormComponent implements OnInit {
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faDate: this.line.faDate,
       faName: this.line.faName,
+      routesetter: this.line.routesetter,
+      setDate: this.line.setDate,
       startingPosition: this.line.startingPosition,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
@@ -521,6 +525,8 @@ export class LineFormComponent implements OnInit {
           ? this.lineForm.get('faDate').value
           : null;
       line.faName = this.lineForm.get('faName').value;
+      line.routesetter = this.lineForm.get('routesetter').value;
+      line.setDate = this.lineForm.get('setDate').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;

@@ -1,6 +1,7 @@
 @use "../../../styles/media-queries" as m;
 
-.fa {
+.fa,
+.routesetter {
   font-size: 11px;
 
   span:nth-of-type(n + 2) {

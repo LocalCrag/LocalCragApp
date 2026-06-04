@@ -47,6 +47,8 @@ class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     faYear = fields.Integer(attribute="fa_year")
     faDate = fields.Date(attribute="fa_date")
     faName = fields.String(attribute="fa_name")
+    routesetter = fields.String()
+    setDate = fields.Date(attribute="set_date")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     secret = fields.Boolean()
     archived = fields.Boolean()
