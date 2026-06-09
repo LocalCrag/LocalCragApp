@@ -12,33 +12,43 @@
     </ng-template>
     <ng-template #header>
       <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <p-select
-          [options]="sortOptions"
-          [(ngModel)]="sortKey"
-          optionLabel="label"
-          (onChange)="onSortChange($event)"
-          [disabled]="loading === loadingStates.LOADING"
-          styleClass="md:mb-0"
-        >
-          <ng-template #selectedItem>
-            @if (sortKey) {
-              <div class="flex align-items-center gap-2">
-                @if (sortKey.icon) {
-                  <i [class]="sortKey.icon"></i>
-                }
-                <div>{{ sortKey.label }}</div>
-              </div>
-            }
-          </ng-template>
-          <ng-template let-option #item>
-            <div class="flex align-items-center gap-2">
-              @if (option.icon) {
-                <i [class]="option.icon"></i>
+        <div class="flex flex-wrap align-items-center gap-2">
+          {{ t("orderByLabel") }}
+          <p-select
+            [options]="orderOptions"
+            [(ngModel)]="orderKey"
+            optionLabel="label"
+            (onChange)="onSortControlsChange()"
+            [disabled]="loading === loadingStates.LOADING"
+            styleClass="md:mb-0"
+          >
+            <ng-template #selectedItem>
+              @if (orderKey) {
+                <div>{{ orderKey.label }}</div>
               }
+            </ng-template>
+            <ng-template let-option #item>
               <div>{{ option.label }}</div>
-            </div>
-          </ng-template>
-        </p-select>
+            </ng-template>
+          </p-select>
+          <p-select
+            [options]="orderDirectionOptions"
+            [(ngModel)]="orderDirectionKey"
+            optionLabel="label"
+            [disabled]="loading === loadingStates.LOADING"
+            (onChange)="onSortControlsChange()"
+            styleClass="md:mb-0"
+          >
+            <ng-template #selectedItem>
+              @if (orderDirectionKey) {
+                <div>{{ orderDirectionKey.label }}</div>
+              }
+            </ng-template>
+            <ng-template let-option #item>
+              <div>{{ option.label }}</div>
+            </ng-template>
+          </p-select>
+        </div>
         <div class="flex justify-content-start sm:justify-content-end gap-3">
           <p-button
             label="{{ t('newSectorButtonLabel') }}"

@@ -1,3 +1,19 @@
+## [1.40.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.40.0...v1.40.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* **topo:** add missing crag, sector and area tiebreakers for ordering lines by topo image position ([#1123](https://github.com/LocalCrag/LocalCragApp/issues/1123)) ([edb1068](https://github.com/LocalCrag/LocalCragApp/commit/edb1068ca7da997054d520ed1ef6a092fc51824b))
+
+# [1.40.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.39.0...v1.40.0) (2026-06-04)
+
+
+### Features
+
+* **topo:** add option to order lines by topo image / block ([#1121](https://github.com/LocalCrag/LocalCragApp/issues/1121)) ([db6f344](https://github.com/LocalCrag/LocalCragApp/commit/db6f344781161e14ab0ab04819ffc8428ed51404)), closes [#383](https://github.com/LocalCrag/LocalCragApp/issues/383)
+* **topo:** add option to sort lines by creation date ([#1120](https://github.com/LocalCrag/LocalCragApp/issues/1120)) ([6278e47](https://github.com/LocalCrag/LocalCragApp/commit/6278e475060f39813925603e5de9b4459e5c6ee7)), closes [#594](https://github.com/LocalCrag/LocalCragApp/issues/594)
+* **topo:** new order options for crags, sectors and areas ([#1122](https://github.com/LocalCrag/LocalCragApp/issues/1122)) ([b059ea6](https://github.com/LocalCrag/LocalCragApp/commit/b059ea698ab4e91e15544847c32ce72f25c8f236)), closes [#32](https://github.com/LocalCrag/LocalCragApp/issues/32)
+
 # [1.39.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.38.2...v1.39.0) (2026-06-03)
 
 

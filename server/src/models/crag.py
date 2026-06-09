@@ -42,6 +42,18 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
     blocweather_url = db.Column(db.String(255), nullable=True)
 
     @hybrid_property
+    def line_count(self):
+        query = (
+            db.session.query(func.count(Line.id))
+            .join(Area, Line.area_id == Area.id)
+            .join(Sector, Area.sector_id == Sector.id)
+            .where(Sector.crag_id == self.id)
+        )
+        if not get_show_secret():
+            query = query.where(Line.secret.is_(False))
+        return query.scalar()
+
+    @hybrid_property
     def ascent_count(self):
         query = (
             db.session.query(func.count(Ascent.id))

@@ -23,6 +23,7 @@ export class Sector extends IsClosable(AbstractModel) {
   rules: string;
   areas: Area[];
   crag: Crag | null;
+  lineCount: number;
   ascentCount: number;
   routerLink: string | null;
   secret: boolean;
@@ -54,6 +55,7 @@ export class Sector extends IsClosable(AbstractModel) {
       : null;
     sector.areas = payload.areas ? payload.areas.map(Area.deserialize) : null;
     sector.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
+    sector.lineCount = payload.lineCount;
     sector.ascentCount = payload.ascentCount;
     sector.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)

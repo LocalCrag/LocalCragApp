@@ -21,6 +21,7 @@ class CragSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     shortDescription = fields.String(attribute="short_description")
     slug = fields.String()
     portraitImage = fields.Nested(file_schema, attribute="portrait_image")
+    lineCount = fields.Integer(attribute="line_count")
     ascentCount = fields.Integer(attribute="ascent_count")
     secret = fields.Boolean()
 

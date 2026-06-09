@@ -117,6 +117,8 @@ def test_successful_get_sectors(client):
         assert r["secret"] == s.secret
         assert r["closed"] == s.closed
         assert r["closedReason"] == s.closed_reason
+        assert r["lineCount"] == s.line_count
+        assert r["ascentCount"] == s.ascent_count
 
 
 def test_successful_get_sector(client):

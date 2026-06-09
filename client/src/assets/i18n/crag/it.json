@@ -1,5 +1,6 @@
 {
   "cragList.noCragsFoundEmptyMessage": "Nessuna zona trovata",
+  "cragList.orderByLabel": "Ordina per:",
   "cragList.newCragButtonLabel": "Nuova zona",
   "cragList.reorderCragsButtonLabel": "Ordina zone",
   "crag.gradeDistribution": "Ripartizione dei gradi",

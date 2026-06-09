@@ -1,5 +1,11 @@
+import datetime
+
+import pytz
+
 from extensions import db
 from models.area import Area
+from models.enums.line_type_enum import LineTypeEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.line import Line
 from models.line_path import LinePath
@@ -815,6 +821,138 @@ def test_successful_get_lines_order_by_name_ascending_regression(client):
     assert rv.status_code == 200
     res = rv.json["items"]
     assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
+def test_successful_get_lines_order_by_time_created_ascending(client):
+    treppe = Line.find_by_slug("treppe")
+    super_spreader = Line.find_by_slug("super-spreader")
+    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
+    db.session.commit()
+
+    rv = client.get("/api/lines?order_by=time_created&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+
+
+def test_successful_get_lines_order_by_time_created_descending(client):
+    treppe = Line.find_by_slug("treppe")
+    super_spreader = Line.find_by_slug("super-spreader")
+    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
+    db.session.commit()
+
+    rv = client.get("/api/lines?order_by=time_created&order_direction=desc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
+def test_successful_get_lines_order_by_topo_position_ascending(client):
+    rv = client.get("/api/lines?order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+
+
+def test_successful_get_lines_order_by_topo_position_descending(client):
+    rv = client.get("/api/lines?order_by=topo_position&order_direction=desc")
+    assert rv.status_code == 200
+    res = rv.json["items"]
+    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+
+
+def test_get_lines_order_by_topo_position_respects_area_order_within_sector(client):
+    """Topo image order_index is per-area; sector/crag lists must sort by area order first."""
+    first_area = Area.find_by_slug("dritter-block-von-links")
+    second_area = Area.find_by_slug("noch-ein-bereich")
+    template_topo = TopoImage.query.filter_by(area_id=first_area.id).first()
+    admin_id = template_topo.created_by_id
+
+    second_area_topo = TopoImage(
+        area_id=second_area.id,
+        file_id=template_topo.file_id,
+        created_by_id=admin_id,
+        order_index=0,
+        title=None,
+        description=None,
+        archived=False,
+    )
+    db.session.add(second_area_topo)
+    db.session.flush()
+
+    second_area_line = Line()
+    second_area_line.name = "Second Area Topo First"
+    second_area_line.area_id = second_area.id
+    second_area_line.grade_scale = "FB"
+    second_area_line.author_grade_value = 10
+    second_area_line.user_grade_value = 10
+    second_area_line.type = LineTypeEnum.BOULDER
+    second_area_line.starting_position = StartingPositionEnum.SIT
+    db.session.add(second_area_line)
+    db.session.flush()
+
+    db.session.add(
+        LinePath(
+            topo_image_id=second_area_topo.id,
+            line_id=second_area_line.id,
+            created_by_id=admin_id,
+            order_index=0,
+            order_index_for_line=0,
+            path=[1.0, 1.0, 2.0, 2.0],
+        )
+    )
+    db.session.commit()
+
+    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        second_area_line.slug,
+        "treppe",
+        "super-spreader",
+    ]
+
+    rv = client.get("/api/lines?crag_slug=brione&order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        second_area_line.slug,
+        "treppe",
+        "super-spreader",
+    ]
+
+    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=desc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]] == [
+        "super-spreader",
+        "treppe",
+        second_area_line.slug,
+    ]
+
+
+def test_get_lines_order_by_topo_position_lines_without_paths_last(client):
+    template = Line.find_by_slug("super-spreader")
+    line_without_paths = Line()
+    line_without_paths.name = "No Topo Line"
+    line_without_paths.area_id = template.area_id
+    line_without_paths.grade_scale = "FB"
+    line_without_paths.author_grade_value = 10
+    line_without_paths.user_grade_value = 10
+    line_without_paths.type = LineTypeEnum.BOULDER
+    line_without_paths.starting_position = StartingPositionEnum.SIT
+    db.session.add(line_without_paths)
+    db.session.commit()
+
+    rv = client.get("/api/lines?order_by=topo_position&order_direction=asc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]][-1] == line_without_paths.slug
+
+    rv = client.get("/api/lines?order_by=topo_position&order_direction=desc")
+    assert rv.status_code == 200
+    assert [line["slug"] for line in rv.json["items"]][-1] == line_without_paths.slug
+
+    db.session.delete(line_without_paths)
+    db.session.commit()
 
 
 def test_successful_get_line(client):

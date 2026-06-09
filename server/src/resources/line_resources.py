@@ -21,6 +21,7 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.line_path import LinePath
 from models.sector import Sector
+from models.topo_image import TopoImage
 from models.user import User
 from util.line_list_query_args import parse_line_list_filters
 from util.line_list_sql_filters import apply_get_lines_advanced_filters
@@ -72,6 +73,31 @@ class MoveLine(MethodView):
         return line_search_schema.dump(line), 200
 
 
+def _primary_topo_sort_subqueries():
+    """
+    Sort keys for the line's primary topo path (lowest order_index_for_line), matching client topo order.
+    """
+    topo_image_order = (
+        select(TopoImage.order_index)
+        .select_from(LinePath)
+        .join(TopoImage, LinePath.topo_image_id == TopoImage.id)
+        .where(LinePath.line_id == Line.id)
+        .order_by(LinePath.order_index_for_line.asc())
+        .limit(1)
+        .correlate(Line)
+        .scalar_subquery()
+    )
+    line_path_order = (
+        select(LinePath.order_index)
+        .where(LinePath.line_id == Line.id)
+        .order_by(LinePath.order_index_for_line.asc())
+        .limit(1)
+        .correlate(Line)
+        .scalar_subquery()
+    )
+    return topo_image_order, line_path_order
+
+
 class GetLinesForLineEditor(MethodView):
 
     def get(self, area_slug):
@@ -102,7 +128,15 @@ class GetLines(MethodView):
         order_direction = request.args.get("order_direction") or "asc"
         archived = request.args.get("archived", False, type=bool)  # default: hide archived lines
 
-        if order_by not in ["grade_value", "name", "rating", "ascent_count", None] or order_direction not in [
+        if order_by not in [
+            "grade_value",
+            "name",
+            "rating",
+            "ascent_count",
+            "time_created",
+            "topo_position",
+            None,
+        ] or order_direction not in [
             "asc",
             "desc",
         ]:
@@ -130,18 +164,32 @@ class GetLines(MethodView):
 
         # Handle order
         if order_by and order_direction:
-            if order_by == "grade_value":
-                order_by = "user_grade_value" if instance_settings.display_user_grades else "author_grade_value"
-            elif order_by == "rating":
-                order_by = "user_rating" if instance_settings.display_user_ratings else "author_rating"
-            if order_by == "ascent_count":
-                order_attribute = select(func.count(Ascent.id)).where(Ascent.line_id == Line.id).scalar_subquery()
+            if order_by == "topo_position":
+                topo_image_order, line_path_order = _primary_topo_sort_subqueries()
+                # UI asc/desc is inverted vs topo guide order (lower order_index = later in list).
+                topo_sort_direction = "desc" if order_direction == "asc" else "asc"
+                # Topo indices are scoped per area; parent order_index breaks ties across areas/sectors/crags.
+                query = query.order_by(
+                    nullslast(getattr(Crag.order_index, topo_sort_direction)()),
+                    nullslast(getattr(Sector.order_index, topo_sort_direction)()),
+                    nullslast(getattr(Area.order_index, topo_sort_direction)()),
+                    nullslast(getattr(topo_image_order, topo_sort_direction)()),
+                    nullslast(getattr(line_path_order, topo_sort_direction)()),
+                    Line.id,
+                )
             else:
-                order_attribute = getattr(Line, order_by)
-            if order_by == "name":
-                order_attribute = func.lower(order_attribute)
-            # Order by Line.id as a tie-breaker to prevent duplicate entries in paginate
-            query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
+                if order_by == "grade_value":
+                    order_by = "user_grade_value" if instance_settings.display_user_grades else "author_grade_value"
+                elif order_by == "rating":
+                    order_by = "user_rating" if instance_settings.display_user_ratings else "author_rating"
+                if order_by == "ascent_count":
+                    order_attribute = select(func.count(Ascent.id)).where(Ascent.line_id == Line.id).scalar_subquery()
+                else:
+                    order_attribute = getattr(Line, order_by)
+                if order_by == "name":
+                    order_attribute = func.lower(order_attribute)
+                # Order by Line.id as a tie-breaker to prevent duplicate entries in paginate
+                query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
 
