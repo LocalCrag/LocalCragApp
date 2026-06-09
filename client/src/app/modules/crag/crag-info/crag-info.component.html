@@ -1,7 +1,9 @@
 <ng-container *transloco="let t; read: 'crag.crag'">
   @if (crag) {
     @if (crag.closed) {
-      <lc-closed-spot-alert [reason]="crag.closedReason"></lc-closed-spot-alert>
+      <lc-closed-spot-alert
+        [reason]="crag.closedReason"
+      ></lc-closed-spot-alert>
     }
     <lc-current-conditions
       [slug]="crag.slug"

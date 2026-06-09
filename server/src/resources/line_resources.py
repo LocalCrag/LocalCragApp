@@ -29,6 +29,10 @@ from util.propagating_boolean_attrs import (
     set_line_parents_false,
     update_line_propagating_boolean_attr,
 )
+from util.scheduled_closure import (
+    apply_closable_configuration,
+    materialize_closures_now,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
@@ -59,17 +63,15 @@ class MoveLine(MethodView):
 
         line.area_id = target_area_id
 
-        # Secret/closed handling:
-        # - If parent (target area) is secret/closed -> child must be secret/closed.
-        # - If parent is not secret/closed -> keep child as-is.
+        # Secret handling: a public line moved into a secret area becomes secret.
+        # Closure flags are recomputed after commit via materialize_closures_now().
         target_area: Area = Area.find_by_id(target_area_id)
         if target_area.secret and not line.secret:
             update_line_propagating_boolean_attr(line, True, "secret")
-        if target_area.closed and not line.closed:
-            update_line_propagating_boolean_attr(line, True, "closed")
 
         db.session.add(line)
         db.session.commit()
+        materialize_closures_now()
         return line_search_schema.dump(line), 200
 
 
@@ -282,15 +284,12 @@ class CreateLine(MethodView):
         new_line.area_id = area_id
         new_line.created_by_id = created_by.id
 
-        new_line.closed = line_data["closed"]
-        new_line.closed_reason = line_data["closedReason"]
+        apply_closable_configuration(new_line, line_data, "line_id")
 
         if not new_line.secret:
             set_line_parents_false(new_line, "secret")
-        if not new_line.closed:
-            set_line_parents_false(new_line, "closed")
-        db.session.add(new_line)
         db.session.commit()
+        materialize_closures_now()
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
 
@@ -330,9 +329,7 @@ class UpdateLine(MethodView):
         line.starting_position = line_data["startingPosition"]
         line.author_rating = line_data["authorRating"]
         update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
-        update_line_propagating_boolean_attr(
-            line, line_data["closed"], "closed", set_additionally={"closed_reason": line_data["closedReason"]}
-        )
+        apply_closable_configuration(line, line_data, "line_id")
 
         if line.author_grade_value >= 0:
             if line_data["faYear"] and line_data["faDate"]:
@@ -381,6 +378,7 @@ class UpdateLine(MethodView):
 
         db.session.add(line)
         db.session.commit()
+        materialize_closures_now()
 
         return line_schema.dump(line), 200
 

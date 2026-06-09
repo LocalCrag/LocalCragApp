@@ -10,8 +10,6 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -73,8 +71,6 @@ def test_successful_change_value_history(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
@@ -93,8 +89,6 @@ def test_history_respects_secret_flag(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": True,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,

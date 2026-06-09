@@ -22,8 +22,6 @@ def test_successful_create_crag(client, moderator_token):
             }
         ],
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
@@ -62,8 +60,6 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -150,8 +146,6 @@ def test_successful_edit_crag(client, moderator_token):
             }
         ],
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,

@@ -57,12 +57,14 @@ import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { environment } from '../../../../environments/environment';
+import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
+import { ClosureState } from '../../../models/closure-state';
+import { ClosureStateService } from '../../../services/crud/closure-state.service';
 
 /**
  * Form component for creating and editing areas.
@@ -94,6 +96,7 @@ import { environment } from '../../../../environments/environment';
     Tooltip,
     OutdoorModeDirective,
     MoveObjectDialogComponent,
+    ScheduledClosureFormComponent,
   ],
 })
 export class AreaFormComponent implements OnInit {
@@ -111,6 +114,7 @@ export class AreaFormComponent implements OnInit {
   public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
   public parentSector: Sector;
+  public parentClosureState: ClosureState | null = null;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -126,6 +130,7 @@ export class AreaFormComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
+  private closureStateService = inject(ClosureStateService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -155,8 +160,12 @@ export class AreaFormComponent implements OnInit {
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
 
-    this.sectorsService.getSector(this.sectorSlug).subscribe((sector) => {
+    forkJoin([
+      this.sectorsService.getSector(this.sectorSlug),
+      this.closureStateService.getSectorClosureState(this.sectorSlug),
+    ]).subscribe(([sector, parentClosureState]) => {
       this.parentSector = sector;
+      this.parentClosureState = parentClosureState;
       this.buildForm();
       if (areaSlug) {
         this.editMode = true;
@@ -206,21 +215,12 @@ export class AreaFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      closed: [false],
-      closedReason: [null],
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
       blocweatherUrl: [null, [blocweatherUrlValidator]],
+      closureSchedules: [[]],
     });
-    this.areaForm
-      .get('closed')
-      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((closed) => {
-        if (!closed) {
-          this.areaForm.get('closedReason').setValue(null);
-        }
-      });
   }
 
   /**
@@ -235,12 +235,11 @@ export class AreaFormComponent implements OnInit {
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
       mapMarkers: this.area.mapMarkers,
-      closed: this.area.closed,
-      closedReason: this.area.closedReason,
       defaultBoulderScale: this.area.defaultBoulderScale,
       defaultSportScale: this.area.defaultSportScale,
       defaultTradScale: this.area.defaultTradScale,
       blocweatherUrl: this.area.blocweatherUrl,
+      closureSchedules: this.area.closureSchedules ?? [],
     });
   }
 
@@ -273,8 +272,7 @@ export class AreaFormComponent implements OnInit {
       area.portraitImage = this.areaForm.get('portraitImage').value;
       area.secret = this.areaForm.get('secret').value;
       area.mapMarkers = this.areaForm.get('mapMarkers').value;
-      area.closed = this.areaForm.get('closed').value;
-      area.closedReason = this.areaForm.get('closedReason').value;
+      area.closureSchedules = this.areaForm.get('closureSchedules').value ?? [];
       area.defaultBoulderScale = this.areaForm.get('defaultBoulderScale').value;
       area.defaultSportScale = this.areaForm.get('defaultSportScale').value;
       area.defaultTradScale = this.areaForm.get('defaultTradScale').value;

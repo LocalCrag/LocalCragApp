@@ -77,7 +77,7 @@
   "lineForm.secretLabel": "Verborgen",
   "lineForm.closedLabel": "Gesloten",
   "lineForm.aPublicLineWillSetParentsToPublic": "Het maken van een zichtbare route binnen een verborgen gebied stelt het gebied, de bijbehorende sector en wand automatisch in op zichtbaar, anders kun je niet naar de route navigeren. Andere reeds bestaande routes, gebieden en sectoren blijven verborgen.",
-  "lineForm.openingAClosedLineWillSetParentsToOpen": "Het openen van een gesloten route binnen een gesloten gebied stelt het gebied, de bijbehorende sector en wand automatisch in op open. Andere reeds bestaande routes, gebieden en sectoren blijven gesloten.",
+  "lineForm.closedBecauseParentIsClosed": "Deze route is gesloten omdat de bovenliggende klimwand momenteel gesloten is.",
   "lineForm.closedReasonLabel": "Reden voor sluiting",
   "lineForm.closedReasonPlaceholder": "bijv. vogelnest...",
   "lineForm.createLineButtonLabel": "Route aanmaken",

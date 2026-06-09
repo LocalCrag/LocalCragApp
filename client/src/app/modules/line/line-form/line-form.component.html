@@ -698,18 +698,6 @@
                   t("secretLabel")
                 }}</label>
               </div>
-              <div class="flex">
-                <p-checkbox
-                  inputId="closed"
-                  name="closed"
-                  [binary]="true"
-                  formControlName="closed"
-                  lcFormControl
-                ></p-checkbox>
-                <label [for]="'closed'" class="ml-2">{{
-                  t("closedLabel")
-                }}</label>
-              </div>
             </div>
           </div>
           @if (parentArea?.secret && !lineForm.get("secret").value) {
@@ -717,25 +705,14 @@
               {{ t("aPublicLineWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentArea?.closed && !lineForm.get("closed").value) {
-            <p-message severity="warn" icon="pi pi-info-circle">
-              {{ t("openingAClosedLineWillSetParentsToOpen") }}
+          <lc-scheduled-closure-form
+            formControlName="closureSchedules"
+            lcFormControl
+          />
+          @if (parentClosureState?.closed) {
+            <p-message severity="info" icon="pi pi-info-circle">
+              {{ t("closedBecauseParentIsClosed") }}
             </p-message>
-          }
-          @if (lineForm.get("closed").value) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
-              <input
-                id="closedReason"
-                type="text"
-                pInputText
-                formControlName="closedReason"
-                placeholder="{{ t('closedReasonPlaceholder') }}"
-                lcFormControl
-              />
-            </div>
           }
         </form>
         <div class="form-actions">

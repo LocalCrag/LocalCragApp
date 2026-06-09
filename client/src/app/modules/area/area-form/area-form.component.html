@@ -201,34 +201,16 @@
                   t("secretLabel")
                 }}</label>
               </div>
-              <div class="flex">
-                <p-checkbox
-                  inputId="closed"
-                  name="closed"
-                  [binary]="true"
-                  formControlName="closed"
-                  lcFormControl
-                ></p-checkbox>
-                <label [for]="'closed'" class="ml-2">{{
-                  t("closedLabel")
-                }}</label>
-              </div>
             </div>
           </div>
-          @if (areaForm.get("closed").value) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
-              <input
-                id="closedReason"
-                type="text"
-                pInputText
-                formControlName="closedReason"
-                placeholder="{{ t('closedReasonPlaceholder') }}"
-                lcFormControl
-              />
-            </div>
+          <lc-scheduled-closure-form
+            formControlName="closureSchedules"
+            lcFormControl
+          />
+          @if (parentClosureState?.closed) {
+            <p-message severity="info" icon="pi pi-info-circle">
+              {{ t("closedBecauseParentIsClosed") }}
+            </p-message>
           }
           <div class="grid align-items-center">
             <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
@@ -284,11 +266,6 @@
           @if (parentSector?.secret && !areaForm.get("secret").value) {
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicAreaWillSetParentsToPublic") }}
-            </p-message>
-          }
-          @if (parentSector?.closed && !areaForm.get("closed").value) {
-            <p-message severity="warn" icon="pi pi-info-circle">
-              {{ t("openingAClosedAreaWillSetParentsToOpen") }}
             </p-message>
           }
         </form>

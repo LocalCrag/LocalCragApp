@@ -272,8 +272,6 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "lat": 12.13,
             "lng": 42.42,
             "secret": False,
-            "closed": False,
-            "closedReason": None,
             "blocweatherUrl": None,
         }
 
@@ -302,8 +300,6 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             }
         ],
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,

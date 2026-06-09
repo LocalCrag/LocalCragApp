@@ -7,7 +7,7 @@ from webargs import fields
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from util.validators import color_validator
-from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
+from webargs_schemas.closure_schedule_args import closure_schedules_field
 
 
 def validate_fa_year(year: int):
@@ -44,7 +44,7 @@ class BatchLineArgsSchema(Schema):
     faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
 
 
-class LineArgsSchema(BatchLineArgsSchema, IsClosableWebargsMixin):
+class LineArgsSchema(BatchLineArgsSchema):
     description = fields.Str(required=True, allow_none=True)
     videos = fields.List(fields.Nested(VideosArgsSchema()), required=True, allow_none=True)
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))
@@ -80,6 +80,7 @@ class LineArgsSchema(BatchLineArgsSchema, IsClosableWebargsMixin):
     compression = fields.Boolean(required=True, allow_none=False)
     arete = fields.Boolean(required=True, allow_none=False)
     mantle = fields.Boolean(required=True, allow_none=False)
+    closureSchedules = closure_schedules_field
 
 
 batch_line_args = BatchLineArgsSchema()

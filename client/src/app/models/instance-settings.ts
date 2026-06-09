@@ -31,6 +31,7 @@ export class InstanceSettings {
   rankingPastWeeks: number | null;
   disableFAInAscents: boolean;
   language: LanguageCode;
+  timezone: string;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -70,6 +71,7 @@ export class InstanceSettings {
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
     instanceSettings.disableFAInAscents = payload.disableFAInAscents;
     instanceSettings.language = payload.language;
+    instanceSettings.timezone = payload.timezone ?? 'UTC';
     return instanceSettings;
   }
 
@@ -107,6 +109,7 @@ export class InstanceSettings {
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
       disableFAInAscents: instanceSettings.disableFAInAscents,
       language: instanceSettings.language,
+      timezone: instanceSettings.timezone,
     };
   }
 }

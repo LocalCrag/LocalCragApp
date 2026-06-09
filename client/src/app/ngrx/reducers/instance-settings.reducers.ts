@@ -30,6 +30,7 @@ export interface InstanceSettingsState {
   rankingPastWeeks: number | null;
   disableFAInAscents: boolean;
   language: LanguageCode;
+  timezone: string;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -57,6 +58,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   rankingPastWeeks: null,
   disableFAInAscents: false,
   language: null,
+  timezone: 'UTC',
 };
 
 const instanceSettingsReducer = createReducer(
@@ -87,6 +89,7 @@ const instanceSettingsReducer = createReducer(
     rankingPastWeeks: action.settings.rankingPastWeeks,
     disableFAInAscents: action.settings.disableFAInAscents,
     language: action.settings.language,
+    timezone: action.settings.timezone,
   })),
 );
 

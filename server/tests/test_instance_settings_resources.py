@@ -38,6 +38,7 @@ def test_successful_get_instance_settings(client):
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks
     assert res["disableFAInAscents"] == instance_settings.disable_fa_in_ascents
+    assert res["timezone"] == instance_settings.timezone
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -69,6 +70,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "rankingPastWeeks": 12,
         "disableFAInAscents": True,
         "language": "de",
+        "timezone": "Europe/Berlin",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -99,6 +101,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["rankingPastWeeks"] == 12
     assert res["disableFAInAscents"] is True
     assert res["language"] == "de"
+    assert res["timezone"] == "Europe/Berlin"
 
 
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
@@ -134,6 +137,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "rankingPastWeeks": None,
         "disableFAInAscents": False,
         "language": "en",
+        "timezone": "UTC",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
@@ -172,6 +176,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "rankingPastWeeks": 4,
         "disableFAInAscents": True,
         "language": "en",
+        "timezone": "UTC",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json

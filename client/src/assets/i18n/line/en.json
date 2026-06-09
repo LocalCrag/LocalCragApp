@@ -77,7 +77,7 @@
   "lineForm.secretLabel": "Secret",
   "lineForm.closedLabel": "Closed",
   "lineForm.aPublicLineWillSetParentsToPublic": "Creating a non-secret line within a secret area automatically sets the area, its sector and crag to non-secret, otherwise you cannot navigate to the line. Other pre-existing lines, areas and sectors remain secret.",
-  "lineForm.openingAClosedLineWillSetParentsToOpen": "Creating a non-closed line within a closed area automatically sets the area, its sector and crag to non-closed. Other pre-existing lines, areas and sectors remain closed.",
+  "lineForm.closedBecauseParentIsClosed": "This line is closed because its area is currently closed.",
   "lineForm.closedReasonLabel": "Reason for the closure",
   "lineForm.closedReasonPlaceholder": "e.g. bird nest...",
   "lineForm.createLineButtonLabel": "Create line",

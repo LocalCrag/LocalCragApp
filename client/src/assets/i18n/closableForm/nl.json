@@ -1,0 +1,19 @@
+{
+  "closableForm.closureSchedulesLabel": "Sluitingsschema's",
+  "closableForm.addSchedule": "Sluitingsschema toevoegen",
+  "closableForm.annualScheduleTitle": "Jaarlijkse sluiting",
+  "closableForm.fixedScheduleTitle": "Vaste sluiting",
+  "closableForm.permanentScheduleTitle": "Permanente sluiting",
+  "closableForm.scheduledClosureStartLabel": "Van",
+  "closableForm.scheduledClosureEndLabel": "Tot",
+  "closableForm.fixedEndBeforeStartValidationError": "De einddatum moet op of na de startdatum liggen.",
+  "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
+  "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
+  "closableForm.closedByParentSchedule": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft.",
+  "closableForm.closedByParentScheduleWithReason": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft: {{reason}}",
+  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen",
+  "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
+  "closableFormScheduleDialog.cancel": "Annuleren",
+  "closableFormScheduleDialog.save": "Opslaan"
+}

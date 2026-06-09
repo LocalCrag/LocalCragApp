@@ -73,6 +73,9 @@ import { dateNotInFutureValidator } from '../../../utility/validators/date-not-i
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
+import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
+import { ClosureState } from '../../../models/closure-state';
+import { ClosureStateService } from '../../../services/crud/closure-state.service';
 
 /**
  * Form component for lines.
@@ -109,6 +112,7 @@ import { MoveObjectDialogComponent } from '../../shared/components/move-object-d
     AsyncPipe,
     FormsModule,
     MoveObjectDialogComponent,
+    ScheduledClosureFormComponent,
   ],
 })
 export class LineFormComponent implements OnInit {
@@ -137,6 +141,7 @@ export class LineFormComponent implements OnInit {
   ];
   public today = new Date(new Date().getFullYear(), 11, 31);
   public parentArea: Area;
+  public parentClosureState: ClosureState | null = null;
   public faFormat = FaDefaultFormat.YEAR;
   public faFormats = FaDefaultFormat;
   public groupedScales: Record<LineType, Scale[]> = null;
@@ -168,6 +173,7 @@ export class LineFormComponent implements OnInit {
   private languageService = inject(LanguageService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
+  private closureStateService = inject(ClosureStateService);
 
   /**
    * Builds the form on component initialization.
@@ -182,9 +188,11 @@ export class LineFormComponent implements OnInit {
       this.cragsService.getCrag(this.cragSlug),
       this.sectorsService.getSector(this.sectorSlug),
       this.areasService.getArea(this.areaSlug),
+      this.closureStateService.getAreaClosureState(this.areaSlug),
       this.scalesService.getScales(),
-    ]).subscribe(([crag, sector, area, scales]) => {
+    ]).subscribe(([crag, sector, area, parentClosureState, scales]) => {
       this.parentArea = area;
+      this.parentClosureState = parentClosureState;
 
       this.groupedScales = {
         [LineType.BOULDER]: [],
@@ -363,8 +371,7 @@ export class LineFormComponent implements OnInit {
           arete: [false],
           mantle: [false],
           secret: [false],
-          closed: [false],
-          closedReason: [null],
+          closureSchedules: [[]],
         });
 
         this.lineForm
@@ -372,14 +379,6 @@ export class LineFormComponent implements OnInit {
           .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             this.setFormDisabledState();
-          });
-        this.lineForm
-          .get('closed')
-          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((closed) => {
-            if (!closed) {
-              this.lineForm.get('closedReason').setValue(null);
-            }
           });
       });
   }
@@ -466,8 +465,7 @@ export class LineFormComponent implements OnInit {
       arete: this.line.arete,
       mantle: this.line.mantle,
       secret: this.line.secret,
-      closed: this.line.closed,
-      closedReason: this.line.closedReason,
+      closureSchedules: this.line.closureSchedules ?? [],
     });
     this.lineForm.enable();
     this.setFormDisabledState();
@@ -550,8 +548,7 @@ export class LineFormComponent implements OnInit {
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
       line.secret = this.lineForm.get('secret').value;
-      line.closed = this.lineForm.get('closed').value;
-      line.closedReason = this.lineForm.get('closedReason').value;
+      line.closureSchedules = this.lineForm.get('closureSchedules').value ?? [];
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {

@@ -50,8 +50,12 @@ def test_create_closed_line_in_open_area(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": True,
-        "closedReason": "Missgünstige Verbandsgemeinde",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Missgünstige Verbandsgemeinde",
+            }
+        ],
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -96,8 +100,12 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
             }
         ],
         "secret": False,
-        "closed": True,
-        "closedReason": "Aggressiver Jagdpächter",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Aggressiver Jagdpächter",
+            }
+        ],
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -142,8 +150,12 @@ def test_secret_property_doesnt_change(client, moderator_token):
             }
         ],
         "secret": False,
-        "closed": True,
-        "closedReason": "Naturschutzgebiet",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Naturschutzgebiet",
+            }
+        ],
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -194,8 +206,12 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": True,
-        "closedReason": "Privatgrund",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Privatgrund",
+            }
+        ],
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)

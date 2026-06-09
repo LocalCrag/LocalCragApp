@@ -27,6 +27,10 @@ from util.propagating_boolean_attrs import (
     set_sector_parents_false,
     update_sector_propagating_boolean_attr,
 )
+from util.scheduled_closure import (
+    apply_closable_configuration,
+    materialize_closures_now,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
@@ -64,7 +68,7 @@ class MoveSector(MethodView):
         sector.crag_id = target_crag_id
         sector.order_index = Sector.find_max_order_index(target_crag_id) + 1
 
-        # Secret/closed handling (see MoveLine for rules).
+        # If the target crag is secret or closed, propagate to the moved sector and descendants.
         target_crag: Crag = Crag.find_by_id(target_crag_id)
         if target_crag.secret and not sector.secret:
             update_sector_propagating_boolean_attr(sector, True, "secret")
@@ -127,19 +131,16 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
-        new_sector.closed = sector_data["closed"]
-        new_sector.closed_reason = sector_data["closedReason"]
         new_sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         new_sector.default_sport_scale = sector_data["defaultSportScale"]
         new_sector.default_trad_scale = sector_data["defaultTradScale"]
         new_sector.blocweather_url = sector_data["blocweatherUrl"]
 
+        apply_closable_configuration(new_sector, sector_data, "sector_id")
         if not new_sector.secret:
             set_sector_parents_false(new_sector, "secret")
-        if not new_sector.closed:
-            set_sector_parents_false(new_sector, "closed")
-        db.session.add(new_sector)
         db.session.commit()
+        materialize_closures_now()
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_sector, created_by)
 
@@ -167,9 +168,7 @@ class UpdateSector(MethodView):
         sector.portrait_image_id = sector_data["portraitImage"]
         sector.rules = add_bucket_placeholders(sector_data["rules"])
         update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
-        update_sector_propagating_boolean_attr(
-            sector, sector_data["closed"], "closed", set_additionally={"closed_reason": sector_data["closedReason"]}
-        )
+        apply_closable_configuration(sector, sector_data, "sector_id")
         sector.default_boulder_scale = sector_data["defaultBoulderScale"]
         sector.default_sport_scale = sector_data["defaultSportScale"]
         sector.default_trad_scale = sector_data["defaultTradScale"]
@@ -178,6 +177,7 @@ class UpdateSector(MethodView):
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()
+        materialize_closures_now()
 
         return sector_schema.dump(sector), 200
 

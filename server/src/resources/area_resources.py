@@ -26,6 +26,10 @@ from util.propagating_boolean_attrs import (
     set_area_parents_false,
     update_area_propagating_boolean_attr,
 )
+from util.scheduled_closure import (
+    apply_closable_configuration,
+    materialize_closures_now,
+)
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
@@ -63,7 +67,7 @@ class MoveArea(MethodView):
         area.sector_id = target_sector_id
         area.order_index = Area.find_max_order_index(target_sector_id) + 1
 
-        # Secret/closed handling (see MoveLine for rules).
+        # If the target sector is secret or closed, propagate to the moved area and descendants.
         target_sector: Sector = Sector.find_by_id(target_sector_id)
         if target_sector.secret and not area.secret:
             update_area_propagating_boolean_attr(area, True, "secret")
@@ -125,20 +129,17 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
-        new_area.closed = area_data["closed"]
-        new_area.closed_reason = area_data["closedReason"]
         new_area.default_boulder_scale = area_data["defaultBoulderScale"]
         new_area.default_sport_scale = area_data["defaultSportScale"]
         new_area.default_trad_scale = area_data["defaultTradScale"]
         new_area.blocweather_url = area_data["blocweatherUrl"]
 
+        apply_closable_configuration(new_area, area_data, "area_id")
         if not new_area.secret:
             set_area_parents_false(new_area, "secret")
-        if not new_area.closed:
-            set_area_parents_false(new_area, "closed")
 
-        db.session.add(new_area)
         db.session.commit()
+        materialize_closures_now()
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_area, created_by)
 
@@ -165,9 +166,7 @@ class UpdateArea(MethodView):
         area.short_description = area_data["shortDescription"]
         area.portrait_image_id = area_data["portraitImage"]
         update_area_propagating_boolean_attr(area, area_data["secret"], "secret")
-        update_area_propagating_boolean_attr(
-            area, area_data["closed"], "closed", set_additionally={"closed_reason": area_data["closedReason"]}
-        )
+        apply_closable_configuration(area, area_data, "area_id")
         area.default_boulder_scale = area_data["defaultBoulderScale"]
         area.default_sport_scale = area_data["defaultSportScale"]
         area.default_trad_scale = area_data["defaultTradScale"]
@@ -176,6 +175,7 @@ class UpdateArea(MethodView):
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()
+        materialize_closures_now()
 
         return area_schema.dump(area), 200
 

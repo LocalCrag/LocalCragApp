@@ -1,25 +1,32 @@
+import { ClosureSchedule } from '../closure-schedule';
+
 type Constructor = new (...args: any[]) => object;
 
 export function IsClosable<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
     closed: boolean;
-    closedReason: string;
+    closedReason: string | null;
+    closureSchedules: ClosureSchedule[];
   };
 }
 
-type ClosableInstance = InstanceType<ReturnType<typeof IsClosable>>;
+export type ClosableInstance = InstanceType<ReturnType<typeof IsClosable>>;
 
 export function deserializeClosableAttributes(
   instance: ClosableInstance,
   payload: any,
 ): void {
   instance.closed = payload.closed;
-  instance.closedReason = payload.closedReason;
+  instance.closedReason = payload.closedReason ?? null;
+  instance.closureSchedules = (payload.closureSchedules ?? []).map(
+    ClosureSchedule.deserialize,
+  );
 }
 
 export function serializeClosableAttributes(instance: ClosableInstance): any {
   return {
-    closed: instance.closed,
-    closedReason: instance.closedReason,
+    closureSchedules: (instance.closureSchedules ?? []).map(
+      ClosureSchedule.serialize,
+    ),
   };
 }

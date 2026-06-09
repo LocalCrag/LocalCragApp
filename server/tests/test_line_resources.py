@@ -138,8 +138,6 @@ def test_successful_create_line(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -236,8 +234,6 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -331,8 +327,6 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -380,8 +374,6 @@ def test_create_line_invalid_rating(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -429,8 +421,6 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -478,8 +468,6 @@ def test_create_line_invalid_grade_value(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -527,8 +515,6 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -576,8 +562,6 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -625,8 +609,6 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -674,8 +656,6 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -727,8 +707,6 @@ def test_create_line_invalid_video_payload(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -1065,8 +1043,6 @@ def test_successful_edit_line(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
@@ -1164,8 +1140,6 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
 
     rv = client.put("/api/lines/super-spreader", token=moderator_token, json=line_data)
@@ -1220,8 +1194,6 @@ def test_create_line_with_fa_date_only(client, moderator_token):
         "arete": False,
         "mantle": False,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     print(rv.data)
@@ -1272,8 +1244,6 @@ def test_create_line_with_fa_date_and_year_raises_400(client, moderator_token):
         "arete": False,
         "mantle": False,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
     }
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400

@@ -231,6 +231,26 @@
           ></lc-language-select>
         </div>
 
+        <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="form-label flex align-items-center">
+            <label for="timezone">{{ t("timezoneLabel") }}</label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('timezoneTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
+          <p-select
+            id="timezone"
+            [options]="timezoneOptions"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            formControlName="timezone"
+            lcFormControl
+          ></p-select>
+        </div>
+
         <p-divider align="center" type="solid" class="mt-6 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >

@@ -6,6 +6,7 @@ import zlib
 from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from sqlalchemy import text
 
@@ -16,8 +17,12 @@ from models.enums.notification_digest_frequency_enum import (
 from models.notification import Notification
 from models.user import User
 from util.email import send_notification_digest_email
+from util.instance_timezone import get_instance_timezone_name
 from util.moderator_task_notifications import should_show_notification_to_user
 from util.notifications import should_send_notification_mail
+from util.scheduled_closure import materialize_closures_now
+
+CLOSURE_SCHEDULES_JOB_ID = "apply_closure_schedules_daily"
 
 # Keep a module-level reference so we don't start multiple schedulers per process
 _scheduler: Optional[BackgroundScheduler] = None
@@ -67,6 +72,22 @@ def _run_build_rankings_with_lock(app):
                     db.session.rollback()
 
 
+def _closure_schedule_trigger(app):
+    with app.app_context():
+        timezone = get_instance_timezone_name()
+    return CronTrigger(hour=0, minute=0, timezone=timezone)
+
+
+def reschedule_closure_materialization_job(app) -> None:
+    """Update the daily closure job to match the current instance timezone."""
+    if not _scheduler or not _scheduler.running:
+        return
+    _scheduler.reschedule_job(
+        CLOSURE_SCHEDULES_JOB_ID,
+        trigger=_closure_schedule_trigger(app),
+    )
+
+
 def init_schedulers(app) -> None:
     """
     Initialize and start background schedulers.
@@ -91,6 +112,14 @@ def init_schedulers(app) -> None:
         func=lambda: _run_send_notification_digests(app),
         trigger=IntervalTrigger(hours=24),
         id="send_notification_digests_daily",
+        max_instances=1,
+        coalesce=True,
+        replace_existing=True,
+    )
+    scheduler.add_job(
+        func=lambda: _run_apply_closure_schedules_with_lock(app),
+        trigger=_closure_schedule_trigger(app),
+        id=CLOSURE_SCHEDULES_JOB_ID,
         max_instances=1,
         coalesce=True,
         replace_existing=True,
@@ -159,6 +188,40 @@ def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> d
 
 def _run_send_notification_digests(app):
     send_notification_digests(app)
+
+
+def _run_apply_closure_schedules_with_lock(app):
+    with app.app_context():
+        lock_name = "apply_closure_schedules_job_lock"
+        lock_id = zlib.crc32(lock_name.encode("utf-8"))
+        got_lock = False
+        try:
+            try:
+                got_lock = db.session.execute(
+                    text("SELECT pg_try_advisory_lock(:lock_id)"), {"lock_id": lock_id}
+                ).scalar()
+            except Exception:
+                app.logger.exception("Failed to acquire lock %s", lock_id)
+                db.session.rollback()
+                got_lock = True
+
+            if not got_lock:
+                app.logger.info("apply_closure_schedules skipped: another instance is running.")
+                return
+
+            app.logger.info("Starting apply_closure_schedules job.")
+            materialize_closures_now()
+            app.logger.info("Completed apply_closure_schedules job.")
+        except Exception:
+            db.session.rollback()
+            raise
+        finally:
+            if got_lock:
+                try:
+                    db.session.execute(text("SELECT pg_advisory_unlock(:lock_id)"), {"lock_id": lock_id})
+                    db.session.commit()
+                except Exception:
+                    db.session.rollback()
 
 
 def _is_monday_utc() -> bool:

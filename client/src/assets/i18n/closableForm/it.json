@@ -1,0 +1,19 @@
+{
+  "closableForm.closureSchedulesLabel": "Programmi di chiusura",
+  "closableForm.addSchedule": "Aggiungi programma di chiusura",
+  "closableForm.annualScheduleTitle": "Chiusura annuale",
+  "closableForm.fixedScheduleTitle": "Chiusura a date fisse",
+  "closableForm.permanentScheduleTitle": "Chiusura permanente",
+  "closableForm.scheduledClosureStartLabel": "Da",
+  "closableForm.scheduledClosureEndLabel": "Fino a",
+  "closableForm.fixedEndBeforeStartValidationError": "La data di fine deve essere uguale o successiva alla data di inizio.",
+  "closableForm.scheduledClosureReasonLabel": "Motivo durante la chiusura",
+  "closableForm.scheduledClosureReasonPlaceholder": "es. periodo di nidificazione...",
+  "closableForm.closedByParentSchedule": "Questo spot è attualmente interdetto perché un livello superiore ha un programma di chiusura attivo.",
+  "closableForm.closedByParentScheduleWithReason": "Questo spot è attualmente interdetto perché un livello superiore ha un programma di chiusura attivo: {{reason}}",
+  "closableFormScheduleDialog.createScheduleTitle": "Aggiungi programma di chiusura",
+  "closableFormScheduleDialog.editScheduleTitle": "Modifica programma di chiusura",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Tipo di programma",
+  "closableFormScheduleDialog.cancel": "Annulla",
+  "closableFormScheduleDialog.save": "Salva"
+}

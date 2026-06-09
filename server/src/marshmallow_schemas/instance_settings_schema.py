@@ -21,6 +21,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     barChartColor = fields.String(attribute="bar_chart_color")
     barChartAccentColor = fields.String(attribute="bar_chart_accent_color")
     language = fields.String(attribute="language")
+    timezone = fields.String(attribute="timezone")
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
     maptilerApiKey = fields.String(attribute="maptiler_api_key")

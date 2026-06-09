@@ -3,6 +3,7 @@ from webargs import fields
 
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from util.instance_timezone import validate_timezone
 from util.validators import validate_language
 
 instance_settings_args = {
@@ -36,4 +37,5 @@ instance_settings_args = {
         validate=validate.Range(min=1, max=20, min_inclusive=True, max_inclusive=True),
     ),
     "disableFAInAscents": fields.Boolean(required=True),
+    "timezone": fields.Str(required=True, validate=validate_timezone),
 }
