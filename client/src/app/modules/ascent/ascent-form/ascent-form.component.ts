@@ -47,7 +47,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { selectDisableFAInAscents } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectGymMode } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
 import { Grade } from '../../../models/scale';
 import {
@@ -102,7 +102,7 @@ export class AscentFormComponent implements OnInit {
     contentCheckedBackground: '{primary.500}',
     checkedColor: '{surface.0}',
   };
-  public disableFAInAscents$: Observable<boolean>;
+  public gymMode$: Observable<boolean>;
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
@@ -128,8 +128,8 @@ export class AscentFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
-    this.disableFAInAscents$ = this.store
-      .select(selectDisableFAInAscents)
+    this.gymMode$ = this.store
+      .select(selectGymMode)
       .pipe(take(1));
 
     this.ascent = this.dialogConfig.data.ascent;
