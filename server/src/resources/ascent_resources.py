@@ -184,8 +184,8 @@ class CreateAscent(MethodView):
         ascent: Ascent = Ascent()
         ascent.line_id = ascent_data["line"]
         ascent.flash = ascent_data["flash"]
-        # Enforce instance setting: disable FA flag if configured
-        if InstanceSettings.return_it().disable_fa_in_ascents:
+        # First ascents don't apply to gym mode, so force the FA flag false
+        if InstanceSettings.return_it().gym_mode:
             ascent.fa = False
         else:
             ascent.fa = ascent_data["fa"]
@@ -236,8 +236,8 @@ class UpdateAscent(MethodView):
             raise BadRequest("Grade scale, name and line type do not match.")
 
         ascent.flash = ascent_data["flash"]
-        # Enforce instance setting: disable FA flag if configured
-        if InstanceSettings.return_it().disable_fa_in_ascents:
+        # First ascents don't apply to gym mode, so force the FA flag false
+        if InstanceSettings.return_it().gym_mode:
             ascent.fa = False
         else:
             ascent.fa = ascent_data["fa"]
