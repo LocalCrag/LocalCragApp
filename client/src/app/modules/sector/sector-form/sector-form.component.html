@@ -229,25 +229,6 @@
               [defaultMarkerType]="MapMarkerType.SECTOR"
             ></lc-map-marker-form-array>
           </div>
-          @if (sector?.slug !== environment.skippedSlug) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
-              <div class="flex flex-column gap-2">
-                <div class="flex">
-                  <p-checkbox
-                    inputId="secret"
-                    name="secret"
-                    [binary]="true"
-                    formControlName="secret"
-                    lcFormControl
-                  ></p-checkbox>
-                  <label [for]="'secret'" class="ml-2">{{
-                    t("secretLabel")
-                  }}</label>
-                </div>
-              </div>
-            </div>
-          }
           <lc-scheduled-closure-form
             formControlName="closureSchedules"
             lcFormControl
@@ -312,6 +293,25 @@
             <p-message severity="warn" icon="pi pi-info-circle">
               {{ t("aPublicSectorWillSetParentsToPublic") }}
             </p-message>
+          }
+          @if (sector?.slug !== environment.skippedSlug) {
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
+              <div class="flex flex-column gap-2">
+                <div class="flex">
+                  <p-checkbox
+                    inputId="secret"
+                    name="secret"
+                    [binary]="true"
+                    formControlName="secret"
+                    lcFormControl
+                  ></p-checkbox>
+                  <label [for]="'secret'" class="ml-2">{{
+                    t("secretLabel")
+                  }}</label>
+                </div>
+              </div>
+            </div>
           }
         </form>
         <div class="form-actions">

@@ -250,26 +250,6 @@
           ></lc-map-marker-form-array>
         </div>
 
-        @if (crag?.slug !== environment.skippedSlug) {
-          <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("cragOptionsLabel") }}</label>
-            <div class="flex flex-column gap-2">
-              <div class="flex">
-                <p-checkbox
-                  inputId="secret"
-                  name="secret"
-                  [binary]="true"
-                  formControlName="secret"
-                  lcFormControl
-                ></p-checkbox>
-                <label [for]="'secret'" class="ml-2">{{
-                  t("secretLabel")
-                }}</label>
-              </div>
-            </div>
-          </div>
-        }
-
         <lc-scheduled-closure-form
           formControlName="closureSchedules"
           lcFormControl
@@ -329,6 +309,26 @@
             ></p-select>
           </div>
         </div>
+
+        @if (crag?.slug !== environment.skippedSlug) {
+          <div class="flex flex-column gap-2" lcControlGroup>
+            <label class="form-label">{{ t("cragOptionsLabel") }}</label>
+            <div class="flex flex-column gap-2">
+              <div class="flex">
+                <p-checkbox
+                  inputId="secret"
+                  name="secret"
+                  [binary]="true"
+                  formControlName="secret"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'secret'" class="ml-2">{{
+                  t("secretLabel")
+                }}</label>
+              </div>
+            </div>
+          </div>
+        }
       </form>
 
       <div class="form-actions">

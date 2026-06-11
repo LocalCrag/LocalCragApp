@@ -8,6 +8,7 @@ import {
   ClosureScheduleType,
 } from '../../../../models/closure-schedule';
 import { ScheduledClosureConfigDialogComponent } from './scheduled-closure-config-dialog.component';
+import { ControlGroupDirective } from '../../forms/control-group.directive';
 import { formatScheduleSummary } from '../../utils/scheduled-closure-form';
 
 @Component({
@@ -17,6 +18,7 @@ import { formatScheduleSummary } from '../../utils/scheduled-closure-form';
     Button,
     Tag,
     ScheduledClosureConfigDialogComponent,
+    ControlGroupDirective,
   ],
   templateUrl: './scheduled-closure-form.component.html',
   styleUrl: './scheduled-closure-form.component.scss',
