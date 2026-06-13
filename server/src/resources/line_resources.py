@@ -247,6 +247,9 @@ class CreateLine(MethodView):
             new_line.fa_name = None
             new_line.fa_date = None
 
+        new_line.routesetter = line_data["routesetter"]
+        new_line.set_date = line_data["setDate"]
+
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
         new_line.highball = line_data["highball"]
@@ -346,6 +349,9 @@ class UpdateLine(MethodView):
             line.fa_date = None
             if line.ascent_count > 0:
                 raise BadRequest("Cannot change a line to a project if it has been ticked!")
+
+        line.routesetter = line_data["routesetter"]
+        line.set_date = line_data["setDate"]
 
         line.eliminate = line_data["eliminate"]
         line.traverse = line_data["traverse"]

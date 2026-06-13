@@ -29,7 +29,6 @@ export class InstanceSettings {
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
-  disableFAInAscents: boolean;
   language: LanguageCode;
 
   public static deserialize(payload: any): InstanceSettings {
@@ -68,7 +67,6 @@ export class InstanceSettings {
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
-    instanceSettings.disableFAInAscents = payload.disableFAInAscents;
     instanceSettings.language = payload.language;
     return instanceSettings;
   }
@@ -105,7 +103,6 @@ export class InstanceSettings {
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
-      disableFAInAscents: instanceSettings.disableFAInAscents,
       language: instanceSettings.language,
     };
   }

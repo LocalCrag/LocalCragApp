@@ -28,7 +28,6 @@ export interface InstanceSettingsState {
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
-  disableFAInAscents: boolean;
   language: LanguageCode;
 }
 
@@ -55,7 +54,6 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   faDefaultFormat: FaDefaultFormat.YEAR,
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
-  disableFAInAscents: false,
   language: null,
 };
 
@@ -85,7 +83,6 @@ const instanceSettingsReducer = createReducer(
     faDefaultFormat: action.settings.faDefaultFormat,
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,
-    disableFAInAscents: action.settings.disableFAInAscents,
     language: action.settings.language,
   })),
 );

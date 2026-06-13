@@ -57,6 +57,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Rating } from 'primeng/rating';
@@ -94,6 +95,7 @@ import { MoveObjectDialogComponent } from '../../shared/components/move-object-d
     Editor,
     AdvancedColorPickerComponent,
     GymModeDirective,
+    OutdoorModeDirective,
     Select,
     TranslateSpecialGradesPipe,
     TranslocoPipe,
@@ -331,6 +333,8 @@ export class LineFormComponent implements OnInit {
           faYear: [null, [yearOfDateNotInFutureValidator()]],
           faDate: [null, [dateNotInFutureValidator()]],
           faName: [null, [Validators.maxLength(120)]],
+          routesetter: [null, [Validators.maxLength(120)]],
+          setDate: [null, [dateNotInFutureValidator()]],
           startingPosition: [
             instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
             [Validators.required],
@@ -437,6 +441,8 @@ export class LineFormComponent implements OnInit {
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
       faDate: this.line.faDate,
       faName: this.line.faName,
+      routesetter: this.line.routesetter,
+      setDate: this.line.setDate,
       startingPosition: this.line.startingPosition,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
@@ -521,6 +527,8 @@ export class LineFormComponent implements OnInit {
           ? this.lineForm.get('faDate').value
           : null;
       line.faName = this.lineForm.get('faName').value;
+      line.routesetter = this.lineForm.get('routesetter').value;
+      line.setDate = this.lineForm.get('setDate').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
