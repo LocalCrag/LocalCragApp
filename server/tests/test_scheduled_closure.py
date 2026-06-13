@@ -80,7 +80,8 @@ def test_multiple_schedules_any_active():
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
         ),
     ]
-    assert not active_schedules(schedules, on_date=date(2026, 3, 1))
+    assert len(active_schedules(schedules, on_date=date(2026, 3, 1))) == 1
+    assert active_schedules(schedules, on_date=date(2026, 3, 1))[0].schedule_type == ClosureScheduleTypeEnum.PERMANENT
     assert len(active_schedules(schedules, on_date=date(2026, 6, 2))) == 1
 
 

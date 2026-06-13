@@ -32,7 +32,6 @@ from util.propagating_boolean_attrs import (
 from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
-    request_closure_materialization,
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -65,14 +64,19 @@ class MoveLine(MethodView):
         line.area_id = target_area_id
 
         # Secret handling: a public line moved into a secret area becomes secret.
-        # Closure flags are recomputed after commit via request_closure_materialization().
         target_area: Area = Area.find_by_id(target_area_id)
         if target_area.secret and not line.secret:
             update_line_propagating_boolean_attr(line, True, "secret")
+        if target_area.closed and not line.closed:
+            update_line_propagating_boolean_attr(
+                line,
+                True,
+                "closed",
+                set_additionally={"closed_reason": target_area.closed_reason},
+            )
 
         db.session.add(line)
         db.session.commit()
-        request_closure_materialization()
         return line_search_schema.dump(line), 200
 
 
