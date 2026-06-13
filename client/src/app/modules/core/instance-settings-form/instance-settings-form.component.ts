@@ -159,7 +159,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       skippedHierarchicalLayers: [null],
       displayUserGrades: [null],
       displayUserRatings: [null],
-      disableFAInAscents: [null],
       logoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
@@ -191,7 +190,6 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettings.skippedHierarchicalLayers,
       displayUserGrades: this.instanceSettings.displayUserGrades,
       displayUserRatings: this.instanceSettings.displayUserRatings,
-      disableFAInAscents: this.instanceSettings.disableFAInAscents,
       logoImage: this.instanceSettings.logoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
@@ -230,8 +228,6 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('displayUserGrades').value;
       instanceSettings.displayUserRatings =
         this.instanceSettingsForm.get('displayUserRatings').value;
-      instanceSettings.disableFAInAscents =
-        this.instanceSettingsForm.get('disableFAInAscents').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
       instanceSettings.faviconImage =

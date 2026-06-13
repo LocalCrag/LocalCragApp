@@ -102,31 +102,6 @@
 
         <div class="flex flex-column gap-2" lcControlGroup>
           <div class="form-label flex align-items-center">
-            <label for="disable-fa-in-ascents">
-              {{ t("disableFAInAscentsLabel") }}
-            </label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('disableFAInAscentsDescription')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
-          >
-            {{ t("disableFAInAscentsFalse") }}
-            <p-toggleswitch
-              id="disable-fa-in-ascents"
-              class="mx-2 blue-green-switch"
-              formControlName="disableFAInAscents"
-              lcFormControl
-            />
-            {{ t("disableFAInAscentsTrue") }}
-          </div>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
             <label for="skippedHierarchicalLayers">
               {{ t("skippedHierarchicalLayersLabel") }}
             </label>

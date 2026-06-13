@@ -29,7 +29,6 @@ export class InstanceSettings {
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
-  disableFAInAscents: boolean;
   language: LanguageCode;
   timezone: string;
 
@@ -69,7 +68,6 @@ export class InstanceSettings {
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
-    instanceSettings.disableFAInAscents = payload.disableFAInAscents;
     instanceSettings.language = payload.language;
     instanceSettings.timezone = payload.timezone ?? 'UTC';
     return instanceSettings;
@@ -107,7 +105,6 @@ export class InstanceSettings {
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
-      disableFAInAscents: instanceSettings.disableFAInAscents,
       language: instanceSettings.language,
       timezone: instanceSettings.timezone,
     };

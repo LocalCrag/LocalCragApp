@@ -36,6 +36,5 @@ instance_settings_args = {
         allow_none=True,
         validate=validate.Range(min=1, max=20, min_inclusive=True, max_inclusive=True),
     ),
-    "disableFAInAscents": fields.Boolean(required=True),
     "timezone": fields.Str(required=True, validate=validate_timezone),
 }

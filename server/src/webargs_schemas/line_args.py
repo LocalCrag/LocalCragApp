@@ -21,6 +21,11 @@ def validate_fa_date(fa_date: datetime.date):
         raise ValidationError("FA date cannot be in the future.")
 
 
+def validate_set_date(set_date: datetime.date):
+    if set_date > datetime.date.today():
+        raise ValidationError("Set date cannot be in the future.")
+
+
 def validate_video_url(url: str):
     if not validators.url(url):
         raise ValidationError(f"Invalid URL: {url}")
@@ -52,6 +57,8 @@ class LineArgsSchema(BatchLineArgsSchema):
     authorRating = fields.Integer(required=True, allow_none=True, validate=validate_rating)
     faYear = fields.Integer(required=True, allow_none=True, validate=validate_fa_year)
     faDate = fields.Date(required=True, allow_none=True, validate=validate_fa_date)
+    routesetter = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
+    setDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_set_date)
     secret = fields.Boolean(required=True, allow_none=False)
     eliminate = fields.Boolean(required=True, allow_none=False)
     traverse = fields.Boolean(required=True, allow_none=False)

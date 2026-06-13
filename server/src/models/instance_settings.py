@@ -53,7 +53,6 @@ class InstanceSettings(db.Model):
     )
     # Number of past weeks to consider for rankings; None means all-time
     ranking_past_weeks = db.Column(db.Integer, nullable=True)
-    disable_fa_in_ascents = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     instance_launched_at = db.Column(db.DateTime(timezone=True), nullable=True)
     # Distinguishes the initial manifest import (silent, no notifications) from later deploys
     # (bundle + optional notifies). Without it, new instances would treat every manifest key as a

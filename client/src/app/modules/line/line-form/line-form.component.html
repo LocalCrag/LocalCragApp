@@ -266,76 +266,116 @@
               ></p-button>
             </div>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label" for="fa-name">{{
-              t("lineFANameLabel")
-            }}</label>
-            <input
-              id="fa-name"
-              type="text"
-              pInputText
-              formControlName="faName"
-              placeholder="{{ t('lineFANamePlaceholder') }}"
-              lcFormControl
-              data-cy="line-form-faName"
-            />
-            <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
-            }}</small>
-          </div>
-          @if (faFormat === faFormats.YEAR) {
+          <ng-container *isOutdoorMode="true">
             <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="fa-year">{{
-                t("lineFAYearLabel")
+              <label class="form-label" for="fa-name">{{
+                t("lineFANameLabel")
               }}</label>
-              <p-date-picker
-                id="fa-year"
-                formControlName="faYear"
-                view="year"
-                dateFormat="yy"
-                inputId="faYear"
+              <input
+                id="fa-name"
+                type="text"
+                pInputText
+                formControlName="faName"
+                placeholder="{{ t('lineFANamePlaceholder') }}"
                 lcFormControl
-                [maxDate]="today"
-                [readonlyInput]="true"
-                data-cy="line-form-faYear"
-              ></p-date-picker>
-              <small class="lc-error" *lcIfError="'dateInFuture'">{{
-                t("yearInFutureValidationError")
+                data-cy="line-form-faName"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                t("maxlength120")
               }}</small>
             </div>
-          }
-          @if (faFormat === faFormats.DATE) {
+            @if (faFormat === faFormats.YEAR) {
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label" for="fa-year">{{
+                  t("lineFAYearLabel")
+                }}</label>
+                <p-date-picker
+                  id="fa-year"
+                  formControlName="faYear"
+                  view="year"
+                  dateFormat="yy"
+                  inputId="faYear"
+                  lcFormControl
+                  [maxDate]="today"
+                  [readonlyInput]="true"
+                  data-cy="line-form-faYear"
+                ></p-date-picker>
+                <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                  t("yearInFutureValidationError")
+                }}</small>
+              </div>
+            }
+            @if (faFormat === faFormats.DATE) {
+              <div class="flex flex-column gap-2" lcControlGroup>
+                <label class="form-label" for="fa-year">{{
+                  t("lineFADateLabel")
+                }}</label>
+                <p-date-picker
+                  id="fa-date"
+                  formControlName="faDate"
+                  view="date"
+                  dateFormat="dd.mm.yy"
+                  inputId="faDate"
+                  lcFormControl
+                  [maxDate]="today"
+                  [readonlyInput]="true"
+                  data-cy="line-form-faDate"
+                ></p-date-picker>
+                <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                  t("dateInFutureValidationError")
+                }}</small>
+              </div>
+            }
+            <div class="mt-2">
+              <p-button
+                (onClick)="toggleFaFormat()"
+                [label]="
+                  faFormat === faFormats.YEAR
+                    ? t('showFaDateInsteadOfYear')
+                    : t('showFaYearInsteadOfDate')
+                "
+                variant="outlined"
+              />
+            </div>
+          </ng-container>
+          <ng-container *isGymMode="true">
             <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="fa-year">{{
-                t("lineFADateLabel")
+              <label class="form-label" for="routesetter">{{
+                t("lineRoutesetterLabel")
+              }}</label>
+              <input
+                id="routesetter"
+                type="text"
+                pInputText
+                formControlName="routesetter"
+                placeholder="{{ t('lineRoutesetterPlaceholder') }}"
+                lcFormControl
+                data-cy="line-form-routesetter"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                t("maxlength120")
+              }}</small>
+            </div>
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label" for="set-date">{{
+                t("lineSetDateLabel")
               }}</label>
               <p-date-picker
-                id="fa-date"
-                formControlName="faDate"
+                id="set-date"
+                formControlName="setDate"
                 view="date"
                 dateFormat="dd.mm.yy"
-                inputId="faDate"
+                inputId="setDate"
                 lcFormControl
                 [maxDate]="today"
                 [readonlyInput]="true"
-                data-cy="line-form-faDate"
+                data-cy="line-form-setDate"
               ></p-date-picker>
               <small class="lc-error" *lcIfError="'dateInFuture'">{{
                 t("dateInFutureValidationError")
               }}</small>
             </div>
-          }
-          <div class="mt-2">
-            <p-button
-              (onClick)="toggleFaFormat()"
-              [label]="
-                faFormat === faFormats.YEAR
-                  ? t('showFaDateInsteadOfYear')
-                  : t('showFaYearInsteadOfDate')
-              "
-              variant="outlined"
-            />
-          </div>
+          </ng-container>
           <div class="flex flex-column gap-2" lcControlGroup>
             <label class="form-label">{{ t("linePropertiesLabel") }}</label>
             <div class="flex flex-column gap-2">

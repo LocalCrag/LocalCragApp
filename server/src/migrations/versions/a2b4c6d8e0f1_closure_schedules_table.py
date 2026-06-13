@@ -1,7 +1,7 @@
 """Closure schedules table.
 
 Revision ID: a2b4c6d8e0f1
-Revises: e8f3a2b1c904
+Revises: a9e7c2f4b831
 Create Date: 2026-06-04
 
 """
@@ -11,7 +11,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision = "a2b4c6d8e0f1"
-down_revision = "e8f3a2b1c904"
+down_revision = "a9e7c2f4b831"
 branch_labels = None
 depends_on = None
 

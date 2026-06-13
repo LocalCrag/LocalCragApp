@@ -402,10 +402,10 @@ def test_grade_ranking_votes_multiple_2(client, user_token, member_token, admin_
     assert line.user_rating == 5
 
 
-def test_disable_fa_in_ascents_enforced_on_create(client, member_token):
-    # Enable the setting to disable FA in ascents
+def test_gym_mode_disables_fa_in_ascents_on_create(client, member_token):
+    # Gym mode disables FA in ascents
     instance_settings = InstanceSettings.return_it()
-    instance_settings.disable_fa_in_ascents = True
+    instance_settings.gym_mode = True
     db.session.add(instance_settings)
 
     ascent_data = {

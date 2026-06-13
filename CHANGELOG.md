@@ -1,3 +1,10 @@
+# [1.41.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.40.1...v1.41.0) (2026-06-13)
+
+
+### Features
+
+* add routesetter fields ([#1119](https://github.com/LocalCrag/LocalCragApp/issues/1119)) ([a201f5e](https://github.com/LocalCrag/LocalCragApp/commit/a201f5e5bdf66acb2518a691a2df44ebd57040cb)), closes [#1118](https://github.com/LocalCrag/LocalCragApp/issues/1118)
+
 ## [1.40.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.40.0...v1.40.1) (2026-06-04)
 
 
