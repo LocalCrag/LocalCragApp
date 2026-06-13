@@ -181,7 +181,7 @@
         data-cy="withKneepad"
         [offLabel]="t('withKneepad')"
       ></p-toggleButton>
-      @if ((disableFAInAscents$ | async) === false) {
+      @if ((gymMode$ | async) === false) {
         <p-toggleButton
           formControlName="fa"
           [dt]="toggleButtonDt"
@@ -191,7 +191,7 @@
       }
     </div>
     @if (
-      ascentForm.get("fa").value && (disableFAInAscents$ | async) === false
+      ascentForm.get("fa").value && (gymMode$ | async) === false
     ) {
       <p-message styleClass="mt-2 ascent-form-alert" severity="info">
         {{ t("firstAscentExplanation") }}

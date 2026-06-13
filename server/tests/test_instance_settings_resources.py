@@ -37,7 +37,6 @@ def test_successful_get_instance_settings(client):
     assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks
-    assert res["disableFAInAscents"] == instance_settings.disable_fa_in_ascents
 
 
 def test_successful_edit_instance_settings(client, moderator_token):
@@ -67,7 +66,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
         "defaultStartingPosition": StartingPositionEnum.SIT.value,
         "rankingPastWeeks": 12,
-        "disableFAInAscents": True,
         "language": "de",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
@@ -97,7 +95,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["faDefaultFormat"] == FaDefaultFormatEnum.DATE.value
     assert res["defaultStartingPosition"] == StartingPositionEnum.SIT.value
     assert res["rankingPastWeeks"] == 12
-    assert res["disableFAInAscents"] is True
     assert res["language"] == "de"
 
 
@@ -132,7 +129,6 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
         "defaultStartingPosition": StartingPositionEnum.STAND.value,
         "rankingPastWeeks": None,
-        "disableFAInAscents": False,
         "language": "en",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
@@ -170,7 +166,6 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
         "defaultStartingPosition": StartingPositionEnum.STAND.value,
         "rankingPastWeeks": 4,
-        "disableFAInAscents": True,
         "language": "en",
     }
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
