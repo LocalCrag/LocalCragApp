@@ -298,7 +298,9 @@ export class LineFormComponent implements OnInit {
           .subscribe((rendered) => {
             if (!rendered) return;
             if (this.editMode) {
-              this.buildTypeOptionsForLine();
+              if (this.line) {
+                this.buildTypeOptionsForLine();
+              }
             } else {
               this.buildTypeOptions();
             }
@@ -669,6 +671,9 @@ export class LineFormComponent implements OnInit {
   }
 
   private buildTypeOptionsForLine() {
+    if (!this.line?.type) {
+      return;
+    }
     this.typeOptions = [
       {
         label: this.translocoService.translate(this.line.type),
