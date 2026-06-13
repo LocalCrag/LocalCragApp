@@ -10,7 +10,7 @@
     <p-tag severity="danger" class="closed-spot-tag">
       <span class="closed-spot-tag-inner">
         <i class="pi pi-ban" aria-hidden="true"></i>
-        <span>{{ t('closed') }}</span>
+        <span>{{ t("closed") }}</span>
         <i
           class="pi pi-question-circle closed-spot-tag-help-icon"
           aria-hidden="true"
@@ -27,9 +27,12 @@
   >
     <div class="closed-spot-tag-popover-content">
       @if (loading) {
-        <p-progressSpinner strokeWidth="4" styleClass="closed-spot-tag-spinner" />
+        <p-progressSpinner
+          strokeWidth="4"
+          styleClass="closed-spot-tag-spinner"
+        />
       } @else if (loadError) {
-        <span class="closed-spot-tag-error">{{ t('loadError') }}</span>
+        <span class="closed-spot-tag-error">{{ t("loadError") }}</span>
       } @else if (displayReasons !== null) {
         <lc-closed-spot-alert [reasons]="displayReasons"></lc-closed-spot-alert>
       }
