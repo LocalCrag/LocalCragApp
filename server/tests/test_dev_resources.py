@@ -17,3 +17,18 @@ def test_notification_digest_dev_endpoint_triggers_mailer(client):
     assert rv.status_code == 200
     assert rv.json == {"usersMailed": 1, "notificationsMailed": 3}
     assert mock_send.call_args.kwargs["respect_digest_schedule"] is False
+
+
+def test_closure_materialization_dev_endpoint_disabled_outside_development(client):
+    with patch("util.flask_environment.is_development_mode", return_value=False):
+        rv = client.post("/api/dev/apply-closure-schedules")
+    assert rv.status_code == 404
+
+
+def test_closure_materialization_dev_endpoint_triggers_materialization(client):
+    with patch("util.flask_environment.is_development_mode", return_value=True):
+        with patch("resources.dev_resources.materialize_closures_now") as mock_materialize:
+            rv = client.post("/api/dev/apply-closure-schedules")
+    assert rv.status_code == 200
+    assert rv.json == {"status": "ok"}
+    mock_materialize.assert_called_once()

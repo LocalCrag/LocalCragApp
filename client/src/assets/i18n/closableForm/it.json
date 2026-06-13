@@ -1,5 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Programmi di chiusura",
+  "closableForm.closureMaterializationInfo": "Dopo il salvataggio possono essere necessari alcuni secondi prima che gli stati di chiusura siano aggiornati negli spot figli.",
   "closableForm.addSchedule": "Aggiungi programma di chiusura",
   "closableForm.annualScheduleTitle": "Chiusura annuale",
   "closableForm.fixedScheduleTitle": "Chiusura a date fisse",
@@ -15,5 +16,5 @@
   "closableFormScheduleDialog.editScheduleTitle": "Modifica programma di chiusura",
   "closableFormScheduleDialog.scheduleTypeLabel": "Tipo di programma",
   "closableFormScheduleDialog.cancel": "Annulla",
-  "closableFormScheduleDialog.save": "Salva"
+  "closableFormScheduleDialog.ok": "OK"
 }

@@ -12,7 +12,7 @@ from models.instance_settings import InstanceSettings
 from models.region import Region
 from models.sector import Sector
 from schedulers import reschedule_closure_materialization_job
-from util.scheduled_closure import materialize_closures_now
+from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
 
@@ -109,7 +109,7 @@ class UpdateInstanceSettings(MethodView):
 
         if previous_timezone != instance_settings.timezone:
             reschedule_closure_materialization_job(current_app._get_current_object())
-            materialize_closures_now()
+            request_closure_materialization()
 
         instance_settings_response = instance_settings_schema.dump(instance_settings)
         instance_settings_response = add_fixed_instance_settings(instance_settings_response)

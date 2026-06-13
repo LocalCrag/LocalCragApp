@@ -1,5 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Sluitingsschema's",
+  "closableForm.closureMaterializationInfo": "Na het opslaan kan het enkele seconden duren voordat sluitingsstatussen bij onderliggende plekken zijn bijgewerkt.",
   "closableForm.addSchedule": "Sluitingsschema toevoegen",
   "closableForm.annualScheduleTitle": "Jaarlijkse sluiting",
   "closableForm.fixedScheduleTitle": "Vaste sluiting",
@@ -15,5 +16,5 @@
   "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
   "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
   "closableFormScheduleDialog.cancel": "Annuleren",
-  "closableFormScheduleDialog.save": "Opslaan"
+  "closableFormScheduleDialog.ok": "OK"
 }

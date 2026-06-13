@@ -1,5 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Closure schedules",
+  "closableForm.closureMaterializationInfo": "After saving, it can take a few seconds until closed states are updated across child spots.",
   "closableForm.addSchedule": "Add closure schedule",
   "closableForm.annualScheduleTitle": "Annual closure",
   "closableForm.fixedScheduleTitle": "Fixed closure",
@@ -15,5 +16,5 @@
   "closableFormScheduleDialog.editScheduleTitle": "Edit closure schedule",
   "closableFormScheduleDialog.scheduleTypeLabel": "Schedule type",
   "closableFormScheduleDialog.cancel": "Cancel",
-  "closableFormScheduleDialog.save": "Save"
+  "closableFormScheduleDialog.ok": "OK"
 }

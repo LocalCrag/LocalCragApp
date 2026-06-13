@@ -3,6 +3,8 @@
 Schedules are stored on closable topo entities (crag, sector, area, line). The
 ``closed`` / ``closed_reason`` columns are derived: recomputed from owned schedules
 and parent closure via ``apply_materialized_closures`` / ``materialize_closures_now``.
+API saves update the saved entity immediately and queue full-tree materialization
+in the background scheduler when available.
 """
 
 from __future__ import annotations
@@ -242,7 +244,7 @@ def sync_closure_schedules(entity, schedules_data: list[dict[str, Any]], fk_fiel
 
     for schedule in list(entity.closure_schedules):
         if str(schedule.id) not in incoming_ids:
-            db.session.delete(schedule)
+            entity.closure_schedules.remove(schedule)
 
     for item in schedules_data:
         schedule_id = item.get("id")
@@ -307,3 +309,32 @@ def apply_materialized_closures(on_date: Optional[date] = None) -> None:
 def materialize_closures_now() -> None:
     """Apply closure schedules immediately using the instance-local calendar date."""
     apply_materialized_closures()
+
+
+def materialize_own_closure(entity: _ClosableLike, on_date: Optional[date] = None) -> None:
+    """Update only the saved entity's ``closed`` flag from its own schedules."""
+    closed, reason = own_closure_state(entity, on_date)
+    _set_materialized(entity, closed, reason)
+    db.session.commit()
+
+
+def request_closure_materialization() -> None:
+    """Materialize descendant closure flags asynchronously when possible."""
+    import sys
+
+    from flask import current_app
+
+    from schedulers import enqueue_closure_materialization
+
+    if "pytest" in sys.modules:
+        materialize_closures_now()
+        return
+
+    if not enqueue_closure_materialization(current_app._get_current_object()):
+        materialize_closures_now()
+
+
+def finalize_closable_save(entity: _ClosableLike) -> None:
+    """Persist the saved entity's own closure state and queue full-tree materialization."""
+    materialize_own_closure(entity)
+    request_closure_materialization()

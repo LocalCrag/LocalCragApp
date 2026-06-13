@@ -28,7 +28,7 @@ from util.propagating_boolean_attrs import (
 )
 from util.scheduled_closure import (
     apply_closable_configuration,
-    materialize_closures_now,
+    finalize_closable_save,
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -139,7 +139,7 @@ class CreateArea(MethodView):
             set_area_parents_false(new_area, "secret")
 
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(new_area)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_area, created_by)
 
@@ -175,7 +175,7 @@ class UpdateArea(MethodView):
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(area)
 
         return area_schema.dump(area), 200
 

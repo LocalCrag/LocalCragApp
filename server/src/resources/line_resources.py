@@ -31,7 +31,8 @@ from util.propagating_boolean_attrs import (
 )
 from util.scheduled_closure import (
     apply_closable_configuration,
-    materialize_closures_now,
+    finalize_closable_save,
+    request_closure_materialization,
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -64,14 +65,14 @@ class MoveLine(MethodView):
         line.area_id = target_area_id
 
         # Secret handling: a public line moved into a secret area becomes secret.
-        # Closure flags are recomputed after commit via materialize_closures_now().
+        # Closure flags are recomputed after commit via request_closure_materialization().
         target_area: Area = Area.find_by_id(target_area_id)
         if target_area.secret and not line.secret:
             update_line_propagating_boolean_attr(line, True, "secret")
 
         db.session.add(line)
         db.session.commit()
-        materialize_closures_now()
+        request_closure_materialization()
         return line_search_schema.dump(line), 200
 
 
@@ -289,7 +290,7 @@ class CreateLine(MethodView):
         if not new_line.secret:
             set_line_parents_false(new_line, "secret")
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(new_line)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
 
@@ -378,7 +379,7 @@ class UpdateLine(MethodView):
 
         db.session.add(line)
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(line)
 
         return line_schema.dump(line), 200
 

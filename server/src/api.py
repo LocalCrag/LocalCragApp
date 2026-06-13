@@ -180,12 +180,20 @@ from resources.util_resources import SentryTest
 
 
 def _register_dev_routes(app):
-    from resources.dev_resources import TriggerNotificationDigestMails
+    from resources.dev_resources import (
+        TriggerClosureMaterialization,
+        TriggerNotificationDigestMails,
+    )
 
     dev_bp = Blueprint("dev", __name__)
     dev_bp.add_url_rule(
         "/notification-digest-mails",
         view_func=TriggerNotificationDigestMails.as_view("trigger_notification_digest_mails"),
+        methods=["POST"],
+    )
+    dev_bp.add_url_rule(
+        "/apply-closure-schedules",
+        view_func=TriggerClosureMaterialization.as_view("trigger_closure_materialization"),
         methods=["POST"],
     )
     app.register_blueprint(dev_bp, url_prefix="/api/dev")

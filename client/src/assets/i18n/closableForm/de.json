@@ -1,5 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Sperrzeitpläne",
+  "closableForm.closureMaterializationInfo": "Nach dem Speichern kann es einige Sekunden dauern, bis Sperrzustände bei untergeordneten Spots aktualisiert sind.",
   "closableForm.addSchedule": "Sperrzeitplan hinzufügen",
   "closableForm.annualScheduleTitle": "Jährliche Sperrung",
   "closableForm.fixedScheduleTitle": "Zeitlich begrenzte Sperrung",
@@ -15,5 +16,5 @@
   "closableFormScheduleDialog.editScheduleTitle": "Sperrzeitplan bearbeiten",
   "closableFormScheduleDialog.scheduleTypeLabel": "Art des Zeitplans",
   "closableFormScheduleDialog.cancel": "Abbrechen",
-  "closableFormScheduleDialog.save": "Speichern"
+  "closableFormScheduleDialog.ok": "OK"
 }

@@ -7,6 +7,7 @@ from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from sqlalchemy import text
 
@@ -23,6 +24,7 @@ from util.notifications import should_send_notification_mail
 from util.scheduled_closure import materialize_closures_now
 
 CLOSURE_SCHEDULES_JOB_ID = "apply_closure_schedules_daily"
+CLOSURE_MATERIALIZATION_IMMEDIATE_JOB_ID = "apply_closure_schedules_immediate"
 
 # Keep a module-level reference so we don't start multiple schedulers per process
 _scheduler: Optional[BackgroundScheduler] = None
@@ -188,6 +190,26 @@ def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> d
 
 def _run_send_notification_digests(app):
     send_notification_digests(app)
+
+
+def enqueue_closure_materialization(app) -> bool:
+    """Queue a one-shot closure materialization job to run as soon as possible.
+
+    Multiple requests coalesce into a single pending job. Returns False when the
+    background scheduler is not running (caller should materialize synchronously).
+    """
+    if not _scheduler or not _scheduler.running:
+        return False
+
+    _scheduler.add_job(
+        func=lambda: _run_apply_closure_schedules_with_lock(app),
+        trigger=DateTrigger(run_date=datetime.datetime.now(datetime.timezone.utc)),
+        id=CLOSURE_MATERIALIZATION_IMMEDIATE_JOB_ID,
+        max_instances=1,
+        coalesce=True,
+        replace_existing=True,
+    )
+    return True
 
 
 def _run_apply_closure_schedules_with_lock(app):

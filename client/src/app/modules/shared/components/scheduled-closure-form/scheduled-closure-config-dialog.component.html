@@ -46,57 +46,62 @@
           </div>
         </form>
 
-        <div class="grid mt-2" [hidden]="scheduleType === 'PERMANENT'">
-          <div class="col-12 md:col-6 flex flex-column gap-2">
-            <label class="form-label" [for]="'schedule-start'">{{
-              tf("scheduledClosureStartLabel")
-            }}</label>
-            <p-date-picker
-              [inputId]="'schedule-start'"
-              [ngModel]="startDate"
-              (ngModelChange)="onStartDateChange($event)"
-              [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
-              [defaultDate]="
-                scheduleType === 'ANNUAL'
-                  ? annualScheduleReferenceDate
-                  : undefined
-              "
-              [readonlyInput]="true"
-              appendTo="body"
-            ></p-date-picker>
+        @if (scheduleType !== 'PERMANENT') {
+          <div class="grid mt-2">
+            <div class="col-12 md:col-6 flex flex-column gap-2">
+              <label class="form-label" [for]="'schedule-start'">{{
+                tf("scheduledClosureStartLabel")
+              }}</label>
+              <p-date-picker
+                [inputId]="'schedule-start'"
+                [ngModel]="startDate"
+                (ngModelChange)="onStartDateChange($event)"
+                [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
+                [defaultDate]="
+                  scheduleType === 'ANNUAL'
+                    ? annualScheduleReferenceDate
+                    : undefined
+                "
+                [readonlyInput]="true"
+                appendTo="body"
+              ></p-date-picker>
+            </div>
+            <div class="col-12 md:col-6 flex flex-column gap-2">
+              <label class="form-label" [for]="'schedule-end'">{{
+                tf("scheduledClosureEndLabel")
+              }}</label>
+              <p-date-picker
+                [inputId]="'schedule-end'"
+                [ngModel]="endDate"
+                (ngModelChange)="onEndDateChange($event)"
+                [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
+                [defaultDate]="
+                  scheduleType === 'ANNUAL'
+                    ? annualScheduleReferenceDate
+                    : undefined
+                "
+                [minDate]="scheduleType === 'FIXED' ? startDate : undefined"
+                [readonlyInput]="true"
+                appendTo="body"
+              ></p-date-picker>
+              @if (showFixedEndDateError) {
+                <small class="lc-error">{{
+                  tf("fixedEndBeforeStartValidationError")
+                }}</small>
+              }
+            </div>
           </div>
-          <div class="col-12 md:col-6 flex flex-column gap-2">
-            <label class="form-label" [for]="'schedule-end'">{{
-              tf("scheduledClosureEndLabel")
-            }}</label>
-            <p-date-picker
-              [inputId]="'schedule-end'"
-              [ngModel]="endDate"
-              (ngModelChange)="onEndDateChange($event)"
-              [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
-              [defaultDate]="
-                scheduleType === 'ANNUAL'
-                  ? annualScheduleReferenceDate
-                  : undefined
-              "
-              [minDate]="scheduleType === 'FIXED' ? startDate : undefined"
-              [readonlyInput]="true"
-              appendTo="body"
-            ></p-date-picker>
-            @if (showFixedEndDateError) {
-              <small class="lc-error">{{
-                tf("fixedEndBeforeStartValidationError")
-              }}</small>
-            }
-          </div>
-        </div>
+        }
+        <p-message severity="info" icon="pi pi-info-circle" class="mt-2">
+          {{ tf("closureMaterializationInfo") }}
+        </p-message>
         <ng-template #footer>
           <p-button
             [label]="t('cancel')"
             severity="secondary"
             (onClick)="close()"
           />
-          <p-button [label]="t('save')" severity="primary" (onClick)="save()" />
+          <p-button [label]="t('ok')" severity="primary" (onClick)="save()" />
         </ng-template>
       </p-dialog>
     }

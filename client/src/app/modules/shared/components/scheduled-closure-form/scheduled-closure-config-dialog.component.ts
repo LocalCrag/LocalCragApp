@@ -19,6 +19,7 @@ import { Button } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
+import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import {
   ClosureSchedule,
@@ -46,6 +47,7 @@ import {
     Select,
     DatePickerModule,
     InputText,
+    Message,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

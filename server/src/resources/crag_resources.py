@@ -25,7 +25,7 @@ from util.bucket_placeholders import add_bucket_placeholders
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.scheduled_closure import (
     apply_closable_configuration,
-    materialize_closures_now,
+    finalize_closable_save,
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -85,7 +85,7 @@ class CreateCrag(MethodView):
 
         apply_closable_configuration(new_crag, crag_data, "crag_id")
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(new_crag)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_crag, created_by)
 
@@ -122,7 +122,7 @@ class UpdateCrag(MethodView):
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(crag)
 
         return crag_schema.dump(crag), 200
 

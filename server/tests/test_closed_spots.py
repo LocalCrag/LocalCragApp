@@ -130,6 +130,48 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     assert res["closed"] is True
 
 
+def test_remove_closure_schedule_from_crag(client, moderator_token):
+    any_file = File.query.first()
+    crag_data = {
+        "name": "brione",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
+        "rules": "Parken nur Samstag und Sonntag 2.",
+        "portraitImage": str(any_file.id),
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
+        "secret": False,
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Temporary works",
+            }
+        ],
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": None,
+    }
+
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    assert len(rv.json["closureSchedules"]) == 1
+    assert rv.json["closed"] is True
+
+    crag_data["closureSchedules"] = []
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    assert rv.json["closureSchedules"] == []
+    assert rv.json["closed"] is False
+
+
 # Test that creating a closed line in a closed area doesn't change the closed state of it's parents
 def test_secret_property_doesnt_change(client, moderator_token):
     any_file = File.query.first()

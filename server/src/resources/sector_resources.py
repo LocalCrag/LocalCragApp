@@ -29,7 +29,7 @@ from util.propagating_boolean_attrs import (
 )
 from util.scheduled_closure import (
     apply_closable_configuration,
-    materialize_closures_now,
+    finalize_closable_save,
 )
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
@@ -140,7 +140,7 @@ class CreateSector(MethodView):
         if not new_sector.secret:
             set_sector_parents_false(new_sector, "secret")
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(new_sector)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_sector, created_by)
 
@@ -177,7 +177,7 @@ class UpdateSector(MethodView):
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()
-        materialize_closures_now()
+        finalize_closable_save(sector)
 
         return sector_schema.dump(sector), 200
 
