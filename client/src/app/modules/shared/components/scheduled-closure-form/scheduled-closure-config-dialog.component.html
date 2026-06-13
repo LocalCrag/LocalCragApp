@@ -62,6 +62,17 @@
                     ? annualScheduleReferenceDate
                     : undefined
                 "
+                [minDate]="
+                  scheduleType === 'ANNUAL' ? annualScheduleMinDate : undefined
+                "
+                [maxDate]="
+                  scheduleType === 'ANNUAL' ? annualScheduleMaxDate : undefined
+                "
+                [panelStyleClass]="
+                  scheduleType === 'ANNUAL'
+                    ? 'lc-annual-closure-date-picker'
+                    : undefined
+                "
                 [readonlyInput]="true"
                 appendTo="body"
               ></p-date-picker>
@@ -80,7 +91,21 @@
                     ? annualScheduleReferenceDate
                     : undefined
                 "
-                [minDate]="scheduleType === 'FIXED' ? startDate : undefined"
+                [minDate]="
+                  scheduleType === 'FIXED'
+                    ? startDate
+                    : scheduleType === 'ANNUAL'
+                      ? annualScheduleMinDate
+                      : undefined
+                "
+                [maxDate]="
+                  scheduleType === 'ANNUAL' ? annualScheduleMaxDate : undefined
+                "
+                [panelStyleClass]="
+                  scheduleType === 'ANNUAL'
+                    ? 'lc-annual-closure-date-picker'
+                    : undefined
+                "
                 [readonlyInput]="true"
                 appendTo="body"
               ></p-date-picker>

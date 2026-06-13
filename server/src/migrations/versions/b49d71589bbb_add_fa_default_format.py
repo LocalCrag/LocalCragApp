@@ -1,4 +1,4 @@
-"""empty message
+"""Add fa default format
 
 Revision ID: b49d71589bbb
 Revises: 2fdca42b075f

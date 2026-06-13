@@ -38,6 +38,7 @@ from resources.blocweather_resources import GetNearestBlocweatherUrl
 from resources.closure_state_resources import (
     GetAreaClosureState,
     GetCragClosureState,
+    GetLineClosureState,
     GetSectorClosureState,
 )
 from resources.comment_resources import (
@@ -330,6 +331,9 @@ def configure_api(app):
     line_bp.add_url_rule("/<string:line_slug>", view_func=UpdateLine.as_view("update_line"))
     line_bp.add_url_rule("/<string:line_slug>", view_func=DeleteLine.as_view("delete_line"))
     line_bp.add_url_rule("/<string:line_slug>/move", view_func=MoveLine.as_view("move_line"))
+    line_bp.add_url_rule(
+        "/<string:line_slug>/closure-state", view_func=GetLineClosureState.as_view("get_line_closure_state")
+    )
     line_bp.add_url_rule(
         "/<string:line_slug>/line-paths/update-order",
         view_func=UpdateLinePathOrderForLine.as_view("update_line_path_order_for_line"),

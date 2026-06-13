@@ -1,6 +1,11 @@
 <ng-container *transloco="let t; read: 'line.line'">
-  @if (line?.closed) {
-    <lc-closed-spot-alert [reason]="line.closedReason"></lc-closed-spot-alert>
+  @if (line?.closedReasons?.length) {
+    <lc-closed-spot-alert [reasons]="line.closedReasons"></lc-closed-spot-alert>
+  }
+  @if (line?.upcomingClosureWarnings?.length) {
+    <lc-upcoming-closure-alert
+      [warnings]="line.upcomingClosureWarnings"
+    ></lc-upcoming-closure-alert>
   }
 
   @if (line && ticks) {

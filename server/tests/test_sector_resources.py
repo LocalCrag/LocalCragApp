@@ -70,7 +70,7 @@ def test_successful_create_sector(client, moderator_token):
     assert res["secret"] is False
     assert res["rules"] == "test rules"
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -112,7 +112,8 @@ def test_successful_get_sectors(client):
         assert r["orderIndex"] == s.order_index
         assert r["secret"] == s.secret
         assert r["closed"] == s.closed
-        assert r["closedReason"] == s.closed_reason
+        assert "closedReasons" not in r
+        assert "closureSchedules" not in r
         assert r["lineCount"] == s.line_count
         assert r["ascentCount"] == s.ascent_count
 
@@ -132,7 +133,7 @@ def test_successful_get_sector(client):
     assert res["rules"] is None
     assert res["secret"] is False
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
@@ -190,7 +191,7 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["secret"] is False
     assert res["rules"] == "test rules"
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

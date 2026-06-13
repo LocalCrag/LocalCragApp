@@ -44,7 +44,7 @@ def test_successful_create_crag(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["secret"] is False
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -86,7 +86,9 @@ def test_successful_get_crags(client):
         assert r["shortDescription"] == crag.short_description
         assert r["portraitImage"] is None or r["portraitImage"]["id"] == crag.portrait_image_id
         assert r["closed"] == crag.closed
-        assert r["closedReason"] == crag.closed_reason
+        assert "closedReasons" not in r
+        assert "closureSchedules" not in r
+        assert "upcomingClosureWarnings" not in r
         assert r["lineCount"] == crag.line_count
         assert r["ascentCount"] == crag.ascent_count
 
@@ -108,7 +110,8 @@ def test_successful_get_crag(client):
     assert len(res["mapMarkers"]) == len(crag.map_markers)
     assert res["secret"] == crag.secret
     assert res["closed"] == crag.closed
-    assert res["closedReason"] == crag.closed_reason
+    assert res["closedReasons"] == []
+    assert "upcomingClosureWarnings" in res
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
@@ -167,7 +170,7 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["secret"] is False
     assert res["id"] is not None
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -53,6 +54,8 @@ import {
     FormControlDirective,
   ],
   templateUrl: './scheduled-closure-config-dialog.component.html',
+  styleUrl: './scheduled-closure-config-dialog.component.scss',
+  encapsulation: ViewEncapsulation.None,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'closableForm' }],
 })
 export class ScheduledClosureConfigDialogComponent implements OnInit {
@@ -70,6 +73,16 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
     ANNUAL_SCHEDULE_REFERENCE_YEAR,
     0,
     1,
+  );
+  readonly annualScheduleMinDate = new Date(
+    ANNUAL_SCHEDULE_REFERENCE_YEAR,
+    0,
+    1,
+  );
+  readonly annualScheduleMaxDate = new Date(
+    ANNUAL_SCHEDULE_REFERENCE_YEAR,
+    11,
+    31,
   );
 
   private destroyRef = inject(DestroyRef);

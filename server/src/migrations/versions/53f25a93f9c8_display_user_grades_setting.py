@@ -1,4 +1,4 @@
-"""display user grades setting
+"""Add display_user_grades_ratings to instance settings.
 
 Revision ID: 53f25a93f9c8
 Revises: 68dd991d54f5

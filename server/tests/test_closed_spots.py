@@ -62,7 +62,7 @@ def test_create_closed_line_in_open_area(client, moderator_token):
     assert rv.status_code == 201
     res = rv.json
     assert res["closed"] is True
-    assert res["closedReason"] == "Missgünstige Verbandsgemeinde"
+    assert res["closedReasons"] == [{"reason": "Missgünstige Verbandsgemeinde"}]
 
     # Test, that area, sector and crag are still open
 
@@ -287,7 +287,6 @@ def test_move_line_into_closed_area_forces_line_closed(client, moderator_token):
 
     # Make target area closed directly in DB
     target_area.closed = True
-    target_area.closed_reason = "test"
     db.session.add(target_area)
     db.session.commit()
 
@@ -311,7 +310,6 @@ def test_move_area_into_closed_sector_forces_area_closed(client, moderator_token
 
     # Make target sector closed directly in DB
     target_sector.closed = True
-    target_sector.closed_reason = "test"
     db.session.add(target_sector)
     db.session.commit()
 
@@ -335,7 +333,6 @@ def test_move_sector_into_closed_crag_forces_sector_closed(client, moderator_tok
 
     # Make target crag closed directly in DB
     target_crag.closed = True
-    target_crag.closed_reason = "test"
     db.session.add(target_crag)
     db.session.commit()
 
@@ -366,7 +363,6 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
 
     # make target area closed directly in DB
     target_area.closed = True
-    target_area.closed_reason = "test"
     db.session.add(target_area)
     db.session.commit()
 
@@ -394,3 +390,33 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
     moved_line = Line.find_by_slug(line.slug)
     assert moved_line.area_id == target_area.id
     assert moved_line.closed is True
+
+
+def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_token):
+    crag_data = {
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Maintenance",
+            },
+            {
+                "scheduleType": "FIXED",
+                "startDate": "2026-01-01",
+                "endDate": "2026-12-31",
+                "reason": "Renovation",
+            },
+        ],
+    }
+
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["closed"] is True
+    assert res["closedReasons"] == [
+        {"reason": "Maintenance"},
+        {
+            "reason": "Renovation",
+            "startDate": "2026-01-01",
+            "endDate": "2026-12-31",
+        },
+    ]

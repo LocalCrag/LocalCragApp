@@ -1,4 +1,4 @@
-"""empty message
+"""Add ranking past weeks
 
 Revision ID: d1ead0ff6362
 Revises: d54a5f859d23

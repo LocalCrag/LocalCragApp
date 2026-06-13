@@ -168,7 +168,6 @@ def test_successful_get_crag_menu_structure(client):
 def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     area = Area.find_by_slug("dritter-block-von-links")
     area.closed = True
-    area.closed_reason = "Temporarily closed"
     db.session.add(area)
     db.session.commit()
 

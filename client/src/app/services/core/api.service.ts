@@ -251,6 +251,8 @@ export class ApiService {
     getListForLineEditor: (areaSlug: string): string =>
       `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    getClosureState: (slug: string): string =>
+      `${this.apiHost}lines/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`,
     move: (id: string): string => `${this.apiHost}lines/${id}/move`,

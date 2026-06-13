@@ -3,7 +3,10 @@ from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
-from marshmallow_schemas.mixins.is_closable import IsClosableSchemaMixin
+from marshmallow_schemas.mixins.is_closable import (
+    IsClosableDetailSchemaMixin,
+    IsClosableListSchemaMixin,
+)
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -29,7 +32,7 @@ class LineSchemaMin(BaseEntityMinSchema):
     archived = fields.Boolean()
 
 
-class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
+class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     name = fields.String()
     description = fields.String()
     slug = fields.String()
@@ -90,12 +93,16 @@ class LineSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     ascentCount = fields.Integer(attribute="ascent_count")
 
 
+class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin):
+    pass
+
+
 class PaginatedLinesSchema(ma.SQLAlchemySchema):
     items = fields.List(fields.Nested(LineSchema()))
     hasNext = fields.Boolean(attribute="has_next")
 
 
-line_schema = LineSchema()
+line_schema = LineDetailSchema()
 paginated_lines_schema = PaginatedLinesSchema()
 lines_schema = LineSchemaMin(many=True)
 ascent_and_todo_lines_schema = AscentAndTodoLineSchema()

@@ -1,16 +1,11 @@
 <ng-container *transloco="let t; read: 'closedSpotAlert'">
-  @if (reason) {
-    <p-message
-      severity="error"
-      [text]="t('closedWithReason', { reason })"
-      styleClass="w-full"
-    ></p-message>
-  }
-  @if (!reason) {
-    <p-message
-      severity="error"
-      [text]="t('closedWithoutReason')"
-      styleClass="w-full"
-    ></p-message>
-  }
+  <div class="flex flex-column gap-2 w-full">
+    @for (alert of displayAlerts; track $index) {
+      <p-message
+        severity="error"
+        [text]="alertText(alert)"
+        styleClass="w-full"
+      ></p-message>
+    }
+  </div>
 </ng-container>

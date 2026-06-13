@@ -47,7 +47,6 @@ def test_region_grades_exclude_closed_lines(client):
     assert baseline_count > 0
 
     line.closed = True
-    line.closed_reason = "Temporarily closed"
     db.session.add(line)
     db.session.commit()
 

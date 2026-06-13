@@ -8,9 +8,8 @@ class IsClosable:
     """
     Mixin for topo entities with closure schedules.
 
-    ``closed`` / ``closed_reason`` are materialized by the closure scheduler from
-    owned schedules and parent closure.
+    ``closed`` is materialized by the closure scheduler from owned schedules
+    and parent closure. Reasons are computed from schedules at read time.
     """
 
     closed = db.Column(db.Boolean, nullable=False, default=False)
-    closed_reason = db.Column(db.Text, nullable=True)

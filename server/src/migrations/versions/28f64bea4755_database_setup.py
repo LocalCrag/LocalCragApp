@@ -1,4 +1,4 @@
-"""empty message
+"""Initial database setup.
 
 Revision ID: 28f64bea4755
 Revises: 43fac44d1505

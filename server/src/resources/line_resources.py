@@ -68,12 +68,7 @@ class MoveLine(MethodView):
         if target_area.secret and not line.secret:
             update_line_propagating_boolean_attr(line, True, "secret")
         if target_area.closed and not line.closed:
-            update_line_propagating_boolean_attr(
-                line,
-                True,
-                "closed",
-                set_additionally={"closed_reason": target_area.closed_reason},
-            )
+            update_line_propagating_boolean_attr(line, True, "closed")
 
         db.session.add(line)
         db.session.commit()

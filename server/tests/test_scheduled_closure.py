@@ -7,10 +7,15 @@ from models.enums.closure_schedule_type_enum import ClosureScheduleTypeEnum
 from util.scheduled_closure import (
     active_schedules,
     closed_by_parent_schedule,
+    effective_closure_reason_alerts,
+    effective_closure_reasons,
     has_own_closure_source,
     is_schedule_active,
     materialized_closure_state,
+    next_schedule_activation_date,
+    own_closure_reasons,
     own_closure_state,
+    upcoming_closure_warnings,
     validate_closure_schedule_payload,
 )
 
@@ -30,7 +35,6 @@ class _StubSchedule:
 class _StubClosable:
     id = None
     closed = False
-    closed_reason = None
     closure_schedules = []
 
 
@@ -94,6 +98,50 @@ def test_permanent_schedule_closes_entity():
         )
     ]
     assert own_closure_state(entity) == (True, "Permanent")
+    assert own_closure_reasons(entity) == ["Permanent"]
+
+
+def test_multiple_active_schedule_reasons_are_all_returned():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Maintenance",
+        ),
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 12, 31),
+            reason="Renovation",
+        ),
+    ]
+    entity.closed = True
+    assert own_closure_reasons(entity, on_date=date(2026, 6, 1)) == [
+        "Maintenance",
+        "Renovation",
+    ]
+    assert effective_closure_reasons(entity, on_date=date(2026, 6, 1)) == [
+        "Maintenance",
+        "Renovation",
+    ]
+
+
+def test_duplicate_schedule_reasons_are_deduped():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Maintenance",
+        ),
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 12, 31),
+            reason="Maintenance",
+        ),
+    ]
+    entity.closed = True
+    assert own_closure_reasons(entity, on_date=date(2026, 6, 1)) == ["Maintenance"]
 
 
 def test_permanent_payload_accepts_minimal_fields():
@@ -120,9 +168,7 @@ def test_fixed_payload_requires_date_window():
 
 def test_materialized_inherits_parent_closure():
     entity = _StubClosable()
-    closed, reason = materialized_closure_state(entity, parent_closed=True, parent_reason="Parent nesting season")
-    assert closed is True
-    assert reason == "Parent nesting season"
+    assert materialized_closure_state(entity, parent_closed=True) is True
 
 
 def test_open_when_no_schedule():
@@ -146,3 +192,100 @@ def test_closed_by_parent_schedule_without_own_source():
     entity = _StubClosable()
     entity.closed = True
     assert closed_by_parent_schedule(entity)[0] is False
+
+
+def test_next_fixed_schedule_activation_date():
+    schedule = _StubSchedule(
+        schedule_type=ClosureScheduleTypeEnum.FIXED,
+        start_date=date(2026, 6, 10),
+        end_date=date(2026, 6, 30),
+    )
+    assert next_schedule_activation_date(schedule, date(2026, 6, 1)) == date(2026, 6, 10)
+    assert next_schedule_activation_date(schedule, date(2026, 6, 10)) is None
+
+
+def test_upcoming_fixed_schedule_within_horizon():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 6, 10),
+            end_date=date(2026, 6, 30),
+            reason="Renovation",
+        )
+    ]
+    warnings = upcoming_closure_warnings(entity, on_date=date(2026, 6, 1))
+    assert len(warnings) == 1
+    assert warnings[0]["startsOn"] == date(2026, 6, 10)
+    assert warnings[0]["reason"] == "Renovation"
+
+
+def test_upcoming_fixed_schedule_outside_horizon():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 7, 1),
+            end_date=date(2026, 7, 31),
+            reason="Renovation",
+        )
+    ]
+    assert upcoming_closure_warnings(entity, on_date=date(2026, 6, 1)) == []
+
+
+def test_upcoming_annual_schedule_within_horizon():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.ANNUAL,
+            start_month=6,
+            start_day=10,
+            end_month=8,
+            end_day=31,
+            reason="Bird nesting",
+        )
+    ]
+    warnings = upcoming_closure_warnings(entity, on_date=date(2026, 6, 1))
+    assert len(warnings) == 1
+    assert warnings[0]["startsOn"] == date(2026, 6, 10)
+
+
+def test_upcoming_warnings_shown_alongside_active_closure():
+    entity = _StubClosable()
+    entity.closed = True
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Maintenance",
+        ),
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 6, 10),
+            end_date=date(2026, 6, 30),
+            reason="Renovation",
+        ),
+    ]
+    on_date = date(2026, 6, 1)
+
+    alerts = effective_closure_reason_alerts(entity, on_date=on_date)
+    assert len(alerts) == 1
+    assert alerts[0]["reason"] == "Maintenance"
+
+    warnings = upcoming_closure_warnings(entity, on_date=on_date)
+    assert len(warnings) == 1
+    assert warnings[0]["startsOn"] == date(2026, 6, 10)
+    assert warnings[0]["reason"] == "Renovation"
+
+
+def test_active_alerts_without_materialized_closed_flag():
+    entity = _StubClosable()
+    entity.closed = False
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Maintenance",
+        )
+    ]
+
+    alerts = effective_closure_reason_alerts(entity, on_date=date(2026, 6, 1))
+    assert alerts == [{"reason": "Maintenance"}]

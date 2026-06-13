@@ -70,7 +70,7 @@ def test_successful_create_area(client, moderator_token):
     assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -166,7 +166,8 @@ def test_successful_get_areas(client):
         else:
             assert r["portraitImage"] is None
         assert r["closed"] == a.closed
-        assert r["closedReason"] == a.closed_reason
+        assert "closedReasons" not in r
+        assert "closureSchedules" not in r
         assert r["lineCount"] == a.line_count
         assert r["ascentCount"] == a.ascent_count
 
@@ -187,7 +188,7 @@ def test_successful_get_area(client):
     assert res["secret"] == area.secret
     assert res["portraitImage"] is None or res["portraitImage"]["id"] == area.portrait_image_id
     assert res["closed"] == area.closed
-    assert res["closedReason"] == area.closed_reason
+    assert isinstance(res["closedReasons"], list)
     assert res["blocweatherUrl"] == area.blocweather_url
 
 
@@ -240,7 +241,7 @@ def test_successful_edit_area(client, moderator_token):
     assert res["secret"] is False
     assert res["id"] is not None
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

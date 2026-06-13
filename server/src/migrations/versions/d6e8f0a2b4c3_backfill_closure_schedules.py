@@ -13,6 +13,7 @@ the closure:
 
 After inserting schedules for those owned closures, ``closed`` flags are
 re-materialized top-down so descendants inherit from the nearest scheduled ancestor.
+The legacy ``closed_reason`` columns are then dropped; reasons live on schedules only.
 """
 
 import sqlalchemy as sa
@@ -141,48 +142,47 @@ def _materialize_closures(connection, own_lines, own_areas, own_sectors, own_cra
     areas_by_sector = _areas_by_sector(areas)
     sectors_by_crag = _sectors_by_crag(sectors)
 
-    connection.execute(sa.text("UPDATE lines SET closed = FALSE, closed_reason = NULL"))
-    connection.execute(sa.text("UPDATE areas SET closed = FALSE, closed_reason = NULL"))
-    connection.execute(sa.text("UPDATE sectors SET closed = FALSE, closed_reason = NULL"))
-    connection.execute(sa.text("UPDATE crags SET closed = FALSE, closed_reason = NULL"))
+    connection.execute(sa.text("UPDATE lines SET closed = FALSE"))
+    connection.execute(sa.text("UPDATE areas SET closed = FALSE"))
+    connection.execute(sa.text("UPDATE sectors SET closed = FALSE"))
+    connection.execute(sa.text("UPDATE crags SET closed = FALSE"))
 
     for crag_id, crag in crags.items():
         crag_closed = crag_id in own_crags
-        crag_reason = crag["closed_reason"] if crag_closed else None
         connection.execute(
-            sa.text("UPDATE crags SET closed = :closed, closed_reason = :reason WHERE id = :id"),
-            {"closed": crag_closed, "reason": crag_reason, "id": crag_id},
+            sa.text("UPDATE crags SET closed = :closed WHERE id = :id"),
+            {"closed": crag_closed, "id": crag_id},
         )
 
         for sector_id in sectors_by_crag.get(crag_id, []):
-            sector = sectors[sector_id]
             sector_own = sector_id in own_sectors
             sector_closed = sector_own or crag_closed
-            sector_reason = sector["closed_reason"] if sector_own else crag_reason if crag_closed else None
             connection.execute(
-                sa.text("UPDATE sectors SET closed = :closed, closed_reason = :reason WHERE id = :id"),
-                {"closed": sector_closed, "reason": sector_reason, "id": sector_id},
+                sa.text("UPDATE sectors SET closed = :closed WHERE id = :id"),
+                {"closed": sector_closed, "id": sector_id},
             )
 
             for area_id in areas_by_sector.get(sector_id, []):
-                area = areas[area_id]
                 area_own = area_id in own_areas
                 area_closed = area_own or sector_closed
-                area_reason = area["closed_reason"] if area_own else sector_reason if sector_closed else None
                 connection.execute(
-                    sa.text("UPDATE areas SET closed = :closed, closed_reason = :reason WHERE id = :id"),
-                    {"closed": area_closed, "reason": area_reason, "id": area_id},
+                    sa.text("UPDATE areas SET closed = :closed WHERE id = :id"),
+                    {"closed": area_closed, "id": area_id},
                 )
 
                 for line_id in lines_by_area.get(area_id, []):
-                    line = lines[line_id]
                     line_own = line_id in own_lines
                     line_closed = line_own or area_closed
-                    line_reason = line["closed_reason"] if line_own else area_reason if area_closed else None
                     connection.execute(
-                        sa.text("UPDATE lines SET closed = :closed, closed_reason = :reason WHERE id = :id"),
-                        {"closed": line_closed, "reason": line_reason, "id": line_id},
+                        sa.text("UPDATE lines SET closed = :closed WHERE id = :id"),
+                        {"closed": line_closed, "id": line_id},
                     )
+
+
+def _drop_closed_reason_columns():
+    for table in ("crags", "sectors", "areas", "lines"):
+        with op.batch_alter_table(table) as batch_op:
+            batch_op.drop_column("closed_reason")
 
 
 def upgrade():
@@ -206,7 +206,12 @@ def upgrade():
         _insert_schedule(connection, "crag_id", crag_id, crags[crag_id]["closed_reason"])
 
     _materialize_closures(connection, own_lines, own_areas, own_sectors, own_crags, snapshot)
+    _drop_closed_reason_columns()
 
 
 def downgrade():
+    for table in ("crags", "sectors", "areas", "lines"):
+        with op.batch_alter_table(table) as batch_op:
+            batch_op.add_column(sa.Column("closed_reason", sa.Text(), nullable=True))
+
     op.execute(sa.text("DELETE FROM closure_schedules"))

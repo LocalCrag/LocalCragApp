@@ -1,32 +1,40 @@
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 
 from marshmallow_schemas.closure_state_schema import closure_state_schema
 from models.area import Area
 from models.crag import Crag
+from models.line import Line
 from models.sector import Sector
-from util.security_util import check_auth_claims
+from util.security_util import check_secret_spot_permission
 
 
 class GetCragClosureState(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
     def get(self, crag_slug):
-        """Materialized closure flags for a crag (used by child entity forms)."""
-        return closure_state_schema.dump(Crag.find_by_slug(crag_slug)), 200
+        """Materialized closure state for a crag (lazy-loaded from closed tags)."""
+        crag = Crag.find_by_slug(crag_slug)
+        check_secret_spot_permission(crag)
+        return closure_state_schema.dump(crag), 200
 
 
 class GetSectorClosureState(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
     def get(self, sector_slug):
-        """Materialized closure flags for a sector (used by child entity forms)."""
-        return closure_state_schema.dump(Sector.find_by_slug(sector_slug)), 200
+        """Materialized closure state for a sector (lazy-loaded from closed tags)."""
+        sector = Sector.find_by_slug(sector_slug)
+        check_secret_spot_permission(sector)
+        return closure_state_schema.dump(sector), 200
 
 
 class GetAreaClosureState(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
     def get(self, area_slug):
-        """Materialized closure flags for an area (used by child entity forms)."""
-        return closure_state_schema.dump(Area.find_by_slug(area_slug)), 200
+        """Materialized closure state for an area (lazy-loaded from closed tags)."""
+        area = Area.find_by_slug(area_slug)
+        check_secret_spot_permission(area)
+        return closure_state_schema.dump(area), 200
+
+
+class GetLineClosureState(MethodView):
+    def get(self, line_slug):
+        """Materialized closure state for a line (lazy-loaded from closed tags)."""
+        line = Line.find_by_slug(line_slug)
+        check_secret_spot_permission(line)
+        return closure_state_schema.dump(line), 200
