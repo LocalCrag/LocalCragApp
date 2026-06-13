@@ -190,9 +190,7 @@
         ></p-toggleButton>
       }
     </div>
-    @if (
-      ascentForm.get("fa").value && (gymMode$ | async) === false
-    ) {
+    @if (ascentForm.get("fa").value && (gymMode$ | async) === false) {
       <p-message styleClass="mt-2 ascent-form-alert" severity="info">
         {{ t("firstAscentExplanation") }}
       </p-message>
