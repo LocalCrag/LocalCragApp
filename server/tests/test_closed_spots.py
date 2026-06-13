@@ -393,7 +393,27 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
 
 
 def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_token):
+    any_file = File.query.first()
     crag_data = {
+        "name": "brione",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
+        "rules": "Parken nur Samstag und Sonntag 2.",
+        "portraitImage": str(any_file.id),
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
+        "secret": False,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": None,
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",
