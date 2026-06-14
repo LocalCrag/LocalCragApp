@@ -11,7 +11,6 @@
   "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
   "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
   "closableForm.closedByParentSchedule": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft.",
-  "closableForm.closedByParentScheduleWithReason": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft: {{reason}}",
   "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen",
   "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
   "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",

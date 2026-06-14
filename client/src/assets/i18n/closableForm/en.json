@@ -11,7 +11,6 @@
   "closableForm.scheduledClosureReasonLabel": "Reason during closure",
   "closableForm.scheduledClosureReasonPlaceholder": "e.g. bird nesting season...",
   "closableForm.closedByParentSchedule": "This spot is currently closed because a parent has an active closure schedule.",
-  "closableForm.closedByParentScheduleWithReason": "This spot is currently closed because a parent has an active closure schedule: {{reason}}",
   "closableFormScheduleDialog.createScheduleTitle": "Add closure schedule",
   "closableFormScheduleDialog.editScheduleTitle": "Edit closure schedule",
   "closableFormScheduleDialog.scheduleTypeLabel": "Schedule type",
