@@ -417,13 +417,13 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",
-                "reason": "Maintenance",
+                "reason": "Aggressive gamekeeper",
             },
             {
                 "scheduleType": "FIXED",
                 "startDate": "2026-01-01",
                 "endDate": "2026-12-31",
-                "reason": "Renovation",
+                "reason": "Access path washed away (again)",
             },
         ],
     }
@@ -433,9 +433,9 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
     res = rv.json
     assert res["closed"] is True
     assert res["closedReasons"] == [
-        {"reason": "Maintenance"},
+        {"reason": "Aggressive gamekeeper"},
         {
-            "reason": "Renovation",
+            "reason": "Access path washed away (again)",
             "startDate": "2026-01-01",
             "endDate": "2026-12-31",
         },

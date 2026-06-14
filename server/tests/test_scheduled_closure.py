@@ -53,7 +53,7 @@ def test_annual_schedule_active_in_window():
 def test_permanent_schedule_always_active():
     schedule = _StubSchedule(
         schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-        reason="Maintenance",
+        reason="Aggressive gamekeeper",
     )
     assert is_schedule_active(schedule, on_date=date(2026, 4, 30))
     assert is_schedule_active(schedule, on_date=date(2030, 1, 1))
@@ -64,7 +64,7 @@ def test_fixed_schedule_active_in_date_window():
         schedule_type=ClosureScheduleTypeEnum.FIXED,
         start_date=date(2026, 3, 1),
         end_date=date(2026, 5, 31),
-        reason="Renovation",
+        reason="Access path washed away (again)",
     )
     assert is_schedule_active(schedule, on_date=date(2026, 4, 15))
     assert not is_schedule_active(schedule, on_date=date(2026, 6, 1))
@@ -94,11 +94,11 @@ def test_permanent_schedule_closes_entity():
     entity.closure_schedules = [
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-            reason="Permanent",
+            reason="Landowner hates chalk",
         )
     ]
-    assert own_closure_state(entity) == (True, "Permanent")
-    assert own_closure_reasons(entity) == ["Permanent"]
+    assert own_closure_state(entity) == (True, "Landowner hates chalk")
+    assert own_closure_reasons(entity) == ["Landowner hates chalk"]
 
 
 def test_multiple_active_schedule_reasons_are_all_returned():
@@ -106,23 +106,23 @@ def test_multiple_active_schedule_reasons_are_all_returned():
     entity.closure_schedules = [
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-            reason="Maintenance",
+            reason="Aggressive gamekeeper",
         ),
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.FIXED,
             start_date=date(2026, 1, 1),
             end_date=date(2026, 12, 31),
-            reason="Renovation",
+            reason="Access path washed away (again)",
         ),
     ]
     entity.closed = True
     assert own_closure_reasons(entity, on_date=date(2026, 6, 1)) == [
-        "Maintenance",
-        "Renovation",
+        "Aggressive gamekeeper",
+        "Access path washed away (again)",
     ]
     assert effective_closure_reasons(entity, on_date=date(2026, 6, 1)) == [
-        "Maintenance",
-        "Renovation",
+        "Aggressive gamekeeper",
+        "Access path washed away (again)",
     ]
 
 
@@ -131,17 +131,17 @@ def test_duplicate_schedule_reasons_are_deduped():
     entity.closure_schedules = [
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-            reason="Maintenance",
+            reason="Aggressive gamekeeper",
         ),
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.FIXED,
             start_date=date(2026, 1, 1),
             end_date=date(2026, 12, 31),
-            reason="Maintenance",
+            reason="Aggressive gamekeeper",
         ),
     ]
     entity.closed = True
-    assert own_closure_reasons(entity, on_date=date(2026, 6, 1)) == ["Maintenance"]
+    assert own_closure_reasons(entity, on_date=date(2026, 6, 1)) == ["Aggressive gamekeeper"]
 
 
 def test_permanent_payload_accepts_minimal_fields():
@@ -211,13 +211,13 @@ def test_upcoming_fixed_schedule_within_horizon():
             schedule_type=ClosureScheduleTypeEnum.FIXED,
             start_date=date(2026, 6, 10),
             end_date=date(2026, 6, 30),
-            reason="Renovation",
+            reason="Access path washed away (again)",
         )
     ]
     warnings = upcoming_closure_warnings(entity, on_date=date(2026, 6, 1))
     assert len(warnings) == 1
     assert warnings[0]["startsOn"] == date(2026, 6, 10)
-    assert warnings[0]["reason"] == "Renovation"
+    assert warnings[0]["reason"] == "Access path washed away (again)"
 
 
 def test_upcoming_fixed_schedule_outside_horizon():
@@ -227,7 +227,7 @@ def test_upcoming_fixed_schedule_outside_horizon():
             schedule_type=ClosureScheduleTypeEnum.FIXED,
             start_date=date(2026, 7, 1),
             end_date=date(2026, 7, 31),
-            reason="Renovation",
+            reason="Access path washed away (again)",
         )
     ]
     assert upcoming_closure_warnings(entity, on_date=date(2026, 6, 1)) == []
@@ -242,7 +242,7 @@ def test_upcoming_annual_schedule_within_horizon():
             start_day=10,
             end_month=8,
             end_day=31,
-            reason="Bird nesting",
+            reason="Peregrine nesting season",
         )
     ]
     warnings = upcoming_closure_warnings(entity, on_date=date(2026, 6, 1))
@@ -256,25 +256,25 @@ def test_upcoming_warnings_shown_alongside_active_closure():
     entity.closure_schedules = [
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-            reason="Maintenance",
+            reason="Aggressive gamekeeper",
         ),
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.FIXED,
             start_date=date(2026, 6, 10),
             end_date=date(2026, 6, 30),
-            reason="Renovation",
+            reason="Access path washed away (again)",
         ),
     ]
     on_date = date(2026, 6, 1)
 
     alerts = effective_closure_reason_alerts(entity, on_date=on_date)
     assert len(alerts) == 1
-    assert alerts[0]["reason"] == "Maintenance"
+    assert alerts[0]["reason"] == "Aggressive gamekeeper"
 
     warnings = upcoming_closure_warnings(entity, on_date=on_date)
     assert len(warnings) == 1
     assert warnings[0]["startsOn"] == date(2026, 6, 10)
-    assert warnings[0]["reason"] == "Renovation"
+    assert warnings[0]["reason"] == "Access path washed away (again)"
 
 
 def test_active_alerts_without_materialized_closed_flag():
@@ -283,9 +283,9 @@ def test_active_alerts_without_materialized_closed_flag():
     entity.closure_schedules = [
         _StubSchedule(
             schedule_type=ClosureScheduleTypeEnum.PERMANENT,
-            reason="Maintenance",
+            reason="Aggressive gamekeeper",
         )
     ]
 
     alerts = effective_closure_reason_alerts(entity, on_date=date(2026, 6, 1))
-    assert alerts == [{"reason": "Maintenance"}]
+    assert alerts == [{"reason": "Aggressive gamekeeper"}]
