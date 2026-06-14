@@ -53,6 +53,7 @@ def test_successful_create_sector(client, moderator_token):
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -90,6 +91,7 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione?x=1",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -174,6 +176,7 @@ def test_successful_edit_sector(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
+        "closureSchedules": [],
     }
 
     rv = client.put("/api/sectors/schattental", token=moderator_token, json=sector_data)

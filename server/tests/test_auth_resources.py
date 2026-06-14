@@ -273,6 +273,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "lng": 42.42,
             "secret": False,
             "blocweatherUrl": None,
+            "closureSchedules": [],
         }
 
         rv = client.post("/api/crags", token=user_token, json=crag_data)
@@ -304,6 +305,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": None,
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)

@@ -26,6 +26,7 @@ def test_successful_create_crag(client, moderator_token):
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
@@ -64,6 +65,7 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)
@@ -153,6 +155,7 @@ def test_successful_edit_crag(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
+        "closureSchedules": [],
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)

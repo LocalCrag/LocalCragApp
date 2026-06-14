@@ -15,4 +15,4 @@ class ClosureScheduleArgsSchema(Schema):
 
 
 closure_schedule_args = ClosureScheduleArgsSchema()
-closure_schedules_field = fields.List(fields.Nested(closure_schedule_args), load_default=list)
+closure_schedules_field = fields.List(fields.Nested(closure_schedule_args), required=True)

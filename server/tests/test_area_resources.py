@@ -53,6 +53,7 @@ def test_successful_create_area(client, moderator_token):
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -92,9 +93,12 @@ def test_create_area_invalid_lat(client, moderator_token):
             }
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
+        "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
+        "blocweatherUrl": None,
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -116,9 +120,12 @@ def test_create_area_invalid_lng(client, moderator_token):
             }
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
+        "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
+        "blocweatherUrl": None,
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -137,6 +144,7 @@ def test_create_area_invalid_blocweather_url(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
@@ -224,6 +232,7 @@ def test_successful_edit_area(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/france/fontainebleau/bas-cuvier",
+        "closureSchedules": [],
     }
 
     rv = client.put("/api/areas/dritter-block-von-links", token=moderator_token, json=area_data)

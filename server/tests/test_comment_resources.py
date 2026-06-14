@@ -126,6 +126,7 @@ def test_cascade_delete_comments(client, moderator_token, member_token):
             "defaultSportScale": None,
             "defaultTradScale": None,
             "blocweatherUrl": None,
+            "closureSchedules": [],
         },
     )
     assert rv.status_code == 201
@@ -285,6 +286,7 @@ def test_create_comment_on_secret_area_returns_404_for_non_member(client, modera
             "defaultSportScale": None,
             "defaultTradScale": None,
             "blocweatherUrl": None,
+            "closureSchedules": [],
         },
     )
     assert rv.status_code == 201

@@ -483,7 +483,7 @@ def apply_closable_configuration(entity, data: dict[str, Any], fk_field: str) ->
     """Persist ``closureSchedules`` from a closable entity create/update payload."""
     db.session.add(entity)
     db.session.flush()
-    sync_closure_schedules(entity, list(data.get("closureSchedules") or []), fk_field)
+    sync_closure_schedules(entity, data["closureSchedules"], fk_field)
 
 
 def _set_materialized(entity: _ClosableLike, closed: bool) -> None:

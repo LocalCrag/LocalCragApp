@@ -14,6 +14,7 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": None,
+        "closureSchedules": [],
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
@@ -71,6 +72,7 @@ def test_successful_change_value_history(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
+        "closureSchedules": [],
     }
 
     rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
@@ -93,6 +95,7 @@ def test_history_respects_secret_flag(client, moderator_token):
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": None,
+        "closureSchedules": [],
     }
     rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
