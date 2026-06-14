@@ -81,7 +81,7 @@
   "lineForm.secretLabel": "Geheim",
   "lineForm.closedLabel": "Gesperrt",
   "lineForm.aPublicLineWillSetParentsToPublic": "Das erstellen einer nicht-geheimen Linie innerhalb eines geheimen Bereichs setzt den Bereich und dessen Sektor und Gebiet automatisch auch auf nicht-geheim, da man ansonsten nicht zur Linie navigieren kann. Andere bereits bestehende Linien, Bereiche und Sektoren bleiben geheim.",
-  "lineForm.closedBecauseParentIsClosed": "Diese Linie ist gesperrt, weil die übergeordnete Area derzeit gesperrt ist.",
+  "lineForm.closedBecauseParentIsClosed": "Diese Linie ist gesperrt, weil der übergeordnete Bereich derzeit gesperrt ist.",
   "lineForm.closedReasonLabel": "Grund der Sperrung",
   "lineForm.closedReasonPlaceholder": "z.B. Vogelbrut, ...",
   "lineForm.createLineButtonLabel": "Linie erstellen",
