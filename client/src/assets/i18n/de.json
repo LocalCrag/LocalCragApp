@@ -346,7 +346,7 @@
   "instanceSettings.instanceSettingsForm.languageLabel": "Standardsprache",
   "instanceSettings.instanceSettingsForm.instanceLanguageTooltip": "Die angezeigte Sprache von LocalCrag entscheidet sich in folgender Reihenfolge: 1. Nutzerpräferenz, 2. Browsersprache, 3. Standardsprache dieser Einstellung.",
   "instanceSettings.instanceSettingsForm.timezoneLabel": "Zeitzone",
-  "instanceSettings.instanceSettingsForm.timezoneTooltip": "Bestimmt, wann tägliche Sperrzeitpläne beginnen und enden. Jährliche Sperrungen wechseln um Mitternacht in dieser Zeitzone.",
+  "instanceSettings.instanceSettingsForm.timezoneTooltip": "Bestimmt, zu welchem Zeitpunkt Sperrzeitpläne beginnen und enden. Terminierte Pläne aktivieren und deaktivieren sich um Mitternacht in dieser Zeitzone.",
   "instanceSettings.instanceSettingsForm.imagesSettings": "Bilder",
   "instanceSettings.instanceSettingsForm.logoImageLabel": "Logo",
   "instanceSettings.instanceSettingsForm.faviconImageLabel": "Favicon",

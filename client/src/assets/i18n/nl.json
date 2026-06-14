@@ -346,7 +346,7 @@
   "instanceSettings.instanceSettingsForm.languageLabel": "Taal",
   "instanceSettings.instanceSettingsForm.instanceLanguageTooltip": "De taal weergegeven door LocalCrag wordt in de volgende volgorde bepaald: 1. Gebruikersvoorkeur, 2. Browsertaal, 3. Standaardtaal voor deze instelling.",
   "instanceSettings.instanceSettingsForm.timezoneLabel": "Tijdzone",
-  "instanceSettings.instanceSettingsForm.timezoneTooltip": "Bepaalt wanneer dagelijkse sluitingsschema's beginnen en eindigen. Jaarlijkse sluitingen wisselen om middernacht in deze tijdzone.",
+  "instanceSettings.instanceSettingsForm.timezoneTooltip": "Bepaalt wanneer sluitingsschema's beginnen en eindigen. Getimede schema's activeren en deactiveren zich om middernacht in deze tijdzone.",
   "instanceSettings.instanceSettingsForm.imagesSettings": "Foto's",
   "instanceSettings.instanceSettingsForm.logoImageLabel": "Logo",
   "instanceSettings.instanceSettingsForm.faviconImageLabel": "Favicon",
