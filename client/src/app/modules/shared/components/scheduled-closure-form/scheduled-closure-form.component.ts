@@ -68,9 +68,9 @@ export class ScheduledClosureFormComponent implements ControlValueAccessor {
 
   scheduleTitleKey(scheduleType: ClosureScheduleType): string {
     switch (scheduleType) {
-      case 'PERMANENT':
+      case ClosureScheduleType.PERMANENT:
         return 'permanentScheduleTitle';
-      case 'FIXED':
+      case ClosureScheduleType.FIXED:
         return 'fixedScheduleTitle';
       default:
         return 'annualScheduleTitle';

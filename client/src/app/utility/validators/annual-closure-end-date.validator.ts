@@ -1,4 +1,5 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { ClosureScheduleType } from '../../models/closure-schedule';
 
 const LEAP_YEAR = 2000; // leap year reference so Feb 29 is included in checks
 const DAYS_IN_LEAP_YEAR = 366;
@@ -47,7 +48,10 @@ export const annualClosureEndDateValidator =
   (): ValidatorFn =>
   (control: AbstractControl): { [key: string]: boolean } | null => {
     const group = control.parent;
-    if (!group || group.get('scheduleType')?.value !== 'ANNUAL') {
+    if (
+      !group ||
+      group.get('scheduleType')?.value !== ClosureScheduleType.ANNUAL
+    ) {
       return null;
     }
 

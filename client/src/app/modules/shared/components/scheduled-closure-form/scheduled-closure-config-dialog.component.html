@@ -46,7 +46,7 @@
           </div>
         </form>
 
-        @if (scheduleType !== "PERMANENT") {
+        @if (scheduleType !== ClosureScheduleType.PERMANENT) {
           <div class="grid mt-2">
             <div class="col-12 md:col-6 flex flex-column gap-2">
               <label class="form-label" [for]="'schedule-start'">{{
@@ -56,14 +56,16 @@
                 [inputId]="'schedule-start'"
                 [ngModel]="startDate"
                 (ngModelChange)="onStartDateChange($event)"
-                [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
+                [dateFormat]="
+                  scheduleType === ClosureScheduleType.FIXED ? 'dd.mm.yy' : 'dd.mm'
+                "
                 [defaultDate]="
-                  scheduleType === 'ANNUAL'
+                  scheduleType === ClosureScheduleType.ANNUAL
                     ? annualScheduleReferenceDate
                     : undefined
                 "
                 [panelStyleClass]="
-                  scheduleType === 'ANNUAL'
+                  scheduleType === ClosureScheduleType.ANNUAL
                     ? 'lc-annual-closure-date-picker'
                     : undefined
                 "
@@ -79,15 +81,21 @@
                 [inputId]="'schedule-end'"
                 [ngModel]="endDate"
                 (ngModelChange)="onEndDateChange($event)"
-                [dateFormat]="scheduleType === 'FIXED' ? 'dd.mm.yy' : 'dd.mm'"
+                [dateFormat]="
+                  scheduleType === ClosureScheduleType.FIXED ? 'dd.mm.yy' : 'dd.mm'
+                "
                 [defaultDate]="
-                  scheduleType === 'ANNUAL'
+                  scheduleType === ClosureScheduleType.ANNUAL
                     ? annualScheduleReferenceDate
                     : undefined
                 "
-                [minDate]="scheduleType === 'FIXED' ? startDate : undefined"
+                [minDate]="
+                  scheduleType === ClosureScheduleType.FIXED
+                    ? startDate
+                    : undefined
+                "
                 [panelStyleClass]="
-                  scheduleType === 'ANNUAL'
+                  scheduleType === ClosureScheduleType.ANNUAL
                     ? 'lc-annual-closure-date-picker'
                     : undefined
                 "

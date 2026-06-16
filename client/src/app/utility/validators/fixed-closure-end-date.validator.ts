@@ -1,4 +1,5 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { ClosureScheduleType } from '../../models/closure-schedule';
 import { formatLocalCalendarDate } from '../local-calendar-date';
 
 /**
@@ -9,7 +10,10 @@ export const fixedClosureEndDateValidator =
   (): ValidatorFn =>
   (control: AbstractControl): { [key: string]: boolean } | null => {
     const group = control.parent;
-    if (!group || group.get('scheduleType')?.value !== 'FIXED') {
+    if (
+      !group ||
+      group.get('scheduleType')?.value !== ClosureScheduleType.FIXED
+    ) {
       return null;
     }
 

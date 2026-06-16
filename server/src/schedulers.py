@@ -21,7 +21,7 @@ from util.email import send_notification_digest_email
 from util.instance_timezone import get_instance_timezone_name
 from util.moderator_task_notifications import should_show_notification_to_user
 from util.notifications import should_send_notification_mail
-from util.scheduled_closure import materialize_closures_now
+from util.scheduled_closure import apply_materialized_closures
 
 CLOSURE_SCHEDULES_JOB_ID = "apply_closure_schedules_daily"
 CLOSURE_MATERIALIZATION_IMMEDIATE_JOB_ID = "apply_closure_schedules_immediate"
@@ -232,7 +232,7 @@ def _run_apply_closure_schedules_with_lock(app):
                 return
 
             app.logger.info("Starting apply_closure_schedules job.")
-            materialize_closures_now()
+            apply_materialized_closures()
             app.logger.info("Completed apply_closure_schedules job.")
         except Exception:
             db.session.rollback()

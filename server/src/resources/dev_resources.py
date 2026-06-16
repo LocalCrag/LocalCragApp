@@ -3,7 +3,7 @@ from flask.views import MethodView
 
 from schedulers import send_notification_digests
 from util.flask_environment import development_only
-from util.scheduled_closure import materialize_closures_now
+from util.scheduled_closure import apply_materialized_closures
 
 
 class TriggerNotificationDigestMails(MethodView):
@@ -23,5 +23,5 @@ class TriggerClosureMaterialization(MethodView):
 
     @development_only
     def post(self):
-        materialize_closures_now()
+        apply_materialized_closures()
         return jsonify({"status": "ok"}), 200

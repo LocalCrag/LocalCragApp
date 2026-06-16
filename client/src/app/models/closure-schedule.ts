@@ -1,4 +1,8 @@
-export type ClosureScheduleType = 'ANNUAL' | 'PERMANENT' | 'FIXED';
+export enum ClosureScheduleType {
+  ANNUAL = 'ANNUAL',
+  PERMANENT = 'PERMANENT',
+  FIXED = 'FIXED',
+}
 
 export class ClosureSchedule {
   id: string | null = null;
@@ -31,13 +35,13 @@ export class ClosureSchedule {
       scheduleType: schedule.scheduleType,
       reason: schedule.reason,
     };
-    if (schedule.scheduleType === 'ANNUAL') {
+    if (schedule.scheduleType === ClosureScheduleType.ANNUAL) {
       payload.startMonth = schedule.startMonth;
       payload.startDay = schedule.startDay;
       payload.endMonth = schedule.endMonth;
       payload.endDay = schedule.endDay;
     }
-    if (schedule.scheduleType === 'FIXED') {
+    if (schedule.scheduleType === ClosureScheduleType.FIXED) {
       payload.startDate = schedule.startDate;
       payload.endDate = schedule.endDate;
     }

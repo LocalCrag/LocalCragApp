@@ -1,9 +1,17 @@
-"""Closure schedules and materialization into persisted closed flags.
+"""Closure schedules and materialized closed flags for closable topo entities.
 
-Schedules are stored on closable topo entities (crag, sector, area, line). The
-``closed`` column is derived: recomputed from owned schedules and parent closure
-via ``apply_materialized_closures`` / ``materialize_closures_now``. Reasons are
-computed at read time from active schedules.
+Each crag, sector, area, and line may own multiple closure schedules:
+
+* **ANNUAL** — recurring month/day window (may wrap across year end)
+* **FIXED** — closed between ``start_date`` and ``end_date``
+* **PERMANENT** — closed indefinitely
+
+``closed`` and ``closure_is_permanent`` are **materialized** on each entity from
+owned active schedules and parent closure (propagated top-down). They are
+recomputed by ``apply_materialized_closures`` and after saves via
+``finalize_closable_save``. Closure reasons and date ranges are
+**computed at read time** from active schedules on the entity or its nearest
+closing ancestor.
 """
 
 from __future__ import annotations
@@ -66,7 +74,7 @@ def _annual_window_active(
 
 
 def is_schedule_active(schedule: ClosureSchedule, on_date: Optional[date] = None) -> bool:
-    """Return whether ``schedule`` applies on ``on_date`` (defaults to today)."""
+    """Return whether ``schedule`` applies on ``on_date`` (defaults to server-local today)."""
     on_date = on_date or date.today()
 
     if schedule.schedule_type == ClosureScheduleTypeEnum.PERMANENT:
@@ -161,7 +169,7 @@ def own_closure_reasons(entity: _ClosableLike, on_date: Optional[date] = None) -
 
 
 def own_closure_state(entity: _ClosableLike, on_date: Optional[date] = None) -> Tuple[bool, Optional[str]]:
-    """Return closure contributed by the entity's own schedules, ignoring parents."""
+    """Return ``(closed, first_reason)`` from the entity's own active schedules only."""
     active = active_schedules(entity.closure_schedules, on_date)
     if active:
         reasons = own_closure_reasons(entity, on_date)
@@ -174,7 +182,7 @@ def materialized_closure_state(
     parent_closed: bool = False,
     on_date: Optional[date] = None,
 ) -> bool:
-    """Return effective closure for ``entity``: own schedule wins, else inherit from parent."""
+    """Return effective closure: own active schedule, else inherit ``parent_closed``."""
     own_closed, _ = own_closure_state(entity, on_date)
     if own_closed:
         return True
@@ -262,7 +270,7 @@ def ancestor_closure_alerts(entity, on_date: Optional[date] = None) -> list[dict
 
 
 def effective_closure_reason_alerts(entity: _ClosableLike, on_date: Optional[date] = None) -> list[dict[str, Any]]:
-    """Return closure alerts that apply to ``entity`` for display."""
+    """Return display alerts from own active schedules, else the nearest closing ancestor."""
     on_date = on_date or instance_local_date()
 
     own = schedule_closure_alerts(entity.closure_schedules, on_date)
@@ -315,7 +323,7 @@ def effective_active_schedules(entity: _ClosableLike, on_date: Optional[date] = 
 
 
 def computed_closure_is_permanent(entity: _ClosableLike, closed: bool, on_date: Optional[date] = None) -> bool:
-    """Return whether ``closed`` on ``entity`` is driven by a permanent schedule."""
+    """Return whether effective closure on ``entity`` includes an active PERMANENT schedule."""
     if not closed:
         return False
     schedules = effective_active_schedules(entity, on_date)
@@ -386,7 +394,7 @@ def _append_upcoming_warnings(
 
 
 def _inherited_closure_schedules(entity) -> list[ClosureSchedule]:
-    """Schedules on ancestors that can propagate closure to ``entity``."""
+    """All schedules on ancestors that may propagate closure or upcoming warnings to ``entity``."""
     if isinstance(entity, Line):
         area = Area.find_by_id(entity.area_id)
         return _ancestor_closure_schedules_from_area(area, include_self=True)
@@ -466,7 +474,7 @@ def _validate_annual_window(data: dict[str, Any]) -> None:
 
 
 def _annual_payload_covers_entire_year(data: dict[str, Any]) -> bool:
-    """Return whether an ANNUAL payload closes every calendar day in a year."""
+    """Return whether an ANNUAL month/day window leaves no open day in a leap year."""
     reference_year = 2000  # leap year so Feb 29 is included in the check
     for month in range(1, 13):
         for day in range(1, 32):
@@ -541,7 +549,7 @@ def _schedule_from_payload(data: dict[str, Any], schedule: ClosureSchedule) -> N
     schedule.end_day = data.get("endDay")
 
 
-def sync_closure_schedules(entity, schedules_data: list[dict[str, Any]], fk_field: str) -> None:
+def _sync_closure_schedules(entity, schedules_data: list[dict[str, Any]], fk_field: str) -> None:
     """Create, update, or delete owned schedules so they match ``schedules_data``."""
     validate_closure_schedules_payload(schedules_data)
     incoming_ids = {str(item["id"]) for item in schedules_data if item.get("id")}
@@ -571,7 +579,7 @@ def apply_closable_configuration(entity, data: dict[str, Any], fk_field: str) ->
     """Persist ``closureSchedules`` from a closable entity create/update payload."""
     db.session.add(entity)
     db.session.flush()
-    sync_closure_schedules(entity, data["closureSchedules"], fk_field)
+    _sync_closure_schedules(entity, data["closureSchedules"], fk_field)
 
 
 def _set_materialized_closure(entity: _ClosableLike, closed: bool, closure_is_permanent: bool) -> None:
@@ -588,7 +596,7 @@ def _set_materialized_closure(entity: _ClosableLike, closed: bool, closure_is_pe
 
 
 def apply_materialized_closures(on_date: Optional[date] = None) -> None:
-    """Recompute persisted ``closed`` flags for the full topo tree and commit."""
+    """Recompute ``closed`` and ``closure_is_permanent`` for the full topo tree and commit."""
     on_date = on_date or instance_local_date()
 
     for crag in Crag.query.all():
@@ -626,13 +634,8 @@ def apply_materialized_closures(on_date: Optional[date] = None) -> None:
     db.session.commit()
 
 
-def materialize_closures_now() -> None:
-    """Apply closure schedules immediately using the instance-local calendar date."""
-    apply_materialized_closures()
-
-
 def materialize_own_closure(entity: _ClosableLike, on_date: Optional[date] = None) -> None:
-    """Update the saved entity's materialized closure flags from its own schedules."""
+    """Update ``closed`` and ``closure_is_permanent`` on ``entity`` from its own schedules only."""
     on_date = on_date or instance_local_date()
     closed, _ = own_closure_state(entity, on_date)
     _set_materialized_closure(
@@ -652,14 +655,14 @@ def request_closure_materialization() -> None:
     from schedulers import enqueue_closure_materialization
 
     if "pytest" in sys.modules:
-        materialize_closures_now()
+        apply_materialized_closures()
         return
 
     if not enqueue_closure_materialization(current_app._get_current_object()):
-        materialize_closures_now()
+        apply_materialized_closures()
 
 
 def finalize_closable_save(entity: _ClosableLike) -> None:
-    """Persist the saved entity's own closure state and queue full-tree materialization."""
+    """Materialize the saved entity's own closure flags, then queue full-tree materialization."""
     materialize_own_closure(entity)
     request_closure_materialization()

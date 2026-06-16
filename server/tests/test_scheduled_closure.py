@@ -343,17 +343,17 @@ def test_validate_annual_full_year_rejected():
         )
 
 
-def test_validate_annual_full_year_rejected_when_dates_reversed():
-    with pytest.raises(BadRequest):
-        validate_closure_schedule_payload(
-            {
-                "scheduleType": "ANNUAL",
-                "startMonth": 12,
-                "startDay": 31,
-                "endMonth": 1,
-                "endDay": 1,
-            }
-        )
+def test_validate_annual_reversed_adjacent_days_accepted():
+    """Dec 31 → Jan 1 is only two closed days despite reversed picker order."""
+    validate_closure_schedule_payload(
+        {
+            "scheduleType": "ANNUAL",
+            "startMonth": 12,
+            "startDay": 31,
+            "endMonth": 1,
+            "endDay": 1,
+        }
+    )
 
 
 def test_validate_annual_full_year_rejected_when_wraparound_covers_year():
@@ -386,11 +386,25 @@ def test_validate_annual_adjacent_year_end_days_accepted():
         {
             "scheduleType": "ANNUAL",
             "startMonth": 12,
-            "startDay": 31,
+            "startDay": 30,
             "endMonth": 12,
-            "endDay": 30,
+            "endDay": 31,
         }
     )
+
+
+def test_validate_annual_adjacent_year_end_days_reversed_rejected():
+    """Dec 31 → Dec 30 wraps and closes the entire year."""
+    with pytest.raises(BadRequest):
+        validate_closure_schedule_payload(
+            {
+                "scheduleType": "ANNUAL",
+                "startMonth": 12,
+                "startDay": 31,
+                "endMonth": 12,
+                "endDay": 30,
+            }
+        )
 
 
 def test_validate_annual_partial_year_accepted():

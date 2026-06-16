@@ -71,6 +71,8 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
   startDate: Date | null = null;
   endDate: Date | null = null;
   readonly scheduleTypes = CLOSURE_SCHEDULE_TYPES;
+  /** Exposed for template comparisons. */
+  protected readonly ClosureScheduleType = ClosureScheduleType;
   /** Stable reference — do not recreate on every change detection (PrimeNG re-renders otherwise). */
   annualScheduleReferenceDate = new Date(annualScheduleReferenceYear(), 0, 1);
 
@@ -83,11 +85,11 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
       .get('scheduleType')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((scheduleType) => {
-        if (scheduleType === 'PERMANENT') {
+        if (scheduleType === ClosureScheduleType.PERMANENT) {
           this.scheduleForm.patchValue({ startDate: null, endDate: null });
           this.startDate = null;
           this.endDate = null;
-        } else if (scheduleType === 'FIXED') {
+        } else if (scheduleType === ClosureScheduleType.FIXED) {
           const start = this.scheduleForm.get('startDate')
             ?.value as Date | null;
           const end = this.scheduleForm.get('endDate')?.value as Date | null;
@@ -112,14 +114,16 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
   }
 
   get scheduleType(): ClosureScheduleType {
-    return this.scheduleForm.get('scheduleType')?.value ?? 'ANNUAL';
+    return (
+      this.scheduleForm.get('scheduleType')?.value ?? ClosureScheduleType.ANNUAL
+    );
   }
 
   scheduleTypeLabelKey(type: ClosureScheduleType): string {
     switch (type) {
-      case 'PERMANENT':
+      case ClosureScheduleType.PERMANENT:
         return 'permanentScheduleTitle';
-      case 'FIXED':
+      case ClosureScheduleType.FIXED:
         return 'fixedScheduleTitle';
       default:
         return 'annualScheduleTitle';
@@ -129,7 +133,7 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
   open(schedule?: ClosureSchedule): void {
     if (!schedule) {
       schedule = new ClosureSchedule();
-      schedule.scheduleType = 'ANNUAL';
+      schedule.scheduleType = ClosureScheduleType.ANNUAL;
     }
     this.annualScheduleReferenceDate = new Date(
       annualScheduleReferenceYear(),
@@ -154,7 +158,7 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
   get showFixedEndDateError(): boolean {
     const endDate = this.scheduleForm.get('endDate');
     return (
-      this.scheduleType === 'FIXED' &&
+      this.scheduleType === ClosureScheduleType.FIXED &&
       !!endDate?.touched &&
       !!endDate?.hasError('fixedEndBeforeStart')
     );
@@ -164,7 +168,7 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
     const endDate = this.scheduleForm.get('endDate');
     const startDate = this.scheduleForm.get('startDate');
     const errorKey = this.annualEndDateErrorKey;
-    if (!errorKey || this.scheduleType !== 'ANNUAL') {
+    if (!errorKey || this.scheduleType !== ClosureScheduleType.ANNUAL) {
       return false;
     }
     if (errorKey === 'annualDatesRequiredValidationError') {
@@ -189,7 +193,9 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
 
   onStartDateChange(value: Date | null): void {
     const date =
-      this.scheduleType === 'ANNUAL' ? normalizeAnnualPickerDate(value) : value;
+      this.scheduleType === ClosureScheduleType.ANNUAL
+        ? normalizeAnnualPickerDate(value)
+        : value;
     this.startDate = date;
     this.scheduleForm.get('startDate')?.setValue(date);
     this.scheduleForm.get('startDate')?.markAsTouched();
@@ -197,14 +203,16 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
 
   onEndDateChange(value: Date | null): void {
     const date =
-      this.scheduleType === 'ANNUAL' ? normalizeAnnualPickerDate(value) : value;
+      this.scheduleType === ClosureScheduleType.ANNUAL
+        ? normalizeAnnualPickerDate(value)
+        : value;
     this.endDate = date;
     this.scheduleForm.get('endDate')?.setValue(date);
     this.scheduleForm.get('endDate')?.markAsTouched();
   }
 
   save(): void {
-    if (this.scheduleType === 'ANNUAL') {
+    if (this.scheduleType === ClosureScheduleType.ANNUAL) {
       this.scheduleForm.get('startDate')?.markAsTouched();
       this.scheduleForm.get('endDate')?.markAsTouched();
       this.scheduleForm.get('endDate')?.updateValueAndValidity();

@@ -27,7 +27,7 @@ def test_closure_materialization_dev_endpoint_disabled_outside_development(clien
 
 def test_closure_materialization_dev_endpoint_triggers_materialization(client):
     with patch("util.flask_environment.is_development_mode", return_value=True):
-        with patch("resources.dev_resources.materialize_closures_now") as mock_materialize:
+        with patch("resources.dev_resources.apply_materialized_closures") as mock_materialize:
             rv = client.post("/api/dev/apply-closure-schedules")
     assert rv.status_code == 200
     assert rv.json == {"status": "ok"}

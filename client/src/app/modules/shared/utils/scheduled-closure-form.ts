@@ -16,9 +16,9 @@ export function annualScheduleReferenceYear(): number {
 }
 
 export const CLOSURE_SCHEDULE_TYPES: ClosureScheduleType[] = [
-  'ANNUAL',
-  'FIXED',
-  'PERMANENT',
+  ClosureScheduleType.ANNUAL,
+  ClosureScheduleType.FIXED,
+  ClosureScheduleType.PERMANENT,
 ];
 
 export function monthDayToDate(
@@ -66,7 +66,7 @@ function scheduleToFormDates(schedule?: Partial<ClosureSchedule>): {
   startDate: Date | null;
   endDate: Date | null;
 } {
-  if (schedule?.scheduleType === 'FIXED') {
+  if (schedule?.scheduleType === ClosureScheduleType.FIXED) {
     return {
       startDate: schedule.startDate
         ? parseLocalCalendarDate(schedule.startDate)
@@ -77,7 +77,10 @@ function scheduleToFormDates(schedule?: Partial<ClosureSchedule>): {
     };
   }
 
-  if (schedule?.scheduleType === 'ANNUAL' || schedule?.scheduleType == null) {
+  if (
+    schedule?.scheduleType === ClosureScheduleType.ANNUAL ||
+    schedule?.scheduleType == null
+  ) {
     return {
       startDate: monthDayToDate(schedule?.startMonth, schedule?.startDay),
       endDate: monthDayToDate(schedule?.endMonth, schedule?.endDay),
@@ -93,7 +96,10 @@ export function buildClosureScheduleDialogForm(
 ): FormGroup {
   const dates = scheduleToFormDates(schedule);
   const group = fb.group({
-    scheduleType: [schedule?.scheduleType ?? 'ANNUAL', [Validators.required]],
+    scheduleType: [
+      schedule?.scheduleType ?? ClosureScheduleType.ANNUAL,
+      [Validators.required],
+    ],
     reason: [schedule?.reason ?? null],
     startDate: [dates.startDate],
     endDate: [
@@ -132,7 +138,7 @@ export function readClosureScheduleFromDialogForm(
   schedule.startDate = null;
   schedule.endDate = null;
 
-  if (value.scheduleType === 'ANNUAL') {
+  if (value.scheduleType === ClosureScheduleType.ANNUAL) {
     const start = dateToMonthDay(value.startDate);
     const end = dateToMonthDay(value.endDate);
     schedule.startMonth = start.month;
@@ -141,7 +147,7 @@ export function readClosureScheduleFromDialogForm(
     schedule.endDay = end.day;
   }
 
-  if (value.scheduleType === 'FIXED') {
+  if (value.scheduleType === ClosureScheduleType.FIXED) {
     schedule.startDate = value.startDate
       ? formatLocalCalendarDate(value.startDate)
       : null;
@@ -163,7 +169,7 @@ function formatIsoDateLabel(value: string): string {
 export function formatScheduleSummary(schedule: ClosureSchedule): string {
   const parts: string[] = [];
 
-  if (schedule.scheduleType === 'ANNUAL') {
+  if (schedule.scheduleType === ClosureScheduleType.ANNUAL) {
     if (
       schedule.startMonth != null &&
       schedule.startDay != null &&
@@ -174,7 +180,7 @@ export function formatScheduleSummary(schedule: ClosureSchedule): string {
         `${padDayMonth(schedule.startDay)}.${padDayMonth(schedule.startMonth)}. – ${padDayMonth(schedule.endDay)}.${padDayMonth(schedule.endMonth)}.`,
       );
     }
-  } else if (schedule.scheduleType === 'FIXED') {
+  } else if (schedule.scheduleType === ClosureScheduleType.FIXED) {
     if (schedule.startDate && schedule.endDate) {
       parts.push(
         `${formatIsoDateLabel(schedule.startDate)} – ${formatIsoDateLabel(schedule.endDate)}`,

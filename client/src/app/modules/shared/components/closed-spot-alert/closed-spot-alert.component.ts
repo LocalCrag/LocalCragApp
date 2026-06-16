@@ -13,7 +13,6 @@ import {
   styleUrl: './closed-spot-alert.component.scss',
 })
 export class ClosedSpotAlertComponent {
-  @Input() reason: string | null = null;
   @Input() reasons: ClosureReasonAlert[] | null = null;
 
   private translocoService = inject(TranslocoService);
@@ -21,11 +20,6 @@ export class ClosedSpotAlertComponent {
   get displayAlerts(): ClosureReasonAlert[] {
     if (this.reasons?.length) {
       return this.reasons;
-    }
-    if (this.reason?.trim()) {
-      const alert = new ClosureReasonAlert();
-      alert.reason = this.reason.trim();
-      return [alert];
     }
     return [new ClosureReasonAlert()];
   }
