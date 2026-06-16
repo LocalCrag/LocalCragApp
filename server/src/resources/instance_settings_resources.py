@@ -11,6 +11,8 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.region import Region
 from models.sector import Sector
+from schedulers import reschedule_closure_materialization_job
+from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
 
@@ -38,6 +40,7 @@ class UpdateInstanceSettings(MethodView):
     def put(self):
         instance_settings_data = parser.parse(instance_settings_args, request)
         instance_settings: InstanceSettings = InstanceSettings.return_it()
+        previous_timezone = instance_settings.timezone
 
         instance_settings.instance_name = instance_settings_data["instanceName"]
         instance_settings.copyright_owner = instance_settings_data["copyrightOwner"]
@@ -61,6 +64,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
         instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
         instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]
+        instance_settings.timezone = instance_settings_data["timezone"]
 
         if instance_settings_data["skippedHierarchicalLayers"] > instance_settings.skipped_hierarchical_layers:
             if instance_settings_data["skippedHierarchicalLayers"] >= 1:
@@ -101,6 +105,10 @@ class UpdateInstanceSettings(MethodView):
 
         db.session.add(instance_settings)
         db.session.commit()
+
+        if previous_timezone != instance_settings.timezone:
+            reschedule_closure_materialization_job(current_app._get_current_object())
+            request_closure_materialization()
 
         instance_settings_response = instance_settings_schema.dump(instance_settings)
         instance_settings_response = add_fixed_instance_settings(instance_settings_response)

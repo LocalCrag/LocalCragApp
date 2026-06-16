@@ -1,0 +1,21 @@
+{
+  "closableForm.closureSchedulesLabel": "Sperrzeitpläne",
+  "closableForm.closureMaterializationInfo": "Nach dem Speichern kann es einige Sekunden dauern, bis Sperrzustände bei untergeordneten Spots aktualisiert sind.",
+  "closableForm.addSchedule": "Sperrzeitplan hinzufügen",
+  "closableForm.annualScheduleTitle": "Jährliche Sperrung",
+  "closableForm.fixedScheduleTitle": "Zeitlich begrenzte Sperrung",
+  "closableForm.permanentScheduleTitle": "Dauerhafte Sperrung",
+  "closableForm.scheduledClosureStartLabel": "Von",
+  "closableForm.scheduledClosureEndLabel": "Bis",
+  "closableForm.fixedEndBeforeStartValidationError": "Das Enddatum muss am oder nach dem Startdatum liegen.",
+  "closableForm.annualDatesRequiredValidationError": "Start- und Enddatum sind erforderlich.",
+  "closableForm.annualCoversEntireYearValidationError": "Jährliche Sperrungen müssen mindestens einen offenen Tag pro Jahr lassen; verwende stattdessen eine dauerhafte Sperrung.",
+  "closableForm.scheduledClosureReasonLabel": "Grund der Sperrung",
+  "closableForm.scheduledClosureReasonPlaceholder": "z.B. Vogelbrutzeit...",
+  "closableForm.closedByParentSchedule": "Dieser Spot ist derzeit gesperrt, weil ein übergeordneter Spot einen aktiven Sperrzeitplan hat.",
+  "closableFormScheduleDialog.createScheduleTitle": "Sperrzeitplan hinzufügen",
+  "closableFormScheduleDialog.editScheduleTitle": "Sperrzeitplan bearbeiten",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Art des Zeitplans",
+  "closableFormScheduleDialog.cancel": "Abbrechen",
+  "closableFormScheduleDialog.ok": "OK"
+}

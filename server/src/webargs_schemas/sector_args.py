@@ -2,11 +2,11 @@ from marshmallow import Schema, validate
 from webargs import fields
 
 from util.validators import blocweather_url_validator
+from webargs_schemas.closure_schedule_args import closure_schedules_field
 from webargs_schemas.map_marker_args import map_marker_args
-from webargs_schemas.mixins.is_closable import IsClosableWebargsMixin
 
 
-class SectorArgsSchema(Schema, IsClosableWebargsMixin):
+class SectorArgsSchema(Schema):
     name = fields.Str(required=True, validate=validate.Length(max=120))
     description = fields.Str(required=True, allow_none=True)
     shortDescription = fields.Str(required=True, allow_none=True)
@@ -18,6 +18,7 @@ class SectorArgsSchema(Schema, IsClosableWebargsMixin):
     defaultSportScale = fields.Str(required=True, allow_none=True)
     defaultTradScale = fields.Str(required=True, allow_none=True)
     blocweatherUrl = fields.Str(required=True, allow_none=True, validate=blocweather_url_validator)
+    closureSchedules = closure_schedules_field
 
 
 sector_args = SectorArgsSchema()

@@ -1,4 +1,4 @@
-"""Add 9A+ to default FB boulder scale
+"""Add 9a+ grade to FB boulder scale.
 
 Revision ID: c4e8f1a92b10
 Revises: b7a5737f7400

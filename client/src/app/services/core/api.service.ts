@@ -162,6 +162,8 @@ export class ApiService {
     create: (): string => `${this.apiHost}crags`,
     getList: (): string => `${this.apiHost}crags`,
     getDetail: (slug: string): string => `${this.apiHost}crags/${slug}`,
+    getClosureState: (slug: string): string =>
+      `${this.apiHost}crags/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}crags/${slug}`,
     update: (slug: string): string => `${this.apiHost}crags/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}crags/${slug}/grades`,
@@ -174,6 +176,8 @@ export class ApiService {
     getList: (cragSlug: string): string =>
       `${this.apiHost}crags/${cragSlug}/sectors`,
     getDetail: (slug: string): string => `${this.apiHost}sectors/${slug}`,
+    getClosureState: (slug: string): string =>
+      `${this.apiHost}sectors/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     update: (slug: string): string => `${this.apiHost}sectors/${slug}`,
     getGrades: (slug: string): string =>
@@ -191,6 +195,8 @@ export class ApiService {
     getList: (sectorSlug: string): string =>
       `${this.apiHost}sectors/${sectorSlug}/areas`,
     getDetail: (slug: string): string => `${this.apiHost}areas/${slug}`,
+    getClosureState: (slug: string): string =>
+      `${this.apiHost}areas/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}areas/${slug}`,
     update: (slug: string): string => `${this.apiHost}areas/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}areas/${slug}/grades`,
@@ -245,6 +251,8 @@ export class ApiService {
     getListForLineEditor: (areaSlug: string): string =>
       `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    getClosureState: (slug: string): string =>
+      `${this.apiHost}lines/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`,
     move: (id: string): string => `${this.apiHost}lines/${id}/move`,

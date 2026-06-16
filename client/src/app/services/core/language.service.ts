@@ -190,6 +190,7 @@ export class LanguageService {
         'topoImage/',
         'linePath/',
         'maps/',
+        'closableForm/',
       ].flatMap((path) => [
         this.transloco.load(path + lang),
         ...(this.gymMode ? [this.transloco.load(path + lang + '-gym')] : []),

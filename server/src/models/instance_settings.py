@@ -34,6 +34,7 @@ class InstanceSettings(db.Model):
     bar_chart_color = db.Column(db.String(30), nullable=False, server_default="rgb(213, 30, 38)")
     bar_chart_accent_color = db.Column(db.String(30), nullable=False, server_default="rgb(250, 204, 21)")
     language = db.Column(db.String(10), nullable=False, default="en", server_default="en")
+    timezone = db.Column(db.String(64), nullable=False, default="UTC", server_default="UTC")
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
     maptiler_api_key = db.Column(db.String(120), nullable=True)

@@ -1,4 +1,4 @@
-"""empty message
+"""Notification system
 
 Revision ID: 128e1bc574bc
 Revises: c1b2a9d5e77f

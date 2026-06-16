@@ -49,7 +49,6 @@ def test_completion_excludes_closed_lines_by_default(client):
 
     line = Line.find_by_id(ascent.line_id)
     line.closed = True
-    line.closed_reason = "Temporarily closed"
     db.session.add(line)
     db.session.commit()
 
@@ -71,7 +70,6 @@ def test_completion_can_include_closed_lines(client):
 
     line = Line.find_by_id(ascent.line_id)
     line.closed = True
-    line.closed_reason = "Temporarily closed"
     db.session.add(line)
     db.session.commit()
 
@@ -93,7 +91,6 @@ def test_completion_excludes_closed_parent_spots_by_default(client):
 
     area = Area.find_by_id(ascent.area_id)
     area.closed = True
-    area.closed_reason = "Temporarily closed area"
     db.session.add(area)
     db.session.commit()
 

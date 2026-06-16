@@ -49,12 +49,11 @@ def test_successful_create_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -72,7 +71,7 @@ def test_successful_create_sector(client, moderator_token):
     assert res["secret"] is False
     assert res["rules"] == "test rules"
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
     assert res["defaultTradScale"] is None
@@ -88,12 +87,11 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "mapMarkers": [],
         "rules": None,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione?x=1",
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
@@ -116,7 +114,8 @@ def test_successful_get_sectors(client):
         assert r["orderIndex"] == s.order_index
         assert r["secret"] == s.secret
         assert r["closed"] == s.closed
-        assert r["closedReason"] == s.closed_reason
+        assert "closedReasons" not in r
+        assert "closureSchedules" not in r
         assert r["lineCount"] == s.line_count
         assert r["ascentCount"] == s.ascent_count
 
@@ -136,7 +135,7 @@ def test_successful_get_sector(client):
     assert res["rules"] is None
     assert res["secret"] is False
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
@@ -173,12 +172,11 @@ def test_successful_edit_sector(client, moderator_token):
         ],
         "rules": "test rules",
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
+        "closureSchedules": [],
     }
 
     rv = client.put("/api/sectors/schattental", token=moderator_token, json=sector_data)
@@ -196,7 +194,7 @@ def test_successful_edit_sector(client, moderator_token):
     assert res["secret"] is False
     assert res["rules"] == "test rules"
     assert res["closed"] is False
-    assert res["closedReason"] is None
+    assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None

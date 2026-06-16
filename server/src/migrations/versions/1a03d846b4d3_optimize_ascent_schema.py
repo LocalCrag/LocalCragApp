@@ -1,4 +1,4 @@
-"""empty message
+"""Optimize ascent schema
 
 Revision ID: 1a03d846b4d3
 Revises: 8b1eb056b52a

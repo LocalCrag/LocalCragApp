@@ -27,7 +27,7 @@
   "sectorForm.closedReasonLabel": "Reden voor sluiting",
   "sectorForm.closedReasonPlaceholder": "bijv. vogelnest...",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Als je een zichtbare sector binnen een verborgen klimmuurgebied aanmaakt, dan zal het klimmuurgebied automatisch zichtbaar worden, anders kunt u niet naar de sector navigeren. Andere reeds bestaande sectoren blijven verborgen.",
-  "sectorForm.openingAClosedSectorWillSetParentsToOpen": "Het openen van een gesloten sector binnen een gesloten klimmuurgebied zet de status van het klimmuurgebied ook automatisch op open. Andere reeds bestaande sectoren blijven gesloten.",
+  "sectorForm.closedBecauseParentIsClosed": "Deze sector is gesloten omdat het bovenliggende klimgebied momenteel gesloten is.",
   "sectorForm.createSectorButtonLabel": "Sector aanmaken",
   "sectorForm.editSectorButtonLabel": "Wijzigingen opslaan",
   "sectorForm.cancelButtonLabel": "Annuleren",

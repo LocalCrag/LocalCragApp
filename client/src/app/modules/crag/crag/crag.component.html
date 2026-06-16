@@ -2,7 +2,12 @@
   <p-card header="{{ crag?.name }}">
     <div class="flex gap-1">
       @if (crag?.closed) {
-        <lc-closed-spot-tag></lc-closed-spot-tag>
+        <lc-closed-spot-tag
+          spotType="crag"
+          [slug]="crag.slug"
+          [reasons]="crag.closedReasons"
+          [closureIsPermanent]="crag.closureIsPermanent"
+        ></lc-closed-spot-tag>
       }
       @if (crag?.secret) {
         <lc-secret-spot-tag></lc-secret-spot-tag>

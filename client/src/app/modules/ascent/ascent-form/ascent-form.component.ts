@@ -128,9 +128,7 @@ export class AscentFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
-    this.gymMode$ = this.store
-      .select(selectGymMode)
-      .pipe(take(1));
+    this.gymMode$ = this.store.select(selectGymMode).pipe(take(1));
 
     this.ascent = this.dialogConfig.data.ascent;
     this.ascentForm.disable();

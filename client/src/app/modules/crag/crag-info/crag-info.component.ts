@@ -11,6 +11,7 @@ import { Season } from '../../../models/season';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
@@ -31,6 +32,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   imports: [
     TranslocoDirective,
     ClosedSpotAlertComponent,
+    UpcomingClosureAlertComponent,
     GradeDistributionBarChartComponent,
     SanitizeHtmlPipe,
     CoordinatesButtonComponent,

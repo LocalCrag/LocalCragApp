@@ -1,4 +1,4 @@
-"""empty message
+"""Add fa date
 
 Revision ID: 2fdca42b075f
 Revises: 3bda486a1a70

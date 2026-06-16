@@ -1,0 +1,45 @@
+<ng-container *transloco="let t; read: 'closableForm.closableForm'">
+  <div class="flex flex-column gap-2" lcControlGroup>
+    <label class="form-label">{{ t("closureSchedulesLabel") }}</label>
+    <div class="flex flex-column gap-2">
+      <div class="flex flex-column gap-2 mb-2">
+        @for (schedule of schedules; track schedule) {
+          <div class="flex flex-row gap-1">
+            <p-tag class="schedule-tag">
+              <i class="pi pi-calendar mr-2"></i>
+              {{ t(scheduleTitleKey(schedule.scheduleType)) }}
+              @if (scheduleSummary(schedule)) {
+                <span>: {{ scheduleSummary(schedule) }}</span>
+              }
+              <p-button
+                [disabled]="isDisabled"
+                text
+                icon="pi pi-pencil"
+                (click)="configDialog.open(schedule)"
+              />
+              <p-button
+                [disabled]="isDisabled"
+                text
+                severity="danger"
+                icon="pi pi-trash"
+                (click)="removeSchedule(schedule)"
+              />
+            </p-tag>
+          </div>
+        }
+      </div>
+
+      <p-button
+        icon="pi pi-plus"
+        [label]="t('addSchedule')"
+        class="w-full"
+        [disabled]="isDisabled"
+        (click)="configDialog.open()"
+      />
+      <lc-scheduled-closure-config-dialog
+        #configDialog
+        (newSchedule)="addSchedule($event)"
+      />
+    </div>
+  </div>
+</ng-container>

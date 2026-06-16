@@ -1,0 +1,37 @@
+:host {
+  display: inline-flex;
+}
+
+.closed-spot-tag-trigger {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+:host ::ng-deep p-tag.closed-spot-tag .p-tag-label:empty {
+  display: none;
+}
+
+:host ::ng-deep .closed-spot-tag-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.closed-spot-tag-popover-content {
+  min-width: 14rem;
+  max-width: 24rem;
+}
+
+:host ::ng-deep .closed-spot-tag-popover-content lc-closed-spot-alert {
+  display: block;
+  margin-top: 0;
+}
+
+:host ::ng-deep .closed-spot-tag-spinner {
+  width: 2rem;
+  height: 2rem;
+}
+
+.closed-spot-tag-error {
+  color: var(--red-500);
+}

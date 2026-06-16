@@ -25,7 +25,7 @@
   "areaForm.closedReasonLabel": "Reden voor sluiting",
   "areaForm.closedReasonPlaceholder": "Leg uit waarom het is gesloten...",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Het maken van een zichtbare klimwand binnen een verborgen klimgebied stelt het klimgebied automatisch in op zichtbaar. Andere reeds bestaande gebieden en sectoren blijven verborgen.",
-  "areaForm.openingAClosedAreaWillSetParentsToOpen": "Het openen van een gesloten klimwand binnen een gesloten sector stelt de sector en de bijbehorende klimgebied automatisch in op open. Andere reeds bestaande gebieden en sectoren blijven gesloten.",
+  "areaForm.closedBecauseParentIsClosed": "Deze klimwand is gesloten omdat de bovenliggende sector momenteel gesloten is.",
   "areaForm.createAreaButtonLabel": "klimwand aanmaken",
   "areaForm.editAreaButtonLabel": "Wijzigingen opslaan",
   "areaForm.cancelButtonLabel": "Annuleren",

@@ -32,7 +32,6 @@ import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/
 import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
-import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
@@ -60,7 +59,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Message,
     LeveledGradeDistributionComponent,
     SanitizeHtmlPipe,
-    ClosedSpotAlertComponent,
   ],
 })
 export class SectorListComponent implements OnInit {
