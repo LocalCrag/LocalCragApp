@@ -27,7 +27,7 @@
   "sectorForm.closedReasonLabel": "Grund der Sperrung",
   "sectorForm.closedReasonPlaceholder": "z.B. Vogelbrut, ...",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Das erstellen eines nicht-geheimen Sektors innerhalb eines geheimen Gebiets setzt das Gebiet automatisch auch auf nicht-geheim, da man ansonsten nicht zum Sektor navigieren kann. Andere bereits bestehende Sektoren bleiben geheim.",
-  "sectorForm.openingAClosedSectorWillSetParentsToOpen": "Das erstellen eines nicht-gesperrten Sektors innerhalb eines gesperrten Gebiets setzt das Gebiet automatisch auch auf nicht-gesperrt. Andere bereits bestehende Sektoren bleiben gesperrt.",
+  "sectorForm.closedBecauseParentIsClosed": "Dieser Sektor ist gesperrt, weil das übergeordnete Gebiet derzeit gesperrt ist.",
   "sectorForm.createSectorButtonLabel": "Sektor erstellen",
   "sectorForm.editSectorButtonLabel": "Änderungen speichern",
   "sectorForm.cancelButtonLabel": "Abbrechen",

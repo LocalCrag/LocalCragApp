@@ -81,7 +81,7 @@
   "lineForm.secretLabel": "Segreto",
   "lineForm.closedLabel": "Interdetto",
   "lineForm.aPublicLineWillSetParentsToPublic": "La creazione di un problema non segreto all'interno di un'area segreta rende automaticamente la rispettiva area, settore e zona non segrete, altrimenti non è possibile raggiungere il problema. Gli altri problemi, aree e settori preesistenti restano segreti.",
-  "lineForm.openingAClosedLineWillSetParentsToOpen": "La creazione di un problema non interdetto all'interno di un'area interdetta rende automaticamente la rispettiva area, settore e zona non interdette. Gli altri problemi, aree e settori preesistenti restano interdetti.",
+  "lineForm.closedBecauseParentIsClosed": "Questo problema è interdetto perché l'area superiore è attualmente interdetta.",
   "lineForm.closedReasonLabel": "Motivo della chiusura",
   "lineForm.closedReasonPlaceholder": "ad es. nido di uccelli...",
   "lineForm.createLineButtonLabel": "Aggiungi Problema",

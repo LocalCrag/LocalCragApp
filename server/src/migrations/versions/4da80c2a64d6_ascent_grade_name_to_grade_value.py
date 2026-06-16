@@ -1,4 +1,4 @@
-"""ascent.grade_name to grade_value
+"""Replace ascent grade_name and grade_scale with grade_value.
 
 Revision ID: 4da80c2a64d6
 Revises: 1a595b68e980

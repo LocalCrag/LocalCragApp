@@ -242,7 +242,13 @@
                                   ></lc-line-bool-prop-list>
                                 }
                                 @if (linePath.line.closed) {
-                                  <lc-closed-spot-tag></lc-closed-spot-tag>
+                                  <lc-closed-spot-tag
+                                    spotType="line"
+                                    [slug]="linePath.line.slug"
+                                    [closureIsPermanent]="
+                                      linePath.line.closureIsPermanent
+                                    "
+                                  ></lc-closed-spot-tag>
                                 }
                               </div>
                             </div>

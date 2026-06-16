@@ -63,7 +63,7 @@ class BatchCreateLines(MethodView):
             new_line.created_by_id = created_by.id
 
             new_line.closed = area.closed
-            new_line.closed_reason = area.closed_reason
+            new_line.closure_is_permanent = area.closure_is_permanent
 
             db.session.add(new_line)
 

@@ -272,9 +272,8 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "lat": 12.13,
             "lng": 42.42,
             "secret": False,
-            "closed": False,
-            "closedReason": None,
             "blocweatherUrl": None,
+            "closureSchedules": [],
         }
 
         rv = client.post("/api/crags", token=user_token, json=crag_data)
@@ -302,12 +301,11 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             }
         ],
         "secret": False,
-        "closed": False,
-        "closedReason": None,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
         "blocweatherUrl": None,
+        "closureSchedules": [],
     }
 
     rv = client.post("/api/crags", token=moderator_token, json=crag_data)

@@ -30,6 +30,7 @@ export class InstanceSettings {
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
   language: LanguageCode;
+  timezone: string;
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
@@ -68,6 +69,7 @@ export class InstanceSettings {
     instanceSettings.defaultStartingPosition = payload.defaultStartingPosition;
     instanceSettings.rankingPastWeeks = payload.rankingPastWeeks;
     instanceSettings.language = payload.language;
+    instanceSettings.timezone = payload.timezone ?? 'UTC';
     return instanceSettings;
   }
 
@@ -104,6 +106,7 @@ export class InstanceSettings {
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
       language: instanceSettings.language,
+      timezone: instanceSettings.timezone,
     };
   }
 }

@@ -29,6 +29,7 @@ export interface InstanceSettingsState {
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
   language: LanguageCode;
+  timezone: string;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -55,6 +56,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
   language: null,
+  timezone: 'UTC',
 };
 
 const instanceSettingsReducer = createReducer(
@@ -84,6 +86,7 @@ const instanceSettingsReducer = createReducer(
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,
     language: action.settings.language,
+    timezone: action.settings.timezone,
   })),
 );
 

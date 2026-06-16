@@ -1,4 +1,4 @@
-"""empty message
+"""Regenerate slugs blocked by the slug blocklist.
 
 Revision ID: 43fac44d1505
 Revises: 019f6bdbb573

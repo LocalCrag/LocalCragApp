@@ -1,4 +1,4 @@
-"""empty message
+"""Fix editor placeholder configuration.
 
 Revision ID: 7d381d88dc85
 Revises: b318163f4e81

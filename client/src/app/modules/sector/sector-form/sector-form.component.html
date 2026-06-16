@@ -229,51 +229,14 @@
               [defaultMarkerType]="MapMarkerType.SECTOR"
             ></lc-map-marker-form-array>
           </div>
-          @if (sector?.slug !== environment.skippedSlug) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
-              <div class="flex flex-column gap-2">
-                <div class="flex">
-                  <p-checkbox
-                    inputId="secret"
-                    name="secret"
-                    [binary]="true"
-                    formControlName="secret"
-                    lcFormControl
-                  ></p-checkbox>
-                  <label [for]="'secret'" class="ml-2">{{
-                    t("secretLabel")
-                  }}</label>
-                </div>
-                <div class="flex">
-                  <p-checkbox
-                    inputId="closed"
-                    name="closed"
-                    [binary]="true"
-                    formControlName="closed"
-                    lcFormControl
-                  ></p-checkbox>
-                  <label [for]="'closed'" class="ml-2">{{
-                    t("closedLabel")
-                  }}</label>
-                </div>
-              </div>
-            </div>
-          }
-          @if (sectorForm.get("closed").value) {
-            <div class="flex flex-column gap-2" lcControlGroup>
-              <label class="form-label" for="closedReason">{{
-                t("closedReasonLabel")
-              }}</label>
-              <input
-                id="closedReason"
-                type="text"
-                pInputText
-                formControlName="closedReason"
-                placeholder="{{ t('closedReasonPlaceholder') }}"
-                lcFormControl
-              />
-            </div>
+          <lc-scheduled-closure-form
+            formControlName="closureSchedules"
+            lcFormControl
+          />
+          @if (parentClosureState?.closed) {
+            <p-message severity="info" icon="pi pi-info-circle">
+              {{ t("closedBecauseParentIsClosed") }}
+            </p-message>
           }
           <div class="grid align-items-center">
             <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
@@ -331,10 +294,24 @@
               {{ t("aPublicSectorWillSetParentsToPublic") }}
             </p-message>
           }
-          @if (parentCrag?.closed && !sectorForm.get("closed").value) {
-            <p-message severity="warn" icon="pi pi-info-circle">
-              {{ t("openingAClosedSectorWillSetParentsToOpen") }}
-            </p-message>
+          @if (sector?.slug !== environment.skippedSlug) {
+            <div class="flex flex-column gap-2" lcControlGroup>
+              <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
+              <div class="flex flex-column gap-2">
+                <div class="flex">
+                  <p-checkbox
+                    inputId="secret"
+                    name="secret"
+                    [binary]="true"
+                    formControlName="secret"
+                    lcFormControl
+                  ></p-checkbox>
+                  <label [for]="'secret'" class="ml-2">{{
+                    t("secretLabel")
+                  }}</label>
+                </div>
+              </div>
+            </div>
           }
         </form>
         <div class="form-actions">

@@ -1,4 +1,4 @@
-"""empty message
+"""Reactions
 
 Revision ID: b7a5737f7400
 Revises: 05ebc3b1cffa

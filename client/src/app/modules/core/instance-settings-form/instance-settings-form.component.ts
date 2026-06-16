@@ -42,6 +42,7 @@ import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { StartingPosition } from '../../../enums/starting-position';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -94,6 +95,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   }[] = [];
   public rankingPastWeeksOptions: { label: string; value: number | null }[] =
     [];
+  public timezoneOptions = getInstanceTimezoneOptions();
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -174,6 +176,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       defaultStartingPosition: [null, [Validators.required]],
       rankingPastWeeks: [null],
       language: [null],
+      timezone: [null, [Validators.required]],
     });
   }
 
@@ -206,6 +209,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
       rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
       language: this.instanceSettings.language,
+      timezone: this.instanceSettings.timezone,
     });
   }
 
@@ -263,6 +267,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('rankingPastWeeks').value;
       instanceSettings.language =
         this.instanceSettingsForm.get('language').value;
+      instanceSettings.timezone =
+        this.instanceSettingsForm.get('timezone').value;
       this.instanceSettingsService
         .updateInstanceSettings(instanceSettings)
         .subscribe({

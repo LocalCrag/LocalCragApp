@@ -1,0 +1,21 @@
+{
+  "closableForm.closureSchedulesLabel": "Closure schedules",
+  "closableForm.closureMaterializationInfo": "After saving, it can take a few seconds until closed states are updated across child spots.",
+  "closableForm.addSchedule": "Add closure schedule",
+  "closableForm.annualScheduleTitle": "Annual closure",
+  "closableForm.fixedScheduleTitle": "Fixed closure",
+  "closableForm.permanentScheduleTitle": "Permanent closure",
+  "closableForm.scheduledClosureStartLabel": "From",
+  "closableForm.scheduledClosureEndLabel": "Until",
+  "closableForm.fixedEndBeforeStartValidationError": "The end date must be on or after the start date.",
+  "closableForm.annualDatesRequiredValidationError": "Start and end dates are required.",
+  "closableForm.annualCoversEntireYearValidationError": "Annual schedules must leave at least one open day per year; use permanent closure instead.",
+  "closableForm.scheduledClosureReasonLabel": "Reason during closure",
+  "closableForm.scheduledClosureReasonPlaceholder": "e.g. bird nesting season...",
+  "closableForm.closedByParentSchedule": "This spot is currently closed because a parent has an active closure schedule.",
+  "closableFormScheduleDialog.createScheduleTitle": "Add closure schedule",
+  "closableFormScheduleDialog.editScheduleTitle": "Edit closure schedule",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Schedule type",
+  "closableFormScheduleDialog.cancel": "Cancel",
+  "closableFormScheduleDialog.ok": "OK"
+}

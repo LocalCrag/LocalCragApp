@@ -128,18 +128,14 @@
                     ></lc-ascent-count>
                     <div class="flex gap-1">
                       @if (sector.closed) {
-                        <lc-closed-spot-tag></lc-closed-spot-tag>
+                        <lc-closed-spot-tag
+                          spotType="sector"
+                          [slug]="sector.slug"
+                          [closureIsPermanent]="sector.closureIsPermanent"
+                        ></lc-closed-spot-tag>
                       }
                       @if (sector.secret) {
                         <lc-secret-spot-tag></lc-secret-spot-tag>
-                      }
-                    </div>
-                    <div class="flex gap-1">
-                      @if (sector.closed) {
-                        <lc-closed-spot-alert
-                          class="mt-0"
-                          [reason]="sector.closedReason"
-                        ></lc-closed-spot-alert>
                       }
                     </div>
                   </div>

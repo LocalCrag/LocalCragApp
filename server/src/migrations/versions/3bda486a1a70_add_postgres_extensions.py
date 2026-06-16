@@ -1,4 +1,4 @@
-"""empty message
+"""Add required PostgreSQL extensions.
 
 Revision ID: 3bda486a1a70
 Revises: 4306dc5f0c18

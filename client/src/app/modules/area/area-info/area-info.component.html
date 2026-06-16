@@ -1,7 +1,14 @@
 <ng-container *transloco="let t; read: 'area.area'">
   @if (area) {
-    @if (area.closed) {
-      <lc-closed-spot-alert [reason]="area.closedReason"></lc-closed-spot-alert>
+    @if (area.closedReasons?.length) {
+      <lc-closed-spot-alert
+        [reasons]="area.closedReasons"
+      ></lc-closed-spot-alert>
+    }
+    @if (area.upcomingClosureWarnings?.length) {
+      <lc-upcoming-closure-alert
+        [warnings]="area.upcomingClosureWarnings"
+      ></lc-upcoming-closure-alert>
     }
     <lc-current-conditions
       *isOutdoorMode="true"

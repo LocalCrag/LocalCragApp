@@ -50,15 +50,19 @@ def test_create_closed_line_in_open_area(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": True,
-        "closedReason": "Missgünstige Verbandsgemeinde",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Missgünstige Verbandsgemeinde",
+            }
+        ],
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["closed"] is True
-    assert res["closedReason"] == "Missgünstige Verbandsgemeinde"
+    assert res["closedReasons"] == [{"reason": "Missgünstige Verbandsgemeinde"}]
 
     # Test, that area, sector and crag are still open
 
@@ -96,8 +100,12 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
             }
         ],
         "secret": False,
-        "closed": True,
-        "closedReason": "Aggressiver Jagdpächter",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Aggressiver Jagdpächter",
+            }
+        ],
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -122,6 +130,48 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     assert res["closed"] is True
 
 
+def test_remove_closure_schedule_from_crag(client, moderator_token):
+    any_file = File.query.first()
+    crag_data = {
+        "name": "brione",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
+        "rules": "Parken nur Samstag und Sonntag 2.",
+        "portraitImage": str(any_file.id),
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
+        "secret": False,
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Temporary works",
+            }
+        ],
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": None,
+    }
+
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    assert len(rv.json["closureSchedules"]) == 1
+    assert rv.json["closed"] is True
+
+    crag_data["closureSchedules"] = []
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    assert rv.json["closureSchedules"] == []
+    assert rv.json["closed"] is False
+
+
 # Test that creating a closed line in a closed area doesn't change the closed state of it's parents
 def test_secret_property_doesnt_change(client, moderator_token):
     any_file = File.query.first()
@@ -142,8 +192,12 @@ def test_secret_property_doesnt_change(client, moderator_token):
             }
         ],
         "secret": False,
-        "closed": True,
-        "closedReason": "Naturschutzgebiet",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Naturschutzgebiet",
+            }
+        ],
         "defaultBoulderScale": None,
         "defaultSportScale": None,
         "defaultTradScale": None,
@@ -194,8 +248,12 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "arete": True,
         "mantle": True,
         "secret": False,
-        "closed": True,
-        "closedReason": "Privatgrund",
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Privatgrund",
+            }
+        ],
     }
 
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
@@ -229,7 +287,6 @@ def test_move_line_into_closed_area_forces_line_closed(client, moderator_token):
 
     # Make target area closed directly in DB
     target_area.closed = True
-    target_area.closed_reason = "test"
     db.session.add(target_area)
     db.session.commit()
 
@@ -253,7 +310,6 @@ def test_move_area_into_closed_sector_forces_area_closed(client, moderator_token
 
     # Make target sector closed directly in DB
     target_sector.closed = True
-    target_sector.closed_reason = "test"
     db.session.add(target_sector)
     db.session.commit()
 
@@ -277,7 +333,6 @@ def test_move_sector_into_closed_crag_forces_sector_closed(client, moderator_tok
 
     # Make target crag closed directly in DB
     target_crag.closed = True
-    target_crag.closed_reason = "test"
     db.session.add(target_crag)
     db.session.commit()
 
@@ -308,7 +363,6 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
 
     # make target area closed directly in DB
     target_area.closed = True
-    target_area.closed_reason = "test"
     db.session.add(target_area)
     db.session.commit()
 
@@ -336,3 +390,54 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
     moved_line = Line.find_by_slug(line.slug)
     assert moved_line.area_id == target_area.id
     assert moved_line.closed is True
+
+
+def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_token):
+    any_file = File.query.first()
+    crag_data = {
+        "name": "brione",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
+        "rules": "Parken nur Samstag und Sonntag 2.",
+        "portraitImage": str(any_file.id),
+        "mapMarkers": [
+            {
+                "lat": 12.13,
+                "lng": 42.42,
+                "type": MapMarkerType.CRAG.value,
+                "description": None,
+                "name": None,
+            }
+        ],
+        "secret": False,
+        "defaultBoulderScale": None,
+        "defaultSportScale": None,
+        "defaultTradScale": None,
+        "blocweatherUrl": None,
+        "closureSchedules": [
+            {
+                "scheduleType": "PERMANENT",
+                "reason": "Aggressive gamekeeper",
+            },
+            {
+                "scheduleType": "FIXED",
+                "startDate": "2026-01-01",
+                "endDate": "2026-12-31",
+                "reason": "Access path washed away (again)",
+            },
+        ],
+    }
+
+    rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["closed"] is True
+    assert res["closureIsPermanent"] is True
+    assert res["closedReasons"] == [
+        {"reason": "Aggressive gamekeeper"},
+        {
+            "reason": "Access path washed away (again)",
+            "startDate": "2026-01-01",
+            "endDate": "2026-12-31",
+        },
+    ]

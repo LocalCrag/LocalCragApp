@@ -35,6 +35,12 @@ from resources.auth_resources import (
 )
 from resources.batch_editor_resources import BatchCreateLines
 from resources.blocweather_resources import GetNearestBlocweatherUrl
+from resources.closure_state_resources import (
+    GetAreaClosureState,
+    GetCragClosureState,
+    GetLineClosureState,
+    GetSectorClosureState,
+)
 from resources.comment_resources import (
     CreateComment,
     DeleteComment,
@@ -175,12 +181,20 @@ from resources.util_resources import SentryTest
 
 
 def _register_dev_routes(app):
-    from resources.dev_resources import TriggerNotificationDigestMails
+    from resources.dev_resources import (
+        TriggerClosureMaterialization,
+        TriggerNotificationDigestMails,
+    )
 
     dev_bp = Blueprint("dev", __name__)
     dev_bp.add_url_rule(
         "/notification-digest-mails",
         view_func=TriggerNotificationDigestMails.as_view("trigger_notification_digest_mails"),
+        methods=["POST"],
+    )
+    dev_bp.add_url_rule(
+        "/apply-closure-schedules",
+        view_func=TriggerClosureMaterialization.as_view("trigger_closure_materialization"),
         methods=["POST"],
     )
     app.register_blueprint(dev_bp, url_prefix="/api/dev")
@@ -318,6 +332,9 @@ def configure_api(app):
     line_bp.add_url_rule("/<string:line_slug>", view_func=DeleteLine.as_view("delete_line"))
     line_bp.add_url_rule("/<string:line_slug>/move", view_func=MoveLine.as_view("move_line"))
     line_bp.add_url_rule(
+        "/<string:line_slug>/closure-state", view_func=GetLineClosureState.as_view("get_line_closure_state")
+    )
+    line_bp.add_url_rule(
         "/<string:line_slug>/line-paths/update-order",
         view_func=UpdateLinePathOrderForLine.as_view("update_line_path_order_for_line"),
     )
@@ -373,6 +390,9 @@ def configure_api(app):
     area_bp.add_url_rule("/<string:area_slug>", view_func=UpdateArea.as_view("update_area"))
     area_bp.add_url_rule("/<string:area_slug>", view_func=DeleteArea.as_view("delete_area"))
     area_bp.add_url_rule("/<string:area_slug>/move", view_func=MoveArea.as_view("move_area"))
+    area_bp.add_url_rule(
+        "/<string:area_slug>/closure-state", view_func=GetAreaClosureState.as_view("get_area_closure_state")
+    )
     area_bp.add_url_rule("/<string:area_slug>/grades", view_func=GetAreaGrades.as_view("get_area_grades"))
     area_bp.add_url_rule("/<string:area_slug>/lines", view_func=CreateLine.as_view("create_line"))
     area_bp.add_url_rule("/<string:area_slug>/topo-images", view_func=GetTopoImages.as_view("get_topo_images"))
@@ -407,6 +427,10 @@ def configure_api(app):
     sector_bp.add_url_rule("/<string:sector_slug>", view_func=UpdateSector.as_view("update_sector"))
     sector_bp.add_url_rule("/<string:sector_slug>", view_func=DeleteSector.as_view("delete_sector"))
     sector_bp.add_url_rule("/<string:sector_slug>/move", view_func=MoveSector.as_view("move_sector"))
+    sector_bp.add_url_rule(
+        "/<string:sector_slug>/closure-state",
+        view_func=GetSectorClosureState.as_view("get_sector_closure_state"),
+    )
     sector_bp.add_url_rule("/<string:sector_slug>/grades", view_func=GetSectorGrades.as_view("get_sector_grades"))
     sector_bp.add_url_rule("/<string:sector_slug>/areas", view_func=GetAreas.as_view("get_areas"))
     sector_bp.add_url_rule("/<string:sector_slug>/areas", view_func=CreateArea.as_view("create_area"))
@@ -423,6 +447,9 @@ def configure_api(app):
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=GetCrag.as_view("get_crag_details"))
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=UpdateCrag.as_view("update_crag"))
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=DeleteCrag.as_view("delete_crag"))
+    crag_bp.add_url_rule(
+        "/<string:crag_slug>/closure-state", view_func=GetCragClosureState.as_view("get_crag_closure_state")
+    )
     crag_bp.add_url_rule("/<string:crag_slug>/grades", view_func=GetCragGrades.as_view("get_crag_grades"))
     crag_bp.add_url_rule("/<string:crag_slug>/sectors", view_func=GetSectors.as_view("get_sectors"))
     crag_bp.add_url_rule("/<string:crag_slug>/sectors", view_func=CreateSector.as_view("create_sector"))

@@ -1,4 +1,4 @@
-"""add language to instance_settings and account_settings, backfill existing to 'de'
+"""Add per-language content columns and migrate existing text.
 
 Revision ID: aa_add_language_columns
 Revises:

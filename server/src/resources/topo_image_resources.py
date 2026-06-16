@@ -110,8 +110,7 @@ class MoveTopoImage(MethodView):
                 synchronize_session=False,
             )
 
-            # Apply secret/closed handling for moved lines:
-            # if parent (target area) is secret/closed -> line must be secret/closed.
+            # If the target area is secret or closed, each moved line must match.
             target_area = Area.find_by_id(target_area_id)
             if target_area.secret or target_area.closed:
                 moved_lines = Line.query.filter(Line.id.in_(affected_line_ids)).all()

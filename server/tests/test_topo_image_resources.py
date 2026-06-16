@@ -57,8 +57,7 @@ def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client
         "arete": False,
         "mantle": False,
         "secret": False,
-        "closed": False,
-        "closedReason": None,
+        "closureSchedules": [],
     }
     rv_line = client.post(f"/api/areas/{source_area_slug}/lines", token=moderator_token, json=line_data)
     assert rv_line.status_code == 201

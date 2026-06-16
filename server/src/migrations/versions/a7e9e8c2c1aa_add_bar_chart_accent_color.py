@@ -1,4 +1,4 @@
-"""add bar chart accent color
+"""Add bar chart accent color to instance settings.
 
 Revision ID: a7e9e8c2c1aa
 Revises: c4e8f1a92b10
