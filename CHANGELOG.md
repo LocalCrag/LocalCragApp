@@ -1,3 +1,10 @@
+# [1.42.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.41.0...v1.42.0) (2026-06-16)
+
+
+### Features
+
+* **topo:** allow scheduled area closures ([#1133](https://github.com/LocalCrag/LocalCragApp/issues/1133)) ([e5e4a14](https://github.com/LocalCrag/LocalCragApp/commit/e5e4a140d767f27d25ba66fb826a94bbf2d5c771))
+
 # [1.41.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.40.1...v1.41.0) (2026-06-13)
 
 
