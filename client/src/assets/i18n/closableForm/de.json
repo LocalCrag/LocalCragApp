@@ -8,6 +8,8 @@
   "closableForm.scheduledClosureStartLabel": "Von",
   "closableForm.scheduledClosureEndLabel": "Bis",
   "closableForm.fixedEndBeforeStartValidationError": "Das Enddatum muss am oder nach dem Startdatum liegen.",
+  "closableForm.annualDatesRequiredValidationError": "Start- und Enddatum sind erforderlich.",
+  "closableForm.annualCoversEntireYearValidationError": "Jährliche Sperrungen müssen mindestens einen offenen Tag pro Jahr lassen; verwende stattdessen eine dauerhafte Sperrung.",
   "closableForm.scheduledClosureReasonLabel": "Grund der Sperrung",
   "closableForm.scheduledClosureReasonPlaceholder": "z.B. Vogelbrutzeit...",
   "closableForm.closedByParentSchedule": "Dieser Spot ist derzeit gesperrt, weil ein übergeordneter Spot einen aktiven Sperrzeitplan hat.",

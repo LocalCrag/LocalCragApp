@@ -11,9 +11,10 @@ the closure:
 * A child keeps an owned closure only when its parent was **not** closed.
 * A parent keeps an owned closure only when **every** descendant was closed.
 
-After inserting schedules for those owned closures, ``closed`` flags are
-re-materialized top-down so descendants inherit from the nearest scheduled ancestor.
-The legacy ``closed_reason`` columns are then dropped; reasons live on schedules only.
+After inserting schedules for those owned closures, ``closed`` and
+``closure_is_permanent`` flags are re-materialized top-down so descendants inherit
+from the nearest scheduled ancestor. The legacy ``closed_reason`` columns are then
+dropped; reasons live on schedules only.
 """
 
 import sqlalchemy as sa
@@ -23,6 +24,23 @@ revision = "d6e8f0a2b4c3"
 down_revision = "a2b4c6d8e0f1"
 branch_labels = None
 depends_on = None
+
+_CLOSABLE_TABLES = ("crags", "sectors", "areas", "lines")
+_UPDATE_CLOSABLE = "UPDATE {table} SET closed = :closed, " "closure_is_permanent = :closure_is_permanent WHERE id = :id"
+
+
+def _add_closure_is_permanent_columns():
+    for table in _CLOSABLE_TABLES:
+        with op.batch_alter_table(table, schema=None) as batch_op:
+            batch_op.add_column(
+                sa.Column("closure_is_permanent", sa.Boolean(), nullable=False, server_default=sa.false())
+            )
+
+
+def _drop_closure_is_permanent_columns():
+    for table in _CLOSABLE_TABLES:
+        with op.batch_alter_table(table, schema=None) as batch_op:
+            batch_op.drop_column("closure_is_permanent")
 
 
 def _fetch_rows(connection, table, extra_columns=()):
@@ -142,50 +160,51 @@ def _materialize_closures(connection, own_lines, own_areas, own_sectors, own_cra
     areas_by_sector = _areas_by_sector(areas)
     sectors_by_crag = _sectors_by_crag(sectors)
 
-    connection.execute(sa.text("UPDATE lines SET closed = FALSE"))
-    connection.execute(sa.text("UPDATE areas SET closed = FALSE"))
-    connection.execute(sa.text("UPDATE sectors SET closed = FALSE"))
-    connection.execute(sa.text("UPDATE crags SET closed = FALSE"))
+    connection.execute(sa.text("UPDATE lines SET closed = FALSE, closure_is_permanent = FALSE"))
+    connection.execute(sa.text("UPDATE areas SET closed = FALSE, closure_is_permanent = FALSE"))
+    connection.execute(sa.text("UPDATE sectors SET closed = FALSE, closure_is_permanent = FALSE"))
+    connection.execute(sa.text("UPDATE crags SET closed = FALSE, closure_is_permanent = FALSE"))
 
     for crag_id, crag in crags.items():
         crag_closed = crag_id in own_crags
         connection.execute(
-            sa.text("UPDATE crags SET closed = :closed WHERE id = :id"),
-            {"closed": crag_closed, "id": crag_id},
+            sa.text(_UPDATE_CLOSABLE.format(table="crags")),
+            {"closed": crag_closed, "closure_is_permanent": crag_closed, "id": crag_id},
         )
 
         for sector_id in sectors_by_crag.get(crag_id, []):
             sector_own = sector_id in own_sectors
             sector_closed = sector_own or crag_closed
             connection.execute(
-                sa.text("UPDATE sectors SET closed = :closed WHERE id = :id"),
-                {"closed": sector_closed, "id": sector_id},
+                sa.text(_UPDATE_CLOSABLE.format(table="sectors")),
+                {"closed": sector_closed, "closure_is_permanent": sector_closed, "id": sector_id},
             )
 
             for area_id in areas_by_sector.get(sector_id, []):
                 area_own = area_id in own_areas
                 area_closed = area_own or sector_closed
                 connection.execute(
-                    sa.text("UPDATE areas SET closed = :closed WHERE id = :id"),
-                    {"closed": area_closed, "id": area_id},
+                    sa.text(_UPDATE_CLOSABLE.format(table="areas")),
+                    {"closed": area_closed, "closure_is_permanent": area_closed, "id": area_id},
                 )
 
                 for line_id in lines_by_area.get(area_id, []):
                     line_own = line_id in own_lines
                     line_closed = line_own or area_closed
                     connection.execute(
-                        sa.text("UPDATE lines SET closed = :closed WHERE id = :id"),
-                        {"closed": line_closed, "id": line_id},
+                        sa.text(_UPDATE_CLOSABLE.format(table="lines")),
+                        {"closed": line_closed, "closure_is_permanent": line_closed, "id": line_id},
                     )
 
 
 def _drop_closed_reason_columns():
-    for table in ("crags", "sectors", "areas", "lines"):
+    for table in _CLOSABLE_TABLES:
         with op.batch_alter_table(table) as batch_op:
             batch_op.drop_column("closed_reason")
 
 
 def upgrade():
+    _add_closure_is_permanent_columns()
     connection = op.get_bind()
 
     lines = _fetch_rows(connection, "lines", ("area_id",))
@@ -210,8 +229,9 @@ def upgrade():
 
 
 def downgrade():
-    for table in ("crags", "sectors", "areas", "lines"):
+    for table in _CLOSABLE_TABLES:
         with op.batch_alter_table(table) as batch_op:
             batch_op.add_column(sa.Column("closed_reason", sa.Text(), nullable=True))
 
     op.execute(sa.text("DELETE FROM closure_schedules"))
+    _drop_closure_is_permanent_columns()

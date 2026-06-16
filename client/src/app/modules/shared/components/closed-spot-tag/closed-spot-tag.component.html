@@ -9,12 +9,9 @@
   >
     <p-tag severity="danger" class="closed-spot-tag">
       <span class="closed-spot-tag-inner">
-        <i class="pi pi-ban" aria-hidden="true"></i>
-        <span>{{ t("closed") }}</span>
-        <i
-          class="pi pi-question-circle closed-spot-tag-help-icon"
-          aria-hidden="true"
-        ></i>
+        <i class="p-tag-icon pi pi-ban" aria-hidden="true"></i>
+        <span>{{ t(isPermanentClosure ? "closed" : "temporarilyClosed") }}</span>
+        <i class="p-tag-icon pi pi-question-circle" aria-hidden="true"></i>
       </span>
     </p-tag>
   </span>

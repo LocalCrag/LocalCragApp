@@ -8,6 +8,8 @@
   "closableForm.scheduledClosureStartLabel": "Van",
   "closableForm.scheduledClosureEndLabel": "Tot",
   "closableForm.fixedEndBeforeStartValidationError": "De einddatum moet op of na de startdatum liggen.",
+  "closableForm.annualDatesRequiredValidationError": "Start- en einddatum zijn verplicht.",
+  "closableForm.annualCoversEntireYearValidationError": "Jaarlijkse sluitingen moeten minstens één open dag per jaar overlaten; gebruik in plaats daarvan een permanente sluiting.",
   "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
   "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
   "closableForm.closedByParentSchedule": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft.",

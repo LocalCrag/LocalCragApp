@@ -9,6 +9,7 @@ type Constructor = new (...args: any[]) => object;
 export function IsClosable<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
     closed: boolean;
+    closureIsPermanent: boolean;
     closedReasons: ClosureReasonAlert[];
     upcomingClosureWarnings: ClosureReasonAlert[];
     closureSchedules: ClosureSchedule[];
@@ -22,6 +23,7 @@ export function deserializeClosableAttributes(
   payload: any,
 ): void {
   instance.closed = payload.closed;
+  instance.closureIsPermanent = payload.closureIsPermanent ?? false;
   instance.closedReasons = deserializeClosureReasonAlerts(
     payload.closedReasons ?? [],
   );

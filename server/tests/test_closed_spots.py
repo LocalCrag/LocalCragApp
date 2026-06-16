@@ -432,6 +432,7 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is True
+    assert res["closureIsPermanent"] is True
     assert res["closedReasons"] == [
         {"reason": "Aggressive gamekeeper"},
         {

@@ -8,6 +8,8 @@
   "closableForm.scheduledClosureStartLabel": "From",
   "closableForm.scheduledClosureEndLabel": "Until",
   "closableForm.fixedEndBeforeStartValidationError": "The end date must be on or after the start date.",
+  "closableForm.annualDatesRequiredValidationError": "Start and end dates are required.",
+  "closableForm.annualCoversEntireYearValidationError": "Annual schedules must leave at least one open day per year; use permanent closure instead.",
   "closableForm.scheduledClosureReasonLabel": "Reason during closure",
   "closableForm.scheduledClosureReasonPlaceholder": "e.g. bird nesting season...",
   "closableForm.closedByParentSchedule": "This spot is currently closed because a parent has an active closure schedule.",

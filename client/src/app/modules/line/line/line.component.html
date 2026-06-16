@@ -13,6 +13,7 @@
           spotType="line"
           [slug]="line.slug"
           [reasons]="line.closedReasons"
+          [closureIsPermanent]="line.closureIsPermanent"
         ></lc-closed-spot-tag>
       }
       @if (line?.secret) {

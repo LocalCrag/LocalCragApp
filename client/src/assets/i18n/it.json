@@ -105,6 +105,7 @@
   "plusXProjects": "più {{projects}} progetti",
   "coordinatesButton.coordinates": "GPS",
   "closedSpotTag.closed": "Interdetto",
+  "closedSpotTag.temporarilyClosed": "Temporaneamente interdetto",
   "closedSpotTag.showReasons": "Mostra motivi della chiusura",
   "closedSpotTag.loadError": "Impossibile caricare i motivi della chiusura.",
   "closedSpotAlert.closedWithReason": "Interdetto: {{reason}}",

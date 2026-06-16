@@ -27,12 +27,14 @@ export class ClosedSpotTagComponent {
   @Input({ required: true }) slug: string;
   /** When already loaded (e.g. detail view), skip the closure-state request. */
   @Input() reasons: ClosureReasonAlert[] | null = null;
+  @Input() closureIsPermanent = true;
 
   @ViewChild('popover') popover: Popover;
 
   protected loading = false;
   protected loadError = false;
   protected loadedReasons: ClosureReasonAlert[] | null = null;
+  protected loadedClosureIsPermanent: boolean | null = null;
 
   private closureStateService = inject(ClosureStateService);
   private loadStarted = false;
@@ -59,6 +61,7 @@ export class ClosedSpotTagComponent {
       .subscribe({
         next: (state) => {
           this.loadedReasons = state.closedReasons;
+          this.loadedClosureIsPermanent = state.closureIsPermanent;
           this.loading = false;
         },
         error: () => {
@@ -80,5 +83,12 @@ export class ClosedSpotTagComponent {
 
   private hasPreloadedReasons(): boolean {
     return this.reasons !== null && this.reasons !== undefined;
+  }
+
+  protected get isPermanentClosure(): boolean {
+    if (this.loadedClosureIsPermanent !== null) {
+      return this.loadedClosureIsPermanent;
+    }
+    return this.closureIsPermanent;
   }
 }

@@ -8,6 +8,8 @@
   "closableForm.scheduledClosureStartLabel": "Da",
   "closableForm.scheduledClosureEndLabel": "Fino a",
   "closableForm.fixedEndBeforeStartValidationError": "La data di fine deve essere uguale o successiva alla data di inizio.",
+  "closableForm.annualDatesRequiredValidationError": "Le date di inizio e fine sono obbligatorie.",
+  "closableForm.annualCoversEntireYearValidationError": "Le chiusure annuali devono lasciare almeno un giorno aperto all'anno; usa invece una chiusura permanente.",
   "closableForm.scheduledClosureReasonLabel": "Motivo durante la chiusura",
   "closableForm.scheduledClosureReasonPlaceholder": "es. periodo di nidificazione...",
   "closableForm.closedByParentSchedule": "Questo spot è attualmente interdetto perché un livello superiore ha un programma di chiusura attivo.",

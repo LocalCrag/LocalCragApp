@@ -105,6 +105,7 @@
   "plusXProjects": "plus {{projects}} projects",
   "coordinatesButton.coordinates": "GPS",
   "closedSpotTag.closed": "Closed",
+  "closedSpotTag.temporarilyClosed": "Temporarily closed",
   "closedSpotTag.showReasons": "Show closure reasons",
   "closedSpotTag.loadError": "Could not load closure reasons.",
   "closedSpotAlert.closedWithReason": "Closed: {{reason}}",

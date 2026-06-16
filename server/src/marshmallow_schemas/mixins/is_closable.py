@@ -10,6 +10,7 @@ from util.scheduled_closure import effective_closure_reason_alerts
 
 class IsClosableListSchemaMixin:
     closed = fields.Boolean()
+    closureIsPermanent = fields.Boolean(attribute="closure_is_permanent")
 
 
 class IsClosableDetailSchemaMixin(UpcomingClosureWarningsMixin):

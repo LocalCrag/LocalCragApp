@@ -62,12 +62,6 @@
                     ? annualScheduleReferenceDate
                     : undefined
                 "
-                [minDate]="
-                  scheduleType === 'ANNUAL' ? annualScheduleMinDate : undefined
-                "
-                [maxDate]="
-                  scheduleType === 'ANNUAL' ? annualScheduleMaxDate : undefined
-                "
                 [panelStyleClass]="
                   scheduleType === 'ANNUAL'
                     ? 'lc-annual-closure-date-picker'
@@ -91,16 +85,7 @@
                     ? annualScheduleReferenceDate
                     : undefined
                 "
-                [minDate]="
-                  scheduleType === 'FIXED'
-                    ? startDate
-                    : scheduleType === 'ANNUAL'
-                      ? annualScheduleMinDate
-                      : undefined
-                "
-                [maxDate]="
-                  scheduleType === 'ANNUAL' ? annualScheduleMaxDate : undefined
-                "
+                [minDate]="scheduleType === 'FIXED' ? startDate : undefined"
                 [panelStyleClass]="
                   scheduleType === 'ANNUAL'
                     ? 'lc-annual-closure-date-picker'
@@ -113,6 +98,9 @@
                 <small class="lc-error">{{
                   tf("fixedEndBeforeStartValidationError")
                 }}</small>
+              }
+              @if (showAnnualEndDateError) {
+                <small class="lc-error">{{ tf(annualEndDateErrorKey!) }}</small>
               }
             </div>
           </div>

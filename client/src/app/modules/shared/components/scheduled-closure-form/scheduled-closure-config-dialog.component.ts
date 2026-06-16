@@ -30,9 +30,11 @@ import { FormDirective } from '../../forms/form.directive';
 import { ControlGroupDirective } from '../../forms/control-group.directive';
 import { FormControlDirective } from '../../forms/form-control.directive';
 import {
-  ANNUAL_SCHEDULE_REFERENCE_YEAR,
+  annualScheduleReferenceYear,
+  applyCurrentYearToMonthDay,
   buildClosureScheduleDialogForm,
   CLOSURE_SCHEDULE_TYPES,
+  normalizeAnnualPickerDate,
   patchClosureScheduleDialogForm,
   readClosureScheduleFromDialogForm,
 } from '../../utils/scheduled-closure-form';
@@ -69,21 +71,8 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
   startDate: Date | null = null;
   endDate: Date | null = null;
   readonly scheduleTypes = CLOSURE_SCHEDULE_TYPES;
-  readonly annualScheduleReferenceDate = new Date(
-    ANNUAL_SCHEDULE_REFERENCE_YEAR,
-    0,
-    1,
-  );
-  readonly annualScheduleMinDate = new Date(
-    ANNUAL_SCHEDULE_REFERENCE_YEAR,
-    0,
-    1,
-  );
-  readonly annualScheduleMaxDate = new Date(
-    ANNUAL_SCHEDULE_REFERENCE_YEAR,
-    11,
-    31,
-  );
+  /** Stable reference — do not recreate on every change detection (PrimeNG re-renders otherwise). */
+  annualScheduleReferenceDate = new Date(annualScheduleReferenceYear(), 0, 1);
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
@@ -93,12 +82,24 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
     this.scheduleForm
       .get('scheduleType')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (this.scheduleForm.get('scheduleType')?.value === 'PERMANENT') {
+      .subscribe((scheduleType) => {
+        if (scheduleType === 'PERMANENT') {
           this.scheduleForm.patchValue({ startDate: null, endDate: null });
           this.startDate = null;
           this.endDate = null;
+        } else if (scheduleType === 'FIXED') {
+          const start = this.scheduleForm.get('startDate')
+            ?.value as Date | null;
+          const end = this.scheduleForm.get('endDate')?.value as Date | null;
+          const startDate = applyCurrentYearToMonthDay(start);
+          const endDate = applyCurrentYearToMonthDay(end);
+          this.scheduleForm.patchValue({ startDate, endDate });
+          this.startDate = startDate;
+          this.endDate = endDate;
         }
+        this.scheduleForm.get('endDate')?.updateValueAndValidity({
+          emitEvent: false,
+        });
       });
     this.scheduleForm
       .get('startDate')
@@ -130,6 +131,11 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
       schedule = new ClosureSchedule();
       schedule.scheduleType = 'ANNUAL';
     }
+    this.annualScheduleReferenceDate = new Date(
+      annualScheduleReferenceYear(),
+      0,
+      1,
+    );
     this.schedule = schedule;
     patchClosureScheduleDialogForm(this.scheduleForm, schedule);
     this.syncDatesFromForm();
@@ -154,20 +160,55 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
     );
   }
 
+  get showAnnualEndDateError(): boolean {
+    const endDate = this.scheduleForm.get('endDate');
+    const startDate = this.scheduleForm.get('startDate');
+    const errorKey = this.annualEndDateErrorKey;
+    if (!errorKey || this.scheduleType !== 'ANNUAL') {
+      return false;
+    }
+    if (errorKey === 'annualDatesRequiredValidationError') {
+      return !!endDate?.touched && !!startDate?.touched;
+    }
+    return !!endDate?.touched || !!startDate?.touched;
+  }
+
+  get annualEndDateErrorKey(): string | null {
+    const endDate = this.scheduleForm.get('endDate');
+    if (!endDate) {
+      return null;
+    }
+    if (endDate.hasError('annualDatesRequired')) {
+      return 'annualDatesRequiredValidationError';
+    }
+    if (endDate.hasError('annualCoversEntireYear')) {
+      return 'annualCoversEntireYearValidationError';
+    }
+    return null;
+  }
+
   onStartDateChange(value: Date | null): void {
-    this.startDate = value;
-    this.scheduleForm.get('startDate')?.setValue(value);
+    const date =
+      this.scheduleType === 'ANNUAL' ? normalizeAnnualPickerDate(value) : value;
+    this.startDate = date;
+    this.scheduleForm.get('startDate')?.setValue(date);
     this.scheduleForm.get('startDate')?.markAsTouched();
-    this.scheduleForm.get('endDate')?.updateValueAndValidity();
   }
 
   onEndDateChange(value: Date | null): void {
-    this.endDate = value;
-    this.scheduleForm.get('endDate')?.setValue(value);
+    const date =
+      this.scheduleType === 'ANNUAL' ? normalizeAnnualPickerDate(value) : value;
+    this.endDate = date;
+    this.scheduleForm.get('endDate')?.setValue(date);
     this.scheduleForm.get('endDate')?.markAsTouched();
   }
 
   save(): void {
+    if (this.scheduleType === 'ANNUAL') {
+      this.scheduleForm.get('startDate')?.markAsTouched();
+      this.scheduleForm.get('endDate')?.markAsTouched();
+      this.scheduleForm.get('endDate')?.updateValueAndValidity();
+    }
     if (this.scheduleForm.valid) {
       readClosureScheduleFromDialogForm(this.scheduleForm, this.schedule);
       if (!this.schedule.id) {
@@ -175,6 +216,7 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
       }
       this.isOpen = false;
     } else {
+      this.scheduleForm.get('endDate')?.markAsTouched();
       this.formDirective.markAsTouched();
     }
   }

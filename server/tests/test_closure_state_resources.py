@@ -2,6 +2,7 @@ def test_get_area_closure_state(client):
     rv = client.get("/api/areas/dritter-block-von-links/closure-state")
     assert rv.status_code == 200
     assert rv.json["closed"] is False
+    assert rv.json["closureIsPermanent"] is False
     assert rv.json["closedReasons"] == []
 
 

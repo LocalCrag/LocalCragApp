@@ -6,6 +6,7 @@ from util.scheduled_closure import effective_closure_reason_alerts
 
 class ClosureStateSchema(Schema):
     closed = fields.Boolean()
+    closureIsPermanent = fields.Boolean(attribute="closure_is_permanent")
     closedReasons = fields.Method("get_closed_reasons")
 
     def get_closed_reasons(self, obj):

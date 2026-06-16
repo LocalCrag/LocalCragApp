@@ -105,6 +105,7 @@
   "plusXProjects": "plus {{projects}} Projekte",
   "coordinatesButton.coordinates": "GPS",
   "closedSpotTag.closed": "Gesperrt",
+  "closedSpotTag.temporarilyClosed": "Vorübergehend gesperrt",
   "closedSpotTag.showReasons": "Sperrgründe anzeigen",
   "closedSpotTag.loadError": "Sperrgründe konnten nicht geladen werden.",
   "closedSpotAlert.closedWithReason": "Gesperrt: {{reason}}",

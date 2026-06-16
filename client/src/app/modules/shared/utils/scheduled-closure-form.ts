@@ -7,10 +7,13 @@ import {
   formatLocalCalendarDate,
   parseLocalCalendarDate,
 } from '../../../utility/local-calendar-date';
+import { annualClosureEndDateValidator } from '../../../utility/validators/annual-closure-end-date.validator';
 import { fixedClosureEndDateValidator } from '../../../utility/validators/fixed-closure-end-date.validator';
 
-/** Fixed year for annual schedule date pickers (only month/day are persisted). */
-export const ANNUAL_SCHEDULE_REFERENCE_YEAR = 2000;
+/** Display year for annual date pickers (only month/day are persisted). */
+export function annualScheduleReferenceYear(): number {
+  return new Date().getFullYear();
+}
 
 export const CLOSURE_SCHEDULE_TYPES: ClosureScheduleType[] = [
   'ANNUAL',
@@ -25,7 +28,28 @@ export function monthDayToDate(
   if (month == null || day == null) {
     return null;
   }
-  return new Date(ANNUAL_SCHEDULE_REFERENCE_YEAR, month - 1, day);
+  return new Date(annualScheduleReferenceYear(), month - 1, day);
+}
+
+/** Strip picker year; annual schedules persist month/day only. */
+export function normalizeAnnualPickerDate(
+  date: Date | null | undefined,
+): Date | null {
+  if (!date) {
+    return null;
+  }
+  return new Date(
+    annualScheduleReferenceYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+}
+
+/** Apply the current calendar year to month/day values (e.g. when switching to FIXED). */
+export function applyCurrentYearToMonthDay(
+  date: Date | null | undefined,
+): Date | null {
+  return normalizeAnnualPickerDate(date);
 }
 
 export function dateToMonthDay(date: Date | null | undefined): {
@@ -72,11 +96,10 @@ export function buildClosureScheduleDialogForm(
     scheduleType: [schedule?.scheduleType ?? 'ANNUAL', [Validators.required]],
     reason: [schedule?.reason ?? null],
     startDate: [dates.startDate],
-    endDate: [dates.endDate, fixedClosureEndDateValidator()],
-  });
-
-  group.get('startDate')?.valueChanges.subscribe(() => {
-    group.get('endDate')?.updateValueAndValidity({ emitEvent: false });
+    endDate: [
+      dates.endDate,
+      [fixedClosureEndDateValidator(), annualClosureEndDateValidator()],
+    ],
   });
 
   return group;

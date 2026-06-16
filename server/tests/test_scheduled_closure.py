@@ -7,6 +7,7 @@ from models.enums.closure_schedule_type_enum import ClosureScheduleTypeEnum
 from util.scheduled_closure import (
     active_schedules,
     closed_by_parent_schedule,
+    computed_closure_is_permanent,
     effective_closure_reason_alerts,
     effective_closure_reasons,
     has_own_closure_source,
@@ -35,6 +36,7 @@ class _StubSchedule:
 class _StubClosable:
     id = None
     closed = False
+    closure_is_permanent = False
     closure_schedules = []
 
 
@@ -289,3 +291,115 @@ def test_active_alerts_without_materialized_closed_flag():
 
     alerts = effective_closure_reason_alerts(entity, on_date=date(2026, 6, 1))
     assert alerts == [{"reason": "Aggressive gamekeeper"}]
+
+
+def test_closure_is_permanent_when_own_permanent_active():
+    entity = _StubClosable()
+    entity.closed = True
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Landowner hates chalk",
+        )
+    ]
+    assert computed_closure_is_permanent(entity, True) is True
+
+
+def test_closure_is_permanent_false_when_own_fixed_only():
+    entity = _StubClosable()
+    entity.closed = True
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.FIXED,
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 12, 31),
+            reason="Access path washed away (again)",
+        )
+    ]
+    assert computed_closure_is_permanent(entity, True, on_date=date(2026, 6, 1)) is False
+
+
+def test_closure_is_permanent_false_when_not_closed():
+    entity = _StubClosable()
+    entity.closure_schedules = [
+        _StubSchedule(
+            schedule_type=ClosureScheduleTypeEnum.PERMANENT,
+            reason="Landowner hates chalk",
+        )
+    ]
+    assert computed_closure_is_permanent(entity, False) is False
+
+
+def test_validate_annual_full_year_rejected():
+    with pytest.raises(BadRequest):
+        validate_closure_schedule_payload(
+            {
+                "scheduleType": "ANNUAL",
+                "startMonth": 1,
+                "startDay": 1,
+                "endMonth": 12,
+                "endDay": 31,
+            }
+        )
+
+
+def test_validate_annual_full_year_rejected_when_dates_reversed():
+    with pytest.raises(BadRequest):
+        validate_closure_schedule_payload(
+            {
+                "scheduleType": "ANNUAL",
+                "startMonth": 12,
+                "startDay": 31,
+                "endMonth": 1,
+                "endDay": 1,
+            }
+        )
+
+
+def test_validate_annual_full_year_rejected_when_wraparound_covers_year():
+    with pytest.raises(BadRequest):
+        validate_closure_schedule_payload(
+            {
+                "scheduleType": "ANNUAL",
+                "startMonth": 1,
+                "startDay": 2,
+                "endMonth": 1,
+                "endDay": 1,
+            }
+        )
+
+
+def test_validate_annual_wraparound_with_open_days_accepted():
+    validate_closure_schedule_payload(
+        {
+            "scheduleType": "ANNUAL",
+            "startMonth": 2,
+            "startDay": 1,
+            "endMonth": 1,
+            "endDay": 1,
+        }
+    )
+
+
+def test_validate_annual_adjacent_year_end_days_accepted():
+    validate_closure_schedule_payload(
+        {
+            "scheduleType": "ANNUAL",
+            "startMonth": 12,
+            "startDay": 31,
+            "endMonth": 12,
+            "endDay": 30,
+        }
+    )
+
+
+def test_validate_annual_partial_year_accepted():
+    validate_closure_schedule_payload(
+        {
+            "scheduleType": "ANNUAL",
+            "startMonth": 3,
+            "startDay": 1,
+            "endMonth": 5,
+            "endDay": 31,
+        }
+    )

@@ -27,6 +27,7 @@ from util.instance_timezone import instance_local_date
 class _ClosableLike(Protocol):
     id: UUID
     closed: bool
+    closure_is_permanent: bool
     closure_schedules: list
 
 
@@ -47,6 +48,23 @@ def _clear_fixed_fields(schedule: ClosureSchedule) -> None:
     schedule.end_date = None
 
 
+def _annual_window_active(
+    start_month: int,
+    start_day: int,
+    end_month: int,
+    end_day: int,
+    on_date: date,
+) -> bool:
+    """Return whether an annual month/day window applies on ``on_date``."""
+    start_doy = _day_of_year(start_month, start_day, on_date.year)
+    end_doy = _day_of_year(end_month, end_day, on_date.year)
+    today_doy = on_date.timetuple().tm_yday
+
+    if start_doy <= end_doy:
+        return start_doy <= today_doy <= end_doy
+    return today_doy >= start_doy or today_doy <= end_doy
+
+
 def is_schedule_active(schedule: ClosureSchedule, on_date: Optional[date] = None) -> bool:
     """Return whether ``schedule`` applies on ``on_date`` (defaults to today)."""
     on_date = on_date or date.today()
@@ -65,13 +83,13 @@ def is_schedule_active(schedule: ClosureSchedule, on_date: Optional[date] = None
     if None in (schedule.start_month, schedule.start_day, schedule.end_month, schedule.end_day):
         return False
 
-    start_doy = _day_of_year(schedule.start_month, schedule.start_day, on_date.year)
-    end_doy = _day_of_year(schedule.end_month, schedule.end_day, on_date.year)
-    today_doy = on_date.timetuple().tm_yday
-
-    if start_doy <= end_doy:
-        return start_doy <= today_doy <= end_doy
-    return today_doy >= start_doy or today_doy <= end_doy
+    return _annual_window_active(
+        schedule.start_month,
+        schedule.start_day,
+        schedule.end_month,
+        schedule.end_day,
+        on_date,
+    )
 
 
 def active_schedules(schedules: list[ClosureSchedule], on_date: Optional[date] = None) -> list[ClosureSchedule]:
@@ -258,6 +276,52 @@ def effective_closure_reason_alerts(entity: _ClosableLike, on_date: Optional[dat
     return []
 
 
+def _ancestor_active_schedules_from_area(
+    area: Area, on_date: Optional[date] = None, include_self: bool = True
+) -> list[ClosureSchedule]:
+    """Return active schedules on the nearest closing ancestor of ``area``."""
+    if include_self and has_own_closure_source(area, on_date):
+        return active_schedules(area.closure_schedules, on_date)
+    sector = Sector.find_by_id(area.sector_id)
+    if sector and has_own_closure_source(sector, on_date):
+        return active_schedules(sector.closure_schedules, on_date)
+    if sector:
+        crag = Crag.find_by_id(sector.crag_id)
+        if crag and has_own_closure_source(crag, on_date):
+            return active_schedules(crag.closure_schedules, on_date)
+    return []
+
+
+def effective_active_schedules(entity: _ClosableLike, on_date: Optional[date] = None) -> list[ClosureSchedule]:
+    """Return schedules that currently drive closure for ``entity``."""
+    on_date = on_date or instance_local_date()
+
+    own = active_schedules(entity.closure_schedules, on_date)
+    if own:
+        return own
+
+    if isinstance(entity, Line):
+        area = Area.find_by_id(entity.area_id)
+        return _ancestor_active_schedules_from_area(area, on_date, include_self=False)
+    if isinstance(entity, Area):
+        return _ancestor_active_schedules_from_area(entity, on_date, include_self=False)
+    if isinstance(entity, Sector):
+        if has_own_closure_source(entity, on_date):
+            return active_schedules(entity.closure_schedules, on_date)
+        crag = Crag.find_by_id(entity.crag_id)
+        if crag and has_own_closure_source(crag, on_date):
+            return active_schedules(crag.closure_schedules, on_date)
+    return []
+
+
+def computed_closure_is_permanent(entity: _ClosableLike, closed: bool, on_date: Optional[date] = None) -> bool:
+    """Return whether ``closed`` on ``entity`` is driven by a permanent schedule."""
+    if not closed:
+        return False
+    schedules = effective_active_schedules(entity, on_date)
+    return any(schedule.schedule_type == ClosureScheduleTypeEnum.PERMANENT for schedule in schedules)
+
+
 def effective_closure_reasons(entity: _ClosableLike, on_date: Optional[date] = None) -> list[str]:
     """Return all closure reason strings that apply to ``entity`` for display."""
     alerts = effective_closure_reason_alerts(entity, on_date)
@@ -389,12 +453,36 @@ def _validate_annual_window(data: dict[str, Any]) -> None:
         if not isinstance(value, int) or value < low or value > high:
             raise BadRequest(f"{key} must be between {low} and {high}")
 
-    year = date.today().year
+    # Leap year: annual schedules store month/day only (picker year is ignored).
+    validation_year = 2000
     for month_key, day_key in (("startMonth", "startDay"), ("endMonth", "endDay")):
         try:
-            date(year, data[month_key], data[day_key])
+            date(validation_year, data[month_key], data[day_key])
         except ValueError:
             raise BadRequest(f"Invalid calendar date for {month_key}/{day_key}")
+
+    if _annual_payload_covers_entire_year(data):
+        raise BadRequest("ANNUAL schedules must leave at least one open day per year; use PERMANENT instead")
+
+
+def _annual_payload_covers_entire_year(data: dict[str, Any]) -> bool:
+    """Return whether an ANNUAL payload closes every calendar day in a year."""
+    reference_year = 2000  # leap year so Feb 29 is included in the check
+    for month in range(1, 13):
+        for day in range(1, 32):
+            try:
+                on_date = date(reference_year, month, day)
+            except ValueError:
+                continue
+            if not _annual_window_active(
+                data["startMonth"],
+                data["startDay"],
+                data["endMonth"],
+                data["endDay"],
+                on_date,
+            ):
+                return False
+    return True
 
 
 def _validate_fixed_window(data: dict[str, Any]) -> None:
@@ -486,10 +574,16 @@ def apply_closable_configuration(entity, data: dict[str, Any], fk_field: str) ->
     sync_closure_schedules(entity, data["closureSchedules"], fk_field)
 
 
-def _set_materialized(entity: _ClosableLike, closed: bool) -> None:
-    """Write materialized ``closed`` when it differs from the computed value."""
+def _set_materialized_closure(entity: _ClosableLike, closed: bool, closure_is_permanent: bool) -> None:
+    """Write materialized ``closed`` and ``closure_is_permanent`` when they differ."""
+    changed = False
     if entity.closed != closed:
         entity.closed = closed
+        changed = True
+    if entity.closure_is_permanent != closure_is_permanent:
+        entity.closure_is_permanent = closure_is_permanent
+        changed = True
+    if changed:
         db.session.add(entity)
 
 
@@ -499,19 +593,35 @@ def apply_materialized_closures(on_date: Optional[date] = None) -> None:
 
     for crag in Crag.query.all():
         crag_closed, _ = own_closure_state(crag, on_date)
-        _set_materialized(crag, crag_closed)
+        _set_materialized_closure(
+            crag,
+            crag_closed,
+            computed_closure_is_permanent(crag, crag_closed, on_date),
+        )
 
         for sector in crag.sectors:
             sector_closed = materialized_closure_state(sector, parent_closed=crag_closed, on_date=on_date)
-            _set_materialized(sector, sector_closed)
+            _set_materialized_closure(
+                sector,
+                sector_closed,
+                computed_closure_is_permanent(sector, sector_closed, on_date),
+            )
 
             for area in sector.areas:
                 area_closed = materialized_closure_state(area, parent_closed=sector_closed, on_date=on_date)
-                _set_materialized(area, area_closed)
+                _set_materialized_closure(
+                    area,
+                    area_closed,
+                    computed_closure_is_permanent(area, area_closed, on_date),
+                )
 
                 for line in area.lines:
                     line_closed = materialized_closure_state(line, parent_closed=area_closed, on_date=on_date)
-                    _set_materialized(line, line_closed)
+                    _set_materialized_closure(
+                        line,
+                        line_closed,
+                        computed_closure_is_permanent(line, line_closed, on_date),
+                    )
 
     db.session.commit()
 
@@ -522,9 +632,14 @@ def materialize_closures_now() -> None:
 
 
 def materialize_own_closure(entity: _ClosableLike, on_date: Optional[date] = None) -> None:
-    """Update only the saved entity's ``closed`` flag from its own schedules."""
+    """Update the saved entity's materialized closure flags from its own schedules."""
+    on_date = on_date or instance_local_date()
     closed, _ = own_closure_state(entity, on_date)
-    _set_materialized(entity, closed)
+    _set_materialized_closure(
+        entity,
+        closed,
+        computed_closure_is_permanent(entity, closed, on_date),
+    )
     db.session.commit()
 
 

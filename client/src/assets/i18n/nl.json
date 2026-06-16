@@ -105,6 +105,7 @@
   "plusXProjects": "plus {{projecten}} projecten",
   "coordinatesButton.coordinates": "GPS",
   "closedSpotTag.closed": "Gesloten",
+  "closedSpotTag.temporarilyClosed": "Tijdelijk gesloten",
   "closedSpotTag.showReasons": "Sluitingsredenen tonen",
   "closedSpotTag.loadError": "Sluitingsredenen konden niet worden geladen.",
   "closedSpotAlert.closedWithReason": "Gesloten: {{reason}}",

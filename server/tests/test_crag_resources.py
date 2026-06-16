@@ -45,6 +45,7 @@ def test_successful_create_crag(client, moderator_token):
     assert res["ascentCount"] == 0
     assert res["secret"] is False
     assert res["closed"] is False
+    assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] == "UIAA"
@@ -173,6 +174,7 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["secret"] is False
     assert res["id"] is not None
     assert res["closed"] is False
+    assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
     assert res["defaultSportScale"] is None
