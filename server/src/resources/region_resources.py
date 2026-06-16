@@ -6,7 +6,6 @@ from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
-from marshmallow_schemas.crag_schema import crag_schema
 from marshmallow_schemas.region_schema import region_schema
 from models.area import Area
 from models.crag import Crag
@@ -46,7 +45,7 @@ class UpdateRegion(MethodView):
         db.session.add(region)
         db.session.commit()
 
-        return crag_schema.dump(region), 200
+        return region_schema.dump(region), 200
 
 
 class GetRegionGrades(MethodView):

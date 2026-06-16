@@ -1,4 +1,4 @@
-"""user and author grade values and ratings
+"""Rename line grade and rating columns to author-specific fields.
 
 Revision ID: 4306dc5f0c18
 Revises: 53f25a93f9c8

@@ -262,7 +262,6 @@ def test_batch_create_lines_inherits_area_properties(client, moderator_token):
     area = Area.find_by_slug("dritter-block-von-links")
     area.secret = True
     area.closed = True
-    area.closed_reason = "Test closure"
     from extensions import db
 
     db.session.add(area)
@@ -292,7 +291,7 @@ def test_batch_create_lines_inherits_area_properties(client, moderator_token):
 
     assert line_detail["secret"] is True
     assert line_detail["closed"] is True
-    assert line_detail["closedReason"] == "Test closure"
+    assert line_detail["closedReasons"] == []
 
 
 def test_batch_create_lines_topo_image_order_index(client, moderator_token):

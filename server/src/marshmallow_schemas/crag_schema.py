@@ -4,7 +4,10 @@ from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
-from marshmallow_schemas.mixins.is_closable import IsClosableSchemaMixin
+from marshmallow_schemas.mixins.is_closable import (
+    IsClosableDetailSchemaMixin,
+    IsClosableListSchemaMixin,
+)
 from marshmallow_schemas.sector_schema import SectorMenuSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
@@ -15,7 +18,7 @@ class AscentAndTodoCragSchema(ma.SQLAlchemySchema):
     id = fields.String()
 
 
-class CragSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
+class CragSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     name = fields.String()
     orderIndex = fields.Int(attribute="order_index")
     shortDescription = fields.String(attribute="short_description")
@@ -26,7 +29,7 @@ class CragSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     secret = fields.Boolean()
 
 
-class CragDetailSchema(CragSchema):
+class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin):
     rules = fields.String()
     description = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")

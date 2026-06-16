@@ -2,7 +2,12 @@
   <p-card header="{{ area?.name }}">
     <div class="flex gap-1">
       @if (area?.closed) {
-        <lc-closed-spot-tag></lc-closed-spot-tag>
+        <lc-closed-spot-tag
+          spotType="area"
+          [slug]="area.slug"
+          [reasons]="area.closedReasons"
+          [closureIsPermanent]="area.closureIsPermanent"
+        ></lc-closed-spot-tag>
       }
       @if (area?.secret) {
         <lc-secret-spot-tag></lc-secret-spot-tag>

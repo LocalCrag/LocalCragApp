@@ -1,4 +1,4 @@
-"""empty message
+"""Update user grades and ratings
 
 Revision ID: 55a7e0a820e3
 Revises: b49d71589bbb

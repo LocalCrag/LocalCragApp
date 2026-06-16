@@ -1,4 +1,4 @@
-"""empty message
+"""Add default starting position to instance settings.
 
 Revision ID: d54a5f859d23
 Revises: b3f3f56d5a7b

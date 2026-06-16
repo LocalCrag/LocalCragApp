@@ -1,4 +1,4 @@
-"""Add line chart grade brackets
+"""Populate line chart grade brackets on scales.
 
 Revision ID: 68dd991d54f5
 Revises: 4da80c2a64d6

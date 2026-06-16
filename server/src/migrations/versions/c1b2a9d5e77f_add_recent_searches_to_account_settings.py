@@ -1,4 +1,4 @@
-"""add recent searches table
+"""Add recent_searches table for account settings.
 
 Revision ID: c1b2a9d5e77f
 Revises: a7e9e8c2c1aa

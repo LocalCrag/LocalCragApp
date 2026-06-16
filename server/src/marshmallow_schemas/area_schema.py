@@ -4,7 +4,10 @@ from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
-from marshmallow_schemas.mixins.is_closable import IsClosableSchemaMixin
+from marshmallow_schemas.mixins.is_closable import (
+    IsClosableDetailSchemaMixin,
+    IsClosableListSchemaMixin,
+)
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
@@ -14,7 +17,7 @@ class AscentAndTodoAreaSchema(ma.SQLAlchemySchema):
     id = fields.String()
 
 
-class AreaSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
+class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     name = fields.String()
     slug = fields.String()
     shortDescription = fields.String(attribute="short_description")
@@ -25,7 +28,7 @@ class AreaSchema(BaseEntityMinSchema, IsClosableSchemaMixin):
     secret = fields.Boolean()
 
 
-class AreaDetailSchema(AreaSchema):
+class AreaDetailSchema(AreaSchema, IsClosableDetailSchemaMixin):
     description = fields.String(attribute="description")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")

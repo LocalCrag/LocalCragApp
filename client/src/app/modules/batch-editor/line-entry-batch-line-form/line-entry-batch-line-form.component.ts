@@ -45,6 +45,7 @@ import { AreasService } from '../../../services/crud/areas.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { ConfirmationService } from 'primeng/api';
+import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -145,6 +146,7 @@ export class LineEntryBatchLineFormComponent
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
   private scalesService = inject(ScalesService);
+  private closureStateService = inject(ClosureStateService);
 
   private onChange: (value: Line) => void = () => {};
   private onTouched: () => void = () => {};
@@ -165,10 +167,11 @@ export class LineEntryBatchLineFormComponent
       this.cragsService.getCrag(this.cragSlug),
       this.sectorsService.getSector(this.sectorSlug),
       this.areasService.getArea(this.areaSlug),
+      this.closureStateService.getAreaClosureState(this.areaSlug),
       this.scalesService.getScales(),
-    ]).subscribe(([crag, sector, area, scales]) => {
+    ]).subscribe(([crag, sector, area, parentClosureState, scales]) => {
       this.parentSecret = area.secret;
-      this.parentClosed = area.closed;
+      this.parentClosed = parentClosureState.closed;
 
       this.groupedScales = {
         [LineType.BOULDER]: [],

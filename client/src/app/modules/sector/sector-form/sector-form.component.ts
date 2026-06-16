@@ -59,12 +59,14 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
 import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { Crag } from '../../../models/crag';
+import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
+import { ClosureState } from '../../../models/closure-state';
+import { ClosureStateService } from '../../../services/crud/closure-state.service';
 
 /**
  * Form component for creating and editing sectors.
@@ -96,6 +98,7 @@ import { Crag } from '../../../models/crag';
     Tooltip,
     OutdoorModeDirective,
     MoveObjectDialogComponent,
+    ScheduledClosureFormComponent,
   ],
 })
 export class SectorFormComponent implements OnInit {
@@ -113,6 +116,7 @@ export class SectorFormComponent implements OnInit {
   public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
   public parentCrag: Crag;
+  public parentClosureState: ClosureState | null = null;
 
   private cragSlug: string;
   private destroyRef = inject(DestroyRef);
@@ -127,6 +131,7 @@ export class SectorFormComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
+  private closureStateService = inject(ClosureStateService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -155,8 +160,12 @@ export class SectorFormComponent implements OnInit {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
 
-    this.cragsService.getCrag(this.cragSlug).subscribe((crag) => {
+    forkJoin([
+      this.cragsService.getCrag(this.cragSlug),
+      this.closureStateService.getCragClosureState(this.cragSlug),
+    ]).subscribe(([crag, parentClosureState]) => {
       this.parentCrag = crag;
+      this.parentClosureState = parentClosureState;
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
@@ -207,21 +216,12 @@ export class SectorFormComponent implements OnInit {
       rules: [null],
       secret: [false],
       mapMarkers: [[]],
-      closed: [false],
-      closedReason: [null],
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
       blocweatherUrl: [null, [blocweatherUrlValidator]],
+      closureSchedules: [[]],
     });
-    this.sectorForm
-      .get('closed')
-      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((closed) => {
-        if (!closed) {
-          this.sectorForm.get('closedReason').setValue(null);
-        }
-      });
   }
 
   /**
@@ -237,12 +237,11 @@ export class SectorFormComponent implements OnInit {
       rules: this.sector.rules,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
-      closed: this.sector.closed,
-      closedReason: this.sector.closedReason,
       defaultBoulderScale: this.sector.defaultBoulderScale,
       defaultSportScale: this.sector.defaultSportScale,
       defaultTradScale: this.sector.defaultTradScale,
       blocweatherUrl: this.sector.blocweatherUrl,
+      closureSchedules: this.sector.closureSchedules ?? [],
     });
   }
 
@@ -271,8 +270,8 @@ export class SectorFormComponent implements OnInit {
       sector.portraitImage = this.sectorForm.get('portraitImage').value;
       sector.secret = this.sectorForm.get('secret').value;
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
-      sector.closed = this.sectorForm.get('closed').value;
-      sector.closedReason = this.sectorForm.get('closedReason').value;
+      sector.closureSchedules =
+        this.sectorForm.get('closureSchedules').value ?? [];
       sector.defaultBoulderScale = this.sectorForm.get(
         'defaultBoulderScale',
       ).value;

@@ -1,4 +1,4 @@
-"""empty message
+"""Optimize todo schema
 
 Revision ID: 05ebc3b1cffa
 Revises: 1a03d846b4d3

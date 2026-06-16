@@ -58,6 +58,7 @@ import { blocweatherUrlValidator } from '../../../utility/validators/blocweather
 import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
+import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 
 /**
  * A component for creating and editing crags.
@@ -86,6 +87,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
     SingleImageUploadComponent,
     Tooltip,
     OutdoorModeDirective,
+    ScheduledClosureFormComponent,
   ],
 })
 export class CragFormComponent implements OnInit {
@@ -183,21 +185,12 @@ export class CragFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      closed: [false],
-      closedReason: [null],
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
       blocweatherUrl: [null, [blocweatherUrlValidator]],
+      closureSchedules: [[]],
     });
-    this.cragForm
-      .get('closed')
-      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((closed) => {
-        if (!closed) {
-          this.cragForm.get('closedReason').setValue(null);
-        }
-      });
   }
 
   /**
@@ -213,12 +206,11 @@ export class CragFormComponent implements OnInit {
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
-      closed: this.crag.closed,
-      closedReason: this.crag.closedReason,
       defaultBoulderScale: this.crag.defaultBoulderScale,
       defaultSportScale: this.crag.defaultSportScale,
       defaultTradScale: this.crag.defaultTradScale,
       blocweatherUrl: this.crag.blocweatherUrl,
+      closureSchedules: this.crag.closureSchedules ?? [],
     });
   }
 
@@ -247,8 +239,7 @@ export class CragFormComponent implements OnInit {
       crag.portraitImage = this.cragForm.get('portraitImage').value;
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;
-      crag.closed = this.cragForm.get('closed').value;
-      crag.closedReason = this.cragForm.get('closedReason').value;
+      crag.closureSchedules = this.cragForm.get('closureSchedules').value ?? [];
       crag.defaultBoulderScale = this.cragForm.get('defaultBoulderScale').value;
       crag.defaultSportScale = this.cragForm.get('defaultSportScale').value;
       crag.defaultTradScale = this.cragForm.get('defaultTradScale').value;

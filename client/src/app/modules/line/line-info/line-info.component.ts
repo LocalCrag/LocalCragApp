@@ -16,6 +16,7 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
+import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { AsyncPipe } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
@@ -46,6 +47,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   providers: [DialogService, ConfirmationService],
   imports: [
     ClosedSpotAlertComponent,
+    UpcomingClosureAlertComponent,
     TranslocoDirective,
     TopoImageDetailsComponent,
     Button,

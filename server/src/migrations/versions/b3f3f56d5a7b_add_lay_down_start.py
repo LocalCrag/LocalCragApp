@@ -1,4 +1,4 @@
-"""empty message
+"""Add lay_down_start flag to lines.
 
 Revision ID: b3f3f56d5a7b
 Revises: 55a7e0a820e3

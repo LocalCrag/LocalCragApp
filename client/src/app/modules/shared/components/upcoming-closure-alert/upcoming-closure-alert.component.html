@@ -1,0 +1,14 @@
+<ng-container *transloco="let t; read: 'closedSpotAlert'">
+  <div class="flex flex-column gap-2 w-full">
+    @for (
+      warning of warnings;
+      track warning.startsOn + (warning.reason ?? "")
+    ) {
+      <p-message
+        severity="warn"
+        [text]="warningText(warning)"
+        styleClass="w-full"
+      ></p-message>
+    }
+  </div>
+</ng-container>
