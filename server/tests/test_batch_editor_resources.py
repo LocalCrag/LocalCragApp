@@ -108,8 +108,10 @@ def test_batch_create_lines_with_project_grades(client, moderator_token):
     assert line["name"] == "Project Boulder"
     assert line["authorGradeValue"] == -1
     assert line["userGradeValue"] == -1
-    assert line["faName"] is None
-    assert line["faDate"] is None
+
+    db_line = Line.find_by_slug(line["slug"])
+    assert db_line.fa_name is None
+    assert db_line.fa_date is None
 
 
 def test_batch_create_lines_without_authentication(client):
