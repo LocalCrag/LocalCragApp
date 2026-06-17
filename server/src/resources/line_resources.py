@@ -36,7 +36,7 @@ from util.scheduled_closure import (
 from util.secret_spots_auth import get_show_secret
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
-from webargs_schemas.line_args import line_args
+from webargs_schemas.line_args import cross_validate_line_args, line_args
 from webargs_schemas.move_args import move_line_args
 
 
@@ -217,7 +217,7 @@ class CreateLine(MethodView):
         Creates a line.
         """
         area_id = Area.get_id_by_slug(area_slug)
-        line_data = parser.parse(line_args, request)
+        line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
         created_by = User.find_by_email(get_jwt_identity())
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
@@ -239,8 +239,6 @@ class CreateLine(MethodView):
         new_line.secret = line_data["secret"]
 
         if new_line.author_grade_value >= 0:
-            if line_data["faYear"] and line_data["faDate"]:
-                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             new_line.fa_year = line_data["faYear"]
             new_line.fa_date = line_data["faDate"]
             new_line.fa_name = line_data["faName"]
@@ -307,7 +305,7 @@ class UpdateLine(MethodView):
         Edit a line.
         @param line_slug: Slug of the line to update.
         """
-        line_data = parser.parse(line_args, request)
+        line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
         line: Line = Line.find_by_slug(line_slug)
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
@@ -335,8 +333,6 @@ class UpdateLine(MethodView):
         apply_closable_configuration(line, line_data, "line_id")
 
         if line.author_grade_value >= 0:
-            if line_data["faYear"] and line_data["faDate"]:
-                raise BadRequest("Both faYear and faDate cannot be provided. One must be None.")
             line.fa_year = line_data["faYear"]
             line.fa_name = line_data["faName"]
             line.fa_date = line_data["faDate"]

@@ -56,8 +56,12 @@ class BatchCreateLines(MethodView):
             new_line.user_grade_value = line_data["authorGradeValue"]
             new_line.starting_position = line_data["startingPosition"]
             new_line.secret = area.secret
-            new_line.fa_date = batch_data["faDate"]
-            new_line.fa_name = line_data["faName"]
+            if new_line.author_grade_value >= 0:
+                new_line.fa_date = batch_data["faDate"]
+                new_line.fa_name = line_data["faName"]
+            else:
+                new_line.fa_date = None
+                new_line.fa_name = None
 
             new_line.area_id = area.id
             new_line.created_by_id = created_by.id

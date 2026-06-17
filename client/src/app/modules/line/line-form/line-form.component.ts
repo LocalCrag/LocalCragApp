@@ -389,15 +389,22 @@ export class LineFormComponent implements OnInit {
       });
   }
 
+  get faInputsDisabled(): boolean {
+    const gradeValue = this.lineForm?.get('grade')?.value;
+    return gradeValue != null && gradeValue < 0;
+  }
+
   setFormDisabledState() {
-    if (this.lineForm.get('grade').value?.value < 0) {
-      // Projects can't have ratings or FA info
+    if (this.faInputsDisabled) {
       this.lineForm.get('faYear').disable();
+      this.lineForm.get('faDate').disable();
       this.lineForm.get('faName').disable();
       this.lineForm.get('faYear').setValue(null);
+      this.lineForm.get('faDate').setValue(null);
       this.lineForm.get('faName').setValue(null);
     } else {
       this.lineForm.get('faYear').enable();
+      this.lineForm.get('faDate').enable();
       this.lineForm.get('faName').enable();
     }
   }
@@ -652,6 +659,9 @@ export class LineFormComponent implements OnInit {
   }
 
   public toggleFaFormat() {
+    if (this.faInputsDisabled) {
+      return;
+    }
     if (this.faFormat === FaDefaultFormat.YEAR) {
       this.faFormat = FaDefaultFormat.DATE;
       this.lineForm.get('faYear').setValue(null);

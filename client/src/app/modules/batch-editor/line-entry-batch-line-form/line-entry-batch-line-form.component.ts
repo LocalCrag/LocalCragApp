@@ -239,6 +239,13 @@ export class LineEntryBatchLineFormComponent
           ],
         });
 
+        this.lineForm
+          .get('grade')
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.setFaInputsDisabledState();
+          });
+
         this.lineForm.valueChanges.subscribe(() => {
           this.onChange(this.lineForm.value as Line);
         });
@@ -251,6 +258,7 @@ export class LineEntryBatchLineFormComponent
   writeValue(obj: Line): void {
     if (obj) {
       this.lineForm.patchValue(obj);
+      this.setFaInputsDisabledState();
     }
   }
 
@@ -288,6 +296,20 @@ export class LineEntryBatchLineFormComponent
 
   registerOnValidatorChange(fn: () => void): void {
     this.validatorChange = fn;
+  }
+
+  private setFaInputsDisabledState() {
+    const gradeValue = this.lineForm?.get('grade')?.value;
+    const faNameControl = this.lineForm?.get('faName');
+    if (!faNameControl) {
+      return;
+    }
+    if (gradeValue != null && gradeValue < 0) {
+      faNameControl.disable();
+      faNameControl.setValue(null);
+    } else {
+      faNameControl.enable();
+    }
   }
 
   private buildTypeOptions() {

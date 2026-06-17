@@ -1266,6 +1266,53 @@ def test_create_line_with_fa_date_and_year_raises_400(client, moderator_token):
     assert rv.status_code == 400
 
 
+def test_create_project_line_with_fa_date_and_year_raises_400(client, moderator_token):
+    line_data = {
+        "name": "ProjectWithBothFaFields",
+        "description": "Project with both FA year and date",
+        "videos": [],
+        "authorGradeValue": -1,
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "authorRating": 5,
+        "faYear": 2016,
+        "faDate": "2020-05-15",
+        "faName": "Dave Graham",
+        "startingPosition": "FRENCH",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": False,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 400
+
+
 def test_get_lines_rejects_invalid_required_bool(client):
     rv = client.get("/api/lines?required_bools=notARealKey")
     assert rv.status_code == 400
