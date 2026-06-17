@@ -3,7 +3,6 @@
   display: inline-block;
   width: 100%;
   padding-bottom: 14px;
-  user-select: none;
   touch-action: manipulation;
 
   &.reaction-bar-suppressed {
@@ -33,6 +32,7 @@
   line-height: 1;
   white-space: normal;
   cursor: pointer;
+  user-select: none;
   transition:
     background 0.15s ease,
     opacity 0.15s ease;
@@ -50,7 +50,12 @@
     .reaction-wrapper:hover
       &:not(.has-reactions):not(.picker-open):not(.disabled).logged-in {
       opacity: 1;
-      pointer-events: auto;
+      pointer-events: none;
+
+      .reaction-default,
+      .reaction-hover-hint {
+        pointer-events: auto;
+      }
     }
 
     &.logged-in:hover,
