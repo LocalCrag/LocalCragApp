@@ -87,7 +87,7 @@ def test_batch_create_lines_with_project_grades(client, moderator_token):
         "images": file_ids,
         "gradeScale": "FB",
         "type": "BOULDER",
-        "faDate": None,
+        "faDate": "2020-05-15",
         "lines": [
             {
                 "name": "Project Boulder",
@@ -108,6 +108,8 @@ def test_batch_create_lines_with_project_grades(client, moderator_token):
     assert line["name"] == "Project Boulder"
     assert line["authorGradeValue"] == -1
     assert line["userGradeValue"] == -1
+    assert line["faName"] is None
+    assert line["faDate"] is None
 
 
 def test_batch_create_lines_without_authentication(client):
