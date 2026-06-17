@@ -13,9 +13,10 @@ lc-menu {
     }
   }
 
-  p-avatar {
+  lc-user-avatar {
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
+    align-items: center;
   }
 
   .wide-menu {
