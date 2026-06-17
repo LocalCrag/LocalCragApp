@@ -1,4 +1,4 @@
-from marshmallow import fields
+from marshmallow import fields, post_dump
 
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
@@ -14,6 +14,7 @@ from models.crag import Crag
 from models.line import Line
 from models.region import Region
 from models.sector import Sector
+from util.bucket_placeholders import replace_bucket_placeholders
 
 
 class RegionMinSchema(ma.SQLAlchemySchema):
@@ -49,6 +50,11 @@ class ModeratorTaskSchema(BaseEntitySchema):
     objectType = fields.String(attribute="object_type")
     objectId = fields.String(attribute="object_id")
     object = GenericRelatedModeratorTaskField()
+
+    @post_dump
+    def handle_bucket_placeholders(self, data, **kwargs):
+        data["description"] = replace_bucket_placeholders(data["description"])
+        return data
 
 
 class PaginatedModeratorTasksSchema(ma.SQLAlchemySchema):
