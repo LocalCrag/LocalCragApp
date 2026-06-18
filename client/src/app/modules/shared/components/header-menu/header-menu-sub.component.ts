@@ -53,8 +53,20 @@ export class HeaderMenuSubComponent {
    */
   onMouseenter(item: ProcessedMenuItem, element: HTMLDivElement) {
     if (!this.isMobile) {
-      const itemElement = element.querySelector('lc-header-menu-sub');
-      this.headerMenuService.setActive(item, itemElement as HTMLElement);
+      const submenuElement = element.querySelector(
+        'lc-header-menu-sub',
+      ) as HTMLElement;
+      const isFirstChild = submenuElement?.classList.contains('first-child');
+      const panelElement = isFirstChild
+        ? null
+        : (element.parentElement as HTMLElement);
+      this.headerMenuService.setActive(
+        item,
+        submenuElement,
+        element,
+        isFirstChild,
+        panelElement,
+      );
     }
   }
 
