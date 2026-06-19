@@ -24,8 +24,13 @@
     width: 100%;
   }
 
-  .lc-error {
+  .lc-error,
+  .lc-error-slot {
     grid-column: 2;
+  }
+
+  .lc-error-slot {
+    min-height: 1.25rem;
   }
 
   @include m.on-mobile {
@@ -34,7 +39,8 @@
     > label,
     > input,
     > p-select,
-    .lc-error {
+    .lc-error,
+    .lc-error-slot {
       grid-column: 1;
     }
   }

@@ -151,9 +151,7 @@ export class ScaleFormComponent implements OnInit {
     };
 
     this.scaleForm = this.fb.group({
-      lineType: this.editMode
-        ? undefined
-        : [LineType.BOULDER, [Validators.required]],
+      lineType: this.editMode ? undefined : [null, Validators.required],
       name: this.editMode ? undefined : ['', Validators.required],
       grades: this.fb.array([], [notUniqueValidator]),
       stackedChartBrackets: this.fb.array(
@@ -205,10 +203,10 @@ export class ScaleFormComponent implements OnInit {
         this.createStackedChartBracketGroup(2),
       );
       this.barChartBracketsControls().push(
-        this.createBarChartBracketGroup(1, marker('FIRST_BAR_CHART_BRACKET')),
+        this.createBarChartBracketGroup(1, ''),
       );
       this.barChartBracketsControls().push(
-        this.createBarChartBracketGroup(2, marker('SECOND_BAR_CHART_BRACKET')),
+        this.createBarChartBracketGroup(2, ''),
       );
       this.addGrade();
     }
@@ -372,7 +370,7 @@ export class ScaleFormComponent implements OnInit {
       });
     } else {
       const scale = new Scale();
-      scale.lineType = this.scaleForm.get('lineType').value.value;
+      scale.lineType = this.scaleForm.get('lineType').value;
       scale.name = this.scaleForm.get('name').value;
       scale.grades = this.gradeControls().value;
       scale.gradeBrackets = {

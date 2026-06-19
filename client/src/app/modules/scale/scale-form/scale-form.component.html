@@ -10,7 +10,7 @@
         <div class="grid grid-nogutter">
           <h4 class="col-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
           @if (!editMode) {
-            <div class="col-12 scale-form-header-field mb-2">
+            <div class="col-12 scale-form-header-field mb-2" lcControlGroup>
               <label for="linetype">
                 {{ t("lineTypeLabel") }}
               </label>
@@ -23,7 +23,16 @@
                   { name: t('TRAD'), value: LineType.TRAD },
                 ]"
                 optionLabel="name"
+                optionValue="value"
+                [placeholder]="t('lineTypeLabel')"
+                showClear
+                lcFormControl
               />
+              <div class="lc-error-slot">
+                <small class="lc-error" *lcIfError="'required'">
+                  {{ t("required") }}
+                </small>
+              </div>
             </div>
             <div class="col-12 scale-form-header-field mb-4" lcControlGroup>
               <label for="name">
@@ -36,9 +45,11 @@
                 formControlName="name"
                 lcFormControl
               />
-              <small class="lc-error" *lcIfError="'required'">
-                {{ t("required") }}
-              </small>
+              <div class="lc-error-slot">
+                <small class="lc-error" *lcIfError="'required'">
+                  {{ t("required") }}
+                </small>
+              </div>
             </div>
           }
           @for (
@@ -101,13 +112,15 @@
                           lcFormControl
                         />
                       </label>
-                      <small
-                        class="lc-error"
-                        *lcIfError="'required'"
-                        lcIfErrorControlName="name"
-                      >
-                        {{ t("required") }}
-                      </small>
+                      <div class="lc-error-slot">
+                        <small
+                          class="lc-error"
+                          *lcIfError="'required'"
+                          lcIfErrorControlName="name"
+                        >
+                          {{ t("required") }}
+                        </small>
+                      </div>
                     </div>
                     <div lcControlGroup>
                       <label>
@@ -119,13 +132,15 @@
                           lcFormControl
                         />
                       </label>
-                      <small
-                        class="lc-error"
-                        *lcIfError="'required'"
-                        lcIfErrorControlName="value"
-                      >
-                        {{ t("required") }}
-                      </small>
+                      <div class="lc-error-slot">
+                        <small
+                          class="lc-error"
+                          *lcIfError="'required'"
+                          lcIfErrorControlName="value"
+                        >
+                          {{ t("required") }}
+                        </small>
+                      </div>
                     </div>
                   }
                   <div actions>
@@ -212,13 +227,15 @@
                       lcFormControl
                     />
                   </label>
-                  <small
-                    class="lc-error"
-                    *lcIfError="'required'"
-                    lcIfErrorControlName="value"
-                  >
-                    {{ t("required") }}
-                  </small>
+                  <div class="lc-error-slot">
+                    <small
+                      class="lc-error"
+                      *lcIfError="'required'"
+                      lcIfErrorControlName="value"
+                    >
+                      {{ t("required") }}
+                    </small>
+                  </div>
                 </div>
                 <div actions>
                   <p-button
@@ -299,13 +316,15 @@
                       lcFormControl
                     />
                   </label>
-                  <small
-                    class="lc-error"
-                    *lcIfError="'required'"
-                    lcIfErrorControlName="value"
-                  >
-                    {{ t("required") }}
-                  </small>
+                  <div class="lc-error-slot">
+                    <small
+                      class="lc-error"
+                      *lcIfError="'required'"
+                      lcIfErrorControlName="value"
+                    >
+                      {{ t("required") }}
+                    </small>
+                  </div>
                 </div>
                 <div lcControlGroup>
                   <label>
@@ -315,16 +334,19 @@
                       class="ml-2"
                       pInputText
                       formControlName="name"
+                      [placeholder]="t('barChartBracketNamePlaceholder')"
                       lcFormControl
                     />
                   </label>
-                  <small
-                    class="lc-error"
-                    *lcIfError="'required'"
-                    lcIfErrorControlName="name"
-                  >
-                    {{ t("required") }}
-                  </small>
+                  <div class="lc-error-slot">
+                    <small
+                      class="lc-error"
+                      *lcIfError="'required'"
+                      lcIfErrorControlName="name"
+                    >
+                      {{ t("required") }}
+                    </small>
+                  </div>
                 </div>
                 <div actions>
                   <p-button
