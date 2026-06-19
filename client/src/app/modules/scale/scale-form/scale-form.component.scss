@@ -1,0 +1,63 @@
+@use "../../../styles/media-queries" as m;
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.scale-form-header-field {
+  display: grid;
+  grid-template-columns: minmax(8rem, 11rem) minmax(12rem, 20rem);
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  align-items: center;
+
+  > label {
+    grid-column: 1;
+  }
+
+  > input,
+  > p-select {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  .lc-error,
+  .lc-error-slot {
+    grid-column: 2;
+  }
+
+  .lc-error-slot {
+    min-height: 1.25rem;
+  }
+
+  @include m.on-mobile {
+    grid-template-columns: 1fr;
+
+    > label,
+    > input,
+    > p-select,
+    .lc-error,
+    .lc-error-slot {
+      grid-column: 1;
+    }
+  }
+}
+
+:host ::ng-deep .scale-form-header-field > p-select {
+  display: flex;
+
+  .p-select {
+    width: 100%;
+  }
+}
+
+.scale-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
