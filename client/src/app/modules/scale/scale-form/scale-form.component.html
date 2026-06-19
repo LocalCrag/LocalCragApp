@@ -2,87 +2,144 @@
   <div class="content">
     <p-card header="{{ editMode ? t('editScale') : t('createTitle') }}">
       <form [formGroup]="scaleForm" lcForm>
-          <ng-template #title>
-            @if (editMode) {
-              {{ scale?.lineType | transloco }} {{ scale?.name }}
-            }
-          </ng-template>
-          <div class="grid grid-nogutter">
-            <h4 class="col-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
-            @if (!editMode) {
-              <div class="col-12 scale-form-header-field mb-2">
-                <label for="linetype">
-                  {{ t("lineTypeLabel") }}
-                </label>
-                <p-select
-                  id="linetype"
-                  formControlName="lineType"
-                  [options]="[
-                    { name: t('BOULDER'), value: LineType.BOULDER },
-                    { name: t('SPORT'), value: LineType.SPORT },
-                    { name: t('TRAD'), value: LineType.TRAD },
-                  ]"
-                  optionLabel="name"
-                />
-              </div>
-              <div class="col-12 scale-form-header-field mb-4" lcControlGroup>
-                <label for="name">
-                  {{ t("nameInputLabel") }}
-                </label>
-                <input
-                  type="text"
-                  pInputText
-                  id="name"
-                  formControlName="name"
-                  lcFormControl
-                />
-                <small class="lc-error" *lcIfError="'required'">
-                  {{ t("required") }}
-                </small>
-              </div>
-            }
-            @for (
-              grade of gradeControls().controls;
-              track grade;
-              let i = $index
-            ) {
-              <div class="col-12" formArrayName="grades">
-                <div [formGroupName]="i" class="mb-2">
-                  <lc-form-entry-row>
+        <ng-template #title>
+          @if (editMode) {
+            {{ scale?.lineType | transloco }} {{ scale?.name }}
+          }
+        </ng-template>
+        <div class="grid grid-nogutter">
+          <h4 class="col-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
+          @if (!editMode) {
+            <div class="col-12 scale-form-header-field mb-2">
+              <label for="linetype">
+                {{ t("lineTypeLabel") }}
+              </label>
+              <p-select
+                id="linetype"
+                formControlName="lineType"
+                [options]="[
+                  { name: t('BOULDER'), value: LineType.BOULDER },
+                  { name: t('SPORT'), value: LineType.SPORT },
+                  { name: t('TRAD'), value: LineType.TRAD },
+                ]"
+                optionLabel="name"
+              />
+            </div>
+            <div class="col-12 scale-form-header-field mb-4" lcControlGroup>
+              <label for="name">
+                {{ t("nameInputLabel") }}
+              </label>
+              <input
+                type="text"
+                pInputText
+                id="name"
+                formControlName="name"
+                lcFormControl
+              />
+              <small class="lc-error" *lcIfError="'required'">
+                {{ t("required") }}
+              </small>
+            </div>
+          }
+          @for (
+            grade of gradeControls().controls;
+            track grade;
+            let i = $index
+          ) {
+            <div class="col-12" formArrayName="grades">
+              <div [formGroupName]="i" class="mb-2">
+                <lc-form-entry-row>
+                  @if (
+                    grade.get("value").value <= 0 &&
+                    ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
+                    )
+                  ) {
+                    <div>
+                      <label>
+                        {{ t("gradeNameLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          disabled
+                          value="{{
+                            grade.get('name').value | translateSpecialGrades
+                          }}"
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <label>
+                        {{ t("gradeValueLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          disabled
+                          value="{{
+                            grade.get('value').value | translateSpecialGrades
+                          }}"
+                        />
+                      </label>
+                    </div>
+                  }
+                  @if (
+                    grade.get("value").value > 0 ||
+                    !["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
+                      grade.get("name").value
+                    )
+                  ) {
+                    <div lcControlGroup>
+                      <label>
+                        {{ t("gradeNameLabel") }}
+                        <input
+                          type="text"
+                          class="ml-2"
+                          pInputText
+                          formControlName="name"
+                          lcFormControl
+                        />
+                      </label>
+                      <small
+                        class="lc-error"
+                        *lcIfError="'required'"
+                        lcIfErrorControlName="name"
+                      >
+                        {{ t("required") }}
+                      </small>
+                    </div>
+                    <div lcControlGroup>
+                      <label>
+                        {{ t("gradeValueLabel") }}
+                        <p-inputNumber
+                          styleClass="ml-2"
+                          formControlName="value"
+                          [min]="1"
+                          lcFormControl
+                        />
+                      </label>
+                      <small
+                        class="lc-error"
+                        *lcIfError="'required'"
+                        lcIfErrorControlName="value"
+                      >
+                        {{ t("required") }}
+                      </small>
+                    </div>
+                  }
+                  <div actions>
                     @if (
                       grade.get("value").value <= 0 &&
                       ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
                         grade.get("name").value
                       )
                     ) {
-                      <div>
-                        <label>
-                          {{ t("gradeNameLabel") }}
-                          <input
-                            type="text"
-                            class="ml-2"
-                            pInputText
-                            disabled
-                            value="{{
-                              grade.get('name').value | translateSpecialGrades
-                            }}"
-                          />
-                        </label>
-                      </div>
-                      <div>
-                        <label>
-                          {{ t("gradeValueLabel") }}
-                          <input
-                            type="text"
-                            class="ml-2"
-                            pInputText
-                            disabled
-                            value="{{
-                              grade.get('value').value | translateSpecialGrades
-                            }}"
-                          />
-                        </label>
-                      </div>
+                      <p-button
+                        icon="pi pi-trash"
+                        styleClass="p-button-danger"
+                        disabled
+                      />
                     }
                     @if (
                       grade.get("value").value > 0 ||
@@ -90,323 +147,264 @@
                         grade.get("name").value
                       )
                     ) {
-                      <div lcControlGroup>
-                        <label>
-                          {{ t("gradeNameLabel") }}
-                          <input
-                            type="text"
-                            class="ml-2"
-                            pInputText
-                            formControlName="name"
-                            lcFormControl
-                          />
-                        </label>
-                        <small
-                          class="lc-error"
-                          *lcIfError="'required'"
-                          lcIfErrorControlName="name"
-                        >
-                          {{ t("required") }}
-                        </small>
-                      </div>
-                      <div lcControlGroup>
-                        <label>
-                          {{ t("gradeValueLabel") }}
-                          <p-inputNumber
-                            styleClass="ml-2"
-                            formControlName="value"
-                            [min]="1"
-                            lcFormControl
-                          />
-                        </label>
-                        <small
-                          class="lc-error"
-                          *lcIfError="'required'"
-                          lcIfErrorControlName="value"
-                        >
-                          {{ t("required") }}
-                        </small>
-                      </div>
+                      <p-button
+                        [disabled]="loadingState === LoadingState.LOADING"
+                        icon="pi pi-trash"
+                        styleClass="p-button-danger"
+                        (click)="deleteGrade(i)"
+                      />
                     }
-                    <div actions>
-                      @if (
-                        grade.get("value").value <= 0 &&
-                        ["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
-                          grade.get("name").value
-                        )
-                      ) {
-                        <p-button
-                          icon="pi pi-trash"
-                          styleClass="p-button-danger"
-                          disabled
-                        />
-                      }
-                      @if (
-                        grade.get("value").value > 0 ||
-                        !["CLOSED_PROJECT", "OPEN_PROJECT", "UNGRADED"].includes(
-                          grade.get("name").value
-                        )
-                      ) {
-                        <p-button
-                          [disabled]="loadingState === LoadingState.LOADING"
-                          icon="pi pi-trash"
-                          styleClass="p-button-danger"
-                          (click)="deleteGrade(i)"
-                        />
-                      }
-                    </div>
-                  </lc-form-entry-row>
-                </div>
+                  </div>
+                </lc-form-entry-row>
               </div>
+            </div>
+          }
+          <div class="col-12 mt-2">
+            @if (gradeControls().hasError("not_unique")) {
+              <p-message
+                severity="error"
+                text="{{ t('valuesNotUnique') }}"
+                styleClass="min-w-full mb-3"
+              />
             }
-            <div class="col-12 mt-2">
-              @if (gradeControls().hasError("not_unique")) {
-                <p-message
-                  severity="error"
-                  text="{{ t('valuesNotUnique') }}"
-                  styleClass="min-w-full mb-3"
-                />
-              }
-            </div>
-            <div class="button-container">
-              <p-button
-                label="{{ t('addGrade') }}"
-                (click)="addGrade()"
-                icon="pi pi-plus-circle"
-                class="responsive-button"
-                [disabled]="loadingState === LoadingState.LOADING"
-              />
-              <p-button
-                label="{{ t('reorderGrades') }}"
-                (click)="reorderGradesByValue()"
-                icon="pi pi-sort-amount-down-alt"
-                class="responsive-button ml-2"
-                [disabled]="loadingState === LoadingState.LOADING"
-              />
-            </div>
           </div>
-
-          <p-divider class="mt-4" />
-
-          <h4>
-            {{ t("gradeBracketsLabel") }} - {{ t("stackedChartBrackets") }}
-          </h4>
-          <div class="mb-2">
-            <em>{{
-              t("gradeBracketsDescriptionStackedChart", { min: 2, max: 8 })
-            }}</em>
-          </div>
-          @for (
-            _ of stackedChartBracketsControls().controls;
-            track _;
-            let i = $index
-          ) {
-            <div class="col-12" formArrayName="stackedChartBrackets">
-              <div [formGroupName]="i" class="mb-2">
-                <lc-form-entry-row>
-                  <div lcControlGroup>
-                    <label>
-                      {{ t("gradeBracketsInputLabel") }}
-                      <p-inputNumber
-                        formControlName="value"
-                        [min]="1"
-                        class="ml-2"
-                        lcFormControl
-                      />
-                    </label>
-                    <small
-                      class="lc-error"
-                      *lcIfError="'required'"
-                      lcIfErrorControlName="value"
-                    >
-                      {{ t("required") }}
-                    </small>
-                  </div>
-                  <div actions>
-                    <p-button
-                      [disabled]="loadingState === LoadingState.LOADING"
-                      icon="pi pi-trash"
-                      styleClass="p-button-danger"
-                      (click)="deleteStackedChartBracket(i)"
-                    />
-                  </div>
-                </lc-form-entry-row>
-              </div>
-            </div>
-          }
-
-          @if (gradeControls().hasError("not_unique")) {
-            <p-message
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-          @if (stackedChartBracketsControls().hasError("semantic_error")) {
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-          @if (stackedChartBracketsControls().hasError("invalid_length")) {
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-
           <div class="button-container">
             <p-button
-              label="{{ t('addBracket') }}"
-              (click)="addStackedChartBracket()"
+              label="{{ t('addGrade') }}"
+              (click)="addGrade()"
               icon="pi pi-plus-circle"
               class="responsive-button"
               [disabled]="loadingState === LoadingState.LOADING"
             />
             <p-button
               label="{{ t('reorderGrades') }}"
-              (click)="reorderStackedChartBracketsByValue()"
+              (click)="reorderGradesByValue()"
               icon="pi pi-sort-amount-down-alt"
               class="responsive-button ml-2"
               [disabled]="loadingState === LoadingState.LOADING"
             />
           </div>
+        </div>
 
-          <p-divider class="mt-4" />
+        <p-divider class="mt-4" />
 
-          <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
-          <div class="mb-2">
-            <em>{{
-              t("gradeBracketsDescriptionBarChart", { min: 2, max: 14 })
-            }}</em>
-          </div>
-
-          @for (
-            _ of barChartBracketsControls().controls;
-            track _;
-            let i = $index
-          ) {
-            <div class="col-12" formArrayName="barChartBrackets">
-              <div [formGroupName]="i" class="mb-2">
-                <lc-form-entry-row>
-                  <div lcControlGroup>
-                    <label>
-                      {{ t("gradeBracketsInputLabel") }}
-                      <p-inputNumber
-                        formControlName="value"
-                        [min]="1"
-                        class="ml-2"
-                        lcFormControl
-                      />
-                    </label>
-                    <small
-                      class="lc-error"
-                      *lcIfError="'required'"
-                      lcIfErrorControlName="value"
-                    >
-                      {{ t("required") }}
-                    </small>
-                  </div>
-                  <div lcControlGroup>
-                    <label>
-                      {{ t("barChartBracketNameLabel") }}
-                      <input
-                        type="text"
-                        class="ml-2"
-                        pInputText
-                        formControlName="name"
-                        lcFormControl
-                      />
-                    </label>
-                    <small
-                      class="lc-error"
-                      *lcIfError="'required'"
-                      lcIfErrorControlName="name"
-                    >
-                      {{ t("required") }}
-                    </small>
-                  </div>
-                  <div actions>
-                    <p-button
-                      icon="pi pi-trash"
-                      [disabled]="loadingState === LoadingState.LOADING"
-                      styleClass="p-button-danger"
-                      (click)="deleteBarChartBracket(i)"
+        <h4>{{ t("gradeBracketsLabel") }} - {{ t("stackedChartBrackets") }}</h4>
+        <div class="mb-2">
+          <em>{{
+            t("gradeBracketsDescriptionStackedChart", { min: 2, max: 8 })
+          }}</em>
+        </div>
+        @for (
+          _ of stackedChartBracketsControls().controls;
+          track _;
+          let i = $index
+        ) {
+          <div class="col-12" formArrayName="stackedChartBrackets">
+            <div [formGroupName]="i" class="mb-2">
+              <lc-form-entry-row>
+                <div lcControlGroup>
+                  <label>
+                    {{ t("gradeBracketsInputLabel") }}
+                    <p-inputNumber
+                      formControlName="value"
+                      [min]="1"
+                      class="ml-2"
+                      lcFormControl
                     />
-                  </div>
-                </lc-form-entry-row>
-              </div>
+                  </label>
+                  <small
+                    class="lc-error"
+                    *lcIfError="'required'"
+                    lcIfErrorControlName="value"
+                  >
+                    {{ t("required") }}
+                  </small>
+                </div>
+                <div actions>
+                  <p-button
+                    [disabled]="loadingState === LoadingState.LOADING"
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger"
+                    (click)="deleteStackedChartBracket(i)"
+                  />
+                </div>
+              </lc-form-entry-row>
             </div>
-          }
-
-          @if (barChartBracketsControls().hasError("not_unique")) {
-            <p-message
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-          @if (barChartBracketsControls().hasError("semantic_error")) {
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-          @if (barChartBracketsControls().hasError("invalid_length")) {
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
-              styleClass="min-w-full mb-3"
-            />
-          }
-
-          <div class="button-container">
-            <p-button
-              label="{{ t('addBracket') }}"
-              (click)="addBarChartBracket()"
-              icon="pi pi-plus-circle"
-              class="responsive-button"
-              [disabled]="loadingState === LoadingState.LOADING"
-            />
-            <p-button
-              label="{{ t('reorderGrades') }}"
-              (click)="reorderBarChartBracketsByValue()"
-              icon="pi pi-sort-amount-down-alt"
-              class="responsive-button ml-2"
-              [disabled]="loadingState === LoadingState.LOADING"
-            />
           </div>
+        }
 
-          <p-divider class="mt-4" />
-          <div class="scale-form-actions">
-            <p-button
-              label="{{ t('saveScale') }}"
-              (click)="saveScale()"
-              icon="pi pi-save"
-              class="responsive-button"
-              [loading]="loadingState === LoadingState.LOADING"
-            />
-            <p-button
-              label="{{ t('deleteScale') }}"
-              (click)="confirmDeleteScale($event)"
-              icon="pi pi-trash"
-              styleClass="p-button-danger"
-              class="responsive-button"
-              [disabled]="loadingState === LoadingState.LOADING"
-            />
-            <p-button
-              label="{{ t('cancel') }}"
-              (click)="router.navigate(['/scales'])"
-              icon="pi pi-ban"
-              severity="secondary"
-              class="responsive-button"
-              [disabled]="loadingState === LoadingState.LOADING"
-            />
-            <p-confirmpopup></p-confirmpopup>
+        @if (gradeControls().hasError("not_unique")) {
+          <p-message
+            severity="error"
+            text="{{ t('valuesNotUnique') }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+        @if (stackedChartBracketsControls().hasError("semantic_error")) {
+          <p-message
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+        @if (stackedChartBracketsControls().hasError("invalid_length")) {
+          <p-message
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+
+        <div class="button-container">
+          <p-button
+            label="{{ t('addBracket') }}"
+            (click)="addStackedChartBracket()"
+            icon="pi pi-plus-circle"
+            class="responsive-button"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('reorderGrades') }}"
+            (click)="reorderStackedChartBracketsByValue()"
+            icon="pi pi-sort-amount-down-alt"
+            class="responsive-button ml-2"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+        </div>
+
+        <p-divider class="mt-4" />
+
+        <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
+        <div class="mb-2">
+          <em>{{
+            t("gradeBracketsDescriptionBarChart", { min: 2, max: 14 })
+          }}</em>
+        </div>
+
+        @for (
+          _ of barChartBracketsControls().controls;
+          track _;
+          let i = $index
+        ) {
+          <div class="col-12" formArrayName="barChartBrackets">
+            <div [formGroupName]="i" class="mb-2">
+              <lc-form-entry-row>
+                <div lcControlGroup>
+                  <label>
+                    {{ t("gradeBracketsInputLabel") }}
+                    <p-inputNumber
+                      formControlName="value"
+                      [min]="1"
+                      class="ml-2"
+                      lcFormControl
+                    />
+                  </label>
+                  <small
+                    class="lc-error"
+                    *lcIfError="'required'"
+                    lcIfErrorControlName="value"
+                  >
+                    {{ t("required") }}
+                  </small>
+                </div>
+                <div lcControlGroup>
+                  <label>
+                    {{ t("barChartBracketNameLabel") }}
+                    <input
+                      type="text"
+                      class="ml-2"
+                      pInputText
+                      formControlName="name"
+                      lcFormControl
+                    />
+                  </label>
+                  <small
+                    class="lc-error"
+                    *lcIfError="'required'"
+                    lcIfErrorControlName="name"
+                  >
+                    {{ t("required") }}
+                  </small>
+                </div>
+                <div actions>
+                  <p-button
+                    icon="pi pi-trash"
+                    [disabled]="loadingState === LoadingState.LOADING"
+                    styleClass="p-button-danger"
+                    (click)="deleteBarChartBracket(i)"
+                  />
+                </div>
+              </lc-form-entry-row>
+            </div>
           </div>
+        }
+
+        @if (barChartBracketsControls().hasError("not_unique")) {
+          <p-message
+            severity="error"
+            text="{{ t('valuesNotUnique') }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+        @if (barChartBracketsControls().hasError("semantic_error")) {
+          <p-message
+            severity="error"
+            text="{{ t('gradeBracketsErrorMsg') }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+        @if (barChartBracketsControls().hasError("invalid_length")) {
+          <p-message
+            severity="error"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
+            styleClass="min-w-full mb-3"
+          />
+        }
+
+        <div class="button-container">
+          <p-button
+            label="{{ t('addBracket') }}"
+            (click)="addBarChartBracket()"
+            icon="pi pi-plus-circle"
+            class="responsive-button"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('reorderGrades') }}"
+            (click)="reorderBarChartBracketsByValue()"
+            icon="pi pi-sort-amount-down-alt"
+            class="responsive-button ml-2"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+        </div>
+
+        <p-divider class="mt-4" />
+        <div class="scale-form-actions">
+          <p-button
+            label="{{ t('saveScale') }}"
+            (click)="saveScale()"
+            icon="pi pi-save"
+            class="responsive-button"
+            [loading]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('deleteScale') }}"
+            (click)="confirmDeleteScale($event)"
+            icon="pi pi-trash"
+            styleClass="p-button-danger"
+            class="responsive-button"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-button
+            label="{{ t('cancel') }}"
+            (click)="router.navigate(['/scales'])"
+            icon="pi pi-ban"
+            severity="secondary"
+            class="responsive-button"
+            [disabled]="loadingState === LoadingState.LOADING"
+          />
+          <p-confirmpopup></p-confirmpopup>
+        </div>
       </form>
     </p-card>
   </div>
