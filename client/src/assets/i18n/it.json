@@ -128,6 +128,7 @@
   "scale.scaleForm.SPORT": "Via",
   "scale.scaleForm.TRAD": "Trad",
   "scale.scaleForm.nameInputLabel": "Nome scala",
+  "scale.scaleForm.scaleDefinitionLabel": "Definizione scala",
   "scale.scaleForm.required": "Campo obbligatorio",
   "scale.scaleForm.gradeNameLabel": "Difficoltà (indicata)",
   "scale.scaleForm.gradeValueLabel": "Difficoltà (numerica, interna)",

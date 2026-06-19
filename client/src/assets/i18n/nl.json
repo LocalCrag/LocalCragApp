@@ -128,6 +128,7 @@
   "scale.scaleForm.SPORT": "Route",
   "scale.scaleForm.TRAD": "Traditioneel",
   "scale.scaleForm.nameInputLabel": "Naam moeilijkheidsgraad",
+  "scale.scaleForm.scaleDefinitionLabel": "Schaaldefinitie",
   "scale.scaleForm.required": "Verplicht veld",
   "scale.scaleForm.gradeNameLabel": "Moeilijkheid (Weergegeven)",
   "scale.scaleForm.gradeValueLabel": "Moeilijkheid (numeriek, intern)",

@@ -1,16 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { DataViewModule } from 'primeng/dataview';
+import { TableModule } from 'primeng/table';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
 
 import { Router, RouterLink } from '@angular/router';
-import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
-import { RatingModule } from 'primeng/rating';
-import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
 import { Message } from 'primeng/message';
@@ -21,13 +17,9 @@ import { Message } from 'primeng/message';
   styleUrl: './scale-list.component.scss',
   imports: [
     TranslocoDirective,
-    DataViewModule,
+    TableModule,
     RouterLink,
-    AvatarModule,
     ButtonModule,
-    MenuModule,
-    RatingModule,
-    TagModule,
     CardModule,
     TranslocoPipe,
     ScaleListSkeletonComponent,

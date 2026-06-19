@@ -1,7 +1,11 @@
-<div class="grid gap-4">
-  @for (_ of [].constructor(2); track _) {
-    <p-card class="width-100 xl:col-3 lg:col-4 md:col-6 sm:col-12">
-      <p-skeleton height="8rem"></p-skeleton>
-    </p-card>
-  }
-</div>
+<table class="scale-list-skeleton w-full">
+  <tbody>
+    @for (_ of [1, 2, 3, 4]; track _) {
+      <tr>
+        <td><p-skeleton height="1.25rem" /></td>
+        <td><p-skeleton height="1.25rem" /></td>
+        <td><p-skeleton height="1.25rem" width="4rem" /></td>
+      </tr>
+    }
+  </tbody>
+</table>

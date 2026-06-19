@@ -27,7 +27,6 @@ import { of } from 'rxjs';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
@@ -35,11 +34,13 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { MessageModule } from 'primeng/message';
+import { DividerModule } from 'primeng/divider';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
 
 @Component({
   selector: 'lc-scale-form',
@@ -52,17 +53,18 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
     TranslocoPipe,
     InputTextModule,
     InputNumberModule,
-    ToolbarModule,
     ButtonModule,
     FormsModule,
     ConfirmPopupModule,
     MessageModule,
+    DividerModule,
     Select,
     TranslateSpecialGradesPipe,
     FormControlDirective,
     IfErrorDirective,
     ControlGroupDirective,
     FormDirective,
+    FormEntryRowComponent,
   ],
   providers: [ConfirmationService],
 })
@@ -115,17 +117,6 @@ export class ScaleFormComponent implements OnInit {
   }
 
   buildForm() {
-    const allNamesFilled: ValidatorFn = (
-      control: AbstractControl,
-    ): ValidationErrors | null => {
-      const formArray = control as FormArray;
-      return formArray.value.every(
-        (item: any) => item.name && item.name.trim() !== '',
-      )
-        ? null
-        : { names_not_filled: true };
-    };
-
     const notUniqueValidator: ValidatorFn = (
       ctl: AbstractControl,
     ): ValidationErrors | null => {
@@ -164,7 +155,7 @@ export class ScaleFormComponent implements OnInit {
         ? undefined
         : [LineType.BOULDER, [Validators.required]],
       name: this.editMode ? undefined : ['', Validators.required],
-      grades: this.fb.array([], [notUniqueValidator, allNamesFilled]),
+      grades: this.fb.array([], [notUniqueValidator]),
       stackedChartBrackets: this.fb.array(
         [],
         [
@@ -179,7 +170,6 @@ export class ScaleFormComponent implements OnInit {
           notUniqueValidator,
           semanticBracketErrorValidator,
           invalidLengthValidator(2, 14),
-          allNamesFilled,
         ],
       ),
     });
@@ -188,49 +178,74 @@ export class ScaleFormComponent implements OnInit {
   setFormValue() {
     if (this.editMode) {
       this.scale.grades
-        .map((g) =>
-          this.fb.group({
-            name: [g.name],
-            value: [g.value],
-          }),
-        )
+        .map((g) => this.createGradeGroup(g.name, g.value))
         .forEach((ctl) => this.gradeControls().push(ctl));
       this.scale.gradeBrackets.stackedChartBrackets
-        .map((value) =>
-          this.fb.group({
-            value: [value],
-          }),
-        )
+        .map((value) => this.createStackedChartBracketGroup(value))
         .forEach((ctl) => this.stackedChartBracketsControls().push(ctl));
       this.scale.gradeBrackets.barChartBrackets
         .map((bracket) =>
-          this.fb.group({
-            value: [bracket.value],
-            name: [bracket.name],
-          }),
+          this.createBarChartBracketGroup(bracket.value, bracket.name),
         )
         .forEach((ctl) => this.barChartBracketsControls().push(ctl));
     } else {
       this.gradeControls().push(
-        this.fb.group({ name: marker('CLOSED_PROJECT'), value: -2 }),
+        this.createGradeGroup(marker('CLOSED_PROJECT'), -2, false),
       );
       this.gradeControls().push(
-        this.fb.group({ name: marker('OPEN_PROJECT'), value: -1 }),
+        this.createGradeGroup(marker('OPEN_PROJECT'), -1, false),
       );
       this.gradeControls().push(
-        this.fb.group({ name: marker('UNGRADED'), value: 0 }),
+        this.createGradeGroup(marker('UNGRADED'), 0, false),
       );
-      this.stackedChartBracketsControls().push(this.fb.group({ value: 1 }));
-      this.stackedChartBracketsControls().push(this.fb.group({ value: 2 }));
-      this.barChartBracketsControls().push(
-        this.fb.group({ value: 1, name: marker('FIRST_BAR_CHART_BRACKET') }),
+      this.stackedChartBracketsControls().push(
+        this.createStackedChartBracketGroup(1),
+      );
+      this.stackedChartBracketsControls().push(
+        this.createStackedChartBracketGroup(2),
       );
       this.barChartBracketsControls().push(
-        this.fb.group({ value: 2, name: marker('SECOND_BAR_CHART_BRACKET') }),
+        this.createBarChartBracketGroup(1, marker('FIRST_BAR_CHART_BRACKET')),
+      );
+      this.barChartBracketsControls().push(
+        this.createBarChartBracketGroup(2, marker('SECOND_BAR_CHART_BRACKET')),
       );
       this.addGrade();
     }
     this.scaleForm.enable();
+  }
+
+  private isSpecialGrade(name: string, value: number): boolean {
+    return (
+      value <= 0 &&
+      ['CLOSED_PROJECT', 'OPEN_PROJECT', 'UNGRADED'].includes(name)
+    );
+  }
+
+  private createGradeGroup(
+    name: string,
+    value: number,
+    validated?: boolean,
+  ): FormGroup {
+    const requireValidation = validated ?? !this.isSpecialGrade(name, value);
+    const validators = requireValidation ? [Validators.required] : [];
+    return this.fb.group({
+      name: [name, validators],
+      value: [value, validators],
+    });
+  }
+
+  private createStackedChartBracketGroup(value: number): FormGroup {
+    return this.fb.group({
+      value: [value, Validators.required],
+    });
+  }
+
+  private createBarChartBracketGroup(value: number, name: string): FormGroup {
+    return this.fb.group({
+      value: [value, Validators.required],
+      name: [name, Validators.required],
+    });
   }
 
   gradeControls() {
@@ -255,19 +270,22 @@ export class ScaleFormComponent implements OnInit {
     data
       .filter((g) => Number.isInteger(g.value))
       .map((g) => {
-        const controls = {
-          value: [g.value],
-        };
         if (includeName) {
-          controls['name'] = [g.name];
+          return this.createBarChartBracketGroup(g.value, g.name);
         }
-        return this.fb.group(controls);
+        return this.createStackedChartBracketGroup(g.value);
       })
       .forEach((ctl) => controls.push(ctl));
   }
 
   reorderGradesByValue() {
-    this.reorderControlsByValue(this.gradeControls());
+    const data = this.gradeControls().value;
+    data.sort((a, b) => a.value - b.value);
+    this.gradeControls().clear();
+    data
+      .filter((g) => Number.isInteger(g.value))
+      .map((g) => this.createGradeGroup(g.name, g.value))
+      .forEach((ctl) => this.gradeControls().push(ctl));
   }
 
   reorderBarChartBracketsByValue() {
@@ -283,7 +301,7 @@ export class ScaleFormComponent implements OnInit {
       (acc, v) => (v.value > acc ? v.value : acc),
       0,
     );
-    this.gradeControls().push(this.fb.group({ name: [], value: [max + 1] }));
+    this.gradeControls().push(this.createGradeGroup('', max + 1));
   }
 
   deleteGrade(index: number) {
@@ -295,13 +313,11 @@ export class ScaleFormComponent implements OnInit {
       (acc, v) => (v.value > acc ? v.value : acc),
       0,
     );
-    const group = {
-      value: [max + 1],
-    };
     if (includeName) {
-      group['name'] = [];
+      controls.push(this.createBarChartBracketGroup(max + 1, ''));
+    } else {
+      controls.push(this.createStackedChartBracketGroup(max + 1));
     }
-    controls.push(this.fb.group(group));
   }
 
   addStackedChartBracket() {
@@ -321,65 +337,68 @@ export class ScaleFormComponent implements OnInit {
   }
 
   saveScale() {
-    if (this.scaleForm.valid) {
-      this.loadingState = LoadingState.LOADING;
-      this.scaleForm.disable();
+    if (!this.scaleForm.valid) {
+      this.formDirective.markAsTouched();
+      return;
+    }
 
-      if (this.editMode) {
-        this.scale.grades = this.gradeControls().value;
-        this.scale.gradeBrackets = {
-          stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-            (gb) => gb.value,
-          ),
-          barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
-            return {
-              value: gb.value,
-              name: gb.name,
-            };
-          }),
-        };
-        this.scalesService.updateScale(this.scale).subscribe({
-          next: () => {
-            this.store.dispatch(toastNotification('SCALE_UPDATED'));
-            this.loadingState = LoadingState.DEFAULT;
-            this.scaleForm.enable();
-          },
-          error: () => {
-            this.store.dispatch(toastNotification('SCALE_UPDATED_ERROR'));
-            this.loadingState = LoadingState.DEFAULT;
-            this.scaleForm.enable();
-          },
-        });
-      } else {
-        const scale = new Scale();
-        scale.lineType = this.scaleForm.get('lineType').value.value;
-        scale.name = this.scaleForm.get('name').value;
-        scale.grades = this.gradeControls().value;
-        scale.gradeBrackets = {
-          stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-            (gb) => gb.value,
-          ),
-          barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
-            return {
-              value: gb.value,
-              name: gb.name,
-            };
-          }),
-        };
-        this.scalesService.createScale(scale).subscribe({
-          next: () => {
-            this.store.dispatch(toastNotification('SCALE_CREATED'));
-            this.loadingState = LoadingState.DEFAULT;
-            this.scaleForm.enable();
-            this.router.navigate(['/scales']);
-          },
-          error: () => {
-            this.store.dispatch(toastNotification('SCALE_CREATED_ERROR'));
-            this.loadingState = LoadingState.DEFAULT;
-            this.scaleForm.enable();
-          },
-        });
-      }
+    this.loadingState = LoadingState.LOADING;
+    this.scaleForm.disable();
+
+    if (this.editMode) {
+      this.scale.grades = this.gradeControls().value;
+      this.scale.gradeBrackets = {
+        stackedChartBrackets: this.stackedChartBracketsControls().value.map(
+          (gb) => gb.value,
+        ),
+        barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
+          return {
+            value: gb.value,
+            name: gb.name,
+          };
+        }),
+      };
+      this.scalesService.updateScale(this.scale).subscribe({
+        next: () => {
+          this.store.dispatch(toastNotification('SCALE_UPDATED'));
+          this.loadingState = LoadingState.DEFAULT;
+          this.scaleForm.enable();
+        },
+        error: () => {
+          this.store.dispatch(toastNotification('SCALE_UPDATED_ERROR'));
+          this.loadingState = LoadingState.DEFAULT;
+          this.scaleForm.enable();
+        },
+      });
+    } else {
+      const scale = new Scale();
+      scale.lineType = this.scaleForm.get('lineType').value.value;
+      scale.name = this.scaleForm.get('name').value;
+      scale.grades = this.gradeControls().value;
+      scale.gradeBrackets = {
+        stackedChartBrackets: this.stackedChartBracketsControls().value.map(
+          (gb) => gb.value,
+        ),
+        barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
+          return {
+            value: gb.value,
+            name: gb.name,
+          };
+        }),
+      };
+      this.scalesService.createScale(scale).subscribe({
+        next: () => {
+          this.store.dispatch(toastNotification('SCALE_CREATED'));
+          this.loadingState = LoadingState.DEFAULT;
+          this.scaleForm.enable();
+          this.router.navigate(['/scales']);
+        },
+        error: () => {
+          this.store.dispatch(toastNotification('SCALE_CREATED_ERROR'));
+          this.loadingState = LoadingState.DEFAULT;
+          this.scaleForm.enable();
+        },
+      });
     }
   }
 

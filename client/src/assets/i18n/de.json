@@ -128,6 +128,7 @@
   "scale.scaleForm.SPORT": "Route",
   "scale.scaleForm.TRAD": "Traditionell",
   "scale.scaleForm.nameInputLabel": "Skalenname",
+  "scale.scaleForm.scaleDefinitionLabel": "Skalendefinition",
   "scale.scaleForm.required": "Pflichtfeld",
   "scale.scaleForm.gradeNameLabel": "Schwierigkeit (angezeigt)",
   "scale.scaleForm.gradeValueLabel": "Schwierigkeitswert (numerisch, intern)",
