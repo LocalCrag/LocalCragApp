@@ -43,9 +43,7 @@
       </div>
     }
   </div>
-  @if (
-    !(loading === loadingStates.LOADING) && images.length === 0
-  ) {
+  @if (!(loading === loadingStates.LOADING) && images.length === 0) {
     <p-message severity="info" icon="pi pi-info-circle">
       {{ t("thisGalleryIsEmpty") }}
     </p-message>

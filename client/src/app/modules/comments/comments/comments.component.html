@@ -32,11 +32,7 @@
       ></p-button>
     </div>
   }
-  @if (
-    !(
-      loading === loadingStates.LOADING
-    ) && comments.length === 0
-  ) {
+  @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
     <p-message severity="info" icon="pi pi-info-circle">
       {{ t("thisCommentFeedIsEmpty") }}
     </p-message>

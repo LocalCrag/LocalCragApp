@@ -1,7 +1,10 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
   <p-dataView #dv [value]="lines">
     <ng-template #emptymessage>
-      @if (lines?.length === 0 && !(loading === loadingStates.LOADING && currentPage === 1)) {
+      @if (
+        lines?.length === 0 &&
+        !(loading === loadingStates.LOADING && currentPage === 1)
+      ) {
         <p-message
           severity="info"
           icon="pi pi-info-circle"
@@ -87,7 +90,9 @@
                   <p-select
                     [options]="availableScales"
                     [(ngModel)]="scaleKey"
-                    [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+                    [disabled]="
+                      loading === loadingStates.LOADING && currentPage === 1
+                    "
                     optionLabel="label"
                     (onChange)="selectScale()"
                     class="md:mb-0"
@@ -109,7 +114,9 @@
               }
               <div *isGymMode="true">
                 <p-button
-                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+                  [disabled]="
+                    loading === loadingStates.LOADING && currentPage === 1
+                  "
                   label="{{
                     showArchive ? t('hideArchive') : t('showArchive')
                   }}"
@@ -150,7 +157,9 @@
                 <p-slider
                   [(ngModel)]="gradeFilterRange"
                   [min]="minGradeValue"
-                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+                  [disabled]="
+                    loading === loadingStates.LOADING && currentPage === 1
+                  "
                   [max]="maxGradeValue"
                   [range]="true"
                   [step]="1"
@@ -162,7 +171,9 @@
 
           <div class="line-list-filter-actions flex-shrink-0">
             <p-button
-              [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
               (click)="openAdvancedFiltersDialog()"
               class="responsive-button line-list-filter-btn"
             >
