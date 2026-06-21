@@ -62,7 +62,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
 
 
 def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token, smtp_mock):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     # Member creates root comment
     rv = client.post(
         "/api/comments",
@@ -103,7 +103,7 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
         },
     )
     assert rv.status_code == 200, rv.text
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     # Member creates root comment
     rv = client.post(
         "/api/comments",

@@ -50,7 +50,7 @@ def test_get_notifications_includes_release_note_item_keys(client, member_token)
 
 
 def test_get_notifications_lists_unread(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -77,17 +77,14 @@ def test_get_notifications_lists_unread(client, admin_token, member_token):
     assert len(rv.json["items"]) == 1
     assert rv.json["hasNext"] is False
     assert rv.json["items"][0]["type"] == "comment_reply"
-    assert rv.json["items"][0]["properties"]["subject"]["line"]["name"] == "Treppe"
+    assert rv.json["items"][0]["properties"]["subject"]["line"]["name"] == "The Vessel"
     assert rv.json["items"][0]["properties"]["subject"]["line"]["gradeScale"] is not None
     assert rv.json["items"][0]["isDismissed"] is False
-    assert (
-        rv.json["items"][0]["actionLink"]
-        == f"/topo/brione/schattental/dritter-block-von-links/treppe/comments#{reply_id}"
-    )
+    assert rv.json["items"][0]["actionLink"] == f"/topo/brione/pampelmousse/shark-attack/the-vessel/comments#{reply_id}"
 
 
 def test_dismiss_notifications_single_id_hides_and_marks_delivered(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -160,7 +157,7 @@ def test_get_notifications_uses_post_title_for_post_comment_replies(client, admi
 
 
 def test_dismiss_all_notifications_marks_everything_for_user(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     for idx in range(2):
         rv = client.post(
             "/api/comments",
@@ -192,7 +189,7 @@ def test_dismiss_all_notifications_marks_everything_for_user(client, admin_token
 
 
 def test_dismiss_notification_marks_selected(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     created_ids = []
     for idx in range(2):
         rv = client.post(
@@ -230,7 +227,7 @@ def test_dismiss_notification_marks_selected(client, admin_token, member_token):
 
 
 def test_get_notifications_include_dismissed_returns_read_items(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -274,7 +271,7 @@ def test_get_notifications_include_dismissed_returns_read_items(client, admin_to
 
 
 def test_get_notifications_count_returns_undismissed_count(client, admin_token, member_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     for idx in range(2):
         rv = client.post(
             "/api/comments",

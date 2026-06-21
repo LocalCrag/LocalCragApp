@@ -4,16 +4,16 @@ from models.post import Post
 
 def test_successful_create_post(client, moderator_token):
     post_data = {
-        "title": "Glees ist gesperrt!",
-        "text": "<p>Haha, verarscht!</p>",
+        "title": "Glees is closed!",
+        "text": "<p>Haha, fooled you!</p>",
     }
 
     rv = client.post("/api/posts", token=moderator_token, json=post_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["title"] == "Glees ist gesperrt!"
-    assert res["slug"] == "glees-ist-gesperrt"
-    assert res["text"] == "<p>Haha, verarscht!</p>"
+    assert res["title"] == "Glees is closed!"
+    assert res["slug"] == "glees-is-closed"
+    assert res["text"] == "<p>Haha, fooled you!</p>"
     assert res["id"] is not None
     assert res["commentCount"] == 0
 
@@ -36,14 +36,14 @@ def test_successful_get_posts(client):
 
 
 def test_successful_get_post(client):
-    rv = client.get("/api/posts/noch-ein-post")
+    rv = client.get("/api/posts/new-boulders-in-brione")
     assert rv.status_code == 200
     res = rv.json
     assert isinstance(res["id"], str)
-    assert res["slug"] == "noch-ein-post"
-    assert res["title"] == "Noch ein Post"
-    assert res["text"] == "<p>Was steht hier nur für ein Quatsch?</p>"
-    post_row = Post.find_by_slug("noch-ein-post")
+    assert res["slug"] == "new-boulders-in-brione"
+    assert res["title"] == "New boulders in Brione!"
+    assert res["text"] == "<p>Felix and Fabian developed some cool new lines in Upper Brione, go check them out!</p>"
+    post_row = Post.find_by_slug("new-boulders-in-brione")
     assert (
         res["commentCount"]
         == Comment.query.filter_by(object_type="Post", object_id=post_row.id, is_deleted=False).count()
@@ -58,20 +58,20 @@ def test_get_deleted_post(client):
 
 
 def test_successful_delete_post(client, moderator_token):
-    rv = client.delete("/api/posts/noch-ein-post", token=moderator_token)
+    rv = client.delete("/api/posts/new-boulders-in-brione", token=moderator_token)
     assert rv.status_code == 204
 
 
 def test_successful_edit_post(client, moderator_token):
     post_data = {
-        "title": "Alles außer Eifel",
-        "text": "ist soft bewertet",
+        "title": "Everything except Eifel",
+        "text": "is soft graded",
     }
 
-    rv = client.put("/api/posts/mein-erster-post", token=moderator_token, json=post_data)
+    rv = client.put("/api/posts/my-first-post", token=moderator_token, json=post_data)
     assert rv.status_code == 200
     res = rv.json
-    assert res["slug"] == "alles-ausser-eifel"
-    assert res["title"] == "Alles außer Eifel"
-    assert res["text"] == "ist soft bewertet"
+    assert res["slug"] == "everything-except-eifel"
+    assert res["title"] == "Everything except Eifel"
+    assert res["text"] == "is soft graded"
     assert res["id"] is not None

@@ -141,7 +141,7 @@ def test_successful_create_line(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["name"] == "Es"
@@ -238,7 +238,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["name"] == "Es"
@@ -332,7 +332,7 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -380,7 +380,7 @@ def test_create_line_invalid_rating(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -428,7 +428,7 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -476,7 +476,7 @@ def test_create_line_invalid_grade_value(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -524,7 +524,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -572,7 +572,7 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -620,7 +620,7 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -668,7 +668,7 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -720,7 +720,7 @@ def test_create_line_invalid_video_payload(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -769,7 +769,7 @@ def test_create_line_invalid_color(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -797,67 +797,67 @@ def test_successful_get_lines_order_by_ascent_count_ascending(client):
     rv = client.get("/api/lines?order_by=ascent_count&order_direction=asc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+    assert [line["slug"] for line in res] == ["the-vessel", "super-spreader"]
 
 
 def test_successful_get_lines_order_by_ascent_count_descending(client):
     rv = client.get("/api/lines?order_by=ascent_count&order_direction=desc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+    assert [line["slug"] for line in res] == ["super-spreader", "the-vessel"]
 
 
 def test_successful_get_lines_order_by_name_ascending_regression(client):
     rv = client.get("/api/lines?order_by=name&order_direction=asc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+    assert [line["slug"] for line in res] == ["super-spreader", "the-vessel"]
 
 
 def test_successful_get_lines_order_by_time_created_ascending(client):
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    stairs.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
     super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
     db.session.commit()
 
     rv = client.get("/api/lines?order_by=time_created&order_direction=asc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+    assert [line["slug"] for line in res] == ["the-vessel", "super-spreader"]
 
 
 def test_successful_get_lines_order_by_time_created_descending(client):
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    treppe.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
+    stairs.time_created = datetime.datetime(2020, 1, 1, tzinfo=pytz.utc)
     super_spreader.time_created = datetime.datetime(2021, 1, 1, tzinfo=pytz.utc)
     db.session.commit()
 
     rv = client.get("/api/lines?order_by=time_created&order_direction=desc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+    assert [line["slug"] for line in res] == ["super-spreader", "the-vessel"]
 
 
 def test_successful_get_lines_order_by_topo_position_ascending(client):
     rv = client.get("/api/lines?order_by=topo_position&order_direction=asc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["treppe", "super-spreader"]
+    assert [line["slug"] for line in res] == ["the-vessel", "super-spreader"]
 
 
 def test_successful_get_lines_order_by_topo_position_descending(client):
     rv = client.get("/api/lines?order_by=topo_position&order_direction=desc")
     assert rv.status_code == 200
     res = rv.json["items"]
-    assert [line["slug"] for line in res] == ["super-spreader", "treppe"]
+    assert [line["slug"] for line in res] == ["super-spreader", "the-vessel"]
 
 
 def test_get_lines_order_by_topo_position_respects_area_order_within_sector(client):
     """Topo image order_index is per-area; sector/crag lists must sort by area order first."""
-    first_area = Area.find_by_slug("dritter-block-von-links")
-    second_area = Area.find_by_slug("noch-ein-bereich")
+    first_area = Area.find_by_slug("shark-attack")
+    second_area = Area.find_by_slug("another-area")
     template_topo = TopoImage.query.filter_by(area_id=first_area.id).first()
     admin_id = template_topo.created_by_id
 
@@ -896,11 +896,11 @@ def test_get_lines_order_by_topo_position_respects_area_order_within_sector(clie
     )
     db.session.commit()
 
-    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=asc")
+    rv = client.get("/api/lines?sector_slug=pampelmousse&order_by=topo_position&order_direction=asc")
     assert rv.status_code == 200
     assert [line["slug"] for line in rv.json["items"]] == [
         second_area_line.slug,
-        "treppe",
+        "the-vessel",
         "super-spreader",
     ]
 
@@ -908,15 +908,15 @@ def test_get_lines_order_by_topo_position_respects_area_order_within_sector(clie
     assert rv.status_code == 200
     assert [line["slug"] for line in rv.json["items"]] == [
         second_area_line.slug,
-        "treppe",
+        "the-vessel",
         "super-spreader",
     ]
 
-    rv = client.get("/api/lines?sector_slug=schattental&order_by=topo_position&order_direction=desc")
+    rv = client.get("/api/lines?sector_slug=pampelmousse&order_by=topo_position&order_direction=desc")
     assert rv.status_code == 200
     assert [line["slug"] for line in rv.json["items"]] == [
         "super-spreader",
-        "treppe",
+        "the-vessel",
         second_area_line.slug,
     ]
 
@@ -952,7 +952,7 @@ def test_successful_get_line(client):
     res = rv.json
     assert res["name"] == "Super-Spreader"
     assert res["slug"] == "super-spreader"
-    assert res["description"] == "<p>Geiler Kühlschrankboulder!</p>"
+    assert res["description"] == "<p>Awesome fridge boulder!</p>"
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=8A_9oHuTkQA"
     assert res["color"] is None
     assert res["authorGradeValue"] == 22
@@ -1003,7 +1003,7 @@ def test_successful_get_line(client):
 
 
 def test_get_deleted_line(client):
-    rv = client.get("/api/lines/linie-existiert-nicht-mehr")
+    rv = client.get("/api/lines/line-no-longer-exists")
     assert rv.status_code == 404
     res = rv.json
     assert res["message"] == "ENTITY_NOT_FOUND"
@@ -1059,7 +1059,7 @@ def test_successful_edit_line(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
+    rv = client.put("/api/lines/the-vessel", token=moderator_token, json=line_data)
     assert rv.status_code == 200
     res = rv.json
     assert res["name"] == "Es"
@@ -1162,7 +1162,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
 
 
 def test_successful_get_lines_for_line_editor(client):
-    rv = client.get("/api/lines/for-line-editor/dritter-block-von-links")
+    rv = client.get("/api/lines/for-line-editor/shark-attack")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 2
@@ -1211,7 +1211,7 @@ def test_create_line_with_fa_date_only(client, moderator_token):
         "secret": False,
         "closureSchedules": [],
     }
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["faYear"] is None
@@ -1261,7 +1261,7 @@ def test_create_line_with_fa_date_and_year_raises_400(client, moderator_token):
         "secret": False,
         "closureSchedules": [],
     }
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -1308,7 +1308,7 @@ def test_create_project_line_with_fa_date_and_year_raises_400(client, moderator_
         "secret": False,
         "closureSchedules": [],
     }
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 400
 
 
@@ -1323,7 +1323,7 @@ def test_get_lines_required_bools_highball_filters_lines(client):
     assert rv.status_code == 200
     assert rv.json["items"] == []
 
-    line: Line = Line.find_by_slug("treppe")
+    line: Line = Line.find_by_slug("the-vessel")
     line.highball = True
     db.session.add(line)
     db.session.commit()
@@ -1331,7 +1331,7 @@ def test_get_lines_required_bools_highball_filters_lines(client):
     rv2 = client.get("/api/lines?required_bools=highball&per_page=50")
     assert rv2.status_code == 200
     slugs = {item["slug"] for item in rv2.json["items"]}
-    assert slugs == {"treppe"}
+    assert slugs == {"the-vessel"}
     assert all(item["highball"] is True for item in rv2.json["items"])
 
 

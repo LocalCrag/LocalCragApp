@@ -3,10 +3,10 @@ describe('Ascent lifespan workflow', () => {
     cy.viewport(1920, 1080);
     cy.login();
 
-    cy.visit('/topo/brione/schattental/dritter-block-von-links/topo-images');
+    cy.visit('/topo/brione/pampelmousse/shark-attack/topo-images');
     cy.get('[data-cy="tick-button"]').eq(1).click();
     cy.get('[data-cy="rating"] .p-rating-option').eq(3).click();
-    cy.get('[data-cy="comment"]').focus().type('Guter Boulder Yo!');
+    cy.get('[data-cy="comment"]').focus().type('Good boulder yo!');
     cy.get('[data-cy="withKneepad"]').click();
     cy.get('[data-cy="submit"]').click();
 

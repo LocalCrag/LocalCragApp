@@ -77,7 +77,7 @@ def test_get_gallery_images_for_line(client):
     assert "avatar" in res["items"][0]["createdBy"]
     assert res["items"][0]["tags"][0]["objectType"] == "Line"
 
-    rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=treppe")
+    rv = client.get("/api/gallery?page=1&tag-object-type=Line&tag-object-slug=the-vessel")
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 0

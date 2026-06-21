@@ -4,9 +4,9 @@ from models.history_item import HistoryItem
 def test_successful_add_and_delete_history(client, moderator_token):
     history_items_before: list[HistoryItem] = HistoryItem.query.all()
     area_data = {
-        "name": "Kreuzfels",
-        "description": "Super Bereich",
-        "shortDescription": "Super Bereich Kurz",
+        "name": "Fiona",
+        "description": "Great area",
+        "shortDescription": "Great area short",
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
@@ -16,14 +16,14 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
-    rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
     rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == len(history_items_before) + 1
 
-    rv = client.delete("/api/areas/kreuzfels", token=moderator_token)
+    rv = client.delete("/api/areas/fiona", token=moderator_token)
     assert rv.status_code == 204
     rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
     assert rv.status_code == 200
@@ -75,7 +75,7 @@ def test_successful_change_value_history(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.put("/api/lines/treppe", token=moderator_token, json=line_data)
+    rv = client.put("/api/lines/the-vessel", token=moderator_token, json=line_data)
     assert rv.status_code == 200
     rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
     assert rv.status_code == 200
@@ -85,9 +85,9 @@ def test_successful_change_value_history(client, moderator_token):
 
 def test_history_respects_secret_flag(client, moderator_token):
     area_data = {
-        "name": "Kreuzfels",
-        "description": "Super Bereich",
-        "shortDescription": "Super Bereich Kurz",
+        "name": "Fiona",
+        "description": "Great area",
+        "shortDescription": "Great area short",
         "mapMarkers": [],
         "portraitImage": None,
         "secret": True,
@@ -97,7 +97,7 @@ def test_history_respects_secret_flag(client, moderator_token):
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
-    rv = client.post("/api/sectors/schattental/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
     rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
     assert rv.status_code == 200
