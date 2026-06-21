@@ -11,7 +11,7 @@ def test_successful_delete_line_path(client, moderator_token):
 
 
 def test_successful_add_line_path(client, moderator_token):
-    stairs = Line.find_by_slug("stairs")
+    stairs = Line.find_by_slug("the-vessel")
     topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
     line_path_data = {"line": str(stairs.id), "path": [1, 2, 3, 4]}
     rv = client.post(f"/api/topo-images/{topo_image.id}/line-paths", token=moderator_token, json=line_path_data)
@@ -23,7 +23,7 @@ def test_successful_add_line_path(client, moderator_token):
 
 
 def test_add_line_path_path_too_short(client, moderator_token):
-    stairs = Line.find_by_slug("stairs")
+    stairs = Line.find_by_slug("the-vessel")
     topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
     line_path_data = {"line": str(stairs.id), "path": [1, 2]}
     rv = client.post(f"/api/topo-images/{topo_image.id}/line-paths", token=moderator_token, json=line_path_data)
@@ -31,7 +31,7 @@ def test_add_line_path_path_too_short(client, moderator_token):
 
 
 def test_add_line_path_path_out_of_bounds(client, moderator_token):
-    stairs = Line.find_by_slug("stairs")
+    stairs = Line.find_by_slug("the-vessel")
     topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
     line_path_data = {"line": str(stairs.id), "path": [1, 2, 101, 101]}
     rv = client.post(f"/api/topo-images/{topo_image.id}/line-paths", token=moderator_token, json=line_path_data)
@@ -39,7 +39,7 @@ def test_add_line_path_path_out_of_bounds(client, moderator_token):
 
 
 def test_add_line_path_path_not_even(client, moderator_token):
-    stairs = Line.find_by_slug("stairs")
+    stairs = Line.find_by_slug("the-vessel")
     topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
     line_path_data = {"line": str(stairs.id), "path": [1, 2, 100]}
     rv = client.post(f"/api/topo-images/{topo_image.id}/line-paths", token=moderator_token, json=line_path_data)
@@ -47,7 +47,7 @@ def test_add_line_path_path_not_even(client, moderator_token):
 
 
 def test_add_line_path_path_duplicate_line(client, moderator_token):
-    stairs = Line.find_by_slug("stairs")
+    stairs = Line.find_by_slug("the-vessel")
     topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index).first()
     line_path_data = {"line": str(stairs.id), "path": [1, 2, 10, 100]}
     rv = client.post(f"/api/topo-images/{topo_image.id}/line-paths", token=moderator_token, json=line_path_data)
@@ -57,12 +57,12 @@ def test_add_line_path_path_duplicate_line(client, moderator_token):
 def test_successful_order_line_paths(client, moderator_token):
     line_paths = (
         LinePath.query.join(LinePath.line)
-        .filter_by(area_id=Area.get_id_by_slug("third-block-from-the-left"))
+        .filter_by(area_id=Area.get_id_by_slug("shark-attack"))
         .order_by(LinePath.order_index)
         .all()
     )
 
-    rv = client.get("/api/areas/third-block-from-the-left/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 2
@@ -77,7 +77,7 @@ def test_successful_order_line_paths(client, moderator_token):
     rv = client.put(f"/api/topo-images/{topo_image_id}/line-paths/update-order", token=moderator_token, json=new_order)
     assert rv.status_code == 200
 
-    rv = client.get("/api/areas/third-block-from-the-left/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 2

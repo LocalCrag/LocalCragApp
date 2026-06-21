@@ -36,14 +36,14 @@ def test_successful_get_posts(client):
 
 
 def test_successful_get_post(client):
-    rv = client.get("/api/posts/another-post")
+    rv = client.get("/api/posts/new-boulders-in-brione")
     assert rv.status_code == 200
     res = rv.json
     assert isinstance(res["id"], str)
-    assert res["slug"] == "another-post"
-    assert res["title"] == "Another Post"
-    assert res["text"] == "<p>What nonsense is written here?</p>"
-    post_row = Post.find_by_slug("another-post")
+    assert res["slug"] == "new-boulders-in-brione"
+    assert res["title"] == "New boulders in Brione!"
+    assert res["text"] == "<p>Felix and Fabian developed some cool new lines in Upper Brione, go check them out!</p>"
+    post_row = Post.find_by_slug("new-boulders-in-brione")
     assert (
         res["commentCount"]
         == Comment.query.filter_by(object_type="Post", object_id=post_row.id, is_deleted=False).count()
@@ -58,7 +58,7 @@ def test_get_deleted_post(client):
 
 
 def test_successful_delete_post(client, moderator_token):
-    rv = client.delete("/api/posts/another-post", token=moderator_token)
+    rv = client.delete("/api/posts/new-boulders-in-brione", token=moderator_token)
     assert rv.status_code == 204
 
 

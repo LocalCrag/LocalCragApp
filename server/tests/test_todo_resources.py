@@ -5,7 +5,7 @@ from models.user import User
 
 
 def test_successful_add_todo(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     todo_data = {
         "line": str(line_id),
     }
@@ -15,13 +15,13 @@ def test_successful_add_todo(client, user_token):
     res = rv.json
     assert res["line"]["id"] == str(line_id)
     assert res["priority"] == TodoPriorityEnum.MEDIUM.value
-    assert res["sector"]["name"] == "Shade Valley"
-    assert res["area"]["name"] == "Third Block from the Left"
+    assert res["sector"]["name"] == "Pampelmousse"
+    assert res["area"]["name"] == "Shark Attack"
     assert res["crag"]["name"] == "Brione"
 
 
 def test_try_adding_todo_twice(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     todo_data = {
         "line": str(line_id),
     }
@@ -48,7 +48,7 @@ def test_try_adding_a_climbed_line_as_todo(client, admin_token):
 
 
 def test_successful_get_todos(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -68,13 +68,13 @@ def test_successful_get_todos(client, user_token):
     assert len(res["items"]) == 1
     assert res["items"][0]["line"]["id"] == str(line_id)
     assert res["items"][0]["priority"] == TodoPriorityEnum.MEDIUM.value
-    assert res["items"][0]["sector"]["name"] == "Shade Valley"
-    assert res["items"][0]["area"]["name"] == "Third Block from the Left"
+    assert res["items"][0]["sector"]["name"] == "Pampelmousse"
+    assert res["items"][0]["area"]["name"] == "Shark Attack"
     assert res["items"][0]["crag"]["name"] == "Brione"
 
-    # Test the grade filter: set min grade to 10, should return no to-do
+    # Test the grade filter: set min grade to 21, should return no to-do (The Vessel is 7C / grade 20)
     rv = client.get(
-        "/api/todos?page=1&min_grade=10&max_grade=28&order_by=grade_value&order_direction=desc&per_page=10",
+        "/api/todos?page=1&min_grade=21&max_grade=28&order_by=grade_value&order_direction=desc&per_page=10",
         token=user_token,
     )
     assert rv.status_code == 200
@@ -105,7 +105,7 @@ def test_successful_get_todos(client, user_token):
 
 
 def test_successful_update_todo_priority(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -128,7 +128,7 @@ def test_successful_update_todo_priority(client, user_token):
 
 
 def test_successful_delete_todo(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -154,7 +154,7 @@ def test_successful_delete_todo(client, user_token):
 
 
 def test_try_getting_todos_of_another_user(client, user_token, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -175,7 +175,7 @@ def test_try_getting_todos_of_another_user(client, user_token, member_token):
 
 
 def test_try_deleting_todos_of_another_user(client, user_token, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -192,7 +192,7 @@ def test_try_deleting_todos_of_another_user(client, user_token, member_token):
 
 
 def test_try_updating_todo_priority_of_another_user(client, user_token, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -223,7 +223,7 @@ def test_try_adding_todo_with_invalid_line_id(client, user_token):
 
 
 def test_try_updating_priority_with_invalid_priority(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {
@@ -244,7 +244,7 @@ def test_try_updating_priority_with_invalid_priority(client, user_token):
 
 
 def test_get_is_todo(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     line2_id = Line.get_id_by_slug("super-spreader")
     user_id = User.get_id_by_slug("user-user")
     member_id = User.get_id_by_slug("member-member")
@@ -277,7 +277,7 @@ def test_get_is_todo(client, user_token):
 
 
 def test_creating_an_ascent_for_a_line_that_is_todo_removed_the_todo(client, user_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     # Add a to-do first
     todo_data = {

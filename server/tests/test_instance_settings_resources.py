@@ -46,7 +46,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     any_file_id = str(File.query.first().id)
     post_data = {
         "instanceName": "Gleesbouldering",
-        "copyrightOwner": "The Gleesards e.V.",
+        "copyrightOwner": "Die Gleesards e.V.",
         "mailGreeting": "Best regards",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
@@ -76,7 +76,7 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert rv.status_code == 200
     res = rv.json
     assert res["instanceName"] == "Gleesbouldering"
-    assert res["copyrightOwner"] == "The Gleesards e.V."
+    assert res["copyrightOwner"] == "Die Gleesards e.V."
     assert res["mailGreeting"] == "Best regards"
     assert res["logoImage"]["id"] == any_file_id
     assert res["faviconImage"]["id"] == any_file_id
@@ -113,7 +113,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
     any_file_id = str(File.query.first().id)
     post_data = {
         "instanceName": "Gleesbouldering",
-        "copyrightOwner": "The Gleesards e.V.",
+        "copyrightOwner": "Die Gleesards e.V.",
         "mailGreeting": "Best regards",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,
@@ -153,7 +153,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
     any_file_id = str(File.query.first().id)
     post_data = {
         "instanceName": "Gleesbouldering",
-        "copyrightOwner": "The Gleesards e.V.",
+        "copyrightOwner": "Die Gleesards e.V.",
         "mailGreeting": "Best regards",
         "logoImage": any_file_id,
         "faviconImage": any_file_id,

@@ -42,7 +42,7 @@ def test_successful_batch_create_lines(client, moderator_token):
     initial_line_count = Line.query.count()
     initial_history_count = HistoryItem.query.count()
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     res = rv.json
@@ -99,7 +99,7 @@ def test_batch_create_lines_with_project_grades(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     res = rv.json
@@ -118,7 +118,7 @@ def test_batch_create_lines_without_authentication(client):
     """Test batch creation without authentication should fail."""
     batch_data = {"images": ["some-id"], "gradeScale": "FB", "type": "BOULDER", "faDate": None, "lines": []}
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", json=batch_data)
     assert rv.status_code == 401
 
 
@@ -126,7 +126,7 @@ def test_batch_create_lines_without_moderator_privileges(client, member_token):
     """Test batch creation without moderator privileges should fail."""
     batch_data = {"images": ["some-id"], "gradeScale": "FB", "type": "BOULDER", "faDate": None, "lines": []}
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=member_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=member_token, json=batch_data)
     assert rv.status_code == 401
 
 
@@ -152,7 +152,7 @@ def test_batch_create_lines_invalid_grade_validation(client, moderator_token):
         "lines": [{"name": "Invalid Line", "startingPosition": "SIT", "authorGradeValue": 15, "faName": "Test"}],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
     assert "Grade scale, value and line type do not match" in rv.json["message"]
 
@@ -167,7 +167,7 @@ def test_batch_create_lines_empty_images_list(client, moderator_token):
         "lines": [],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
 
 
@@ -186,7 +186,7 @@ def test_batch_create_lines_invalid_fa_date(client, moderator_token):
         "lines": [{"name": "Test Line", "startingPosition": "SIT", "authorGradeValue": 15, "faName": "Test"}],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
 
 
@@ -210,7 +210,7 @@ def test_batch_create_lines_invalid_starting_position(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
 
 
@@ -235,7 +235,7 @@ def test_batch_create_lines_invalid_color(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
 
 
@@ -256,14 +256,14 @@ def test_batch_create_lines_missing_required_fields(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
     assert rv.status_code == 400
 
 
 def test_batch_create_lines_inherits_area_properties(client, moderator_token):
     """Test that created lines inherit secret/closed properties from area."""
     # First, modify the area to be secret and closed
-    area = Area.find_by_slug("third-block-from-the-left")
+    area = Area.find_by_slug("shark-attack")
     area.secret = True
     area.closed = True
     from extensions import db
@@ -284,7 +284,7 @@ def test_batch_create_lines_inherits_area_properties(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     res = rv.json
@@ -301,7 +301,7 @@ def test_batch_create_lines_inherits_area_properties(client, moderator_token):
 def test_batch_create_lines_topo_image_order_index(client, moderator_token):
     """Test that topo images are created with correct order indices."""
     # Get current max order index for the area
-    area = Area.find_by_slug("third-block-from-the-left")
+    area = Area.find_by_slug("shark-attack")
     initial_max_order = TopoImage.find_max_order_index(area.id)
 
     files = File.query.limit(2).all()
@@ -309,7 +309,7 @@ def test_batch_create_lines_topo_image_order_index(client, moderator_token):
 
     batch_data = {"images": file_ids, "gradeScale": "FB", "type": "BOULDER", "faDate": None, "lines": []}
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     res = rv.json
@@ -341,7 +341,7 @@ def test_batch_create_lines_line_name_trimming(client, moderator_token):
         ],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     res = rv.json
@@ -364,7 +364,7 @@ def test_batch_create_lines_history_creation(mock_history, client, moderator_tok
         "lines": [{"name": "History Test Line", "startingPosition": "SIT", "authorGradeValue": 15, "faName": "Test"}],
     }
 
-    rv = client.post("/api/areas/third-block-from-the-left/batch-create", token=moderator_token, json=batch_data)
+    rv = client.post("/api/areas/shark-attack/batch-create", token=moderator_token, json=batch_data)
 
     assert rv.status_code == 200
     # Verify history item creation was called for each line

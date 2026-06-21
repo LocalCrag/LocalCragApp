@@ -18,7 +18,7 @@ def test_successful_get_ranking_boulder(client):
     assert res[0]["top50"] == 22
     assert res[0]["totalCount"] == 1
 
-    rv = client.get(f'/api/ranking?line_type=BOULDER&sector_id={Sector.get_id_by_slug("shade-valley")}')
+    rv = client.get(f'/api/ranking?line_type=BOULDER&sector_id={Sector.get_id_by_slug("pampelmousse")}')
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 1
@@ -45,7 +45,7 @@ def test_successful_get_ranking_invalid_type(client):
 def test_successful_get_ranking_invalid_crag_and_sector_query_params(client):
     rv = client.get(
         f'/api/ranking?line_type=BOULDER&crag_id={Crag.get_id_by_slug("brione")}'
-        f'&sector_id={Sector.get_id_by_slug("shade-valley")}'
+        f'&sector_id={Sector.get_id_by_slug("pampelmousse")}'
     )
     assert rv.status_code == 400
 
@@ -68,7 +68,7 @@ def test_successful_update_ranking(client, admin_token):
         "comment": "Hahahahaha",
         "year": None,
         "gradeValue": 10,
-        "line": str(Line.get_id_by_slug("stairs")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-13",
     }
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)
@@ -145,7 +145,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
         "comment": "Recent tick",
         "year": None,
         "gradeValue": 10,
-        "line": str(Line.get_id_by_slug("stairs")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": today,
     }
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)

@@ -1,14 +1,14 @@
 describe('Create area', () => {
   it('creates an area', () => {
     cy.login();
-    cy.visit('/topo/brione/shade-valley/create-area');
-    cy.get('[data-cy="area-form-name"]').type('Upper');
+    cy.visit('/topo/brione/pampelmousse/create-area');
+    cy.get('[data-cy="area-form-name"]').type('Upper Brione');
     cy.get('[data-cy="area-form-shortDescription"] .ql-editor')
       .focus()
-      .type('Upper is great.');
+      .type('Upper Brione is great.');
     cy.get('[data-cy="area-form-description"] .ql-editor')
       .focus()
-      .type('Upper is very great.');
+      .type('Upper Brione is very great.');
     cy.get('[data-cy="area-form-portraitImage"] input')
       .focus()
       .selectFile('cypress/fixtures/images/peter.jpeg', { force: true });
@@ -19,7 +19,7 @@ describe('Create area', () => {
     cy.get('[data-cy="lng"]').focus().type('180');
     cy.get('[data-cy="save-marker"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('/topo/brione/shade-valley/areas');
-    cy.get('[data-cy="area-list-item"]').last().contains('Upper');
+    cy.visit('/topo/brione/pampelmousse/areas');
+    cy.get('[data-cy="area-list-item"]').last().contains('Upper Brione');
   });
 });

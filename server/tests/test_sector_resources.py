@@ -5,7 +5,7 @@ from models.sector import Sector
 
 
 def test_successful_move_sector_to_different_crag(client, moderator_token):
-    sector: Sector = Sector.find_by_slug("shade-valley")
+    sector: Sector = Sector.find_by_slug("pampelmousse")
     old_crag_id = sector.crag_id
 
     # pick a target crag that is different from the current one
@@ -13,13 +13,13 @@ def test_successful_move_sector_to_different_crag(client, moderator_token):
     assert target_crag is not None
 
     rv = client.put(
-        "/api/sectors/shade-valley/move",
+        "/api/sectors/pampelmousse/move",
         token=moderator_token,
         json={"cragId": str(target_crag.id)},
     )
     assert rv.status_code == 200
     res = rv.json
-    assert res["slug"] == "shade-valley"
+    assert res["slug"] == "pampelmousse"
 
     moved = Sector.find_by_slug(res["slug"])
     assert moved.crag_id != old_crag_id
@@ -34,7 +34,7 @@ def test_successful_move_sector_to_different_crag(client, moderator_token):
 def test_successful_create_sector(client, moderator_token):
     any_file = File.query.first()
     sector_data = {
-        "name": "Crucifix",
+        "name": "Kruzifix",
         "description": "The classic sector",
         "shortDescription": "Classic.",
         "portraitImage": str(any_file.id),
@@ -59,8 +59,8 @@ def test_successful_create_sector(client, moderator_token):
     rv = client.post("/api/crags/brione/sectors", token=moderator_token, json=sector_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["name"] == "Crucifix"
-    assert res["slug"] == "crucifix"
+    assert res["name"] == "Kruzifix"
+    assert res["slug"] == "kruzifix"
     assert res["description"] == "The classic sector"
     assert res["shortDescription"] == "Classic."
     assert res["portraitImage"]["id"] == str(any_file.id)
@@ -80,7 +80,7 @@ def test_successful_create_sector(client, moderator_token):
 
 def test_create_sector_invalid_blocweather_url(client, moderator_token):
     sector_data = {
-        "name": "Crucifix",
+        "name": "Kruzifix",
         "description": "The classic sector",
         "shortDescription": "Classic.",
         "portraitImage": None,
@@ -121,16 +121,16 @@ def test_successful_get_sectors(client):
 
 
 def test_successful_get_sector(client):
-    rv = client.get("/api/sectors/shade-valley")
+    rv = client.get("/api/sectors/pampelmousse")
     assert rv.status_code == 200
     res = rv.json
     assert isinstance(res["id"], str)
-    assert res["name"] == "Shade Valley"
-    assert res["slug"] == "shade-valley"
+    assert res["name"] == "Pampelmousse"
+    assert res["slug"] == "pampelmousse"
     assert res["ascentCount"] == 1
     assert res["portraitImage"] is None
-    assert res["description"] == "<p>Long description of Shade Valley</p>"
-    assert res["shortDescription"] == "Short description of Shade Valley"
+    assert res["description"] == "<p>Long description of Pampelmousse</p>"
+    assert res["shortDescription"] == "Short description of Pampelmousse"
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
     assert res["secret"] is False
@@ -139,7 +139,7 @@ def test_successful_get_sector(client):
     assert res["defaultBoulderScale"] is None
     assert res["defaultSportScale"] is None
     assert res["defaultTradScale"] is None
-    assert res["blocweatherUrl"] == Sector.find_by_slug("shade-valley").blocweather_url
+    assert res["blocweatherUrl"] == Sector.find_by_slug("pampelmousse").blocweather_url
 
 
 def test_get_deleted_sector(client):
@@ -150,7 +150,7 @@ def test_get_deleted_sector(client):
 
 
 def test_successful_delete_sector(client, moderator_token):
-    rv = client.delete("/api/sectors/shade-valley", token=moderator_token)
+    rv = client.delete("/api/sectors/pampelmousse", token=moderator_token)
     assert rv.status_code == 204
 
 
@@ -179,7 +179,7 @@ def test_successful_edit_sector(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.put("/api/sectors/shade-valley", token=moderator_token, json=sector_data)
+    rv = client.put("/api/sectors/pampelmousse", token=moderator_token, json=sector_data)
     assert rv.status_code == 200
     res = rv.json
     assert res["name"] == "Romani"
@@ -229,7 +229,7 @@ def test_successful_order_sectors(client, moderator_token):
 
 
 def test_successful_get_sector_grades(client):
-    rv = client.get("/api/sectors/shade-valley/grades")
+    rv = client.get("/api/sectors/pampelmousse/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}
+    assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}

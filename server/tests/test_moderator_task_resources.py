@@ -8,7 +8,7 @@ from models.user import User
 
 def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     region = Region.return_it()
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     rv = client.post(
         "/api/moderator-tasks",
@@ -79,7 +79,7 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     line_task_id = rv.json["id"]
 
     rv = client.get(
-        "/api/moderator-tasks?scope-type=Line&line-slug=stairs&page=1&per_page=50",
+        "/api/moderator-tasks?scope-type=Line&line-slug=the-vessel&page=1&per_page=50",
         token=moderator_token,
     )
     assert rv.status_code == 200

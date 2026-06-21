@@ -8,8 +8,8 @@ def test_successful_create_crag(client, moderator_token):
 
     crag_data = {
         "name": "Glees",
-        "description": "Explore and document.",
-        "shortDescription": "Explore and document 2.",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": any_file_id,
         "mapMarkers": [
@@ -34,8 +34,8 @@ def test_successful_create_crag(client, moderator_token):
     res = rv.json
     assert res["name"] == "Glees"
     assert res["slug"] == "glees"
-    assert res["description"] == "Explore and document."
-    assert res["shortDescription"] == "Explore and document 2."
+    assert res["description"] == "Fodere et scandere."
+    assert res["shortDescription"] == "Fodere et scandere 2."
     assert res["rules"] == "Parking only on Saturday and Sunday."
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
@@ -56,8 +56,8 @@ def test_successful_create_crag(client, moderator_token):
 def test_create_crag_invalid_blocweather_url(client, moderator_token):
     crag_data = {
         "name": "Glees",
-        "description": "Explore and document.",
-        "shortDescription": "Explore and document 2.",
+        "description": "Fodere et scandere.",
+        "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": None,
         "mapMarkers": [],
@@ -138,8 +138,8 @@ def test_successful_edit_crag(client, moderator_token):
 
     crag_data = {
         "name": "Glees 2",
-        "description": "Explore and document. 2",
-        "shortDescription": "Explore and document 3.",
+        "description": "Fodere et scandere. 2",
+        "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": any_file_id,
         "mapMarkers": [
@@ -164,8 +164,8 @@ def test_successful_edit_crag(client, moderator_token):
     res = rv.json
     assert res["name"] == "Glees 2"
     assert res["slug"] == "glees-2"
-    assert res["description"] == "Explore and document. 2"
-    assert res["shortDescription"] == "Explore and document 3."
+    assert res["description"] == "Fodere et scandere. 2"
+    assert res["shortDescription"] == "Fodere et scandere 3."
     assert res["rules"] == "Parking only on Saturday and Sunday 2."
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
@@ -236,7 +236,7 @@ def test_successful_get_crag_grades(client):
     rv = client.get("/api/crags/brione/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}
+    assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}
 
 
 def test_crag_season(client):

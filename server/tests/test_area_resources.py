@@ -5,7 +5,7 @@ from models.sector import Sector
 
 
 def test_successful_move_area_to_different_sector(client, moderator_token):
-    area: Area = Area.find_by_slug("third-block-from-the-left")
+    area: Area = Area.find_by_slug("shark-attack")
     old_sector_id = area.sector_id
 
     # pick a target sector that is different from the current one
@@ -14,15 +14,15 @@ def test_successful_move_area_to_different_sector(client, moderator_token):
 
     # move to an existing sector in fixtures
     rv = client.put(
-        "/api/areas/third-block-from-the-left/move",
+        "/api/areas/shark-attack/move",
         token=moderator_token,
         json={"sectorId": str(target_sector.id)},
     )
     assert rv.status_code == 200
     res = rv.json
-    assert res["slug"] == "third-block-from-the-left"
+    assert res["slug"] == "shark-attack"
 
-    moved = Area.find_by_slug("third-block-from-the-left")
+    moved = Area.find_by_slug("shark-attack")
     assert moved.sector_id != old_sector_id
 
     # ensure old sector indices have no gap
@@ -35,7 +35,7 @@ def test_successful_create_area(client, moderator_token):
     any_file = File.query.first()
 
     area_data = {
-        "name": "Cross Crag",
+        "name": "Fiona",
         "description": "Great area",
         "shortDescription": "Great area short",
         "mapMarkers": [
@@ -56,11 +56,11 @@ def test_successful_create_area(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/sectors/shade-valley/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 201
     res = rv.json
-    assert res["name"] == "Cross Crag"
-    assert res["slug"] == "cross-crag"
+    assert res["name"] == "Fiona"
+    assert res["slug"] == "fiona"
     assert res["description"] == "Great area"
     assert res["shortDescription"] == "Great area short"
     assert res["mapMarkers"][0]["lat"] == 12.13
@@ -80,7 +80,7 @@ def test_successful_create_area(client, moderator_token):
 
 def test_create_area_invalid_lat(client, moderator_token):
     area_data = {
-        "name": "Cross Crag",
+        "name": "Fiona",
         "description": "Great area",
         "shortDescription": "Great area short",
         "mapMarkers": [
@@ -101,13 +101,13 @@ def test_create_area_invalid_lat(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/sectors/shade-valley/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 400
 
 
 def test_create_area_invalid_lng(client, moderator_token):
     area_data = {
-        "name": "Cross Crag",
+        "name": "Fiona",
         "description": "Great area",
         "shortDescription": "Great area short",
         "mapMarkers": [
@@ -128,13 +128,13 @@ def test_create_area_invalid_lng(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/sectors/shade-valley/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 400
 
 
 def test_create_area_invalid_blocweather_url(client, moderator_token):
     area_data = {
-        "name": "Cross Crag",
+        "name": "Fiona",
         "description": "Great area",
         "shortDescription": "Great area short",
         "mapMarkers": [],
@@ -147,12 +147,12 @@ def test_create_area_invalid_blocweather_url(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/sectors/shade-valley/areas", token=moderator_token, json=area_data)
+    rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
     assert rv.status_code == 400
 
 
 def test_successful_get_areas(client):
-    rv = client.get("/api/sectors/shade-valley/areas")
+    rv = client.get("/api/sectors/pampelmousse/areas")
     assert rv.status_code == 200
     res = rv.json
 
@@ -181,9 +181,9 @@ def test_successful_get_areas(client):
 
 
 def test_successful_get_area(client):
-    area = Area.find_by_slug("third-block-from-the-left")
+    area = Area.find_by_slug("shark-attack")
 
-    rv = client.get("/api/areas/third-block-from-the-left")
+    rv = client.get("/api/areas/shark-attack")
     assert rv.status_code == 200
     res = rv.json
     assert res["id"] == str(area.id)
@@ -208,7 +208,7 @@ def test_get_deleted_area(client):
 
 
 def test_successful_delete_area(client, moderator_token):
-    rv = client.delete("/api/areas/third-block-from-the-left", token=moderator_token)
+    rv = client.delete("/api/areas/shark-attack", token=moderator_token)
     assert rv.status_code == 204
 
 
@@ -235,7 +235,7 @@ def test_successful_edit_area(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.put("/api/areas/third-block-from-the-left", token=moderator_token, json=area_data)
+    rv = client.put("/api/areas/shark-attack", token=moderator_token, json=area_data)
     assert rv.status_code == 200
 
     res = rv.json
@@ -260,7 +260,7 @@ def test_successful_edit_area(client, moderator_token):
 def test_successful_order_areas(client, moderator_token):
     areas = Area.query.order_by(Area.order_index).all()
 
-    rv = client.get("/api/sectors/shade-valley/areas")
+    rv = client.get("/api/sectors/pampelmousse/areas")
     assert rv.status_code == 200
     res = rv.json
     assert res[0]["id"] == str(areas[0].id)
@@ -272,10 +272,10 @@ def test_successful_order_areas(client, moderator_token):
         str(areas[0].id): 1,
         str(areas[1].id): 0,
     }
-    rv = client.put("/api/sectors/shade-valley/areas/update-order", token=moderator_token, json=new_order)
+    rv = client.put("/api/sectors/pampelmousse/areas/update-order", token=moderator_token, json=new_order)
     assert rv.status_code == 200
 
-    rv = client.get("/api/sectors/shade-valley/areas")
+    rv = client.get("/api/sectors/pampelmousse/areas")
     assert rv.status_code == 200
     res = rv.json
     assert res[0]["id"] == str(areas[1].id)
@@ -285,7 +285,7 @@ def test_successful_order_areas(client, moderator_token):
 
 
 def test_successful_get_area_grades(client):
-    rv = client.get("/api/areas/third-block-from-the-left/grades")
+    rv = client.get("/api/areas/shark-attack/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}
+    assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}

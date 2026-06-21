@@ -4,7 +4,7 @@ from models.post import Post
 
 
 def test_create_comment_on_line(client, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     payload = {
         "message": "Nice climb!",
         "objectType": "Line",
@@ -22,7 +22,7 @@ def test_create_comment_on_line(client, member_token):
 
 
 def test_reply_to_comment(client, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -49,7 +49,7 @@ def test_reply_to_comment(client, member_token):
 
 
 def test_update_and_delete_comment(client, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -82,7 +82,7 @@ def test_create_comment_on_post(client, member_token):
 
 
 def test_get_comments_for_post(client, member_token):
-    post_id = Post.get_id_by_slug("another-post")
+    post_id = Post.get_id_by_slug("new-boulders-in-brione")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -98,7 +98,7 @@ def test_get_comments_for_post(client, member_token):
 
 
 def test_get_comments_for_line(client):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&page=1&per-page=100")
     assert rv.status_code == 200
     assert "items" in rv.json
@@ -111,9 +111,9 @@ def test_get_comments_for_line(client):
 
 
 def test_cascade_delete_comments(client, moderator_token, member_token):
-    # create a comment on area cross-crag and then delete area -> comment should be gone
+    # create a comment on area fiona and then delete area -> comment should be gone
     rv = client.post(
-        "/api/sectors/shade-valley/areas",
+        "/api/sectors/pampelmousse/areas",
         token=moderator_token,
         json={
             "name": "K-Comment",
@@ -159,7 +159,7 @@ def test_create_comment_missing_fields_returns_400(client, member_token):
 
 
 def test_create_comment_invalid_object_type_returns_400(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -169,7 +169,7 @@ def test_create_comment_invalid_object_type_returns_400(client, member_token):
 
 
 def test_create_comment_empty_message_returns_400(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -180,7 +180,7 @@ def test_create_comment_empty_message_returns_400(client, member_token):
 
 def test_update_comment_empty_message_returns_400(client, member_token):
     # Create first
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -206,7 +206,7 @@ def test_reply_mismatched_parent_raises_bad_request(client, member_token):
     parent_id = rv.json["id"]
 
     # Try to reply on a different line using parent from A
-    line_b = str(Line.get_id_by_slug("stairs"))
+    line_b = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -237,7 +237,7 @@ def test_create_comment_on_nonexistent_object_returns_404(client, member_token):
 
 
 def test_unauthorized_edit_by_other_user_returns_401(client, member_token, user_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     # Create by member
     rv = client.post(
         "/api/comments",
@@ -254,7 +254,7 @@ def test_unauthorized_edit_by_other_user_returns_401(client, member_token, user_
 
 
 def test_unauthorized_delete_by_other_user_returns_401(client, member_token, user_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     # Create by member
     rv = client.post(
         "/api/comments",
@@ -273,7 +273,7 @@ def test_unauthorized_delete_by_other_user_returns_401(client, member_token, use
 def test_create_comment_on_secret_area_returns_404_for_non_member(client, moderator_token, user_token):
     # Create a secret area
     rv = client.post(
-        "/api/sectors/shade-valley/areas",
+        "/api/sectors/pampelmousse/areas",
         token=moderator_token,
         json={
             "name": "Secret-Area",
@@ -305,7 +305,7 @@ def test_create_comment_on_secret_area_returns_404_for_non_member(client, modera
 
 
 def test_create_comment_requires_auth_returns_401(client):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         json={"message": "Hi", "objectType": "Line", "objectId": line_id},
@@ -329,7 +329,7 @@ def test_update_comment_not_found_returns_404(client, member_token):
 
 def test_get_only_root_level_comments_and_reply_count(client, member_token):
     # Arrange: create a parent and two replies on the same line
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -367,7 +367,7 @@ def test_get_only_root_level_comments_and_reply_count(client, member_token):
 
 
 def test_get_replies_for_comment(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -395,7 +395,7 @@ def test_get_replies_for_comment(client, member_token):
 
 
 def test_reply_to_reply_sets_root_id(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     # Create root comment
     rv = client.post(
         "/api/comments",
@@ -431,7 +431,7 @@ def test_reply_to_reply_sets_root_id(client, member_token):
 
 
 def test_delete_comment_with_replies_is_soft_deleted(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     # Create parent and a reply
     rv = client.post(
         "/api/comments",
@@ -470,7 +470,7 @@ def test_delete_comment_with_replies_is_soft_deleted(client, member_token):
 
 
 def test_delete_comment_without_replies_is_hard_deleted(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -490,7 +490,7 @@ def test_delete_comment_without_replies_is_hard_deleted(client, member_token):
 
 
 def test_delete_child_comment_does_not_affect_parent(client, member_token):
-    line_id = str(Line.get_id_by_slug("stairs"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     # Create parent and a reply
     rv = client.post(
         "/api/comments",
@@ -520,7 +520,7 @@ def test_delete_child_comment_does_not_affect_parent(client, member_token):
 
 
 def test_admins_receive_email_on_new_comment(client, user_token, smtp_mock):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=user_token,
@@ -534,7 +534,7 @@ def test_admins_receive_email_on_new_comment(client, user_token, smtp_mock):
 
 
 def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -569,7 +569,7 @@ def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
 
 
 def test_reaction_post_put_delete_on_comment(client, member_token, admin_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,
@@ -619,7 +619,7 @@ def test_reaction_post_put_delete_on_comment(client, member_token, admin_token):
 
 
 def test_cannot_react_to_own_comment(client, member_token):
-    line_id = Line.get_id_by_slug("stairs")
+    line_id = Line.get_id_by_slug("the-vessel")
     rv = client.post(
         "/api/comments",
         token=member_token,

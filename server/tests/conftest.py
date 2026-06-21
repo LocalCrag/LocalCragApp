@@ -352,15 +352,15 @@ def fill_db_with_sample_data():
     db.session.add(crag)
 
     sector = Sector()
-    sector.name = "Shade Valley"
-    sector.description = "<p>Long description of Shade Valley</p>"
-    sector.short_description = "Short description of Shade Valley"
+    sector.name = "Pampelmousse"
+    sector.description = "<p>Long description of Pampelmousse</p>"
+    sector.short_description = "Short description of Pampelmousse"
     sector.crag_id = Crag.get_id_by_slug("brione")
     sector.order_index = 0
     db.session.add(sector)
 
     sector = Sector()
-    sector.name = "Upper"
+    sector.name = "Upper Brione"
     sector.description = ""
     sector.short_description = ""
     sector.crag_id = Crag.get_id_by_slug("brione")
@@ -368,29 +368,29 @@ def fill_db_with_sample_data():
     db.session.add(sector)
 
     area = Area()
-    area.name = "Third Block from the Left"
-    area.description = "<p>General info about the third block from the left.</p>"
-    area.sector_id = Sector.get_id_by_slug("shade-valley")
+    area.name = "Shark Attack"
+    area.description = "<p>General info about Shark Attack.</p>"
+    area.sector_id = Sector.get_id_by_slug("pampelmousse")
     area.order_index = 0
     db.session.add(area)
 
     area = Area()
     area.name = "Another Area"
     area.description = ""
-    area.sector_id = Sector.get_id_by_slug("shade-valley")
+    area.sector_id = Sector.get_id_by_slug("pampelmousse")
     area.order_index = 1
     db.session.add(area)
 
     line = Line()
-    line.name = "Stairs"
+    line.name = "The Vessel"
     line.description = "<p>A normal staircase.</p>"
     line.type = LineTypeEnum.BOULDER
-    line.area_id = Area.get_id_by_slug("third-block-from-the-left")
+    line.area_id = Area.get_id_by_slug("shark-attack")
     line.author_rating = 1
     line.user_rating = 1
     line.grade_scale = "FB"
-    line.author_grade_value = 1
-    line.user_grade_value = 1
+    line.author_grade_value = 20
+    line.user_grade_value = 20
     line.starting_position = StartingPositionEnum.STAND
     db.session.add(line)
 
@@ -398,7 +398,7 @@ def fill_db_with_sample_data():
     line.name = "Super-Spreader"
     line.description = "<p>Awesome fridge boulder!</p>"
     line.type = LineTypeEnum.BOULDER
-    line.area_id = Area.get_id_by_slug("third-block-from-the-left")
+    line.area_id = Area.get_id_by_slug("shark-attack")
     line.author_rating = 5
     line.user_rating = 3
     line.fa_year = 2024
@@ -436,8 +436,8 @@ def fill_db_with_sample_data():
     db.session.add(post)
 
     post = Post()
-    post.title = "Another Post"
-    post.text = "<p>What nonsense is written here?</p>"
+    post.title = "New boulders in Brione!"
+    post.text = "<p>Felix and Fabian developed some cool new lines in Upper Brione, go check them out!</p>"
     post.created_by_id = admin_id
     db.session.add(post)
 
@@ -539,14 +539,14 @@ def fill_db_with_sample_data():
     db.session.add(instance_settings)
 
     topo_image = TopoImage()
-    topo_image.area_id = Area.get_id_by_slug("third-block-from-the-left")
+    topo_image.area_id = Area.get_id_by_slug("shark-attack")
     topo_image.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
     topo_image.created_by_id = admin_id
     topo_image.order_index = 0
     db.session.add(topo_image)
 
     topo_image = TopoImage()
-    topo_image.area_id = Area.get_id_by_slug("third-block-from-the-left")
+    topo_image.area_id = Area.get_id_by_slug("shark-attack")
     topo_image.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
     topo_image.created_by_id = admin_id
     topo_image.order_index = 1
@@ -571,7 +571,7 @@ def fill_db_with_sample_data():
     db.session.add(line_path)
 
     line_path = LinePath()
-    line_path.line_id = Line.get_id_by_slug("stairs")
+    line_path.line_id = Line.get_id_by_slug("the-vessel")
     line_path.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
     line_path.path = [
         84.42857142857143,
@@ -610,7 +610,7 @@ def fill_db_with_sample_data():
     mapMarker.lat = 34.343434
     mapMarker.lng = 29.292929
     mapMarker.type = MapMarkerType.AREA
-    mapMarker.area_id = Area.get_id_by_slug("third-block-from-the-left")
+    mapMarker.area_id = Area.get_id_by_slug("shark-attack")
     db.session.add(mapMarker)
 
     menuPage = MenuPage()
@@ -686,7 +686,7 @@ def fill_db_with_sample_data():
 
         ranking = Ranking()
         ranking.user_id = admin_id
-        ranking.sector_id = Sector.get_id_by_slug("shade-valley")
+        ranking.sector_id = Sector.get_id_by_slug("pampelmousse")
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
@@ -742,7 +742,7 @@ def fill_db_with_sample_data():
     recent_search = RecentSearch()
     recent_search.user_id = member_id
     recent_search.object_type = "Line"
-    recent_search.object_id = Line.get_id_by_slug("stairs")
+    recent_search.object_id = Line.get_id_by_slug("the-vessel")
     db.session.add(recent_search)
 
     recent_search = RecentSearch()

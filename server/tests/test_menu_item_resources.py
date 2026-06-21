@@ -154,19 +154,19 @@ def test_successful_get_crag_menu_structure(client):
     assert res[1]["slug"] == "chironico"
     assert res[1]["name"] == "Chironico"
 
-    assert res[0]["sectors"][0]["slug"] == "shade-valley"
-    assert res[0]["sectors"][0]["name"] == "Shade Valley"
-    assert res[0]["sectors"][1]["slug"] == "upper"
+    assert res[0]["sectors"][0]["slug"] == "pampelmousse"
+    assert res[0]["sectors"][0]["name"] == "Pampelmousse"
+    assert res[0]["sectors"][1]["slug"] == "upper-brione"
     assert res[0]["sectors"][1]["name"] == "Upper"
 
-    assert res[0]["sectors"][0]["areas"][0]["slug"] == "third-block-from-the-left"
-    assert res[0]["sectors"][0]["areas"][0]["name"] == "Third Block from the Left"
+    assert res[0]["sectors"][0]["areas"][0]["slug"] == "shark-attack"
+    assert res[0]["sectors"][0]["areas"][0]["name"] == "Shark Attack"
     assert res[0]["sectors"][0]["areas"][1]["slug"] == "another-area"
     assert res[0]["sectors"][0]["areas"][1]["name"] == "Another Area"
 
 
 def test_get_crag_menu_structure_excludes_closed_with_filter(client):
-    area = Area.find_by_slug("third-block-from-the-left")
+    area = Area.find_by_slug("shark-attack")
     area.closed = True
     db.session.add(area)
     db.session.commit()
@@ -177,7 +177,7 @@ def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     for crag in rv.json:
         for sector in crag["sectors"]:
             all_areas.extend([a["slug"] for a in sector["areas"]])
-    assert "third-block-from-the-left" in all_areas
+    assert "shark-attack" in all_areas
 
     rv = client.get("/api/menu-items/crag-menu-structure?exclude_closed=1")
     assert rv.status_code == 200
@@ -185,4 +185,4 @@ def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     for crag in rv.json:
         for sector in crag["sectors"]:
             filtered_areas.extend([a["slug"] for a in sector["areas"]])
-    assert "third-block-from-the-left" not in filtered_areas
+    assert "shark-attack" not in filtered_areas
