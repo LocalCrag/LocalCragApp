@@ -23,8 +23,7 @@
       <p-button
         label="{{ t('logoutButtonLabel') }}"
         (click)="logout()"
-        styleClass="p-button-outlined p-button-secondary"
-        class="mr-3"
+        class="p-button-outlined p-button-secondary mr-3"
         [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
       ></p-button>
       <p-button

@@ -131,14 +131,35 @@ export class ChangePasswordComponent implements OnInit {
     this.changePasswordForm = this.fb.group({
       newPasswords: this.fb.group(
         {
-          password: ['', [Validators.required, Validators.minLength(8)]],
-          passwordConfirm: ['', [Validators.required, Validators.minLength(8)]],
+          password: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(8),
+              Validators.maxLength(120),
+            ],
+          ],
+          passwordConfirm: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(8),
+              Validators.maxLength(120),
+            ],
+          ],
         },
         {
           validators: passwordsValidator(),
         },
       ),
-      oldPassword: ['', [Validators.required, Validators.minLength(8)]],
+      oldPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(120),
+        ],
+      ],
     });
   }
 }

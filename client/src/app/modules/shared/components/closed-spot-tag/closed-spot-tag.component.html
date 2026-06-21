@@ -21,15 +21,12 @@
   <p-popover
     #popover
     appendTo="body"
-    styleClass="closed-spot-tag-popover"
+    class="closed-spot-tag-popover"
     (onShow)="onPopoverShow()"
   >
     <div class="closed-spot-tag-popover-content">
       @if (loading) {
-        <p-progressSpinner
-          strokeWidth="4"
-          styleClass="closed-spot-tag-spinner"
-        />
+        <p-progressSpinner strokeWidth="4" class="closed-spot-tag-spinner" />
       } @else if (loadError) {
         <span class="closed-spot-tag-error">{{ t("loadError") }}</span>
       } @else if (displayReasons !== null) {

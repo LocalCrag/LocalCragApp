@@ -18,6 +18,7 @@
   "areaForm.blocweatherUrlLabel": "Blocweather-URL",
   "areaForm.blocweatherTooltip": "Als u weersinformatie voor deze regio op de detailspagina wilt weergeven, kunt u hier de URL voor het relevante gedeelte op blocweather.com invoeren.",
   "areaForm.invalidBlocweatherUrl": "Ongeldige URL",
+  "areaForm.maxlength255": "Maximum aantal tekens: 255",
   "areaForm.mapMarkersLabel": "GPS coördinaten",
   "areaForm.closedBecauseParentIsClosed": "Deze klimwand is gesloten omdat de bovenliggende sector momenteel gesloten is.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Het maken van een zichtbare klimwand binnen een verborgen klimgebied stelt het klimgebied automatisch in op zichtbaar. Andere reeds bestaande gebieden en sectoren blijven verborgen.",

@@ -150,7 +150,7 @@
             }}</small>
             @if (getDisplayUserGrades() | async) {
               <p-message
-                styleClass="mt-2"
+                class="mt-2"
                 severity="warn"
                 text="{{ t('displayUserGradesActive') }}"
               />
@@ -195,7 +195,7 @@
             ></p-rating>
             @if (getDisplayUserRatings() | async) {
               <p-message
-                styleClass="mt-2"
+                class="mt-2"
                 severity="warn"
                 text="{{ t('displayUserRatingsActive') }}"
               />
@@ -252,7 +252,7 @@
                 <p-button
                   (click)="deleteLineVideoControl(i)"
                   icon="pi pi-trash"
-                  styleClass="p-button-danger"
+                  class="p-button-danger"
                 ></p-button>
               </div>
             }
@@ -260,8 +260,7 @@
               <p-button
                 label="{{ t('addVideoButtonLabel') }}"
                 (click)="addLineVideoFormControl()"
-                class="pl-0"
-                styleClass="p-button-secondary"
+                class="pl-0 p-button-secondary"
                 icon="pi pi-plus"
               ></p-button>
             </div>
@@ -779,24 +778,21 @@
           <p-button
             label="{{ t('cancelButtonLabel') }}"
             (click)="cancel()"
-            class="ml-3 responsive-button"
-            styleClass="p-button-secondary"
+            class="ml-3 responsive-button p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
           @if (editMode) {
             <p-button
               icon="pi pi-arrow-right-arrow-left"
               label="{{ t('moveLineButtonLabel') }}"
-              styleClass="p-button-secondary"
-              class="ml-3 responsive-button"
+              class="p-button-secondary ml-3 responsive-button"
               (click)="openMoveDialog()"
             ></p-button>
             <p-button
               label="{{ t('deleteLineButtonLabel') }}"
               (click)="confirmDeleteLine($event)"
               icon="pi pi-trash"
-              styleClass="p-button-danger"
-              class="ml-3 responsive-button"
+              class="p-button-danger ml-3 responsive-button"
               [loading]="loadingState === loadingStates.LOADING"
             ></p-button>
           }

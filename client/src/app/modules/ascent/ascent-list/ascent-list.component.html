@@ -31,7 +31,7 @@
               "
               optionLabel="label"
               (onChange)="loadFirstPage()"
-              styleClass="md:mb-0"
+              class="md:mb-0"
             >
               <ng-template #selectedItem>
                 @if (orderKey) {
@@ -54,7 +54,7 @@
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
               (onChange)="loadFirstPage()"
-              styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
+              class="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
             >
               <ng-template #selectedItem>
                 @if (orderDirectionKey) {
@@ -86,7 +86,7 @@
                 [(ngModel)]="scaleKey"
                 optionLabel="label"
                 (onChange)="selectScale()"
-                styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
+                class="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
               >
                 <ng-template #selectedItem2>
                   @if (scaleKey) {
@@ -147,7 +147,7 @@
                       <div class="ascent-table-user-info">
                         <lc-user-avatar
                           [user]="ascent.createdBy"
-                          styleClass="mr-2"
+                          class="mr-2"
                           size="large"
                         />
                         <a
@@ -267,7 +267,7 @@
                         ></p-menu>
                         <p-button
                           icon="pi pi-ellipsis-v"
-                          styleClass="p-button-rounded p-button-text"
+                          class="p-button-rounded p-button-text"
                           data-cy="ascent-actions-button"
                           (click)="
                             openAscentActionsMenu($event, ascent, menuLarge)
@@ -282,7 +282,7 @@
                       @if (!user) {
                         <lc-user-avatar
                           [user]="ascent.createdBy"
-                          styleClass="mr-2"
+                          class="mr-2"
                           size="large"
                         />
                       }
@@ -403,7 +403,7 @@
                         ></p-menu>
                         <p-button
                           icon="pi pi-ellipsis-v"
-                          styleClass="p-button-rounded p-button-text"
+                          class="p-button-rounded p-button-text"
                           (click)="
                             openAscentActionsMenu($event, ascent, menuMedium)
                           "
@@ -417,7 +417,7 @@
                       @if (!user) {
                         <lc-user-avatar
                           [user]="ascent.createdBy"
-                          styleClass="mr-3"
+                          class="mr-3"
                           size="large"
                         />
                       }
@@ -466,7 +466,7 @@
                           ></p-menu>
                           <p-button
                             icon="pi pi-ellipsis-v"
-                            styleClass="p-button-rounded p-button-text"
+                            class="p-button-rounded p-button-text"
                             (click)="
                               openAscentActionsMenu($event, ascent, menuSmall)
                             "

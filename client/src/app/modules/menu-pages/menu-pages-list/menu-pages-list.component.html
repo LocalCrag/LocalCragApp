@@ -23,7 +23,7 @@
               [(ngModel)]="sortKey"
               optionLabel="label"
               (onChange)="onSortChange($event)"
-              styleClass="md:mb-0"
+              class="md:mb-0"
             ></p-select>
             <div class="flex justify-content-end gap-3">
               <p-button
@@ -57,15 +57,14 @@
                           label="{{ t('visitMenuPageButtonLabel') }}"
                           icon="pi pi-eye"
                           routerLink="/pages/{{ menuPage.slug }}"
-                          styleClass="pr-0 responsive-button"
+                          class="pr-0 responsive-button"
                           [text]="true"
                         ></p-button>
                         <p-button
                           label="{{ t('editMenuPageButtonLabel') }}"
                           icon="pi pi-file-edit"
                           routerLink="/pages/{{ menuPage.slug }}/edit"
-                          styleClass="pr-0"
-                          class="responsive-button"
+                          class="pr-0 responsive-button"
                           [text]="true"
                         ></p-button>
                       </div>

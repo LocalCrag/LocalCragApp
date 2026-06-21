@@ -21,6 +21,7 @@
   "cragForm.blocweatherUrlLabel": "Blocweather URL",
   "cragForm.blocweatherTooltip": "Per visualizzare le informazioni meteorologiche relative a questa zona nella pagina dei dettagli, puoi inserire qui l'URL della sezione corrispondente su blocweather.com.",
   "cragForm.invalidBlocweatherUrl": "L'URL deve seguire lo schema https://blocweather.com/<paese>/<regione>/<località>",
+  "cragForm.maxlength255": "Numero massimo di caratteri: 255",
   "cragForm.mapMarkersLabel": "Punti GPS",
   "cragForm.cragOptionsLabel": "Opzioni",
   "cragForm.secretLabel": "Segreta",

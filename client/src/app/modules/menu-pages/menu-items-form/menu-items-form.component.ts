@@ -194,7 +194,9 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm
         .get('menuPage')
         .setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
-      this.menuItemForm.get('icon').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('icon')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
       this.menuItemForm.get('url').setValidators([]);
@@ -206,11 +208,19 @@ export class MenuItemsFormComponent implements OnInit {
     } else if (this.menuItemForm.get('type').value === MenuItemType.URL) {
       this.menuItemForm
         .get('url')
-        .setValidators([Validators.required, httpUrlValidator()]);
+        .setValidators([
+          Validators.required,
+          httpUrlValidator(),
+          Validators.maxLength(120),
+        ]);
       this.menuItemForm.get('url').enable();
-      this.menuItemForm.get('title').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('title')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('title').enable();
-      this.menuItemForm.get('icon').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('icon')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
       this.menuItemForm.get('menuPage').setValidators([]);

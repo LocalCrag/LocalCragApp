@@ -18,6 +18,10 @@ export const blocweatherUrlValidator: ValidatorFn = (
     return { blocweatherUrl: { invalid: true } };
   }
 
+  if (url.length > 255) {
+    return { blocweatherUrl: { invalid: true } };
+  }
+
   const prefix = 'https://blocweather.com/';
   if (!url.startsWith(prefix)) {
     return { blocweatherUrl: { invalid: true } };

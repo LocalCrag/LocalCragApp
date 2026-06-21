@@ -55,7 +55,7 @@
             ? searchable.area.portraitImage.thumbnailS
             : 'assets/placeholder.png'
         "
-        styleClass="mr-2"
+        class="mr-2"
         size="normal"
       ></p-avatar>
       <div class="search-result-description">
@@ -89,7 +89,7 @@
             ? searchable.sector.portraitImage.thumbnailS
             : 'assets/placeholder.png'
         "
-        styleClass="mr-2"
+        class="mr-2"
         size="normal"
       ></p-avatar>
       <div class="search-result-description">
@@ -118,7 +118,7 @@
             ? searchable.crag.portraitImage.thumbnailS
             : 'assets/placeholder.png'
         "
-        styleClass="mr-2"
+        class="mr-2"
         size="normal"
       ></p-avatar>
       <div class="search-result-description">
@@ -136,11 +136,7 @@
       [routerLink]="disableNavigation ? null : searchable.user.routerLink"
       (click)="onSearchResultClick()"
     >
-      <lc-user-avatar
-        [user]="searchable.user"
-        styleClass="mr-2"
-        size="normal"
-      />
+      <lc-user-avatar [user]="searchable.user" class="mr-2" size="normal" />
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.user.fullname }}</div>
         <div class="search-result-meta">

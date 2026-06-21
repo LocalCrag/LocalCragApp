@@ -25,7 +25,7 @@
         [model]="userMenuItems"
         [popup]="true"
         data-cy="auth-menu"
-        styleClass="wide-menu"
+        class="wide-menu"
       ></p-menu>
       <div class="flex align-items-center justify-content-center gap-2">
         <div class="search-fake-input" (click)="openSearch()" tabindex="0">
@@ -47,7 +47,7 @@
               [user]="authUser"
               (click)="menu.toggle($event)"
               data-cy="auth-menu-button"
-              styleClass="mr-2"
+              class="mr-2"
               size="normal"
             />
           }
