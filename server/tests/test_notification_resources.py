@@ -36,7 +36,7 @@ def test_get_notifications_includes_release_note_item_keys(client, member_token)
     db.session.commit()
 
     rv = client.get(
-        "/api/users/account/notifications?include_dismissed=1",
+        "/api/account/notifications?include_dismissed=1",
         token=member_token,
     )
     assert rv.status_code == 200, rv.text
@@ -69,7 +69,7 @@ def test_get_notifications_lists_unread(client, admin_token, member_token):
     assert rv.status_code == 201, rv.text
     reply_id = rv.json["id"]
 
-    rv = client.get("/api/users/account/notifications", token=member_token)
+    rv = client.get("/api/account/notifications", token=member_token)
     assert rv.status_code == 200, rv.text
     assert len(rv.json["items"]) == 1
     assert rv.json["hasNext"] is False
@@ -110,7 +110,7 @@ def test_dismiss_notifications_single_id_hides_and_marks_delivered(client, admin
     notification = notifications[0]
 
     rv = client.post(
-        f"/api/users/account/notifications/{notification.id}/dismiss",
+        f"/api/account/notifications/{notification.id}/dismiss",
         token=member_token,
     )
     assert rv.status_code == 204, rv.text
@@ -119,7 +119,7 @@ def test_dismiss_notifications_single_id_hides_and_marks_delivered(client, admin
     assert updated.dismissed_at is not None
     assert updated.delivered_at is not None
 
-    rv = client.get("/api/users/account/notifications", token=member_token)
+    rv = client.get("/api/account/notifications", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["items"] == []
     assert rv.json["hasNext"] is False
@@ -148,7 +148,7 @@ def test_get_notifications_uses_post_title_for_post_comment_replies(client, admi
     )
     assert rv.status_code == 201, rv.text
 
-    rv = client.get("/api/users/account/notifications", token=member_token)
+    rv = client.get("/api/account/notifications", token=member_token)
     assert rv.status_code == 200, rv.text
     assert len(rv.json["items"]) == 1
     assert rv.json["items"][0]["type"] == "comment_reply"
@@ -179,7 +179,7 @@ def test_dismiss_all_notifications_marks_everything_for_user(client, admin_token
         )
         assert rv.status_code == 201, rv.text
 
-    rv = client.post("/api/users/account/notifications/dismiss-all", token=member_token)
+    rv = client.post("/api/account/notifications/dismiss-all", token=member_token)
     assert rv.status_code == 204, rv.text
 
     notifications = Notification.query.all()
@@ -213,7 +213,7 @@ def test_dismiss_notification_marks_selected(client, admin_token, member_token):
         created_ids.append(str(Notification.query.order_by(Notification.time_created.desc()).first().id))
 
     rv = client.post(
-        f"/api/users/account/notifications/{created_ids[0]}/dismiss",
+        f"/api/account/notifications/{created_ids[0]}/dismiss",
         token=member_token,
     )
     assert rv.status_code == 204, rv.text
@@ -252,17 +252,17 @@ def test_get_notifications_include_dismissed_returns_read_items(client, admin_to
     assert notification is not None
 
     rv = client.post(
-        f"/api/users/account/notifications/{notification.id}/dismiss",
+        f"/api/account/notifications/{notification.id}/dismiss",
         token=member_token,
     )
     assert rv.status_code == 204, rv.text
 
-    rv = client.get("/api/users/account/notifications", token=member_token)
+    rv = client.get("/api/account/notifications", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["items"] == []
 
     rv = client.get(
-        "/api/users/account/notifications?include_dismissed=1",
+        "/api/account/notifications?include_dismissed=1",
         token=member_token,
     )
     assert rv.status_code == 200, rv.text
@@ -292,18 +292,18 @@ def test_get_notifications_count_returns_undismissed_count(client, admin_token, 
         )
         assert rv.status_code == 201, rv.text
 
-    rv = client.get("/api/users/account/notifications/count", token=member_token)
+    rv = client.get("/api/account/notifications/count", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["count"] == 2
 
     newest = Notification.query.order_by(Notification.time_created.desc()).first()
     assert newest is not None
     rv = client.post(
-        f"/api/users/account/notifications/{newest.id}/dismiss",
+        f"/api/account/notifications/{newest.id}/dismiss",
         token=member_token,
     )
     assert rv.status_code == 204, rv.text
 
-    rv = client.get("/api/users/account/notifications/count", token=member_token)
+    rv = client.get("/api/account/notifications/count", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["count"] == 1

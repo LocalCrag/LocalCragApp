@@ -49,6 +49,6 @@ def test_get_notifications_hides_moderator_task_notifications_for_non_moderators
     db.session.add(note)
     db.session.commit()
 
-    rv = client.get("/api/users/account/notifications", token=member_token)
+    rv = client.get("/api/account/notifications", token=member_token)
     assert rv.status_code == 200
     assert all(item["type"] != "moderator_task_created" for item in rv.json["items"])
