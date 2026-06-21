@@ -8,13 +8,14 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
+from models.mixins.has_order_index import HasOrderIndex
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 from util.secret_spots_auth import get_show_secret
 
 
-class Area(HasSlug, IsSearchable, IsClosable, BaseEntity):
+class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
     """
     Model of a sector's area. Could be e.g. "Black Gate". Contains one or more lines.
     """
@@ -30,7 +31,6 @@ class Area(HasSlug, IsSearchable, IsClosable, BaseEntity):
     sector_id = db.Column(UUID(), db.ForeignKey("sectors.id"), nullable=False)
     lines = db.relationship("Line", cascade="all,delete", backref="area", lazy="select")
     topo_images = db.relationship("TopoImage", cascade="all,delete", backref="area", lazy="select")
-    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     secret = db.Column(db.Boolean, default=False, server_default="0")
 
     sector_slug = association_proxy("sector", "slug")

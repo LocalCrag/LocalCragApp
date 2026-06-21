@@ -7,19 +7,22 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import {
+  deserializeOrderIndexAttributes,
+  HasOrderIndex,
+} from './mixins/has-order-index';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 import { topoCragRouterLink } from './topo-router-link';
 
 /**
  * Model of a climbing crag.
  */
-export class Crag extends IsClosable(AbstractModel) {
+export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   name: string;
   description: string;
   shortDescription: string;
   rules: string;
-  slug: string;
   portraitImage: File;
-  orderIndex: number;
   sectors: Sector[];
   lineCount: number;
   ascentCount: number;
@@ -41,13 +44,13 @@ export class Crag extends IsClosable(AbstractModel) {
     const crag = new Crag();
     AbstractModel.deserializeAbstractAttributes(crag, payload);
     deserializeClosableAttributes(crag, payload);
+    deserializeSlugAttributes(crag, payload);
+    deserializeOrderIndexAttributes(crag, payload);
     crag.name = payload.name;
     crag.description = payload.description;
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
-    crag.slug = payload.slug;
     crag.secret = payload.secret;
-    crag.orderIndex = payload.orderIndex;
     crag.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
       : null;

@@ -9,13 +9,14 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
+from models.mixins.has_order_index import HasOrderIndex
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 from util.secret_spots_auth import get_show_secret
 
 
-class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
+class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
     """
     Model of a climbing crag's sector. Could be e.g. "Mordor". Contains one or more areas.
     """
@@ -32,7 +33,6 @@ class Sector(HasSlug, IsSearchable, IsClosable, BaseEntity):
     areas = db.relationship(
         "Area", cascade="all,delete", backref="sector", lazy="select", order_by="Area.order_index.asc()"
     )
-    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     rules = db.Column(db.Text, nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default="0")

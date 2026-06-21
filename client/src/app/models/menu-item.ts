@@ -2,11 +2,15 @@ import { AbstractModel } from './abstract-model';
 import { MenuItemType } from '../enums/menu-item-type';
 import { MenuItemPosition } from '../enums/menu-item-position';
 import { MenuPage } from './menu-page';
+import {
+  deserializeOrderIndexAttributes,
+  HasOrderIndex,
+} from './mixins/has-order-index';
 
 /**
  * Model of a menu item.
  */
-export class MenuItem extends AbstractModel {
+export class MenuItem extends HasOrderIndex(AbstractModel) {
   type: MenuItemType;
   position: MenuItemPosition;
   menuPage: MenuPage;
@@ -23,6 +27,7 @@ export class MenuItem extends AbstractModel {
   public static deserialize(payload: any): MenuItem {
     const menuItem = new MenuItem();
     AbstractModel.deserializeAbstractAttributes(menuItem, payload);
+    deserializeOrderIndexAttributes(menuItem, payload);
     menuItem.type = payload.type;
     menuItem.position = payload.position;
     menuItem.icon = payload.icon;

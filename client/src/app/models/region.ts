@@ -6,7 +6,6 @@ import { AbstractModel } from './abstract-model';
 export class Region extends AbstractModel {
   name: string;
   description: string;
-  slug: string;
   rules: string;
   ascentCount: number;
 
@@ -21,7 +20,6 @@ export class Region extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(region, payload);
     region.name = payload.name;
     region.description = payload.description;
-    region.slug = payload.slug;
     region.rules = payload.rules;
     region.ascentCount = payload.ascentCount;
     return region;

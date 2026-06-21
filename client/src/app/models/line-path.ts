@@ -2,14 +2,17 @@ import { AbstractModel } from './abstract-model';
 import { Line } from './line';
 import Konva from 'konva';
 import { LoadingState } from '../enums/loading-state';
+import {
+  deserializeOrderIndexAttributes,
+  HasOrderIndex,
+} from './mixins/has-order-index';
 
 /**
  * Model of a line path.
  */
-export class LinePath extends AbstractModel {
+export class LinePath extends HasOrderIndex(AbstractModel) {
   path: number[];
   line: Line;
-  orderIndex: number;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
@@ -35,8 +38,8 @@ export class LinePath extends AbstractModel {
   public static deserialize(payload: any): LinePath {
     const linePath = new LinePath();
     AbstractModel.deserializeAbstractAttributes(linePath, payload);
+    deserializeOrderIndexAttributes(linePath, payload);
     linePath.path = payload.path;
-    linePath.orderIndex = payload.orderIndex;
     linePath.line = payload.line ? Line.deserialize(payload.line) : null;
     return linePath;
   }
