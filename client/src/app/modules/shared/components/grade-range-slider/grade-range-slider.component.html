@@ -1,0 +1,28 @@
+<div class="slider-container">
+  <lc-slider-labels
+    [rangeMin]="range[0]"
+    [rangeMax]="range[1]"
+    [min]="min"
+    [max]="max"
+    [minLabel]="
+      scalesService.gradeNameByValue(lineType, gradeScale, range[0])
+        | async
+        | translateSpecialGrades
+    "
+    [maxLabel]="
+      scalesService.gradeNameByValue(lineType, gradeScale, range[1])
+        | async
+        | translateSpecialGrades
+    "
+  />
+  <p-slider
+    [ngModel]="range"
+    (ngModelChange)="onRangeChange($event)"
+    [min]="min"
+    [max]="max"
+    [disabled]="disabled"
+    [range]="true"
+    [step]="1"
+    (onSlideEnd)="slideEnd.emit()"
+  />
+</div>

@@ -30,39 +30,13 @@
         </div>
       }
       @if (dialogScaleKey?.value && maxGrade !== null) {
-        <div class="slider-container">
-          <lc-slider-labels
-            [rangeMin]="gradeRange[0]"
-            [rangeMax]="gradeRange[1]"
-            [min]="minGradeValue"
-            [max]="maxGrade"
-            [minLabel]="
-              scalesService.gradeNameByValue(
-                dialogScaleKey.value.lineType,
-                dialogScaleKey.value.gradeScale,
-                gradeRange[0]
-              )
-                | async
-                | translateSpecialGrades
-            "
-            [maxLabel]="
-              scalesService.gradeNameByValue(
-                dialogScaleKey.value.lineType,
-                dialogScaleKey.value.gradeScale,
-                gradeRange[1]
-              )
-                | async
-                | translateSpecialGrades
-            "
-          ></lc-slider-labels>
-          <p-slider
-            [(ngModel)]="gradeRange"
-            [min]="minGradeValue"
-            [max]="maxGrade"
-            [range]="true"
-            [step]="1"
-          />
-        </div>
+        <lc-grade-range-slider
+          [(range)]="gradeRange"
+          [min]="minGradeValue"
+          [max]="maxGrade"
+          [lineType]="dialogScaleKey.value.lineType"
+          [gradeScale]="dialogScaleKey.value.gradeScale"
+        />
       }
     </div>
 
@@ -70,24 +44,10 @@
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersRatingSection") }}
       </div>
-      <div class="slider-container">
-        <lc-slider-labels
-          [rangeMin]="draft.minRating"
-          [rangeMax]="draft.maxRating"
-          [min]="0"
-          [max]="5"
-          [minLabel]="'' + draft.minRating"
-          [maxLabel]="'' + draft.maxRating"
-        ></lc-slider-labels>
-        <p-slider
-          [ngModel]="[draft.minRating, draft.maxRating]"
-          (ngModelChange)="onRatingRangeChange($event)"
-          [min]="0"
-          [max]="5"
-          [range]="true"
-          [step]="1"
-        ></p-slider>
-      </div>
+      <lc-rating-range-slider
+        [range]="[draft.minRating, draft.maxRating]"
+        (rangeChange)="onRatingRangeChange($event)"
+      />
     </div>
 
     <div>
