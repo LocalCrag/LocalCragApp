@@ -1,9 +1,13 @@
+import logging
+
 from flask import current_app
 
 from app import app
 from extensions import db
 from helpers.user_helpers import create_user
 from models.user import User
+
+logger = logging.getLogger(__name__)
 
 
 def add_superadmin():
@@ -13,7 +17,7 @@ def add_superadmin():
     with app.app_context():
         # Prevent creating multiple superadmins.
         if User.query.filter_by(superadmin=True).first():
-            print("Superadmin already exists. Skipping.")
+            logger.info("Superadmin already exists. Skipping.")
             return
 
         superadmin_email = (current_app.config.get("SUPERADMIN_EMAIL") or "").strip().lower()
@@ -21,7 +25,7 @@ def add_superadmin():
         # If the configured email already exists, do not create a new superadmin.
         # (This avoids creating a second account and avoids implicitly elevating an existing one.)
         if superadmin_email and User.find_by_email(superadmin_email):
-            print("Configured SUPERADMIN_EMAIL already exists. Skipping.")
+            logger.info("Configured SUPERADMIN_EMAIL already exists. Skipping.")
             return
 
         if (
@@ -45,7 +49,7 @@ def add_superadmin():
         user.member = True
         db.session.add(user)
         db.session.commit()
-        print("Added superadmin user.")
+        logger.info("Added superadmin user.")
 
 
 if __name__ == "__main__":

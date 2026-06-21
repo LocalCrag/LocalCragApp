@@ -57,6 +57,11 @@
           "type": "string",
           "minLength": 1,
           "description": "Public URL of the frontend application"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR"],
+          "description": "Application log level written to stdout"
         }
       }
     },

@@ -37,6 +37,7 @@ def overwrite_config_by_env_vars(app):
         "SUPERADMIN_EMAIL",
         "SUPERADMIN_FIRSTNAME",
         "SUPERADMIN_LASTNAME",
+        "LOG_LEVEL",
     ]
 
     for var_name in var_names:

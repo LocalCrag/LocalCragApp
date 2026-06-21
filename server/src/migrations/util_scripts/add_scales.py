@@ -1,6 +1,10 @@
+import logging
+
 from app import app
 from extensions import db
 from models.scale import GRADE_BRACKETS, GRADES, Scale
+
+logger = logging.getLogger(__name__)
 
 
 def add_scales():
@@ -18,7 +22,7 @@ def add_scales():
                     new_grades.grade_brackets = GRADE_BRACKETS[line_type][name]
                     db.session.add(new_grades)
                     db.session.commit()
-                    print(f"Added grades {name} for line type {line_type}")
+                    logger.info("Added grades %s for line type %s", name, line_type)
 
 
 if __name__ == "__main__":
