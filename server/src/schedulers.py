@@ -129,6 +129,10 @@ def init_schedulers(app) -> None:
 
     scheduler.start()
     _scheduler = scheduler
+    app.logger.info(
+        "APScheduler started with jobs: build_rankings_every_15m, send_notification_digests_daily, %s",
+        CLOSURE_SCHEDULES_JOB_ID,
+    )
 
     # Ensure graceful shutdown on process exit
     atexit.register(lambda: _scheduler and _scheduler.shutdown(wait=False))
@@ -189,7 +193,17 @@ def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> d
 
 
 def _run_send_notification_digests(app):
-    send_notification_digests(app)
+    app.logger.info("Starting send_notification_digests job.")
+    try:
+        counts = send_notification_digests(app)
+        app.logger.info(
+            "Completed send_notification_digests job: usersMailed=%s notificationsMailed=%s",
+            counts["usersMailed"],
+            counts["notificationsMailed"],
+        )
+    except Exception:
+        app.logger.exception("send_notification_digests job failed")
+        raise
 
 
 def enqueue_closure_materialization(app) -> bool:

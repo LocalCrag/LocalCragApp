@@ -1212,7 +1212,6 @@ def test_create_line_with_fa_date_only(client, moderator_token):
         "closureSchedules": [],
     }
     rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
-    print(rv.data)
     assert rv.status_code == 201
     res = rv.json
     assert res["faYear"] is None

@@ -39,6 +39,8 @@ export default defineConfig([
 
       "no-control-regex": "off",
 
+      "no-console": ["error", { allow: ["warn", "error"] }],
+
       "@angular-eslint/directive-selector": [
         "error",
         {

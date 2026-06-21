@@ -6,6 +6,8 @@ Create Date: 2025-04-27 05:38:22.632602
 
 """
 
+import logging
+
 import sqlalchemy as sa
 from alembic import op
 
@@ -28,8 +30,8 @@ def upgrade():
         batch_op.execute(sa.text("UPDATE lines SET user_grade_value = author_grade_value"))
         batch_op.execute(sa.text("UPDATE lines SET user_rating = author_rating"))
 
-    print(
-        "WARNING: You need to manually run src/migrations/util_scripts/calculate_user_grades.py "
+    logging.getLogger(__name__).warning(
+        "You need to manually run src/migrations/util_scripts/calculate_user_grades.py "
         "to calculate user grades and ratings for existing lines"
     )
 

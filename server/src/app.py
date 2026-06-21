@@ -13,6 +13,7 @@ from extensions import cors, db, jwt, ma, migrate
 from models.revoked_token import RevokedToken
 from schedulers import init_schedulers
 from util.flask_environment import is_development_mode
+from util.logging_config import configure_app_logging
 
 
 def register_extensions(application):
@@ -51,6 +52,8 @@ def create_app():
         application.config.from_envvar("LOCALCRAG_CONFIG")
     overwrite_config_by_env_vars(application)
     validate_config(application.config)
+
+    configure_app_logging(application)
 
     init_sentry_sdk(application)
 

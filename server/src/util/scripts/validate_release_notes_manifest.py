@@ -13,21 +13,29 @@ From repo root with pipenv (``jsonschema`` is a dev dependency)::
 from __future__ import annotations
 
 import json
+import logging
 import sys
 from pathlib import Path
 
 from jsonschema import Draft7Validator
 
+logger = logging.getLogger(__name__)
 
-def _server_src_dir() -> Path:
-    return Path(__file__).resolve().parent.parent.parent
+_SRC_DIR = Path(__file__).resolve().parent.parent.parent
+
+
+def _configure_logging() -> None:
+    if str(_SRC_DIR) not in sys.path:
+        sys.path.insert(0, str(_SRC_DIR))
+    from util.logging_config import configure_standalone_logging
+
+    configure_standalone_logging()
 
 
 def _default_paths() -> tuple[Path, Path]:
-    base = _server_src_dir()
     return (
-        base / "data" / "release_notes_manifest.json",
-        base / "data" / "release_notes_manifest.schema.json",
+        _SRC_DIR / "data" / "release_notes_manifest.json",
+        _SRC_DIR / "data" / "release_notes_manifest.schema.json",
     )
 
 
@@ -64,31 +72,32 @@ def validate_manifest(instance: object, schema: object) -> list[str]:
 
 
 def main() -> int:
+    _configure_logging()
     manifest_path, schema_path = _default_paths()
     if not schema_path.is_file():
-        print(f"Schema not found: {schema_path}", file=sys.stderr)
+        logger.error("Schema not found: %s", schema_path)
         return 1
     if not manifest_path.is_file():
-        print(f"Manifest not found: {manifest_path}", file=sys.stderr)
+        logger.error("Manifest not found: %s", manifest_path)
         return 1
     try:
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        print(f"Invalid JSON in schema: {e}", file=sys.stderr)
+        logger.error("Invalid JSON in schema: %s", e)
         return 1
     try:
         instance = json.loads(manifest_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        print(f"Invalid JSON in manifest: {e}", file=sys.stderr)
+        logger.error("Invalid JSON in manifest: %s", e)
         return 1
 
     errs = validate_manifest(instance, schema)
     if errs:
-        print(f"release_notes_manifest.json validation failed ({manifest_path}):", file=sys.stderr)
+        logger.error("release_notes_manifest.json validation failed (%s):", manifest_path)
         for msg in errs:
-            print(f"  - {msg}", file=sys.stderr)
+            logger.error("  - %s", msg)
         return 1
-    print(f"OK: {manifest_path}")
+    logger.info("OK: %s", manifest_path)
     return 0
 
 

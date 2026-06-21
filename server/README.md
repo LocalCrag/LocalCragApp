@@ -30,6 +30,7 @@
     - `S3_ADDRESSING` S3 object storage addressing mode: `virtual` or `path`
     - `SENTRY_DSN` DSN for Sentry error tracking
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
+    - `LOG_LEVEL` Application log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Defaults to `INFO`. Logs are written to stdout.
 - For configuring a local object storage, read `../docs/dev-tooling.md`. This is needed if you are working with fileupload in any way.
 - Now you are ready to set up the database of your local dev instance:
   - Set your config env var `LOCALCRAG_CONFIG=config/dev.cfg`
