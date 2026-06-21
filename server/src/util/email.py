@@ -67,12 +67,12 @@ def send_generic_mail(msg):
     """
 
     if current_app.config["PRINT_MAILS_TO_CONSOLE"]:
-        print_decoded_email_parts(msg)
+        log_decoded_email_parts(msg)
         return
 
     smtp_type = current_app.config.get("SMTP_TYPE", "").lower()
     if smtp_type not in ["smtps", "starttls", "plain", "disabled"]:
-        print(f"WARNING: Invalid SMTP_TYPE set ({smtp_type!r}), defaulting to 'disabled'")
+        current_app.logger.warning("Invalid SMTP_TYPE set (%r), defaulting to 'disabled'", smtp_type)
         smtp_type = "disabled"
 
     if smtp_type == "starttls":  # pragma: no cover
@@ -262,13 +262,13 @@ def _html_to_plain_text(html: str) -> str:
     return h.handle(html).strip()
 
 
-def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
+def _log_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
     if email_message.is_multipart():
         for part in email_message.walk():
             content_disposition = part.get("Content-Disposition")
             if content_disposition is not None:
                 # This is an attachment (may be multipart, e.g. forwarded message)
-                print(f"Attachment: {part.get_filename()}")
+                current_app.logger.info("Attachment: %s", part.get_filename())
                 continue
             content_type = part.get_content_type()
             if part.is_multipart():
@@ -282,28 +282,28 @@ def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool)
                 body = raw.decode(charset)
                 if strip_html and content_type == "text/html":
                     body = _html_to_plain_text(body)
-                print(f"Content Type: {content_type}\nBody:\n{body}\n")
+                current_app.logger.info("Content Type: %s\nBody:\n%s\n", content_type, body)
             except Exception as e:
-                print(f"Could not decode part: {e}")
+                current_app.logger.warning("Could not decode part: %s", e)
     else:
         charset = email_message.get_content_charset() or "utf-8"
         raw = email_message.get_payload(decode=True)
         if raw is None:
-            print("Body:\n(empty)\n")
+            current_app.logger.info("Body:\n(empty)\n")
             return
         body = raw.decode(charset)
         ct = email_message.get_content_type()
         if strip_html and ct == "text/html":
             body = _html_to_plain_text(body)
-        print(f"Body:\n{body}\n")
+        current_app.logger.info("Body:\n%s\n", body)
 
 
-def print_decoded_email_parts(email_message: Message):
+def log_decoded_email_parts(email_message: Message):
     """
-    Print all parts of an email message twice: first as decoded HTML (with markup), then the same
+    Log all parts of an email message twice: first as decoded HTML (with markup), then the same
     bodies run through html2text so values like temporary passwords are easy to spot in the console.
     """
-    print("--- Mail (with markup) ---")
-    _print_decoded_email_parts_once(email_message, strip_html=False)
-    print("--- Mail (plain text) ---")
-    _print_decoded_email_parts_once(email_message, strip_html=True)
+    current_app.logger.info("--- Mail (with markup) ---")
+    _log_decoded_email_parts_once(email_message, strip_html=False)
+    current_app.logger.info("--- Mail (plain text) ---")
+    _log_decoded_email_parts_once(email_message, strip_html=True)

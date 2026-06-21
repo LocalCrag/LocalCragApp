@@ -1,6 +1,10 @@
+import logging
+
 from app import app
 from extensions import db
 from models.instance_settings import InstanceSettings
+
+logger = logging.getLogger(__name__)
 
 
 def add_initial_instance_settings():
@@ -11,7 +15,7 @@ def add_initial_instance_settings():
             instance_settings.copyright_owner = "Your name goes here"
             db.session.add(instance_settings)
             db.session.commit()
-            print("Created initial instance settings.")
+            logger.info("Created initial instance settings.")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,9 @@
+import os
+
 bind = "0.0.0.0:5000"
+loglevel = os.environ.get("LOG_LEVEL", "info").lower()
+errorlog = "-"
+accesslog = "-"
 workers = 4
 worker_tmp_dir = "/dev/shm"
 wsgi_app = "app:app"

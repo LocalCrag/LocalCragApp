@@ -34,6 +34,7 @@ html2text = "==2024.*"
 
 [dev-packages]
 flake8 = "==7.*"
+flake8-print = "==5.*"
 black = "==25.*"
 isort = "==6.*"
 jsonschema = "==4.*"

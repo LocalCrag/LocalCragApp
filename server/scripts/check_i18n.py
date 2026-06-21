@@ -8,13 +8,15 @@ Run from server/src with PYTHONPATH=. (see i18n-extract-and-check workflow):
 from __future__ import annotations
 
 import importlib
-import sys
+import logging
 from pathlib import Path
 
 from i18n.mail_common import merge_mail_translations
+from util.logging_config import configure_standalone_logging
 from util.validators import ALLOWED_LANGUAGES
 
 I18N_DIR = Path("i18n")
+logger = logging.getLogger(__name__)
 
 
 def _key_mismatch_errors(source_dict: dict, locales: set[str]) -> list[str]:
@@ -92,6 +94,7 @@ def _check_source(
 
 
 def main() -> int:
+    configure_standalone_logging()
     sources, merge_mail_translations_fn, allowed_languages = _load_sources()
     failures: list[tuple[str, list[str]]] = []
 
@@ -107,18 +110,21 @@ def main() -> int:
             failures.append((source_name, source_errors))
 
     if failures:
-        print("Backend i18n check failed:", file=sys.stderr)
+        logger.error("Backend i18n check failed:")
         for source_name, source_errors in failures:
             for error in source_errors:
-                print(f"- {source_name}: {error}", file=sys.stderr)
-        print(
-            "\nPlease add missing locales/keys and provide translations for every string "
-            "(mail templates merge shared strings from mail_common.py).",
-            file=sys.stderr,
+                logger.error("- %s: %s", source_name, error)
+        logger.error(
+            "Please add missing locales/keys and provide translations for every string "
+            "(mail templates merge shared strings from mail_common.py)."
         )
         return 1
 
-    print(f"Backend i18n OK ({len(sources)} source(s), locales: {', '.join(sorted(allowed_languages))}).")
+    logger.info(
+        "Backend i18n OK (%s source(s), locales: %s).",
+        len(sources),
+        ", ".join(sorted(allowed_languages)),
+    )
     return 0
 
 

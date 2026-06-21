@@ -103,6 +103,9 @@ spec:
             - name: FRONTEND_HOST
               value: "{{ .Values.server.frontendHost }}"
 
+            - name: LOG_LEVEL
+              value: "{{ .Values.server.logLevel }}"
+
           readinessProbe:
             httpGet:
               path: /api/health

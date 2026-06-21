@@ -228,7 +228,6 @@ export class TopoImageFormComponent implements OnInit {
 
   onObjectMoved(obj: TopoImage | Sector | Area | Line) {
     const movedImage = obj as TopoImage;
-    console.log(movedImage.area.routerLink);
     this.router.navigate([movedImage.area.routerLink, 'topo-images']);
   }
 }
