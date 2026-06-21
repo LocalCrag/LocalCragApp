@@ -214,7 +214,7 @@
                 [max]="maxGradeValue"
                 [lineType]="scaleKey.value.lineType"
                 [gradeScale]="scaleKey.value.gradeScale"
-                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                 (slideEnd)="reloadOnSlideEnd()"
               />
             }
