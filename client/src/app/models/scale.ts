@@ -5,7 +5,11 @@ export interface Grade {
   value: number;
 }
 
-export type StackedChartBrackets = number[];
+export type StackedChartBracket = {
+  value: number;
+  color: string;
+};
+export type StackedChartBrackets = StackedChartBracket[];
 export type BarChartBracket = {
   name: string;
   value: number;

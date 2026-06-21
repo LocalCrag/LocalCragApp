@@ -92,3 +92,9 @@ class LineArgsSchema(BatchLineArgsSchema):
 
 batch_line_args = BatchLineArgsSchema()
 line_args = LineArgsSchema()
+
+
+def cross_validate_line_args(args):
+    if args.get("faYear") and args.get("faDate"):
+        return False
+    return True

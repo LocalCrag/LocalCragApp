@@ -1,17 +1,8 @@
-.scale-large {
-  font-size: 1.3em;
-}
-
-.scale-vlarge {
-  font-size: 1.5em;
-}
-
-.scale-link {
-  color: inherit;
-  text-decoration: inherit;
-  font-size: 1.3em;
-}
-
-width-100 {
-  width: 100%;
+:host ::ng-deep .scale-list-table {
+  .scale-list-actions-header,
+  .scale-list-actions-cell {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
 }

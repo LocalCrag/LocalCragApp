@@ -158,3 +158,36 @@ def test_moderator_task_crud_and_scope(client, moderator_token, user_token):
     rv = client.delete(f"/api/moderator-tasks/{region_task_id}", token=moderator_token)
     assert rv.status_code == 204
     assert ModeratorTask.query.filter_by(id=region_task_id).first() is None
+
+
+def test_moderator_task_description_replaces_bucket_placeholders_on_read(client, moderator_token, monkeypatch):
+    bucket_url = "https://cdn.example.com/my-bucket"
+    monkeypatch.setattr(
+        "util.bucket_placeholders.get_bucket_placeholders",
+        lambda: ("{{BUCKET_PLACEHOLDER}}", bucket_url),
+    )
+
+    region = Region.return_it()
+    image_html = f'<p><img src="{bucket_url}/uploads/foo.jpg"></p>'
+
+    rv = client.post(
+        "/api/moderator-tasks",
+        token=moderator_token,
+        json={
+            "title": "Task with image",
+            "description": image_html,
+            "objectType": "Region",
+            "objectId": str(region.id),
+        },
+    )
+    assert rv.status_code == 201
+    task_id = rv.json["id"]
+
+    stored_task = ModeratorTask.find_by_id(task_id)
+    assert "{{BUCKET_PLACEHOLDER}}" in stored_task.description
+    assert bucket_url not in stored_task.description
+
+    rv = client.get(f"/api/moderator-tasks/{task_id}", token=moderator_token)
+    assert rv.status_code == 200
+    assert bucket_url in rv.json["description"]
+    assert "{{BUCKET_PLACEHOLDER}}" not in rv.json["description"]

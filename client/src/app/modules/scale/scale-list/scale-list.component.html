@@ -1,55 +1,57 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
   <div class="content">
     <p-card header="{{ t('editScales') }}">
-      <p-dataView [value]="scales" class="p-5">
-        <ng-template #emptymessage>
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle"
-            class="m-4 mb-1 block"
-            >{{ t("noScalesFoundEmptyMessage") }}</p-message
-          >
-        </ng-template>
-        <ng-template let-scales #list>
-          @if (loadingState === LoadingState.LOADING) {
-            <lc-scale-list-skeleton></lc-scale-list-skeleton>
-          }
-          @if (loadingState !== LoadingState.LOADING) {
-            <div class="grid gap-4">
-              @for (scale of scales; track scale; let first = $first) {
-                <a
-                  class="xl:col-3 lg:col-4 md:col-6 sm:col-12 clickable-data-item scale-link"
-                  routerLink="/scales/{{ scale.lineType }}/{{ scale.name }}"
-                  data-cy="scale-list-item"
-                >
-                  <p-card class="width-100">
-                    <div class="flex flex-column scale width-100 pb-3">
-                      <div class="scale-large md:ml-4 flex align-items-center">
-                        <span class="pi pi-image scale-vlarge mr-3"></span>
-                        {{ scale.lineType | transloco }}
-                      </div>
-                      <div
-                        class="scale-large mt-4 md:ml-4 flex align-items-center"
-                      >
-                        <span class="pi pi-chart-bar scale-vlarge mr-3"></span>
-                        {{ scale.name }}
-                      </div>
-                    </div>
-                  </p-card>
-                </a>
-              }
-            </div>
-          }
-        </ng-template>
-      </p-dataView>
-      <div class="mt-4">
+      <div class="flex justify-content-end mb-3">
         <p-button
           [disabled]="loadingState === LoadingState.LOADING"
           icon="pi pi-plus"
           (click)="router.navigate(['/scales/create'])"
           label="{{ t('createScale') }}"
+          class="responsive-button"
         />
       </div>
+      @if (loadingState === LoadingState.LOADING) {
+        <lc-scale-list-skeleton></lc-scale-list-skeleton>
+      }
+      @if (loadingState !== LoadingState.LOADING) {
+        <p-table [value]="scales" styleClass="scale-list-table">
+          <ng-template #header>
+            <tr>
+              <th>{{ "scale.scaleForm.lineTypeLabel" | transloco }}</th>
+              <th>{{ "scale.scaleForm.nameInputLabel" | transloco }}</th>
+              <th class="scale-list-actions-header"></th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-scale>
+            <tr data-cy="scale-list-item">
+              <td>{{ scale.lineType | transloco }}</td>
+              <td>{{ scale.name }}</td>
+              <td class="scale-list-actions-cell">
+                <p-button
+                  icon="pi pi-file-edit"
+                  label="{{ 'scale.scaleForm.editScale' | transloco }}"
+                  class="responsive-button"
+                  [routerLink]="['/scales', scale.lineType, scale.name]"
+                  [text]="true"
+                />
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="3">
+                <p-message
+                  severity="info"
+                  icon="pi pi-info-circle"
+                  class="m-2 block"
+                >
+                  {{ t("noScalesFoundEmptyMessage") }}
+                </p-message>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
     </p-card>
   </div>
 </ng-container>
