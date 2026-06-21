@@ -7,7 +7,6 @@ from util.bucket_placeholders import replace_bucket_placeholders
 class RegionSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
-    slug = fields.String()
     rules = fields.String()
     ascentCount = fields.Integer(attribute="ascent_count")
 

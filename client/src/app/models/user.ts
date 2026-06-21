@@ -1,16 +1,16 @@
 import { AbstractModel } from './abstract-model';
 import { File } from './file';
 import { LanguageCode } from '../utility/types/language';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 
 /**
  * Model of a user.
  */
-export class User extends AbstractModel {
+export class User extends HasSlug(AbstractModel) {
   email: string;
   newEmail: string;
   firstname: string;
   lastname: string;
-  slug: string;
   password: string;
   activated: boolean;
   superadmin: boolean;
@@ -33,12 +33,12 @@ export class User extends AbstractModel {
   public static deserialize(payload: any): User {
     const user = new User();
     AbstractModel.deserializeAbstractAttributes(user, payload);
+    deserializeSlugAttributes(user, payload);
     user.id = payload.id;
     user.email = payload.email;
     user.newEmail = payload.newEmail;
     user.firstname = payload.firstname;
     user.lastname = payload.lastname;
-    user.slug = payload.slug;
     user.activated = payload.activated;
     user.superadmin = payload.superadmin;
     user.admin = payload.admin;

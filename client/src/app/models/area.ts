@@ -7,18 +7,21 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import {
+  deserializeOrderIndexAttributes,
+  HasOrderIndex,
+} from './mixins/has-order-index';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 import { topoAreaRouterLink } from './topo-router-link';
 
 /**
  * Model of a climbing sector's area.
  */
-export class Area extends IsClosable(AbstractModel) {
+export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   name: string;
   description: string;
   shortDescription: string;
-  slug: string;
   portraitImage: File;
-  orderIndex: number;
   lineCount: number;
   ascentCount: number;
   secret: boolean;
@@ -41,11 +44,11 @@ export class Area extends IsClosable(AbstractModel) {
     const area = new Area();
     AbstractModel.deserializeAbstractAttributes(area, payload);
     deserializeClosableAttributes(area, payload);
+    deserializeSlugAttributes(area, payload);
+    deserializeOrderIndexAttributes(area, payload);
     area.name = payload.name;
     area.description = payload.description;
     area.shortDescription = payload.shortDescription;
-    area.slug = payload.slug;
-    area.orderIndex = payload.orderIndex;
     area.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
       : null;

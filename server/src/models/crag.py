@@ -8,6 +8,7 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
+from models.mixins.has_order_index import HasOrderIndex
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
@@ -15,7 +16,7 @@ from models.sector import Sector
 from util.secret_spots_auth import get_show_secret
 
 
-class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
+class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
     """
     Model of a climbing crag. Could be e.g. "Glees". Contains one or more sectors.
     """
@@ -32,7 +33,6 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
     sectors = db.relationship(
         "Sector", cascade="all,delete", backref="crag", lazy="select", order_by="Sector.order_index.asc()"
     )
-    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     secret = db.Column(db.Boolean, default=False, server_default="0")
     map_markers = db.relationship("MapMarker", back_populates="crag")

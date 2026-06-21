@@ -9,6 +9,7 @@ import {
   IsClosable,
   serializeClosableAttributes,
 } from './mixins/is-closable';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 import { topoLineRouterLink } from './topo-router-link';
 import {
   formatLocalCalendarDate,
@@ -23,10 +24,9 @@ export interface LineVideo {
 /**
  * Model of a climbing area's line.
  */
-export class Line extends IsClosable(AbstractModel) {
+export class Line extends IsClosable(HasSlug(AbstractModel)) {
   name: string;
   description: string;
-  slug: string;
   color?: string;
   videos: LineVideo[];
   gradeScale: string;
@@ -104,10 +104,10 @@ export class Line extends IsClosable(AbstractModel) {
     const line = new Line();
     AbstractModel.deserializeAbstractAttributes(line, payload);
     deserializeClosableAttributes(line, payload);
+    deserializeSlugAttributes(line, payload);
     line.name = payload.name;
     line.description = payload.description;
     line.videos = payload.videos ? payload.videos : [];
-    line.slug = payload.slug;
     line.color = payload.color;
 
     line.gradeScale = payload.gradeScale;
