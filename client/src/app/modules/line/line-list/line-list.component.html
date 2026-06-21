@@ -1,7 +1,10 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
   <p-dataView #dv [value]="lines">
     <ng-template #emptymessage>
-      @if (lines?.length === 0 && loadingFirstPage !== loadingStates.LOADING) {
+      @if (
+        lines?.length === 0 &&
+        !(loading === loadingStates.LOADING && currentPage === 1)
+      ) {
         <p-message
           severity="info"
           icon="pi pi-info-circle"
@@ -38,7 +41,7 @@
             optionLabel="label"
             (onChange)="loadFirstPage()"
             class="md:mb-0"
-            [disabled]="loadingFirstPage === loadingStates.LOADING"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
           >
             <ng-template #selectedItem>
               @if (orderKey) {
@@ -57,7 +60,7 @@
             [options]="orderDirectionOptions"
             [(ngModel)]="orderDirectionKey"
             optionLabel="label"
-            [disabled]="loadingFirstPage === loadingStates.LOADING"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
             (onChange)="loadFirstPage()"
             class="md:mb-0"
           >
@@ -87,7 +90,9 @@
                   <p-select
                     [options]="availableScales"
                     [(ngModel)]="scaleKey"
-                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [disabled]="
+                      loading === loadingStates.LOADING && currentPage === 1
+                    "
                     optionLabel="label"
                     (onChange)="selectScale()"
                     class="md:mb-0"
@@ -109,7 +114,9 @@
               }
               <div *isGymMode="true">
                 <p-button
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [disabled]="
+                    loading === loadingStates.LOADING && currentPage === 1
+                  "
                   label="{{
                     showArchive ? t('hideArchive') : t('showArchive')
                   }}"
@@ -129,7 +136,9 @@
                 [max]="maxGradeValue"
                 [lineType]="scaleKey.value.lineType"
                 [gradeScale]="scaleKey.value.gradeScale"
-                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                [disabled]="
+                  loading === loadingStates.LOADING && currentPage === 1
+                "
                 (slideEnd)="reloadOnSlideEnd()"
               />
             }
@@ -137,7 +146,9 @@
 
           <div class="line-list-filter-actions flex-shrink-0">
             <p-button
-              [disabled]="loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
               (click)="openAdvancedFiltersDialog()"
               class="responsive-button line-list-filter-btn"
             >
@@ -161,10 +172,10 @@
       </div>
     </ng-template>
     <ng-template let-lines #list>
-      @if (loadingFirstPage === loadingStates.LOADING) {
+      @if (loading === loadingStates.LOADING && currentPage === 1) {
         <lc-line-list-skeleton></lc-line-list-skeleton>
       }
-      @if (loadingFirstPage !== loadingStates.LOADING) {
+      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
         <div class="grid grid-nogutter">
           @for (line of lines; track line; let first = $first) {
             <a
@@ -293,10 +304,7 @@
         infiniteScroll
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="
-          loadingAdditionalPage === loadingStates.LOADING ||
-          loadingFirstPage === loadingStates.LOADING
-        "
+        [loading]="loading === loadingStates.LOADING"
       ></p-button>
     </div>
   }

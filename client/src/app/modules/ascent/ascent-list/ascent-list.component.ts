@@ -21,6 +21,12 @@ import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -97,7 +103,9 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
   providers: [DialogService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AscentListComponent implements OnInit, OnChanges {
+export class AscentListComponent
+  implements OnInit, OnChanges, PaginatedListView
+{
   @Input() user: User;
   @Input() cragId: string;
   @Input() sectorId: string;
@@ -115,8 +123,7 @@ export class AscentListComponent implements OnInit, OnChanges {
   private regionGradesLoaded$ = new BehaviorSubject<boolean>(false);
 
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
@@ -263,62 +270,56 @@ export class AscentListComponent implements OnInit, OnChanges {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
-    this.loadedGradeFilterRange = [...this.gradeFilterRange];
+    loadFirstPaginatedPage(
+      this,
+      () => this.loadNextPage(),
+      () => {
+        this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      },
+    );
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.ascents = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const params: ApiQueryParams = {
-        page: this.currentPage,
-        order_by: this.orderKey.value,
-        order_direction: this.orderDirectionKey.value,
-        per_page: 10,
-      };
-      if (this.gradeFilterRange[1] !== null) {
-        params.min_grade = this.gradeFilterRange[0];
-        params.max_grade = this.gradeFilterRange[1];
-      }
-      if (this.scaleKey?.value) {
-        params.line_type = this.scaleKey.value.lineType;
-        params.grade_scale = this.scaleKey.value.gradeScale;
-      }
-      if (this.user) {
-        params.user_id = this.user.id;
-      }
-      if (this.cragId) {
-        params.crag_id = this.cragId;
-      }
-      if (this.sectorId) {
-        params.sector_id = this.sectorId;
-      }
-      if (this.areaId) {
-        params.area_id = this.areaId;
-      }
-      if (this.lineId) {
-        params.line_id = this.lineId;
-      }
-      this.ascentsService.getAscents(params).subscribe((ascents) => {
-        this.ascents.push(...ascents.items);
-        this.hasNextPage = ascents.hasNext;
-        this.loadingFirstPage = LoadingState.DEFAULT;
-        this.loadingAdditionalPage = LoadingState.DEFAULT;
-        this.cdr.detectChanges();
-      });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.ascents = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      order_by: this.orderKey.value,
+      order_direction: this.orderDirectionKey.value,
+      per_page: 10,
+    };
+    if (this.gradeFilterRange[1] !== null) {
+      params.min_grade = this.gradeFilterRange[0];
+      params.max_grade = this.gradeFilterRange[1];
+    }
+    if (this.scaleKey?.value) {
+      params.line_type = this.scaleKey.value.lineType;
+      params.grade_scale = this.scaleKey.value.gradeScale;
+    }
+    if (this.user) {
+      params.user_id = this.user.id;
+    }
+    if (this.cragId) {
+      params.crag_id = this.cragId;
+    }
+    if (this.sectorId) {
+      params.sector_id = this.sectorId;
+    }
+    if (this.areaId) {
+      params.area_id = this.areaId;
+    }
+    if (this.lineId) {
+      params.line_id = this.lineId;
+    }
+    this.ascentsService.getAscents(params).subscribe((ascents) => {
+      this.ascents.push(...ascents.items);
+      completePaginatedPageLoad(this, ascents.hasNext);
+      this.cdr.detectChanges();
+    });
   }
 
   editAscent(ascent: Ascent) {

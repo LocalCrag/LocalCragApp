@@ -13,10 +13,10 @@
       <lc-comment [comment]="comment"></lc-comment>
     }
   </div>
-  @if (loadingFirstPage === loadingStates.LOADING) {
+  @if (loading === loadingStates.LOADING && currentPage === 1) {
     <lc-comments-skeleton></lc-comments-skeleton>
   }
-  @if (loadingAdditionalPage === loadingStates.LOADING) {
+  @if (loading === loadingStates.LOADING && currentPage > 1) {
     <lc-comments-skeleton></lc-comments-skeleton>
   }
   @if (hasNextPage) {
@@ -28,16 +28,11 @@
         infiniteScroll
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="loadingAdditionalPage === loadingStates.LOADING"
+        [loading]="loading === loadingStates.LOADING && currentPage > 1"
       ></p-button>
     </div>
   }
-  @if (
-    !(
-      loadingAdditionalPage === loadingStates.LOADING ||
-      loadingFirstPage === loadingStates.LOADING
-    ) && comments.length === 0
-  ) {
+  @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
     <p-message severity="info" icon="pi pi-info-circle">
       {{ t("thisCommentFeedIsEmpty") }}
     </p-message>

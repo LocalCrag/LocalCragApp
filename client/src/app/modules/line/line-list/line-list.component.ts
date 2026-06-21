@@ -23,6 +23,12 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { Line } from '../../../models/line';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { ConfirmationService, SelectItem } from 'primeng/api';
@@ -110,10 +116,9 @@ import {
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class LineListComponent implements OnInit {
+export class LineListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public lines: Line[];
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
@@ -315,76 +320,70 @@ export class LineListComponent implements OnInit {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
-    this.loadedGradeFilterRange = [...this.gradeFilterRange];
+    loadFirstPaginatedPage(
+      this,
+      () => this.loadNextPage(),
+      () => {
+        this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      },
+    );
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.lines = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const params: ApiQueryParams = {
-        page: this.currentPage,
-        order_by: this.orderKey.value,
-        order_direction: this.orderDirectionKey.value,
-        per_page: 10,
-      };
-      if (this.showArchive) {
-        params.archived = '1';
-      }
-      if (this.cragSlug) {
-        params.crag_slug = this.cragSlug;
-      }
-      if (this.sectorSlug) {
-        params.sector_slug = this.sectorSlug;
-      }
-      if (this.areaSlug) {
-        params.area_slug = this.areaSlug;
-      }
-      appendLineListQueryParams(
-        params,
-        this.advancedFilters,
-        this.scaleKey,
-        this.gradeFilterRange,
-      );
-      this.linesService
-        .getLines(params)
-        .pipe(
-          mergeMap((lines) => {
-            const line_ids = lines.items.map((line) => line.id);
-            const tickRequest =
-              line_ids.length > 0
-                ? this.ticksService.getTicks(null, null, null, line_ids)
-                : of(new Set<string>());
-            const isTodoRequest =
-              line_ids.length > 0
-                ? this.isTodoService.getIsTodo(null, null, null, line_ids)
-                : of(new Set<string>());
-            return forkJoin([tickRequest, isTodoRequest]).pipe(
-              map(([ticks, isTodo]) => {
-                this.lines.push(...lines.items);
-                this.hasNextPage = lines.hasNext;
-                this.loadingFirstPage = LoadingState.DEFAULT;
-                this.loadingAdditionalPage = LoadingState.DEFAULT;
-                this.ticks = new Set([...this.ticks, ...ticks]);
-                this.isTodo = new Set([...this.isTodo, ...isTodo]);
-              }),
-            );
-          }),
-        )
-        .subscribe();
+    const page = beginPaginatedPageLoad(this, () => {
+      this.lines = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      order_by: this.orderKey.value,
+      order_direction: this.orderDirectionKey.value,
+      per_page: 10,
+    };
+    if (this.showArchive) {
+      params.archived = '1';
+    }
+    if (this.cragSlug) {
+      params.crag_slug = this.cragSlug;
+    }
+    if (this.sectorSlug) {
+      params.sector_slug = this.sectorSlug;
+    }
+    if (this.areaSlug) {
+      params.area_slug = this.areaSlug;
+    }
+    appendLineListQueryParams(
+      params,
+      this.advancedFilters,
+      this.scaleKey,
+      this.gradeFilterRange,
+    );
+    this.linesService
+      .getLines(params)
+      .pipe(
+        mergeMap((lines) => {
+          const line_ids = lines.items.map((line) => line.id);
+          const tickRequest =
+            line_ids.length > 0
+              ? this.ticksService.getTicks(null, null, null, line_ids)
+              : of(new Set<string>());
+          const isTodoRequest =
+            line_ids.length > 0
+              ? this.isTodoService.getIsTodo(null, null, null, line_ids)
+              : of(new Set<string>());
+          return forkJoin([tickRequest, isTodoRequest]).pipe(
+            map(([ticks, isTodo]) => {
+              this.lines.push(...lines.items);
+              completePaginatedPageLoad(this, lines.hasNext);
+              this.ticks = new Set([...this.ticks, ...ticks]);
+              this.isTodo = new Set([...this.isTodo, ...isTodo]);
+            }),
+          );
+        }),
+      )
+      .subscribe();
   }
 
   openVideo(event: MouseEvent, line: Line) {
