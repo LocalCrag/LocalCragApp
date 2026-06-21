@@ -1,6 +1,6 @@
 <ng-container *transloco="let t; read: 'todoButton'">
   <p-button
-    styleClass="p-button-rounded p-button-text p-button-secondary todo-button"
+    class="p-button-rounded p-button-text p-button-secondary todo-button"
     data-cy="todo-button"
     label="{{ isTodo ? t('onTodoList') : t('addTodo') }}"
     (click)="addTodo($event)"

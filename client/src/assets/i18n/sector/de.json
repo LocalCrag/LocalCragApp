@@ -20,6 +20,7 @@
   "sectorForm.blocweatherUrlLabel": "BlocWeather URL",
   "sectorForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Sektor auf der Detailseite, kannst Du hier die URL zum entsprechenden Sektor auf blocweather.com hinterlegen.",
   "sectorForm.invalidBlocweatherUrl": "Die URL muss das Schema https://blocweather.com/<country>/<region>/<spot> haben",
+  "sectorForm.maxlength255": "Maximale Anzahl Zeichen: 255",
   "sectorForm.mapMarkersLabel": "GPS-Punkte",
   "sectorForm.closedBecauseParentIsClosed": "Dieser Sektor ist gesperrt, weil das übergeordnete Gebiet derzeit gesperrt ist.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Das erstellen eines nicht-geheimen Sektors innerhalb eines geheimen Gebiets setzt das Gebiet automatisch auch auf nicht-geheim, da man ansonsten nicht zum Sektor navigieren kann. Andere bereits bestehende Sektoren bleiben geheim.",

@@ -99,6 +99,9 @@ def blocweather_url_validator(url: Optional[str]):
     if url == "":
         raise ValidationError("Invalid BlocWeather URL")
 
+    if len(url) > 255:
+        raise ValidationError("Invalid BlocWeather URL")
+
     prefix = "https://blocweather.com/"
     if not url.startswith(prefix):
         raise ValidationError("Invalid BlocWeather URL")

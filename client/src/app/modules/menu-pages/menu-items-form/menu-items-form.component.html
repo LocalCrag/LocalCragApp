@@ -166,8 +166,7 @@
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
-          class="ml-3 responsive-button"
-          styleClass="p-button-secondary"
+          class="ml-3 responsive-button p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
         @if (editMode) {
@@ -175,8 +174,7 @@
             label="{{ t('deleteMenuItemButtonLabel') }}"
             (click)="confirmDeleteMenuItem($event)"
             icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="ml-3 responsive-button"
+            class="p-button-danger ml-3 responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>
         }

@@ -21,6 +21,7 @@
   "cragForm.blocweatherUrlLabel": "Blocmétéo URL",
   "cragForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour ce rocher sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
   "cragForm.invalidBlocweatherUrl": "Le URL doit suivre le format https://blocweather.com/<country>/<region>/<spot>",
+  "cragForm.maxlength255": "Nombre maximum de caractères : 255",
   "cragForm.mapMarkersLabel": "GPS points",
   "cragForm.cragOptionsLabel": "Possibilités",
   "cragForm.secretLabel": "Secrète",

@@ -14,7 +14,7 @@
         <lc-scale-list-skeleton></lc-scale-list-skeleton>
       }
       @if (loadingState !== LoadingState.LOADING) {
-        <p-table [value]="scales" styleClass="scale-list-table">
+        <p-table [value]="scales" class="scale-list-table">
           <ng-template #header>
             <tr>
               <th>{{ "scale.scaleForm.lineTypeLabel" | transloco }}</th>

@@ -156,7 +156,9 @@ export class ScaleFormComponent implements OnInit {
 
     this.scaleForm = this.fb.group({
       lineType: this.editMode ? undefined : [null, Validators.required],
-      name: this.editMode ? undefined : ['', Validators.required],
+      name: this.editMode
+        ? undefined
+        : ['', [Validators.required, Validators.maxLength(32)]],
       grades: this.fb.array([], [notUniqueValidator]),
       stackedChartBrackets: this.fb.array(
         [],

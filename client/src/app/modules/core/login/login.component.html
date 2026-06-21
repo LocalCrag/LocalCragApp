@@ -18,6 +18,9 @@
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
 
         <div class="card-container block" lcControlGroup>
@@ -32,6 +35,9 @@
           <small class="lc-error" *lcIfError="'required'">{{
             t("required")
           }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
         </div>
       </form>
 
@@ -44,15 +50,13 @@
 
       <p-button
         label="{{ t('forgotPasswordButtonLabel') }}"
-        styleClass="p-button-link"
-        class="link-button"
+        class="p-button-link link-button"
         [routerLink]="'/forgot-password'"
       ></p-button>
 
       <p-button
         label="{{ t('registerButtonLabel') }}"
-        styleClass="p-button-link"
-        class="link-button"
+        class="p-button-link link-button"
         [routerLink]="'/register'"
       ></p-button>
     </div>

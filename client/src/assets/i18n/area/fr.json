@@ -18,6 +18,7 @@
   "areaForm.blocweatherUrlLabel": "Blocmétéo URL",
   "areaForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour cette zone sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
   "areaForm.invalidBlocweatherUrl": "Invao",
+  "areaForm.maxlength255": "Nombre maximum de caractères : 255",
   "areaForm.mapMarkersLabel": "GPS points",
   "areaForm.closedBecauseParentIsClosed": "Cette zone est fermée car son secteur est actuellement fermé.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Créer une zone non secrète dans un secteur secret définit automatiquement le secteur et la falaise correspondante comme non secrets, sinon vous ne pouvez pas naviguer vers la zone. D’autres domaines et secteurs préexistants restent secrets.",
