@@ -134,6 +134,27 @@ class GetNotifications(MethodView):
                 )
                 if reaction:
                     reaction_emoji = reaction.emoji
+            properties: dict = {}
+            if line_payload is not None or topic_name is not None:
+                properties["subject"] = {
+                    "line": line_payload,
+                    "topicName": topic_name,
+                }
+            if reaction_emoji is not None:
+                properties["reaction"] = {"emoji": reaction_emoji}
+            if notification.type.value == "release_notes" and notification.entity_id:
+                properties["releaseNotes"] = {
+                    "releaseNoteItemKeys": _release_note_item_keys_for_bundle(
+                        notification.entity_id,
+                    ),
+                }
+            if notification.entity_type == "moderator_task" and notification.entity_id:
+                task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+                if task:
+                    properties["moderatorTask"] = {
+                        "title": task.title,
+                        "targetLabel": moderator_task_target_label(task),
+                    }
             row: dict = {
                 "id": str(notification.id),
                 "type": notification.type.value,
@@ -143,20 +164,9 @@ class GetNotifications(MethodView):
                 "entityType": notification.entity_type,
                 "entityId": str(notification.entity_id) if notification.entity_id else None,
                 "actionLink": _notification_action_link(notification),
-                "line": line_payload,
-                "topicName": topic_name,
-                "reactionEmoji": reaction_emoji,
                 "isDismissed": notification.dismissed_at is not None,
+                "properties": properties,
             }
-            if notification.type.value == "release_notes" and notification.entity_id:
-                row["releaseNoteItemKeys"] = _release_note_item_keys_for_bundle(
-                    notification.entity_id,
-                )
-            if notification.entity_type == "moderator_task" and notification.entity_id:
-                task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
-                if task:
-                    row["topicName"] = moderator_task_target_label(task)
-                    row["taskTitle"] = task.title
             payload.append(row)
 
         return jsonify({"items": payload, "hasNext": notifications.has_next}), 200

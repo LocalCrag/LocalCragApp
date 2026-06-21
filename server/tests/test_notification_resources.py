@@ -43,7 +43,10 @@ def test_get_notifications_includes_release_note_item_keys(client, member_token)
     release_rows = [i for i in rv.json["items"] if i["type"] == "release_notes"]
     assert len(release_rows) >= 1
     ours = next(r for r in release_rows if r.get("entityId") == str(bundle.id))
-    assert ours["releaseNoteItemKeys"] == ["rnApiTestFeat", "rnApiTestFix"]
+    assert ours["properties"]["releaseNotes"]["releaseNoteItemKeys"] == [
+        "rnApiTestFeat",
+        "rnApiTestFix",
+    ]
 
 
 def test_get_notifications_lists_unread(client, admin_token, member_token):
@@ -74,8 +77,8 @@ def test_get_notifications_lists_unread(client, admin_token, member_token):
     assert len(rv.json["items"]) == 1
     assert rv.json["hasNext"] is False
     assert rv.json["items"][0]["type"] == "comment_reply"
-    assert rv.json["items"][0]["line"]["name"] == "Treppe"
-    assert rv.json["items"][0]["line"]["gradeScale"] is not None
+    assert rv.json["items"][0]["properties"]["subject"]["line"]["name"] == "Treppe"
+    assert rv.json["items"][0]["properties"]["subject"]["line"]["gradeScale"] is not None
     assert rv.json["items"][0]["isDismissed"] is False
     assert (
         rv.json["items"][0]["actionLink"]
@@ -152,8 +155,8 @@ def test_get_notifications_uses_post_title_for_post_comment_replies(client, admi
     assert rv.status_code == 200, rv.text
     assert len(rv.json["items"]) == 1
     assert rv.json["items"][0]["type"] == "comment_reply"
-    assert rv.json["items"][0]["line"] is None
-    assert rv.json["items"][0]["topicName"] == post.title
+    assert rv.json["items"][0]["properties"]["subject"]["line"] is None
+    assert rv.json["items"][0]["properties"]["subject"]["topicName"] == post.title
 
 
 def test_dismiss_all_notifications_marks_everything_for_user(client, admin_token, member_token):
