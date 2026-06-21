@@ -91,6 +91,7 @@ jobs:
 
       - name: Check backend i18n translations
         shell: bash
+        working-directory: ./
         run: |
           set -euo pipefail
           pip install pipenv
