@@ -369,7 +369,7 @@ export class MenuComponent implements OnInit {
       dismissableMask: true,
       modal: true,
       showHeader: false,
-      class: 'search-dialog',
+      styleClass: 'search-dialog',
     });
   }
 }
