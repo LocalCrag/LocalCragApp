@@ -71,16 +71,21 @@ def test_log_decoded_email_parts_logs_markup_then_plain(caplog):
     import logging
 
     with app.app_context():
+        # app.logger has propagate=False; attach caplog handler to capture its output.
+        app.logger.addHandler(caplog.handler)
         caplog.set_level(logging.INFO, logger=app.logger.name)
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "x"
-        msg.attach(MIMEText("<p>a <b>b</b></p>", "html", "utf-8"))
-        log_decoded_email_parts(msg)
-        out = caplog.text
-        assert "--- Mail (with markup) ---" in out
-        assert "<p>a <b>b</b></p>" in out
-        assert "--- Mail (plain text) ---" in out
-        plain_section = out.split("--- Mail (plain text) ---", 1)[1]
-        assert "a" in plain_section and "b" in plain_section
-        assert "<p>" not in out.split("--- Mail (plain text) ---", 1)[1]
-        assert "Could not decode part" not in out
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = "x"
+            msg.attach(MIMEText("<p>a <b>b</b></p>", "html", "utf-8"))
+            log_decoded_email_parts(msg)
+            out = caplog.text
+            assert "--- Mail (with markup) ---" in out
+            assert "<p>a <b>b</b></p>" in out
+            assert "--- Mail (plain text) ---" in out
+            plain_section = out.split("--- Mail (plain text) ---", 1)[1]
+            assert "a" in plain_section and "b" in plain_section
+            assert "<p>" not in plain_section
+            assert "Could not decode part" not in out
+        finally:
+            app.logger.removeHandler(caplog.handler)
