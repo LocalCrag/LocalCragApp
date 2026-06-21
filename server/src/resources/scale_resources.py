@@ -41,7 +41,7 @@ class CreateScale(MethodView):
 
         # All values used in the grade brackets must be in the grades
         all_grades = set(g["value"] for g in scale_data["grades"])
-        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
+        if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
             raise BadRequest(ResponseMessage.INVALID_STACKED_CHART_BRACKETS)
         if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["barChartBrackets"]):
             raise BadRequest(ResponseMessage.INVALID_BAR_CHART_BRACKETS)
@@ -81,7 +81,7 @@ class UpdateScale(MethodView):
 
         # All values used in the grade brackets must be in the grades
         all_grades = set(g["value"] for g in scale_data["grades"])
-        if any(gb not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
+        if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["stackedChartBrackets"]):
             raise BadRequest(ResponseMessage.INVALID_STACKED_CHART_BRACKETS)
         if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["barChartBrackets"]):
             raise BadRequest(ResponseMessage.INVALID_BAR_CHART_BRACKETS)

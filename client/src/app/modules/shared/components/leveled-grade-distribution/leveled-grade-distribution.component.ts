@@ -12,6 +12,10 @@ import { ScalesService } from '../../../../services/crud/scales.service';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { map } from 'rxjs/operators';
+import {
+  getStackedChartBracketColor,
+  getStackedChartBracketValue,
+} from '../../../../utility/scale/stacked-chart-brackets';
 import { textColor } from '../../../../utility/misc/color';
 import { Tag } from 'primeng/tag';
 import { MeterGroup } from 'primeng/metergroup';
@@ -58,16 +62,6 @@ export class LeveledGradeDistributionComponent implements OnInit {
    * Sorts the grades in buckets and calculates the total count for each bucket.
    */
   buildGradeDistribution() {
-    const colors = [
-      'var(--p-yellow-500)',
-      'var(--p-blue-500)',
-      'var(--p-red-500)',
-      'var(--p-green-500)',
-      'var(--p-orange-500)',
-      'var(--p-teal-500)',
-      'var(--p-indigo-500)',
-      'var(--p-bluegray-500)',
-    ];
     const stackChartData: StackChartData[] = [];
     const observables: Observable<any>[] = [];
 
@@ -82,9 +76,8 @@ export class LeveledGradeDistributionComponent implements OnInit {
             ),
           ]).pipe(
             map(([scale, gradeNameByValueMap]) => {
-              const labels = Array(
-                scale.gradeBrackets.stackedChartBrackets.length,
-              ).fill('');
+              const stackedBrackets = scale.gradeBrackets.stackedChartBrackets;
+              const labels = Array(stackedBrackets.length).fill('');
 
               const nextGradeName = Object.fromEntries(
                 scale.grades
@@ -96,23 +89,26 @@ export class LeveledGradeDistributionComponent implements OnInit {
                   }),
               );
 
-              for (
-                let i = 0;
-                i < scale.gradeBrackets.stackedChartBrackets.length;
-                i++
-              ) {
+              for (let i = 0; i < stackedBrackets.length; i++) {
+                const bracketValue = getStackedChartBracketValue(
+                  stackedBrackets[i],
+                );
                 if (i == 0) {
                   labels[i] =
-                    `${this.translocoService.translate(marker('leveledGradeDistributionUntil'))} ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
-                } else if (
-                  i ==
-                  scale.gradeBrackets.stackedChartBrackets.length - 1
-                ) {
+                    `${this.translocoService.translate(marker('leveledGradeDistributionUntil'))} ${gradeNameByValueMap[bracketValue]}`;
+                } else if (i == stackedBrackets.length - 1) {
                   labels[i] =
-                    `${this.translocoService.translate(marker('leveledGradeDistributionFrom'))} ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
+                    `${this.translocoService.translate(marker('leveledGradeDistributionFrom'))} ${gradeNameByValueMap[bracketValue]}`;
                 } else {
+                  const startName =
+                    nextGradeName[
+                      getStackedChartBracketValue(stackedBrackets[i - 1])
+                    ];
+                  const endName = gradeNameByValueMap[bracketValue];
                   labels[i] =
-                    `${nextGradeName[scale.gradeBrackets.stackedChartBrackets[i - 1]]} - ${gradeNameByValueMap[scale.gradeBrackets.stackedChartBrackets[i]]}`;
+                    startName === endName
+                      ? startName
+                      : `${startName} - ${endName}`;
                 }
               }
 
@@ -123,9 +119,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 ungraded: 0,
                 total: 0,
                 meterValues: Array.from(
-                  { length: scale.gradeBrackets.stackedChartBrackets.length },
+                  { length: stackedBrackets.length },
                   (_, i) => ({
-                    color: colors[i % colors.length],
+                    color: getStackedChartBracketColor(stackedBrackets[i], i),
                     value: 0,
                     label: null,
                   }),
@@ -142,16 +138,11 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 } else if (gradeValue < 0) {
                   data.projects += count;
                 } else {
-                  for (
-                    let i = 0;
-                    i < scale.gradeBrackets.stackedChartBrackets.length;
-                    i++
-                  ) {
-                    const bracket = scale.gradeBrackets.stackedChartBrackets[i];
-                    if (
-                      i ==
-                      scale.gradeBrackets.stackedChartBrackets.length - 1
-                    ) {
+                  for (let i = 0; i < stackedBrackets.length; i++) {
+                    const bracket = getStackedChartBracketValue(
+                      stackedBrackets[i],
+                    );
+                    if (i == stackedBrackets.length - 1) {
                       data.meterValues[i].value += count;
                     } else if (gradeValue <= bracket) {
                       data.meterValues[i].value += count;

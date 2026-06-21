@@ -97,7 +97,12 @@ GRADE_BRACKETS = {
                 {"name": "7C", "value": 21},
                 {"name": ">8", "value": 22},
             ],
-            "stackedChartBrackets": [9, 15, 21, 22],
+            "stackedChartBrackets": [
+                {"value": 9, "color": "#eab308"},
+                {"value": 15, "color": "#3b82f6"},
+                {"value": 21, "color": "#ef4444"},
+                {"value": 22, "color": "#22c55e"},
+            ],
         }
     },
     LineTypeEnum.SPORT: {
@@ -113,7 +118,12 @@ GRADE_BRACKETS = {
                 {"name": "X", "value": 24},
                 {"name": ">= XI", "value": 25},
             ],
-            "stackedChartBrackets": [9, 15, 21, 22],
+            "stackedChartBrackets": [
+                {"value": 9, "color": "#eab308"},
+                {"value": 15, "color": "#3b82f6"},
+                {"value": 21, "color": "#ef4444"},
+                {"value": 22, "color": "#22c55e"},
+            ],
         }
     },
 }
