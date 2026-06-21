@@ -31,6 +31,22 @@ reset_password_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "Reset LocalCrag password",
     },
+    "fr": {
+        "title": "Nouveau mot de passe pour LocalCrag",
+        "intro_text": "Utilisez ce lien pour réinitialiser votre mot de passe. Le lien est valable 24 heures.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "text_1": "Vous avez récemment demandé la réinitialisation du mot de passe de votre compte LocalCrag. "
+        "Utilisez ce bouton pour réinitialiser votre mot de passe.",
+        "text_2": "Ce lien n'est valable que pendant les 24 prochaines heures.",
+        "reset_password": "Réinitialiser le mot de passe",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "hint": "Si le bouton ci-dessus ne fonctionne pas, copiez l'URL ci-dessous directement "
+        "dans la barre d'adresse de votre navigateur.",
+        "thanks": "Merci,",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Réinitialiser le mot de passe LocalCrag",
+    },
     "it": {
         "title": "",
         "intro_text": "",

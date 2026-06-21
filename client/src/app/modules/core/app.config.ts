@@ -177,6 +177,8 @@ export const appConfig: ApplicationConfig = {
           'de-gym',
           'en',
           'en-gym',
+          'fr',
+          'fr-gym',
           'it',
           'it-gym',
           'nl',

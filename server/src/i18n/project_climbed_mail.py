@@ -30,6 +30,22 @@ project_climbed_mail = {
         "subject": "A project has been climbed!",
         "reply_to": "To reply, mail",
     },
+    "fr": {
+        "title": "Un projet a été grimpé !",
+        "intro": "Un projet vient d'être signalé comme grimpé sur votre instance LocalCrag.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "message": "Message",
+        "view_user": "Voir l'utilisateur",
+        "view_project": "Voir le projet",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "hint": "Si les boutons ci-dessus ne fonctionnent pas, copiez les URL ci-dessous directement dans la "
+        "barre d'adresse de votre navigateur.",
+        "thanks": "Salutations,",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Un projet a été grimpé !",
+        "reply_to": "Pour répondre, envoyez un e-mail à",
+    },
     "it": {
         "title": "",
         "intro": "",
