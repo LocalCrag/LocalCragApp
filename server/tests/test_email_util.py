@@ -71,7 +71,7 @@ def test_log_decoded_email_parts_logs_markup_then_plain(caplog):
     import logging
 
     with app.app_context():
-        caplog.set_level(logging.INFO)
+        caplog.set_level(logging.INFO, logger=app.logger.name)
         msg = MIMEMultipart("alternative")
         msg["Subject"] = "x"
         msg.attach(MIMEText("<p>a <b>b</b></p>", "html", "utf-8"))
