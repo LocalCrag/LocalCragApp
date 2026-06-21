@@ -25,22 +25,22 @@ export class ApiService {
   };
 
   public account = {
-    getSettings: (): string => `${this.apiHost}users/account/settings`,
-    updateSettings: (): string => `${this.apiHost}users/account/settings`,
-    getRecentSearches: (): string =>
-      `${this.apiHost}users/account/recent-searches`,
-    createRecentSearch: (): string =>
-      `${this.apiHost}users/account/recent-searches`,
-    getNotifications: (): string =>
-      `${this.apiHost}users/account/notifications`,
+    update: (): string => `${this.apiHost}account`,
+    changeEmail: (): string => `${this.apiHost}account/change-email`,
+    deleteOwnUser: (): string => `${this.apiHost}account/delete-own-user`,
+    getSettings: (): string => `${this.apiHost}account/settings`,
+    updateSettings: (): string => `${this.apiHost}account/settings`,
+    getRecentSearches: (): string => `${this.apiHost}account/recent-searches`,
+    createRecentSearch: (): string => `${this.apiHost}account/recent-searches`,
+    getNotifications: (): string => `${this.apiHost}account/notifications`,
     getNotificationsCount: (): string =>
-      `${this.apiHost}users/account/notifications/count`,
+      `${this.apiHost}account/notifications/count`,
     dismissNotification: (id: string): string =>
-      `${this.apiHost}users/account/notifications/${id}/dismiss`,
+      `${this.apiHost}account/notifications/${id}/dismiss`,
     dismissAllNotifications: (): string =>
-      `${this.apiHost}users/account/notifications/dismiss-all`,
+      `${this.apiHost}account/notifications/dismiss-all`,
     releaseNoteBundle: (bundleId: string): string =>
-      `${this.apiHost}users/account/release-notes/${bundleId}`,
+      `${this.apiHost}account/release-notes/${bundleId}`,
   };
 
   public statistics = {
@@ -88,18 +88,15 @@ export class ApiService {
     register: (): string => `${this.apiHost}users`,
     getList: (): string => `${this.apiHost}users`,
     getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
-    updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string =>
       `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
     promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
-    changeEmail: (): string => `${this.apiHost}users/account/change-email`,
     getEmailTaken: (email: string): string =>
       `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
     getStatistics: (slug: string): string =>
       `${this.apiHost}users/${slug}/statistics`,
-    deleteOwnUser: (): string => `${this.apiHost}users/account/delete-own-user`,
   };
 
   public moderatorTasks = {

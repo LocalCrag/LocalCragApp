@@ -28,7 +28,7 @@ export class UsersService {
 
   public updateAccount(user: User): Observable<User> {
     return this.http
-      .put(this.api.users.updateAccount(), User.serializeAccountInfo(user))
+      .put(this.api.account.update(), User.serializeAccountInfo(user))
       .pipe(map(User.deserialize));
   }
 
@@ -46,7 +46,7 @@ export class UsersService {
 
   public changeEmail(hash: string): Observable<LoginResponse> {
     return this.http
-      .put(this.api.users.changeEmail(), { newEmailHash: hash })
+      .put(this.api.account.changeEmail(), { newEmailHash: hash })
       .pipe(map(LoginResponse.deserialize));
   }
 
@@ -73,7 +73,7 @@ export class UsersService {
 
   public deleteOwnUser(): Observable<null> {
     return this.http
-      .delete(this.api.users.deleteOwnUser())
+      .delete(this.api.account.deleteOwnUser())
       .pipe(map(() => null));
   }
 
