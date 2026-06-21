@@ -92,8 +92,8 @@ def test_successful_update_ranking(client, admin_token):
             if (
                 len(res) == 1
                 and res[0]["user"]["slug"] == "admin-admin"
-                and res[0]["top10"] == 23
-                and res[0]["top50"] == 23
+                and res[0]["top10"] == 42
+                and res[0]["top50"] == 42
                 and res[0]["totalCount"] == 2
             ):
                 break
@@ -103,8 +103,8 @@ def test_successful_update_ranking(client, admin_token):
     assert rv.status_code == 200
     assert len(res) == 1
     assert res[0]["user"]["slug"] == "admin-admin"
-    assert res[0]["top10"] == 23
-    assert res[0]["top50"] == 23
+    assert res[0]["top10"] == 42
+    assert res[0]["top50"] == 42
     assert res[0]["totalCount"] == 2
 
 

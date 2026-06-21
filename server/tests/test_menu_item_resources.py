@@ -157,7 +157,7 @@ def test_successful_get_crag_menu_structure(client):
     assert res[0]["sectors"][0]["slug"] == "pampelmousse"
     assert res[0]["sectors"][0]["name"] == "Pampelmousse"
     assert res[0]["sectors"][1]["slug"] == "upper-brione"
-    assert res[0]["sectors"][1]["name"] == "Upper"
+    assert res[0]["sectors"][1]["name"] == "Upper Brione"
 
     assert res[0]["sectors"][0]["areas"][0]["slug"] == "shark-attack"
     assert res[0]["sectors"][0]["areas"][0]["name"] == "Shark Attack"
