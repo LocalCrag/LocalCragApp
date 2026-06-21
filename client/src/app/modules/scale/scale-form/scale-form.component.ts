@@ -41,6 +41,11 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
+import { NgxColorsModule } from 'ngx-colors';
+import {
+  DEFAULT_STACKED_CHART_BRACKET_COLORS,
+  normalizeStackedChartBracket,
+} from '../../../utility/scale/stacked-chart-brackets';
 
 @Component({
   selector: 'lc-scale-form',
@@ -65,6 +70,7 @@ import { FormEntryRowComponent } from '../../shared/components/form-entry-row/fo
     ControlGroupDirective,
     FormDirective,
     FormEntryRowComponent,
+    NgxColorsModule,
   ],
   providers: [ConfirmationService],
 })
@@ -141,12 +147,10 @@ export class ScaleFormComponent implements OnInit {
         : { semantic_error: true };
     };
 
-    const invalidLengthValidator = (min: number, max: number): ValidatorFn => {
+    const minLengthValidator = (min: number): ValidatorFn => {
       return (ctl: AbstractControl): ValidationErrors | null => {
         const formArray = ctl as FormArray;
-        return formArray.value.length >= min && formArray.value.length <= max
-          ? null
-          : { invalid_length: true };
+        return formArray.value.length >= min ? null : { invalid_length: true };
       };
     };
 
@@ -159,7 +163,7 @@ export class ScaleFormComponent implements OnInit {
         [
           notUniqueValidator,
           semanticBracketErrorValidator,
-          invalidLengthValidator(2, 8),
+          minLengthValidator(2),
         ],
       ),
       barChartBrackets: this.fb.array(
@@ -167,7 +171,7 @@ export class ScaleFormComponent implements OnInit {
         [
           notUniqueValidator,
           semanticBracketErrorValidator,
-          invalidLengthValidator(2, 14),
+          minLengthValidator(2),
         ],
       ),
     });
@@ -179,7 +183,11 @@ export class ScaleFormComponent implements OnInit {
         .map((g) => this.createGradeGroup(g.name, g.value))
         .forEach((ctl) => this.gradeControls().push(ctl));
       this.scale.gradeBrackets.stackedChartBrackets
-        .map((value) => this.createStackedChartBracketGroup(value))
+        .map((value, index) =>
+          this.createStackedChartBracketGroup(
+            normalizeStackedChartBracket(value, index),
+          ),
+        )
         .forEach((ctl) => this.stackedChartBracketsControls().push(ctl));
       this.scale.gradeBrackets.barChartBrackets
         .map((bracket) =>
@@ -197,10 +205,16 @@ export class ScaleFormComponent implements OnInit {
         this.createGradeGroup(marker('UNGRADED'), 0, false),
       );
       this.stackedChartBracketsControls().push(
-        this.createStackedChartBracketGroup(1),
+        this.createStackedChartBracketGroup({
+          value: 1,
+          color: DEFAULT_STACKED_CHART_BRACKET_COLORS[0],
+        }),
       );
       this.stackedChartBracketsControls().push(
-        this.createStackedChartBracketGroup(2),
+        this.createStackedChartBracketGroup({
+          value: 2,
+          color: DEFAULT_STACKED_CHART_BRACKET_COLORS[1],
+        }),
       );
       this.barChartBracketsControls().push(
         this.createBarChartBracketGroup(1, ''),
@@ -233,9 +247,13 @@ export class ScaleFormComponent implements OnInit {
     });
   }
 
-  private createStackedChartBracketGroup(value: number): FormGroup {
+  private createStackedChartBracketGroup(bracket: {
+    value: number;
+    color: string;
+  }): FormGroup {
     return this.fb.group({
-      value: [value, Validators.required],
+      value: [bracket.value, Validators.required],
+      color: [bracket.color, Validators.required],
     });
   }
 
@@ -271,7 +289,10 @@ export class ScaleFormComponent implements OnInit {
         if (includeName) {
           return this.createBarChartBracketGroup(g.value, g.name);
         }
-        return this.createStackedChartBracketGroup(g.value);
+        return this.createStackedChartBracketGroup({
+          value: g.value,
+          color: g.color,
+        });
       })
       .forEach((ctl) => controls.push(ctl));
   }
@@ -314,7 +335,16 @@ export class ScaleFormComponent implements OnInit {
     if (includeName) {
       controls.push(this.createBarChartBracketGroup(max + 1, ''));
     } else {
-      controls.push(this.createStackedChartBracketGroup(max + 1));
+      controls.push(
+        this.createStackedChartBracketGroup({
+          value: max + 1,
+          color:
+            DEFAULT_STACKED_CHART_BRACKET_COLORS[
+              controls.value.length %
+                DEFAULT_STACKED_CHART_BRACKET_COLORS.length
+            ],
+        }),
+      );
     }
   }
 
@@ -347,7 +377,10 @@ export class ScaleFormComponent implements OnInit {
       this.scale.grades = this.gradeControls().value;
       this.scale.gradeBrackets = {
         stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-          (gb) => gb.value,
+          (gb) => ({
+            value: gb.value,
+            color: gb.color,
+          }),
         ),
         barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
           return {
@@ -375,7 +408,10 @@ export class ScaleFormComponent implements OnInit {
       scale.grades = this.gradeControls().value;
       scale.gradeBrackets = {
         stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-          (gb) => gb.value,
+          (gb) => ({
+            value: gb.value,
+            color: gb.color,
+          }),
         ),
         barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
           return {
@@ -435,4 +471,6 @@ export class ScaleFormComponent implements OnInit {
 
   protected readonly LoadingState = LoadingState;
   protected readonly LineType = LineType;
+  protected readonly stackedChartBracketColors =
+    DEFAULT_STACKED_CHART_BRACKET_COLORS;
 }

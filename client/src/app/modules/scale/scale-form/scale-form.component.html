@@ -205,9 +205,7 @@
 
         <h4>{{ t("gradeBracketsLabel") }} - {{ t("stackedChartBrackets") }}</h4>
         <div class="mb-2">
-          <em>{{
-            t("gradeBracketsDescriptionStackedChart", { min: 2, max: 8 })
-          }}</em>
+          <em>{{ t("gradeBracketsDescriptionStackedChart") }}</em>
         </div>
         @for (
           _ of stackedChartBracketsControls().controls;
@@ -232,6 +230,27 @@
                       class="lc-error"
                       *lcIfError="'required'"
                       lcIfErrorControlName="value"
+                    >
+                      {{ t("required") }}
+                    </small>
+                  </div>
+                </div>
+                <div lcControlGroup>
+                  <label>
+                    {{ t("stackedChartBracketColorLabel") }}
+                    <ngx-colors
+                      ngx-colors-trigger
+                      class="stacked-bracket-color-picker"
+                      formControlName="color"
+                      [palette]="stackedChartBracketColors"
+                      lcFormControl
+                    />
+                  </label>
+                  <div class="lc-error-slot">
+                    <small
+                      class="lc-error"
+                      *lcIfError="'required'"
+                      lcIfErrorControlName="color"
                     >
                       {{ t("required") }}
                     </small>
@@ -267,7 +286,7 @@
         @if (stackedChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 8 }) }}"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
             styleClass="min-w-full mb-3"
           />
         }
@@ -293,9 +312,7 @@
 
         <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
         <div class="mb-2">
-          <em>{{
-            t("gradeBracketsDescriptionBarChart", { min: 2, max: 14 })
-          }}</em>
+          <em>{{ t("gradeBracketsDescriptionBarChart") }}</em>
         </div>
 
         @for (
@@ -378,7 +395,7 @@
         @if (barChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
-            text="{{ t('gradeBracketsInvalidLength', { min: 2, max: 14 }) }}"
+            text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
             styleClass="min-w-full mb-3"
           />
         }
