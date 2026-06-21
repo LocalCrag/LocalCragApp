@@ -38,7 +38,11 @@ def test_successful_create_scale(client, admin_token):
                 {"name": "hard", "value": 3},
                 {"name": "insane", "value": 4},
             ],
-            "stackedChartBrackets": [1, 3, 4],
+            "stackedChartBrackets": [
+                {"value": 1, "color": "#eab308"},
+                {"value": 3, "color": "#3b82f6"},
+                {"value": 4, "color": "#ef4444"},
+            ],
         },
     }
 

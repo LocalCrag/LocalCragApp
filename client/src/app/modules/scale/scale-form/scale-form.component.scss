@@ -61,3 +61,8 @@
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+:host ::ng-deep .stacked-bracket-color-picker {
+  display: flex;
+  align-items: center;
+}
