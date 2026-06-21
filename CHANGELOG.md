@@ -1,3 +1,22 @@
+# [1.43.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.42.0...v1.43.0) (2026-06-21)
+
+
+### Bug Fixes
+
+* **core:** fix vertical avatar position in header ([#1140](https://github.com/LocalCrag/LocalCragApp/issues/1140)) ([7843c48](https://github.com/LocalCrag/LocalCragApp/commit/7843c481f2c395ffcbfc17074f3cc1ad6ff93891)), closes [#1134](https://github.com/LocalCrag/LocalCragApp/issues/1134)
+* **core:** nested topo menu does no longer glitch on small viewports ([#1144](https://github.com/LocalCrag/LocalCragApp/issues/1144)) ([77cc7b1](https://github.com/LocalCrag/LocalCragApp/commit/77cc7b1ba27d04fb45dc41cd3080e47467b0215b)), closes [#635](https://github.com/LocalCrag/LocalCragApp/issues/635)
+* **core:** rework scale UI to make it for on mobile screens ([#1145](https://github.com/LocalCrag/LocalCragApp/issues/1145)) ([8e2542e](https://github.com/LocalCrag/LocalCragApp/commit/8e2542e8b54bcb2b08981154d96533c717edc80e)), closes [#580](https://github.com/LocalCrag/LocalCragApp/issues/580)
+* **gallery:** add back accidentally removed padding in line gallery images ([#1149](https://github.com/LocalCrag/LocalCragApp/issues/1149)) ([a4ded17](https://github.com/LocalCrag/LocalCragApp/commit/a4ded177279645fdf6d5825081cf81e56df7fd2e)), closes [#1147](https://github.com/LocalCrag/LocalCragApp/issues/1147)
+* **reactions:** reaction bar hover overlay no longer blocks pointer events ([#1142](https://github.com/LocalCrag/LocalCragApp/issues/1142)) ([2a7dd28](https://github.com/LocalCrag/LocalCragApp/commit/2a7dd284e89ae46a34a8ba3637ac233d48b6fd16)), closes [#1125](https://github.com/LocalCrag/LocalCragApp/issues/1125)
+* **scales:** fix single grade bracket label display and remove bracket restrictions ([#1148](https://github.com/LocalCrag/LocalCragApp/issues/1148)) ([7c0bce0](https://github.com/LocalCrag/LocalCragApp/commit/7c0bce0d313b4402f2c4e358fa5ec201bc8641fd)), closes [#567](https://github.com/LocalCrag/LocalCragApp/issues/567)
+* **tasks:** uploaded images in task descriptions are now displayed ([#1143](https://github.com/LocalCrag/LocalCragApp/issues/1143)) ([9a0e71f](https://github.com/LocalCrag/LocalCragApp/commit/9a0e71f7323fac2056b03397fefe8c5265306906)), closes [#1132](https://github.com/LocalCrag/LocalCragApp/issues/1132)
+* **topo:** add missing archive confirmation dialogs ([#1150](https://github.com/LocalCrag/LocalCragApp/issues/1150)) ([183f8ff](https://github.com/LocalCrag/LocalCragApp/commit/183f8ffba2705ba0a85740a8c2440876d0c78b7d)), closes [#655](https://github.com/LocalCrag/LocalCragApp/issues/655)
+
+
+### Features
+
+* **topo:** implement dynamic disabling of FA inputs based on grade value ([#1141](https://github.com/LocalCrag/LocalCragApp/issues/1141)) ([8a4a169](https://github.com/LocalCrag/LocalCragApp/commit/8a4a169d677c66ceb0412ae6110b4fa61ab68149)), closes [#1128](https://github.com/LocalCrag/LocalCragApp/issues/1128)
+
 # [1.42.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.41.0...v1.42.0) (2026-06-16)
 
 
