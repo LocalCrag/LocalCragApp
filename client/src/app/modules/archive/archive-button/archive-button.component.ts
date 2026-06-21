@@ -13,10 +13,18 @@ import { ArchiveService } from '../../../services/crud/archive.service';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmationService } from 'primeng/api';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'lc-archive-button',
-  imports: [ButtonModule, NgClass, TranslocoDirective, GymModeDirective],
+  imports: [
+    ButtonModule,
+    NgClass,
+    TranslocoDirective,
+    GymModeDirective,
+    ConfirmPopup,
+  ],
+  providers: [ConfirmationService],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -72,23 +80,60 @@ export class ArchiveButtonComponent {
     }
 
     if (this.area) {
-      this.archiveService
-        .setAreaArchived(this.area)
-        .subscribe(this.toggleArchivedResultHandler);
+      this.confirmArchiveEntity(event, 'area');
     }
 
     if (this.sector) {
-      this.archiveService
-        .setSectorArchived(this.sector)
-        .subscribe(this.toggleArchivedResultHandler);
+      this.confirmArchiveEntity(event, 'sector');
     }
 
     if (this.crag) {
-      this.archiveService
-        .setCragArchived(this.crag)
-        .subscribe(this.toggleArchivedResultHandler);
+      this.confirmArchiveEntity(event, 'crag');
     }
   }
+
+  confirmArchiveEntity(event: Event, type: 'area' | 'sector' | 'crag') {
+    const messageKeys = {
+      area: marker('archive.askConfirmArchiveArea'),
+      sector: marker('archive.askConfirmArchiveSector'),
+      crag: marker('archive.askConfirmArchiveCrag'),
+    };
+
+    this.confirmationService.confirm({
+      target: event.target,
+      message: this.translocoService.translate(messageKeys[type]),
+      acceptLabel: this.translocoService.translate(
+        marker('archive.yesArchive'),
+      ),
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
+      rejectLabel: this.translocoService.translate(marker('archive.noCancel')),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.doArchiveEntity(type);
+      },
+    });
+  }
+
+  doArchiveEntity(type: 'area' | 'sector' | 'crag') {
+    const archiveRequest =
+      type === 'area'
+        ? this.archiveService.setAreaArchived(this.area)
+        : type === 'sector'
+          ? this.archiveService.setSectorArchived(this.sector)
+          : this.archiveService.setCragArchived(this.crag);
+
+    archiveRequest.subscribe(this.archiveEntityResultHandler);
+  }
+
+  archiveEntityResultHandler = {
+    next: (_) => {
+      this.store.dispatch(toastNotification('ARCHIVED'));
+    },
+    error: () => {
+      this.store.dispatch(toastNotification('ARCHIVED_ERROR'));
+    },
+  };
 
   confirmArchiveTopoImage(event: Event) {
     this.confirmationService.confirm({
