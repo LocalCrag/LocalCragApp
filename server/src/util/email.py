@@ -10,6 +10,7 @@ from flask import current_app, render_template
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.comment_created_mail import comment_created_mail
 from i18n.create_user_mail import create_user_mail
+from i18n.mail_common import merge_mail_translations
 from i18n.notification_digest_mail import notification_digest_mail
 from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
@@ -35,8 +36,27 @@ def build_i18n_keyword_arg_dict(locale, i18n_source_dict):
     :return: Dictionary that has keys in the format of 'i18n_<key>' and translated string as values.
     """
     i18n_keyword_arg_dict = {}
-    for key, value in i18n_source_dict[locale].items():
+    for key, value in merge_mail_translations(locale, i18n_source_dict[locale]).items():
         i18n_keyword_arg_dict["i18n_{}".format(key)] = value
+    return i18n_keyword_arg_dict
+
+
+def _instance_branding():
+    settings = InstanceSettings.return_it()
+    return {
+        "instance_name": settings.instance_name,
+        "copyright_owner": settings.copyright_owner,
+        "mail_greeting": settings.mail_greeting,
+    }
+
+
+def _apply_instance_branding(i18n_keyword_arg_dict):
+    branding = _instance_branding()
+    for key, value in list(i18n_keyword_arg_dict.items()):
+        if isinstance(value, str) and ("{instance_name}" in value or "{copyright_owner}" in value):
+            i18n_keyword_arg_dict[key] = value.format(**branding)
+    i18n_keyword_arg_dict["i18n_thanks"] = branding["mail_greeting"]
+    i18n_keyword_arg_dict.update(branding)
     return i18n_keyword_arg_dict
 
 
@@ -83,6 +103,7 @@ def prepare_message(user: User, i18n_dict_source):
     :return: Tuple of message object and translation dict.
     """
     i18n_keyword_arg_dict = build_i18n_keyword_arg_dict(user.account_settings.language, i18n_dict_source)
+    _apply_instance_branding(i18n_keyword_arg_dict)
     msg = MIMEMultipart("alternative")
     msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"]
     msg["From"] = current_app.config["SYSTEM_EMAIL"]
@@ -215,9 +236,6 @@ def send_notification_digest_email(receiver: User, notifications: list[Notificat
 
     msg, i18n_keyword_arg_dict = prepare_message(receiver, notification_digest_mail)
     msg["To"] = receiver.email
-    instance_name = InstanceSettings.return_it().instance_name
-    msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"].format(instance_name=instance_name)
-    i18n_keyword_arg_dict["i18n_title"] = i18n_keyword_arg_dict["i18n_title"].format(instance_name=instance_name)
     if receiver.account_settings.notification_digest_frequency == NotificationDigestFrequencyEnum.WEEKLY:
         i18n_keyword_arg_dict["i18n_intro"] = i18n_keyword_arg_dict["i18n_intro_weekly"]
     digest_i18n = notification_digest_mail[receiver.account_settings.language]
@@ -226,7 +244,6 @@ def send_notification_digest_email(receiver: User, notifications: list[Notificat
     template = render_template(
         "notification-digest-mail.html",
         receiver_firstname=receiver.firstname,
-        instance_name=instance_name,
         digest_items=digest_items,
         frontend_host=current_app.config["FRONTEND_HOST"],
         notifications_link=current_app.config["FRONTEND_HOST"],

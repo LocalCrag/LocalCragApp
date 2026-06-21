@@ -83,3 +83,18 @@ jobs:
 
           print("No empty translation strings found.")
           PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
+
+      - name: Check backend i18n translations
+        shell: bash
+        run: |
+          set -euo pipefail
+          pip install pipenv
+          cd server/src
+          export PYTHONPATH=.
+          pipenv install --deploy --ignore-pipfile
+          pipenv run python ../scripts/check_i18n.py

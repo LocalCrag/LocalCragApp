@@ -1,3 +1,5 @@
 [flake8]
 max-line-length = 120
 exclude = docs,scripts,tests,.idea,.git,__pycache__
+per-file-ignores =
+    src/i18n/*_mail.py: E501

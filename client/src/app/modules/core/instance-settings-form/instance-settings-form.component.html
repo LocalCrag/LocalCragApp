@@ -47,6 +47,26 @@
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
+          <label class="form-label" for="mail-greeting">{{
+            t("mailGreetingLabel")
+          }}</label>
+          <input
+            id="mail-greeting"
+            type="text"
+            pInputText
+            formControlName="mailGreeting"
+            placeholder="{{ t('mailGreetingPlaceholder') }}"
+            lcFormControl
+          />
+          <small class="lc-error" *lcIfError="'required'">{{
+            t("required")
+          }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            t("maxlength120")
+          }}</small>
+        </div>
+
+        <div class="flex flex-column gap-2" lcControlGroup>
           <label class="form-label" for="gym-mode">
             {{ t("gymModeLabel") }}
           </label>

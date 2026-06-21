@@ -317,6 +317,8 @@
   "instanceSettings.instanceSettingsForm.maxlength120": "Maximum aantal tekens: 120",
   "instanceSettings.instanceSettingsForm.copyrightOwnerLabel": "Copyright Eigenaar",
   "instanceSettings.instanceSettingsForm.copyrightOwnerPlaceholder": "bijv. De Gleesards - Boulderverein Eifel e.V.",
+  "instanceSettings.instanceSettingsForm.mailGreetingLabel": "E-mail afsluiting",
+  "instanceSettings.instanceSettingsForm.mailGreetingPlaceholder": "bijv. Met vriendelijke groet",
   "instanceSettings.instanceSettingsForm.gymModeLabel": "Gebruiksmodus",
   "instanceSettings.instanceSettingsForm.gymModeLabelFalse": "Buiten modus",
   "instanceSettings.instanceSettingsForm.gymModeLabelTrue": "Klimzaal modus",
