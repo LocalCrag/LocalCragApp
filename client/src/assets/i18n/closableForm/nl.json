@@ -1,21 +1,15 @@
 {
   "closableForm.closureSchedulesLabel": "Sluitingsschema's",
-  "closableForm.closureMaterializationInfo": "Na het opslaan kan het enkele seconden duren voordat sluitingsstatussen bij onderliggende plekken zijn bijgewerkt.",
   "closableForm.addSchedule": "Sluitingsschema toevoegen",
-  "closableForm.annualScheduleTitle": "Jaarlijkse sluiting",
-  "closableForm.fixedScheduleTitle": "Vaste sluiting",
-  "closableForm.permanentScheduleTitle": "Permanente sluiting",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
+  "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
+  "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
   "closableForm.scheduledClosureStartLabel": "Van",
   "closableForm.scheduledClosureEndLabel": "Tot",
   "closableForm.fixedEndBeforeStartValidationError": "De einddatum moet op of na de startdatum liggen.",
-  "closableForm.annualDatesRequiredValidationError": "Start- en einddatum zijn verplicht.",
-  "closableForm.annualCoversEntireYearValidationError": "Jaarlijkse sluitingen moeten minstens één open dag per jaar overlaten; gebruik in plaats daarvan een permanente sluiting.",
-  "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
-  "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
-  "closableForm.closedByParentSchedule": "Deze plek is momenteel gesloten omdat een bovenliggend niveau een actief sluitingsschema heeft.",
-  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen",
-  "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
-  "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
+  "closableForm.closureMaterializationInfo": "Na het opslaan kan het enkele seconden duren voordat sluitingsstatussen bij onderliggende plekken zijn bijgewerkt.",
   "closableFormScheduleDialog.cancel": "Annuleren",
-  "closableFormScheduleDialog.ok": "OK"
+  "closableFormScheduleDialog.ok": "OK",
+  "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
+  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen"
 }

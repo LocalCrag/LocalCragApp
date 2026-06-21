@@ -24,6 +24,19 @@ comment_created_mail = {
         "subject": "New comment",
         "copyright": "© LocalCrag. All rights reserved.",
     },
+    "fr": {
+        "title": "Nouveau commentaire",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "new_comment_text": "Un nouveau commentaire a été publié par",
+        "view": "Voir",
+        "thanks": "Merci,",
+        "greetings": "Votre équipe LocalCrag",
+        "hint": "Si le bouton ci-dessus ne fonctionne pas, copiez l'URL ci-dessous dans la barre d'adresse de "
+        "votre navigateur.",
+        "subject": "Nouveau commentaire",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+    },
     "it": {
         "title": "",
         "LOCALCRAG": "",
