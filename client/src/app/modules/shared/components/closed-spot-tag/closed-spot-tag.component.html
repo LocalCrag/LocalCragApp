@@ -26,10 +26,7 @@
   >
     <div class="closed-spot-tag-popover-content">
       @if (loading) {
-        <p-progressSpinner
-          strokeWidth="4"
-          class="closed-spot-tag-spinner"
-        />
+        <p-progressSpinner strokeWidth="4" class="closed-spot-tag-spinner" />
       } @else if (loadError) {
         <span class="closed-spot-tag-error">{{ t("loadError") }}</span>
       } @else if (displayReasons !== null) {
