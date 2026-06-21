@@ -4,7 +4,7 @@
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
           @if (
-            todos?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+            todos?.length === 0 && !(loading === loadingStates.LOADING && currentPage === 1)
           ) {
             <p-message
               severity="info"
@@ -27,7 +27,7 @@
                   [options]="orderOptions"
                   [(ngModel)]="orderKey"
                   optionLabel="label"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                   (onChange)="loadFirstPage()"
                 >
                   <ng-template #selectedItem>
@@ -48,7 +48,7 @@
                   [(ngModel)]="orderDirectionKey"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                 >
                   <ng-template #selectedItem>
                     @if (orderDirectionKey) {
@@ -74,7 +74,7 @@
                 <p-select
                   [options]="priorityFilterOptions"
                   [(ngModel)]="priorityFilterKey"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                   optionLabel="label"
                   (onChange)="loadFirstPage()"
                 >
@@ -95,7 +95,7 @@
                   <p-select
                     [options]="cragFilterOptions"
                     [(ngModel)]="cragFilterKey"
-                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                     optionLabel="label"
                     (onChange)="buildSectorFilterOptions(); loadFirstPage()"
                   >
@@ -117,7 +117,7 @@
                   <p-select
                     [options]="sectorFilterOptions"
                     [(ngModel)]="sectorFilterKey"
-                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                     optionLabel="label"
                     (onChange)="buildAreaFilterOptions(); loadFirstPage()"
                   >
@@ -140,7 +140,7 @@
                     [options]="areaFilterOptions"
                     [(ngModel)]="areaFilterKey"
                     optionLabel="label"
-                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                     (onChange)="loadFirstPage()"
                   >
                     <ng-template #selectedItem>
@@ -168,7 +168,7 @@
                   {{ t("lineType") }}
                   <p-select
                     [options]="availableScales"
-                    [disabled]="loadingFirstPage === loadingStates.LOADING"
+                    [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                     [(ngModel)]="scaleKey"
                     optionLabel="label"
                     (onChange)="selectScale()"
@@ -221,7 +221,7 @@
                   [(ngModel)]="gradeFilterRange"
                   [min]="minGradeValue"
                   [max]="maxGradeValue"
-                  [disabled]="loadingFirstPage === loadingStates.LOADING"
+                  [disabled]="loading === loadingStates.LOADING && currentPage === 1"
                   [range]="true"
                   [step]="1"
                   (onSlideEnd)="reloadOnSlideEnd()"
@@ -231,10 +231,10 @@
           </div>
         </ng-template>
         <ng-template let-todos #list>
-          @if (loadingFirstPage === loadingStates.LOADING) {
+          @if (loading === loadingStates.LOADING && currentPage === 1) {
             <lc-line-list-skeleton></lc-line-list-skeleton>
           }
-          @if (loadingFirstPage !== loadingStates.LOADING) {
+          @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
             <div class="grid grid-nogutter">
               @for (todo of todos; track todo; let first = $first) {
                 <div class="col-12" data-cy="todo-list-item">
@@ -365,10 +365,7 @@
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
-            [loading]="
-              loadingAdditionalPage === loadingStates.LOADING ||
-              loadingFirstPage === loadingStates.LOADING
-            "
+            [loading]="loading === loadingStates.LOADING"
           ></p-button>
         </div>
       }

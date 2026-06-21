@@ -8,6 +8,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
@@ -82,10 +88,9 @@ import { LanguageService } from '../../../services/core/language.service';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public todos: Todo[];
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
@@ -350,59 +355,53 @@ export class TodoListComponent implements OnInit {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
-    this.loadedGradeFilterRange = [...this.gradeFilterRange];
+    loadFirstPaginatedPage(
+      this,
+      () => this.loadNextPage(),
+      () => {
+        this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      },
+    );
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.todos = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const params: ApiQueryParams = {
-        page: this.currentPage,
-        order_by: this.orderKey.value,
-        order_direction: this.orderDirectionKey.value,
-        per_page: 10,
-      };
-      if (this.gradeFilterRange[1] !== null) {
-        params.min_grade = this.gradeFilterRange[0];
-        params.max_grade = this.gradeFilterRange[1];
-      }
-      if (this.scaleKey?.value) {
-        params.line_type = this.scaleKey.value.lineType;
-        params.grade_scale = this.scaleKey.value.gradeScale;
-      }
-      if (this.cragFilterKey?.value) {
-        params.crag_id = this.cragFilterKey.value;
-      }
-      if (this.sectorFilterKey?.value) {
-        params.sector_id = this.sectorFilterKey.value;
-      }
-      if (this.areaFilterKey?.value) {
-        params.area_id = this.areaFilterKey.value;
-      }
-      if (this.priorityFilterKey.value !== null) {
-        params.priority = this.priorityFilterKey.value;
-      }
-      this.todosService.getTodos(params).subscribe((todos) => {
-        this.todos.push(...todos.items);
-        this.hasNextPage = todos.hasNext;
-        this.loadingFirstPage = LoadingState.DEFAULT;
-        this.loadingAdditionalPage = LoadingState.DEFAULT;
-        this.cdr.detectChanges();
-      });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.todos = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      order_by: this.orderKey.value,
+      order_direction: this.orderDirectionKey.value,
+      per_page: 10,
+    };
+    if (this.gradeFilterRange[1] !== null) {
+      params.min_grade = this.gradeFilterRange[0];
+      params.max_grade = this.gradeFilterRange[1];
+    }
+    if (this.scaleKey?.value) {
+      params.line_type = this.scaleKey.value.lineType;
+      params.grade_scale = this.scaleKey.value.gradeScale;
+    }
+    if (this.cragFilterKey?.value) {
+      params.crag_id = this.cragFilterKey.value;
+    }
+    if (this.sectorFilterKey?.value) {
+      params.sector_id = this.sectorFilterKey.value;
+    }
+    if (this.areaFilterKey?.value) {
+      params.area_id = this.areaFilterKey.value;
+    }
+    if (this.priorityFilterKey.value !== null) {
+      params.priority = this.priorityFilterKey.value;
+    }
+    this.todosService.getTodos(params).subscribe((todos) => {
+      this.todos.push(...todos.items);
+      completePaginatedPageLoad(this, todos.hasNext);
+      this.cdr.detectChanges();
+    });
   }
 
   protected readonly LineType = LineType;

@@ -51,7 +51,7 @@
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
-            [loading]="loadingAdditionalPage === loadingStates.LOADING"
+            [loading]="loading === loadingStates.LOADING && currentPage > 1"
           ></p-button>
         </div>
       }

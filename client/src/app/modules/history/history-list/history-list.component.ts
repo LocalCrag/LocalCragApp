@@ -24,6 +24,12 @@ import { select, Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
@@ -53,10 +59,9 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HistoryListComponent implements OnInit {
+export class HistoryListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public hasNextPage = true;
   public currentPage = 0;
   public historyItems: HistoryItem[] = [];
@@ -72,36 +77,25 @@ export class HistoryListComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
+    loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.historyItems = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const params: ApiQueryParams = {
-        page: this.currentPage,
-        per_page: 10,
-      };
-      this.historyService.getHistory(params).subscribe((historyItems) => {
-        this.historyItems = [...this.historyItems, ...historyItems.items];
-        this.hasNextPage = historyItems.hasNext;
-        this.loadingFirstPage = LoadingState.DEFAULT;
-        this.loadingAdditionalPage = LoadingState.DEFAULT;
-        this.cdr.detectChanges();
-      });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.historyItems = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      per_page: 10,
+    };
+    this.historyService.getHistory(params).subscribe((historyItems) => {
+      this.historyItems = [...this.historyItems, ...historyItems.items];
+      completePaginatedPageLoad(this, historyItems.hasNext);
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {

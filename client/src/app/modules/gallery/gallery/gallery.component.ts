@@ -26,6 +26,12 @@ import { Store } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { Message } from 'primeng/message';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,14 +56,13 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
   providers: [DialogService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GalleryComponent implements OnInit {
+export class GalleryComponent implements OnInit, PaginatedListView {
   public images: GalleryImage[] = [];
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
 
   private objectSlug: string;
   private objectType: ObjectType;
@@ -105,44 +110,33 @@ export class GalleryComponent implements OnInit {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
+    loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.images = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const params: ApiQueryParams = {
-        page: this.currentPage,
-      };
-      if (this.objectType) {
-        params['tag-object-type'] = this.objectType;
-        params['tag-object-slug'] = this.objectSlug;
-      }
-      this.galleryService
-        .getGalleryImages(params)
-        .pipe(
-          map((images) => {
-            this.images.push(...images.items);
-            this.hasNextPage = images.hasNext;
-            this.loadingFirstPage = LoadingState.DEFAULT;
-            this.loadingAdditionalPage = LoadingState.DEFAULT;
-            this.cdr.detectChanges();
-          }),
-        )
-        .subscribe();
+    const page = beginPaginatedPageLoad(this, () => {
+      this.images = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+    };
+    if (this.objectType) {
+      params['tag-object-type'] = this.objectType;
+      params['tag-object-slug'] = this.objectSlug;
+    }
+    this.galleryService
+      .getGalleryImages(params)
+      .pipe(
+        map((images) => {
+          this.images.push(...images.items);
+          completePaginatedPageLoad(this, images.hasNext);
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe();
   }
 
   addImage() {
