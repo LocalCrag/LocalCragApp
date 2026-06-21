@@ -18,6 +18,7 @@
   "areaForm.blocweatherUrlLabel": "Blocweather URL",
   "areaForm.blocweatherTooltip": "Per visualizzare le informazioni meteorologiche relative a quest'area nella pagina dei dettagli, puoi inserire qui l'URL della pagina corrispondente su blocweather.com.",
   "areaForm.invalidBlocweatherUrl": "L'URL deve seguire lo schema https://blocweather.com/<paese>/<regione>/<località>",
+  "areaForm.maxlength255": "Numero massimo di caratteri: 255",
   "areaForm.mapMarkersLabel": "Punti GPS",
   "areaForm.closedBecauseParentIsClosed": "Quest'area è interdetta perché il settore superiore è attualmente interdetto.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "La creazione di un'area non segreta all'interno di un settore segreto rende automaticamente sia il settore che la zona corrispondente non segrete, altrimenti non sarebbe possibile raggiungere l'area. Le altre aree e i settori preesistenti restano segreti.",

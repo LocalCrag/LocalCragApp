@@ -49,6 +49,9 @@
                 <small class="lc-error" *lcIfError="'required'">
                   {{ t("required") }}
                 </small>
+                <small class="lc-error" *lcIfError="'maxlength'">
+                  {{ t("maxlength32") }}
+                </small>
               </div>
             </div>
           }
@@ -126,7 +129,7 @@
                       <label>
                         {{ t("gradeValueLabel") }}
                         <p-inputNumber
-                          styleClass="ml-2"
+                          class="ml-2"
                           formControlName="value"
                           [min]="1"
                           lcFormControl
@@ -152,7 +155,7 @@
                     ) {
                       <p-button
                         icon="pi pi-trash"
-                        styleClass="p-button-danger"
+                        class="p-button-danger"
                         disabled
                       />
                     }
@@ -165,7 +168,7 @@
                       <p-button
                         [disabled]="loadingState === LoadingState.LOADING"
                         icon="pi pi-trash"
-                        styleClass="p-button-danger"
+                        class="p-button-danger"
                         (click)="deleteGrade(i)"
                       />
                     }
@@ -179,7 +182,7 @@
               <p-message
                 severity="error"
                 text="{{ t('valuesNotUnique') }}"
-                styleClass="min-w-full mb-3"
+                class="min-w-full mb-3"
               />
             }
           </div>
@@ -260,7 +263,7 @@
                   <p-button
                     [disabled]="loadingState === LoadingState.LOADING"
                     icon="pi pi-trash"
-                    styleClass="p-button-danger"
+                    class="p-button-danger"
                     (click)="deleteStackedChartBracket(i)"
                   />
                 </div>
@@ -273,21 +276,21 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
         @if (stackedChartBracketsControls().hasError("semantic_error")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
         @if (stackedChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
 
@@ -369,7 +372,7 @@
                   <p-button
                     icon="pi pi-trash"
                     [disabled]="loadingState === LoadingState.LOADING"
-                    styleClass="p-button-danger"
+                    class="p-button-danger"
                     (click)="deleteBarChartBracket(i)"
                   />
                 </div>
@@ -382,21 +385,21 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
         @if (barChartBracketsControls().hasError("semantic_error")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
         @if (barChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-            styleClass="min-w-full mb-3"
+            class="min-w-full mb-3"
           />
         }
 
@@ -430,8 +433,7 @@
             label="{{ t('deleteScale') }}"
             (click)="confirmDeleteScale($event)"
             icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="responsive-button"
+            class="p-button-danger responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
           />
           <p-button

@@ -218,7 +218,10 @@ export class AreaFormComponent implements OnInit {
       defaultBoulderScale: [null],
       defaultSportScale: [null],
       defaultTradScale: [null],
-      blocweatherUrl: [null, [blocweatherUrlValidator]],
+      blocweatherUrl: [
+        null,
+        [blocweatherUrlValidator, Validators.maxLength(255)],
+      ],
       closureSchedules: [[]],
     });
   }

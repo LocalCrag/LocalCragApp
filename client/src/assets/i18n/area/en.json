@@ -18,6 +18,7 @@
   "areaForm.blocweatherUrlLabel": "Blocweather URL",
   "areaForm.blocweatherTooltip": "To display weather information for this area on the details page, you can enter the URL for the relevant section on blocweather.com here.",
   "areaForm.invalidBlocweatherUrl": "Invao",
+  "areaForm.maxlength255": "Maximum number of characters: 255",
   "areaForm.mapMarkersLabel": "GPS points",
   "areaForm.closedBecauseParentIsClosed": "This area is closed because its sector is currently closed.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Creating a non-secret area within a secret sector automatically sets the sector and the corrisponding crag to non-secret, otherwise you cannot navigate to the area. Other pre-existing areas and sectors remain secret.",

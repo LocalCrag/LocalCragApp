@@ -235,6 +235,9 @@
           <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
             t("invalidBlocweatherUrl")
           }}</small>
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            t("maxlength255")
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2" lcControlGroup>
@@ -354,8 +357,7 @@
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
-          class="ml-3 responsive-button"
-          styleClass="p-button-secondary"
+          class="ml-3 responsive-button p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
         @if (editMode && crag?.slug !== environment.skippedSlug) {
@@ -363,8 +365,7 @@
             label="{{ t('deleteCragButtonLabel') }}"
             (click)="confirmDeleteCrag($event)"
             icon="pi pi-trash"
-            styleClass="p-button-danger"
-            class="ml-3 responsive-button"
+            class="p-button-danger ml-3 responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>
         }

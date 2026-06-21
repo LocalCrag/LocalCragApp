@@ -21,6 +21,7 @@
   "cragForm.blocweatherUrlLabel": "Blocweather-URL",
   "cragForm.blocweatherTooltip": "Om weersinformatie voor dit klimgebied op de detailspagina weer te geven, kunt u hier de URL voor de relevante sectie op blocweather.com invoeren.",
   "cragForm.invalidBlocweatherUrl": "De URL moet het formaat https://blocweather.com/<country>/<region>/<spot> volgen",
+  "cragForm.maxlength255": "Maximum aantal tekens: 255",
   "cragForm.mapMarkersLabel": "GPS coördinaten",
   "cragForm.cragOptionsLabel": "Opties",
   "cragForm.secretLabel": "Verborgen",

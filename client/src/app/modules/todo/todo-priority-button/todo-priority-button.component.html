@@ -3,7 +3,7 @@
   @if (todo.priority === priorities.MEDIUM) {
     <p-button
       type="button"
-      styleClass="p-button-secondary p-button-text medium-priority"
+      class="p-button-secondary p-button-text medium-priority"
       (click)="menu.toggle($event)"
       icon="pi pi-circle"
       [label]="t('mediumPriority')"
@@ -12,7 +12,7 @@
   @if (todo.priority === priorities.LOW) {
     <p-button
       type="button"
-      styleClass="p-button-secondary p-button-text low-priority"
+      class="p-button-secondary p-button-text low-priority"
       (click)="menu.toggle($event)"
       icon="pi pi-chevron-circle-down"
       [label]="t('lowPriority')"
@@ -21,7 +21,7 @@
   @if (todo.priority === priorities.HIGH) {
     <p-button
       type="button"
-      styleClass="p-button-secondary p-button-text high-priority"
+      class="p-button-secondary p-button-text high-priority"
       (click)="menu.toggle($event)"
       icon="pi pi-chevron-circle-up"
       [label]="t('highPriority')"

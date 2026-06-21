@@ -5,7 +5,7 @@
     [previewImageSrc]="previewImageUrl"
     [alt]="ariaLabel"
     imageClass="lc-user-avatar-preview-thumb"
-    [styleClass]="previewStyleClass"
+    [class]="previewStyleClass"
   >
     <ng-template #indicator>
       <i class="pi pi-eye"></i>
@@ -16,7 +16,7 @@
     [image]="imageUrl"
     [size]="size"
     shape="circle"
-    [styleClass]="styleClass"
+    [class]="class"
     [attr.aria-label]="ariaLabel"
   />
 } @else {
@@ -25,7 +25,7 @@
     [style]="gradientStyle"
     [size]="size"
     shape="circle"
-    [styleClass]="fallbackClasses"
+    [class]="fallbackClasses"
     [attr.aria-label]="ariaLabel"
   />
 }

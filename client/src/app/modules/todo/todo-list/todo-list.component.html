@@ -172,7 +172,7 @@
                     [(ngModel)]="scaleKey"
                     optionLabel="label"
                     (onChange)="selectScale()"
-                    styleClass="md:mb-0"
+                    class="md:mb-0"
                   >
                     <ng-template #selectedItem>
                       @if (scaleKey) {
@@ -258,7 +258,7 @@
                           [ticked]="false"
                         ></lc-tick-button>
                         <p-button
-                          styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                          class="p-button-rounded p-button-text p-button-secondary tick-button"
                           data-cy="delete-todo"
                           (click)="deleteTodo(todo)"
                         >
@@ -312,7 +312,7 @@
                             [ticked]="false"
                           ></lc-tick-button>
                           <p-button
-                            styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                            class="p-button-rounded p-button-text p-button-secondary tick-button"
                             data-cy="tick-button"
                             (click)="deleteTodo(todo)"
                           >

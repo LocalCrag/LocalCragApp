@@ -4,7 +4,7 @@ from webargs import fields
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from util.instance_timezone import validate_timezone
-from util.validators import validate_language
+from util.validators import color_validator, validate_language
 
 instance_settings_args = {
     "instanceName": fields.Str(required=True, validate=validate.Length(max=120)),
@@ -15,16 +15,16 @@ instance_settings_args = {
     "faviconImage": fields.String(required=True, allow_none=True),
     "authBgImage": fields.String(required=True, allow_none=True),
     "mainBgImage": fields.String(required=True, allow_none=True),
-    "arrowColor": fields.Str(required=True),
-    "arrowTextColor": fields.Str(required=True),
-    "arrowHighlightColor": fields.Str(required=True),
-    "arrowHighlightTextColor": fields.Str(required=True),
-    "barChartColor": fields.Str(required=True),
-    "barChartAccentColor": fields.Str(required=True),
+    "arrowColor": fields.Str(required=True, validate=color_validator),
+    "arrowTextColor": fields.Str(required=True, validate=color_validator),
+    "arrowHighlightColor": fields.Str(required=True, validate=color_validator),
+    "arrowHighlightTextColor": fields.Str(required=True, validate=color_validator),
+    "barChartColor": fields.Str(required=True, validate=validate.Length(max=30)),
+    "barChartAccentColor": fields.Str(required=True, validate=validate.Length(max=30)),
     "language": fields.Str(required=True, validate=validate_language),
-    "matomoTrackerUrl": fields.Str(required=True, allow_none=True),
-    "matomoSiteId": fields.Str(required=True, allow_none=True),
-    "maptilerApiKey": fields.Str(required=True, allow_none=True),
+    "matomoTrackerUrl": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "matomoSiteId": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "maptilerApiKey": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "skippedHierarchicalLayers": fields.Integer(
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)
     ),

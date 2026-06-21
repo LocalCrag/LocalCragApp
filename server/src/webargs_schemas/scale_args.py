@@ -1,4 +1,4 @@
-from marshmallow import ValidationError
+from marshmallow import ValidationError, validate
 from webargs import fields
 
 from models.enums.line_type_enum import LineTypeEnum
@@ -51,7 +51,7 @@ grade_bracket_args = {
 }
 
 scale_args = {
-    "name": fields.String(required=False),
+    "name": fields.String(required=False, validate=validate.Length(max=32)),
     "type": fields.Enum(LineTypeEnum, required=True, allow_none=False),
     "grades": fields.List(
         fields.Nested(scale_grades_args),

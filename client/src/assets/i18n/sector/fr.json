@@ -20,6 +20,7 @@
   "sectorForm.blocweatherUrlLabel": "Blocweather URL",
   "sectorForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour ce secteur sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
   "sectorForm.invalidBlocweatherUrl": "Le URL doit suivre le format https://blocweather.com/<country>/<region>/<spot>",
+  "sectorForm.maxlength255": "Nombre maximum de caractères : 255",
   "sectorForm.mapMarkersLabel": "GPS points",
   "sectorForm.closedBecauseParentIsClosed": "Ce secteur est fermé car son rocher est actuellement fermé.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Créer un secteur non secret dans une falaise secrète définit automatiquement la falaise comme non secret, sinon vous ne pouvez pas naviguer vers le secteur. D'autres secteurs préexistants restent secrets.",

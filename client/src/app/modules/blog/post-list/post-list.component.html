@@ -22,7 +22,7 @@
               [(ngModel)]="sortKey"
               optionLabel="label"
               (onChange)="onSortChange($event)"
-              styleClass="md:mb-0"
+              class="md:mb-0"
               [disabled]="loading === loadingStates.LOADING"
             ></p-select>
             <div class="flex justify-content-end gap-3">
@@ -62,8 +62,7 @@
                           label="{{ t('editPostButtonLabel') }}"
                           icon="pi pi-file-edit"
                           routerLink="/news/{{ post.slug }}/edit"
-                          styleClass="pr-0"
-                          class="responsive-button"
+                          class="pr-0 responsive-button"
                           *isModerator="true"
                           [text]="true"
                         ></p-button>
