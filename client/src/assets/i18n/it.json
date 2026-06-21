@@ -1007,5 +1007,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Data",
-  "YEAR": "Anno"
+  "YEAR": "Anno",
+  "releaseNotes.notes.frenchLanguage_title": "Nuova lingua: francese",
+  "releaseNotes.notes.frenchLanguage": "Il francese può ora essere selezionato come lingua. Se hai effettuato l'accesso, puoi modificare la lingua nelle impostazioni dell'account."
 }

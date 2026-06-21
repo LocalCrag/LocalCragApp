@@ -6,6 +6,8 @@
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 export const RELEASE_NOTE_TRANSLOCO_KEYS_FOR_EXTRACT = [
+  marker('releaseNotes.notes.frenchLanguage'),
+  marker('releaseNotes.notes.frenchLanguage_title'),
   marker('releaseNotes.notes.lineFilters'),
   marker('releaseNotes.notes.lineFilters_title'),
   marker('releaseNotes.notes.newOrderOptions'),

@@ -1007,5 +1007,7 @@
   "BOTTOM": "Voettekst",
   "TOP": "Koptekst",
   "DATE": "Datum",
-  "YEAR": "Jaar"
+  "YEAR": "Jaar",
+  "releaseNotes.notes.frenchLanguage_title": "Nieuwe taal: Frans",
+  "releaseNotes.notes.frenchLanguage": "Frans kan nu als taal worden geselecteerd. Als je bent ingelogd, kun je je taal aanpassen in de accountinstellingen."
 }

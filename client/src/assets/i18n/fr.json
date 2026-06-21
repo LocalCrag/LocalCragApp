@@ -1007,5 +1007,7 @@
   "BOTTOM": "Pied de page",
   "TOP": "En-tête",
   "DATE": "Date",
-  "YEAR": "Année"
+  "YEAR": "Année",
+  "releaseNotes.notes.frenchLanguage_title": "Nouvelle langue : le français",
+  "releaseNotes.notes.frenchLanguage": "Le français peut désormais être sélectionné comme langue. Si vous êtes connecté·e, vous pouvez modifier votre langue dans les paramètres du compte."
 }
