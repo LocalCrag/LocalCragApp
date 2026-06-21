@@ -155,6 +155,7 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm = this.fb.group({
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
       copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
+      mailGreeting: [null, [Validators.required, Validators.maxLength(120)]],
       gymMode: [null],
       skippedHierarchicalLayers: [null],
       displayUserGrades: [null],
@@ -185,6 +186,7 @@ export class InstanceSettingsFormComponent implements OnInit {
     this.instanceSettingsForm.patchValue({
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
+      mailGreeting: this.instanceSettings.mailGreeting,
       gymMode: this.instanceSettings.gymMode,
       skippedHierarchicalLayers:
         this.instanceSettings.skippedHierarchicalLayers,
@@ -221,6 +223,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('instanceName').value;
       instanceSettings.copyrightOwner =
         this.instanceSettingsForm.get('copyrightOwner').value;
+      instanceSettings.mailGreeting =
+        this.instanceSettingsForm.get('mailGreeting').value;
       instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
       instanceSettings.skippedHierarchicalLayers =
         this.instanceSettingsForm.get('skippedHierarchicalLayers').value;

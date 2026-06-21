@@ -317,6 +317,8 @@
   "instanceSettings.instanceSettingsForm.maxlength120": "Numero massimo di caratteri: 120",
   "instanceSettings.instanceSettingsForm.copyrightOwnerLabel": "Titolare del copyright",
   "instanceSettings.instanceSettingsForm.copyrightOwnerPlaceholder": "ad es. Die Gleesards - Boulderverein Eifel e.V.",
+  "instanceSettings.instanceSettingsForm.mailGreetingLabel": "Formula di chiusura e-mail",
+  "instanceSettings.instanceSettingsForm.mailGreetingPlaceholder": "es. Cordiali saluti",
   "instanceSettings.instanceSettingsForm.gymModeLabel": "Modalità",
   "instanceSettings.instanceSettingsForm.gymModeLabelFalse": "Outdoor",
   "instanceSettings.instanceSettingsForm.gymModeLabelTrue": "Indoor",

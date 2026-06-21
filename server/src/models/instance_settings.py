@@ -19,6 +19,7 @@ class InstanceSettings(db.Model):
     time_updated = db.Column(db.DateTime(), onupdate=lambda: datetime.datetime.now(pytz.utc))
     instance_name = db.Column(db.String(120), nullable=False)
     copyright_owner = db.Column(db.String(120), nullable=False)
+    mail_greeting = db.Column(db.String(120), nullable=False, server_default="Viele Grüße")
     logo_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     logo_image = db.relationship("File", lazy="joined", foreign_keys=[logo_image_id])
     favicon_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)

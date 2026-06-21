@@ -7,6 +7,7 @@ export class InstanceSettings {
   timeUpdated: Date;
   instanceName: string;
   copyrightOwner: string;
+  mailGreeting: string;
   logoImage: File;
   faviconImage: File;
   mainBgImage: File;
@@ -37,6 +38,7 @@ export class InstanceSettings {
     instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z');
     instanceSettings.instanceName = payload.instanceName;
     instanceSettings.copyrightOwner = payload.copyrightOwner;
+    instanceSettings.mailGreeting = payload.mailGreeting;
     instanceSettings.logoImage = payload.logoImage
       ? File.deserialize(payload.logoImage)
       : null;
@@ -77,6 +79,7 @@ export class InstanceSettings {
     return {
       instanceName: instanceSettings.instanceName,
       copyrightOwner: instanceSettings.copyrightOwner,
+      mailGreeting: instanceSettings.mailGreeting,
       logoImage: instanceSettings.logoImage
         ? instanceSettings.logoImage.id
         : null,
