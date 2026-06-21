@@ -37,7 +37,7 @@
           >
             <div class="notifications-item-icon">
               @if (notificationUi.isReaction(item)) {
-                <span>{{ item.reactionEmoji || "😊" }}</span>
+                <span>{{ item.properties.reaction?.emoji || "😊" }}</span>
               } @else if (item.type === "comment_reply") {
                 <i class="pi pi-comment"></i>
               } @else if (item.type === "release_notes") {
