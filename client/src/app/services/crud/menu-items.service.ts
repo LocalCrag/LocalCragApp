@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { MenuItem } from '../../models/menu-item';
 import { ItemOrder } from '../../interfaces/item-order.interface';
 import { Crag } from '../../models/crag';
+import { httpGetOptions } from '../../utility/http/query-params';
 
 /**
  * CRUD service for menu items.
@@ -105,16 +106,10 @@ export class MenuItemsService {
   }
 
   public getCragMenuStructure(excludeClosed = false): Observable<Crag[]> {
-    const filters = new URLSearchParams();
-    if (excludeClosed) {
-      filters.set('exclude_closed', '1');
-    }
-    const query = filters.toString();
     return this.http
       .get(
-        query
-          ? `${this.api.menuItems.getCragMenuStructure()}?${query}`
-          : this.api.menuItems.getCragMenuStructure(),
+        this.api.menuItems.getCragMenuStructure(),
+        httpGetOptions(excludeClosed ? { exclude_closed: '1' } : undefined),
       )
       .pipe(map((cragListJson: any) => cragListJson.map(Crag.deserialize)));
   }

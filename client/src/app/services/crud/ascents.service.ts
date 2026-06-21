@@ -5,6 +5,10 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Ascent } from '../../models/ascent';
 import { Paginated } from '../../models/paginated';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +17,9 @@ export class AscentsService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
-  public getAscents(filters: string): Observable<Paginated<Ascent>> {
+  public getAscents(params: ApiQueryParams): Observable<Paginated<Ascent>> {
     return this.http
-      .get(this.api.ascents.getList(filters))
+      .get(this.api.ascents.getList(), httpGetOptions(params))
       .pipe(
         map((payload) => Paginated.deserialize(payload, Ascent.deserialize)),
       );

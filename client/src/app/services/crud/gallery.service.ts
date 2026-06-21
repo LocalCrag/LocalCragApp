@@ -5,6 +5,10 @@ import { GalleryImage } from '../../models/gallery-image';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Paginated } from '../../models/paginated';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -48,10 +52,10 @@ export class GalleryService {
   }
 
   public getGalleryImages(
-    filterString: string,
+    params: ApiQueryParams,
   ): Observable<Paginated<GalleryImage>> {
     return this.http
-      .get(this.api.gallery.getList(filterString))
+      .get(this.api.gallery.getList(), httpGetOptions(params))
       .pipe(
         map((payload) =>
           Paginated.deserialize(payload, GalleryImage.deserialize),

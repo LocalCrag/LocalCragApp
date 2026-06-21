@@ -22,6 +22,7 @@ import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CommentComponent } from '../comment/comment.component';
 import { CommentsContextService } from '../comments-context.service';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-comments',
@@ -128,17 +129,16 @@ export class CommentsComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
-        'per-page': '20',
-      });
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+        'per-page': 20,
+      };
       if (this.objectType) {
-        filters.set('object-type', this.objectType);
-        filters.set('object-id', objectId);
+        params['object-type'] = this.objectType;
+        params['object-id'] = objectId;
       }
-      const filterString = `?${filters.toString()}`;
       this.commentsService
-        .getComments(filterString)
+        .getComments(params)
         .pipe(
           map((comments) => {
             this.comments.push(...comments.items);

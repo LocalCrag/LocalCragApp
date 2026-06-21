@@ -36,6 +36,7 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { LanguageService } from '../../../services/core/language.service';
 import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-comment',
@@ -135,14 +136,13 @@ export class CommentComponent implements OnInit {
       if (this.currentPage === 1) {
         this.replies = [];
       }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
+      const params: ApiQueryParams = {
+        page: this.currentPage,
         'root-id': this.comment.id,
-        'per-page': this.pageSize.toString(),
-      });
-      const filterString = `?${filters.toString()}`;
+        'per-page': this.pageSize,
+      };
       this.commentsService
-        .getComments(filterString)
+        .getComments(params)
         .pipe(
           map((comments) => {
             this.replies.push(...comments.items);

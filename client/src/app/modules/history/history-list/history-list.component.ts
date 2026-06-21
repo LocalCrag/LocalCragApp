@@ -31,6 +31,7 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { ObjectType } from '../../../models/object';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-history-list',
@@ -89,12 +90,11 @@ export class HistoryListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
-        per_page: '10',
-      });
-      const filterString = `?${filters.toString()}`;
-      this.historyService.getHistory(filterString).subscribe((historyItems) => {
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+        per_page: 10,
+      };
+      this.historyService.getHistory(params).subscribe((historyItems) => {
         this.historyItems = [...this.historyItems, ...historyItems.items];
         this.hasNextPage = historyItems.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;

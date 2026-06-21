@@ -32,6 +32,7 @@ import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { MapStyles } from '../../../enums/map-styles';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-map',
@@ -79,18 +80,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    let filters = '';
+    let params: ApiQueryParams = {};
     if (this.target instanceof Crag) {
-      filters = `?crag-id=${this.target.id}`;
+      params = { 'crag-id': this.target.id };
     }
     if (this.target instanceof Sector) {
-      filters = `?sector-id=${this.target.id}`;
+      params = { 'sector-id': this.target.id };
     }
     if (this.target instanceof Area) {
-      filters = `?area-id=${this.target.id}`;
+      params = { 'area-id': this.target.id };
     }
     forkJoin([
-      this.mapsService.getMarkersGeoJSON(filters),
+      this.mapsService.getMarkersGeoJSON(params),
       this.store.select(selectInstanceSettingsState).pipe(take(1)),
     ]).subscribe(([markersSource, instanceSettingsState]) => {
       let mapStyleUrl = '';

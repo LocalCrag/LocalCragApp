@@ -27,6 +27,7 @@ import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Checkbox } from 'primeng/checkbox';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-completion',
@@ -113,22 +114,22 @@ export class CompletionComponent implements OnInit {
 
   public loadCompletion() {
     this.loadedGradeFilterRange = [...this.gradeFilterRange];
-    const filters = new URLSearchParams({
+    const params: ApiQueryParams = {
       user_id: this.user.id,
-    });
+    };
     if (this.gradeFilterRange[1] !== null) {
-      filters.set('min_grade', this.gradeFilterRange[0]);
-      filters.set('max_grade', this.gradeFilterRange[1]);
+      params.min_grade = this.gradeFilterRange[0];
+      params.max_grade = this.gradeFilterRange[1];
     }
     if (this.scaleKey?.value) {
-      filters.set('line_type', this.scaleKey.value.lineType);
-      filters.set('grade_scale', this.scaleKey.value.gradeScale);
+      params.line_type = this.scaleKey.value.lineType;
+      params.grade_scale = this.scaleKey.value.gradeScale;
     }
     if (this.includeClosed) {
-      filters.set('include_closed', '1');
+      params.include_closed = '1';
     }
     return this.statisticsService
-      .getCompletion(`?${filters.toString()}`)
+      .getCompletion(params)
       .subscribe((completion) => {
         this.completion = completion;
       });
