@@ -17,7 +17,6 @@ import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
-import { AsyncPipe } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -32,7 +31,6 @@ import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -61,7 +59,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     TopoImageComponent,
-    AsyncPipe,
     DatePipe,
   ],
 })
@@ -71,7 +68,6 @@ export class LineInfoComponent implements OnInit {
   public ticks: Set<string>;
   public todos: Set<string>;
   public displayUserRating?: boolean = undefined;
-  public displayUserGrades?: boolean = undefined;
 
   private lineSlug: string;
   private destroyRef = inject(DestroyRef);
@@ -84,8 +80,6 @@ export class LineInfoComponent implements OnInit {
   private linePathsService = inject(LinePathsService);
   private linesService = inject(LinesService);
   private store = inject(Store);
-
-  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.route.paramMap
@@ -107,7 +101,6 @@ export class LineInfoComponent implements OnInit {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
-        this.displayUserGrades = instanceSettings.displayUserGrades;
       });
   }
 

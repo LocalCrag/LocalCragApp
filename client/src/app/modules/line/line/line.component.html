@@ -1,9 +1,22 @@
 <div class="content">
   <p-card>
     <ng-template #header>
-      <div class="card-header p-card-title">
+      <div class="card-header p-card-title" *transloco="let t; read: 'line.line'">
         {{ line?.name }}
         <span class="grade-font">{{ line | lineGrade }}</span>
+        @if (line?.ascentCount > 0) {
+          @if (displayUserGrades) {
+            <span class="secondary-grade">
+              ({{ t("proposedAs") }}
+              <span class="grade-font">{{ line | lineGrade: "author" }}</span>)
+            </span>
+          } @else {
+            <span class="secondary-grade">
+              ({{ t("userGrade") }}
+              <span class="grade-font">{{ line | lineGrade: "user" }}</span>)
+            </span>
+          }
+        }
       </div>
     </ng-template>
 
