@@ -214,7 +214,7 @@ def test_update_user(client, admin_token):
         "email": "admin@localcrag.invalid.org",
         "avatar": str(any_file.id),
     }
-    rv = client.put("/api/users/account", token=admin_token, json=data)
+    rv = client.put("/api/account", token=admin_token, json=data)
     assert rv.status_code == 200, rv.text
     res = rv.json
     assert res["accountLanguage"] == "en"
@@ -234,7 +234,7 @@ def test_update_user_different_email(client, mocker, member_token):
         "email": "horstpopelfritze@fengelmann.de",
         "avatar": None,
     }
-    rv = client.put("/api/users/account", token=member_token, json=data)
+    rv = client.put("/api/account", token=member_token, json=data)
     assert rv.status_code == 200
     res = rv.json
     assert res["accountLanguage"] == "en"
@@ -259,7 +259,7 @@ def test_change_email(client):
     data = {
         "newEmailHash": reset_hash,
     }
-    rv = client.put("/api/users/account/change-email", json=data)
+    rv = client.put("/api/account/change-email", json=data)
     assert rv.status_code == 200
     res = rv.json
     assert res["message"] == ResponseMessage.EMAIL_CHANGED.value
@@ -286,7 +286,7 @@ def test_change_email_invalid_token(client):
     data = {
         "newEmailHash": "lol",
     }
-    rv = client.put("/api/users/account/change-email", json=data)
+    rv = client.put("/api/account/change-email", json=data)
     assert rv.status_code == 401
 
 
@@ -302,7 +302,7 @@ def test_change_email_expired_token(client):
     data = {
         "newEmailHash": reset_hash,
     }
-    rv = client.put("/api/users/account/change-email", json=data)
+    rv = client.put("/api/account/change-email", json=data)
     assert rv.status_code == 401
 
 
@@ -313,7 +313,7 @@ def test_update_user_taken_email(client, member_token):
         "email": "user@localcrag.invalid.org",
         "avatar": None,
     }
-    rv = client.put("/api/users/account", token=member_token, json=data)
+    rv = client.put("/api/account", token=member_token, json=data)
     assert rv.status_code == 409
     res = rv.json
     assert res["message"] == ResponseMessage.USER_ALREADY_EXISTS.value
@@ -326,7 +326,7 @@ def test_update_user_invalid_email(client, member_token):
         "email": "localcragfengelmann.de",
         "avatar": None,
     }
-    rv = client.put("/api/users/account", token=member_token, json=data)
+    rv = client.put("/api/account", token=member_token, json=data)
     assert rv.status_code == 400
     res = rv.json
     assert res["message"] == ResponseMessage.EMAIL_INVALID.value
