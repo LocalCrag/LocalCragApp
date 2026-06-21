@@ -5,6 +5,10 @@ import { TopoImage } from '../../models/topo-image';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemOrder } from '../../interfaces/item-order.interface';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 /**
  * CRUD service for topo images.
@@ -50,15 +54,15 @@ export class TopoImagesService {
   /**
    * Returns a list of TopoImages for an area.
    * @param areaSlug Slug of the area to get the topo images for.
-   * @param filters Query parameters as string
+   * @param params Optional query parameters.
    * @return Observable of a list of TopoImages.
    */
   public getTopoImages(
     areaSlug: string,
-    filters?: string,
+    params?: ApiQueryParams,
   ): Observable<TopoImage[]> {
     return this.http
-      .get(this.api.topoImages.getList(areaSlug, filters))
+      .get(this.api.topoImages.getList(areaSlug), httpGetOptions(params))
       .pipe(
         map((topoImageListJson: any) =>
           topoImageListJson.map(TopoImage.deserialize),

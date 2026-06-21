@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
 import { Paginated } from '../../models/paginated';
 import { ModeratorTask } from '../../models/moderator-task';
+import { httpGetOptions } from '../../utility/http/query-params';
 import {
   buildModeratorTaskListQuery,
   ModeratorTaskListQuery,
@@ -18,9 +19,9 @@ export class ModeratorTasksService {
   public getTasks(
     query: ModeratorTaskListQuery,
   ): Observable<Paginated<ModeratorTask>> {
-    const queryString = buildModeratorTaskListQuery(query);
+    const queryParams = buildModeratorTaskListQuery(query);
     return this.http
-      .get(this.api.moderatorTasks.getList(queryString))
+      .get(this.api.moderatorTasks.getList(), httpGetOptions(queryParams))
       .pipe(
         map((payload) =>
           Paginated.deserialize(payload, ModeratorTask.deserialize),

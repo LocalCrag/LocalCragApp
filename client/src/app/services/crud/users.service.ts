@@ -11,6 +11,7 @@ import {
   UserStatistics,
   UserStatisticsModel,
 } from '../../models/user-statistics';
+import { httpGetOptions } from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -50,13 +51,11 @@ export class UsersService {
   }
 
   public getUsers(options?: { isModerator?: boolean }): Observable<User[]> {
-    const params = new URLSearchParams();
-    if (options?.isModerator) {
-      params.set('isModerator', '1');
-    }
-    const query = params.toString();
     return this.http
-      .get(this.api.users.getList(query ? `?${query}` : ''))
+      .get(
+        this.api.users.getList(),
+        httpGetOptions(options?.isModerator ? { isModerator: '1' } : undefined),
+      )
       .pipe(map((userListJson: any) => userListJson.map(User.deserialize)));
   }
 

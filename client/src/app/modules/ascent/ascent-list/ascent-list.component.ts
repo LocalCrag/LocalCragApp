@@ -15,6 +15,7 @@ import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 import { Ascent } from '../../../models/ascent';
 import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
@@ -283,36 +284,36 @@ export class AscentListComponent implements OnInit, OnChanges {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams();
-      filters.set('page', this.currentPage.toString());
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+        order_by: this.orderKey.value,
+        order_direction: this.orderDirectionKey.value,
+        per_page: 10,
+      };
       if (this.gradeFilterRange[1] !== null) {
-        filters.set('min_grade', this.gradeFilterRange[0].toString());
-        filters.set('max_grade', this.gradeFilterRange[1].toString());
+        params.min_grade = this.gradeFilterRange[0];
+        params.max_grade = this.gradeFilterRange[1];
       }
       if (this.scaleKey?.value) {
-        filters.set('line_type', this.scaleKey.value.lineType);
-        filters.set('grade_scale', this.scaleKey.value.gradeScale);
+        params.line_type = this.scaleKey.value.lineType;
+        params.grade_scale = this.scaleKey.value.gradeScale;
       }
-      filters.set('order_by', this.orderKey.value);
-      filters.set('order_direction', this.orderDirectionKey.value);
-      filters.set('per_page', '10');
       if (this.user) {
-        filters.set('user_id', this.user.id);
+        params.user_id = this.user.id;
       }
       if (this.cragId) {
-        filters.set('crag_id', this.cragId);
+        params.crag_id = this.cragId;
       }
       if (this.sectorId) {
-        filters.set('sector_id', this.sectorId);
+        params.sector_id = this.sectorId;
       }
       if (this.areaId) {
-        filters.set('area_id', this.areaId);
+        params.area_id = this.areaId;
       }
       if (this.lineId) {
-        filters.set('line_id', this.lineId);
+        params.line_id = this.lineId;
       }
-      const filterString = `?${filters.toString()}`;
-      this.ascentsService.getAscents(filterString).subscribe((ascents) => {
+      this.ascentsService.getAscents(params).subscribe((ascents) => {
         this.ascents.push(...ascents.items);
         this.hasNextPage = ascents.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;

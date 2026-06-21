@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { NotificationItem } from '../../models/notification-item';
 import { Paginated } from '../../models/paginated';
+import { httpGetOptions } from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -21,13 +22,13 @@ export class NotificationsService {
     perPage: number,
     includeDismissed: boolean,
   ): Observable<Paginated<NotificationItem>> {
-    const query = new URLSearchParams({
-      page: String(page),
-      per_page: String(perPage),
-      include_dismissed: includeDismissed ? '1' : '0',
-    });
     return this.http.get<Paginated<NotificationItem>>(
-      this.api.account.getNotifications(`?${query.toString()}`),
+      this.api.account.getNotifications(),
+      httpGetOptions({
+        page,
+        per_page: perPage,
+        include_dismissed: includeDismissed ? '1' : '0',
+      }),
     );
   }
 

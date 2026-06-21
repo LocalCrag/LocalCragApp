@@ -30,6 +30,7 @@ import { Message } from 'primeng/message';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ObjectType } from '../../../models/object';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-gallery',
@@ -122,16 +123,15 @@ export class GalleryComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
-      });
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+      };
       if (this.objectType) {
-        filters.set('tag-object-type', this.objectType);
-        filters.set('tag-object-slug', this.objectSlug);
+        params['tag-object-type'] = this.objectType;
+        params['tag-object-slug'] = this.objectSlug;
       }
-      const filterString = `?${filters.toString()}`;
       this.galleryService
-        .getGalleryImages(filterString)
+        .getGalleryImages(params)
         .pipe(
           map((images) => {
             this.images.push(...images.items);

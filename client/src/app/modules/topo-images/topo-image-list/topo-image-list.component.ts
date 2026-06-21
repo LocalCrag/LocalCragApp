@@ -44,6 +44,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { Rating } from 'primeng/rating';
@@ -176,17 +177,16 @@ export class TopoImageListComponent implements OnInit {
    */
   refreshData() {
     this.loading = LoadingState.LOADING;
-    const filters = new URLSearchParams();
-    if (this.showArchive) filters.set('archived', '1');
+    const params: ApiQueryParams = {};
+    if (this.showArchive) {
+      params.archived = '1';
+    }
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           return forkJoin([
-            this.topoImagesService.getTopoImages(
-              this.areaSlug,
-              '?' + filters.toString(),
-            ),
+            this.topoImagesService.getTopoImages(this.areaSlug, params),
             this.ticksService.getTicks(null, null, area.id),
           ]);
         }),

@@ -5,6 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { mergeMap, Observable, of } from 'rxjs';
 import { selectCurrentUser } from '../../ngrx/selectors/auth.selectors';
 import { map, take } from 'rxjs/operators';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -28,29 +32,30 @@ export class IsTodoService {
           if (!user) {
             return of(new Set<string>());
           }
-          const query_string_parts = [`user_id=${user.id}`];
+          const params: ApiQueryParams = { user_id: user.id };
           if (crag_id) {
-            query_string_parts.push(`crag_id=${crag_id}`);
+            params.crag_id = crag_id;
           }
           if (sector_id) {
-            query_string_parts.push(`sector_id=${sector_id}`);
+            params.sector_id = sector_id;
           }
           if (area_id) {
-            query_string_parts.push(`area_id=${area_id}`);
+            params.area_id = area_id;
           }
           if (line_ids) {
-            query_string_parts.push(`line_ids=${line_ids.join(',')}`);
+            params.line_ids = line_ids.join(',');
           }
-          const query_string = `?${query_string_parts.join('&')}`;
-          return this.http.get(this.api.isTodo.getList() + query_string).pipe(
-            map((ticks) => {
-              const resultSet = new Set<string>();
-              (ticks as string[]).map((tick) => {
-                resultSet.add(tick);
-              });
-              return resultSet;
-            }),
-          );
+          return this.http
+            .get(this.api.isTodo.getList(), httpGetOptions(params))
+            .pipe(
+              map((ticks) => {
+                const resultSet = new Set<string>();
+                (ticks as string[]).map((tick) => {
+                  resultSet.add(tick);
+                });
+                return resultSet;
+              }),
+            );
         }),
       );
   }

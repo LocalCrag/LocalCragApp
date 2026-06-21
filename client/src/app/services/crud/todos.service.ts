@@ -7,6 +7,10 @@ import { map } from 'rxjs/operators';
 import { Todo } from '../../models/todo';
 import { Line } from '../../models/line';
 import { TodoPriority } from '../../enums/todo-priority';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +19,9 @@ export class TodosService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
-  public getTodos(filters: string): Observable<Paginated<Todo>> {
+  public getTodos(params: ApiQueryParams): Observable<Paginated<Todo>> {
     return this.http
-      .get(this.api.todos.getList(filters))
+      .get(this.api.todos.getList(), httpGetOptions(params))
       .pipe(map((payload) => Paginated.deserialize(payload, Todo.deserialize)));
   }
 

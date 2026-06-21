@@ -72,6 +72,7 @@ import {
   sanitizeLineListAdvancedFilters,
 } from '../line-list-filters/line-list-filter.logic';
 import { appendLineListQueryParams } from '../line-list-filters/line-list-api-query';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 import {
   loadLineListFilters,
   saveLineListFilters,
@@ -338,32 +339,32 @@ export class LineListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams();
-      filters.set('page', this.currentPage.toString());
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+        order_by: this.orderKey.value,
+        order_direction: this.orderDirectionKey.value,
+        per_page: 10,
+      };
       if (this.showArchive) {
-        filters.set('archived', '1');
+        params.archived = '1';
       }
       if (this.cragSlug) {
-        filters.set('crag_slug', this.cragSlug);
+        params.crag_slug = this.cragSlug;
       }
       if (this.sectorSlug) {
-        filters.set('sector_slug', this.sectorSlug);
+        params.sector_slug = this.sectorSlug;
       }
       if (this.areaSlug) {
-        filters.set('area_slug', this.areaSlug);
+        params.area_slug = this.areaSlug;
       }
       appendLineListQueryParams(
-        filters,
+        params,
         this.advancedFilters,
         this.scaleKey,
         this.gradeFilterRange,
       );
-      filters.set('order_by', this.orderKey.value);
-      filters.set('order_direction', this.orderDirectionKey.value);
-      filters.set('per_page', '10');
-      const filterString = `?${filters.toString()}`;
       this.linesService
-        .getLines(filterString)
+        .getLines(params)
         .pipe(
           mergeMap((lines) => {
             const line_ids = lines.items.map((line) => line.id);

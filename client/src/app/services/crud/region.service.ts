@@ -5,6 +5,7 @@ import { Region } from '../../models/region';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { deserializeGradeList, GradeDistribution } from '../../models/scale';
+import { httpGetOptions } from '../../utility/http/query-params';
 
 /**
  * CRUD service for regions.
@@ -45,16 +46,10 @@ export class RegionService {
    * @return Observable of a list of Grades.
    */
   public getRegionGrades(excludeClosed = false): Observable<GradeDistribution> {
-    const filters = new URLSearchParams();
-    if (excludeClosed) {
-      filters.set('exclude_closed', '1');
-    }
-    const query = filters.toString();
     return this.http
       .get(
-        query
-          ? `${this.api.region.getGrades()}?${query}`
-          : this.api.region.getGrades(),
+        this.api.region.getGrades(),
+        httpGetOptions(excludeClosed ? { exclude_closed: '1' } : undefined),
       )
       .pipe(map(deserializeGradeList));
   }

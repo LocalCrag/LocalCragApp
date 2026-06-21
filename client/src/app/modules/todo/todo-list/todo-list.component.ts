@@ -17,6 +17,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -368,33 +369,33 @@ export class TodoListComponent implements OnInit {
       } else {
         this.loadingAdditionalPage = LoadingState.LOADING;
       }
-      const filters = new URLSearchParams();
-      filters.set('page', this.currentPage.toString());
+      const params: ApiQueryParams = {
+        page: this.currentPage,
+        order_by: this.orderKey.value,
+        order_direction: this.orderDirectionKey.value,
+        per_page: 10,
+      };
       if (this.gradeFilterRange[1] !== null) {
-        filters.set('min_grade', this.gradeFilterRange[0].toString());
-        filters.set('max_grade', this.gradeFilterRange[1].toString());
+        params.min_grade = this.gradeFilterRange[0];
+        params.max_grade = this.gradeFilterRange[1];
       }
       if (this.scaleKey?.value) {
-        filters.set('line_type', this.scaleKey.value.lineType);
-        filters.set('grade_scale', this.scaleKey.value.gradeScale);
+        params.line_type = this.scaleKey.value.lineType;
+        params.grade_scale = this.scaleKey.value.gradeScale;
       }
-      filters.set('order_by', this.orderKey.value);
-      filters.set('order_direction', this.orderDirectionKey.value);
-      filters.set('per_page', '10');
       if (this.cragFilterKey?.value) {
-        filters.set('crag_id', this.cragFilterKey.value);
+        params.crag_id = this.cragFilterKey.value;
       }
       if (this.sectorFilterKey?.value) {
-        filters.set('sector_id', this.sectorFilterKey.value);
+        params.sector_id = this.sectorFilterKey.value;
       }
       if (this.areaFilterKey?.value) {
-        filters.set('area_id', this.areaFilterKey.value);
+        params.area_id = this.areaFilterKey.value;
       }
       if (this.priorityFilterKey.value !== null) {
-        filters.set('priority', this.priorityFilterKey.value);
+        params.priority = this.priorityFilterKey.value;
       }
-      const filterString = `?${filters.toString()}`;
-      this.todosService.getTodos(filterString).subscribe((todos) => {
+      this.todosService.getTodos(params).subscribe((todos) => {
         this.todos.push(...todos.items);
         this.hasNextPage = todos.hasNext;
         this.loadingFirstPage = LoadingState.DEFAULT;
