@@ -3,15 +3,13 @@
     <p-card header="{{ t('todos') }}">
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
-          @if (
-            todos?.length === 0 &&
-            !(loading === loadingStates.LOADING && currentPage === 1)
-          ) {
+          @if (todos?.length === 0 &&
+          !(loading === loadingStates.LOADING && currentPage === 1)) {
             <p-message
               severity="info"
               icon="pi pi-info-circle"
               class="m-4 mb-1 block"
-              >{{ t("noTodosFoundMessage") }}
+            >{{ t("noTodosFoundMessage") }}
             </p-message>
           }
         </ng-template>
@@ -237,21 +235,21 @@
                       <div class="todo-table-line-info">
                         <div class="todo-table-line-name font-bold">
                           <a routerLink="{{ todo.routerLinkLine }}">{{
-                            todo.line.name
-                          }}</a>
+                              todo.line.name
+                            }}</a>
                         </div>
                         <div class="todo-table-line-location mt-1">
                           <a routerLink="{{ todo.routerLinkCrag }}">{{
-                            todo.crag.name
-                          }}</a
+                              todo.crag.name
+                            }}</a
                           >,
                           <a routerLink="{{ todo.routerLinkSector }}">{{
-                            todo.sector.name
-                          }}</a
+                              todo.sector.name
+                            }}</a
                           >,
                           <a routerLink="{{ todo.routerLinkArea }}">{{
-                            todo.area.name
-                          }}</a>
+                              todo.area.name
+                            }}</a>
                         </div>
                       </div>
                       <div class="todo-table-grade">
@@ -289,21 +287,21 @@
                         <div class="todo-table-line-info">
                           <div class="todo-table-line-name font-bold">
                             <a routerLink="{{ todo.routerLinkLine }}">{{
-                              todo.line.name
-                            }}</a>
+                                todo.line.name
+                              }}</a>
                           </div>
                           <div class="todo-table-line-location mt-1">
                             <a routerLink="{{ todo.routerLinkCrag }}">{{
-                              todo.crag.name
-                            }}</a
+                                todo.crag.name
+                              }}</a
                             >,
                             <a routerLink="{{ todo.routerLinkSector }}">{{
-                              todo.sector.name
-                            }}</a
+                                todo.sector.name
+                              }}</a
                             >,
                             <a routerLink="{{ todo.routerLinkArea }}">{{
-                              todo.area.name
-                            }}</a>
+                                todo.area.name
+                              }}</a>
                           </div>
                         </div>
                         <div class="todo-table-grade">

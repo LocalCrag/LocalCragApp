@@ -1,15 +1,13 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
   <p-dataView #dv [value]="lines">
     <ng-template #emptymessage>
-      @if (
-        lines?.length === 0 &&
-        !(loading === loadingStates.LOADING && currentPage === 1)
-      ) {
+      @if (lines?.length === 0 &&
+      !(loading === loadingStates.LOADING && currentPage === 1)) {
         <p-message
           severity="info"
           icon="pi pi-info-circle"
           class="m-4 mb-1 block"
-          >{{ t("noLinesFoundEmptyMessage") }}
+        >{{ t("noLinesFoundEmptyMessage") }}
         </p-message>
       }
     </ng-template>
@@ -154,8 +152,8 @@
                 <span class="p-button-icon pi pi-filter"></span>
                 <span class="line-list-filter-label-group">
                   <span class="p-button-label">{{
-                    t("advancedFiltersButtonLabel")
-                  }}</span>
+                      t("advancedFiltersButtonLabel")
+                    }}</span>
                   @if (filtersMayHideLines()) {
                     <span
                       class="line-list-filter-active-dot"
