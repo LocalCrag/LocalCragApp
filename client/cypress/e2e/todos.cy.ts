@@ -3,7 +3,7 @@ describe('Todo lifespan workflow', () => {
     cy.viewport(1920, 1080);
     cy.login();
 
-    cy.visit('/topo/brione/schattental/dritter-block-von-links/lines');
+    cy.visit('/topo/brione/shade-valley/third-block-from-the-left/lines');
     cy.get('[data-cy="todo-button"]').eq(0).click();
 
     cy.visit('/todos');

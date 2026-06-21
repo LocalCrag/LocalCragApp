@@ -265,9 +265,9 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         # Test to access moderator resource
         crag_data = {
             "name": "Glees",
-            "description": "Fodere et scandere.",
-            "shortDescription": "Fodere et scandere 2.",
-            "rules": "Parken nur Samstag und Sonntag.",
+            "description": "Explore and document.",
+            "shortDescription": "Explore and document 2.",
+            "rules": "Parking only on Saturday and Sunday.",
             "portraitImage": any_file_id,
             "lat": 12.13,
             "lng": 42.42,
@@ -287,9 +287,9 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
     # Test to access moderator resource
     crag_data = {
         "name": "Glees",
-        "description": "Fodere et scandere.",
-        "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
+        "description": "Explore and document.",
+        "shortDescription": "Explore and document 2.",
+        "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": any_file_id,
         "mapMarkers": [
             {

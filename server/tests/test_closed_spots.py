@@ -11,7 +11,7 @@ from models.topo_image import TopoImage
 
 def test_create_closed_line_in_open_area(client, moderator_token):
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret One",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 19,
@@ -53,25 +53,25 @@ def test_create_closed_line_in_open_area(client, moderator_token):
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",
-                "reason": "Missgünstige Verbandsgemeinde",
+                "reason": "Uncooperative municipal association",
             }
         ],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/third-block-from-the-left/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["closed"] is True
-    assert res["closedReasons"] == [{"reason": "Missgünstige Verbandsgemeinde"}]
+    assert res["closedReasons"] == [{"reason": "Uncooperative municipal association"}]
 
     # Test, that area, sector and crag are still open
 
-    rv = client.get("/api/areas/dritter-block-von-links")
+    rv = client.get("/api/areas/third-block-from-the-left")
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is False
 
-    rv = client.get("/api/sectors/schattental")
+    rv = client.get("/api/sectors/shade-valley")
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is False
@@ -86,9 +86,9 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     any_file = File.query.first()
     crag_data = {
         "name": "brione",
-        "description": "Fodere et scandere. 2",
-        "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "description": "Explore and document. 2",
+        "shortDescription": "Explore and document 3.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -103,7 +103,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",
-                "reason": "Aggressiver Jagdpächter",
+                "reason": "Aggressive hunting leaseholder",
             }
         ],
         "defaultBoulderScale": None,
@@ -119,12 +119,12 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
 
     # Test, that sectors, areas and lines are now also closed
 
-    rv = client.get("/api/sectors/schattental", token=moderator_token)
+    rv = client.get("/api/sectors/shade-valley", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is True
 
-    rv = client.get("/api/sectors/oben", token=moderator_token)
+    rv = client.get("/api/sectors/upper", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is True
@@ -134,9 +134,9 @@ def test_remove_closure_schedule_from_crag(client, moderator_token):
     any_file = File.query.first()
     crag_data = {
         "name": "brione",
-        "description": "Fodere et scandere. 2",
-        "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "description": "Explore and document. 2",
+        "shortDescription": "Explore and document 3.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -178,9 +178,9 @@ def test_secret_property_doesnt_change(client, moderator_token):
     # First make crag secret...
     crag_data = {
         "name": "Glees 2",
-        "description": "Fodere et scandere. 2",
-        "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "description": "Explore and document. 2",
+        "shortDescription": "Explore and document 3.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -209,7 +209,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
 
     # Add a closed line
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret One",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 19,
@@ -251,24 +251,24 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",
-                "reason": "Privatgrund",
+                "reason": "Private property",
             }
         ],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/third-block-from-the-left/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["closed"] is True
 
     # Test, that area, sector and crag are still closed
 
-    rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
+    rv = client.get("/api/areas/third-block-from-the-left", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is True
 
-    rv = client.get("/api/sectors/schattental", token=moderator_token)
+    rv = client.get("/api/sectors/shade-valley", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["closed"] is True
@@ -280,7 +280,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
 
 
 def test_move_line_into_closed_area_forces_line_closed(client, moderator_token):
-    line = Line.find_by_slug("treppe")
+    line = Line.find_by_slug("stairs")
     assert line.closed is False
     target_area = Area.query.filter(Area.id != line.area_id).first()
     assert target_area is not None
@@ -303,7 +303,7 @@ def test_move_line_into_closed_area_forces_line_closed(client, moderator_token):
 
 
 def test_move_area_into_closed_sector_forces_area_closed(client, moderator_token):
-    area = Area.find_by_slug("dritter-block-von-links")
+    area = Area.find_by_slug("third-block-from-the-left")
     assert area.closed is False
     target_sector = Sector.query.filter(Sector.id != area.sector_id).first()
     assert target_sector is not None
@@ -326,7 +326,7 @@ def test_move_area_into_closed_sector_forces_area_closed(client, moderator_token
 
 
 def test_move_sector_into_closed_crag_forces_sector_closed(client, moderator_token):
-    sector = Sector.find_by_slug("schattental")
+    sector = Sector.find_by_slug("shade-valley")
     assert sector.closed is False
     target_crag = Crag.query.filter(Crag.id != sector.crag_id).first()
     assert target_crag is not None
@@ -349,7 +349,7 @@ def test_move_sector_into_closed_crag_forces_sector_closed(client, moderator_tok
 
 
 def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, moderator_token):
-    source_area = Area.find_by_slug("dritter-block-von-links")
+    source_area = Area.find_by_slug("third-block-from-the-left")
     assert source_area.closed is False
     topo_image = TopoImage.query.filter_by(area_id=source_area.id).first()
     assert topo_image is not None
@@ -396,9 +396,9 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
     any_file = File.query.first()
     crag_data = {
         "name": "brione",
-        "description": "Fodere et scandere. 2",
-        "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "description": "Explore and document. 2",
+        "shortDescription": "Explore and document 3.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {

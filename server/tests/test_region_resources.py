@@ -7,21 +7,21 @@ def test_successful_get_region(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["id"] == "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
-    assert res["name"] == "Tessin"
-    assert res["description"] == "Tolle Region"
+    assert res["name"] == "Ticino"
+    assert res["description"] == "Great region"
     assert res["rules"] is None
     assert res["ascentCount"] == 1
 
 
 def test_successful_edit_region(client, admin_token):
-    crag_data = {"description": "Fodere et scandere. 2", "rules": "test rules", "name": "Nahetal"}
+    crag_data = {"description": "Explore and document. 2", "rules": "test rules", "name": "Nahe Valley"}
 
     rv = client.put("/api/region", token=admin_token, json=crag_data)
     assert rv.status_code == 200
     res = rv.json
     assert res["id"] == "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
-    assert res["name"] == "Nahetal"
-    assert res["description"] == "Fodere et scandere. 2"
+    assert res["name"] == "Nahe Valley"
+    assert res["description"] == "Explore and document. 2"
     assert res["rules"] == "test rules"
     assert res["ascentCount"] == 1
 

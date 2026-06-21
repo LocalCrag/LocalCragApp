@@ -8,9 +8,9 @@ def test_successful_create_crag(client, moderator_token):
 
     crag_data = {
         "name": "Glees",
-        "description": "Fodere et scandere.",
-        "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
+        "description": "Explore and document.",
+        "shortDescription": "Explore and document 2.",
+        "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": any_file_id,
         "mapMarkers": [
             {
@@ -34,9 +34,9 @@ def test_successful_create_crag(client, moderator_token):
     res = rv.json
     assert res["name"] == "Glees"
     assert res["slug"] == "glees"
-    assert res["description"] == "Fodere et scandere."
-    assert res["shortDescription"] == "Fodere et scandere 2."
-    assert res["rules"] == "Parken nur Samstag und Sonntag."
+    assert res["description"] == "Explore and document."
+    assert res["shortDescription"] == "Explore and document 2."
+    assert res["rules"] == "Parking only on Saturday and Sunday."
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["portraitImage"]["id"] == any_file_id
@@ -56,9 +56,9 @@ def test_successful_create_crag(client, moderator_token):
 def test_create_crag_invalid_blocweather_url(client, moderator_token):
     crag_data = {
         "name": "Glees",
-        "description": "Fodere et scandere.",
-        "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
+        "description": "Explore and document.",
+        "shortDescription": "Explore and document 2.",
+        "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
@@ -138,9 +138,9 @@ def test_successful_edit_crag(client, moderator_token):
 
     crag_data = {
         "name": "Glees 2",
-        "description": "Fodere et scandere. 2",
-        "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "description": "Explore and document. 2",
+        "shortDescription": "Explore and document 3.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": any_file_id,
         "mapMarkers": [
             {
@@ -164,9 +164,9 @@ def test_successful_edit_crag(client, moderator_token):
     res = rv.json
     assert res["name"] == "Glees 2"
     assert res["slug"] == "glees-2"
-    assert res["description"] == "Fodere et scandere. 2"
-    assert res["shortDescription"] == "Fodere et scandere 3."
-    assert res["rules"] == "Parken nur Samstag und Sonntag 2."
+    assert res["description"] == "Explore and document. 2"
+    assert res["shortDescription"] == "Explore and document 3."
+    assert res["rules"] == "Parking only on Saturday and Sunday 2."
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["orderIndex"] == 0

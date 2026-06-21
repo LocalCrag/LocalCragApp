@@ -1,14 +1,14 @@
 describe('Create area', () => {
   it('creates an area', () => {
     cy.login();
-    cy.visit('/topo/brione/schattental/create-area');
-    cy.get('[data-cy="area-form-name"]').type('Oben');
+    cy.visit('/topo/brione/shade-valley/create-area');
+    cy.get('[data-cy="area-form-name"]').type('Upper');
     cy.get('[data-cy="area-form-shortDescription"] .ql-editor')
       .focus()
-      .type('Oben ist toll.');
+      .type('Upper is great.');
     cy.get('[data-cy="area-form-description"] .ql-editor')
       .focus()
-      .type('Oben ist sehr toll.');
+      .type('Upper is very great.');
     cy.get('[data-cy="area-form-portraitImage"] input')
       .focus()
       .selectFile('cypress/fixtures/images/peter.jpeg', { force: true });
@@ -19,7 +19,7 @@ describe('Create area', () => {
     cy.get('[data-cy="lng"]').focus().type('180');
     cy.get('[data-cy="save-marker"]').click();
     cy.get('[data-cy="submit"]').click();
-    cy.visit('/topo/brione/schattental/areas');
-    cy.get('[data-cy="area-list-item"]').last().contains('Oben');
+    cy.visit('/topo/brione/shade-valley/areas');
+    cy.get('[data-cy="area-list-item"]').last().contains('Upper');
   });
 });

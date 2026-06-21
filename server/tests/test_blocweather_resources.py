@@ -5,7 +5,7 @@ from models.sector import Sector
 
 
 def test_nearest_blocweather_url_for_area_prefers_area(client):
-    area: Area = Area.find_by_slug("dritter-block-von-links")
+    area: Area = Area.find_by_slug("third-block-from-the-left")
     sector: Sector = area.sector
     crag: Crag = sector.crag
 
@@ -21,7 +21,7 @@ def test_nearest_blocweather_url_for_area_prefers_area(client):
 
 
 def test_nearest_blocweather_url_for_area_falls_back_to_sector(client):
-    area: Area = Area.find_by_slug("dritter-block-von-links")
+    area: Area = Area.find_by_slug("third-block-from-the-left")
     sector: Sector = area.sector
     crag: Crag = sector.crag
 
@@ -37,7 +37,7 @@ def test_nearest_blocweather_url_for_area_falls_back_to_sector(client):
 
 
 def test_nearest_blocweather_url_for_area_falls_back_to_crag(client):
-    area: Area = Area.find_by_slug("dritter-block-von-links")
+    area: Area = Area.find_by_slug("third-block-from-the-left")
     sector: Sector = area.sector
     crag: Crag = sector.crag
 
@@ -53,7 +53,7 @@ def test_nearest_blocweather_url_for_area_falls_back_to_crag(client):
 
 
 def test_nearest_blocweather_url_for_sector_prefers_sector(client):
-    sector: Sector = Sector.find_by_slug("schattental")
+    sector: Sector = Sector.find_by_slug("shade-valley")
     crag: Crag = sector.crag
 
     sector.blocweather_url = "https://blocweather.com/switzerland/ticino/brione"
@@ -67,7 +67,7 @@ def test_nearest_blocweather_url_for_sector_prefers_sector(client):
 
 
 def test_nearest_blocweather_url_for_sector_falls_back_to_crag(client):
-    sector: Sector = Sector.find_by_slug("schattental")
+    sector: Sector = Sector.find_by_slug("shade-valley")
     crag: Crag = sector.crag
 
     sector.blocweather_url = None
