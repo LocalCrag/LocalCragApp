@@ -75,6 +75,44 @@ notification_digest_mail = {
         "view_comment_label": "View comment",
         "open_account_label": "Open account",
     },
+    "fr": {
+        "title": "Notifications pour {instance_name}",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "intro": "Voici votre résumé quotidien des nouvelles notifications :",
+        "intro_weekly": "Voici votre résumé hebdomadaire des nouvelles notifications :",
+        "open_notifications": "Ouvrir LocalCrag",
+        "thanks": "Merci,",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Notifications pour {instance_name}",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "reaction_ascent_text": "{count} nouvelles réactions sur votre ascension de {target_link}",
+        "reaction_ascent_text_single": "Nouvelle réaction sur votre ascension de {target_link}",
+        "reaction_comment_text": "{count} nouvelles réactions sur votre commentaire sur {target_link}",
+        "reaction_comment_text_single": "Nouvelle réaction sur votre commentaire sur {target_link}",
+        "reaction_generic_text": "{count} nouvelles réactions",
+        "reaction_generic_text_single": "Nouvelle réaction",
+        "comment_reply_text": "{count} nouvelles réponses à votre commentaire sur {target_link}",
+        "comment_reply_text_single": "Nouvelle réponse à votre commentaire sur {target_link}",
+        "fa_removed_text": (
+            "{moderator_name} a retiré le label FA de votre ascension de {target_link}. "
+            "En cas de doute, contactez-nous par e-mail à {moderator_email}."
+        ),
+        "moderator_task_completed_text": "{count} tâches terminées : {title} ({target_link})",
+        "moderator_task_completed_text_single": "Tâche terminée : {title} ({target_link})",
+        "moderator_task_created_text": "{count} nouvelles tâches : {title} ({target_link})",
+        "moderator_task_created_text_single": "Nouvelle tâche : {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": (
+            "{count} nouvelles tâches créées et assignées à vous : {title} ({target_link})"
+        ),
+        "moderator_task_created_and_assigned_text_single": (
+            "Nouvelle tâche créée et assignée à vous : {title} ({target_link})"
+        ),
+        "moderator_task_assigned_text": "{count} tâches assignées à vous : {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Tâche assignée à vous : {title} ({target_link})",
+        "view_comment_label": "Voir le commentaire",
+        "open_account_label": "Ouvrir le compte",
+    },
     "it": {
         "title": "Notifiche per {instance_name}",
         "LOCALCRAG": "LocalCrag",

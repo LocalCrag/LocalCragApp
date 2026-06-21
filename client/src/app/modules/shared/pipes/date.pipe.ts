@@ -1,8 +1,10 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { format, Locale } from 'date-fns';
 import { de } from 'date-fns/locale/de';
+import { fr } from 'date-fns/locale/fr';
 import { it } from 'date-fns/locale/it';
 import { enGB } from 'date-fns/locale/en-GB';
+import { nl } from 'date-fns/locale/nl';
 import { LanguageService } from '../../../services/core/language.service';
 
 /**
@@ -17,7 +19,9 @@ export class DatePipe implements PipeTransform {
   private static DATE_FNS_LOCALES: Record<string, Locale> = {
     en: enGB,
     de,
+    fr,
     it,
+    nl,
   };
 
   /**

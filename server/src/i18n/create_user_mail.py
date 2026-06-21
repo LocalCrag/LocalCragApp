@@ -35,6 +35,25 @@ create_user_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "Your LocalCrag account",
     },
+    "fr": {
+        "title": "Votre compte LocalCrag",
+        "intro_text": "Activez votre compte LocalCrag maintenant.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "text_1": "Un compte LocalCrag a été créé pour vous. Connectez-vous avec les informations ci-dessous pour "
+        "activer votre compte.",
+        "text_2": "Pour des raisons de sécurité, nous vous recommandons de changer votre mot de passe après votre "
+        "première connexion.",
+        "email_title": "Adresse e-mail :",
+        "password_title": "Mot de passe :",
+        "activate_account": "Activer le compte",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "hint": "Si le bouton ci-dessus ne fonctionne pas, copiez l'URL ci-dessous directement dans la "
+        "barre d'adresse de votre navigateur.",
+        "thanks": "Merci,",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Votre compte LocalCrag",
+    },
     "it": {
         "title": "",
         "intro_text": "",

@@ -11,7 +11,7 @@ def test_get_account_settings(client, member_token):
     assert rv.json["systemNotificationsEnabled"] is True
     assert rv.json["moderatorTaskNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "daily"
-    assert rv.json["language"] in ("de", "en", "it")
+    assert rv.json["language"] in ("de", "en", "fr", "it", "nl")
 
 
 def test_update_account_settings(client, member_token):
@@ -139,7 +139,7 @@ def test_update_account_settings_invalid_language(client, member_token):
             "systemNotificationsEnabled": True,
             "moderatorTaskNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
-            "language": "fr",
+            "language": "es",
         },
     )
     assert rv.status_code == 400, rv.text

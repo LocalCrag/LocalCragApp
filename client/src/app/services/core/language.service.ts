@@ -11,6 +11,7 @@ import { map, tap } from 'rxjs/operators';
 import { PrimeNG } from 'primeng/config';
 import { Locale } from 'primelocale/js/locale.js';
 import { de } from 'primelocale/js/de.js';
+import { fr } from 'primelocale/js/fr.js';
 import { it } from 'primelocale/js/it.js';
 import { en_GB } from 'primelocale/js/en_GB.js';
 import { nl } from 'primelocale/js/nl.js';
@@ -43,6 +44,7 @@ export class LanguageService {
   private primeNGTranslationMapping: Record<LanguageCode, Locale> = {
     de: de,
     en: en_GB,
+    fr: fr,
     it: it,
     nl: nl,
   };

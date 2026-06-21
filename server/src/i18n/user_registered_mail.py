@@ -27,6 +27,20 @@ user_registered_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "New user",
     },
+    "fr": {
+        "title": "Nouvel utilisateur !",
+        "new_user_text": "Félicitations, un nouvel utilisateur vient de s'inscrire sur votre instance LocalCrag",
+        "LOCALCRAG": "LocalCrag",
+        "user_count_text": "Cet utilisateur est l'utilisateur numéro",
+        "hello": "Bonjour",
+        "view_user": "Voir l'utilisateur",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "hint": "Si le bouton ci-dessus ne fonctionne pas, copiez l'URL ci-dessous directement dans la "
+        "barre d'adresse de votre navigateur.",
+        "thanks": "Salutations,",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Nouvel utilisateur",
+    },
     "it": {
         "title": "",
         "new_user_text": "",

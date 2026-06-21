@@ -32,6 +32,22 @@ change_email_address_mail = {
         "greetings": "Your LocalCrag team",
         "subject": "Change of your LocalCrag e-mail address",
     },
+    "fr": {
+        "title": "Modifier votre adresse e-mail LocalCrag",
+        "intro_text": "Utilisez ce lien pour modifier votre adresse e-mail. Le lien est valable 24 heures.",
+        "LOCALCRAG": "LocalCrag",
+        "hello": "Bonjour",
+        "text_1": "Vous avez récemment demandé de modifier l'adresse e-mail de votre compte LocalCrag. "
+        "La nouvelle adresse est l'adresse destinataire de cet e-mail. Utilisez ce bouton pour terminer le processus.",
+        "text_2": "Ce lien n'est valable que pendant les 24 prochaines heures.",
+        "change_email": "Modifier l'adresse e-mail",
+        "copyright": "© LocalCrag. Tous droits réservés.",
+        "hint": "Si le bouton ci-dessus ne fonctionne pas, copiez l'URL ci-dessous directement "
+        "dans la barre d'adresse de votre navigateur.",
+        "thanks": "Merci",
+        "greetings": "Votre équipe LocalCrag",
+        "subject": "Modification de votre adresse e-mail LocalCrag",
+    },
     "it": {
         "title": "",
         "intro_text": "",
