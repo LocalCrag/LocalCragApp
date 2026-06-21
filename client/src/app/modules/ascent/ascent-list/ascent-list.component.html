@@ -2,7 +2,8 @@
   <p-dataView #dv [value]="ascents">
     <ng-template #emptymessage>
       @if (
-        ascents?.length === 0 && loadingFirstPage !== loadingStates.LOADING
+        ascents?.length === 0 &&
+        !(loading === loadingStates.LOADING && currentPage === 1)
       ) {
         <p-message
           severity="info"
@@ -25,7 +26,9 @@
             <p-select
               [options]="orderOptions"
               [(ngModel)]="orderKey"
-              [disabled]="loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
               optionLabel="label"
               (onChange)="loadFirstPage()"
               styleClass="md:mb-0"
@@ -44,7 +47,9 @@
               </ng-template>
             </p-select>
             <p-select
-              [disabled]="loadingFirstPage === loadingStates.LOADING"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
               [options]="orderDirectionOptions"
               [(ngModel)]="orderDirectionKey"
               optionLabel="label"
@@ -75,7 +80,9 @@
               {{ t("lineType") }}
               <p-select
                 [options]="availableScales"
-                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                [disabled]="
+                  loading === loadingStates.LOADING && currentPage === 1
+                "
                 [(ngModel)]="scaleKey"
                 optionLabel="label"
                 (onChange)="selectScale()"
@@ -106,7 +113,7 @@
             [max]="maxGradeValue"
             [lineType]="scaleKey.value.lineType"
             [gradeScale]="scaleKey.value.gradeScale"
-            [disabled]="loadingFirstPage === loadingStates.LOADING"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
             (slideEnd)="reloadOnSlideEnd()"
           />
         }
@@ -114,11 +121,12 @@
     </ng-template>
     <ng-template let-ascents #list>
       @if (
-        loadingFirstPage === loadingStates.LOADING || ascents === undefined
+        (loading === loadingStates.LOADING && currentPage === 1) ||
+        ascents === undefined
       ) {
         <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
       }
-      @if (loadingFirstPage !== loadingStates.LOADING) {
+      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
         <div class="grid grid-nogutter">
           @for (ascent of ascents; track ascent; let first = $first) {
             <div class="col-12" data-cy="ascent-list-item">
@@ -579,10 +587,7 @@
         infiniteScroll
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="
-          loadingAdditionalPage === loadingStates.LOADING ||
-          loadingFirstPage === loadingStates.LOADING
-        "
+        [loading]="loading === loadingStates.LOADING"
       ></p-button>
     </div>
   }

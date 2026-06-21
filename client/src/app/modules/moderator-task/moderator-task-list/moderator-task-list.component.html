@@ -2,7 +2,7 @@
   <p-dataView [value]="dataViewRows">
     <ng-template #emptymessage>
       @if (
-        loadingFirstPage !== loadingStates.LOADING &&
+        !(loading === loadingStates.LOADING && currentPage === 1) &&
         tasks.length === 0 &&
         !filtersActive
       ) {
@@ -15,7 +15,7 @@
         </p-message>
       }
       @if (
-        loadingFirstPage !== loadingStates.LOADING &&
+        !(loading === loadingStates.LOADING && currentPage === 1) &&
         tasks.length === 0 &&
         filtersActive
       ) {
@@ -41,7 +41,8 @@
             class="responsive-button"
             [outlined]="!myTasksActive"
             [disabled]="
-              usersLoading || loadingFirstPage === loadingStates.LOADING
+              usersLoading ||
+              (loading === loadingStates.LOADING && currentPage === 1)
             "
             (click)="toggleMyTasksFilter()"
           ></p-button>
@@ -55,7 +56,8 @@
               optionLabel="label"
               optionValue="value"
               [disabled]="
-                usersLoading || loadingFirstPage === loadingStates.LOADING
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
               "
               (onChange)="onFilterChange()"
               class="md:mb-0"
@@ -69,7 +71,8 @@
               optionLabel="label"
               optionValue="value"
               [disabled]="
-                usersLoading || loadingFirstPage === loadingStates.LOADING
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
               "
               (onChange)="onFilterChange()"
               class="md:mb-0"
@@ -85,7 +88,8 @@
               optionLabel="label"
               optionValue="value"
               [disabled]="
-                usersLoading || loadingFirstPage === loadingStates.LOADING
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
               "
               (onChange)="onFilterChange()"
               class="md:mb-0"
@@ -103,10 +107,10 @@
       </div>
     </ng-template>
     <ng-template let-rows #list>
-      @if (loadingFirstPage === loadingStates.LOADING) {
+      @if (loading === loadingStates.LOADING && currentPage === 1) {
         <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
       }
-      @if (loadingFirstPage !== loadingStates.LOADING) {
+      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
         @if (rows.length > 0) {
           <p-menu
             #taskMenu
@@ -265,10 +269,7 @@
         infiniteScroll
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="
-          loadingAdditionalPage === loadingStates.LOADING ||
-          loadingFirstPage === loadingStates.LOADING
-        "
+        [loading]="loading === loadingStates.LOADING"
       ></p-button>
     </div>
   }

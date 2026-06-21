@@ -18,9 +18,9 @@
       </div>
     }
     @for (
-      _ of loadingAdditionalPage === loadingStates.LOADING
+      _ of loading === loadingStates.LOADING && currentPage > 1
         ? [1, 2, 3]
-        : loadingFirstPage === loadingStates.LOADING
+        : loading === loadingStates.LOADING && currentPage === 1
           ? [1, 2, 3, 4, 5, 6]
           : [];
       track _
@@ -38,17 +38,12 @@
           infiniteScroll
           [infiniteScrollDistance]="2"
           [infiniteScrollThrottle]="50"
-          [loading]="loadingAdditionalPage === loadingStates.LOADING"
+          [loading]="loading === loadingStates.LOADING && currentPage > 1"
         ></p-button>
       </div>
     }
   </div>
-  @if (
-    !(
-      loadingAdditionalPage === loadingStates.LOADING ||
-      loadingFirstPage === loadingStates.LOADING
-    ) && images.length === 0
-  ) {
+  @if (!(loading === loadingStates.LOADING) && images.length === 0) {
     <p-message severity="info" icon="pi pi-info-circle">
       {{ t("thisGalleryIsEmpty") }}
     </p-message>
