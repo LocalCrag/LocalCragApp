@@ -29,13 +29,12 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DataViewModule } from 'primeng/dataview';
 import { MenuModule } from 'primeng/menu';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
-import { TagModule } from 'primeng/tag';
 import { FormsModule } from '@angular/forms';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
+import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -52,7 +51,6 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 
@@ -66,8 +64,7 @@ import { LanguageService } from '../../../services/core/language.service';
     MenuModule,
     RatingModule,
     RouterLink,
-    SliderLabelsComponent,
-    SliderModule,
+    GradeRangeSliderComponent,
     TagModule,
     TranslocoDirective,
     FormsModule,
@@ -75,13 +72,11 @@ import { LanguageService } from '../../../services/core/language.service';
     CardModule,
     TodoPriorityButtonComponent,
     TickButtonComponent,
-    AsyncPipe,
     Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
     LineGradePipe,
-    TranslateSpecialGradesPipe,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

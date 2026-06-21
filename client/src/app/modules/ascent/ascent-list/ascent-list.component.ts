@@ -48,8 +48,7 @@ import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
 
 import { User } from '../../../models/user';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { MenuModule } from 'primeng/menu';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -86,8 +85,7 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     DowngradePipe,
     ConsensusGradePipe,
     TagModule,
-    SliderLabelsComponent,
-    SliderModule,
+    GradeRangeSliderComponent,
     MenuModule,
     Select,
     RouterLink,

@@ -129,43 +129,16 @@
             </div>
 
             @if (scaleKey?.value && !gradeScaleBoundsLoading) {
-              <div class="slider-container mt-1">
-                <lc-slider-labels
-                  [rangeMin]="gradeFilterRange[0]"
-                  [rangeMax]="gradeFilterRange[1]"
-                  [min]="minGradeValue"
-                  [max]="maxGradeValue"
-                  [minLabel]="
-                    scalesService.gradeNameByValue(
-                      scaleKey.value.lineType,
-                      scaleKey.value.gradeScale,
-                      gradeFilterRange[0]
-                    )
-                      | async
-                      | translateSpecialGrades
-                  "
-                  [maxLabel]="
-                    scalesService.gradeNameByValue(
-                      scaleKey.value.lineType,
-                      scaleKey.value.gradeScale,
-                      gradeFilterRange[1]
-                    )
-                      | async
-                      | translateSpecialGrades
-                  "
-                ></lc-slider-labels>
-                <p-slider
-                  [(ngModel)]="gradeFilterRange"
-                  [min]="minGradeValue"
-                  [disabled]="
-                    loading === loadingStates.LOADING && currentPage === 1
-                  "
-                  [max]="maxGradeValue"
-                  [range]="true"
-                  [step]="1"
-                  (onSlideEnd)="reloadOnSlideEnd()"
-                />
-              </div>
+              <lc-grade-range-slider
+                class="mt-1"
+                [(range)]="gradeFilterRange"
+                [min]="minGradeValue"
+                [max]="maxGradeValue"
+                [lineType]="scaleKey.value.lineType"
+                [gradeScale]="scaleKey.value.gradeScale"
+                [disabled]="loadingFirstPage === loadingStates.LOADING"
+                (slideEnd)="reloadOnSlideEnd()"
+              />
             }
           </div>
 

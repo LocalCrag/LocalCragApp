@@ -15,7 +15,7 @@ import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.com
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -30,8 +30,7 @@ import {
   PaginatedListView,
 } from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
-import { SliderModule } from 'primeng/slider';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
@@ -59,7 +58,6 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
@@ -98,14 +96,12 @@ import {
     TranslocoDirective,
     NgClass,
     FormsModule,
-    SliderModule,
-    SliderLabelsComponent,
+    GradeRangeSliderComponent,
     AccordionModule,
     TodoButtonComponent,
     ClosedSpotTagComponent,
     ArchiveButtonComponent,
     GymModeDirective,
-    AsyncPipe,
     Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
@@ -114,7 +110,6 @@ import {
     LineBoolPropListComponent,
     LineGradePipe,
     TopoImageComponent,
-    TranslateSpecialGradesPipe,
   ],
   providers: [ConfirmationService, DialogService],
   templateUrl: './line-list.component.html',

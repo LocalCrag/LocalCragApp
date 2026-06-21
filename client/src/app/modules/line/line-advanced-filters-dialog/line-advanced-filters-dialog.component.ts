@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -7,13 +6,12 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
-import { SliderModule } from 'primeng/slider';
 import { DatePicker } from 'primeng/datepicker';
 import { StartingPosition } from '../../../enums/starting-position';
 import { LineType } from '../../../enums/line-type';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
+import { RatingRangeSliderComponent } from '../../shared/components/rating-range-slider/rating-range-slider.component';
 import {
   defaultLineListAdvancedFilters,
   defaultLineListScaleKey,
@@ -42,11 +40,9 @@ export interface LineAdvancedFiltersDialogData {
     Button,
     Checkbox,
     Select,
-    SliderModule,
     DatePicker,
-    SliderLabelsComponent,
-    TranslateSpecialGradesPipe,
-    AsyncPipe,
+    GradeRangeSliderComponent,
+    RatingRangeSliderComponent,
   ],
 })
 export class LineAdvancedFiltersDialogComponent implements OnInit {
