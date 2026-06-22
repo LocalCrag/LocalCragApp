@@ -8,14 +8,14 @@ from models.topo_image import TopoImage
 def test_archive_line(client, moderator_token, gym_mode):
     archive_data = {
         "type": ArchiveTypeEnum.LINE,
-        "slug": "treppe",
+        "slug": "the-vessel",
         "value": True,
     }
 
     rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
-    line = Line.find_by_slug("treppe")
+    line = Line.find_by_slug("the-vessel")
     assert line.archived
 
     archive_data["value"] = False
@@ -23,12 +23,12 @@ def test_archive_line(client, moderator_token, gym_mode):
     rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
-    line = Line.find_by_slug("treppe")
+    line = Line.find_by_slug("the-vessel")
     assert not line.archived
 
 
 def test_archive_topo_image(client, moderator_token, gym_mode):
-    area_id = Area.get_id_by_slug("dritter-block-von-links")
+    area_id = Area.get_id_by_slug("shark-attack")
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
 
     archive_data = {
@@ -45,13 +45,13 @@ def test_archive_topo_image(client, moderator_token, gym_mode):
     assert topo_image.archived
 
     # Cascade should archive all lines linked to this topo image
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is True
+    assert stairs.archived is True
     assert super_spreader.archived is True
 
     # Topo Image should not be included in default list
-    rv = client.get("/api/areas/dritter-block-von-links/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert str(topo_image.id) not in [r["id"] for r in res]
@@ -65,9 +65,9 @@ def test_archive_topo_image(client, moderator_token, gym_mode):
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
     assert not topo_image.archived
 
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
 
@@ -75,13 +75,13 @@ def test_archive_topo_image_without_cascade(client, moderator_token, gym_mode):
     """
     Archiving a topo image with cascade=False should not change any lines' archived flags.
     """
-    area_id = Area.get_id_by_slug("dritter-block-von-links")
+    area_id = Area.get_id_by_slug("shark-attack")
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
 
     # Ensure initial state is unarchived for involved lines
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
     archive_data = {
@@ -98,9 +98,9 @@ def test_archive_topo_image_without_cascade(client, moderator_token, gym_mode):
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
     assert topo_image.archived is True
 
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
     # Unarchive without cascade - lines still unchanged
@@ -112,24 +112,24 @@ def test_archive_topo_image_without_cascade(client, moderator_token, gym_mode):
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=0).first()
     assert topo_image.archived is False
 
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
 
 def test_archive_second_topo_image_affects_only_associated_lines(client, moderator_token, gym_mode):
     """
     Archiving the second topo image (order_index=1) should only affect lines that have a path on it.
-    In the test data, only "super-spreader" has a LinePath on order_index=1, while "treppe" does not.
+    In the test data, only "super-spreader" has a LinePath on order_index=1, while "the-vessel" does not.
     """
-    area_id = Area.get_id_by_slug("dritter-block-von-links")
+    area_id = Area.get_id_by_slug("shark-attack")
     topo_image = TopoImage.query.filter_by(area_id=area_id, order_index=1).first()
 
     # Ensure initial state
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
     archive_data = {
@@ -142,10 +142,10 @@ def test_archive_second_topo_image_affects_only_associated_lines(client, moderat
     rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
-    # Only super-spreader should be archived, treppe untouched
-    treppe = Line.find_by_slug("treppe")
+    # Only super-spreader should be archived, the-vessel untouched
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is True
 
     # Revert
@@ -153,18 +153,18 @@ def test_archive_second_topo_image_affects_only_associated_lines(client, moderat
     rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
-    treppe = Line.find_by_slug("treppe")
+    stairs = Line.find_by_slug("the-vessel")
     super_spreader = Line.find_by_slug("super-spreader")
-    assert treppe.archived is False
+    assert stairs.archived is False
     assert super_spreader.archived is False
 
 
 def test_archive_area(client, moderator_token, gym_mode):
-    area_id = Area.get_id_by_slug("dritter-block-von-links")
+    area_id = Area.get_id_by_slug("shark-attack")
 
     archive_data = {
         "type": ArchiveTypeEnum.AREA,
-        "slug": "dritter-block-von-links",
+        "slug": "shark-attack",
         "value": True,
     }
 
@@ -186,18 +186,18 @@ def test_archive_area(client, moderator_token, gym_mode):
 def test_archive_sector(client, moderator_token, gym_mode):
     archive_data = {
         "type": ArchiveTypeEnum.SECTOR,
-        "slug": "schattental",
+        "slug": "pampelmousse",
         "value": True,
     }
 
     rv = client.put("/api/archive", token=moderator_token, json=archive_data)
     assert rv.status_code == 204
 
-    assert Line.query.filter_by(sector_slug="schattental", archived=False).count() == 0
-    assert Line.query.filter_by(sector_slug="schattental", archived=True).count() > 0
+    assert Line.query.filter_by(sector_slug="pampelmousse", archived=False).count() == 0
+    assert Line.query.filter_by(sector_slug="pampelmousse", archived=True).count() > 0
 
-    assert TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", not TopoImage.archived).count() == 0
-    assert TopoImage.query.join(Area).filter(Area.sector_slug == "schattental", TopoImage.archived).count() > 0
+    assert TopoImage.query.join(Area).filter(Area.sector_slug == "pampelmousse", not TopoImage.archived).count() == 0
+    assert TopoImage.query.join(Area).filter(Area.sector_slug == "pampelmousse", TopoImage.archived).count() > 0
 
     archive_data["value"] = False
 

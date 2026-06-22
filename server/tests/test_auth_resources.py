@@ -267,7 +267,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "name": "Glees",
             "description": "Fodere et scandere.",
             "shortDescription": "Fodere et scandere 2.",
-            "rules": "Parken nur Samstag und Sonntag.",
+            "rules": "Parking only on Saturday and Sunday.",
             "portraitImage": any_file_id,
             "lat": 12.13,
             "lng": 42.42,
@@ -289,7 +289,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         "name": "Glees",
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
+        "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": any_file_id,
         "mapMarkers": [
             {

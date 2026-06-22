@@ -5,13 +5,11 @@ describe('Topo images test', () => {
     cy.intercept('POST', '**/upload').as('uploadFile');
     cy.intercept('POST', '**/areas/*/topo-images').as('createTopoImage');
     cy.intercept('POST', '**/topo-images/*/line-paths').as('createLinePath');
-    cy.visit('/topo/brione/schattental/dritter-block-von-links/topo-images');
+    cy.visit('/topo/brione/pampelmousse/shark-attack/topo-images');
     cy.get('[data-cy="topo-image-list-item"]')
       .its('length')
       .then((numBefore) => {
-        cy.visit(
-          '/topo/brione/schattental/dritter-block-von-links/add-topo-image',
-        );
+        cy.visit('/topo/brione/pampelmousse/shark-attack/add-topo-image');
         cy.get('[data-cy="topo-image-input"] input')
           .focus()
           .selectFile('cypress/fixtures/images/peter.jpeg', { force: true });
@@ -24,17 +22,15 @@ describe('Topo images test', () => {
           .eq(1)
           .focus()
           .type('180');
-        cy.get('[data-cy="topo-image-form-title"]')
-          .focus()
-          .type('Toller Block');
+        cy.get('[data-cy="topo-image-form-title"]').focus().type('Great block');
         cy.get('[data-cy="topo-image-form-description"] .ql-editor')
           .focus()
-          .type('Sehr großer Block eh');
+          .type('Very big block indeed');
         cy.get('[data-cy="submit"]').click();
         cy.wait('@createTopoImage');
         cy.url().should(
           'include',
-          '/topo/brione/schattental/dritter-block-von-links/topo-images',
+          '/topo/brione/pampelmousse/shark-attack/topo-images',
         );
         cy.get('[data-cy="topo-image-list-item"]').should(
           'have.length',
@@ -47,7 +43,7 @@ describe('Topo images test', () => {
           .then((id) => {
             topoImageId = id;
             cy.visit(
-              `/topo/brione/schattental/dritter-block-von-links/topo-images/${topoImageId}/add-line-path`,
+              `/topo/brione/pampelmousse/shark-attack/topo-images/${topoImageId}/add-line-path`,
             );
             cy.wait(2000);
             cy.get('[data-cy="line-dropdown"] > div').click();
@@ -61,7 +57,7 @@ describe('Topo images test', () => {
             cy.get('[data-cy="leave-editor"]').click();
             cy.url().should(
               'include',
-              '/topo/brione/schattental/dritter-block-von-links/topo-images',
+              '/topo/brione/pampelmousse/shark-attack/topo-images',
             );
             cy.get(
               '[data-cy="topo-image-list-item"]:nth-child(3) [data-cy="line-row"]',

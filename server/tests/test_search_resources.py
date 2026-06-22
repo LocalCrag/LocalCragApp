@@ -38,7 +38,7 @@ def test_search_object_type_invalid_value(client):
 
 
 def test_get_recent_searches(client, member_token):
-    line_id = str(Line.get_id_by_slug("treppe"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     crag_id = str(Crag.get_id_by_slug("brione"))
     rv = client.post(
         "/api/account/recent-searches",
@@ -62,7 +62,7 @@ def test_get_recent_searches(client, member_token):
 
 
 def test_create_recent_search(client, member_token):
-    line_id = str(Line.get_id_by_slug("treppe"))
+    line_id = str(Line.get_id_by_slug("the-vessel"))
     rv = client.post(
         "/api/account/recent-searches",
         token=member_token,

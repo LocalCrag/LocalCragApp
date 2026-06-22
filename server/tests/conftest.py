@@ -236,7 +236,7 @@ def copy_required_upload_files():
     if not os.path.isdir("uploads"):
         os.makedirs("uploads")
 
-    # Reaction formular image for PDF generator test
+    # Reaction form image for PDF generator test
     shutil.copyfile("../tests/assets/test_image_271_186.png", "uploads/6bbf1ddf-81d0-4229-825c-efb7633eb837.png")
     # Files used as analysis PDF
     shutil.copyfile("../tests/assets/test_pdf.pdf", "uploads/vx-200-manual.pdf")
@@ -331,36 +331,36 @@ def fill_db_with_sample_data():
 
     region = Region()
     region.id = "d2c864b4-ca80-4d01-a8bf-41521182b5d4"
-    region.name = "Tessin"
-    region.description = "Tolle Region"
+    region.name = "Ticino"
+    region.description = "Great region"
     db.session.add(region)
 
     crag = Crag()
     crag.name = "Brione"
-    crag.description = "<p>Lange Beschreibung zu Brione.</p>"
-    crag.rules = "<p>Briones Regeln.</p>"
-    crag.short_description = "Kurze Beschreibung zu Brione"
+    crag.description = "<p>Long description of Brione.</p>"
+    crag.rules = "<p>Brione rules.</p>"
+    crag.short_description = "Short description of Brione"
     crag.order_index = 0
     db.session.add(crag)
 
     crag = Crag()
     crag.name = "Chironico"
-    crag.description = "<p>Lange Beschreibung zu Chironico</p>"
-    crag.rules = "<p>Briones Regeln.</p>"
-    crag.short_description = "Kurze Beschreibung zu Chironico"
+    crag.description = "<p>Long description of Chironico</p>"
+    crag.rules = "<p>Brione rules.</p>"
+    crag.short_description = "Short description of Chironico"
     crag.order_index = 1
     db.session.add(crag)
 
     sector = Sector()
-    sector.name = "Schattental"
-    sector.description = "<p>Lange Beschreibung zum Schattental</p>"
-    sector.short_description = "Kurze Beschreibung zum Schattental"
+    sector.name = "Pampelmousse"
+    sector.description = "<p>Long description of Pampelmousse</p>"
+    sector.short_description = "Short description of Pampelmousse"
     sector.crag_id = Crag.get_id_by_slug("brione")
     sector.order_index = 0
     db.session.add(sector)
 
     sector = Sector()
-    sector.name = "Oben"
+    sector.name = "Upper Brione"
     sector.description = ""
     sector.short_description = ""
     sector.crag_id = Crag.get_id_by_slug("brione")
@@ -368,37 +368,37 @@ def fill_db_with_sample_data():
     db.session.add(sector)
 
     area = Area()
-    area.name = "Dritter Block von links"
-    area.description = "<p>Allgemeine Infos zum dritten Block von links.</p>"
-    area.sector_id = Sector.get_id_by_slug("schattental")
+    area.name = "Shark Attack"
+    area.description = "<p>General info about Shark Attack.</p>"
+    area.sector_id = Sector.get_id_by_slug("pampelmousse")
     area.order_index = 0
     db.session.add(area)
 
     area = Area()
-    area.name = "Noch ein Bereich"
+    area.name = "Another Area"
     area.description = ""
-    area.sector_id = Sector.get_id_by_slug("schattental")
+    area.sector_id = Sector.get_id_by_slug("pampelmousse")
     area.order_index = 1
     db.session.add(area)
 
     line = Line()
-    line.name = "Treppe"
-    line.description = "<p>Eine normale Treppe.</p>"
+    line.name = "The Vessel"
+    line.description = "<p>A normal staircase.</p>"
     line.type = LineTypeEnum.BOULDER
-    line.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    line.area_id = Area.get_id_by_slug("shark-attack")
     line.author_rating = 1
     line.user_rating = 1
     line.grade_scale = "FB"
-    line.author_grade_value = 1
-    line.user_grade_value = 1
+    line.author_grade_value = 20
+    line.user_grade_value = 20
     line.starting_position = StartingPositionEnum.STAND
     db.session.add(line)
 
     line = Line()
     line.name = "Super-Spreader"
-    line.description = "<p>Geiler Kühlschrankboulder!</p>"
+    line.description = "<p>Awesome fridge boulder!</p>"
     line.type = LineTypeEnum.BOULDER
-    line.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    line.area_id = Area.get_id_by_slug("shark-attack")
     line.author_rating = 5
     line.user_rating = 3
     line.fa_year = 2024
@@ -430,14 +430,14 @@ def fill_db_with_sample_data():
     db.session.add(ascent)
 
     post = Post()
-    post.title = "Mein erster Post"
-    post.text = "<p>Juhu, sie haben Post!</p>"
+    post.title = "My First Post"
+    post.text = "<p>Yay, you've got mail!</p>"
     post.created_by_id = admin_id
     db.session.add(post)
 
     post = Post()
-    post.title = "Noch ein Post"
-    post.text = "<p>Was steht hier nur für ein Quatsch?</p>"
+    post.title = "New boulders in Brione!"
+    post.text = "<p>Felix and Fabian developed some cool new lines in Upper Brione, go check them out!</p>"
     post.created_by_id = admin_id
     db.session.add(post)
 
@@ -539,14 +539,14 @@ def fill_db_with_sample_data():
     db.session.add(instance_settings)
 
     topo_image = TopoImage()
-    topo_image.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topo_image.area_id = Area.get_id_by_slug("shark-attack")
     topo_image.file_id = File.query.filter_by(original_filename="Love it or leave it.JPG").first().id
     topo_image.created_by_id = admin_id
     topo_image.order_index = 0
     db.session.add(topo_image)
 
     topo_image = TopoImage()
-    topo_image.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    topo_image.area_id = Area.get_id_by_slug("shark-attack")
     topo_image.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
     topo_image.created_by_id = admin_id
     topo_image.order_index = 1
@@ -571,7 +571,7 @@ def fill_db_with_sample_data():
     db.session.add(line_path)
 
     line_path = LinePath()
-    line_path.line_id = Line.get_id_by_slug("treppe")
+    line_path.line_id = Line.get_id_by_slug("the-vessel")
     line_path.topo_image_id = TopoImage.query.filter_by(order_index=0).first().id
     line_path.path = [
         84.42857142857143,
@@ -610,18 +610,18 @@ def fill_db_with_sample_data():
     mapMarker.lat = 34.343434
     mapMarker.lng = 29.292929
     mapMarker.type = MapMarkerType.AREA
-    mapMarker.area_id = Area.get_id_by_slug("dritter-block-von-links")
+    mapMarker.area_id = Area.get_id_by_slug("shark-attack")
     db.session.add(mapMarker)
 
     menuPage = MenuPage()
-    menuPage.title = "Impressum"
-    menuPage.text = "<p>Hier steht ein Impressums Text.</p>"
+    menuPage.title = "Legal Notice"
+    menuPage.text = "<p>Legal notice text goes here.</p>"
     menuPage.created_by_id = admin_id
     db.session.add(menuPage)
 
     menuPage = MenuPage()
-    menuPage.title = "Datenschutzerklärung"
-    menuPage.text = "<p>Hier steht die Datenschutzerklärung.</p>"
+    menuPage.title = "Privacy Policy"
+    menuPage.text = "<p>Privacy policy text goes here.</p>"
     menuPage.created_by_id = admin_id
     db.session.add(menuPage)
 
@@ -629,7 +629,7 @@ def fill_db_with_sample_data():
     menu_item.type = MenuItemTypeEnum.MENU_PAGE
     menu_item.position = MenuItemPositionEnum.BOTTOM
     menu_item.order_index = 0
-    menu_item.menu_page_id = menuPage.get_id_by_slug("impressum")
+    menu_item.menu_page_id = menuPage.get_id_by_slug("legal-notice")
     menu_item.created_by_id = admin_id
     db.session.add(menu_item)
 
@@ -637,7 +637,7 @@ def fill_db_with_sample_data():
     menu_item.type = MenuItemTypeEnum.MENU_PAGE
     menu_item.position = MenuItemPositionEnum.BOTTOM
     menu_item.order_index = 1
-    menu_item.menu_page_id = menuPage.get_id_by_slug("datenschutzerklaerung")
+    menu_item.menu_page_id = menuPage.get_id_by_slug("privacy-policy")
     menu_item.created_by_id = admin_id
     db.session.add(menu_item)
 
@@ -686,7 +686,7 @@ def fill_db_with_sample_data():
 
         ranking = Ranking()
         ranking.user_id = admin_id
-        ranking.sector_id = Sector.get_id_by_slug("schattental")
+        ranking.sector_id = Sector.get_id_by_slug("pampelmousse")
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
@@ -742,7 +742,7 @@ def fill_db_with_sample_data():
     recent_search = RecentSearch()
     recent_search.user_id = member_id
     recent_search.object_type = "Line"
-    recent_search.object_id = Line.get_id_by_slug("treppe")
+    recent_search.object_id = Line.get_id_by_slug("the-vessel")
     db.session.add(recent_search)
 
     recent_search = RecentSearch()

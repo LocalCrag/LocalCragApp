@@ -7,7 +7,7 @@ from models.menu_page import MenuPage
 
 
 def test_successful_create_menu_item(client, moderator_token):
-    menu_page = MenuPage.find_by_slug("impressum")
+    menu_page = MenuPage.find_by_slug("legal-notice")
 
     menu_item_data = {
         "type": "MENU_PAGE",
@@ -95,7 +95,7 @@ def test_successful_delete_menu_item(client, moderator_token):
 
 
 def test_successful_edit_menu_item(client, moderator_token):
-    menu_page = MenuPage.find_by_slug("impressum")
+    menu_page = MenuPage.find_by_slug("legal-notice")
     menu_item = MenuItem.query.filter_by(menu_page_id=menu_page.id).first()
 
     menu_item_data = {
@@ -154,19 +154,19 @@ def test_successful_get_crag_menu_structure(client):
     assert res[1]["slug"] == "chironico"
     assert res[1]["name"] == "Chironico"
 
-    assert res[0]["sectors"][0]["slug"] == "schattental"
-    assert res[0]["sectors"][0]["name"] == "Schattental"
-    assert res[0]["sectors"][1]["slug"] == "oben"
-    assert res[0]["sectors"][1]["name"] == "Oben"
+    assert res[0]["sectors"][0]["slug"] == "pampelmousse"
+    assert res[0]["sectors"][0]["name"] == "Pampelmousse"
+    assert res[0]["sectors"][1]["slug"] == "upper-brione"
+    assert res[0]["sectors"][1]["name"] == "Upper Brione"
 
-    assert res[0]["sectors"][0]["areas"][0]["slug"] == "dritter-block-von-links"
-    assert res[0]["sectors"][0]["areas"][0]["name"] == "Dritter Block von links"
-    assert res[0]["sectors"][0]["areas"][1]["slug"] == "noch-ein-bereich"
-    assert res[0]["sectors"][0]["areas"][1]["name"] == "Noch ein Bereich"
+    assert res[0]["sectors"][0]["areas"][0]["slug"] == "shark-attack"
+    assert res[0]["sectors"][0]["areas"][0]["name"] == "Shark Attack"
+    assert res[0]["sectors"][0]["areas"][1]["slug"] == "another-area"
+    assert res[0]["sectors"][0]["areas"][1]["name"] == "Another Area"
 
 
 def test_get_crag_menu_structure_excludes_closed_with_filter(client):
-    area = Area.find_by_slug("dritter-block-von-links")
+    area = Area.find_by_slug("shark-attack")
     area.closed = True
     db.session.add(area)
     db.session.commit()
@@ -177,7 +177,7 @@ def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     for crag in rv.json:
         for sector in crag["sectors"]:
             all_areas.extend([a["slug"] for a in sector["areas"]])
-    assert "dritter-block-von-links" in all_areas
+    assert "shark-attack" in all_areas
 
     rv = client.get("/api/menu-items/crag-menu-structure?exclude_closed=1")
     assert rv.status_code == 200
@@ -185,4 +185,4 @@ def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     for crag in rv.json:
         for sector in crag["sectors"]:
             filtered_areas.extend([a["slug"] for a in sector["areas"]])
-    assert "dritter-block-von-links" not in filtered_areas
+    assert "shark-attack" not in filtered_areas

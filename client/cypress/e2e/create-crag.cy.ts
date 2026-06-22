@@ -5,13 +5,13 @@ describe('Create crag', () => {
     cy.get('[data-cy="crag-form-name"]').type('Ferschweiler');
     cy.get('[data-cy="crag-form-shortDescription"] .ql-editor')
       .focus()
-      .type('Ferschweiler ist toll.');
+      .type('Ferschweiler is great.');
     cy.get('[data-cy="crag-form-description"] .ql-editor')
       .focus()
-      .type('Ferschweiler ist sehr toll.');
+      .type('Ferschweiler is very great.');
     cy.get('[data-cy="crag-form-rules"] .ql-editor')
       .focus()
-      .type('Kein Feuer machen!');
+      .type('No fires allowed!');
     cy.get('[data-cy="crag-form-portraitImage"] input')
       .focus()
       .selectFile('cypress/fixtures/images/peter.jpeg', { force: true });
