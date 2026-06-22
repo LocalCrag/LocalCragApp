@@ -17,8 +17,6 @@
   "lineForm.createLineDescription": "Créez une nouvelle ligne ici. Plus il y a d'informations, mieux c'est.",
   "lineForm.lineNameLabel": "Nom",
   "lineForm.lineNamePlaceholder": "par ex. La grande île",
-  "lineForm.required": "Champ obligatoire",
-  "lineForm.maxlength120": "Nombre maximum de caractères : 120",
   "lineForm.lineDescriptionLabel": "Description",
   "lineForm.lineDescriptionPlaceholder": "Décrivez ici les aspects généraux de la ligne et les autres éléments à surveiller. Avez-vous besoin de beaucoup de crashpads ? Est-ce qu'il reste mouillé longtemps ? Certaines prises sont-elles fragiles ?",
   "lineForm.colorLabel": "Sélectionnez la couleur",
@@ -32,7 +30,6 @@
   "lineForm.displayUserRatingsActive": "Attention : Les notes proposées dans les ascensions déterminent la note affichée",
   "lineForm.lineVideosLabel": "Vidéos",
   "lineForm.lineVideoTitlePlaceholder": "Titre de la vidéo, par ex. Morpho bêta",
-  "lineForm.requiredValidationError": "Champ obligatoire",
   "lineForm.lineVideoUrlPlaceholder": "Vidéo URL",
   "lineForm.invalidHttpUrlValidationError": "URL invalide",
   "lineForm.addVideoButtonLabel": "Ajouter une vidéo",
@@ -135,8 +132,6 @@
   "lineList.advancedFiltersCancel": "Annuler",
   "lineList.advancedFiltersApply": "Appliquer",
   "batchLineForm.lineNamePlaceholder": "Nom",
-  "batchLineForm.required": "Champ obligatoire",
-  "batchLineForm.maxlength120": "Nombre maximum de caractères : 120",
   "batchLineForm.gradePlaceholder": "Grade",
   "batchLineForm.lineFANamePlaceholder": "Premier grimpeur"
 }

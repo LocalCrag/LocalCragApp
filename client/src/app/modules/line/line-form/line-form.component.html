@@ -23,10 +23,10 @@
               data-cy="line-form-name"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              'validation.maxLength' | transloco: { max: 120 }
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -146,7 +146,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
             @if (getDisplayUserGrades() | async) {
               <p-message
@@ -180,7 +180,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -225,7 +225,7 @@
                   />
                   <div>
                     <small class="lc-error" *lcIfError="'required'">{{
-                      t("requiredValidationError")
+                      'validation.required' | transloco
                     }}</small>
                   </div>
                 </div>
@@ -242,7 +242,7 @@
                   />
                   <div>
                     <small class="lc-error" *lcIfError="'required'">{{
-                      t("requiredValidationError")
+                      'validation.required' | transloco
                     }}</small>
                     <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
                       t("invalidHttpUrlValidationError")
@@ -280,7 +280,7 @@
                 data-cy="line-form-faName"
               />
               <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
+                'validation.maxLength' | transloco: { max: 120 }
               }}</small>
             </div>
             @if (faFormat === faFormats.YEAR) {
@@ -353,7 +353,7 @@
                 data-cy="line-form-routesetter"
               />
               <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
+                'validation.maxLength' | transloco: { max: 120 }
               }}</small>
             </div>
             <div class="flex flex-column gap-2" lcControlGroup>

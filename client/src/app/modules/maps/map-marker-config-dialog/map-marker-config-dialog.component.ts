@@ -19,7 +19,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoPipe,
+} from '@jsverse/transloco';
 import { Editor, EditorModule } from 'primeng/editor';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { ColorPickerModule } from 'primeng/colorpicker';
@@ -45,6 +49,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     InputTextModule,
     TranslocoDirective,
+    TranslocoPipe,
     EditorModule,
     CoordinatesComponent,
     ColorPickerModule,

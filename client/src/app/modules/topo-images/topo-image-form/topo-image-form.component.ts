@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
@@ -55,6 +56,7 @@ import { AreasService } from '../../../services/crud/areas.service';
   styleUrls: ['./topo-image-form.component.scss'],
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     Card,
     ReactiveFormsModule,
     SingleImageUploadComponent,

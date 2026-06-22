@@ -17,8 +17,6 @@
   "lineForm.createLineDescription": "Erstelle hier eine neue Linie. Je mehr Infos, desto besser.",
   "lineForm.lineNameLabel": "Name",
   "lineForm.lineNamePlaceholder": "z.B. The Big Island",
-  "lineForm.required": "Pflichtfeld",
-  "lineForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "lineForm.lineDescriptionLabel": "Beschreibung",
   "lineForm.lineDescriptionPlaceholder": "Beschreibe hier generelle Aspekte der Linie und anderes worauf es zu achten gilt. Braucht man viele Pads? Bleibt sie lange nass? Sind evtl Griffe brüchig?",
   "lineForm.colorLabel": "Farbe wählen",
@@ -32,7 +30,6 @@
   "lineForm.displayUserRatingsActive": "Achtung: Die Bewertungen der Begehungen bestimmen die angezeigte Bewertung",
   "lineForm.lineVideosLabel": "Videos",
   "lineForm.lineVideoTitlePlaceholder": "Videotitel, z.B. Morpho-Beta",
-  "lineForm.requiredValidationError": "Pflichtfeld",
   "lineForm.lineVideoUrlPlaceholder": "Video URL",
   "lineForm.invalidHttpUrlValidationError": "Ungültige URL",
   "lineForm.addVideoButtonLabel": "Video hinzufügen",
@@ -135,8 +132,6 @@
   "lineList.advancedFiltersCancel": "Abbrechen",
   "lineList.advancedFiltersApply": "Übernehmen",
   "batchLineForm.lineNamePlaceholder": "Name",
-  "batchLineForm.required": "Pflichtfeld",
-  "batchLineForm.maxlength120": "Maximale Anzahl Zeichen: 120",
   "batchLineForm.gradePlaceholder": "Grad",
   "batchLineForm.lineFANamePlaceholder": "Erstbegeher / Erstbegeherin"
 }

@@ -16,7 +16,7 @@
         #commentTextarea
       ></textarea>
       <small class="lc-error" *lcIfError="'maxlength'">{{
-        t("maxlength2000")
+        'validation.maxLength' | transloco: { max: 2000 }
       }}</small>
     </div>
 

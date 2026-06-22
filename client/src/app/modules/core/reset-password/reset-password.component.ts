@@ -27,7 +27,11 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
 import { passwordsValidator } from '../../../utility/validators/passwords.validator';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -44,6 +48,7 @@ import { Button } from 'primeng/button';
   styleUrls: ['./reset-password.component.scss'],
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,

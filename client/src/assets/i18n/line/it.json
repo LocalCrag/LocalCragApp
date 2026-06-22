@@ -17,8 +17,6 @@
   "lineForm.createLineDescription": "Crea qui un nuovo Problema. Più informazioni ci sono, meglio è!",
   "lineForm.lineNameLabel": "Nome",
   "lineForm.lineNamePlaceholder": "ad es. The Big Island",
-  "lineForm.required": "Campo obbligatorio",
-  "lineForm.maxlength120": "Numero massimo di caratteri: 120",
   "lineForm.lineDescriptionLabel": "Descrizione",
   "lineForm.lineDescriptionPlaceholder": "Descrivi qui gli aspetti generali del problema e altre cose a cui prestare attenzione. Servono molti crash pad? Ci mette molto ad asciugarsi dopo la pioggia? Ci sono prese a rischio rottura?",
   "lineForm.colorLabel": "Seleziona il colore",
@@ -32,7 +30,6 @@
   "lineForm.displayUserRatingsActive": "Attenzione: la valutazione mostrata dipende dalla valutazione proposta da chi ha ripetuto il problema",
   "lineForm.lineVideosLabel": "Video",
   "lineForm.lineVideoTitlePlaceholder": "Titolo video, ad es. Morpho-Beta",
-  "lineForm.requiredValidationError": "Campo obbligatorio",
   "lineForm.lineVideoUrlPlaceholder": "Video URL",
   "lineForm.invalidHttpUrlValidationError": "Indirizzo non valido",
   "lineForm.addVideoButtonLabel": "Aggiungi video",
@@ -135,8 +132,6 @@
   "lineList.advancedFiltersCancel": "Annulla",
   "lineList.advancedFiltersApply": "Applica",
   "batchLineForm.lineNamePlaceholder": "Nome",
-  "batchLineForm.required": "Campo obbligatorio",
-  "batchLineForm.maxlength120": "Numero massimo di caratteri: 120",
   "batchLineForm.gradePlaceholder": "Grado",
   "batchLineForm.lineFANamePlaceholder": "Aperto da"
 }

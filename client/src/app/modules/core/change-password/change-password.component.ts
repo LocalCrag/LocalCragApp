@@ -21,7 +21,11 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Password } from 'primeng/password';
 import { Message } from 'primeng/message';
@@ -45,6 +49,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     Message,
     Button,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

@@ -17,8 +17,6 @@
   "lineForm.createLineDescription": "Maak hier een nieuwe route aan. Hoe meer informatie, hoe beter.",
   "lineForm.lineNameLabel": "Naam",
   "lineForm.lineNamePlaceholder": "bijv. The Big Island",
-  "lineForm.required": "Verplicht veld",
-  "lineForm.maxlength120": "Maximum aantal tekens: 120",
   "lineForm.lineDescriptionLabel": "Beschrijving",
   "lineForm.lineDescriptionPlaceholder": "Beschrijf hier algemene aspecten van de route en andere dingen waar je op moet letten. Heb je veel valmatten nodig? Blijft het lang nat? Zijn er enige greepjes broos?",
   "lineForm.colorLabel": "Selecteer kleur",
@@ -32,7 +30,6 @@
   "lineForm.displayUserRatingsActive": "Opgelet: De ratings die in de beklimmingen worden voorgesteld bepalen de weergegeven rating",
   "lineForm.lineVideosLabel": "Video's",
   "lineForm.lineVideoTitlePlaceholder": "Videotitel, bijv. Morpho-hint",
-  "lineForm.requiredValidationError": "Verplicht veld",
   "lineForm.lineVideoUrlPlaceholder": "Video-URL",
   "lineForm.invalidHttpUrlValidationError": "Ongeldige URL",
   "lineForm.addVideoButtonLabel": "Video toevoegen",
@@ -135,8 +132,6 @@
   "lineList.advancedFiltersCancel": "Annuleren",
   "lineList.advancedFiltersApply": "Toepassen",
   "batchLineForm.lineNamePlaceholder": "Naam",
-  "batchLineForm.required": "Verplicht veld",
-  "batchLineForm.maxlength120": "Maximum aantal tekens: 120",
   "batchLineForm.gradePlaceholder": "Graad",
   "batchLineForm.lineFANamePlaceholder": "Eerste klimmer"
 }

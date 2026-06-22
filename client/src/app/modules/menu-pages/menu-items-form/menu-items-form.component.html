@@ -31,7 +31,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -54,7 +54,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -77,7 +77,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -100,7 +100,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -114,10 +114,10 @@
               lcFormControl
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              'validation.maxLength' | transloco: { max: 120 }
             }}</small>
           </div>
           <div class="flex flex-column gap-2" lcControlGroup>
@@ -134,10 +134,10 @@
               t("invalidHttpUrl")
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              'validation.maxLength' | transloco: { max: 120 }
             }}</small>
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
           </div>
         </form>

@@ -10,7 +10,11 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -43,6 +47,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     InputTextModule,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

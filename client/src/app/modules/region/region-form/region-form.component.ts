@@ -18,7 +18,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { UploadService } from '../../../services/crud/upload.service';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -43,6 +43,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     EditorModule,
     ButtonModule,
     TranslocoDirective,
+    TranslocoPipe,
     InputTextModule,
     FormDirective,
     ControlGroupDirective,

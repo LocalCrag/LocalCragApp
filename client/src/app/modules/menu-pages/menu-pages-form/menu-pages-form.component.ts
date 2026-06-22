@@ -12,7 +12,11 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UploadService } from '../../../services/crud/upload.service';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
@@ -43,6 +47,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

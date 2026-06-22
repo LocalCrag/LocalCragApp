@@ -16,10 +16,10 @@
             data-cy="register-form-firstname"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            'validation.required' | transloco
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
+            'validation.maxLength' | transloco: { max: 120 }
           }}</small>
         </div>
 
@@ -33,10 +33,10 @@
             data-cy="register-form-lastname"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            'validation.required' | transloco
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
+            'validation.maxLength' | transloco: { max: 120 }
           }}</small>
         </div>
 
@@ -51,7 +51,7 @@
               data-cy="register-form-email"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
             <small class="lc-error" *lcIfError="'pattern'">{{
               t("invalidEmailHint")
@@ -60,7 +60,7 @@
               t("emailTaken")
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              'validation.maxLength' | transloco: { max: 120 }
             }}</small>
           </div>
 
@@ -74,7 +74,7 @@
               data-cy="register-form-email-confirm"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              'validation.required' | transloco
             }}</small>
             <small class="lc-error" *lcIfError="'pattern'">{{
               t("invalidEmailHint")
@@ -83,7 +83,7 @@
               t("emailTaken")
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              'validation.maxLength' | transloco: { max: 120 }
             }}</small>
           </div>
         </div>

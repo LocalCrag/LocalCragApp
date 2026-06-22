@@ -1,12 +1,12 @@
 {
-  "line.reorderLinePathsForLineButtonLabel": "Réorganiser les images Topo",
-  "line.ascentCount": "Ascensions",
-  "line.FA": "Ouvert",
-  "lineForm.lineDescriptionPlaceholder": "Décrivez ici les aspects généraux de la ligne et les autres éléments à surveiller. Les bords de murs sont-ils interdits ? Les volumes sont-ils interdits ?",
-  "lineForm.lineFANameLabel": "Routeur",
   "batchLineForm.lineFANamePlaceholder": "Routeur",
-  "lineForm.lineFANamePlaceholder": "par ex. Wolfgang Güllich",
-  "lineForm.lineFAYearLabel": "Année de mise en place",
+  "line.FA": "Ouvert",
+  "line.ascentCount": "Ascensions",
+  "line.reorderLinePathsForLineButtonLabel": "Réorganiser les images Topo",
+  "lineForm.closedReasonPlaceholder": "par ex. travaux d'entretien...",
+  "lineForm.lineDescriptionPlaceholder": "Décrivez ici les aspects généraux de la ligne et les autres éléments à surveiller. Les bords de murs sont-ils interdits ? Les volumes sont-ils interdits ?",
   "lineForm.lineFADateLabel": "Date de mise en place",
-  "lineForm.closedReasonPlaceholder": "par ex. travaux d'entretien..."
+  "lineForm.lineFANameLabel": "Routeur",
+  "lineForm.lineFANamePlaceholder": "par ex. Wolfgang Güllich",
+  "lineForm.lineFAYearLabel": "Année de mise en place"
 }

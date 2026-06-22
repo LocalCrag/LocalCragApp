@@ -3,7 +3,6 @@
   "linePathForm.addLinePathTitle": "Tracer une ligne",
   "linePathForm.lineLabel": "Doubler",
   "linePathForm.linePlaceholder": "Sélectionnez une ligne",
-  "linePathForm.required": "Champ obligatoire",
   "linePathForm.linePathLabel": "Chemin de ligne",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Tracez une ligne avec au moins deux points d'ancrage.",
   "linePathForm.addLinePathButtonLabel": "Tracer une ligne",

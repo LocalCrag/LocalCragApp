@@ -26,7 +26,7 @@ import {
 } from '../../../ngrx/selectors/auth.selectors';
 import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { Dialog } from 'primeng/dialog';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -45,6 +45,7 @@ import { Button } from 'primeng/button';
   encapsulation: ViewEncapsulation.None,
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     Dialog,
     ReactiveFormsModule,
     FormDirective,
