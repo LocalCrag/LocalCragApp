@@ -1,7 +1,7 @@
 from flask import current_app, jsonify
 from flask.views import MethodView
 
-from schedulers import send_notification_digests
+from scheduler_jobs.notification_digests import send_notification_digests
 from util.flask_environment import development_only
 from util.scheduled_closure import apply_materialized_closures
 

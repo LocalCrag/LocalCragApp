@@ -11,7 +11,9 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.region import Region
 from models.sector import Sector
-from schedulers import reschedule_closure_materialization_job
+from scheduler_jobs.closure_materialization import (
+    reschedule_closure_materialization_job,
+)
 from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
