@@ -16,10 +16,10 @@
             data-cy="login-form-email"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            'validation.required' | transloco
+            "validation.required" | transloco
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            'validation.maxLength' | transloco: { max: 120 }
+            "validation.maxLength" | transloco: { max: 120 }
           }}</small>
         </div>
 
@@ -33,10 +33,10 @@
             data-cy="login-form-password"
           ></p-password>
           <small class="lc-error" *lcIfError="'required'">{{
-            'validation.required' | transloco
+            "validation.required" | transloco
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            'validation.maxLength' | transloco: { max: 120 }
+            "validation.maxLength" | transloco: { max: 120 }
           }}</small>
         </div>
       </form>
