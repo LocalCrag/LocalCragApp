@@ -15,7 +15,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from util.bucket_placeholders import add_bucket_placeholders
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from webargs_schemas.region_args import region_args
 
@@ -74,8 +74,7 @@ class GetRegionGrades(MethodView):
                 Sector.closed.is_(False),
                 Crag.closed.is_(False),
             )
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         result = query.all()
 
         response_data = {

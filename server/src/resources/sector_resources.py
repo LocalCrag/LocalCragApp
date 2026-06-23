@@ -31,7 +31,7 @@ from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
 )
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.move_args import move_sector_args
@@ -242,8 +242,7 @@ class GetSectorGrades(MethodView):
             .join(Area)
             .filter(Area.sector_id == sector_id, Line.archived.is_(False))
         )
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         result = query.all()
 
         response_data = {

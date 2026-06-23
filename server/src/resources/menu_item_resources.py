@@ -11,7 +11,7 @@ from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
 from models.user import User
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
@@ -165,10 +165,10 @@ class GetCragMenuStructure(MethodView):
         filter_out_secret_spots_crag_clause = ""
         filter_out_secret_spots_sector_clause = ""
         filter_out_secret_spots_area_clause = ""
-        if not get_show_secret():
-            filter_out_secret_spots_crag_clause = "WHERE crags.secret = FALSE"
-            filter_out_secret_spots_sector_clause = "AND sectors.secret = FALSE"
-            filter_out_secret_spots_area_clause = "AND areas.secret = FALSE"
+        if not SecretService.can_view_secrets():
+            filter_out_secret_spots_crag_clause = "WHERE crags.id NOT IN (SELECT entity_id FROM secret_topo_entities)"
+            filter_out_secret_spots_sector_clause = "AND sectors.id NOT IN (SELECT entity_id FROM secret_topo_entities)"
+            filter_out_secret_spots_area_clause = "AND areas.id NOT IN (SELECT entity_id FROM secret_topo_entities)"
 
         filter_out_closed_spots_crag_clause = ""
         filter_out_closed_spots_sector_clause = ""

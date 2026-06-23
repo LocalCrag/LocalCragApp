@@ -25,8 +25,6 @@ def update_searchables(session, flush_context, instances):
         searchable.name = "".join(
             [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns]
         )
-        if hasattr(item, "secret"):
-            searchable.secret = item.secret
         db.session.add(searchable)
 
     deleted_items = [item for item in session.deleted if isinstance(item, IsSearchable)]
@@ -50,6 +48,4 @@ def create_searchables(session, flush_context):
         searchable.name = "".join(
             [getattr(item, name_target_column) for name_target_column in item.search_name_target_columns]
         )
-        if hasattr(item, "secret"):
-            searchable.secret = item.secret
         db.session.add(searchable)
