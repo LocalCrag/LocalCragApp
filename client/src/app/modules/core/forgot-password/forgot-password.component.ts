@@ -20,7 +20,11 @@ import { selectForgotPasswordLoadingState } from '../../../ngrx/selectors/auth.s
 import { forgotPassword } from '../../../ngrx/actions/auth.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
@@ -38,6 +42,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   styleUrls: ['./forgot-password.component.scss'],
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     ReactiveFormsModule,
     InputText,
     Button,

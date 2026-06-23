@@ -1,5 +1,5 @@
 {
+  "batchUploadForm.lineFADateLabel": "Date de mise en place",
   "topoImageForm.addTopoImageDescription": "Téléchargez une nouvelle image Topo. Ensuite, les lignes disponibles peuvent être tracées sur l'image. Le mur doit occuper la majeure partie de l’image et toute la ligne doit être facile à voir. Dans certains cas, il est judicieux de tracer la même ligne sur plusieurs images. C'est le cas, par exemple, des cheminements ou des lignes qui contournent une arête.",
-  "topoImageForm.topoImageDescriptionPlaceholder": "Des choses intéressantes sur le mur. Existe-t-il, par exemple, un style de ligne typique ? A-t-il une histoire particulière ?",
-  "batchUploadForm.lineFADateLabel": "Date de mise en place"
+  "topoImageForm.topoImageDescriptionPlaceholder": "Des choses intéressantes sur le mur. Existe-t-il, par exemple, un style de ligne typique ? A-t-il une histoire particulière ?"
 }

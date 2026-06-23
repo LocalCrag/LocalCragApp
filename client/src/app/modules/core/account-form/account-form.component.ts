@@ -13,7 +13,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
@@ -54,6 +58,7 @@ import { AccountSettingsFormComponent } from '../account-settings-form/account-s
     ReactiveFormsModule,
     ButtonModule,
     TranslocoDirective,
+    TranslocoPipe,
     InputTextModule,
     AvatarUploadComponent,
     MessageModule,

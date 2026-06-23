@@ -49,7 +49,9 @@
             />
           </div>
           @if (submitted && form.errors?.noStatusSelected) {
-            <small class="lc-error">{{ t("blocWeather.required") }}</small>
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
           }
         </div>
 
@@ -76,7 +78,7 @@
             />
           </div>
           <small class="lc-error" *lcIfError="'required'">{{
-            t("blocWeather.required")
+            "validation.required" | transloco
           }}</small>
         </div>
 

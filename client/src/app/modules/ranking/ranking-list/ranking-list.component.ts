@@ -84,11 +84,15 @@ export class RankingListComponent implements OnInit {
   ngOnInit() {
     this.rankingTypes = [
       {
-        label: this.translocoService.translate(marker('top10Ranking')),
+        label: this.translocoService.translate(marker('ranking.topN'), {
+          count: 10,
+        }),
         value: 'top10',
       },
       {
-        label: this.translocoService.translate(marker('top50Ranking')),
+        label: this.translocoService.translate(marker('ranking.topN'), {
+          count: 50,
+        }),
         value: 'top50',
       },
       {

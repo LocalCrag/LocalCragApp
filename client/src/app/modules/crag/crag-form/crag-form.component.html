@@ -20,10 +20,10 @@
             data-cy="crag-form-name"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
+            "validation.maxLength" | transloco: { max: 120 }
           }}</small>
         </div>
 
@@ -236,7 +236,7 @@
             t("invalidBlocweatherUrl")
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength255")
+            "validation.maxLength" | transloco: { max: 255 }
           }}</small>
         </div>
 

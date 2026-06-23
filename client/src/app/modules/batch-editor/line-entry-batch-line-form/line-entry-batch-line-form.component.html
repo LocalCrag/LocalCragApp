@@ -20,10 +20,10 @@
             data-cy="line-form-name"
           />
           <small class="lc-error mt-1" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
           <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
-            t("maxlength120")
+            "validation.maxLength" | transloco: { max: 120 }
           }}</small>
         </div>
         @if (gymMode$ | async) {
@@ -59,7 +59,7 @@
             </ng-template>
           </p-select>
           <small class="lc-error mt-1" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
         </div>
         @if (type === lineTypes.BOULDER && (gymMode$ | async) === false) {
@@ -84,7 +84,7 @@
               </ng-template>
             </p-select>
             <small class="lc-error mt-1" *lcIfError="'required'">{{
-              t("required")
+              "validation.required" | transloco
             }}</small>
           </div>
         }
@@ -99,7 +99,7 @@
               lcFormControl
             />
             <small class="lc-error mt-1" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              "validation.maxLength" | transloco: { max: 120 }
             }}</small>
           </div>
         }

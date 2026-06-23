@@ -1,16 +1,11 @@
 {
-  "region.regionForm.regionNamePlaceholder": "par ex. nom de l'organisation",
-  "region.regionForm.regionDescriptionPlaceholder": "Informations générales sur l'organisation.",
-  "region.regionForm.regionRulesPlaceholder": "Règles",
-  "region.regionForm.editRegionTitle": "Modifier l'organisation",
+  "ascentForm.firstAscentExplanation": "Première ascension : Cette case n'est à cocher que si vous êtes la première personne à gravir cette ligne. Ce n'est pas votre première ascension personnelle !",
   "notFound.title": "Erreur 404 : Aucune cale en vue !",
   "projectClimbedForm.projectClimbedInfoMessage": "Vous avez grimpé un projet ? Félicitations! Ce serait sympa si vous pouviez nous envoyer quelques informations afin que nous puissions inclure la nouvelle ligne dans le topo. En premier lieu, le nom de la ligne et le niveau de difficulté proposé. Si vous avez une vidéo, n'hésitez pas à nous l'envoyer. Si vous souhaitez être mentionné dans le Topo lors de la première ascension, envoyez-nous votre nom et la date de l'ascension. Nous vous contacterons !",
-  "ascentForm.firstAscentExplanation": "Première ascension : Cette case n'est à cocher que si vous êtes la première personne à gravir cette ligne. Ce n'est pas votre première ascension personnelle !",
-  "top25Ranking": "Top 25 des ascensions",
-  "top10FaRanking": "Top 10 des premières ascensions",
-  "totalFaCountRanking": "Nombre de premières ascensions",
-  "top10FaExponentialRanking": "Top 10 des premières ascensions (pondération exponentielle)",
-  "totalFaRanking": "Toutes les premières ascensions",
-  "totalFaExponentialRanking": "Toutes les premières ascensions (pondération exponentielle)",
+  "ranking.topN": "Top {{count}} ascensions",
+  "region.regionForm.editRegionTitle": "Modifier l'organisation",
+  "region.regionForm.regionDescriptionPlaceholder": "Informations générales sur l'organisation.",
+  "region.regionForm.regionNamePlaceholder": "par ex. nom de l'organisation",
+  "region.regionForm.regionRulesPlaceholder": "Règles",
   "searchDialog.infoMessage": "La qualité de la fonction de recherche n'est pas encore excellente."
 }

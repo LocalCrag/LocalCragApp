@@ -17,7 +17,7 @@
         [placeholder]="t('message')"
       ></textarea>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
+        "validation.required" | transloco
       }}</small>
     </div>
   </form>

@@ -22,7 +22,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Textarea } from 'primeng/textarea';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { Button } from 'primeng/button';
 import { getObjectType } from '../../../models/object';
 import { CommentsContextService } from '../comments-context.service';
@@ -39,6 +39,7 @@ import { Store } from '@ngrx/store';
     IfErrorDirective,
     Textarea,
     TranslocoDirective,
+    TranslocoPipe,
     Button,
   ],
   templateUrl: './comment-editor.component.html',
@@ -79,7 +80,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       message: [
         this.commentToEdit ? this.commentToEdit.message : '',
-        [Validators.required, Validators.maxLength(2000)],
+        [Validators.required, Validators.maxLength(10000)],
       ],
     });
   }

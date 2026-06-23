@@ -3,7 +3,6 @@
   "linePathForm.addLinePathTitle": "Linie einzeichnen",
   "linePathForm.lineLabel": "Linie",
   "linePathForm.linePlaceholder": "Wähle eine Linie",
-  "linePathForm.required": "Pflichtfeld",
   "linePathForm.linePathLabel": "Linienverlauf",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
   "linePathForm.addLinePathButtonLabel": "Linie einzeichnen",

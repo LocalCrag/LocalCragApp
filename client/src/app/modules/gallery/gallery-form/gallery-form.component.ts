@@ -15,7 +15,7 @@ import {
 import { GalleryService } from '../../../services/crud/gallery.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { LoadingState } from '../../../enums/loading-state';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -42,6 +42,7 @@ import { ObjectUtilsService } from '../../../services/utils/object-utils.service
   selector: 'lc-gallery-form',
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     ReactiveFormsModule,
     ButtonModule,
     MultiSelectModule,

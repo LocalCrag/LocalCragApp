@@ -17,7 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { DatePicker } from 'primeng/datepicker';
 import { Textarea } from 'primeng/textarea';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { Message } from 'primeng/message';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,6 +50,7 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
     DatePicker,
     Textarea,
     TranslocoDirective,
+    TranslocoPipe,
     Message,
     FormDirective,
     ControlGroupDirective,

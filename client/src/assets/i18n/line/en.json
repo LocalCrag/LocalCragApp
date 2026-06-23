@@ -17,8 +17,6 @@
   "lineForm.createLineDescription": "Create a new line here. The more info, the better.",
   "lineForm.lineNameLabel": "Name",
   "lineForm.lineNamePlaceholder": "e.g. The Big Island",
-  "lineForm.required": "Mandatory field",
-  "lineForm.maxlength120": "Maximum number of characters: 120",
   "lineForm.lineDescriptionLabel": "Description",
   "lineForm.lineDescriptionPlaceholder": "Describe here general aspects of the line and other things to look out for. Do you need a lot of crashpads? Does it stay wet for a long time? Are any holds brittle?",
   "lineForm.colorLabel": "Select color",
@@ -32,7 +30,6 @@
   "lineForm.displayUserRatingsActive": "Attention: The ratings proposed in the ascents determine the rating displayed",
   "lineForm.lineVideosLabel": "Videos",
   "lineForm.lineVideoTitlePlaceholder": "Video title, e.g. Morpho beta",
-  "lineForm.requiredValidationError": "Mandatory field",
   "lineForm.lineVideoUrlPlaceholder": "Video URL",
   "lineForm.invalidHttpUrlValidationError": "Invalid URL",
   "lineForm.addVideoButtonLabel": "Add video",
@@ -135,8 +132,6 @@
   "lineList.advancedFiltersCancel": "Cancel",
   "lineList.advancedFiltersApply": "Apply",
   "batchLineForm.lineNamePlaceholder": "Name",
-  "batchLineForm.required": "Mandatory field",
-  "batchLineForm.maxlength120": "Maximum number of characters: 120",
   "batchLineForm.gradePlaceholder": "Grade",
   "batchLineForm.lineFANamePlaceholder": "First Climber"
 }

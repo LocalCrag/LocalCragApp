@@ -15,7 +15,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
@@ -43,6 +47,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     PasswordModule,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     RouterLink,
     MessageModule,
     FormDirective,

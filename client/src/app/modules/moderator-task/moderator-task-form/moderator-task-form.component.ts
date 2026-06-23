@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
 import { Select } from 'primeng/select';
@@ -48,6 +48,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     Select,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,

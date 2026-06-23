@@ -30,7 +30,7 @@
               />
               <div class="lc-error-slot">
                 <small class="lc-error" *lcIfError="'required'">
-                  {{ t("required") }}
+                  {{ "validation.required" | transloco }}
                 </small>
               </div>
             </div>
@@ -47,10 +47,10 @@
               />
               <div class="lc-error-slot">
                 <small class="lc-error" *lcIfError="'required'">
-                  {{ t("required") }}
+                  {{ "validation.required" | transloco }}
                 </small>
                 <small class="lc-error" *lcIfError="'maxlength'">
-                  {{ t("maxlength32") }}
+                  {{ "validation.maxLength" | transloco: { max: 32 } }}
                 </small>
               </div>
             </div>
@@ -121,7 +121,7 @@
                           *lcIfError="'required'"
                           lcIfErrorControlName="name"
                         >
-                          {{ t("required") }}
+                          {{ "validation.required" | transloco }}
                         </small>
                       </div>
                     </div>
@@ -141,7 +141,7 @@
                           *lcIfError="'required'"
                           lcIfErrorControlName="value"
                         >
-                          {{ t("required") }}
+                          {{ "validation.required" | transloco }}
                         </small>
                       </div>
                     </div>
@@ -234,7 +234,7 @@
                       *lcIfError="'required'"
                       lcIfErrorControlName="value"
                     >
-                      {{ t("required") }}
+                      {{ "validation.required" | transloco }}
                     </small>
                   </div>
                 </div>
@@ -255,7 +255,7 @@
                       *lcIfError="'required'"
                       lcIfErrorControlName="color"
                     >
-                      {{ t("required") }}
+                      {{ "validation.required" | transloco }}
                     </small>
                   </div>
                 </div>
@@ -342,7 +342,7 @@
                       *lcIfError="'required'"
                       lcIfErrorControlName="value"
                     >
-                      {{ t("required") }}
+                      {{ "validation.required" | transloco }}
                     </small>
                   </div>
                 </div>
@@ -364,7 +364,7 @@
                       *lcIfError="'required'"
                       lcIfErrorControlName="name"
                     >
-                      {{ t("required") }}
+                      {{ "validation.required" | transloco }}
                     </small>
                   </div>
                 </div>
