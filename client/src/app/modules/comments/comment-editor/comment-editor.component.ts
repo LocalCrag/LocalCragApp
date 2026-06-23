@@ -80,7 +80,7 @@ export class CommentEditorComponent implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       message: [
         this.commentToEdit ? this.commentToEdit.message : '',
-        [Validators.required, Validators.maxLength(2000)],
+        [Validators.required, Validators.maxLength(10000)],
       ],
     });
   }
