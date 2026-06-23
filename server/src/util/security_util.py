@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from messages.messages import ResponseMessage
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 def check_auth_claims(admin=False, moderator=False, member=False):
@@ -36,5 +36,5 @@ def check_secret_spot_permission(item):
     Checks for a given Line, Area, Sector or Crag if the requesting user has secret spot permissions to view it.
     """
     if item.secret:
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)

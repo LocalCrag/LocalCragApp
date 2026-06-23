@@ -14,9 +14,9 @@ from models.instance_settings import InstanceSettings
 from models.recent_search import RecentSearch
 from models.searchable import Searchable
 from models.user import User
-from util.generic_relationships import check_object_exists, get_object_secret
+from util.generic_relationships import check_object_exists
 from util.search_result_serialization import serialize_search_result
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from webargs_schemas.recent_search_args import recent_search_create_args
 
 MAX_RECENT_SEARCHES = 10
@@ -57,8 +57,7 @@ class Search(MethodView):
                 raise BadRequest(f"Invalid objectType '{object_type}'. Allowed values: {allowed}.") from e
         instance_settings = InstanceSettings.return_it()
         db_query = db.session.query(Searchable)
-        if not get_show_secret():
-            db_query = db_query.filter(Searchable.secret.is_(False))
+        db_query = SecretService.apply_searchable_filter(db_query)
         if type_filter is not None:
             db_query = db_query.filter(Searchable.type == type_filter)
         if instance_settings.skipped_hierarchical_layers > 0:
@@ -91,7 +90,7 @@ class GetRecentSearches(MethodView):
         )
         result = []
         for entry in recent_entries:
-            if not entry.object or (not get_show_secret() and get_object_secret(entry.object_type, entry.object_id)):
+            if not entry.object or (not SecretService.can_view_secrets() and SecretService.is_secret(entry.object_id)):
                 continue
             serialized = serialize_search_result(entry.object_type, entry.object_id)
             if serialized:
@@ -110,7 +109,7 @@ class CreateRecentSearch(MethodView):
         object_id = data["objectId"]
         if not check_object_exists(object_type, object_id):
             raise BadRequest("Referenced object does not exist.")
-        if object_type != "User" and (not get_show_secret()) and get_object_secret(object_type, object_id):
+        if object_type != "User" and (not SecretService.can_view_secrets()) and SecretService.is_secret(object_id):
             raise BadRequest("Referenced object is not visible.")
 
         existing = RecentSearch.query.filter_by(

@@ -40,6 +40,7 @@ from models.ranking import Ranking
 from models.recent_search import RecentSearch
 from models.region import Region
 from models.revoked_token import RevokedToken
+from models.secret_topo_entity import cleanup_deleted_secret_registry_entries
 from models.sector import Sector
 from models.tag import Tag
 from models.topo_image import TopoImage
@@ -88,6 +89,7 @@ def db_session():
         # We need to re-register all handlers, as we change the session
         listen(db.session, "before_flush", update_slugs)
         listen(db.session, "before_flush", update_searchables)
+        listen(db.session, "before_flush", cleanup_deleted_secret_registry_entries)
         listen(db.session, "after_flush", create_searchables)
         yield db.session
         transaction.rollback()

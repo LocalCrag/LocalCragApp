@@ -18,7 +18,7 @@ from models.enums.map_marker_type_enum import (
 from models.map_marker import MapMarker
 from models.sector import Sector
 from models.topo_image import TopoImage
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class GetMarkers(MethodView):
@@ -64,7 +64,7 @@ class GetMarkers(MethodView):
             query = query.join(Crag, MapMarker.crag_id == Crag.id)
 
         # Filter out secret spots if the user is not allowed to see them
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             query = query.filter(
                 and_(
                     or_(MapMarker.crag.has(secret=False), MapMarker.crag_id.is_(None)),

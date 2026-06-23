@@ -16,7 +16,7 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.todo import Todo
 from models.user import User
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from webargs_schemas.todo_args import todo_args, todo_priority_args
 
 
@@ -110,7 +110,7 @@ class GetTodos(MethodView):
             query = query.filter(Todo.priority == priority)
 
         # Filter secret spots
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             query = query.filter(Todo.line.has(secret=False))
 
         # Apply ordering

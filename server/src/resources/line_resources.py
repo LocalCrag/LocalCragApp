@@ -33,7 +33,7 @@ from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
 )
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import cross_validate_line_args, line_args
@@ -153,8 +153,7 @@ class GetLines(MethodView):
         if area_slug:
             query = query.filter(Area.slug == area_slug)
         # Filter secret spots
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
 
         user_for_filters = None
         if list_filters.climb_filter != "any":

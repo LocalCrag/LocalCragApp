@@ -26,7 +26,7 @@ from models.user import User
 from util.email import send_comment_created_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from webargs_schemas.comment_args import comment_args, comment_update_args
 
 
@@ -56,7 +56,7 @@ class CreateComment(MethodView):
             raise BadRequest("Unsupported object type")
 
         # Enforce secret spot visibility
-        if hasattr(target, "secret") and target.secret and not get_show_secret():
+        if hasattr(target, "secret") and target.secret and not SecretService.can_view_secrets():
             raise NotFound()
 
         parent_id = data.get("parentId")
@@ -178,7 +178,7 @@ class GetComments(MethodView):
 
         # helper to apply secret filters
         def apply_secret_filters(query, current_type):
-            if get_show_secret() or current_type not in ["Line", "Area", "Sector", "Crag"]:
+            if SecretService.can_view_secrets() or current_type not in ["Line", "Area", "Sector", "Crag"]:
                 return query
             if current_type == "Line":
                 return query.join(Line, and_(Comment.object_id == Line.id, Comment.object_type == "Line")).filter(
