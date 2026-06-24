@@ -295,7 +295,8 @@
           <p-button
             label="{{ t('cancelButtonLabel') }}"
             (click)="cancel()"
-            class="ml-3 responsive-button p-button-secondary"
+            class="ml-3 responsive-button"
+            styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
           @if (editMode) {
@@ -303,7 +304,8 @@
               <p-button
                 icon="pi pi-arrow-right-arrow-left"
                 label="{{ t('moveAreaButtonLabel') }}"
-                class="p-button-secondary ml-3 responsive-button"
+                class="ml-3 responsive-button"
+                styleClass="p-button-secondary"
                 (click)="openMoveDialog()"
               ></p-button>
             }
@@ -311,7 +313,8 @@
               label="{{ t('deleteAreaButtonLabel') }}"
               (click)="confirmDeleteArea($event)"
               icon="pi pi-trash"
-              class="p-button-danger ml-3 responsive-button"
+              class="ml-3 responsive-button"
+              styleClass="p-button-danger"
               [loading]="loadingState === loadingStates.LOADING"
             ></p-button>
           }

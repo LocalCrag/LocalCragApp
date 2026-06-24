@@ -40,7 +40,7 @@ export class UserAvatarComponent implements OnChanges {
   @Input() user: User | null | undefined;
   @Input() thumbnail: 'thumbnailS' | 'thumbnailM' = 'thumbnailS';
   @Input() size: 'normal' | 'large' | 'xlarge' = 'normal';
-  @Input() class = '';
+  @Input() styleClass = '';
   /** When set (e.g. deleted comment), always show this image and ignore avatar / initials. */
   @Input() imageFallback: string | null | undefined;
   /** Opens a fullscreen image preview when the user has an avatar. */
@@ -67,7 +67,7 @@ export class UserAvatarComponent implements OnChanges {
       ? {}
       : { background: userAvatarGradientCss(seed) };
 
-    this.fallbackClasses = [this.class, 'lc-user-avatar--initials']
+    this.fallbackClasses = [this.styleClass, 'lc-user-avatar--initials']
       .filter(Boolean)
       .join(' ');
     this.ariaLabel =
@@ -77,7 +77,7 @@ export class UserAvatarComponent implements OnChanges {
     const previewClasses = [
       'lc-user-avatar-preview',
       `lc-user-avatar-preview--${this.size}`,
-      this.class,
+      this.styleClass,
     ];
     this.previewStyleClass = previewClasses.filter(Boolean).join(' ');
   }
