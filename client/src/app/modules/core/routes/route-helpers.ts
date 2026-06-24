@@ -3,7 +3,18 @@ import { CanActivateFn, Route, Routes } from '@angular/router';
 import { StaticBackgroundImages } from '../background-image/background-image.component';
 import { ObjectType } from '../../../models/object';
 import { isModerator } from '../../../guards/is-moderator';
-import { ModeratorTaskFormComponent } from '../../moderator-task/moderator-task-form/moderator-task-form.component';
+
+type LazyComponentLoader = () => Promise<Type<unknown>>;
+
+export const loadGalleryComponent: LazyComponentLoader = () =>
+  import('../../gallery/gallery/gallery.component').then(
+    (m) => m.GalleryComponent,
+  );
+
+export const loadCommentsComponent: LazyComponentLoader = () =>
+  import('../../comments/comments/comments.component').then(
+    (m) => m.CommentsComponent,
+  );
 
 export function defaultBg(
   extra: Record<string, unknown> = {},
@@ -48,20 +59,46 @@ export function outletRoute(
   };
 }
 
+export function lazyOutletRoute(
+  path: string,
+  loadComponent: LazyComponentLoader,
+  outlet: string,
+  options: OutletRouteOptions = {},
+): Route {
+  return {
+    path,
+    ...(options.canActivate && { canActivate: options.canActivate }),
+    children: [
+      {
+        path: '',
+        loadComponent,
+        outlet,
+        ...(options.pathMatch && { pathMatch: options.pathMatch }),
+        ...(options.data && { data: options.data }),
+      },
+    ],
+  };
+}
+
 export function moderatorTaskFormRoutes(
   pathPrefix: string,
   scopeType: ObjectType,
 ): Routes {
+  const loadModeratorTaskForm: LazyComponentLoader = () =>
+    import('../../moderator-task/moderator-task-form/moderator-task-form.component').then(
+      (m) => m.ModeratorTaskFormComponent,
+    );
+
   return [
     {
       path: `${pathPrefix}/moderator-tasks/create`,
-      component: ModeratorTaskFormComponent,
+      loadComponent: loadModeratorTaskForm,
       canActivate: [isModerator],
       data: defaultBg({ scopeType }),
     },
     {
       path: `${pathPrefix}/moderator-tasks/:task-id/edit`,
-      component: ModeratorTaskFormComponent,
+      loadComponent: loadModeratorTaskForm,
       canActivate: [isModerator],
       data: defaultBg({ scopeType }),
     },

@@ -1,8 +1,4 @@
 import { Routes } from '@angular/router';
-import { InstanceSettingsFormComponent } from '../instance-settings-form/instance-settings-form.component';
-import { ScaleListComponent } from '../../scale/scale-list/scale-list.component';
-import { ScaleFormComponent } from '../../scale/scale-form/scale-form.component';
-import { HistoryListComponent } from '../../history/history-list/history-list.component';
 import { isModerator } from '../../../guards/is-moderator';
 import { isAdmin } from '../../../guards/is-admin';
 import { authBg } from './route-helpers';
@@ -10,30 +6,45 @@ import { authBg } from './route-helpers';
 export const adminRoutes: Routes = [
   {
     path: 'instance-settings',
-    component: InstanceSettingsFormComponent,
+    loadComponent: () =>
+      import('../instance-settings-form/instance-settings-form.component').then(
+        (m) => m.InstanceSettingsFormComponent,
+      ),
     canActivate: [isModerator],
     data: authBg(),
   },
   {
     path: 'scales',
-    component: ScaleListComponent,
+    loadComponent: () =>
+      import('../../scale/scale-list/scale-list.component').then(
+        (m) => m.ScaleListComponent,
+      ),
     canActivate: [isAdmin],
     data: authBg(),
   },
   {
     path: 'scales/create',
-    component: ScaleFormComponent,
+    loadComponent: () =>
+      import('../../scale/scale-form/scale-form.component').then(
+        (m) => m.ScaleFormComponent,
+      ),
     canActivate: [isAdmin],
     data: authBg(),
   },
   {
     path: 'scales/:lineType/:name',
-    component: ScaleFormComponent,
+    loadComponent: () =>
+      import('../../scale/scale-form/scale-form.component').then(
+        (m) => m.ScaleFormComponent,
+      ),
     canActivate: [isAdmin],
     data: authBg(),
   },
   {
     path: 'history',
-    component: HistoryListComponent,
+    loadComponent: () =>
+      import('../../history/history-list/history-list.component').then(
+        (m) => m.HistoryListComponent,
+      ),
   },
 ];

@@ -1,22 +1,24 @@
 import { Routes } from '@angular/router';
-import { MenuPagesListComponent } from '../../menu-pages/menu-pages-list/menu-pages-list.component';
-import { MenuPagesFormComponent } from '../../menu-pages/menu-pages-form/menu-pages-form.component';
 import { MenuPageDetailComponent } from '../../menu-pages/menu-page-detail/menu-page-detail.component';
-import { MenuItemsListComponent } from '../../menu-pages/menu-items-list/menu-items-list.component';
-import { MenuItemsFormComponent } from '../../menu-pages/menu-items-form/menu-items-form.component';
 import { isModerator } from '../../../guards/is-moderator';
 import { defaultBg } from './route-helpers';
 
 export const menuRoutes: Routes = [
   {
     path: 'pages',
-    component: MenuPagesListComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-pages-list/menu-pages-list.component').then(
+        (m) => m.MenuPagesListComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: 'pages/create-menu-page',
-    component: MenuPagesFormComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-pages-form/menu-pages-form.component').then(
+        (m) => m.MenuPagesFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
@@ -27,25 +29,37 @@ export const menuRoutes: Routes = [
   },
   {
     path: 'pages/:menu-page-slug/edit',
-    component: MenuPagesFormComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-pages-form/menu-pages-form.component').then(
+        (m) => m.MenuPagesFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: 'menu-items',
-    component: MenuItemsListComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-items-list/menu-items-list.component').then(
+        (m) => m.MenuItemsListComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: 'menu-items/create-menu-item/:position',
-    component: MenuItemsFormComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-items-form/menu-items-form.component').then(
+        (m) => m.MenuItemsFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: 'menu-items/:menu-item-id/edit',
-    component: MenuItemsFormComponent,
+    loadComponent: () =>
+      import('../../menu-pages/menu-items-form/menu-items-form.component').then(
+        (m) => m.MenuItemsFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },

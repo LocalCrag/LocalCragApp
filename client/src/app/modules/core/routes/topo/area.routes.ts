@@ -3,16 +3,14 @@ import { AreaComponent } from '../../../area/area/area.component';
 import { AreaInfoComponent } from '../../../area/area-info/area-info.component';
 import { LineListComponent } from '../../../line/line-list/line-list.component';
 import { TopoImageListComponent } from '../../../topo-images/topo-image-list/topo-image-list.component';
-import { GalleryComponent } from '../../../gallery/gallery/gallery.component';
-import { CommentsComponent } from '../../../comments/comments/comments.component';
-import { ModeratorTaskListComponent } from '../../../moderator-task/moderator-task-list/moderator-task-list.component';
 import { AreaAscentsComponent } from '../../../area/area-ascents/area-ascents.component';
-import { AreaWeatherComponent } from '../../../area/area-weather/area-weather.component';
-import { AreaFormComponent } from '../../../area/area-form/area-form.component';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
   defaultBg,
+  lazyOutletRoute,
+  loadCommentsComponent,
+  loadGalleryComponent,
   moderatorTaskFormRoutes,
   outletRoute,
 } from '../route-helpers';
@@ -42,15 +40,18 @@ export const topoAreaRoutes: Routes = [
       outletRoute('topo-images', TopoImageListComponent, 'areaContent', {
         pathMatch: 'full',
       }),
-      outletRoute('gallery', GalleryComponent, 'areaContent', {
+      lazyOutletRoute('gallery', loadGalleryComponent, 'areaContent', {
         data: { objectType: ObjectType.Area },
       }),
-      outletRoute('comments', CommentsComponent, 'areaContent', {
+      lazyOutletRoute('comments', loadCommentsComponent, 'areaContent', {
         data: { objectType: ObjectType.Area },
       }),
-      outletRoute(
+      lazyOutletRoute(
         'moderator-tasks',
-        ModeratorTaskListComponent,
+        () =>
+          import('../../../moderator-task/moderator-task-list/moderator-task-list.component').then(
+            (m) => m.ModeratorTaskListComponent,
+          ),
         'areaContent',
         {
           canActivate: [isModerator],
@@ -58,13 +59,23 @@ export const topoAreaRoutes: Routes = [
         },
       ),
       outletRoute('ascents', AreaAscentsComponent, 'areaContent'),
-      outletRoute('weather', AreaWeatherComponent, 'areaContent'),
+      lazyOutletRoute(
+        'weather',
+        () =>
+          import('../../../area/area-weather/area-weather.component').then(
+            (m) => m.AreaWeatherComponent,
+          ),
+        'areaContent',
+      ),
     ],
   },
   ...moderatorTaskFormRoutes(areaPrefix, ObjectType.Area),
   {
     path: `${areaPrefix}/edit`,
-    component: AreaFormComponent,
+    loadComponent: () =>
+      import('../../../area/area-form/area-form.component').then(
+        (m) => m.AreaFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
