@@ -3,21 +3,16 @@ import { CragComponent } from '../../../crag/crag/crag.component';
 import { CragInfoComponent } from '../../../crag/crag-info/crag-info.component';
 import { SectorListComponent } from '../../../sector/sector-list/sector-list.component';
 import { LineListComponent } from '../../../line/line-list/line-list.component';
-import { CragRulesComponent } from '../../../crag/crag-rules/crag-rules.component';
-import { GalleryComponent } from '../../../gallery/gallery/gallery.component';
-import { CommentsComponent } from '../../../comments/comments/comments.component';
-import { ModeratorTaskListComponent } from '../../../moderator-task/moderator-task-list/moderator-task-list.component';
 import { CragAscentsComponent } from '../../../crag/crag-ascents/crag-ascents.component';
-import { CragWeatherComponent } from '../../../crag/crag-weather/crag-weather.component';
-import { CragRankingComponent } from '../../../crag/crag-ranking/crag-ranking.component';
-import { CragFormComponent } from '../../../crag/crag-form/crag-form.component';
-import { SectorFormComponent } from '../../../sector/sector-form/sector-form.component';
 import { skipHierarchy } from '../../../../guards/skip-hierarchy';
 import { isModerator } from '../../../../guards/is-moderator';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
 import {
   defaultBg,
+  lazyOutletRoute,
+  loadCommentsComponent,
+  loadGalleryComponent,
   moderatorTaskFormRoutes,
   outletRoute,
 } from '../route-helpers';
@@ -63,18 +58,29 @@ export const topoCragRoutes: Routes = [
       outletRoute('lines', LineListComponent, 'cragContent', {
         canActivate: [skipHierarchy(2, ['/topo'], ['lines'])],
       }),
-      outletRoute('rules', CragRulesComponent, 'cragContent', {
-        canActivate: [skipHierarchy(2, ['/topo'], ['rules'])],
-      }),
-      outletRoute('gallery', GalleryComponent, 'cragContent', {
+      lazyOutletRoute(
+        'rules',
+        () =>
+          import('../../../crag/crag-rules/crag-rules.component').then(
+            (m) => m.CragRulesComponent,
+          ),
+        'cragContent',
+        {
+          canActivate: [skipHierarchy(2, ['/topo'], ['rules'])],
+        },
+      ),
+      lazyOutletRoute('gallery', loadGalleryComponent, 'cragContent', {
         data: { objectType: ObjectType.Crag },
       }),
-      outletRoute('comments', CommentsComponent, 'cragContent', {
+      lazyOutletRoute('comments', loadCommentsComponent, 'cragContent', {
         data: { objectType: ObjectType.Crag },
       }),
-      outletRoute(
+      lazyOutletRoute(
         'moderator-tasks',
-        ModeratorTaskListComponent,
+        () =>
+          import('../../../moderator-task/moderator-task-list/moderator-task-list.component').then(
+            (m) => m.ModeratorTaskListComponent,
+          ),
         'cragContent',
         {
           canActivate: [isModerator],
@@ -84,24 +90,46 @@ export const topoCragRoutes: Routes = [
       outletRoute('ascents', CragAscentsComponent, 'cragContent', {
         canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
       }),
-      outletRoute('weather', CragWeatherComponent, 'cragContent', {
-        canActivate: [skipHierarchy(2, ['/topo'], ['weather'])],
-      }),
-      outletRoute('ranking', CragRankingComponent, 'cragContent', {
-        canActivate: [skipHierarchy(2, ['/topo'], ['ranking'])],
-      }),
+      lazyOutletRoute(
+        'weather',
+        () =>
+          import('../../../crag/crag-weather/crag-weather.component').then(
+            (m) => m.CragWeatherComponent,
+          ),
+        'cragContent',
+        {
+          canActivate: [skipHierarchy(2, ['/topo'], ['weather'])],
+        },
+      ),
+      lazyOutletRoute(
+        'ranking',
+        () =>
+          import('../../../crag/crag-ranking/crag-ranking.component').then(
+            (m) => m.CragRankingComponent,
+          ),
+        'cragContent',
+        {
+          canActivate: [skipHierarchy(2, ['/topo'], ['ranking'])],
+        },
+      ),
     ],
   },
   ...moderatorTaskFormRoutes(cragPrefix, ObjectType.Crag),
   {
     path: `${cragPrefix}/edit`,
-    component: CragFormComponent,
+    loadComponent: () =>
+      import('../../../crag/crag-form/crag-form.component').then(
+        (m) => m.CragFormComponent,
+      ),
     canActivate: [isModerator, skipHierarchy(2, ['/topo'], ['edit'])],
     data: defaultBg(),
   },
   {
     path: `${cragPrefix}/create-sector`,
-    component: SectorFormComponent,
+    loadComponent: () =>
+      import('../../../sector/sector-form/sector-form.component').then(
+        (m) => m.SectorFormComponent,
+      ),
     canActivate: [
       isModerator,
       skipHierarchy(

@@ -3,22 +3,14 @@ import { SectorComponent } from '../../../sector/sector/sector.component';
 import { SectorInfoComponent } from '../../../sector/sector-info/sector-info.component';
 import { AreaListComponent } from '../../../area/area-list/area-list.component';
 import { LineListComponent } from '../../../line/line-list/line-list.component';
-import { SectorRulesComponent } from '../../../sector/sector-rules/sector-rules.component';
-import { GalleryComponent } from '../../../gallery/gallery/gallery.component';
-import { CommentsComponent } from '../../../comments/comments/comments.component';
-import { ModeratorTaskListComponent } from '../../../moderator-task/moderator-task-list/moderator-task-list.component';
 import { SectorAscentsComponent } from '../../../sector/sector-ascents/sector-ascents.component';
-import { SectorWeatherComponent } from '../../../sector/sector-weather/sector-weather.component';
-import { SectorRankingComponent } from '../../../sector/sector-ranking/sector-ranking.component';
-import { SectorFormComponent } from '../../../sector/sector-form/sector-form.component';
-import { AreaFormComponent } from '../../../area/area-form/area-form.component';
-import { LineFormComponent } from '../../../line/line-form/line-form.component';
-import { TopoImageFormComponent } from '../../../topo-images/topo-image-form/topo-image-form.component';
-import { LineEntryBatchEditorComponent } from '../../../batch-editor/line-entry-batch-editor/line-entry-batch-editor.component';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
   defaultBg,
+  lazyOutletRoute,
+  loadCommentsComponent,
+  loadGalleryComponent,
   moderatorTaskFormRoutes,
   outletRoute,
 } from '../route-helpers';
@@ -43,17 +35,27 @@ export const topoSectorRoutes: Routes = [
         ],
       },
       outletRoute('areas', AreaListComponent, 'sectorContent'),
-      outletRoute('rules', SectorRulesComponent, 'sectorContent'),
+      lazyOutletRoute(
+        'rules',
+        () =>
+          import('../../../sector/sector-rules/sector-rules.component').then(
+            (m) => m.SectorRulesComponent,
+          ),
+        'sectorContent',
+      ),
       outletRoute('lines', LineListComponent, 'sectorContent'),
-      outletRoute('gallery', GalleryComponent, 'sectorContent', {
+      lazyOutletRoute('gallery', loadGalleryComponent, 'sectorContent', {
         data: { objectType: ObjectType.Sector },
       }),
-      outletRoute('comments', CommentsComponent, 'sectorContent', {
+      lazyOutletRoute('comments', loadCommentsComponent, 'sectorContent', {
         data: { objectType: ObjectType.Sector },
       }),
-      outletRoute(
+      lazyOutletRoute(
         'moderator-tasks',
-        ModeratorTaskListComponent,
+        () =>
+          import('../../../moderator-task/moderator-task-list/moderator-task-list.component').then(
+            (m) => m.ModeratorTaskListComponent,
+          ),
         'sectorContent',
         {
           canActivate: [isModerator],
@@ -61,44 +63,76 @@ export const topoSectorRoutes: Routes = [
         },
       ),
       outletRoute('ascents', SectorAscentsComponent, 'sectorContent'),
-      outletRoute('weather', SectorWeatherComponent, 'sectorContent'),
-      outletRoute('ranking', SectorRankingComponent, 'sectorContent'),
+      lazyOutletRoute(
+        'weather',
+        () =>
+          import('../../../sector/sector-weather/sector-weather.component').then(
+            (m) => m.SectorWeatherComponent,
+          ),
+        'sectorContent',
+      ),
+      lazyOutletRoute(
+        'ranking',
+        () =>
+          import('../../../sector/sector-ranking/sector-ranking.component').then(
+            (m) => m.SectorRankingComponent,
+          ),
+        'sectorContent',
+      ),
     ],
   },
   ...moderatorTaskFormRoutes(sectorPrefix, ObjectType.Sector),
   {
     path: `${sectorPrefix}/edit`,
-    component: SectorFormComponent,
+    loadComponent: () =>
+      import('../../../sector/sector-form/sector-form.component').then(
+        (m) => m.SectorFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/create-area`,
-    component: AreaFormComponent,
+    loadComponent: () =>
+      import('../../../area/area-form/area-form.component').then(
+        (m) => m.AreaFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/create-line`,
-    component: LineFormComponent,
+    loadComponent: () =>
+      import('../../../line/line-form/line-form.component').then(
+        (m) => m.LineFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/add-topo-image`,
-    component: TopoImageFormComponent,
+    loadComponent: () =>
+      import('../../../topo-images/topo-image-form/topo-image-form.component').then(
+        (m) => m.TopoImageFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/line-entry-batch-editor`,
-    component: LineEntryBatchEditorComponent,
+    loadComponent: () =>
+      import('../../../batch-editor/line-entry-batch-editor/line-entry-batch-editor.component').then(
+        (m) => m.LineEntryBatchEditorComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/topo-images/:image-id/edit`,
-    component: TopoImageFormComponent,
+    loadComponent: () =>
+      import('../../../topo-images/topo-image-form/topo-image-form.component').then(
+        (m) => m.TopoImageFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },

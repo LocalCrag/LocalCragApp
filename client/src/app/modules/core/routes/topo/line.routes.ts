@@ -2,15 +2,13 @@ import { Routes } from '@angular/router';
 import { LineComponent } from '../../../line/line/line.component';
 import { LineInfoComponent } from '../../../line/line-info/line-info.component';
 import { LineAscentsComponent } from '../../../line/line-ascents/line-ascents.component';
-import { GalleryComponent } from '../../../gallery/gallery/gallery.component';
-import { CommentsComponent } from '../../../comments/comments/comments.component';
-import { ModeratorTaskListComponent } from '../../../moderator-task/moderator-task-list/moderator-task-list.component';
-import { LineFormComponent } from '../../../line/line-form/line-form.component';
-import { LinePathFormWrapperComponent } from '../../../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
   defaultBg,
+  lazyOutletRoute,
+  loadCommentsComponent,
+  loadGalleryComponent,
   moderatorTaskFormRoutes,
   outletRoute,
 } from '../route-helpers';
@@ -30,15 +28,18 @@ export const topoLineRoutes: Routes = [
         outlet: 'lineContent',
       },
       outletRoute('ascents', LineAscentsComponent, 'lineContent'),
-      outletRoute('gallery', GalleryComponent, 'lineContent', {
+      lazyOutletRoute('gallery', loadGalleryComponent, 'lineContent', {
         data: { objectType: ObjectType.Line },
       }),
-      outletRoute('comments', CommentsComponent, 'lineContent', {
+      lazyOutletRoute('comments', loadCommentsComponent, 'lineContent', {
         data: { objectType: ObjectType.Line },
       }),
-      outletRoute(
+      lazyOutletRoute(
         'moderator-tasks',
-        ModeratorTaskListComponent,
+        () =>
+          import('../../../moderator-task/moderator-task-list/moderator-task-list.component').then(
+            (m) => m.ModeratorTaskListComponent,
+          ),
         'lineContent',
         {
           canActivate: [isModerator],
@@ -50,13 +51,19 @@ export const topoLineRoutes: Routes = [
   ...moderatorTaskFormRoutes(linePrefix, ObjectType.Line),
   {
     path: `${linePrefix}/edit`,
-    component: LineFormComponent,
+    loadComponent: () =>
+      import('../../../line/line-form/line-form.component').then(
+        (m) => m.LineFormComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
-    component: LinePathFormWrapperComponent,
+    loadComponent: () =>
+      import('../../../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component').then(
+        (m) => m.LinePathFormWrapperComponent,
+      ),
     canActivate: [isModerator],
     data: defaultBg(),
   },

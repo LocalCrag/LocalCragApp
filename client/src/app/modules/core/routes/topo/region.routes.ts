@@ -3,18 +3,18 @@ import { RegionComponent } from '../../../region/region/region.component';
 import { RegionInfoComponent } from '../../../region/region-info/region-info.component';
 import { CragListComponent } from '../../../crag/crag-list/crag-list.component';
 import { LineListComponent } from '../../../line/line-list/line-list.component';
-import { MapComponent } from '../../../maps/map/map.component';
-import { RegionRulesComponent } from '../../../region/region-rules/region-rules.component';
-import { GalleryComponent } from '../../../gallery/gallery/gallery.component';
-import { CommentsComponent } from '../../../comments/comments/comments.component';
-import { ModeratorTaskListComponent } from '../../../moderator-task/moderator-task-list/moderator-task-list.component';
 import { RegionAscentsComponent } from '../../../region/region-ascents/region-ascents.component';
-import { RankingListComponent } from '../../../ranking/ranking-list/ranking-list.component';
 import { skipHierarchy } from '../../../../guards/skip-hierarchy';
 import { isModerator } from '../../../../guards/is-moderator';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
-import { defaultBg, outletRoute } from '../route-helpers';
+import {
+  defaultBg,
+  lazyOutletRoute,
+  loadCommentsComponent,
+  loadGalleryComponent,
+  outletRoute,
+} from '../route-helpers';
 
 export const topoRegionRoute: Routes = [
   {
@@ -55,19 +55,36 @@ export const topoRegionRoute: Routes = [
       outletRoute('lines', LineListComponent, 'regionContent', {
         canActivate: [skipHierarchy(1, ['/topo'], ['lines'])],
       }),
-      outletRoute('map', MapComponent, 'regionContent', {
-        canActivate: [skipHierarchy(1, ['/topo'])],
-      }),
-      outletRoute('rules', RegionRulesComponent, 'regionContent', {
-        canActivate: [skipHierarchy(1, ['/topo'], ['rules'])],
-      }),
-      outletRoute('gallery', GalleryComponent, 'regionContent'),
-      outletRoute('comments', CommentsComponent, 'regionContent', {
+      lazyOutletRoute(
+        'map',
+        () =>
+          import('../../../maps/map/map.component').then((m) => m.MapComponent),
+        'regionContent',
+        {
+          canActivate: [skipHierarchy(1, ['/topo'])],
+        },
+      ),
+      lazyOutletRoute(
+        'rules',
+        () =>
+          import('../../../region/region-rules/region-rules.component').then(
+            (m) => m.RegionRulesComponent,
+          ),
+        'regionContent',
+        {
+          canActivate: [skipHierarchy(1, ['/topo'], ['rules'])],
+        },
+      ),
+      lazyOutletRoute('gallery', loadGalleryComponent, 'regionContent'),
+      lazyOutletRoute('comments', loadCommentsComponent, 'regionContent', {
         data: { objectType: ObjectType.Region },
       }),
-      outletRoute(
+      lazyOutletRoute(
         'moderator-tasks',
-        ModeratorTaskListComponent,
+        () =>
+          import('../../../moderator-task/moderator-task-list/moderator-task-list.component').then(
+            (m) => m.ModeratorTaskListComponent,
+          ),
         'regionContent',
         {
           canActivate: [isModerator],
@@ -77,9 +94,17 @@ export const topoRegionRoute: Routes = [
       outletRoute('ascents', RegionAscentsComponent, 'regionContent', {
         canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
       }),
-      outletRoute('ranking', RankingListComponent, 'regionContent', {
-        canActivate: [skipHierarchy(1, ['/topo'], ['ranking'])],
-      }),
+      lazyOutletRoute(
+        'ranking',
+        () =>
+          import('../../../ranking/ranking-list/ranking-list.component').then(
+            (m) => m.RankingListComponent,
+          ),
+        'regionContent',
+        {
+          canActivate: [skipHierarchy(1, ['/topo'], ['ranking'])],
+        },
+      ),
     ],
   },
 ];
