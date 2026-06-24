@@ -33,7 +33,7 @@
             [disabled]="usersLoading"
             placeholder="{{ t('assignedToPlaceholder') }}"
             lcFormControl
-            class="w-full"
+            styleClass="w-full"
           >
             <ng-template let-user pTemplate="item">
               {{ assigneeLabel(user) }}
@@ -115,7 +115,8 @@
         <p-button
           [label]="t('cancelButton')"
           (click)="cancel()"
-          class="ml-3 p-button-secondary"
+          class="ml-3"
+          styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
         @if (editMode) {
@@ -123,7 +124,8 @@
             [label]="t('deleteTaskButton')"
             (click)="confirmDelete($event)"
             icon="pi pi-trash"
-            class="p-button-danger ml-3"
+            class="ml-3"
+            styleClass="p-button-danger"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>
         }

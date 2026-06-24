@@ -7,7 +7,7 @@
           [label]="t('postDetail.backToNews')"
           icon="pi pi-arrow-left"
           [text]="true"
-          class="p-0"
+          styleClass="p-0"
         ></p-button>
       </div>
       @if (post) {
@@ -37,7 +37,7 @@
           icon="pi pi-file-edit"
           [routerLink]="['/news', post.slug, 'edit']"
           [text]="true"
-          class="mb-0"
+          styleClass="mb-0"
         ></p-button>
         <p-divider type="solid"></p-divider>
       }

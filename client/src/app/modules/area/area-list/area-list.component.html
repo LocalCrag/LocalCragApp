@@ -20,7 +20,7 @@
             optionLabel="label"
             (onChange)="onSortControlsChange()"
             [disabled]="loading === loadingStates.LOADING"
-            class="md:mb-0"
+            styleClass="md:mb-0"
           >
             <ng-template #selectedItem>
               @if (orderKey) {
@@ -37,7 +37,7 @@
             optionLabel="label"
             [disabled]="loading === loadingStates.LOADING"
             (onChange)="onSortControlsChange()"
-            class="md:mb-0"
+            styleClass="md:mb-0"
           >
             <ng-template #selectedItem>
               @if (orderDirectionKey) {

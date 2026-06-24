@@ -140,14 +140,14 @@
                     </div>
                     <p-button
                       (click)="addLine()"
-                      class="w-full md:w-auto"
+                      styleClass="w-full md:w-auto"
                       icon="pi pi-plus"
                       [label]="t('addLine')"
                     ></p-button>
                   </div>
                   @if (getDisplayUserGrades() | async) {
                     <p-message
-                      class="mt-4"
+                      styleClass="mt-4"
                       severity="warn"
                       [text]="t('displayUserGradesActive')"
                     />

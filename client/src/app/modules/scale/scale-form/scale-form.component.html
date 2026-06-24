@@ -155,7 +155,7 @@
                     ) {
                       <p-button
                         icon="pi pi-trash"
-                        class="p-button-danger"
+                        styleClass="p-button-danger"
                         disabled
                       />
                     }
@@ -168,7 +168,7 @@
                       <p-button
                         [disabled]="loadingState === LoadingState.LOADING"
                         icon="pi pi-trash"
-                        class="p-button-danger"
+                        styleClass="p-button-danger"
                         (click)="deleteGrade(i)"
                       />
                     }
@@ -182,7 +182,7 @@
               <p-message
                 severity="error"
                 text="{{ t('valuesNotUnique') }}"
-                class="min-w-full mb-3"
+                styleClass="min-w-full mb-3"
               />
             }
           </div>
@@ -263,7 +263,7 @@
                   <p-button
                     [disabled]="loadingState === LoadingState.LOADING"
                     icon="pi pi-trash"
-                    class="p-button-danger"
+                        styleClass="p-button-danger"
                     (click)="deleteStackedChartBracket(i)"
                   />
                 </div>
@@ -276,21 +276,21 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            class="min-w-full mb-3"
+            styleClass="min-w-full mb-3"
           />
         }
         @if (stackedChartBracketsControls().hasError("semantic_error")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-            class="min-w-full mb-3"
+                styleClass="min-w-full mb-3"
           />
         }
         @if (stackedChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-            class="min-w-full mb-3"
+            styleClass="min-w-full mb-3"
           />
         }
 
@@ -372,7 +372,7 @@
                   <p-button
                     icon="pi pi-trash"
                     [disabled]="loadingState === LoadingState.LOADING"
-                    class="p-button-danger"
+                        styleClass="p-button-danger"
                     (click)="deleteBarChartBracket(i)"
                   />
                 </div>
@@ -385,7 +385,7 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            class="min-w-full mb-3"
+            styleClass="min-w-full mb-3"
           />
         }
         @if (barChartBracketsControls().hasError("semantic_error")) {
@@ -433,7 +433,8 @@
             label="{{ t('deleteScale') }}"
             (click)="confirmDeleteScale($event)"
             icon="pi pi-trash"
-            class="p-button-danger responsive-button"
+            class="responsive-button"
+            styleClass="p-button-danger"
             [disabled]="loadingState === LoadingState.LOADING"
           />
           <p-button

@@ -357,7 +357,8 @@
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
-          class="ml-3 responsive-button p-button-secondary"
+          class="ml-3 responsive-button"
+          styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
         @if (editMode && crag?.slug !== environment.skippedSlug) {
@@ -365,7 +366,8 @@
             label="{{ t('deleteCragButtonLabel') }}"
             (click)="confirmDeleteCrag($event)"
             icon="pi pi-trash"
-            class="p-button-danger ml-3 responsive-button"
+            class="ml-3 responsive-button"
+            styleClass="p-button-danger"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>
         }
