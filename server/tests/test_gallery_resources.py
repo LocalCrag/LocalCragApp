@@ -1,6 +1,115 @@
+from extensions import db
+from models.area import Area
 from models.file import File
 from models.gallery_image import GalleryImage
+from models.secret_topo_entity import SecretTopoEntity
 from models.user import User
+
+
+def _secret_line_payload():
+    return {
+        "name": "Gallery Secret Line",
+        "description": "Super Boulder",
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "authorGradeValue": 20,
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "authorRating": 5,
+        "faYear": 2016,
+        "faDate": None,
+        "faName": "Dave Graham",
+        "startingPosition": "FRENCH",
+        "eliminate": True,
+        "traverse": True,
+        "highball": True,
+        "morpho": True,
+        "lowball": True,
+        "noTopout": True,
+        "badDropzone": True,
+        "childFriendly": True,
+        "roof": True,
+        "slab": True,
+        "vertical": True,
+        "overhang": True,
+        "athletic": True,
+        "technical": True,
+        "endurance": True,
+        "cruxy": True,
+        "dyno": True,
+        "jugs": True,
+        "sloper": True,
+        "crimps": True,
+        "pockets": True,
+        "pinches": True,
+        "crack": True,
+        "dihedral": True,
+        "compression": True,
+        "arete": True,
+        "mantle": True,
+        "secret": True,
+        "closureSchedules": [],
+    }
+
+
+def test_secret_gallery_images_excluded_from_global_listing(client, moderator_token, member_token):
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    public_count = len(rv.json["items"])
+
+    line_data = _secret_line_payload()
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    line_id = rv.json["id"]
+    assert db.session.get(SecretTopoEntity, line_id) is not None
+
+    file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": file_id, "tags": [{"objectType": "Line", "objectId": line_id}]},
+    )
+    assert rv.status_code == 201
+    secret_image_id = rv.json["id"]
+
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    anonymous_ids = {item["id"] for item in rv.json["items"]}
+    assert secret_image_id not in anonymous_ids
+    assert len(rv.json["items"]) == public_count
+
+    rv = client.get("/api/gallery", token=member_token)
+    assert rv.status_code == 200
+    member_ids = {item["id"] for item in rv.json["items"]}
+    assert secret_image_id in member_ids
+
+
+def test_secret_gallery_images_tagged_to_secret_area_are_hidden(client, moderator_token, member_token):
+    secret_area = Area.find_by_slug("shark-attack")
+    secret_area.secret = True
+    db.session.commit()
+    assert db.session.get(SecretTopoEntity, secret_area.id) is not None
+
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    public_count = len(rv.json["items"])
+
+    file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": file_id, "tags": [{"objectType": "Area", "objectId": str(secret_area.id)}]},
+    )
+    assert rv.status_code == 201
+    secret_image_id = rv.json["id"]
+
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    assert secret_image_id not in {item["id"] for item in rv.json["items"]}
+    assert len(rv.json["items"]) == public_count
+
+    rv = client.get("/api/gallery", token=member_token)
+    assert rv.status_code == 200
+    assert secret_image_id in {item["id"] for item in rv.json["items"]}
 
 
 def test_successful_create_gallery_image(client, user_token):

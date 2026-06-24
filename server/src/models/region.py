@@ -5,7 +5,7 @@ from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.line import Line
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class Region(BaseEntity):
@@ -22,8 +22,7 @@ class Region(BaseEntity):
     @hybrid_property
     def ascent_count(self):
         query = db.session.query(func.count(Ascent.id)).join(Line)
-        if not get_show_secret():
-            query = query.where(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         return query.scalar()
 
     @classmethod

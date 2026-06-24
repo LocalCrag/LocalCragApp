@@ -17,7 +17,7 @@ from models.topo_image import TopoImage
 from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.move_args import move_topo_image_args
@@ -170,7 +170,7 @@ class GetTopoImages(MethodView):
             order_by=lambda: TopoImage.order_index.asc(),
         )
         include_secret = True
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             include_secret = False
         unfiltered_response = topo_images_schema.dump(topo_images)
         if not include_secret:

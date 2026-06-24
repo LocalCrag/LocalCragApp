@@ -13,10 +13,11 @@ from models.mixins.has_order_index import HasOrderIndex
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
-from util.secret_spots_auth import get_show_secret
+from models.mixins.is_secret import IsSecret
+from util.secret_service import SecretService
 
 
-class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
+class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
     """
     Model of a climbing crag's sector. Could be e.g. "Mordor". Contains one or more areas.
     """
@@ -35,7 +36,6 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
     )
     rules = db.Column(db.Text, nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-    secret = db.Column(db.Boolean, default=False, server_default="0")
     crag_slug = association_proxy("crag", "slug")
     map_markers = db.relationship("MapMarker", back_populates="sector")
     default_boulder_scale = db.Column(db.String(32), nullable=True)
@@ -48,8 +48,7 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
         query = (
             db.session.query(func.count(Line.id)).join(Area, Line.area_id == Area.id).where(Area.sector_id == self.id)
         )
-        if not get_show_secret():
-            query = query.where(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         return query.scalar()
 
     @hybrid_property
@@ -60,8 +59,7 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, BaseEntity):
             .join(Area, Line.area_id == Area.id)
             .where(Area.sector_id == self.id)
         )
-        if not get_show_secret():
-            query = query.where(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         return query.scalar()
 
     @classmethod

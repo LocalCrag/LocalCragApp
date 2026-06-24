@@ -1,6 +1,5 @@
 from flask import request
 from flask.views import MethodView
-from sqlalchemy import false
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
@@ -10,7 +9,7 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class GetCompletion(MethodView):
@@ -64,8 +63,7 @@ class GetCompletion(MethodView):
                 )
 
         # Filter secret spots
-        if not get_show_secret():
-            lines_query = lines_query.filter(Line.secret == false())
+        lines_query = SecretService.apply_line_filter(lines_query)
 
         if line_type is not None:
             lines_query = lines_query.filter(Line.type == line_type)
@@ -104,7 +102,7 @@ class GetCompletion(MethodView):
                 )
 
         # Filter secret spots
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             ascents_query = ascents_query.filter(Ascent.line.has(secret=False))
         if not include_closed:
             ascents_query = ascents_query.filter(
