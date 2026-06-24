@@ -14,6 +14,7 @@ from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 from models.mixins.is_secret import IsSecret
 from models.sector import Sector
+from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
 from util.secret_service import SecretService
 
 
@@ -43,6 +44,9 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
 
     @hybrid_property
     def line_count(self):
+        cached = get_cached_line_count(self)
+        if cached is not None:
+            return cached
         query = (
             db.session.query(func.count(Line.id))
             .join(Area, Line.area_id == Area.id)
@@ -54,6 +58,9 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
 
     @hybrid_property
     def ascent_count(self):
+        cached = get_cached_ascent_count(self)
+        if cached is not None:
+            return cached
         query = (
             db.session.query(func.count(Ascent.id))
             .join(Line)

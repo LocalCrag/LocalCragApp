@@ -32,6 +32,7 @@ from util.scheduled_closure import (
 )
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_area_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.area_args import area_args
 from webargs_schemas.move_args import move_area_args
@@ -90,6 +91,8 @@ class GetAreas(MethodView):
         areas: List[Area] = Area.return_all(
             filter=lambda: Area.sector_id == sector_id, order_by=lambda: Area.order_index.asc()
         )
+        attach_area_counts(areas)
+        SecretService.attach_secret_flags(areas)
         return jsonify(areas_schema.dump(areas)), 200
 
 

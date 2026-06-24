@@ -29,6 +29,7 @@ from util.scheduled_closure import (
 )
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_crag_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -40,6 +41,8 @@ class GetCrags(MethodView):
         Returns all crags.
         """
         crags: Crag = Crag.return_all(order_by=lambda: Crag.order_index.asc())
+        attach_crag_counts(crags)
+        SecretService.attach_secret_flags(crags)
         return jsonify(crags_schema.dump(crags)), 200
 
 

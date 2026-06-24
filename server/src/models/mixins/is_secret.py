@@ -11,6 +11,7 @@ from models.secret_topo_entity import SecretTopoEntity
 # secret_topo_entities immediately would insert NULL and fail; the after_insert
 # listener applies the pending value once the row exists.
 _SECRET_PENDING_ATTR = "_secret_pending"
+_SECRET_CACHE_ATTR = "_secret_cache"
 
 
 @declarative_mixin
@@ -27,6 +28,9 @@ class IsSecret:
         pending = getattr(self, _SECRET_PENDING_ATTR, None)
         if pending is not None:
             return pending
+        cached = getattr(self, _SECRET_CACHE_ATTR, None)
+        if cached is not None:
+            return cached
         if self.id is None:
             return False
         return db.session.get(SecretTopoEntity, self.id) is not None

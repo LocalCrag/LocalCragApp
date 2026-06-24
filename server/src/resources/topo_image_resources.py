@@ -4,6 +4,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -168,7 +169,14 @@ class GetTopoImages(MethodView):
         topo_images: List[TopoImage] = TopoImage.return_all(
             filter=lambda: [TopoImage.archived == archived, TopoImage.area_id == area_id],
             order_by=lambda: TopoImage.order_index.asc(),
+            options=(
+                joinedload(TopoImage.file),
+                selectinload(TopoImage.line_paths).joinedload(LinePath.line),
+                selectinload(TopoImage.map_markers),
+            ),
         )
+        lines = [line_path.line for topo_image in topo_images for line_path in topo_image.line_paths]
+        SecretService.attach_secret_flags(lines)
         include_secret = True
         if not SecretService.can_view_secrets():
             include_secret = False

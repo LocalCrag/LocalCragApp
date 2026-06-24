@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -23,7 +24,10 @@ class GetMenuItems(MethodView):
         """
         Returns all menu items.
         """
-        menu_items: MenuItem = MenuItem.return_all(order_by=lambda: MenuItem.order_index.asc())
+        menu_items: MenuItem = MenuItem.return_all(
+            order_by=lambda: MenuItem.order_index.asc(),
+            options=joinedload(MenuItem.menu_page),
+        )
         return jsonify(menu_items_schema.dump(menu_items)), 200
 
 

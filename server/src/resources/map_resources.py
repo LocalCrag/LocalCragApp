@@ -3,6 +3,7 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from sqlalchemy import and_, or_
+from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
@@ -73,7 +74,12 @@ class GetMarkers(MethodView):
                 )
             )
 
-        markers: List[MapMarker] = query.all()
+        markers: List[MapMarker] = query.options(
+            joinedload(MapMarker.crag),
+            joinedload(MapMarker.sector).joinedload(Sector.crag),
+            joinedload(MapMarker.area).joinedload(Area.sector).joinedload(Sector.crag),
+            joinedload(MapMarker.topo_image).joinedload(TopoImage.area).joinedload(Area.sector).joinedload(Sector.crag),
+        ).all()
 
         # Convert markers to GeoJSON
         markers_geo_json = {"type": "FeatureCollection", "features": []}
