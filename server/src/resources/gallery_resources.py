@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.not_found import NotFound
@@ -20,6 +21,7 @@ from models.tag import Tag, get_child_tags
 from models.user import User
 from util.generic_relationships import check_object_exists
 from util.secret_service import SecretService
+from util.tag_object_prefetch import prefetch_tag_objects
 from webargs_schemas.gallery_image_args import (
     gallery_image_post_args,
     gallery_image_put_args,
@@ -72,7 +74,15 @@ class GetGalleryImages(MethodView):
             secret_images_subquery = SecretService.secret_gallery_image_ids_subquery()
             images_query = images_query.filter(~GalleryImage.id.in_(secret_images_subquery))
 
+        images_query = images_query.options(
+            joinedload(GalleryImage.file),
+            joinedload(GalleryImage.created_by),
+            selectinload(GalleryImage.tags),
+        )
+
         paginated_images = db.paginate(images_query, page=int(page), per_page=per_page)
+        all_tags = [tag for image in paginated_images.items for tag in image.tags]
+        prefetch_tag_objects(all_tags)
         return jsonify(paginated_gallery_images_schema.dump(paginated_images)), 200
 
 

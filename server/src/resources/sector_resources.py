@@ -33,6 +33,7 @@ from util.scheduled_closure import (
 )
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_sector_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.move_args import move_sector_args
 from webargs_schemas.sector_args import sector_args
@@ -91,6 +92,8 @@ class GetSectors(MethodView):
         sectors: Sector = Sector.return_all(
             filter=lambda: Sector.crag_id == crag_id, order_by=lambda: Sector.order_index.asc()
         )
+        attach_sector_counts(sectors)
+        SecretService.attach_secret_flags(sectors)
         return jsonify(sectors_schema.dump(sectors)), 200
 
 

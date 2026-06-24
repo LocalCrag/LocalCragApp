@@ -89,4 +89,9 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
 
     @hybrid_property
     def ascent_count(self):
+        from util.entity_count_cache import get_cached_line_ascent_count
+
+        cached = get_cached_line_ascent_count(self)
+        if cached is not None:
+            return cached
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()

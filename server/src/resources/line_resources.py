@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from sqlalchemy import func, nullslast, select
+from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -35,6 +36,7 @@ from util.scheduled_closure import (
 )
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_line_ascent_counts
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import cross_validate_line_args, line_args
 from webargs_schemas.move_args import move_line_args
@@ -163,6 +165,11 @@ class GetLines(MethodView):
 
         query = apply_get_lines_advanced_filters(query, list_filters, instance_settings, user_for_filters)
 
+        query = query.options(
+            joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag),
+            selectinload(Line.line_paths).joinedload(LinePath.topo_image),
+        )
+
         # Handle order
         if order_by and order_direction:
             if order_by == "topo_position":
@@ -193,6 +200,8 @@ class GetLines(MethodView):
                 query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
+        attach_line_ascent_counts(paginated_lines.items)
+        SecretService.attach_secret_flags(paginated_lines.items)
 
         return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 

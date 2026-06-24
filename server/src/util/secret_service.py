@@ -23,6 +23,23 @@ class SecretService:
         return db.session.get(SecretTopoEntity, entity_id) is not None
 
     @staticmethod
+    def attach_secret_flags(entities) -> None:
+        """Bulk-load secret registry membership for list serialization."""
+        from models.mixins.is_secret import _SECRET_CACHE_ATTR
+
+        ids = [entity.id for entity in entities if entity.id is not None]
+        if not ids:
+            return
+
+        secret_ids = {
+            row[0]
+            for row in db.session.query(SecretTopoEntity.entity_id).filter(SecretTopoEntity.entity_id.in_(ids)).all()
+        }
+        for entity in entities:
+            if entity.id is not None:
+                object.__setattr__(entity, _SECRET_CACHE_ATTR, entity.id in secret_ids)
+
+    @staticmethod
     def apply_topo_entity_filter(query, model):
         """Exclude secret rows from ``query`` when the caller lacks secret access.
 
