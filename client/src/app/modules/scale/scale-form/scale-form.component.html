@@ -263,7 +263,7 @@
                   <p-button
                     [disabled]="loadingState === LoadingState.LOADING"
                     icon="pi pi-trash"
-                        styleClass="p-button-danger"
+                    styleClass="p-button-danger"
                     (click)="deleteStackedChartBracket(i)"
                   />
                 </div>
@@ -283,7 +283,7 @@
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-                styleClass="min-w-full mb-3"
+            styleClass="min-w-full mb-3"
           />
         }
         @if (stackedChartBracketsControls().hasError("invalid_length")) {
@@ -372,7 +372,7 @@
                   <p-button
                     icon="pi pi-trash"
                     [disabled]="loadingState === LoadingState.LOADING"
-                        styleClass="p-button-danger"
+                    styleClass="p-button-danger"
                     (click)="deleteBarChartBracket(i)"
                   />
                 </div>
