@@ -17,6 +17,7 @@ from models.line_path import LinePath
 from models.topo_image import TopoImage
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims
@@ -39,7 +40,7 @@ class AddTopoImage(MethodView):
         new_topo_image: TopoImage = TopoImage()
         new_topo_image.file_id = topo_image_data["image"]
         new_topo_image.title = topo_image_data["title"]
-        new_topo_image.description = topo_image_data["description"]
+        new_topo_image.description = sanitize_wysiwyg_html(topo_image_data["description"])
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
@@ -59,7 +60,7 @@ class UpdateTopoImage(MethodView):
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
 
         topo_image.title = topo_image_data["title"]
-        topo_image.description = topo_image_data["description"]
+        topo_image.description = sanitize_wysiwyg_html(topo_image_data["description"])
         topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], topo_image)
         db.session.add(topo_image)
         db.session.commit()

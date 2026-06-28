@@ -5,12 +5,12 @@
       [modal]="true"
       [(visible)]="isOpen"
     >
-      <form [formGroup]="form" lcForm class="flex flex-column pt-1">
-        <p-message icon="pi pi-info-circle" class="mb-3">
+      <form [formGroup]="form" lcForm class="flex flex-col pt-1">
+        <p-message icon="pi pi-info-circle" class="mb-6">
           {{ t("blocWeather.reportConditionsInfo") }}
         </p-message>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label">{{
             t("blocWeather.reportConditionsStatusLabel")
           }}</label>
@@ -55,7 +55,7 @@
           }
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label">{{
             t("blocWeather.reportConditionsObservedAtLabel")
           }}</label>
@@ -82,7 +82,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label">{{
             t("blocWeather.reportConditionsCommentLabel")
           }}</label>

@@ -21,7 +21,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.scheduled_closure import (
     apply_closable_configuration,
@@ -73,9 +73,9 @@ class CreateCrag(MethodView):
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
-        new_crag.description = add_bucket_placeholders(crag_data["description"])
-        new_crag.short_description = crag_data["shortDescription"]
-        new_crag.rules = add_bucket_placeholders(crag_data["rules"])
+        new_crag.description = sanitize_wysiwyg_html(crag_data["description"])
+        new_crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
+        new_crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
         new_crag.portrait_image_id = crag_data["portraitImage"]
         new_crag.secret = crag_data["secret"]
         new_crag.created_by_id = created_by.id
@@ -111,9 +111,9 @@ class UpdateCrag(MethodView):
             raise NotFound(error)
 
         crag.name = crag_data["name"].strip()
-        crag.description = add_bucket_placeholders(crag_data["description"])
-        crag.short_description = crag_data["shortDescription"]
-        crag.rules = add_bucket_placeholders(crag_data["rules"])
+        crag.description = sanitize_wysiwyg_html(crag_data["description"])
+        crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
+        crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")

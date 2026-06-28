@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'linePath.linePathForm'">
   @if (linePathForm) {
     <form [formGroup]="linePathForm" lcForm>
-      <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="line">{{ t("lineLabel") }}</label>
         <p-select
           id="line"
@@ -14,13 +14,13 @@
         >
           <ng-template let-line #item>
             <div
-              class="flex align-items-center gap-2"
+              class="flex items-center gap-2"
               data-cy="line-dropdown-item"
             >
               <div>
                 <span
                   *isGymMode="true"
-                  class="color-indicator mr-3"
+                  class="color-indicator mr-6"
                   [style]="{ '--arrow-color': line.color }"
                 ></span>
                 {{ line.name }}
@@ -36,7 +36,7 @@
           "validation.required" | transloco
         }}</small>
       </div>
-      <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="path-editor">{{
           t("linePathLabel")
         }}</label>
@@ -70,7 +70,7 @@
     <p-button
       label="{{ t('leaveEditorButtonLabel') }}"
       (click)="leaveEditor()"
-      class="ml-3 responsive-button"
+      class="ml-6 responsive-button"
       styleClass="p-button-secondary"
       icon="pi pi-ban"
       data-cy="leave-editor"

@@ -11,12 +11,12 @@
           <p-message
             severity="info"
             icon="pi pi-info-circle"
-            class="m-4 mb-1 block"
+            class="m-12 mb-1 block"
             >{{ t("noMenuPagesFoundEmptyMessage") }}</p-message
           >
         </ng-template>
         <ng-template #header>
-          <div class="flex flex-row justify-content-between">
+          <div class="flex flex-row justify-between">
             <p-select
               [disabled]="loading === loadingStates.LOADING"
               [options]="sortOptions"
@@ -25,7 +25,7 @@
               (onChange)="onSortChange($event)"
               styleClass="md:mb-0"
             ></p-select>
-            <div class="flex justify-content-end gap-3">
+            <div class="flex justify-end gap-6">
               <p-button
                 [disabled]="loading === loadingStates.LOADING"
                 label="{{ t('newMenuPageButtonLabel') }}"
@@ -41,18 +41,18 @@
             <lc-menu-list-skeleton></lc-menu-list-skeleton>
           }
           @if (loading !== loadingStates.LOADING) {
-            <div class="grid grid-nogutter">
+            <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
               @for (menuPage of menuPages; track menuPage; let first = $first) {
-                <div class="col-12">
+                <div class="col-span-12">
                   <div
-                    class="flex flex-column xl:align-items-start p-4 gap-2"
-                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                    class="flex flex-col xl:items-start p-12 gap-2"
+                    [ngClass]="{ 'border-t border-surface': !first }"
                   >
-                    <div class="text-2xl font-bold text-900 flex w-full">
-                      <div class="flex-grow-1 flex align-items-center">
+                    <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full">
+                      <div class="grow flex items-center">
                         {{ menuPage.title }}
                       </div>
-                      <div class="flex flex-grow-0 gap-3">
+                      <div class="flex grow-0 gap-6">
                         <p-button
                           label="{{ t('visitMenuPageButtonLabel') }}"
                           icon="pi pi-eye"

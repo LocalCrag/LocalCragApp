@@ -52,7 +52,8 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['model']) {
-      this.processedModel = this.processItems(this.model, null);
+      this.processedModel = this.processItems(this.model ?? [], null);
+      this.cdr.markForCheck();
     }
   }
 

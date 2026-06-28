@@ -1,12 +1,19 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { isSeasonEmpty, Season } from '../../../../models/season';
 import { ChartModule } from 'primeng/chart';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { selectBarChartColor } from '../../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectBarChartColor,
+  selectDarkBarChartColor,
+} from '../../../../ngrx/selectors/instance-settings.selectors';
+import { combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { getRgbObject } from '../../../../utility/misc/color';
+import { effectiveBarChartColor } from '../../../../utility/instance-settings-theme';
+import { ThemeService } from '../../../../services/core/theme.service';
 import { Message } from 'primeng/message';
 
 @Component({
@@ -24,14 +31,26 @@ export class SeasonChartComponent implements OnInit {
 
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
+  private themeService = inject(ThemeService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.seasonEmpty = isSeasonEmpty(this.season);
-    this.store
-      .select(selectBarChartColor)
-      .pipe(take(1))
-      .subscribe((barChartColor) => {
-        const rgbObject = getRgbObject(barChartColor);
+
+    combineLatest([
+      this.store.select(selectBarChartColor).pipe(take(1)),
+      this.store.select(selectDarkBarChartColor).pipe(take(1)),
+      toObservable(this.themeService.isDarkMode),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([barChartColor, darkBarChartColor, isDarkMode]) => {
+        const color =
+          effectiveBarChartColor(
+            barChartColor,
+            darkBarChartColor,
+            isDarkMode,
+          ) ?? barChartColor;
+        const rgbObject = getRgbObject(color);
         const bgColor = `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, 0.4)`;
         this.data = {
           labels: [
@@ -68,7 +87,7 @@ export class SeasonChartComponent implements OnInit {
               tension: 0.4,
               pointRadius: 0,
               pointHoverRadius: 0,
-              borderColor: barChartColor,
+              borderColor: color,
               backgroundColor: bgColor,
             },
           ],

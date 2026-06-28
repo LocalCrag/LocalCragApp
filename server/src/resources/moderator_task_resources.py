@@ -20,7 +20,7 @@ from models.moderator_task import ModeratorTask
 from models.region import Region
 from models.sector import Sector
 from models.user import User
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.moderator_task_notifications import (
     notify_task_assigned,
     notify_task_completed,
@@ -228,7 +228,7 @@ class CreateModeratorTask(MethodView):
 
         task = ModeratorTask()
         task.title = data["title"].strip()
-        task.description = add_bucket_placeholders(data["description"]) if data.get("description") else None
+        task.description = sanitize_wysiwyg_html(data["description"]) if data.get("description") else None
         task.object = target
         task.created_by_id = created_by.id
         assignee = _resolve_assigned_to(data.get("assignedToId"))
@@ -250,7 +250,7 @@ class UpdateModeratorTask(MethodView):
         task = ModeratorTask.find_by_id(task_id)
         previous_assignee_id = task.assigned_to_id
         task.title = data["title"].strip()
-        task.description = add_bucket_placeholders(data["description"]) if data.get("description") else None
+        task.description = sanitize_wysiwyg_html(data["description"]) if data.get("description") else None
         assignee = _resolve_assigned_to(data.get("assignedToId"))
         task.assigned_to_id = assignee.id if assignee else None
         db.session.add(task)

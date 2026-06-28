@@ -36,6 +36,11 @@ export const selectLogoImage = createSelector(
   (instanceSettingsState) => instanceSettingsState.logoImage,
 );
 
+export const selectDarkLogoImage = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkLogoImage,
+);
+
 export const selectFaviconImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.faviconImage,
@@ -49,6 +54,16 @@ export const selectBarChartColor = createSelector(
 export const selectBarChartAccentColor = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.barChartAccentColor,
+);
+
+export const selectDarkBarChartColor = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkBarChartColor,
+);
+
+export const selectDarkBarChartAccentColor = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkBarChartAccentColor,
 );
 
 export const selectRankingPastWeeks = createSelector(

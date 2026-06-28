@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'accountSettingsForm'">
   <form [formGroup]="accountSettingsForm" lcForm>
-    <div class="flex flex-column gap-2" lcControlGroup>
-      <div class="form-label flex align-items-center">
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
         <label for="language">{{ t("languageLabel") }}</label>
       </div>
       <lc-language-select
@@ -11,12 +11,27 @@
       ></lc-language-select>
     </div>
 
-    <div class="flex flex-column gap-2" lcControlGroup>
-      <div class="form-label flex align-items-center">
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label for="color-scheme">{{ t("colorSchemeLabel") }}</label>
+      </div>
+      <select
+        id="color-scheme"
+        class="p-inputtext"
+        formControlName="colorScheme"
+      >
+        <option value="system">{{ t("colorSchemeSystem") }}</option>
+        <option value="light">{{ t("colorSchemeLight") }}</option>
+        <option value="dark">{{ t("colorSchemeDark") }}</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
         <label for="language">{{ t("notificationsLabel") }}</label>
       </div>
       <div
-        class="flex align-items-center justify-content-center sm:justify-content-start"
+        class="flex items-center justify-center sm:justify-start"
       >
         <div>
           <p-toggleswitch
@@ -26,15 +41,15 @@
             lcFormControl
           />
         </div>
-        <div class="flex flex-column">
+        <div class="flex flex-col">
           <span>{{ t("commentReplyMailsEnabled") }}</span>
-          <small class="text-color-secondary">{{
+          <small class="text-muted-color">{{
             t("commentReplyMailsEnabledDescription")
           }}</small>
         </div>
       </div>
       <div
-        class="flex align-items-center justify-content-center sm:justify-content-start"
+        class="flex items-center justify-center sm:justify-start"
       >
         <div>
           <p-toggleswitch
@@ -44,15 +59,15 @@
             lcFormControl
           />
         </div>
-        <div class="flex flex-column">
+        <div class="flex flex-col">
           <span>{{ t("reactionNotificationsEnabled") }}</span>
-          <small class="text-color-secondary">{{
+          <small class="text-muted-color">{{
             t("reactionNotificationsEnabledDescription")
           }}</small>
         </div>
       </div>
       <div
-        class="flex align-items-center justify-content-center sm:justify-content-start"
+        class="flex items-center justify-center sm:justify-start"
       >
         <div>
           <p-toggleswitch
@@ -62,16 +77,16 @@
             lcFormControl
           />
         </div>
-        <div class="flex flex-column">
+        <div class="flex flex-col">
           <span>{{ t("systemNotificationsEnabled") }}</span>
-          <small class="text-color-secondary">{{
+          <small class="text-muted-color">{{
             t("systemNotificationsEnabledDescription")
           }}</small>
         </div>
       </div>
       <div
         *isModerator="true"
-        class="flex align-items-center justify-content-center sm:justify-content-start"
+        class="flex items-center justify-center sm:justify-start"
       >
         <div>
           <p-toggleswitch
@@ -81,19 +96,21 @@
             lcFormControl
           />
         </div>
-        <div class="flex flex-column">
+        <div class="flex flex-col">
           <span>{{ t("moderatorTaskNotificationsEnabled") }}</span>
-          <small class="text-color-secondary">{{
+          <small class="text-muted-color">{{
             t("moderatorTaskNotificationsEnabledDescription")
           }}</small>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-column gap-2 form-label" lcControlGroup>
-      <label for="notification-digest-frequency">{{
-        t("notificationDigestFrequencyLabel")
-      }}</label>
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label for="notification-digest-frequency">{{
+          t("notificationDigestFrequencyLabel")
+        }}</label>
+      </div>
       <select
         id="notification-digest-frequency"
         class="p-inputtext"

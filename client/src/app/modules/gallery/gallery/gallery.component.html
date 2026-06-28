@@ -1,6 +1,6 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
-  <div class="grid">
-    <div class="col-12 flex justify-content-end" *isLoggedIn="true">
+  <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+    <div class="col-span-12 flex justify-end" *isLoggedIn="true">
       <p-button
         (click)="addImage()"
         icon="pi pi-image"
@@ -9,7 +9,7 @@
     </div>
 
     @for (image of images; track image) {
-      <div class="col-12 md:col-6 xl:col-4">
+      <div class="col-span-12 md:col-span-6 xl:col-span-4">
         <lc-gallery-image
           [image]="image"
           (delete)="confirmDeleteImage($event, image)"
@@ -25,12 +25,12 @@
           : [];
       track _
     ) {
-      <div class="col-12 md:col-6 xl:col-4">
+      <div class="col-span-12 md:col-span-6 xl:col-span-4">
         <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
       </div>
     }
     @if (hasNextPage) {
-      <div class="flex justify-content-center mt-5">
+      <div class="flex justify-center mt-20">
         <p-button
           label="{{ t('loadMore') }}"
           (scrolled)="loadNextPage()"

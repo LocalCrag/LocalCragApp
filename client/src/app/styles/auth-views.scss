@@ -15,12 +15,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: aliceblue;
+    background-color: var(--p-content-background);
     min-width: 33%;
     border-radius: var(--p-border-radius-md);
 
     .p-divider-content {
-      background-color: aliceblue;
+      background-color: var(--p-content-background);
     }
   }
 

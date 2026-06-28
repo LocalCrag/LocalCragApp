@@ -1,7 +1,7 @@
 <ng-container *transloco="let t">
   <form [formGroup]="coordinatesForm" lcForm>
-    <div class="flex flex-row gap-3">
-      <div class="flex flex-column gap-2 flex-1" lcControlGroup>
+    <div class="flex flex-row gap-6">
+      <div class="flex flex-col gap-2 flex-1" lcControlGroup>
         <label for="lat">{{ t("latLabel") }}</label>
         <input
           id="lat"
@@ -17,7 +17,7 @@
         }}</small>
       </div>
 
-      <div class="flex flex-column gap-2 flex-1" lcControlGroup>
+      <div class="flex flex-col gap-2 flex-1" lcControlGroup>
         <label for="lng">{{ t("lngLabel") }}</label>
         <input
           type="text"
@@ -33,7 +33,7 @@
         }}</small>
       </div>
 
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-col gap-2">
         <label for="get-location-button">&nbsp;</label>
         <p-button
           id="get-location-button"
@@ -48,7 +48,7 @@
   </form>
 
   @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
-    <div class="mt-3">
+    <div class="mt-6">
       @if (coordinatesLoadingSuccess && !positionLoading) {
         <p-message
           severity="success"

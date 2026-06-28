@@ -1,6 +1,7 @@
 import { AbstractModel } from './abstract-model';
 import { File } from './file';
 import { LanguageCode } from '../utility/types/language';
+import { ColorScheme } from '../services/core/theme.service';
 import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 
 /**
@@ -20,6 +21,7 @@ export class User extends HasSlug(AbstractModel) {
   activatedAt: Date;
   avatar: File;
   accountLanguage: LanguageCode;
+  accountColorScheme: ColorScheme;
 
   fullname: string;
   routerLink: string;
@@ -49,6 +51,7 @@ export class User extends HasSlug(AbstractModel) {
     user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;
     user.routerLink = `/users/${user.slug}`;
     user.accountLanguage = payload.accountLanguage;
+    user.accountColorScheme = payload.accountColorScheme ?? 'system';
     return user;
   }
 

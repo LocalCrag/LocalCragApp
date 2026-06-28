@@ -1,9 +1,10 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, combineLatest } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -19,7 +20,12 @@ import {
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { LineType } from '../../../enums/line-type';
-import { selectBarChartColor } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectBarChartColor,
+  selectDarkBarChartColor,
+} from '../../../ngrx/selectors/instance-settings.selectors';
+import { effectiveBarChartColor } from '../../../utility/instance-settings-theme';
+import { ThemeService } from '../../../services/core/theme.service';
 
 @Component({
   selector: 'lc-user-charts',
@@ -51,6 +57,8 @@ export class UserChartsComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private translateSpecialGrades = inject(TranslateSpecialGradesService);
   private store = inject(Store);
+  private themeService = inject(ThemeService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     const userSlug =
@@ -67,7 +75,10 @@ export class UserChartsComponent implements OnInit {
     forkJoin({
       stats: this.usersService.getUserStatistics(userSlug),
       barChartColor: this.store.select(selectBarChartColor).pipe(take(1)),
-    }).subscribe(({ stats, barChartColor }) => {
+      darkBarChartColor: this.store
+        .select(selectDarkBarChartColor)
+        .pipe(take(1)),
+    }).subscribe(({ stats, barChartColor, darkBarChartColor }) => {
       this.stats = stats;
       this.hardestAscentLabel$ = this.formatHardestLine(
         stats.ascentTotals.hardestAscentGrades,
@@ -78,8 +89,26 @@ export class UserChartsComponent implements OnInit {
       this.hardestFaLabel$ = this.formatHardestLine(
         stats.ascentTotals.hardestFaGrades,
       );
-      this.barChartColor = barChartColor;
+      this.barChartColor = effectiveBarChartColor(
+        barChartColor,
+        darkBarChartColor,
+        this.themeService.isDarkMode(),
+      );
     });
+
+    combineLatest([
+      this.store.select(selectBarChartColor),
+      this.store.select(selectDarkBarChartColor),
+      toObservable(this.themeService.isDarkMode),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([barChartColor, darkBarChartColor, isDarkMode]) => {
+        this.barChartColor = effectiveBarChartColor(
+          barChartColor,
+          darkBarChartColor,
+          isDarkMode,
+        );
+      });
   }
 
   /**

@@ -1,13 +1,13 @@
 <ng-container *transloco="let t; read: 'user.charts'">
   @if (availableScales.length > 0 && scaleKey?.value) {
     <div
-      class="w-full flex align-items-start sm:align-items-center flex-column sm:flex-row mt-4 mb-4"
+      class="w-full flex items-start sm:items-center flex-col sm:flex-row mt-12 mb-12"
     >
       <div
-        class="w-full gap-2 flex align-items-start sm:align-items-center flex-column"
+        class="w-full gap-2 flex items-start sm:items-center flex-col"
       >
         @if (availableScales.length > 2) {
-          <div class="w-full flex align-items-center">
+          <div class="w-full flex items-center">
             <strong class="mr-2">
               {{ t("lineType") }}
             </strong>
@@ -20,13 +20,13 @@
             >
               <ng-template #selectedItem>
                 @if (scaleKey) {
-                  <div class="flex align-items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <div>{{ scaleKey.label }}</div>
                   </div>
                 }
               </ng-template>
               <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
@@ -44,7 +44,7 @@
             (slideEnd)="reloadOnSlideEnd()"
           />
         }
-        <div class="w-full flex align-items-center mt-3">
+        <div class="w-full flex items-center mt-6">
           <p-checkbox
             inputId="includeClosedSpots"
             name="includeClosedSpots"
@@ -77,7 +77,7 @@
       </div>
       @if (regionExpanded) {
         @for (crag of crags; track crag) {
-          <div class="ml-4">
+          <div class="ml-12">
             @if (completion.crags[crag.id]) {
               <div class="progress-bar-wrapper">
                 <lc-completion-progress-bar
@@ -96,7 +96,7 @@
               </div>
               @if (expandedCrags.has(crag.id)) {
                 @for (sector of crag.sectors; track sector) {
-                  <div class="ml-4">
+                  <div class="ml-12">
                     @if (completion.sectors[sector.id]) {
                       <div class="progress-bar-wrapper">
                         <lc-completion-progress-bar
@@ -117,7 +117,7 @@
                       </div>
                       @if (expandedSectors.has(sector.id)) {
                         @for (area of sector.areas; track area) {
-                          <div class="ml-4">
+                          <div class="ml-12">
                             @if (completion.areas[area.id]) {
                               <div class="progress-bar-wrapper">
                                 <lc-completion-progress-bar

@@ -1,0 +1,70 @@
+// WYSIWYG editors strip inline colors on save; force theme colors while editing so
+// the preview matches persisted output (including pasted or legacy colored HTML).
+.lc-wysiwyg-editor,
+.p-editor {
+  .ql-editor {
+    & * {
+      color: var(--p-text-color) !important;
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    a {
+      color: var(--p-primary-color) !important;
+    }
+
+    // ql-blank is on the same element as ql-editor — not a child.
+    &.ql-blank::before {
+      color: var(--p-text-muted-color) !important;
+    }
+  }
+
+  // Quill snow ships hardcoded #444 strokes; PrimeNG tokens don't always win on toolbar SVGs.
+  .p-editor-toolbar {
+    .ql-stroke,
+    .ql-stroke-miter {
+      stroke: var(--p-text-color) !important;
+    }
+
+    .ql-fill,
+    .ql-stroke.ql-fill {
+      fill: var(--p-text-color) !important;
+    }
+
+    .ql-picker-label {
+      color: var(--p-text-color) !important;
+    }
+
+    button:hover,
+    button:focus,
+    .ql-picker-label:hover {
+      .ql-stroke,
+      .ql-stroke-miter {
+        stroke: var(--p-primary-color) !important;
+      }
+
+      .ql-fill,
+      .ql-stroke.ql-fill {
+        fill: var(--p-primary-color) !important;
+      }
+
+      color: var(--p-primary-color) !important;
+    }
+
+    button.ql-active,
+    .ql-picker-label.ql-active,
+    .ql-picker-item.ql-selected {
+      .ql-stroke,
+      .ql-stroke-miter {
+        stroke: var(--p-primary-color) !important;
+      }
+
+      .ql-fill,
+      .ql-stroke.ql-fill {
+        fill: var(--p-primary-color) !important;
+      }
+
+      color: var(--p-primary-color) !important;
+    }
+  }
+}

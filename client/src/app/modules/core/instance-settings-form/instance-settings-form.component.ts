@@ -166,6 +166,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       displayUserGrades: [null],
       displayUserRatings: [null],
       logoImage: [null],
+      darkLogoImage: [null],
       faviconImage: [null],
       authBgImage: [null],
       mainBgImage: [null],
@@ -175,6 +176,8 @@ export class InstanceSettingsFormComponent implements OnInit {
       arrowHighlightTextColor: [null],
       barChartColor: [null],
       barChartAccentColor: [null],
+      darkBarChartColor: [null],
+      darkBarChartAccentColor: [null],
       matomoTrackerUrl: [null, [Validators.maxLength(120)]],
       matomoSiteId: [null, [Validators.maxLength(120)]],
       maptilerApiKey: [null, [Validators.maxLength(120)]],
@@ -198,6 +201,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       displayUserGrades: this.instanceSettings.displayUserGrades,
       displayUserRatings: this.instanceSettings.displayUserRatings,
       logoImage: this.instanceSettings.logoImage,
+      darkLogoImage: this.instanceSettings.darkLogoImage,
       faviconImage: this.instanceSettings.faviconImage,
       authBgImage: this.instanceSettings.authBgImage,
       mainBgImage: this.instanceSettings.mainBgImage,
@@ -208,6 +212,10 @@ export class InstanceSettingsFormComponent implements OnInit {
       barChartColor: getRgbObject(this.instanceSettings.barChartColor),
       barChartAccentColor: getRgbObject(
         this.instanceSettings.barChartAccentColor,
+      ),
+      darkBarChartColor: getRgbObject(this.instanceSettings.darkBarChartColor),
+      darkBarChartAccentColor: getRgbObject(
+        this.instanceSettings.darkBarChartAccentColor,
       ),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
@@ -239,6 +247,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('displayUserRatings').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
+      instanceSettings.darkLogoImage =
+        this.instanceSettingsForm.get('darkLogoImage').value;
       instanceSettings.faviconImage =
         this.instanceSettingsForm.get('faviconImage').value;
       instanceSettings.mainBgImage =
@@ -260,6 +270,12 @@ export class InstanceSettingsFormComponent implements OnInit {
       );
       instanceSettings.barChartAccentColor = this.getCSSRgbValue(
         this.instanceSettingsForm.get('barChartAccentColor').value,
+      );
+      instanceSettings.darkBarChartColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('darkBarChartColor').value,
+      );
+      instanceSettings.darkBarChartAccentColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('darkBarChartAccentColor').value,
       );
       instanceSettings.matomoSiteId =
         this.instanceSettingsForm.get('matomoSiteId').value;

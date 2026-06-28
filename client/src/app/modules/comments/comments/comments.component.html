@@ -1,6 +1,6 @@
 <ng-container *transloco="let t; read: 'comments'">
   @if (commentsContextService.object) {
-    <div class="mt-2 mb-4 block">
+    <div class="mt-2 mb-12 block">
       <lc-comment-editor
         *isLoggedIn="true"
         (created)="onCommentCreated($event)"
@@ -8,7 +8,7 @@
     </div>
   }
 
-  <div class="flex gap-3 flex-column mt-2">
+  <div class="flex gap-6 flex-col mt-2">
     @for (comment of comments; track comment) {
       <lc-comment [comment]="comment"></lc-comment>
     }
@@ -20,7 +20,7 @@
     <lc-comments-skeleton></lc-comments-skeleton>
   }
   @if (hasNextPage) {
-    <div class="flex justify-content-center mt-5">
+    <div class="flex justify-center mt-20">
       <p-button
         label="{{ t('loadMore') }}"
         (scrolled)="loadNextPage()"

@@ -19,7 +19,7 @@
             <p-step-panels>
               <p-step-panel [value]="1">
                 <ng-template #content>
-                  <div class="flex flex-column gap-2" lcControlGroup>
+                  <div class="flex flex-col gap-2" lcControlGroup>
                     <lc-multi-image-upload
                       lcFormControl
                       formControlName="images"
@@ -29,7 +29,7 @@
                       t("min-length-1-image-validation-error")
                     }}</small>
                   </div>
-                  <div class="flex pt-6 justify-content-between">
+                  <div class="flex pt-12 justify-between">
                     <p-button
                       [label]="t('cancel')"
                       severity="secondary"
@@ -53,7 +53,7 @@
                   <div formGroupName="lines">
                     @if (typeOptions?.length > 1) {
                       <div
-                        class="flex flex-column gap-2 max-w-20rem"
+                        class="flex flex-col gap-2 max-w-80"
                         lcControlGroup
                       >
                         <label class="form-label" for="type">{{
@@ -75,7 +75,7 @@
                     }
                     @if (scaleOptions?.length > 1) {
                       <div
-                        class="flex flex-column gap-2 max-w-20rem"
+                        class="flex flex-col gap-2 max-w-80"
                         lcControlGroup
                       >
                         <label class="form-label" for="scale">{{
@@ -93,7 +93,7 @@
                     }
                     @if (faFormat === faFormats.DATE && (gymMode$ | async)) {
                       <div
-                        class="flex flex-column gap-2 max-w-20rem"
+                        class="flex flex-col gap-2 max-w-80"
                         lcControlGroup
                       >
                         <label class="form-label" for="fa-year">{{
@@ -117,7 +117,7 @@
                     }
                     <div
                       formArrayName="lines"
-                      class="flex gap-2 flex-column mb-4"
+                      class="flex gap-2 flex-col mb-12"
                     >
                       <label class="form-label" for="scale">{{
                         t("linesLabel")
@@ -147,12 +147,12 @@
                   </div>
                   @if (getDisplayUserGrades() | async) {
                     <p-message
-                      styleClass="mt-4"
+                      styleClass="mt-12"
                       severity="warn"
                       [text]="t('displayUserGradesActive')"
                     />
                   }
-                  <div class="flex pt-6 justify-content-between">
+                  <div class="flex pt-12 justify-between">
                     <div class="flex gap-2">
                       <p-button
                         [label]="t('Back')"
@@ -184,7 +184,7 @@
               </p-step-panel>
               <p-step-panel [value]="3">
                 <ng-template #content>
-                  <div class="flex flex-column gap-2" lcControlGroup>
+                  <div class="flex flex-col gap-2" lcControlGroup>
                     <label class="form-label" for="topoImage">{{
                       t("topoImageLabel")
                     }}</label>

@@ -24,9 +24,9 @@ lc-menu {
   }
 
   .search-fake-input {
-    background: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    background: var(--p-form-field-background);
+    border: 1px solid var(--p-form-field-border-color);
+    border-radius: var(--p-border-radius-md);
     display: flex;
     padding: 0.5rem;
     padding-right: 2rem;
@@ -40,7 +40,7 @@ lc-menu {
     cursor: pointer;
 
     &:hover {
-      border-color: #3b82f6;
+      border-color: var(--p-primary-500);
     }
 
     @media (screen and max-width: 960px) {

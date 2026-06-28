@@ -4,9 +4,9 @@
       <b>{{ t("ascentDate") }}</b>
     </p-divider>
 
-    <div class="flex justify-content-center gap-2 mb-2">
+    <div class="flex justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
-        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+        <div class="flex flex-col gap-2 grow" lcControlGroup>
           <p-date-picker
             formControlName="year"
             view="year"
@@ -27,7 +27,7 @@
         </div>
       }
       @if (!ascentForm.get("yearOnly").value) {
-        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+        <div class="flex flex-col gap-2 grow" lcControlGroup>
           <p-date-picker
             formControlName="date"
             view="date"
@@ -55,7 +55,7 @@
       ></p-toggleButton>
     </div>
 
-    <div class="flex justify-content-center gap-2">
+    <div class="flex justify-center gap-2">
       <p-button
         [label]="t('today')"
         size="small"
@@ -81,7 +81,7 @@
     </p-divider>
 
     <div
-      class="flex flex-row gap-2 justify-content-center align-items-center"
+      class="flex flex-row gap-2 justify-center items-center"
       lcControlGroup
     >
       <p-toggleButton
@@ -100,7 +100,7 @@
       >
         <ng-template let-grade #item>
           <div
-            class="flex align-items-center gap-2"
+            class="flex items-center gap-2"
             data-cy="grade-dropdown-item"
           >
             <div>{{ grade.name | translateSpecialGrades }}</div>
@@ -131,7 +131,7 @@
     </p-divider>
 
     <div
-      class="flex flex-column gap-2 align-items-center justify-content-center"
+      class="flex flex-col gap-2 items-center justify-center"
       lcControlGroup
     >
       <p-rating
@@ -165,7 +165,7 @@
     </p-divider>
 
     <div
-      class="flex flex-row gap-2 align-items-center justify-content-center"
+      class="flex flex-row gap-2 items-center justify-center"
       lcControlGroup
     >
       <p-toggleButton

@@ -2,7 +2,7 @@
   <div class="content">
     <p-card header="{{ t('editRegionTitle') }}">
       <form [formGroup]="regionForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="name">{{
             t("regionNameLabel")
           }}</label>
@@ -23,11 +23,12 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
             t("regionDescriptionLabel")
           }}</label>
           <p-editor
+            class="lc-wysiwyg-editor"
             id="description"
             formControlName="description"
             lcFormControl
@@ -89,11 +90,12 @@
           </p-editor>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rules">{{
             t("regionRulesLabel")
           }}</label>
           <p-editor
+            class="lc-wysiwyg-editor"
             id="rules"
             formControlName="rules"
             lcFormControl
@@ -169,7 +171,7 @@
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
-          class="ml-3 responsive-button"
+          class="ml-6 responsive-button"
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>

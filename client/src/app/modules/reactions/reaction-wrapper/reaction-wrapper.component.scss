@@ -23,11 +23,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--p-surface-card, #ffffff);
-  border: 1px solid var(--p-surface-border, #e2e8f0);
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
   border-radius: 999px;
   padding: 4px 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--p-overlay-popover-shadow);
   font-size: 0.8rem;
   line-height: 1;
   white-space: normal;
@@ -60,7 +60,7 @@
 
     &.logged-in:hover,
     .reaction-wrapper:hover &:not(.has-reactions):not(.disabled).logged-in {
-      background: var(--p-surface-hover, #f8fafc);
+      background: var(--p-content-hover-background);
 
       .reaction-default {
         opacity: 0;
@@ -75,7 +75,7 @@
   }
 
   &.picker-open {
-    background: var(--p-surface-hover, #f8fafc);
+    background: var(--p-content-hover-background);
 
     .reaction-default {
       opacity: 0;
@@ -98,7 +98,7 @@
     @media (hover: hover) {
       &:hover,
       .reaction-wrapper:hover & {
-        background: var(--p-surface-card, #ffffff);
+        background: var(--p-content-background);
 
         .reaction-default {
           opacity: 1;
@@ -133,7 +133,7 @@
   justify-content: center;
   align-items: center;
   gap: 6px;
-  color: var(--p-text-muted-color, #64748b);
+  color: var(--p-text-muted-color);
   opacity: 0;
   visibility: hidden;
   transition:
@@ -148,11 +148,11 @@
 .reaction-info-btn {
   background: none;
   border: none;
-  border-left: 1px solid var(--p-surface-border, #e2e8f0);
+  border-left: 1px solid var(--p-content-border-color);
   margin-left: 4px;
   padding: 6px 6px 6px 10px;
   cursor: pointer;
-  color: var(--p-text-muted-color, #64748b);
+  color: var(--p-text-muted-color);
   display: flex;
   align-items: center;
   border-radius: 0 8px 8px 0;
@@ -163,7 +163,7 @@
   line-height: 1;
 
   &:hover {
-    background: var(--p-surface-hover, #f1f5f9);
+    background: var(--p-content-hover-background);
     color: var(--p-text-color);
   }
 
@@ -184,7 +184,7 @@
 }
 
 .reaction-total {
-  color: var(--p-text-muted-color, #64748b);
+  color: var(--p-text-muted-color);
   font-weight: 600;
   font-size: 0.75rem;
   margin-left: 2px;
@@ -223,12 +223,12 @@
   line-height: 1;
 
   &:hover {
-    background: var(--p-surface-hover, #f1f5f9);
+    background: var(--p-content-hover-background);
     transform: scale(1.2);
   }
 
   &.active {
-    border-color: var(--p-primary-color, #6366f1);
-    background: var(--p-primary-50, #eef2ff);
+    border-color: var(--p-primary-color);
+    background: color-mix(in srgb, var(--p-primary-color) 14%, var(--p-content-background));
   }
 }

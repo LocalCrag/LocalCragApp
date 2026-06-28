@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Pipe that transforms a value to a string.
  */
 @Pipe({
-  name: 'toString',
+  name: 'function toString() { [native code] }',
 })
 export class ToStringPipe implements PipeTransform {
   transform(value: any): string {

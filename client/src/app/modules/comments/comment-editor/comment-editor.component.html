@@ -3,9 +3,9 @@
     [formGroup]="form"
     lcForm
     (ngSubmit)="send()"
-    class="flex gap-2 flex-column"
+    class="flex gap-2 flex-col"
   >
-    <div lcControlGroup class="flex flex-column gap-2">
+    <div lcControlGroup class="flex flex-col gap-2">
       <textarea
         pTextarea
         formControlName="message"
@@ -20,7 +20,7 @@
       }}</small>
     </div>
 
-    <div class="flex justify-content-end gap-2">
+    <div class="flex justify-end gap-2">
       @if (cancelable) {
         <p-button
           [disabled]="saving"

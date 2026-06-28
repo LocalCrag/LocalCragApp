@@ -6,7 +6,7 @@
           ><b>{{ t("commonSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="instance-name">{{
             t("instanceNameLabel")
           }}</label>
@@ -26,7 +26,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="copyright-owner">{{
             t("copyrightOwnerLabel")
           }}</label>
@@ -46,7 +46,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="mail-greeting">{{
             t("mailGreetingLabel")
           }}</label>
@@ -66,12 +66,12 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="gym-mode">
             {{ t("gymModeLabel") }}
           </label>
           <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
+            class="flex items-center justify-center sm:justify-start"
           >
             {{ t("gymModeLabelFalse") }}
             <p-toggleswitch
@@ -84,12 +84,12 @@
           </div>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="display-user-grades">
             {{ t("displayUserGradesLabel") }}
           </label>
           <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
+            class="flex items-center justify-center sm:justify-start"
           >
             {{ t("displayUserGradesFalse") }}
             <p-toggleswitch
@@ -102,12 +102,12 @@
           </div>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="display-user-ratings">
             {{ t("displayUserRatingsLabel") }}
           </label>
           <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
+            class="flex items-center justify-center sm:justify-start"
           >
             {{ t("displayUserRatingsFalse") }}
             <p-toggleswitch
@@ -120,8 +120,8 @@
           </div>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="skippedHierarchicalLayers">
               {{ t("skippedHierarchicalLayersLabel") }}
             </label>
@@ -145,8 +145,8 @@
           ></p-select>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="faDefaultFormat">
               {{ t("faDefaultFormat") }}
             </label>
@@ -169,8 +169,8 @@
           ></p-select>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="defaultStartingPosition">
               {{ t("defaultStartingPosition") }}
             </label>
@@ -189,8 +189,8 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="rankingPastWeeks">
               {{ t("rankingPastWeeksLabel") }}
             </label>
@@ -210,8 +210,8 @@
           ></p-select>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="language">{{ t("languageLabel") }}</label>
             <span
               class="pi pi-question-circle ml-2"
@@ -226,8 +226,8 @@
           ></lc-language-select>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <div class="form-label flex items-center">
             <label for="timezone">{{ t("timezoneLabel") }}</label>
             <span
               class="pi pi-question-circle ml-2"
@@ -246,22 +246,35 @@
           ></p-select>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
+        <p-divider align="center" type="solid" class="mt-12 mb-2"
           ><b>{{ t("imagesSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="logo-upload">{{
-            t("logoImageLabel")
-          }}</label>
-          <lc-single-image-upload
-            lcFormControl
-            id="logo-upload"
-            formControlName="logoImage"
-          ></lc-single-image-upload>
+        <div class="lc-theme-variant-pair">
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="logo-upload">{{
+              t("logoImageLabel")
+            }}</label>
+            <lc-single-image-upload
+              lcFormControl
+              id="logo-upload"
+              formControlName="logoImage"
+            ></lc-single-image-upload>
+          </div>
+
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="dark-logo-upload">{{
+              t("darkLogoImageLabel")
+            }}</label>
+            <lc-single-image-upload
+              lcFormControl
+              id="dark-logo-upload"
+              formControlName="darkLogoImage"
+            ></lc-single-image-upload>
+          </div>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="favicon-image-upload">{{
             t("faviconImageLabel")
           }}</label>
@@ -272,7 +285,7 @@
           ></lc-single-image-upload>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="main-bg-image">{{
             t("mainBgImageLabel")
           }}</label>
@@ -283,7 +296,7 @@
           ></lc-single-image-upload>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="auth-bg-image">{{
             t("authBgImageLabel")
           }}</label>
@@ -294,11 +307,11 @@
           ></lc-single-image-upload>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
+        <p-divider align="center" type="solid" class="mt-12 mb-2"
           ><b>{{ t("arrowsSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="arrow-color">{{
             t("arrowColorLabel")
           }}</label>
@@ -308,7 +321,7 @@
           ></p-colorPicker>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="arrowTextColor">{{
             t("arrowTextColorLabel")
           }}</label>
@@ -318,7 +331,7 @@
           ></p-colorPicker>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="arrow-highlight-color">{{
             t("arrowHighlightColorLabel")
           }}</label>
@@ -328,7 +341,7 @@
           ></p-colorPicker>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="arrow-highlight-text-color">{{
             t("arrowHighlightTextColorLabel")
           }}</label>
@@ -338,37 +351,63 @@
           ></p-colorPicker>
         </div>
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
+        <p-divider align="center" type="solid" class="mt-12 mb-2"
           ><b>{{ t("chartSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="bar-chart-color">{{
-            t("barChartColorLabel")
-          }}</label>
-          <p-colorPicker
-            id="bar-chart-color"
-            formControlName="barChartColor"
-            format="rgb"
-          ></p-colorPicker>
+        <div class="lc-theme-variant-pair">
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="bar-chart-color">{{
+              t("barChartColorLabel")
+            }}</label>
+            <p-colorPicker
+              id="bar-chart-color"
+              formControlName="barChartColor"
+              format="rgb"
+            ></p-colorPicker>
+          </div>
+
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="dark-bar-chart-color">{{
+              t("darkBarChartColorLabel")
+            }}</label>
+            <p-colorPicker
+              id="dark-bar-chart-color"
+              formControlName="darkBarChartColor"
+              format="rgb"
+            ></p-colorPicker>
+          </div>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="bar-chart-accent-color">{{
-            t("barChartAccentColorLabel")
-          }}</label>
-          <p-colorPicker
-            id="bar-chart-accent-color"
-            formControlName="barChartAccentColor"
-            format="rgb"
-          ></p-colorPicker>
+        <div class="lc-theme-variant-pair">
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="bar-chart-accent-color">{{
+              t("barChartAccentColorLabel")
+            }}</label>
+            <p-colorPicker
+              id="bar-chart-accent-color"
+              formControlName="barChartAccentColor"
+              format="rgb"
+            ></p-colorPicker>
+          </div>
+
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="dark-bar-chart-accent-color">{{
+              t("darkBarChartAccentColorLabel")
+            }}</label>
+            <p-colorPicker
+              id="dark-bar-chart-accent-color"
+              formControlName="darkBarChartAccentColor"
+              format="rgb"
+            ></p-colorPicker>
+          </div>
         </div>
 
         <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("matomoSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="matomo-tracker-url">{{
             t("matomoTrackerUrlLabel")
           }}</label>
@@ -385,7 +424,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="matomo-site-id">{{
             t("matomoSiteIdLabel")
           }}</label>
@@ -406,7 +445,7 @@
           ><b>{{ t("mapSettings") }}</b></p-divider
         >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="maptiler-api-key">{{
             t("maptilerApiKeyLabel")
           }}</label>

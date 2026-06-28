@@ -17,7 +17,7 @@
       }
 
       <form [formGroup]="topoImageForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <lc-single-image-upload
             lcFormControl
             formControlName="image"
@@ -28,7 +28,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="title">{{
             t("topoImageTitleLabel")
           }}</label>
@@ -46,11 +46,12 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
             t("topoImageDescriptionLabel")
           }}</label>
           <p-editor
+            class="lc-wysiwyg-editor"
             id="description"
             formControlName="description"
             lcFormControl
@@ -88,7 +89,7 @@
           </p-editor>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="coordinates">{{
             t("coordinatesLabel")
           }}</label>
@@ -115,7 +116,7 @@
         <p-button
           label="{{ t('cancelButtonLabel') }}"
           (click)="cancel()"
-          class="ml-3 responsive-button"
+          class="ml-6 responsive-button"
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
@@ -123,7 +124,7 @@
           <p-button
             icon="pi pi-arrow-right-arrow-left"
             label="{{ t('moveTopoImageButtonLabel') }}"
-            class="responsive-button ml-3"
+            class="responsive-button ml-6"
             styleClass="p-button-secondary"
             (click)="openMoveDialog()"
             *isModerator="true"

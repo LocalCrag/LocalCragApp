@@ -8,7 +8,7 @@
         <p-message
           severity="info"
           icon="pi pi-info-circle"
-          class="m-4 mb-1 block"
+          class="m-12 mb-1 block"
         >
           {{ t("noAscentsFoundMessage") }}
         </p-message>
@@ -16,10 +16,10 @@
     </ng-template>
     <ng-template #header>
       <div
-        class="flex flex-column sm:flex-column justify-content-between gap-2"
+        class="flex flex-col sm:flex-col justify-between gap-2"
       >
         <div
-          class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
         >
           {{ t("orderByLabel") }}
           <div>
@@ -35,13 +35,13 @@
             >
               <ng-template #selectedItem>
                 @if (orderKey) {
-                  <div class="flex align-items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <div>{{ orderKey.label }}</div>
                   </div>
                 }
               </ng-template>
               <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
@@ -58,13 +58,13 @@
             >
               <ng-template #selectedItem>
                 @if (orderDirectionKey) {
-                  <div class="flex align-items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <div>{{ orderDirectionKey.label }}</div>
                   </div>
                 }
               </ng-template>
               <ng-template let-option #item>
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
                 </div>
               </ng-template>
@@ -73,7 +73,7 @@
         </div>
 
         <div
-          class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
         >
           @if (availableScales.length > 2) {
             <div>
@@ -90,13 +90,13 @@
               >
                 <ng-template #selectedItem2>
                   @if (scaleKey) {
-                    <div class="flex align-items-center gap-2">
+                    <div class="flex items-center gap-2">
                       <div>{{ scaleKey.label }}</div>
                     </div>
                   }
                 </ng-template>
                 <ng-template let-option #item2>
-                  <div class="flex align-items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <div>{{ option.label }}</div>
                   </div>
                 </ng-template>
@@ -127,9 +127,9 @@
         <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
       }
       @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        <div class="grid grid-nogutter">
+        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
           @for (ascent of ascents; track ascent; let first = $first) {
-            <div class="col-12" data-cy="ascent-list-item">
+            <div class="col-span-12" data-cy="ascent-list-item">
               <lc-reaction-wrapper
                 [reactions]="ascent.reactions"
                 [targetType]="'ascent'"
@@ -138,8 +138,8 @@
                 (reactionsChange)="ascent.reactions = $event"
               >
                 <div
-                  class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ascent-table-container"
-                  [ngClass]="{ 'border-top-1 surface-border': !first }"
+                  class="flex flex-col xl:flex-row xl:items-start p-12 gap-12 ascent-table-container"
+                  [ngClass]="{ 'border-t border-surface': !first }"
                 >
                   <!-- DISPLAY FOR LARGE SCREENS -->
                   <div class="ascent-table-row-large">
@@ -417,7 +417,7 @@
                       @if (!user) {
                         <lc-user-avatar
                           [user]="ascent.createdBy"
-                          styleClass="mr-3"
+                          styleClass="mr-6"
                           size="large"
                         />
                       }
@@ -579,7 +579,7 @@
   </p-dataView>
 
   @if (hasNextPage) {
-    <div class="flex justify-content-center mt-5">
+    <div class="flex justify-center mt-20">
       <p-button
         label="{{ t('loadMore') }}"
         (scrolled)="loadNextPage()"
