@@ -105,7 +105,11 @@
           }
         </div>
 
-        @if (!disableGradeOrderAndFiltering && scaleKey?.value && maxGradeValue !== null) {
+        @if (
+          !disableGradeOrderAndFiltering &&
+          scaleKey?.value &&
+          maxGradeValue !== null
+        ) {
           <lc-grade-range-slider
             class="mt-1"
             [(range)]="gradeFilterRange"
