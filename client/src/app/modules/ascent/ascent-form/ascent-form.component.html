@@ -80,10 +80,7 @@
       <b>{{ t("personalGrade") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-row gap-2 justify-center items-center"
-      lcControlGroup
-    >
+    <div class="flex flex-row gap-2 justify-center items-center" lcControlGroup>
       <p-toggleButton
         formControlName="soft"
         [onLabel]="t('soft')"
@@ -99,10 +96,7 @@
         lcFormControl
       >
         <ng-template let-grade #item>
-          <div
-            class="flex items-center gap-2"
-            data-cy="grade-dropdown-item"
-          >
+          <div class="flex items-center gap-2" data-cy="grade-dropdown-item">
             <div>{{ grade.name | translateSpecialGrades }}</div>
           </div>
         </ng-template>
@@ -130,10 +124,7 @@
       <b>{{ t("rating") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-col gap-2 items-center justify-center"
-      lcControlGroup
-    >
+    <div class="flex flex-col gap-2 items-center justify-center" lcControlGroup>
       <p-rating
         formControlName="rating"
         lcFormControl
@@ -164,10 +155,7 @@
       <b>{{ t("otherInfo") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-row gap-2 items-center justify-center"
-      lcControlGroup
-    >
+    <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
       <p-toggleButton
         formControlName="flash"
         [dt]="toggleButtonDt"

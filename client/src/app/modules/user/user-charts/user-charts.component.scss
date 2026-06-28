@@ -61,12 +61,20 @@
 
     &--red {
       border-left-color: var(--p-red-500);
-      background: color-mix(in srgb, var(--p-red-500) 12%, var(--p-content-background));
+      background: color-mix(
+        in srgb,
+        var(--p-red-500) 12%,
+        var(--p-content-background)
+      );
     }
 
     &--blue {
       border-left-color: var(--p-blue-500);
-      background: color-mix(in srgb, var(--p-blue-500) 12%, var(--p-content-background));
+      background: color-mix(
+        in srgb,
+        var(--p-blue-500) 12%,
+        var(--p-content-background)
+      );
     }
   }
 
@@ -101,22 +109,38 @@
   /* One accent per section (matches each h3 block). */
   .stat-grid--rankings .stat-card {
     border-left-color: var(--p-blue-500);
-    background: color-mix(in srgb, var(--p-blue-500) 12%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-blue-500) 12%,
+      var(--p-content-background)
+    );
   }
 
   .stat-grid--achievements .stat-card {
     border-left-color: var(--p-primary-500);
-    background: color-mix(in srgb, var(--p-primary-color) 12%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-primary-color) 12%,
+      var(--p-content-background)
+    );
   }
 
   .stat-grid--social .stat-card {
     border-left-color: var(--p-orange-500);
-    background: color-mix(in srgb, var(--p-orange-500) 12%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-orange-500) 12%,
+      var(--p-content-background)
+    );
   }
 
   .stat-grid--moderation .stat-card {
     border-left-color: var(--p-teal-500);
-    background: color-mix(in srgb, var(--p-teal-500) 12%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-teal-500) 12%,
+      var(--p-content-background)
+    );
   }
 
   .stat-label {

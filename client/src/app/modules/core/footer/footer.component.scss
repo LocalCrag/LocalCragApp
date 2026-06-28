@@ -6,7 +6,11 @@ lc-footer {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: color-mix(in srgb, var(--p-text-color) 4%, var(--p-content-background));
+  background-color: color-mix(
+    in srgb,
+    var(--p-text-color) 4%,
+    var(--p-content-background)
+  );
 
   .version {
     color: var(--p-text-muted-color);

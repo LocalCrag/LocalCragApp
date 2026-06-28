@@ -47,10 +47,7 @@
             lcFormControl
           >
             <ng-template let-grade #item>
-              <div
-                class="flex items-center"
-                data-cy="grade-dropdown-item"
-              >
+              <div class="flex items-center" data-cy="grade-dropdown-item">
                 <div>{{ grade.name | translateSpecialGrades }}</div>
               </div>
             </ng-template>
@@ -103,9 +100,7 @@
             }}</small>
           </div>
         }
-        <div
-          class="shrink-0 flex md:items-start sm:items-end justify-end"
-        >
+        <div class="shrink-0 flex md:items-start sm:items-end justify-end">
           <p-button
             icon="pi pi-trash"
             severity="danger"

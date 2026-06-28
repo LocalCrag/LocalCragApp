@@ -83,7 +83,11 @@ lc-notification-bell {
 }
 
 .notifications-item:hover {
-  background: color-mix(in srgb, var(--p-text-color) 5%, var(--p-content-background));
+  background: color-mix(
+    in srgb,
+    var(--p-text-color) 5%,
+    var(--p-content-background)
+  );
 }
 
 .notifications-item-main {

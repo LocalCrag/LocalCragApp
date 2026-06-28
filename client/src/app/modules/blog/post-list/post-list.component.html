@@ -49,7 +49,9 @@
                     class="flex flex-col xl:items-start p-12 gap-2"
                     [ngClass]="{ 'border-t border-surface': !first }"
                   >
-                    <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full">
+                    <div
+                      class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
+                    >
                       <div class="grow flex items-center">
                         <a
                           class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
@@ -81,7 +83,10 @@
                         {{ t("deletedUser") }}
                       }
                       {{ t("atDate", { date: post.timeCreated | date }) }}
-                      <span class="text-surface-500 dark:text-surface-300 hidden sm:inline">·</span>
+                      <span
+                        class="text-surface-500 dark:text-surface-300 hidden sm:inline"
+                        >·</span
+                      >
                       <span class="text-surface-600 dark:text-surface-200">{{
                         t("totalComments", { count: post.commentCount })
                       }}</span>

@@ -92,12 +92,20 @@ lc-header-menu-sub {
 
   &:hover {
     color: var(--p-text-color);
-    background: color-mix(in srgb, var(--p-text-color) 6%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-text-color) 6%,
+      var(--p-content-background)
+    );
   }
 
   &.active-item {
     color: var(--p-primary-color);
-    background: color-mix(in srgb, var(--p-primary-color) 14%, var(--p-content-background));
+    background: color-mix(
+      in srgb,
+      var(--p-primary-color) 14%,
+      var(--p-content-background)
+    );
 
     .menu-icon {
       color: var(--p-primary-color);

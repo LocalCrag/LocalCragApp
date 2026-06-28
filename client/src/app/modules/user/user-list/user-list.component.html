@@ -16,9 +16,7 @@
           >
         </ng-template>
         <ng-template #header>
-          <div
-            class="flex flex-col sm:flex-row justify-between gap-2"
-          >
+          <div class="flex flex-col sm:flex-row justify-between gap-2">
             <p-select
               [options]="sortOptions"
               [(ngModel)]="sortKey"
@@ -69,7 +67,9 @@
                       />
                     </div>
                     <div class="flex flex-col grow">
-                      <div class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-1">
+                      <div
+                        class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-1"
+                      >
                         {{ user.fullname }}
                       </div>
                       <small class="mb-6">{{ user.email }}</small>
