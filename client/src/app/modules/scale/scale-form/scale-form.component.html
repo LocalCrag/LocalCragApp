@@ -192,7 +192,7 @@
               />
             }
           </div>
-          <div class="button-container">
+          <div class="lc-button-group mt-2">
             <p-button
               label="{{ t('addGrade') }}"
               (click)="addGrade()"
@@ -204,7 +204,7 @@
               label="{{ t('reorderGrades') }}"
               (click)="reorderGradesByValue()"
               icon="pi pi-sort-amount-down-alt"
-              class="responsive-button ml-2"
+              class="responsive-button"
               [disabled]="loadingState === LoadingState.LOADING"
             />
           </div>
@@ -300,7 +300,7 @@
           />
         }
 
-        <div class="button-container">
+        <div class="lc-button-group mt-2">
           <p-button
             label="{{ t('addBracket') }}"
             (click)="addStackedChartBracket()"
@@ -312,7 +312,7 @@
             label="{{ t('reorderGrades') }}"
             (click)="reorderStackedChartBracketsByValue()"
             icon="pi pi-sort-amount-down-alt"
-            class="responsive-button ml-2"
+            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
           />
         </div>
@@ -409,7 +409,7 @@
           />
         }
 
-        <div class="button-container">
+        <div class="lc-button-group mt-2">
           <p-button
             label="{{ t('addBracket') }}"
             (click)="addBarChartBracket()"
@@ -421,13 +421,13 @@
             label="{{ t('reorderGrades') }}"
             (click)="reorderBarChartBracketsByValue()"
             icon="pi pi-sort-amount-down-alt"
-            class="responsive-button ml-2"
+            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
           />
         </div>
 
         <p-divider class="mt-12" />
-        <div class="scale-form-actions">
+        <div class="form-actions justify-end">
           <p-button
             label="{{ t('saveScale') }}"
             (click)="saveScale()"

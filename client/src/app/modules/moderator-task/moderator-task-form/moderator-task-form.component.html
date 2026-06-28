@@ -116,7 +116,6 @@
         <p-button
           [label]="t('cancelButton')"
           (click)="cancel()"
-          class="ml-6"
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
@@ -125,7 +124,6 @@
             [label]="t('deleteTaskButton')"
             (click)="confirmDelete($event)"
             icon="pi pi-trash"
-            class="ml-6"
             styleClass="p-button-danger"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>

@@ -9,8 +9,8 @@
   }
 
   @if (line && ticks) {
-    <div class="flex flex-col xl:flex-row xl:items-start gap-12">
-      <div class="w-full sm:w-9/12 xl:w-5/12 flex flex-col mx-auto pt-12 gap-6">
+    <div class="flex flex-col xl:flex-row xl:items-start gap-6">
+      <div class="w-full sm:w-9/12 xl:w-5/12 flex flex-col mx-auto pt-6 gap-4">
         @for (topoImage of line.topoImages; track topoImage) {
           <div>
             <lc-topo-image
@@ -40,7 +40,7 @@
         ></p-button>
       </div>
       <div
-        class="flex flex-col justify-between items-center xl:items-start flex-1 gap-12 pt-12"
+        class="flex flex-col justify-between items-center xl:items-start flex-1 gap-6 pt-6"
       >
         <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
         @if (line.description) {

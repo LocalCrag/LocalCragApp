@@ -9,7 +9,7 @@
       } @else if (bundle) {
         <div class="flex flex-col gap-6 release-notes-bundle">
           <h1 class="m-0 text-2xl">{{ t("releaseNotes.heading") }}</h1>
-          <div class="flex flex-col gap-12 release-notes-bundle-items">
+          <div class="flex flex-col gap-6 release-notes-bundle-items">
             @for (item of bundleItems; track item.key) {
               <article class="release-notes-bundle-item flex flex-col gap-2">
                 <h2

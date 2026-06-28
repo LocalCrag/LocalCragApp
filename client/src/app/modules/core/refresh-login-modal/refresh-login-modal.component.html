@@ -20,18 +20,19 @@
           }}</small>
         </div>
       </form>
-      <p-button
-        label="{{ t('logoutButtonLabel') }}"
-        (click)="logout()"
-        class="mr-4"
-        styleClass="p-button-outlined p-button-secondary"
-        [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
-      ></p-button>
-      <p-button
-        label="{{ t('refreshLoginButtonLabel') }}"
-        (click)="refreshLogin()"
-        [loading]="(isLoading$ | async) === loadingStates.LOADING"
-      ></p-button>
+      <div class="lc-button-group justify-end">
+        <p-button
+          label="{{ t('logoutButtonLabel') }}"
+          (click)="logout()"
+          styleClass="p-button-outlined p-button-secondary"
+          [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
+        ></p-button>
+        <p-button
+          label="{{ t('refreshLoginButtonLabel') }}"
+          (click)="refreshLogin()"
+          [loading]="(isLoading$ | async) === loadingStates.LOADING"
+        ></p-button>
+      </div>
     </p-dialog>
   }
 </ng-container>

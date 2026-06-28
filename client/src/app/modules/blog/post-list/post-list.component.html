@@ -25,7 +25,7 @@
               styleClass="md:mb-0"
               [disabled]="loading === loadingStates.LOADING"
             ></p-select>
-            <div class="flex justify-end gap-6">
+            <div class="lc-button-group justify-end">
               <p-button
                 label="{{ t('newPostButtonLabel') }}"
                 icon="pi pi-plus"
@@ -42,11 +42,11 @@
             <lc-post-list-skeleton></lc-post-list-skeleton>
           }
           @if (loading !== loadingStates.LOADING) {
-            <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+            <div class="grid grid-cols-12">
               @for (post of posts; track post; let first = $first) {
                 <div class="col-span-12">
                   <div
-                    class="flex flex-col xl:items-start p-12 gap-2"
+                    class="flex flex-col xl:items-start p-6 gap-2"
                     [ngClass]="{ 'border-t border-surface': !first }"
                   >
                     <div
@@ -59,7 +59,7 @@
                           >{{ post.title }}</a
                         >
                       </div>
-                      <div class="flex grow-0 gap-6">
+                      <div class="lc-button-group grow-0">
                         <p-button
                           label="{{ t('editPostButtonLabel') }}"
                           icon="pi pi-file-edit"

@@ -46,7 +46,7 @@
             ></p-button>
           </div>
         </div>
-        <div class="flex justify-start sm:justify-end gap-6">
+        <div class="lc-button-group justify-start sm:justify-end">
           <p-button
             [disabled]="loading === loadingStates.LOADING"
             label="{{ t('newTopoImageButtonLabel') }}"
@@ -93,7 +93,7 @@
         <lc-topo-image-list-skeleton></lc-topo-image-list-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+        <div class="grid grid-cols-12">
           @for (topoImage of topoImages; track topoImage; let first = $first) {
             <div
               class="col-span-12"
@@ -101,7 +101,7 @@
               [id]="topoImage.id"
             >
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-12 gap-12"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
                 [ngClass]="{
                   'border-t border-surface': !first,
                   archived: topoImage.archived,
@@ -118,7 +118,7 @@
                   ></lc-topo-image-details>
                 </div>
                 <div
-                  class="flex flex-col sm:flex-col justify-between items-center xl:items-start flex-1 gap-12"
+                  class="flex flex-col sm:flex-col justify-between items-center xl:items-start flex-1 gap-6"
                 >
                   <div class="line-table">
                     <div
@@ -138,7 +138,7 @@
                       }
                       <div
                         *isModerator="true"
-                        class="justify-start sm:justify-end flex grow items-center"
+                        class="lc-button-group justify-start sm:justify-end grow items-center"
                       >
                         <p-button
                           label="{{ t('addLineToImageButtonLabel') }}"
@@ -163,7 +163,7 @@
                         <p-button
                           label="{{ t('editTopoImageButtonLabel') }}"
                           icon="pi pi-pencil"
-                          class="ml-2 responsive-button"
+                          class="responsive-button"
                           routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
                             areaSlug
                           }}/topo-images/{{ topoImage.id }}/edit"
@@ -174,11 +174,10 @@
                           [showLabel]="false"
                           [topoImage]="topoImage"
                           [style]="'plain'"
-                          class="ml-2 responsive-button"
+                          class="responsive-button"
                         ></lc-archive-button>
                         <p-button
                           icon="pi pi-trash"
-                          class="ml-2"
                           (click)="confirmDeleteTopoImage($event, topoImage)"
                           [loading]="
                             topoImage.loadingState === loadingStates.LOADING

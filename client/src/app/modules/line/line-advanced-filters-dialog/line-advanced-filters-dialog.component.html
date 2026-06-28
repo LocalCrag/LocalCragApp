@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
-  <div class="line-adv-filters-dialog flex flex-col gap-12">
+  <div class="line-adv-filters-dialog flex flex-col gap-6">
     <div>
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersGradeSection") }}
@@ -55,7 +55,7 @@
         {{ t("advancedFiltersFaYearSection") }}
       </div>
       <div
-        class="fa-year-range grid grid-cols-12 gap-4 grid-cols-12 gap-6 grid-cols-12 gap-12 grid-cols-12 gap-12 w-full"
+        class="fa-year-range grid grid-cols-12 gap-6 w-full"
       >
         <div class="fa-year-field col-span-6 flex flex-col gap-1">
           <label class="block text-sm mb-1" for="advancedFiltersFaYearFrom">{{
@@ -240,7 +240,7 @@
       </ng-container>
     </div>
 
-    <div class="flex flex-wrap justify-between gap-2 mt-2">
+    <div class="lc-button-group justify-between mt-2">
       <p-button
         [label]="t('advancedFiltersReset')"
         icon="pi pi-refresh"
@@ -248,7 +248,7 @@
         class="responsive-button"
         (click)="reset()"
       ></p-button>
-      <div class="flex gap-2">
+      <div class="lc-button-group">
         <p-button
           [label]="t('advancedFiltersCancel')"
           icon="pi pi-times"

@@ -25,7 +25,7 @@
               (onChange)="onSortChange($event)"
               styleClass="md:mb-0"
             ></p-select>
-            <div class="flex justify-end gap-6">
+            <div class="lc-button-group justify-end">
               <p-button
                 [disabled]="loading === loadingStates.LOADING"
                 label="{{ t('newMenuPageButtonLabel') }}"
@@ -41,11 +41,11 @@
             <lc-menu-list-skeleton></lc-menu-list-skeleton>
           }
           @if (loading !== loadingStates.LOADING) {
-            <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+            <div class="grid grid-cols-12">
               @for (menuPage of menuPages; track menuPage; let first = $first) {
                 <div class="col-span-12">
                   <div
-                    class="flex flex-col xl:items-start p-12 gap-2"
+                    class="flex flex-col xl:items-start p-6 gap-2"
                     [ngClass]="{ 'border-t border-surface': !first }"
                   >
                     <div
@@ -54,7 +54,7 @@
                       <div class="grow flex items-center">
                         {{ menuPage.title }}
                       </div>
-                      <div class="flex grow-0 gap-6">
+                      <div class="lc-button-group grow-0">
                         <p-button
                           label="{{ t('visitMenuPageButtonLabel') }}"
                           icon="pi pi-eye"

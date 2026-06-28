@@ -225,11 +225,11 @@
             <lc-line-list-skeleton></lc-line-list-skeleton>
           }
           @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-            <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+            <div class="grid grid-cols-12">
               @for (todo of todos; track todo; let first = $first) {
                 <div class="col-span-12" data-cy="todo-list-item">
                   <div
-                    class="flex flex-col xl:flex-row xl:items-start p-12 gap-12 todo-table-container"
+                    class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 todo-table-container"
                     [ngClass]="{ 'border-t border-surface': !first }"
                   >
                     <!-- DISPLAY FOR NORMAL SCREENS -->

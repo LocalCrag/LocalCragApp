@@ -104,7 +104,7 @@
         <lc-ranking-list-skeleton></lc-ranking-list-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+        <div class="grid grid-cols-12">
           @for (
             ranking of rankings;
             track ranking;
@@ -113,7 +113,7 @@
           ) {
             <div class="col-span-12">
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-12 gap-12 ranking-table-container"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ranking-table-container"
                 [ngClass]="{ 'border-t border-surface': !first }"
               >
                 <div class="ranking-table-row">

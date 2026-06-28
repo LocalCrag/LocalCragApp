@@ -52,7 +52,7 @@
             </ng-template>
           </p-select>
         </div>
-        <div class="flex justify-start sm:justify-end gap-6">
+        <div class="lc-button-group justify-start sm:justify-end">
           <p-button
             label="{{ t('newAreaButtonLabel') }}"
             icon="pi pi-plus"
@@ -77,7 +77,7 @@
         <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+        <div class="grid grid-cols-12">
           @for (area of areas; track area; let first = $first) {
             <a
               class="col-span-12 clickable-data-item"
@@ -87,7 +87,7 @@
               data-cy="area-list-item"
             >
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-12 gap-12"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
                 [ngClass]="{ 'border-t border-surface': !first }"
               >
                 <img
@@ -100,10 +100,10 @@
                   [alt]="area.name"
                 />
                 <div
-                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-12"
+                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
                 >
                   <div
-                    class="flex flex-col items-center sm:items-start gap-6 w-full"
+                    class="flex flex-col items-center sm:items-start gap-4 w-full"
                   >
                     <div class="flex justify-between w-full">
                       <span class="text-2xl font-bold black-font">
