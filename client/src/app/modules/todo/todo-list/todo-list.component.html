@@ -206,7 +206,7 @@
               }
             </div>
 
-            @if (scaleKey?.value) {
+            @if (scaleKey?.value && maxGradeValue !== null) {
               <lc-grade-range-slider
                 class="mt-1"
                 [(range)]="gradeFilterRange"
