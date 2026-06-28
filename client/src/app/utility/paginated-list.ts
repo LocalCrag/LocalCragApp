@@ -87,6 +87,9 @@ export function loadFirstPaginatedPage(
   loadNextPage: () => void,
   afterReset?: () => void,
 ): void {
+  if (view.loading === LoadingState.LOADING) {
+    return;
+  }
   resetPaginatedList(view);
   afterReset?.();
   loadNextPage();

@@ -61,8 +61,6 @@ import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
@@ -119,9 +117,6 @@ export class AscentListComponent
    */
   @Input() parentLoading = false;
 
-  private parentLoading$ = new BehaviorSubject<boolean>(this.parentLoading);
-  private regionGradesLoaded$ = new BehaviorSubject<boolean>(false);
-
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
@@ -148,6 +143,8 @@ export class AscentListComponent
   private currentUser: User | null = null;
 
   private loadedGradeFilterRange: number[] = null;
+  private regionGradesLoaded = false;
+  private initialLoadStarted = false;
   private destroyRef = inject(DestroyRef);
   private ascentsService = inject(AscentsService);
   private dialogService = inject(DialogService);
@@ -163,12 +160,12 @@ export class AscentListComponent
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['parentLoading']) {
-      this.parentLoading$.next(changes['parentLoading'].currentValue);
+      this.tryBootstrapList();
     }
 
     // Parent ascent routes reuse this component across param-only navigations (e.g. clicking a
     // notification jumps from one line’s ascents to another). Initial load runs only once via
-    // combineLatest(…take(1)) in ngOnInit, so we must refetch when scoped inputs identity changes.
+    // tryBootstrapList(), so we must refetch when scoped inputs identity changes.
     const scopeKeys = [
       'lineId',
       'cragId',
@@ -180,40 +177,23 @@ export class AscentListComponent
       const ch = changes[key];
       return ch && !ch.firstChange && ch.currentValue !== ch.previousValue;
     });
-    if (
-      scopeChanged &&
-      this.regionGradesLoaded$.value &&
-      !this.parentLoading$.value
-    ) {
+    if (scopeChanged && this.canBootstrap() && this.initialLoadStarted) {
       this.loadFirstPage();
     }
   }
 
   ngOnInit() {
-    // Only offer lineType/gradeScales for filtering that are indeed available
-    this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
-      // store distribution for later rebuilds and build initial available scales
-      this.gradeDistribution = gradeDistribution;
-      this.buildAvailableScales(gradeDistribution);
-      this.regionGradesLoaded$.next(true);
-    });
-
-    // Call initial selectScale() (which loads th first page) only when both conditions are met:
-    // 1. parentLoading is false
-    // 2. regionGradesLoaded is true
-    combineLatest([this.parentLoading$, this.regionGradesLoaded$])
-      .pipe(
-        filter(
-          ([parentLoading, regionGradesLoaded]) =>
-            !parentLoading && regionGradesLoaded,
-        ),
-        take(1),
-      )
-      .subscribe(() => {
-        this.selectScale();
+    if (this.disableGradeOrderAndFiltering) {
+      this.tryBootstrapList();
+    } else {
+      this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
+        this.gradeDistribution = gradeDistribution;
+        this.buildAvailableScales(gradeDistribution);
+        this.regionGradesLoaded = true;
+        this.tryBootstrapList();
       });
+    }
 
-    // use helpers to create order/direction/action options so they can be reused
     this.buildOrderOptions();
     this.buildDirectionOptions();
 
@@ -225,7 +205,6 @@ export class AscentListComponent
         this.cdr.markForCheck();
       });
 
-    // Rebuild menu labels and available scales when language changes
     this.languageService.renderedLanguage$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((rendered) => {
@@ -245,18 +224,54 @@ export class AscentListComponent
       });
   }
 
-  selectScale() {
-    if (this.scaleKey?.value) {
-      this.scalesService
-        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
-        .subscribe((scale) => {
-          this.maxGradeValue = Math.max(
-            ...scale.grades.map((grade) => grade.value),
-          );
-          this.gradeFilterRange = [0, this.maxGradeValue];
-        });
+  private canBootstrap(): boolean {
+    if (this.parentLoading) {
+      return false;
     }
-    this.loadFirstPage();
+    return this.disableGradeOrderAndFiltering || this.regionGradesLoaded;
+  }
+
+  /** Fetch the first page once parent scope (and grade filters when used) are ready. */
+  private tryBootstrapList(): void {
+    if (this.initialLoadStarted || !this.canBootstrap()) {
+      return;
+    }
+    this.initialLoadStarted = true;
+    this.bootstrapList();
+  }
+
+  private bootstrapList(): void {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+      this.cdr.markForCheck();
+    });
+  }
+
+  /** User changed the scale filter. */
+  selectScale() {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+    });
+  }
+
+  private applyScaleBounds(onReady: () => void): void {
+    if (this.disableGradeOrderAndFiltering || !this.scaleKey?.value) {
+      this.maxGradeValue = null;
+      this.gradeFilterRange = [0, null];
+      onReady();
+      return;
+    }
+    this.scalesService
+      .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+      .subscribe((scale) => {
+        this.maxGradeValue = Math.max(
+          ...scale.grades.map((grade) => grade.value),
+        );
+        this.gradeFilterRange = [0, this.maxGradeValue];
+        onReady();
+      });
   }
 
   reloadOnSlideEnd() {
@@ -292,11 +307,14 @@ export class AscentListComponent
       order_direction: this.orderDirectionKey.value,
       per_page: 10,
     };
-    if (this.gradeFilterRange[1] !== null) {
+    if (
+      !this.disableGradeOrderAndFiltering &&
+      this.gradeFilterRange[1] !== null
+    ) {
       params.min_grade = this.gradeFilterRange[0];
       params.max_grade = this.gradeFilterRange[1];
     }
-    if (this.scaleKey?.value) {
+    if (!this.disableGradeOrderAndFiltering && this.scaleKey?.value) {
       params.line_type = this.scaleKey.value.lineType;
       params.grade_scale = this.scaleKey.value.gradeScale;
     }
