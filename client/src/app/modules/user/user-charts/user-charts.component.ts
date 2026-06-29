@@ -24,7 +24,7 @@ import {
   selectBarChartColor,
   selectDarkBarChartColor,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { effectiveBarChartColor } from '../../../utility/instance-settings-theme';
+import { resolveBarChartColor } from '../../../utility/chart-theme';
 import { ThemeService } from '../../../services/core/theme.service';
 
 @Component({
@@ -89,7 +89,7 @@ export class UserChartsComponent implements OnInit {
       this.hardestFaLabel$ = this.formatHardestLine(
         stats.ascentTotals.hardestFaGrades,
       );
-      this.barChartColor = effectiveBarChartColor(
+      this.barChartColor = resolveBarChartColor(
         barChartColor,
         darkBarChartColor,
         this.themeService.isDarkMode(),
@@ -103,7 +103,7 @@ export class UserChartsComponent implements OnInit {
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([barChartColor, darkBarChartColor, isDarkMode]) => {
-        this.barChartColor = effectiveBarChartColor(
+        this.barChartColor = resolveBarChartColor(
           barChartColor,
           darkBarChartColor,
           isDarkMode,

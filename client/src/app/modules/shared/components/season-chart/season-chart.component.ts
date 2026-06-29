@@ -11,8 +11,7 @@ import {
 } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { getRgbObject } from '../../../../utility/misc/color';
-import { effectiveBarChartColor } from '../../../../utility/instance-settings-theme';
+import { resolveBarChartColor, toRgba } from '../../../../utility/chart-theme';
 import { ThemeService } from '../../../../services/core/theme.service';
 import { Message } from 'primeng/message';
 
@@ -44,14 +43,12 @@ export class SeasonChartComponent implements OnInit {
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([barChartColor, darkBarChartColor, isDarkMode]) => {
-        const color =
-          effectiveBarChartColor(
-            barChartColor,
-            darkBarChartColor,
-            isDarkMode,
-          ) ?? barChartColor;
-        const rgbObject = getRgbObject(color);
-        const bgColor = `rgba(${rgbObject.r}, ${rgbObject.g}, ${rgbObject.b}, 0.4)`;
+        const color = resolveBarChartColor(
+          barChartColor,
+          darkBarChartColor,
+          isDarkMode,
+        );
+        const bgColor = toRgba(color, 0.4);
         this.data = {
           labels: [
             this.translocoService.translate(marker('January')),

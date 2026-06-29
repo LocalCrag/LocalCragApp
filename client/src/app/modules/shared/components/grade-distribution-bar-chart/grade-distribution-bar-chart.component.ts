@@ -22,9 +22,10 @@ import {
   selectDarkBarChartAccentColor,
 } from '../../../../ngrx/selectors/instance-settings.selectors';
 import {
-  effectiveBarChartAccentColor,
-  effectiveBarChartColor,
-} from '../../../../utility/instance-settings-theme';
+  getChartThemeColors,
+  resolveBarChartAccentColor,
+  resolveBarChartColor,
+} from '../../../../utility/chart-theme';
 import { ThemeService } from '../../../../services/core/theme.service';
 import { debounceTime, map, take } from 'rxjs/operators';
 import { GradeDistribution } from '../../../../models/scale';
@@ -88,7 +89,10 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
     toObservable(this.themeService.isDarkMode)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.buildData());
+      .subscribe(() => {
+        this.buildChartOptions();
+        this.buildData();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -122,8 +126,11 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--p-text-color');
+    this.buildChartOptions();
+  }
+
+  private buildChartOptions() {
+    const { textColor } = getChartThemeColors();
     this.options = {
       layout: {
         padding: {
@@ -337,18 +344,16 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 const stacked = !!flashCounts?.some((n) => n > 0);
 
                 // Set the colors for the chart
-                const nonFlashColor =
-                  effectiveBarChartColor(
-                    barChartColor,
-                    darkBarChartColor,
-                    isDarkMode,
-                  )?.trim() || 'rgb(239, 68, 68)';
-                const flashColor =
-                  effectiveBarChartAccentColor(
-                    barChartAccentColor,
-                    darkBarChartAccentColor,
-                    isDarkMode,
-                  )?.trim() || 'rgb(250, 204, 21)';
+                const nonFlashColor = resolveBarChartColor(
+                  barChartColor,
+                  darkBarChartColor,
+                  isDarkMode,
+                );
+                const flashColor = resolveBarChartAccentColor(
+                  barChartAccentColor,
+                  darkBarChartAccentColor,
+                  isDarkMode,
+                );
 
                 // Stacked bar: first dataset = bottom of bar (flash), second = top (repeat / redpoint).
                 const datasets = stacked
