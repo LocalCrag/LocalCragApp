@@ -7,7 +7,7 @@ lc-gallery-image {
     align-items: center;
 
     i {
-      color: var(--p-gray-500);
+      color: var(--p-text-muted-color);
     }
   }
 
@@ -52,7 +52,7 @@ lc-gallery-image {
     gap: 0.25rem;
 
     p-tag {
-      color: white;
+      color: var(--p-primary-contrast-color);
       border-radius: calc(2 * var(--p-tag-rounded-border-radius));
       padding: 0.125rem 0.25rem;
     }
@@ -91,7 +91,7 @@ lc-gallery-image {
     .p-card-header {
       display: flex;
       justify-content: center;
-      background-color: #f4f4f4;
+      background-color: var(--p-content-hover-background);
     }
   }
 

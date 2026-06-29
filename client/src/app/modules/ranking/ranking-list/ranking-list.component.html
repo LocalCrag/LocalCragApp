@@ -9,12 +9,12 @@
       <p-message
         severity="info"
         icon="pi pi-info-circle"
-        class="m-4 mb-1 block"
+        class="m-12 mb-1 block"
         >{{ t("noRankingsFoundMessage") }}</p-message
       >
     </ng-template>
     <ng-template #header>
-      <div class="flex flex-column sm:flex-row column-gap-4 row-gap-3">
+      <div class="flex flex-col sm:flex-row gap-x-6 gap-y-4">
         @if (lineTypes?.length > 1) {
           <p-select
             [options]="lineTypes"
@@ -26,13 +26,13 @@
           >
             <ng-template #selectedItem>
               @if (lineType) {
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ lineType.label }}</div>
                 </div>
               }
             </ng-template>
             <ng-template let-option #item>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
@@ -48,13 +48,13 @@
         >
           <ng-template #selectedItem>
             @if (rankingType) {
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <div>{{ rankingType.label }}</div>
               </div>
             }
           </ng-template>
           <ng-template let-option #item>
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <div>{{ option.label }}</div>
             </div>
           </ng-template>
@@ -104,17 +104,17 @@
         <lc-ranking-list-skeleton></lc-ranking-list-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-nogutter">
+        <div class="grid grid-cols-12">
           @for (
             ranking of rankings;
             track ranking;
             let first = $first;
             let index = $index
           ) {
-            <div class="col-12">
+            <div class="col-span-12">
               <div
-                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ranking-table-container"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ranking-table-container"
+                [ngClass]="{ 'border-t border-surface': !first }"
               >
                 <div class="ranking-table-row">
                   <div class="ranking-table-rank">{{ index + 1 }}.</div>

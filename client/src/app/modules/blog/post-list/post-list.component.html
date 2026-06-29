@@ -11,12 +11,12 @@
           <p-message
             severity="info"
             icon="pi pi-info-circle"
-            class="m-4 mb-1 block"
+            class="m-12 mb-1 block"
             >{{ t("noPostsFoundEmptyMessage") }}</p-message
           >
         </ng-template>
         <ng-template #header>
-          <div class="flex flex-row justify-content-between">
+          <div class="flex flex-row justify-between">
             <p-select
               [options]="sortOptions"
               [(ngModel)]="sortKey"
@@ -25,7 +25,7 @@
               styleClass="md:mb-0"
               [disabled]="loading === loadingStates.LOADING"
             ></p-select>
-            <div class="flex justify-content-end gap-3">
+            <div class="lc-button-group justify-end">
               <p-button
                 label="{{ t('newPostButtonLabel') }}"
                 icon="pi pi-plus"
@@ -42,22 +42,24 @@
             <lc-post-list-skeleton></lc-post-list-skeleton>
           }
           @if (loading !== loadingStates.LOADING) {
-            <div class="grid grid-nogutter">
+            <div class="grid grid-cols-12">
               @for (post of posts; track post; let first = $first) {
-                <div class="col-12">
+                <div class="col-span-12">
                   <div
-                    class="flex flex-column xl:align-items-start p-4 gap-2"
-                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                    class="flex flex-col xl:items-start p-6 gap-2"
+                    [ngClass]="{ 'border-t border-surface': !first }"
                   >
-                    <div class="text-2xl font-bold text-900 flex w-full">
-                      <div class="flex-grow-1 flex align-items-center">
+                    <div
+                      class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
+                    >
+                      <div class="grow flex items-center">
                         <a
-                          class="text-900 no-underline hover:underline cursor-pointer"
+                          class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
                           [routerLink]="['/news', post.slug]"
                           >{{ post.title }}</a
                         >
                       </div>
-                      <div class="flex flex-grow-0 gap-3">
+                      <div class="lc-button-group grow-0">
                         <p-button
                           label="{{ t('editPostButtonLabel') }}"
                           icon="pi pi-file-edit"
@@ -81,8 +83,11 @@
                         {{ t("deletedUser") }}
                       }
                       {{ t("atDate", { date: post.timeCreated | date }) }}
-                      <span class="text-500 hidden sm:inline">·</span>
-                      <span class="text-600">{{
+                      <span
+                        class="text-surface-500 dark:text-surface-300 hidden sm:inline"
+                        >·</span
+                      >
+                      <span class="text-surface-600 dark:text-surface-200">{{
                         t("totalComments", { count: post.commentCount })
                       }}</span>
                     </div>

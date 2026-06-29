@@ -9,7 +9,7 @@
 
       @if (lineForm) {
         <form [formGroup]="lineForm" lcForm>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
               t("lineNameLabel")
             }}</label>
@@ -29,11 +29,12 @@
               "validation.maxLength" | transloco: { max: 120 }
             }}</small>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
               t("lineDescriptionLabel")
             }}</label>
             <p-editor
+              class="lc-wysiwyg-editor"
               id="description"
               formControlName="description"
               lcFormControl
@@ -71,7 +72,7 @@
             </p-editor>
           </div>
           <ng-container *isGymMode="true">
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="color">
                 {{ t("colorLabel") }}
               </label>
@@ -83,7 +84,7 @@
             </div>
           </ng-container>
           @if (!editMode || line?.ascentCount === 0) {
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="type">
                 {{ t("lineTypeLabel") }}
               </label>
@@ -104,7 +105,7 @@
           @if (
             scaleOptions.length > 1 && (!editMode || line?.ascentCount === 0)
           ) {
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="scale">
                 {{ t("lineScaleLabel") }}
               </label>
@@ -119,7 +120,7 @@
               </p-select>
             </div>
           }
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="grade">{{
               t("lineGradeLabel")
             }}</label>
@@ -135,7 +136,7 @@
             >
               <ng-template let-grade #item>
                 <div
-                  class="flex align-items-center gap-2"
+                  class="flex items-center gap-2"
                   data-cy="grade-dropdown-item"
                 >
                   <div>{{ grade.name | translateSpecialGrades }}</div>
@@ -156,7 +157,7 @@
               />
             }
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="starting-position">{{
               t("startingPositionLabel")
             }}</label>
@@ -169,7 +170,7 @@
             >
               <ng-template let-startingPosition #item>
                 <div
-                  class="flex align-items-center gap-2"
+                  class="flex items-center gap-2"
                   data-cy="starting-position-dropdown-item"
                 >
                   <div>{{ startingPosition | transloco }}</div>
@@ -183,7 +184,7 @@
               "validation.required" | transloco
             }}</small>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="rating">{{
               t("lineRatingLabel")
             }}</label>
@@ -201,7 +202,7 @@
               />
             }
           </div>
-          <div class="flex flex-column gap-2">
+          <div class="flex flex-col gap-2">
             <label class="form-label">{{ t("lineVideosLabel") }}</label>
             @for (
               lineVideoGroup of (lineForm.get("videos") | asFormArray).controls;
@@ -210,11 +211,11 @@
             ) {
               <div
                 [formGroup]="lineVideoGroup | asFormGroup"
-                class="flex flex-row gap-3"
+                class="flex flex-row gap-6"
               >
                 <div
                   lcControlGroup
-                  class="flex flex-column flex-1 video-input-container"
+                  class="flex flex-col flex-1 video-input-container"
                 >
                   <input
                     type="text"
@@ -231,7 +232,7 @@
                 </div>
                 <div
                   lcControlGroup
-                  class="flex flex-column flex-1 video-input-container"
+                  class="flex flex-col flex-1 video-input-container"
                 >
                   <input
                     type="text"
@@ -267,7 +268,7 @@
             </div>
           </div>
           <ng-container *isOutdoorMode="true">
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="fa-name">{{
                 t("lineFANameLabel")
               }}</label>
@@ -285,7 +286,7 @@
               }}</small>
             </div>
             @if (faFormat === faFormats.YEAR) {
-              <div class="flex flex-column gap-2" lcControlGroup>
+              <div class="flex flex-col gap-2" lcControlGroup>
                 <label class="form-label" for="fa-year">{{
                   t("lineFAYearLabel")
                 }}</label>
@@ -306,7 +307,7 @@
               </div>
             }
             @if (faFormat === faFormats.DATE) {
-              <div class="flex flex-column gap-2" lcControlGroup>
+              <div class="flex flex-col gap-2" lcControlGroup>
                 <label class="form-label" for="fa-year">{{
                   t("lineFADateLabel")
                 }}</label>
@@ -340,7 +341,7 @@
             </div>
           </ng-container>
           <ng-container *isGymMode="true">
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="routesetter">{{
                 t("lineRoutesetterLabel")
               }}</label>
@@ -357,7 +358,7 @@
                 "validation.maxLength" | transloco: { max: 120 }
               }}</small>
             </div>
-            <div class="flex flex-column gap-2" lcControlGroup>
+            <div class="flex flex-col gap-2" lcControlGroup>
               <label class="form-label" for="set-date">{{
                 t("lineSetDateLabel")
               }}</label>
@@ -377,9 +378,9 @@
               }}</small>
             </div>
           </ng-container>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("linePropertiesLabel") }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="eliminate"
@@ -467,9 +468,9 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineTypeLabel") }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="roof"
@@ -604,9 +605,9 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineKeyAspectsLabel") }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="athletic"
@@ -657,11 +658,11 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{
               t("linePrimaryHoldTypesLabel")
             }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="jugs"
@@ -733,9 +734,9 @@
               {{ t("closedBecauseParentIsClosed") }}
             </p-message>
           }
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("lineOptionsLabel") }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="secret"

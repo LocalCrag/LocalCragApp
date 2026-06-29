@@ -9,7 +9,7 @@
 
       @if (areaForm) {
         <form [formGroup]="areaForm" lcForm>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
               t("areaNameLabel")
             }}</label>
@@ -29,11 +29,12 @@
               "validation.maxLength" | transloco: { max: 120 }
             }}</small>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="short-description">{{
               t("areaShortDescriptionLabel")
             }}</label>
             <p-editor
+              class="lc-wysiwyg-editor"
               id="short-description"
               formControlName="shortDescription"
               lcFormControl
@@ -70,11 +71,12 @@
               </ng-template>
             </p-editor>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
               t("areaDescriptionLabel")
             }}</label>
             <p-editor
+              class="lc-wysiwyg-editor"
               id="description"
               formControlName="description"
               lcFormControl
@@ -136,7 +138,7 @@
               </ng-template>
             </p-editor>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="portrait-image">{{
               t("areaPortraitImageLabel")
             }}</label>
@@ -148,11 +150,7 @@
             >
             </lc-single-image-upload>
           </div>
-          <div
-            class="flex flex-column gap-2"
-            lcControlGroup
-            *isOutdoorMode="true"
-          >
+          <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
             <label class="form-label" for="blocweatherUrl">
               {{ t("blocweatherUrlLabel") }}
               <span
@@ -177,7 +175,7 @@
               "validation.maxLength" | transloco: { max: 255 }
             }}</small>
           </div>
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="map-markers">{{
               t("mapMarkersLabel")
             }}</label>
@@ -198,15 +196,15 @@
               {{ t("closedBecauseParentIsClosed") }}
             </p-message>
           }
-          <div class="grid align-items-center">
-            <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
+          <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6 items-center">
+            <h4 class="col-span-12">{{ "defaultScalesLabel" | transloco }}</h4>
             <label
               for="defaultBoulderScale"
-              class="xl:col-1 md:col-2 sm:col-3 col-4"
+              class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
             >
               {{ "BOULDER" | transloco }}:
             </label>
-            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+            <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
               <p-select
                 id="defaultBoulderScale"
                 [options]="boulderScales"
@@ -218,11 +216,11 @@
             </div>
             <label
               for="defaultSportScale"
-              class="xl:col-1 md:col-2 sm:col-3 col-4"
+              class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
             >
               {{ "SPORT" | transloco }}:
             </label>
-            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+            <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
               <p-select
                 id="defaultSportScale"
                 [options]="sportScales"
@@ -234,11 +232,11 @@
             </div>
             <label
               for="defaultTradScale"
-              class="xl:col-1 md:col-2 sm:col-3 col-4"
+              class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
             >
               {{ "TRAD" | transloco }}:
             </label>
-            <div class="xl:col-11 md:col-10 sm:col-9 col-8">
+            <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
               <p-select
                 id="defaultTradScale"
                 [options]="tradScales"
@@ -254,9 +252,9 @@
               {{ t("aPublicAreaWillSetParentsToPublic") }}
             </p-message>
           }
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("secretOptionsLabel") }}</label>
-            <div class="flex flex-column gap-2">
+            <div class="flex flex-col gap-2">
               <div class="flex">
                 <p-checkbox
                   inputId="secret"
@@ -295,7 +293,7 @@
           <p-button
             label="{{ t('cancelButtonLabel') }}"
             (click)="cancel()"
-            class="ml-3 responsive-button"
+            class="responsive-button"
             styleClass="p-button-secondary"
             icon="pi pi-ban"
           ></p-button>
@@ -304,7 +302,7 @@
               <p-button
                 icon="pi pi-arrow-right-arrow-left"
                 label="{{ t('moveAreaButtonLabel') }}"
-                class="ml-3 responsive-button"
+                class="responsive-button"
                 styleClass="p-button-secondary"
                 (click)="openMoveDialog()"
               ></p-button>
@@ -313,7 +311,7 @@
               label="{{ t('deleteAreaButtonLabel') }}"
               (click)="confirmDeleteArea($event)"
               icon="pi pi-trash"
-              class="ml-3 responsive-button"
+              class="responsive-button"
               styleClass="p-button-danger"
               [loading]="loadingState === loadingStates.LOADING"
             ></p-button>

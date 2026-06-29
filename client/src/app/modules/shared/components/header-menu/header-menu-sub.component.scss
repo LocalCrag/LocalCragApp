@@ -3,12 +3,12 @@ lc-header-menu-sub {
   --header-submenu-width: 15rem;
 
   &:not(.root):not(.is-mobile) {
-    background-color: #ffffff;
+    background-color: var(--p-overlay-popover-background);
     flex-direction: column;
     position: absolute;
     top: 0;
     padding: 0.5rem 0;
-    box-shadow: 0 2px 12px #0000001a;
+    box-shadow: var(--p-overlay-popover-shadow);
     width: var(--header-submenu-width);
     z-index: 3;
     left: 100%;
@@ -36,12 +36,12 @@ lc-header-menu-sub {
   }
 
   &.is-mobile {
-    background-color: #ffffff;
+    background-color: var(--p-overlay-popover-background);
     z-index: 3;
     position: absolute;
     top: 100%;
     flex-direction: column;
-    box-shadow: 0 2px 12px #0000001a;
+    box-shadow: var(--p-overlay-popover-shadow);
     left: 0;
     width: 100%;
     display: none;
@@ -52,7 +52,7 @@ lc-header-menu-sub {
   }
 
   &.is-mobile lc-header-menu-sub {
-    background-color: #ffffff;
+    background-color: var(--p-overlay-popover-background);
     flex-direction: column;
     padding: 0.5rem 0;
     width: 100% !important;
@@ -84,23 +84,31 @@ lc-header-menu-sub {
   overflow: visible;
   position: relative;
   user-select: none;
-  color: #4b5563;
+  color: var(--p-text-muted-color);
   transition: box-shadow 0.2s;
-  border-radius: 6px;
+  border-radius: var(--p-border-radius-md);
   flex-direction: column;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    color: #4b5563;
-    background: #f3f4f6;
+    color: var(--p-text-color);
+    background: color-mix(
+      in srgb,
+      var(--p-text-color) 6%,
+      var(--p-content-background)
+    );
   }
 
   &.active-item {
-    color: #1d4ed8;
-    background: #eff6ff;
+    color: var(--p-primary-color);
+    background: color-mix(
+      in srgb,
+      var(--p-primary-color) 14%,
+      var(--p-content-background)
+    );
 
     .menu-icon {
-      color: #1d4ed8;
+      color: var(--p-primary-color);
     }
   }
 
@@ -168,7 +176,7 @@ lc-header-menu-sub:not(.is-mobile) .root-child > .item-wrapper > .item-angle {
 }
 
 .menu-icon {
-  color: #6b7280;
+  color: var(--p-text-muted-color);
   margin-right: 0.5rem;
 }
 

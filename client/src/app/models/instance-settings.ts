@@ -9,6 +9,7 @@ export class InstanceSettings {
   copyrightOwner: string;
   mailGreeting: string;
   logoImage: File;
+  darkLogoImage: File;
   faviconImage: File;
   mainBgImage: File;
   authBgImage: File;
@@ -18,6 +19,8 @@ export class InstanceSettings {
   arrowHighlightTextColor: string;
   barChartColor: string;
   barChartAccentColor: string;
+  darkBarChartColor: string;
+  darkBarChartAccentColor: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
@@ -42,6 +45,9 @@ export class InstanceSettings {
     instanceSettings.logoImage = payload.logoImage
       ? File.deserialize(payload.logoImage)
       : null;
+    instanceSettings.darkLogoImage = payload.darkLogoImage
+      ? File.deserialize(payload.darkLogoImage)
+      : null;
     instanceSettings.faviconImage = payload.faviconImage
       ? File.deserialize(payload.faviconImage)
       : null;
@@ -57,6 +63,8 @@ export class InstanceSettings {
     instanceSettings.arrowHighlightTextColor = payload.arrowHighlightTextColor;
     instanceSettings.barChartColor = payload.barChartColor;
     instanceSettings.barChartAccentColor = payload.barChartAccentColor;
+    instanceSettings.darkBarChartColor = payload.darkBarChartColor;
+    instanceSettings.darkBarChartAccentColor = payload.darkBarChartAccentColor;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
@@ -83,6 +91,9 @@ export class InstanceSettings {
       logoImage: instanceSettings.logoImage
         ? instanceSettings.logoImage.id
         : null,
+      darkLogoImage: instanceSettings.darkLogoImage
+        ? instanceSettings.darkLogoImage.id
+        : null,
       faviconImage: instanceSettings.faviconImage
         ? instanceSettings.faviconImage.id
         : null,
@@ -98,6 +109,8 @@ export class InstanceSettings {
       arrowHighlightTextColor: instanceSettings.arrowHighlightTextColor,
       barChartColor: instanceSettings.barChartColor,
       barChartAccentColor: instanceSettings.barChartAccentColor,
+      darkBarChartColor: instanceSettings.darkBarChartColor,
+      darkBarChartAccentColor: instanceSettings.darkBarChartAccentColor,
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,

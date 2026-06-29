@@ -4,7 +4,7 @@ lc-gallery-image-skeleton {
   }
 
   .p-card-header {
-    background-color: #f4f4f4;
+    background-color: var(--p-content-hover-background);
     border-radius: var(--p-card-border-radius);
 
     .image-container {

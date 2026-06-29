@@ -7,7 +7,7 @@ from extensions import db
 from marshmallow_schemas.menu_page_schema import menu_page_schema, menu_pages_schema
 from models.menu_page import MenuPage
 from models.user import User
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.security_util import check_auth_claims
 from webargs_schemas.menu_page_args import menu_page_args
 
@@ -44,7 +44,7 @@ class CreateMenuPage(MethodView):
 
         new_menu_page: MenuPage = MenuPage()
         new_menu_page.title = menu_page_data["title"].strip()
-        new_menu_page.text = add_bucket_placeholders(menu_page_data["text"])
+        new_menu_page.text = sanitize_wysiwyg_html(menu_page_data["text"])
         new_menu_page.created_by_id = created_by.id
 
         db.session.add(new_menu_page)
@@ -65,7 +65,7 @@ class UpdateMenuPage(MethodView):
         menu_page: MenuPage = MenuPage.find_by_slug(menu_page_slug)
 
         menu_page.title = menu_page_data["title"].strip()
-        menu_page.text = add_bucket_placeholders(menu_page_data["text"])
+        menu_page.text = sanitize_wysiwyg_html(menu_page_data["text"])
         db.session.add(menu_page)
         db.session.commit()
 

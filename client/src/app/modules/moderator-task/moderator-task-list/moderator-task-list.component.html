@@ -9,7 +9,7 @@
         <p-message
           severity="info"
           icon="pi pi-info-circle"
-          class="m-4 mb-1 block"
+          class="m-12 mb-1 block"
         >
           {{ t("emptyList") }}
         </p-message>
@@ -22,18 +22,16 @@
         <p-message
           severity="info"
           icon="pi pi-info-circle"
-          class="m-4 mb-1 block"
+          class="m-12 mb-1 block"
         >
           {{ t("emptyFilterList") }}
         </p-message>
       }
     </ng-template>
     <ng-template #header>
-      <div
-        class="task-list-header-row flex flex-wrap align-items-end gap-2 w-full"
-      >
+      <div class="task-list-header-row flex flex-wrap items-end gap-2 w-full">
         <div
-          class="task-list-filters-row flex flex-wrap align-items-end gap-2 flex-grow-1 min-w-0"
+          class="task-list-filters-row flex flex-wrap items-end gap-2 grow min-w-0"
         >
           <p-button
             [label]="t('myTasksButton')"
@@ -96,7 +94,7 @@
             ></p-select>
           </div>
         </div>
-        <div class="task-list-header-actions flex-shrink-0">
+        <div class="task-list-header-actions shrink-0">
           <p-button
             [label]="t('createTaskButton')"
             icon="pi pi-plus"
@@ -121,7 +119,7 @@
           <p-confirmpopup></p-confirmpopup>
         }
 
-        <div class="task-list-section flex flex-column gap-3">
+        <div class="task-list-section flex flex-col gap-6">
           @for (row of rows; track trackListRow($index, row)) {
             @if (row.kind === "divider") {
               <p-divider
@@ -134,7 +132,7 @@
             } @else {
               @let task = row.task;
               <div
-                class="task-row border-1 surface-border border-round"
+                class="task-row border border-surface rounded-border"
                 [ngClass]="{ 'task-row-completed': task.completed }"
               >
                 <p-button
@@ -154,7 +152,7 @@
                   <div class="task-row-main min-w-0">
                     <h3 class="m-0 task-row-title">{{ task.title }}</h3>
                     <div
-                      class="text-sm text-color-secondary mt-1 task-target-location"
+                      class="text-sm text-muted-color mt-1 task-target-location"
                     >
                       <span>{{ t("belongsTo") }}: </span>
                       @if (getTargetLinks(task).length === 0) {
@@ -179,15 +177,15 @@
                       ></div>
                     }
                   </div>
-                  <div class="task-row-people flex flex-column gap-3 text-sm">
+                  <div class="task-row-people flex flex-col gap-6 text-sm">
                     @if (task.assignedTo) {
-                      <div class="task-person flex align-items-start gap-2">
+                      <div class="task-person flex items-start gap-2">
                         <lc-user-avatar
                           [user]="task.assignedTo"
                           thumbnail="thumbnailS"
                         ></lc-user-avatar>
                         <div class="task-person-content flex-1 min-w-0">
-                          <div class="task-person-label text-color-secondary">
+                          <div class="task-person-label text-muted-color">
                             {{ t("assignedTo") }}
                           </div>
                           <div class="task-person-detail">
@@ -199,13 +197,13 @@
                         </div>
                       </div>
                     }
-                    <div class="task-person flex align-items-start gap-2">
+                    <div class="task-person flex items-start gap-2">
                       <lc-user-avatar
                         [user]="task.createdBy"
                         thumbnail="thumbnailS"
                       ></lc-user-avatar>
                       <div class="task-person-content flex-1 min-w-0">
-                        <div class="task-person-label text-color-secondary">
+                        <div class="task-person-label text-muted-color">
                           {{ t("createdBy") }}
                         </div>
                         <div class="task-person-detail">
@@ -227,13 +225,13 @@
                       </div>
                     </div>
                     @if (task.completed && task.finishedBy) {
-                      <div class="task-person flex align-items-start gap-2">
+                      <div class="task-person flex items-start gap-2">
                         <lc-user-avatar
                           [user]="task.finishedBy"
                           thumbnail="thumbnailS"
                         ></lc-user-avatar>
                         <div class="task-person-content flex-1 min-w-0">
-                          <div class="task-person-label text-color-secondary">
+                          <div class="task-person-label text-muted-color">
                             {{ t("finishedBy") }}
                           </div>
                           <div class="task-person-detail">
@@ -261,7 +259,7 @@
   </p-dataView>
 
   @if (hasNextPage) {
-    <div class="flex justify-content-center mt-5">
+    <div class="flex justify-center mt-20">
       <p-button
         [label]="t('loadMore')"
         (scrolled)="loadNextPage()"

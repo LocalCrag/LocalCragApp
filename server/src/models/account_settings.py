@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
 from extensions import db
+from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
 )
@@ -36,4 +37,15 @@ class AccountSettings(db.Model):
     )
     # Preferred language for the account
     language = db.Column(db.String(10), nullable=False, default="en", server_default="en")
+    # UI color scheme preference ("light", "dark", "system")
+    color_scheme = db.Column(
+        db.Enum(
+            ColorSchemeEnum,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+            name="colorschemeenum",
+        ),
+        nullable=False,
+        default=ColorSchemeEnum.SYSTEM,
+        server_default=ColorSchemeEnum.SYSTEM.value,
+    )
     user = db.relationship("User", back_populates="account_settings")

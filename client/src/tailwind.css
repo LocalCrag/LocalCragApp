@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+@custom-variant dark (&:where(.lc-dark, .lc-dark *));

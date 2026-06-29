@@ -2,7 +2,7 @@
   <div class="content">
     <p-card header="{{ editMode ? t('editTaskTitle') : t('createTaskTitle') }}">
       <form [formGroup]="taskForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="title">{{ t("titleLabel") }}</label>
           <input
             type="text"
@@ -20,7 +20,7 @@
           }}</small>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="assigned-to">{{
             t("assignedToLabel")
           }}</label>
@@ -44,11 +44,12 @@
           </p-select>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
             t("descriptionLabel")
           }}</label>
           <p-editor
+            class="lc-wysiwyg-editor"
             id="description"
             formControlName="description"
             lcFormControl
@@ -115,7 +116,6 @@
         <p-button
           [label]="t('cancelButton')"
           (click)="cancel()"
-          class="ml-3"
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
@@ -124,7 +124,6 @@
             [label]="t('deleteTaskButton')"
             (click)="confirmDelete($event)"
             icon="pi pi-trash"
-            class="ml-3"
             styleClass="p-button-danger"
             [loading]="loadingState === loadingStates.LOADING"
           ></p-button>

@@ -7,10 +7,13 @@
             {{ scale?.lineType | transloco }} {{ scale?.name }}
           }
         </ng-template>
-        <div class="grid grid-nogutter">
-          <h4 class="col-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
+        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+          <h4 class="col-span-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
           @if (!editMode) {
-            <div class="col-12 scale-form-header-field mb-2" lcControlGroup>
+            <div
+              class="col-span-12 scale-form-header-field mb-2"
+              lcControlGroup
+            >
               <label for="linetype">
                 {{ t("lineTypeLabel") }}
               </label>
@@ -34,7 +37,10 @@
                 </small>
               </div>
             </div>
-            <div class="col-12 scale-form-header-field mb-4" lcControlGroup>
+            <div
+              class="col-span-12 scale-form-header-field mb-12"
+              lcControlGroup
+            >
               <label for="name">
                 {{ t("nameInputLabel") }}
               </label>
@@ -60,7 +66,7 @@
             track grade;
             let i = $index
           ) {
-            <div class="col-12" formArrayName="grades">
+            <div class="col-span-12" formArrayName="grades">
               <div [formGroupName]="i" class="mb-2">
                 <lc-form-entry-row>
                   @if (
@@ -177,16 +183,16 @@
               </div>
             </div>
           }
-          <div class="col-12 mt-2">
+          <div class="col-span-12 mt-2">
             @if (gradeControls().hasError("not_unique")) {
               <p-message
                 severity="error"
                 text="{{ t('valuesNotUnique') }}"
-                styleClass="min-w-full mb-3"
+                styleClass="min-w-full mb-6"
               />
             }
           </div>
-          <div class="button-container">
+          <div class="lc-button-group mt-2">
             <p-button
               label="{{ t('addGrade') }}"
               (click)="addGrade()"
@@ -198,13 +204,13 @@
               label="{{ t('reorderGrades') }}"
               (click)="reorderGradesByValue()"
               icon="pi pi-sort-amount-down-alt"
-              class="responsive-button ml-2"
+              class="responsive-button"
               [disabled]="loadingState === LoadingState.LOADING"
             />
           </div>
         </div>
 
-        <p-divider class="mt-4" />
+        <p-divider class="mt-12" />
 
         <h4>{{ t("gradeBracketsLabel") }} - {{ t("stackedChartBrackets") }}</h4>
         <div class="mb-2">
@@ -215,7 +221,7 @@
           track _;
           let i = $index
         ) {
-          <div class="col-12" formArrayName="stackedChartBrackets">
+          <div class="col-span-12" formArrayName="stackedChartBrackets">
             <div [formGroupName]="i" class="mb-2">
               <lc-form-entry-row>
                 <div lcControlGroup>
@@ -276,25 +282,25 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
+            styleClass="min-w-full mb-6"
           />
         }
         @if (stackedChartBracketsControls().hasError("semantic_error")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-            styleClass="min-w-full mb-3"
+            styleClass="min-w-full mb-6"
           />
         }
         @if (stackedChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-            styleClass="min-w-full mb-3"
+            styleClass="min-w-full mb-6"
           />
         }
 
-        <div class="button-container">
+        <div class="lc-button-group mt-2">
           <p-button
             label="{{ t('addBracket') }}"
             (click)="addStackedChartBracket()"
@@ -306,12 +312,12 @@
             label="{{ t('reorderGrades') }}"
             (click)="reorderStackedChartBracketsByValue()"
             icon="pi pi-sort-amount-down-alt"
-            class="responsive-button ml-2"
+            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
           />
         </div>
 
-        <p-divider class="mt-4" />
+        <p-divider class="mt-12" />
 
         <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
         <div class="mb-2">
@@ -323,7 +329,7 @@
           track _;
           let i = $index
         ) {
-          <div class="col-12" formArrayName="barChartBrackets">
+          <div class="col-span-12" formArrayName="barChartBrackets">
             <div [formGroupName]="i" class="mb-2">
               <lc-form-entry-row>
                 <div lcControlGroup>
@@ -385,25 +391,25 @@
           <p-message
             severity="error"
             text="{{ t('valuesNotUnique') }}"
-            styleClass="min-w-full mb-3"
+            styleClass="min-w-full mb-6"
           />
         }
         @if (barChartBracketsControls().hasError("semantic_error")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsErrorMsg') }}"
-            class="min-w-full mb-3"
+            class="min-w-full mb-6"
           />
         }
         @if (barChartBracketsControls().hasError("invalid_length")) {
           <p-message
             severity="error"
             text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-            class="min-w-full mb-3"
+            class="min-w-full mb-6"
           />
         }
 
-        <div class="button-container">
+        <div class="lc-button-group mt-2">
           <p-button
             label="{{ t('addBracket') }}"
             (click)="addBarChartBracket()"
@@ -415,13 +421,13 @@
             label="{{ t('reorderGrades') }}"
             (click)="reorderBarChartBracketsByValue()"
             icon="pi pi-sort-amount-down-alt"
-            class="responsive-button ml-2"
+            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
           />
         </div>
 
-        <p-divider class="mt-4" />
-        <div class="scale-form-actions">
+        <p-divider class="mt-12" />
+        <div class="form-actions justify-end">
           <p-button
             label="{{ t('saveScale') }}"
             (click)="saveScale()"

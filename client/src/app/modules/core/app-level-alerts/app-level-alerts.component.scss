@@ -9,10 +9,10 @@ lc-app-level-alerts {
     align-items: center;
     justify-content: center;
     height: fit-content;
-    color: #ffffff;
+    color: var(--p-primary-contrast-color);
 
     a {
-      color: #ffffff;
+      color: var(--p-primary-contrast-color);
     }
 
     &.warning {
@@ -37,7 +37,7 @@ lc-app-level-alerts {
     }
 
     .p-button-label {
-      color: #fff;
+      color: var(--p-primary-contrast-color);
     }
   }
 }

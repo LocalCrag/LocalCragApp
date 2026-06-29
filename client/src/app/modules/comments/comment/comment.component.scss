@@ -1,13 +1,13 @@
 lc-comment {
   background-color: transparent;
-  outline: 0 solid var(--p-primary-100);
+  outline: 0 solid var(--p-highlight-background);
   transition:
     background-color 0.75s ease,
     outline-width 0.75s ease;
 
   a {
     text-decoration: none;
-    color: #4b5563;
+    color: var(--p-text-muted-color);
 
     &:hover {
       text-decoration: underline;
@@ -35,8 +35,8 @@ lc-comment {
   }
 
   &.is-highlighted {
-    background-color: var(--p-primary-100) !important;
-    outline: 0.5rem solid var(--p-primary-100) !important;
+    background-color: var(--p-highlight-background) !important;
+    outline: 0.5rem solid var(--p-highlight-background) !important;
   }
 
   .ellipsis-button button {

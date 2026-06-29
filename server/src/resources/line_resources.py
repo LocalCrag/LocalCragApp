@@ -24,6 +24,7 @@ from models.line_path import LinePath
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.line_list_query_args import parse_line_list_filters
 from util.line_list_sql_filters import apply_get_lines_advanced_filters
 from util.propagating_boolean_attrs import (
@@ -234,7 +235,7 @@ class CreateLine(MethodView):
         new_line: Line = Line()
 
         new_line.name = line_data["name"].strip()
-        new_line.description = line_data["description"]
+        new_line.description = sanitize_wysiwyg_html(line_data["description"])
         new_line.color = line_data.get("color", None)
         new_line.videos = line_data["videos"]
         new_line.type = line_data["type"]
@@ -320,7 +321,7 @@ class UpdateLine(MethodView):
             raise BadRequest("Grade scale, value and line type do not match.")
 
         line.name = line_data["name"].strip()
-        line.description = line_data["description"]
+        line.description = sanitize_wysiwyg_html(line_data["description"])
         line.color = line_data.get("color", None)
         line.videos = line_data["videos"]
         line.type = line_data["type"]

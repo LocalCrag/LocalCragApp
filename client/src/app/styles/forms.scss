@@ -3,6 +3,14 @@
   margin-top: 1rem;
 }
 
+.lc-button-group,
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .form-actions {
   margin-top: 1rem;
 }

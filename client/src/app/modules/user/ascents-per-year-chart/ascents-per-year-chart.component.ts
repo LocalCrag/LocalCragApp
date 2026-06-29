@@ -1,9 +1,12 @@
-import { Component, Input, OnChanges, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnChanges, inject } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
 import { Message } from 'primeng/message';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
+import { getChartThemeColors } from '../../../utility/chart-theme';
+import { ThemeService } from '../../../services/core/theme.service';
 
 Chart.register(ChartDataLabels);
 
@@ -20,6 +23,14 @@ export class AscentsPerYearChartComponent implements OnChanges {
   public yearChartOptions: any;
 
   private transloco = inject(TranslocoService);
+  private themeService = inject(ThemeService);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    toObservable(this.themeService.isDarkMode)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.buildYearChart());
+  }
 
   ngOnChanges(): void {
     this.buildYearChart();
@@ -29,9 +40,7 @@ export class AscentsPerYearChartComponent implements OnChanges {
     const valuesByYear = this.ascentsPerYear ?? {};
     const years = Object.keys(valuesByYear).sort();
     const values = years.map((y) => valuesByYear[y]);
-
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--p-text-color');
+    const { textColor, gridColor } = getChartThemeColors();
 
     this.yearChartData = {
       labels: years,
@@ -87,7 +96,7 @@ export class AscentsPerYearChartComponent implements OnChanges {
             precision: 0,
             stepSize: 1,
           },
-          grid: { color: 'rgba(128,128,128,0.15)' },
+          grid: { color: gridColor },
         },
         x: {
           ticks: { color: textColor },

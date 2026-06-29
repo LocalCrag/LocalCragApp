@@ -8,24 +8,26 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import {
-  debounceTime,
-  forkJoin,
-  fromEvent,
-  Observable,
-  Subscription,
-} from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
 
 import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
 import { Store } from '@ngrx/store';
 import {
-  selectBarChartAccentColor,
   selectBarChartColor,
+  selectBarChartAccentColor,
+  selectDarkBarChartColor,
+  selectDarkBarChartAccentColor,
 } from '../../../../ngrx/selectors/instance-settings.selectors';
-import { map, take } from 'rxjs/operators';
+import {
+  getChartThemeColors,
+  resolveBarChartAccentColor,
+  resolveBarChartColor,
+} from '../../../../utility/chart-theme';
+import { ThemeService } from '../../../../services/core/theme.service';
+import { debounceTime, map, take } from 'rxjs/operators';
 import { GradeDistribution } from '../../../../models/scale';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { LineType } from '../../../../enums/line-type';
@@ -74,6 +76,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   private scalesService = inject(ScalesService);
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
+  private themeService = inject(ThemeService);
   private dataSubscription: Subscription | null = null;
 
   constructor() {
@@ -81,6 +84,13 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
       .pipe(debounceTime(200), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.isCondensed = null;
+        this.buildData();
+      });
+
+    toObservable(this.themeService.isDarkMode)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.buildChartOptions();
         this.buildData();
       });
   }
@@ -116,8 +126,11 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--p-text-color');
+    this.buildChartOptions();
+  }
+
+  private buildChartOptions() {
+    const { textColor } = getChartThemeColors();
     this.options = {
       layout: {
         padding: {
@@ -213,272 +226,299 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
           forkJoin([
             this.store.select(selectBarChartColor).pipe(take(1)),
             this.store.select(selectBarChartAccentColor).pipe(take(1)),
+            this.store.select(selectDarkBarChartColor).pipe(take(1)),
+            this.store.select(selectDarkBarChartAccentColor).pipe(take(1)),
+            toObservable(this.themeService.isDarkMode).pipe(take(1)),
             this.scalesService.getScale(lineType as LineType, gradeScale),
           ]).pipe(
-            map(([barChartColor, barChartAccentColor, scale]) => {
-              const usedScale = condensed
-                ? [...scale.gradeBrackets.barChartBrackets]
-                : [...scale.grades];
+            map(
+              ([
+                barChartColor,
+                barChartAccentColor,
+                darkBarChartColor,
+                darkBarChartAccentColor,
+                isDarkMode,
+                scale,
+              ]) => {
+                const usedScale = condensed
+                  ? [...scale.gradeBrackets.barChartBrackets]
+                  : [...scale.grades];
 
-              // Because of the way the condensed scale is built, we need to replace the last grade value
-              // with the maximum grade value of the full scale (if not condensed, this has no effect)
-              usedScale[usedScale.length - 1].value = Math.max(
-                ...scale.grades.map((grade) => grade.value),
-              );
+                // Because of the way the condensed scale is built, we need to replace the last grade value
+                // with the maximum grade value of the full scale (if not condensed, this has no effect)
+                usedScale[usedScale.length - 1].value = Math.max(
+                  ...scale.grades.map((grade) => grade.value),
+                );
 
-              // Sort grades in ascending order
-              let gradesInUsedScale = usedScale.sort(
-                (a, b) => a.value - b.value,
-              );
+                // Sort grades in ascending order
+                let gradesInUsedScale = usedScale.sort(
+                  (a, b) => a.value - b.value,
+                );
 
-              // Filter out projects
-              gradesInUsedScale = gradesInUsedScale.filter(
-                (grade) => grade.value > 0,
-              );
+                // Filter out projects
+                gradesInUsedScale = gradesInUsedScale.filter(
+                  (grade) => grade.value > 0,
+                );
 
-              // Collect the grade values that will be shown on the x-axis.
-              const gradeValues = gradesInUsedScale.map((grade) => grade.value);
+                // Collect the grade values that will be shown on the x-axis.
+                const gradeValues = gradesInUsedScale.map(
+                  (grade) => grade.value,
+                );
 
-              // Map each full-scale grade value to the nearest visible bucket.
-              const condensedSortingMap: Record<number, number> = {};
-              const gradesInFullScale = scale.grades;
-              gradesInFullScale.forEach((grade) => {
-                for (const usedGrade of gradesInUsedScale) {
-                  if (usedGrade.value >= grade.value) {
-                    condensedSortingMap[grade.value] = usedGrade.value;
-                    break;
+                // Map each full-scale grade value to the nearest visible bucket.
+                const condensedSortingMap: Record<number, number> = {};
+                const gradesInFullScale = scale.grades;
+                gradesInFullScale.forEach((grade) => {
+                  for (const usedGrade of gradesInUsedScale) {
+                    if (usedGrade.value >= grade.value) {
+                      condensedSortingMap[grade.value] = usedGrade.value;
+                      break;
+                    }
                   }
+                });
+
+                // Map the grade distribution to the condensed scale
+                const mappedTotal = this.mapGradesToBuckets(
+                  this.gradeDistribution,
+                  lineType,
+                  gradeScale,
+                  condensedSortingMap,
+                );
+
+                // Map the flash distribution to the condensed scale
+                const mappedFlash = this.flashDistribution
+                  ? this.mapGradesToBuckets(
+                      this.flashDistribution,
+                      lineType,
+                      gradeScale,
+                      condensedSortingMap,
+                    )
+                  : null;
+
+                // Build aligned totals/flash/non-flash counts per visible bucket.
+                const countsFull = gradeValues.map(
+                  (gradeValue) => mappedTotal[gradeValue] ?? 0,
+                );
+                const flashRaw = mappedFlash
+                  ? gradeValues.map(
+                      (gradeValue) => mappedFlash[gradeValue] ?? 0,
+                    )
+                  : null;
+                const flashCountsFull = flashRaw
+                  ? flashRaw.map((f, i) => Math.min(f, countsFull[i]))
+                  : null;
+                const nonFlashCountsFull = flashCountsFull
+                  ? countsFull.map((c, i) =>
+                      Math.max(0, c - flashCountsFull[i]),
+                    )
+                  : countsFull;
+
+                // Drop only trailing (hardest) grades with no ascents; always keep
+                // the easiest grades, including zeros in the middle.
+                let visibleLen = countsFull.length;
+                while (visibleLen > 1 && countsFull[visibleLen - 1] === 0) {
+                  visibleLen--;
                 }
-              });
+                const gradesVisible = gradesInUsedScale.slice(0, visibleLen);
+                const labels = gradesVisible.map((grade) =>
+                  grade.value > 0
+                    ? grade.name
+                    : this.translocoService.translate(grade.name),
+                );
+                const counts = countsFull.slice(0, visibleLen);
+                const flashCounts = flashCountsFull
+                  ? flashCountsFull.slice(0, visibleLen)
+                  : null;
+                const nonFlashCounts = flashCounts
+                  ? nonFlashCountsFull.slice(0, visibleLen)
+                  : counts;
 
-              // Map the grade distribution to the condensed scale
-              const mappedTotal = this.mapGradesToBuckets(
-                this.gradeDistribution,
-                lineType,
-                gradeScale,
-                condensedSortingMap,
-              );
+                // Collect the project and ungraded counts
+                const projectCount =
+                  (this.gradeDistribution[lineType][gradeScale]['-2'] ?? 0) +
+                  (this.gradeDistribution[lineType][gradeScale]['-1'] ?? 0);
+                const ungradedCount =
+                  this.gradeDistribution[lineType][gradeScale]['0'] ?? 0;
 
-              // Map the flash distribution to the condensed scale
-              const mappedFlash = this.flashDistribution
-                ? this.mapGradesToBuckets(
-                    this.flashDistribution,
-                    lineType,
-                    gradeScale,
-                    condensedSortingMap,
-                  )
-                : null;
+                // Determine if the chart should be stacked
+                const stacked = !!flashCounts?.some((n) => n > 0);
 
-              // Build aligned totals/flash/non-flash counts per visible bucket.
-              const countsFull = gradeValues.map(
-                (gradeValue) => mappedTotal[gradeValue] ?? 0,
-              );
-              const flashRaw = mappedFlash
-                ? gradeValues.map((gradeValue) => mappedFlash[gradeValue] ?? 0)
-                : null;
-              const flashCountsFull = flashRaw
-                ? flashRaw.map((f, i) => Math.min(f, countsFull[i]))
-                : null;
-              const nonFlashCountsFull = flashCountsFull
-                ? countsFull.map((c, i) => Math.max(0, c - flashCountsFull[i]))
-                : countsFull;
+                // Set the colors for the chart
+                const nonFlashColor = resolveBarChartColor(
+                  barChartColor,
+                  darkBarChartColor,
+                  isDarkMode,
+                );
+                const flashColor = resolveBarChartAccentColor(
+                  barChartAccentColor,
+                  darkBarChartAccentColor,
+                  isDarkMode,
+                );
 
-              // Drop only trailing (hardest) grades with no ascents; always keep
-              // the easiest grades, including zeros in the middle.
-              let visibleLen = countsFull.length;
-              while (visibleLen > 1 && countsFull[visibleLen - 1] === 0) {
-                visibleLen--;
-              }
-              const gradesVisible = gradesInUsedScale.slice(0, visibleLen);
-              const labels = gradesVisible.map((grade) =>
-                grade.value > 0
-                  ? grade.name
-                  : this.translocoService.translate(grade.name),
-              );
-              const counts = countsFull.slice(0, visibleLen);
-              const flashCounts = flashCountsFull
-                ? flashCountsFull.slice(0, visibleLen)
-                : null;
-              const nonFlashCounts = flashCounts
-                ? nonFlashCountsFull.slice(0, visibleLen)
-                : counts;
-
-              // Collect the project and ungraded counts
-              const projectCount =
-                (this.gradeDistribution[lineType][gradeScale]['-2'] ?? 0) +
-                (this.gradeDistribution[lineType][gradeScale]['-1'] ?? 0);
-              const ungradedCount =
-                this.gradeDistribution[lineType][gradeScale]['0'] ?? 0;
-
-              // Determine if the chart should be stacked
-              const stacked = !!flashCounts?.some((n) => n > 0);
-
-              // Set the colors for the chart
-              const nonFlashColor = barChartColor?.trim() || 'rgb(239, 68, 68)';
-              const flashColor =
-                barChartAccentColor?.trim() || 'rgb(250, 204, 21)';
-
-              // Stacked bar: first dataset = bottom of bar (flash), second = top (repeat / redpoint).
-              const datasets = stacked
-                ? [
-                    {
-                      label: this.translocoService.translate(
-                        'user.charts.legendFlash',
-                      ),
-                      data: flashCounts,
-                      borderWidth: 0,
-                      backgroundColor: flashColor,
-                    },
-                    {
-                      label: this.translocoService.translate(
-                        'user.charts.legendNonFlash',
-                      ),
-                      data: nonFlashCounts,
-                      borderWidth: 0,
-                      backgroundColor: nonFlashColor,
-                    },
-                  ]
-                : [
-                    {
-                      data: counts,
-                      borderWidth: 0,
-                      backgroundColor: nonFlashColor,
-                    },
-                  ];
-
-              // Configure the tooltip
-              const tooltipOptions = this.showDetailedTooltip
-                ? {
-                    enabled: true,
-                    mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                      label: (ctx: {
-                        dataIndex: number;
-                        datasetIndex: number;
-                        dataset: { label?: string };
-                      }) => {
-                        const idx = ctx.dataIndex;
-                        if (!stacked) {
-                          const ascents = counts[idx] ?? 0;
-                          return `${this.translocoService.translate('user.charts.totalAscents')}: ${ascents}`;
-                        }
-                        if (ctx.datasetIndex === 0) {
-                          const flashes = flashCounts?.[idx] ?? 0;
-                          return `${this.translocoService.translate('user.charts.flashes')}: ${flashes}`;
-                        }
-                        const ascents = counts[idx] ?? 0;
-                        // Use translated dataset label for the non-flash segment line
-                        const label =
-                          ctx.dataset.label ||
-                          this.translocoService.translate(
-                            'user.charts.totalAscents',
-                          );
-                        return `${label}: ${ascents}`;
+                // Stacked bar: first dataset = bottom of bar (flash), second = top (repeat / redpoint).
+                const datasets = stacked
+                  ? [
+                      {
+                        label: this.translocoService.translate(
+                          'user.charts.legendFlash',
+                        ),
+                        data: flashCounts,
+                        borderWidth: 0,
+                        backgroundColor: flashColor,
                       },
-                    },
-                  }
-                : { enabled: false };
-
-              // Configure the base chart options
-              const chartOptionsBase = {
-                ...this.options,
-                plugins: {
-                  ...this.options.plugins,
-                  tooltip: tooltipOptions,
-                },
-              };
-
-              // Configure the chart options for stacked bars
-              const chartOptions = stacked
-                ? {
-                    ...chartOptionsBase,
-                    plugins: {
-                      ...chartOptionsBase.plugins,
-                      legend: {
-                        display: true,
-                        labels: {
-                          color: this.options.scales.x.ticks.color,
-                        },
+                      {
+                        label: this.translocoService.translate(
+                          'user.charts.legendNonFlash',
+                        ),
+                        data: nonFlashCounts,
+                        borderWidth: 0,
+                        backgroundColor: nonFlashColor,
                       },
-                      datalabels: {
-                        ...this.options.plugins.datalabels,
-                        display: (ctx: {
-                          chart: {
-                            data: { datasets: { data: unknown[] }[] };
-                            isDatasetVisible: (datasetIndex: number) => boolean;
-                          };
-                          datasetIndex: number;
+                    ]
+                  : [
+                      {
+                        data: counts,
+                        borderWidth: 0,
+                        backgroundColor: nonFlashColor,
+                      },
+                    ];
+
+                // Configure the tooltip
+                const tooltipOptions = this.showDetailedTooltip
+                  ? {
+                      enabled: true,
+                      mode: 'index',
+                      intersect: false,
+                      callbacks: {
+                        label: (ctx: {
                           dataIndex: number;
+                          datasetIndex: number;
+                          dataset: { label?: string };
                         }) => {
-                          const { chart, datasetIndex, dataIndex } = ctx;
-                          const datasets = chart.data.datasets;
-                          const targetDatasetIndex = [...datasets.keys()]
-                            .reverse()
-                            .find((i) => chart.isDatasetVisible(i));
-                          if (
-                            targetDatasetIndex == null ||
-                            datasetIndex !== targetDatasetIndex
-                          ) {
-                            return false;
+                          const idx = ctx.dataIndex;
+                          if (!stacked) {
+                            const ascents = counts[idx] ?? 0;
+                            return `${this.translocoService.translate('user.charts.totalAscents')}: ${ascents}`;
                           }
-                          const nonFlashVisible = chart.isDatasetVisible(1);
-                          const shownValue = nonFlashVisible
-                            ? datasets.reduce(
-                                (sum, ds) =>
-                                  sum + (Number(ds.data[dataIndex]) || 0),
-                                0,
-                              )
-                            : Number(datasets[0].data[dataIndex]) || 0;
-                          return shownValue > 0;
+                          if (ctx.datasetIndex === 0) {
+                            const flashes = flashCounts?.[idx] ?? 0;
+                            return `${this.translocoService.translate('user.charts.flashes')}: ${flashes}`;
+                          }
+                          const ascents = counts[idx] ?? 0;
+                          // Use translated dataset label for the non-flash segment line
+                          const label =
+                            ctx.dataset.label ||
+                            this.translocoService.translate(
+                              'user.charts.totalAscents',
+                            );
+                          return `${label}: ${ascents}`;
                         },
-                        formatter: (
-                          _value: unknown,
-                          ctx: {
+                      },
+                    }
+                  : { enabled: false };
+
+                // Configure the base chart options
+                const chartOptionsBase = {
+                  ...this.options,
+                  plugins: {
+                    ...this.options.plugins,
+                    tooltip: tooltipOptions,
+                  },
+                };
+
+                // Configure the chart options for stacked bars
+                const chartOptions = stacked
+                  ? {
+                      ...chartOptionsBase,
+                      plugins: {
+                        ...chartOptionsBase.plugins,
+                        legend: {
+                          display: true,
+                          labels: {
+                            color: this.options.scales.x.ticks.color,
+                          },
+                        },
+                        datalabels: {
+                          ...this.options.plugins.datalabels,
+                          display: (ctx: {
                             chart: {
                               data: { datasets: { data: unknown[] }[] };
                               isDatasetVisible: (
                                 datasetIndex: number,
                               ) => boolean;
                             };
+                            datasetIndex: number;
                             dataIndex: number;
+                          }) => {
+                            const { chart, datasetIndex, dataIndex } = ctx;
+                            const datasets = chart.data.datasets;
+                            const targetDatasetIndex = [...datasets.keys()]
+                              .reverse()
+                              .find((i) => chart.isDatasetVisible(i));
+                            if (
+                              targetDatasetIndex == null ||
+                              datasetIndex !== targetDatasetIndex
+                            ) {
+                              return false;
+                            }
+                            const nonFlashVisible = chart.isDatasetVisible(1);
+                            const shownValue = nonFlashVisible
+                              ? datasets.reduce(
+                                  (sum, ds) =>
+                                    sum + (Number(ds.data[dataIndex]) || 0),
+                                  0,
+                                )
+                              : Number(datasets[0].data[dataIndex]) || 0;
+                            return shownValue > 0;
                           },
-                        ) => {
-                          const { chart, dataIndex } = ctx;
-                          const datasets = chart.data.datasets;
-                          const nonFlashVisible = chart.isDatasetVisible(1);
-                          const shownValue = nonFlashVisible
-                            ? datasets.reduce(
-                                (sum, ds) =>
-                                  sum + (Number(ds.data[dataIndex]) || 0),
-                                0,
-                              )
-                            : Number(datasets[0].data[dataIndex]) || 0;
-                          return shownValue > 0 ? String(shownValue) : '';
+                          formatter: (
+                            _value: unknown,
+                            ctx: {
+                              chart: {
+                                data: { datasets: { data: unknown[] }[] };
+                                isDatasetVisible: (
+                                  datasetIndex: number,
+                                ) => boolean;
+                              };
+                              dataIndex: number;
+                            },
+                          ) => {
+                            const { chart, dataIndex } = ctx;
+                            const datasets = chart.data.datasets;
+                            const nonFlashVisible = chart.isDatasetVisible(1);
+                            const shownValue = nonFlashVisible
+                              ? datasets.reduce(
+                                  (sum, ds) =>
+                                    sum + (Number(ds.data[dataIndex]) || 0),
+                                  0,
+                                )
+                              : Number(datasets[0].data[dataIndex]) || 0;
+                            return shownValue > 0 ? String(shownValue) : '';
+                          },
                         },
                       },
-                    },
-                    scales: {
-                      ...this.options.scales,
-                      x: { ...this.options.scales.x, stacked: true },
-                      y: { ...this.options.scales.y, stacked: true },
-                    },
-                  }
-                : chartOptionsBase;
+                      scales: {
+                        ...this.options.scales,
+                        x: { ...this.options.scales.x, stacked: true },
+                        y: { ...this.options.scales.y, stacked: true },
+                      },
+                    }
+                  : chartOptionsBase;
 
-              return {
-                lineType: lineType as LineType,
-                gradeScale,
-                data: {
-                  labels: labels,
-                  datasets,
-                },
-                projectCount: projectCount,
-                ungradedCount: ungradedCount,
-                totalCount: counts.reduce((a, b) => a + b, 0),
-                chartOptions,
-              };
-            }),
+                return {
+                  lineType: lineType as LineType,
+                  gradeScale,
+                  data: {
+                    labels: labels,
+                    datasets,
+                  },
+                  projectCount: projectCount,
+                  ungradedCount: ungradedCount,
+                  totalCount: counts.reduce((a, b) => a + b, 0),
+                  chartOptions,
+                };
+              },
+            ),
           ),
         );
       }

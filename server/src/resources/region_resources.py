@@ -14,7 +14,7 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.region import Region
 from models.sector import Sector
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from webargs_schemas.region_args import region_args
@@ -40,8 +40,8 @@ class UpdateRegion(MethodView):
         region: Region = Region.return_it()
 
         region.name = region_data["name"].strip()
-        region.description = add_bucket_placeholders(region_data["description"])
-        region.rules = add_bucket_placeholders(region_data["rules"])
+        region.description = sanitize_wysiwyg_html(region_data["description"])
+        region.rules = sanitize_wysiwyg_html(region_data["rules"])
         db.session.add(region)
         db.session.commit()
 

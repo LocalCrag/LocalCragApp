@@ -7,6 +7,7 @@
 @use "app/styles/primeng-fixes";
 @use "app/styles/primeng-mobile-optimisation";
 @use "app/styles/main-views";
+@use "app/styles/wysiwyg-editor";
 @use "app/styles/util";
 @use "app/styles/confirm-dialog";
 @import "primeicons/primeicons.css";
@@ -18,8 +19,13 @@ body {
 
 html {
   height: 100vh;
-  --ticked-bg-color: #eafeee;
+  --ticked-bg-color: var(--p-green-50);
   --ticked-color: var(--p-green-600);
+
+  &.lc-dark {
+    --ticked-bg-color: color-mix(in srgb, var(--p-green-500) 18%, transparent);
+    --ticked-color: var(--p-green-400);
+  }
 }
 
 body {

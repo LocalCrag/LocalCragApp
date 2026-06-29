@@ -17,12 +17,11 @@ def get_bucket_placeholders():
     return bucket_placeholder, bucket_placeholder_target
 
 
-def add_bucket_placeholders(text):
+def replace_live_bucket_urls_with_placeholder(text):
     bucket_placeholder, bucket_placeholder_target = get_bucket_placeholders()
     if text:
         return text.replace(bucket_placeholder_target, bucket_placeholder)
-    else:
-        return text
+    return text
 
 
 def replace_bucket_placeholders(text):

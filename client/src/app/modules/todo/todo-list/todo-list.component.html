@@ -10,17 +10,15 @@
             <p-message
               severity="info"
               icon="pi pi-info-circle"
-              class="m-4 mb-1 block"
+              class="m-12 mb-1 block"
               >{{ t("noTodosFoundMessage") }}
             </p-message>
           }
         </ng-template>
         <ng-template #header>
-          <div
-            class="flex flex-column sm:flex-column justify-content-between gap-2"
-          >
+          <div class="flex flex-col sm:flex-col justify-between gap-2">
             <div
-              class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+              class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
             >
               {{ t("orderByLabel") }}
               <div class="flex flex-wrap gap-2">
@@ -35,13 +33,13 @@
                 >
                   <ng-template #selectedItem>
                     @if (orderKey) {
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ orderKey.label }}</div>
                       </div>
                     }
                   </ng-template>
                   <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
+                    <div class="flex items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
@@ -57,13 +55,13 @@
                 >
                   <ng-template #selectedItem>
                     @if (orderDirectionKey) {
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ orderDirectionKey.label }}</div>
                       </div>
                     }
                   </ng-template>
                   <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
+                    <div class="flex items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
@@ -72,7 +70,7 @@
             </div>
 
             <div
-              class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+              class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
             >
               {{ t("filterLabel") }}
               <div class="flex flex-wrap gap-2">
@@ -87,13 +85,13 @@
                 >
                   <ng-template #selectedItem>
                     @if (priorityFilterKey) {
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ priorityFilterKey.label }}</div>
                       </div>
                     }
                   </ng-template>
                   <ng-template let-option #item>
-                    <div class="flex align-items-center gap-2">
+                    <div class="flex items-center gap-2">
                       <div>{{ option.label }}</div>
                     </div>
                   </ng-template>
@@ -110,13 +108,13 @@
                   >
                     <ng-template #selectedItem>
                       @if (cragFilterKey) {
-                        <div class="flex align-items-center gap-2">
+                        <div class="flex items-center gap-2">
                           <div>{{ cragFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
                     <ng-template let-option #item>
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
                     </ng-template>
@@ -134,13 +132,13 @@
                   >
                     <ng-template #selectedItem>
                       @if (sectorFilterKey) {
-                        <div class="flex align-items-center gap-2">
+                        <div class="flex items-center gap-2">
                           <div>{{ sectorFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
                     <ng-template let-option #item>
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
                     </ng-template>
@@ -158,13 +156,13 @@
                   >
                     <ng-template #selectedItem>
                       @if (areaFilterKey) {
-                        <div class="flex align-items-center gap-2">
+                        <div class="flex items-center gap-2">
                           <div>{{ areaFilterKey.label }}</div>
                         </div>
                       }
                     </ng-template>
                     <ng-template let-option #item>
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
                     </ng-template>
@@ -174,7 +172,7 @@
             </div>
 
             <div
-              class="gap-2 flex align-items-start sm:align-items-center flex-column sm:flex-row"
+              class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
             >
               @if (availableScales.length > 2) {
                 <div>
@@ -191,13 +189,13 @@
                   >
                     <ng-template #selectedItem>
                       @if (scaleKey) {
-                        <div class="flex align-items-center gap-2">
+                        <div class="flex items-center gap-2">
                           <div>{{ scaleKey.label }}</div>
                         </div>
                       }
                     </ng-template>
                     <ng-template let-option #item>
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
                     </ng-template>
@@ -227,12 +225,12 @@
             <lc-line-list-skeleton></lc-line-list-skeleton>
           }
           @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-            <div class="grid grid-nogutter">
+            <div class="grid grid-cols-12">
               @for (todo of todos; track todo; let first = $first) {
-                <div class="col-12" data-cy="todo-list-item">
+                <div class="col-span-12" data-cy="todo-list-item">
                   <div
-                    class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 todo-table-container"
-                    [ngClass]="{ 'border-top-1 surface-border': !first }"
+                    class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 todo-table-container"
+                    [ngClass]="{ 'border-t border-surface': !first }"
                   >
                     <!-- DISPLAY FOR NORMAL SCREENS -->
                     <div class="todo-table-row-normal">
@@ -349,7 +347,7 @@
       </p-dataView>
 
       @if (hasNextPage) {
-        <div class="flex justify-content-center mt-5">
+        <div class="flex justify-center mt-20">
           <p-button
             label="{{ t('loadMore') }}"
             (scrolled)="loadNextPage()"

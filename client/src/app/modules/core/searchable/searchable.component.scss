@@ -73,8 +73,8 @@ lc-searchable {
       min-height: 2rem;
       height: 2rem;
       border-radius: 100%;
-      background-color: #d0d0d0;
-      color: rgb(75, 85, 99);
+      background-color: var(--p-content-hover-background);
+      color: var(--p-text-color);
       font-size: 0.8rem;
       font-weight: bold;
       display: flex;

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 import {
   selectAuthState,
   selectCurrentUser,
@@ -19,8 +19,8 @@ import {
 } from 'src/app/ngrx/actions/auth.actions';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { take } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take, map } from 'rxjs/operators';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
@@ -30,9 +30,12 @@ import { MenuItemType } from '../../../enums/menu-item-type';
 import { Crag } from '../../../models/crag';
 import {
   selectInstanceName,
+  selectDarkLogoImage,
   selectLogoImage,
   selectSkippedHierarchyLayers,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { effectiveLogoImage } from '../../../utility/instance-settings-theme';
+import { ThemeService } from '../../../services/core/theme.service';
 import { File } from '../../../models/file';
 import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -92,9 +95,19 @@ export class MenuComponent implements OnInit {
   private store = inject(Store);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
+  private themeService = inject(ThemeService);
+  private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
 
   ngOnInit() {
-    this.logoImage$ = this.store.pipe(select(selectLogoImage));
+    this.logoImage$ = combineLatest([
+      this.store.select(selectLogoImage),
+      this.store.select(selectDarkLogoImage),
+      this.isDarkMode$,
+    ]).pipe(
+      map(([logo, darkLogo, isDarkMode]) =>
+        effectiveLogoImage(logo, darkLogo, isDarkMode),
+      ),
+    );
     this.instanceName$ = this.store.pipe(select(selectInstanceName));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
@@ -254,35 +267,35 @@ export class MenuComponent implements OnInit {
       const skippedHierarchyLayersSlug = `${environment.skippedSlug}/`.repeat(
         skippedHierarchyLayers,
       );
-      this.items = [];
+      const items: MenuItem[] = [];
       const menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
       );
-      menuItemsTop.map((menuItem) => {
+      menuItemsTop.forEach((menuItem) => {
         switch (menuItem.type) {
           case MenuItemType.MENU_PAGE:
-            this.items.push({
+            items.push({
               label: menuItem.menuPage.title,
               icon: `pi pi-fw ${menuItem.icon}`,
               routerLink: '/pages/' + menuItem.menuPage.slug,
             });
             break;
           case MenuItemType.NEWS:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.news')),
               icon: 'pi pi-fw pi-megaphone',
               routerLink: '/news',
             });
             break;
           case MenuItemType.URL:
-            this.items.push({
+            items.push({
               label: menuItem.title,
               url: menuItem.url,
               icon: `pi pi-fw ${menuItem.icon}`,
             });
             break;
           case MenuItemType.TOPO:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.topo')),
               icon: 'pi pi-fw pi-map',
               routerLink: '/topo/crags',
@@ -290,28 +303,28 @@ export class MenuComponent implements OnInit {
             });
             break;
           case MenuItemType.ASCENTS:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.ascents')),
               icon: 'pi pi-fw pi-check-square',
               routerLink: '/ascents',
             });
             break;
           case MenuItemType.RANKING:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.ranking')),
               icon: 'pi pi-fw pi-trophy',
               routerLink: '/ranking',
             });
             break;
           case MenuItemType.GALLERY:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.gallery')),
               icon: 'pi pi-fw pi-images',
               routerLink: `/topo/${skippedHierarchyLayersSlug}gallery`,
             });
             break;
           case MenuItemType.HISTORY:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.history')),
               icon: 'pi pi-fw pi-clock',
               routerLink: '/history',
@@ -319,6 +332,7 @@ export class MenuComponent implements OnInit {
             break;
         }
       });
+      this.items = items;
     });
   }
 

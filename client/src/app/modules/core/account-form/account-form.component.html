@@ -2,10 +2,10 @@
   <div class="auth-container">
     <div class="card login-card">
       <form [formGroup]="accountForm" lcForm>
-        <div class="flex flex-row align-items-center">
+        <div class="flex flex-row items-center">
           <lc-avatar-upload formControlName="avatar"></lc-avatar-upload>
 
-          <div class="ml-5">
+          <div class="ml-20">
             <h3>{{ t("accountFormTitle") }}</h3>
 
             {{ t("accountFormDescription") }}
@@ -98,7 +98,7 @@
       </form>
 
       @if (savePressed && emailsDontMatch()) {
-        <p-message severity="error" class="mt-4">
+        <p-message severity="error" class="mt-12">
           {{ t("emailsDontMatchAlertText") }}
         </p-message>
       }
@@ -110,14 +110,14 @@
       ></p-button>
 
       @if (emailChangedPostSave) {
-        <p-message severity="info" class="w-full max-w-35rem">
+        <p-message severity="info" class="mt-6 w-full max-w-35rem">
           {{ t("emailAddressChangeInfoText") }}
         </p-message>
       }
 
       <lc-account-settings-form></lc-account-settings-form>
 
-      <p-divider align="center" class="mt-5">
+      <p-divider align="center" class="mt-20">
         <b>{{ t("dangerZoneTitle") }}</b>
       </p-divider>
 
@@ -130,8 +130,8 @@
         {{ t("superadminsCannotDeleteOwnUser") }}
       </p-message>
 
-      <div class="flex flex-column gap-3 mt-3" *isSuperadmin="false">
-        <div class="text-600">
+      <div class="flex flex-col gap-6 mt-6" *isSuperadmin="false">
+        <div class="text-surface-600 dark:text-surface-200">
           {{ t("deleteAccountInfoText") }}
         </div>
         <div>

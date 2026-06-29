@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'posts'">
   <div class="content">
     <p-card>
-      <div class="mb-3">
+      <div class="mb-4">
         <p-button
           [routerLink]="['/news']"
           [label]="t('postDetail.backToNews')"
@@ -11,10 +11,12 @@
         ></p-button>
       </div>
       @if (post) {
-        <div class="text-2xl font-bold text-900 mb-2">
+        <div
+          class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-2"
+        >
           {{ post.title }}
         </div>
-        <div class="text-xs mb-3">
+        <div class="text-xs mb-4">
           {{ t("postList.byUser") }}
           @if (post.createdBy) {
             <a
@@ -29,7 +31,7 @@
         </div>
         <div
           [innerHTML]="post.text | sanitizeHtml"
-          class="quill-content mb-4"
+          class="quill-content mb-6"
         ></div>
         <p-button
           *isModerator="true"

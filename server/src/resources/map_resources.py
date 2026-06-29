@@ -19,6 +19,7 @@ from models.enums.map_marker_type_enum import (
 from models.map_marker import MapMarker
 from models.sector import Sector
 from models.topo_image import TopoImage
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.secret_service import SecretService
 
 
@@ -193,7 +194,7 @@ def create_or_update_markers(markers_json: List[dict], parent_entity) -> List[Ma
         marker.lat = marker_json["lat"]
         marker.lng = marker_json["lng"]
         marker.name = marker_json["name"]
-        marker.description = marker_json["description"]
+        marker.description = sanitize_wysiwyg_html(marker_json["description"])
         marker.type = marker_json["type"]
         new_markers.append(marker)
         db.session.add(marker)

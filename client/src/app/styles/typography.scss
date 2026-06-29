@@ -7,12 +7,12 @@
 }
 
 .black-font {
-  color: #000000;
+  color: var(--p-text-color);
 }
 
 a.title-link {
   text-decoration: none;
-  color: var(--p-surface-900);
+  color: var(--p-text-color);
   &:hover {
     text-decoration: underline;
     cursor: pointer;
