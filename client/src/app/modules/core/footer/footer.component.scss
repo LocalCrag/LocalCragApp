@@ -24,6 +24,10 @@ lc-footer {
   .footer-menu {
     display: block;
     padding: 0.5rem;
+
+    .p-button.p-button-text:not(:disabled):hover {
+      background: var(--p-content-hover-background);
+    }
   }
 
   .footer-notes {

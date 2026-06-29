@@ -7,16 +7,18 @@ lc-language-select {
   &.no-label .p-select-dropdown {
     display: none;
   }
+}
 
-  .language-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+// Dropdown is appendTo="body", so option rows are outside lc-language-select.
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   .flag {
     width: 1.25rem;
     height: auto;
+    flex-shrink: 0;
     border-radius: 2px;
     box-shadow: 0 0 0 1px var(--p-content-border-color);
   }

@@ -29,9 +29,6 @@ export class FooterComponent implements OnInit {
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
   public version = environment.version;
-  public footerButtonsDt = {
-    textSecondaryHoverBackground: '{surface.200}',
-  };
 
   private skippedHierarchyLayers$: Observable<number>;
   private menuItemsService = inject(MenuItemsService);

@@ -23,6 +23,34 @@ lc-menu {
     width: 15rem;
   }
 
+  .navbar-field-group {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+
+    lc-language-select {
+      display: flex;
+      align-items: stretch;
+
+      p-select {
+        display: flex;
+        flex: 1;
+        height: 100%;
+      }
+
+      .p-select {
+        flex: 1;
+        height: 100%;
+        align-items: center;
+      }
+
+      .p-select-label {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
   .search-fake-input {
     background: var(--p-form-field-background);
     border: 1px solid var(--p-form-field-border-color);

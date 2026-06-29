@@ -2,6 +2,41 @@
 // the preview matches persisted output (including pasted or legacy colored HTML).
 .lc-wysiwyg-editor,
 .p-editor {
+  .p-editor-toolbar.ql-snow,
+  .p-editor-content.ql-snow,
+  .ql-toolbar.ql-snow,
+  .ql-container.ql-snow {
+    border-color: var(--p-form-field-border-color) !important;
+  }
+
+  &:hover {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-hover-border-color) !important;
+    }
+  }
+
+  &:focus-within {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-focus-border-color) !important;
+    }
+  }
+
+  &.p-invalid,
+  &.ng-invalid.ng-touched {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-invalid-border-color) !important;
+    }
+  }
+
   .ql-editor {
     & * {
       color: var(--p-text-color) !important;
