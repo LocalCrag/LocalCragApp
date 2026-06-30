@@ -332,6 +332,35 @@ def test_grade_ranking_votes(client, user_token):
     assert line.user_rating == 5
 
 
+def test_grade_ranking_votes_top_of_scale(client, user_token):
+    # Regression: an ascent graded at the highest grade of the scale (FB 9A+ = 29)
+    # used to crash the recompute with IndexError, leaving user_grade_value stale.
+    line_id = Line.get_id_by_slug("treppe")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 29,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 1
+    assert line.user_grade_value == 29
+
+
 def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_token):
     line_id = Line.get_id_by_slug("treppe")
 
