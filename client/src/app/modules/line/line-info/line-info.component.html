@@ -50,17 +50,12 @@
           ></div>
         }
         <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
-        @if (line.ascentCount > 0 && displayUserGrades === true) {
-          <div>
-            {{ t("userGrade") }}:
-            {{
-              scalesService.gradeNameByValue(
-                line.type,
-                line.gradeScale,
-                line.userGradeValue
-              ) | async
-            }}
-          </div>
+        @if (line.ascentCount > 0) {
+          @if (displayUserGrades) {
+            <div>{{ t("proposedAs") }}: {{ line | lineGrade: "author" }}</div>
+          } @else {
+            <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
+          }
         }
         @if (line.videos?.length > 0) {
           <div>
