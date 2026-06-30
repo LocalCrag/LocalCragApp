@@ -12,11 +12,7 @@ import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { AreasService } from '../../../services/crud/areas.service';
-import {
-  TRANSLOCO_SCOPE,
-  TranslocoDirective,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import {
   ActivatedRoute,
   Router,
@@ -66,7 +62,6 @@ import { LanguageService } from '../../../services/core/language.service';
     Tab,
     RouterLink,
     RouterOutlet,
-    TranslocoDirective,
   ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
@@ -78,7 +73,6 @@ export class LineComponent implements OnInit {
   public items: MenuItem[];
   public breadcrumbs: MenuItem[] | undefined;
   public breadcrumbHome: MenuItem | undefined;
-  public displayUserGrades = false;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -143,7 +137,6 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
-            this.displayUserGrades = instanceSettings.displayUserGrades;
             const gradeValue = instanceSettings.displayUserGrades
               ? line.userGradeValue
               : line.authorGradeValue;

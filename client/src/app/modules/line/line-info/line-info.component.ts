@@ -32,6 +32,7 @@ import { TopoImageComponent } from '../../shared/components/topo-image/topo-imag
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -60,6 +61,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     LineBoolPropListComponent,
     TopoImageComponent,
     DatePipe,
+    LineGradePipe,
   ],
 })
 export class LineInfoComponent implements OnInit {
@@ -68,6 +70,7 @@ export class LineInfoComponent implements OnInit {
   public ticks: Set<string>;
   public todos: Set<string>;
   public displayUserRating?: boolean = undefined;
+  public displayUserGrades?: boolean = undefined;
 
   private lineSlug: string;
   private destroyRef = inject(DestroyRef);
@@ -101,6 +104,7 @@ export class LineInfoComponent implements OnInit {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
+        this.displayUserGrades = instanceSettings.displayUserGrades;
       });
   }
 
