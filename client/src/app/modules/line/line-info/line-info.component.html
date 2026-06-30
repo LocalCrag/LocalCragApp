@@ -50,6 +50,13 @@
           ></div>
         }
         <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
+        @if (line.ascentCount > 0) {
+          @if (displayUserGrades) {
+            <div>{{ t("proposedAs") }}: {{ line | lineGrade: "author" }}</div>
+          } @else {
+            <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
+          }
+        }
         @if (line.videos?.length > 0) {
           <div>
             {{ t("videoBeta") }}:
