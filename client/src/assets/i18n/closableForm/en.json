@@ -1,6 +1,9 @@
 {
   "closableForm.closureSchedulesLabel": "Closure schedules",
   "closableForm.addSchedule": "Add closure schedule",
+  "closableForm.annualScheduleTitle": "Annual",
+  "closableForm.fixedScheduleTitle": "Fixed",
+  "closableForm.permanentScheduleTitle": "Permanent",
   "closableFormScheduleDialog.scheduleTypeLabel": "Schedule type",
   "closableForm.scheduledClosureReasonLabel": "Reason during closure",
   "closableForm.scheduledClosureReasonPlaceholder": "e.g. bird nesting season...",

@@ -1,6 +1,9 @@
 {
   "closableForm.closureSchedulesLabel": "Programmi di chiusura",
   "closableForm.addSchedule": "Aggiungi programma di chiusura",
+  "closableForm.annualScheduleTitle": "Annuale",
+  "closableForm.fixedScheduleTitle": "Fisso",
+  "closableForm.permanentScheduleTitle": "Permanente",
   "closableFormScheduleDialog.scheduleTypeLabel": "Tipo di programma",
   "closableForm.scheduledClosureReasonLabel": "Motivo durante la chiusura",
   "closableForm.scheduledClosureReasonPlaceholder": "es. periodo di nidificazione...",

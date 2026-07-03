@@ -6,6 +6,10 @@ lc-ascent-list {
     &:hover {
       text-decoration: underline;
     }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
+    }
   }
 
   .ascent-table-container {

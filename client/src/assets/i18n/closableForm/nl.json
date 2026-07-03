@@ -1,6 +1,9 @@
 {
   "closableForm.closureSchedulesLabel": "Sluitingsschema's",
   "closableForm.addSchedule": "Sluitingsschema toevoegen",
+  "closableForm.annualScheduleTitle": "Jaarlijks",
+  "closableForm.fixedScheduleTitle": "Vast",
+  "closableForm.permanentScheduleTitle": "Permanent",
   "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
   "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
   "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",

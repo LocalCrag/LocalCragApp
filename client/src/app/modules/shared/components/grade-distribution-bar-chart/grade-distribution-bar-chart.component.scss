@@ -1,6 +1,11 @@
 lc-grade-distribution-bar-chart {
   display: block;
 
+  p-message {
+    display: block;
+    margin-block: 0.75rem;
+  }
+
   p-chart {
     height: 100%;
     display: block;

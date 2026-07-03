@@ -46,10 +46,11 @@ class BatchLineArgsSchema(Schema):
     color = fields.Str(required=False, allow_none=True, validate=color_validator)
     startingPosition = fields.Enum(StartingPositionEnum, required=True, allow_none=False)
     authorGradeValue = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=-2))
-    faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
+    faName = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
 
 
 class LineArgsSchema(BatchLineArgsSchema):
+    faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
     description = fields.Str(required=True, allow_none=True)
     videos = fields.List(fields.Nested(VideosArgsSchema()), required=True, allow_none=True)
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))

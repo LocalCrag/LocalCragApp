@@ -12,6 +12,10 @@ lc-comment {
     &:hover {
       text-decoration: underline;
     }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
+    }
   }
 
   .username {

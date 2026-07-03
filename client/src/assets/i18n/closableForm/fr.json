@@ -1,6 +1,9 @@
 {
   "closableForm.closureSchedulesLabel": "Horaires de fermeture",
   "closableForm.addSchedule": "Ajouter un horaire de fermeture",
+  "closableForm.annualScheduleTitle": "Annuel",
+  "closableForm.fixedScheduleTitle": "Fixe",
+  "closableForm.permanentScheduleTitle": "Permanent",
   "closableFormScheduleDialog.scheduleTypeLabel": "Type d'horaire",
   "closableForm.scheduledClosureReasonLabel": "Raison lors de la fermeture",
   "closableForm.scheduledClosureReasonPlaceholder": "par ex. la saison de nidification des oiseaux...",

@@ -24,6 +24,10 @@ lc-ranking-list {
     &:hover {
       text-decoration: underline;
     }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
+    }
   }
 
   .ranking-table-row {

@@ -4,6 +4,11 @@ lc-searchable.ellipsis {
     padding: 0;
     margin-right: 0;
 
+    lc-user-avatar {
+      display: flex;
+      align-items: center;
+    }
+
     p-avatar {
       margin-right: 0.25rem;
       height: 1.5rem;
@@ -77,6 +82,7 @@ lc-searchable {
       color: var(--p-text-color);
       font-size: 0.8rem;
       font-weight: bold;
+      line-height: normal;
       display: flex;
       justify-content: center;
       align-items: center;

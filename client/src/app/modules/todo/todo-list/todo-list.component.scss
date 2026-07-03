@@ -6,6 +6,10 @@ lc-todo-list {
     &:hover {
       text-decoration: underline;
     }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
+    }
   }
 
   .todo-table-container {

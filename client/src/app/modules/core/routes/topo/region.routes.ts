@@ -56,15 +56,6 @@ export const topoRegionRoute: Routes = [
         canActivate: [skipHierarchy(1, ['/topo'], ['lines'])],
       }),
       lazyOutletRoute(
-        'map',
-        () =>
-          import('../../../maps/map/map.component').then((m) => m.MapComponent),
-        'regionContent',
-        {
-          canActivate: [skipHierarchy(1, ['/topo'])],
-        },
-      ),
-      lazyOutletRoute(
         'rules',
         () =>
           import('../../../region/region-rules/region-rules.component').then(
