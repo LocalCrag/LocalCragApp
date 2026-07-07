@@ -1,0 +1,89 @@
+<ng-container *transloco="let t; read: 'sidebar'">
+  <nav class="sidebar-inner">
+    @if (!loading && stats) {
+      @if (stats.hardestAscentsLastMonth.length > 0) {
+        <div class="sidebar-section">
+          <span class="sidebar-heading">{{ t('hardestAscentsLastMonth') }}</span>
+          <ul class="sidebar-list">
+            @for (ascent of stats.hardestAscentsLastMonth; track ascent.id) {
+              <li class="sidebar-list-item">
+                <a [routerLink]="ascent.routerLinkLine" class="sidebar-list-link">
+                  <span class="sidebar-list-name">{{ ascent.line.name }}</span>
+                  <span class="sidebar-list-meta grade-font">{{
+                    ascent.line | lineGrade
+                  }}</span>
+                </a>
+                @if (ascent.createdBy) {
+                  <a
+                    [routerLink]="ascent.routerLinkCreatedBy"
+                    class="sidebar-list-sub"
+                  >
+                    {{ ascent.createdBy.firstname }}
+                    {{ ascent.createdBy.lastname }}
+                  </a>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (stats.latestFirstAscents.length > 0) {
+        <div class="sidebar-section">
+          <span class="sidebar-heading">{{ t('latestFirstAscents') }}</span>
+          <ul class="sidebar-list">
+            @for (ascent of stats.latestFirstAscents; track ascent.id) {
+              <li class="sidebar-list-item">
+                <a [routerLink]="ascent.routerLinkLine" class="sidebar-list-link">
+                  <span class="sidebar-list-name">{{ ascent.line.name }}</span>
+                  <span class="sidebar-list-meta grade-font">{{
+                    ascent.line | lineGrade
+                  }}</span>
+                </a>
+                @if (ascent.createdBy) {
+                  <a
+                    [routerLink]="ascent.routerLinkCreatedBy"
+                    class="sidebar-list-sub"
+                  >
+                    {{ ascent.createdBy.firstname }}
+                    {{ ascent.createdBy.lastname }}
+                  </a>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    }
+
+    <div class="sidebar-section">
+      <span class="sidebar-heading">{{ t('overview') }}</span>
+      @if (loading) {
+        <div class="stat-grid">
+          @for (i of [1, 2, 3, 4]; track i) {
+            <p-skeleton height="3.5rem" styleClass="stat-skeleton" />
+          }
+        </div>
+      } @else if (stats) {
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value">{{ stats.totals.totalAscents }}</span>
+            <span class="stat-label">{{ t('totalAscents') }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ stats.totals.ascentsLastWeek }}</span>
+            <span class="stat-label">{{ t('ascentsLastWeek') }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ stats.totals.totalLines }}</span>
+            <span class="stat-label">{{ t('totalLines') }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ stats.totals.totalUsers }}</span>
+            <span class="stat-label">{{ t('totalUsers') }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </nav>
+</ng-container>

@@ -19,6 +19,11 @@ body {
 
 html {
   height: 100vh;
+  --lc-subtle-bg: color-mix(
+    in srgb,
+    var(--p-text-color) 4%,
+    var(--p-content-background)
+  );
   --ticked-bg-color: var(--p-green-50);
   --ticked-color: var(--p-green-600);
 
@@ -30,6 +35,7 @@ html {
 
 body {
   height: 100vh;
+  background-color: var(--lc-subtle-bg);
   font-family:
     "Inter var",
     -apple-system,
@@ -44,30 +50,40 @@ body {
     "Segoe UI Symbol";
 }
 
-.main {
-  flex: auto;
-  align-items: stretch;
-  display: flex;
-
-  > *:not(router-outlet) {
-    width: 100%;
-  }
-}
-
 .content {
-  padding: 3rem 6rem;
+  padding: 2rem 3.5rem;
   height: 100%;
   width: 100%;
-  max-width: 110rem;
+  max-width: 80rem;
   margin-left: auto;
   margin-right: auto;
 
   @include m.on-mobile {
-    padding: 0 0;
+    padding: 1rem;
   }
 
-  .p-card-content {
-    padding-bottom: 0;
+  > p-card {
+    display: block;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    .p-card-header {
+      padding: 0 0 1rem;
+      background: transparent;
+      border: none;
+    }
+
+    .p-card-body,
+    .p-card-content {
+      padding: 0;
+    }
+
+    .p-card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
   }
 }
 

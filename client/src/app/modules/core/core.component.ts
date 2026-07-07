@@ -11,7 +11,7 @@ import {
 } from '../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { NavigationService } from '../../services/core/navigation.service';
-import { BackgroundImageComponent } from './background-image/background-image.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { MenuComponent } from './menu/menu.component';
 import { RouterOutlet } from '@angular/router';
@@ -24,7 +24,7 @@ import { Toast } from 'primeng/toast';
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
   imports: [
-    BackgroundImageComponent,
+    SidebarComponent,
     AppLevelAlertsComponent,
     MenuComponent,
     RouterOutlet,

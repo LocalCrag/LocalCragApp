@@ -45,6 +45,7 @@ export class ApiService {
 
   public statistics = {
     completion: (): string => `${this.apiHost}statistics/completion`,
+    instance: (): string => `${this.apiHost}statistics/instance`,
   };
 
   public search = {

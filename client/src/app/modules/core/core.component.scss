@@ -3,3 +3,27 @@
   display: flex;
   flex-direction: column;
 }
+
+.body-row {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background-color: var(--p-content-background);
+  border-bottom: 1px solid var(--p-content-border-color);
+
+  > *:not(router-outlet) {
+    width: 100%;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
