@@ -3,11 +3,16 @@
     @if (!loading && stats) {
       @if (stats.hardestAscentsLastMonth.length > 0) {
         <div class="sidebar-section">
-          <span class="sidebar-heading">{{ t('hardestAscentsLastMonth') }}</span>
+          <span class="sidebar-heading">{{
+            t("hardestAscentsLastMonth")
+          }}</span>
           <ul class="sidebar-list">
             @for (ascent of stats.hardestAscentsLastMonth; track ascent.id) {
               <li class="sidebar-list-item">
-                <a [routerLink]="ascent.routerLinkLine" class="sidebar-list-link">
+                <a
+                  [routerLink]="ascent.routerLinkLine"
+                  class="sidebar-list-link"
+                >
                   <span class="sidebar-list-name">{{ ascent.line.name }}</span>
                   <span class="sidebar-list-meta grade-font">{{
                     ascent.line | lineGrade
@@ -30,11 +35,14 @@
 
       @if (stats.latestFirstAscents.length > 0) {
         <div class="sidebar-section">
-          <span class="sidebar-heading">{{ t('latestFirstAscents') }}</span>
+          <span class="sidebar-heading">{{ t("latestFirstAscents") }}</span>
           <ul class="sidebar-list">
             @for (ascent of stats.latestFirstAscents; track ascent.id) {
               <li class="sidebar-list-item">
-                <a [routerLink]="ascent.routerLinkLine" class="sidebar-list-link">
+                <a
+                  [routerLink]="ascent.routerLinkLine"
+                  class="sidebar-list-link"
+                >
                   <span class="sidebar-list-name">{{ ascent.line.name }}</span>
                   <span class="sidebar-list-meta grade-font">{{
                     ascent.line | lineGrade
@@ -57,7 +65,7 @@
     }
 
     <div class="sidebar-section">
-      <span class="sidebar-heading">{{ t('overview') }}</span>
+      <span class="sidebar-heading">{{ t("overview") }}</span>
       @if (loading) {
         <div class="stat-grid">
           @for (i of [1, 2, 3, 4]; track i) {
@@ -68,19 +76,19 @@
         <div class="stat-grid">
           <div class="stat-card">
             <span class="stat-value">{{ stats.totals.totalAscents }}</span>
-            <span class="stat-label">{{ t('totalAscents') }}</span>
+            <span class="stat-label">{{ t("totalAscents") }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-value">{{ stats.totals.ascentsLastWeek }}</span>
-            <span class="stat-label">{{ t('ascentsLastWeek') }}</span>
+            <span class="stat-label">{{ t("ascentsLastWeek") }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-value">{{ stats.totals.totalLines }}</span>
-            <span class="stat-label">{{ t('totalLines') }}</span>
+            <span class="stat-label">{{ t("totalLines") }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-value">{{ stats.totals.totalUsers }}</span>
-            <span class="stat-label">{{ t('totalUsers') }}</span>
+            <span class="stat-label">{{ t("totalUsers") }}</span>
           </div>
         </div>
       }
