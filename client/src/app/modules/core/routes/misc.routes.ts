@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { isLoggedIn } from '../../../guards/is-logged-in';
-import { authBg, defaultBg, notFoundBg } from './route-helpers';
+import { defaultBg, notFoundBg } from './route-helpers';
 
 export const rootRedirectRoutes: Routes = [
   {
@@ -27,7 +27,7 @@ export const miscRoutes: Routes = [
         (m) => m.TodoListComponent,
       ),
     canActivate: [isLoggedIn],
-    data: authBg(),
+    data: defaultBg(),
   },
 ];
 

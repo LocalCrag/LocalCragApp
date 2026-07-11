@@ -1,14 +1,41 @@
+@use "../../styles/media-queries" as m;
+
 :host {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  --lc-layout-gap: 1.5rem;
+  --lc-sidebar-width: 16rem;
+  --lc-main-max-width: 80rem;
 }
 
 .body-row {
   flex: 1;
   display: flex;
-  align-items: stretch;
+  background-color: var(--lc-subtle-bg);
+  padding: var(--lc-layout-gap);
   min-height: 0;
+
+  @include m.on-mobile {
+    padding: 0;
+  }
+}
+
+.layout-columns {
+  display: flex;
+  gap: var(--lc-layout-gap);
+  width: 100%;
+  max-width: calc(
+    var(--lc-sidebar-width) + var(--lc-layout-gap) + var(--lc-main-max-width)
+  );
+  margin: 0 auto;
+  align-items: flex-start;
+  min-width: 0;
+
+  @include m.on-mobile {
+    gap: 0;
+    max-width: none;
+  }
 }
 
 .main {
@@ -18,12 +45,19 @@
   min-width: 0;
   min-height: 0;
   background-color: var(--p-content-background);
-  border-bottom: 1px solid var(--p-content-border-color);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  box-shadow: var(--p-card-shadow);
+  overflow: hidden;
+
+  @include m.on-mobile {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
 
   > *:not(router-outlet) {
     width: 100%;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
   }
 }

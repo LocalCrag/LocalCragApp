@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'users.list'">
   <div class="content">
-    <p-card header="{{ t('userListTitle') }}">
       <p-dataView
         #dv
         [value]="users"
@@ -135,7 +134,6 @@
           }
         </ng-template>
       </p-dataView>
-    </p-card>
   </div>
 
   <p-confirmDialog [style]="{ maxWidth: '800px' }"></p-confirmDialog>

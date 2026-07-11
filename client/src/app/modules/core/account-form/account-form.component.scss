@@ -1,3 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card-container {
+  margin-top: 1.5rem;
+}
+
+form,
+input,
+.card-container {
+  width: 100%;
+}
+
 .max-w-35rem {
   max-width: 35rem;
 }
@@ -5,4 +20,10 @@
 h3 {
   word-break: normal;
   hyphens: auto;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--p-text-color);
 }

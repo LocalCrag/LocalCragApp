@@ -12,7 +12,6 @@ export class InstanceSettings {
   darkLogoImage: File;
   faviconImage: File;
   mainBgImage: File;
-  authBgImage: File;
   arrowColor: string;
   arrowTextColor: string;
   arrowHighlightColor: string;
@@ -53,9 +52,6 @@ export class InstanceSettings {
       : null;
     instanceSettings.mainBgImage = payload.mainBgImage
       ? File.deserialize(payload.mainBgImage)
-      : null;
-    instanceSettings.authBgImage = payload.authBgImage
-      ? File.deserialize(payload.authBgImage)
       : null;
     instanceSettings.arrowColor = payload.arrowColor;
     instanceSettings.arrowTextColor = payload.arrowTextColor;
@@ -99,9 +95,6 @@ export class InstanceSettings {
         : null,
       mainBgImage: instanceSettings.mainBgImage
         ? instanceSettings.mainBgImage.id
-        : null,
-      authBgImage: instanceSettings.authBgImage
-        ? instanceSettings.authBgImage.id
         : null,
       arrowColor: instanceSettings.arrowColor,
       arrowTextColor: instanceSettings.arrowTextColor,

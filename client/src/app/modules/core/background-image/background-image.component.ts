@@ -1,20 +1,15 @@
 import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { ActivationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import {
-  selectAuthBgImage,
-  selectMainBgImage,
-} from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectMainBgImage } from '../../../ngrx/selectors/instance-settings.selectors';
 
 export enum StaticBackgroundImages {
   DEFAULT,
-  AUTH,
   NOT_FOUND,
 }
 
 export enum StaticBackgroundImageDefaults {
   DEFAULT = 'assets/bg.jpeg',
-  AUTH = 'assets/login-bg.jpeg',
   NOT_FOUND = 'assets/404.jpeg',
 }
 
@@ -51,14 +46,6 @@ export class BackgroundImageComponent implements OnInit {
           const path = bgImage
             ? bgImage.thumbnailXL
             : StaticBackgroundImageDefaults.DEFAULT;
-          this.el.nativeElement.style.backgroundImage = `url(${path})`;
-        });
-        break;
-      case StaticBackgroundImages.AUTH:
-        this.store.select(selectAuthBgImage).subscribe((bgImage) => {
-          const path = bgImage
-            ? bgImage.thumbnailXL
-            : StaticBackgroundImageDefaults.AUTH;
           this.el.nativeElement.style.backgroundImage = `url(${path})`;
         });
         break;

@@ -3,12 +3,7 @@ import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
@@ -21,43 +16,30 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import {
   selectGymMode,
   selectInstanceSettingsState,
+  selectMainBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 
-import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
-  imports: [
-    Card,
-    ClosedSpotTagComponent,
-    SecretSpotTagComponent,
-    Breadcrumb,
-    Tabs,
-    SetActiveTabDirective,
-    TabList,
-    Tab,
-    RouterLink,
-    RouterOutlet,
-  ],
+  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
 export class SectorComponent implements OnInit {
   public crag: Crag;
   public sector: Sector;
   public items: MenuItem[];
-  public breadcrumbs: MenuItem[] | undefined;
-  public breadcrumbHome: MenuItem | undefined;
+
+  private breadcrumbHome: MenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -69,6 +51,7 @@ export class SectorComponent implements OnInit {
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
+  private pageTitleService = inject(PageTitleService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -97,11 +80,24 @@ export class SectorComponent implements OnInit {
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
+          this.store.pipe(select(selectMainBgImage), take(1)),
         ]).subscribe(
-          ([crag, sector, blocweatherConfig, isModerator, isGymMode]) => {
+          ([
+            crag,
+            sector,
+            blocweatherConfig,
+            isModerator,
+            isGymMode,
+            mainBgImage,
+          ]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
             this.sector = sector;
+            this.pageTitleService.setPortraitTitle(
+              sector.name,
+              sector.portraitImage,
+              mainBgImage,
+            );
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {
@@ -118,6 +114,7 @@ export class SectorComponent implements OnInit {
                       instanceSettings.skippedHierarchyLayers,
                     ),
                 };
+                this.updateBreadcrumbs(crag, sector);
               });
             this.buildItems(isModerator, isGymMode);
             this.languageService.renderedLanguage$
@@ -126,20 +123,27 @@ export class SectorComponent implements OnInit {
                 if (!rendered) return;
                 this.buildItems(isModerator, isGymMode);
               });
-            this.breadcrumbs = [
-              {
-                label: crag.name,
-                slug: crag.slug,
-                routerLink: `/topo/${crag.slug}/sectors`,
-              },
-              {
-                label: sector.name,
-                slug: sector.slug,
-              },
-            ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
           },
         );
       });
+  }
+
+  private updateBreadcrumbs(crag: Crag, sector: Sector) {
+    const breadcrumbs = [
+      {
+        label: crag.name,
+        slug: crag.slug,
+        routerLink: `/topo/${crag.slug}/sectors`,
+      },
+      {
+        label: sector.name,
+        slug: sector.slug,
+      },
+    ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+    this.pageTitleService.setBreadcrumbs(
+      breadcrumbs,
+      this.breadcrumbHome ?? null,
+    );
   }
 
   private buildItems(isModerator: boolean, isGymMode: boolean) {
@@ -212,6 +216,7 @@ export class SectorComponent implements OnInit {
         visible: isModerator,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 
   protected readonly environment = environment;

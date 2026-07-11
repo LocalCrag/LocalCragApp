@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
-  <div class="content">
-    <p-card header="{{ t('editScales') }}">
+  <div class="content p-6">
       <div class="flex justify-end mb-6">
         <p-button
           [disabled]="loadingState === LoadingState.LOADING"
@@ -52,6 +51,5 @@
           </ng-template>
         </p-table>
       }
-    </p-card>
   </div>
 </ng-container>

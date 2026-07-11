@@ -18,19 +18,26 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { UploadService } from '../../../services/crud/upload.service';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { PageTitleService } from '../../../services/core/page-title.service';
+import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { InstanceSettings } from '../../../models/instance-settings';
 
 /**
  * A component for editing regions.
@@ -38,7 +45,6 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 @Component({
   selector: 'lc-region-form',
   imports: [
-    CardModule,
     ReactiveFormsModule,
     EditorModule,
     ButtonModule,
@@ -49,6 +55,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    SingleImageUploadComponent,
   ],
   templateUrl: './region-form.component.html',
   styleUrl: './region-form.component.scss',
@@ -63,12 +70,16 @@ export class RegionFormComponent implements OnInit {
   public region: Region;
   public editMode = false;
   public quillModules: any;
+  public instanceSettings: InstanceSettings;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private router = inject(Router);
   private uploadService = inject(UploadService);
   private regionsService = inject(RegionService);
+  private instanceSettingsService = inject(InstanceSettingsService);
+  private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -80,25 +91,38 @@ export class RegionFormComponent implements OnInit {
   ngOnInit() {
     this.buildForm();
     this.editMode = true;
+    this.setPageTitle();
     this.regionForm.disable();
-    this.regionsService
-      .getRegion()
-      .pipe(
+    forkJoin([
+      this.regionsService.getRegion().pipe(
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
           }
-          return of(e);
+          return of(null);
         }),
-      )
-      .subscribe((crag) => {
-        this.region = crag;
-        this.setFormValue();
-        this.loadingState = LoadingState.DEFAULT;
-        this.editors?.map((editor) => {
-          editor.getQuill()?.enable();
-        });
+      ),
+      this.instanceSettingsService
+        .getInstanceSettings()
+        .pipe(catchError(() => of(null))),
+    ]).subscribe(([region, instanceSettings]) => {
+      if (!region) {
+        return;
+      }
+      this.region = region;
+      this.instanceSettings = instanceSettings;
+      this.setFormValue();
+      this.loadingState = LoadingState.DEFAULT;
+      this.editors?.map((editor) => {
+        editor.getQuill()?.enable();
       });
+    });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate('region.regionForm.editRegionTitle'),
+    );
   }
 
   /**
@@ -109,6 +133,7 @@ export class RegionFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       rules: [null],
+      image: [null],
     });
   }
 
@@ -121,6 +146,7 @@ export class RegionFormComponent implements OnInit {
       name: this.region.name,
       description: this.region.description,
       rules: this.region.rules,
+      image: this.region.image ?? this.instanceSettings?.mainBgImage ?? null,
     });
   }
 
@@ -141,6 +167,7 @@ export class RegionFormComponent implements OnInit {
       region.name = this.regionForm.get('name').value;
       region.description = this.regionForm.get('description').value;
       region.rules = this.regionForm.get('rules').value;
+      region.image = this.regionForm.get('image').value;
       this.regionsService.updateRegion(region).subscribe(() => {
         this.store.dispatch(toastNotification('REGION_UPDATED'));
         this.router.navigate(['/topo']);

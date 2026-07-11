@@ -42,6 +42,7 @@ class UpdateRegion(MethodView):
         region.name = region_data["name"].strip()
         region.description = sanitize_wysiwyg_html(region_data["description"])
         region.rules = sanitize_wysiwyg_html(region_data["rules"])
+        region.image_id = region_data["image"]
         db.session.add(region)
         db.session.commit()
 

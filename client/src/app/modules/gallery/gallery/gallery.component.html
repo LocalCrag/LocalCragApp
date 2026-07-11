@@ -1,52 +1,54 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
-  <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
-    <div class="col-span-12 flex justify-end" *isLoggedIn="true">
-      <p-button
-        (click)="addImage()"
-        icon="pi pi-image"
-        [label]="t('addImage')"
-      ></p-button>
-    </div>
-
-    @for (image of images; track image) {
-      <div class="col-span-12 md:col-span-6 xl:col-span-4">
-        <lc-gallery-image
-          [image]="image"
-          (delete)="confirmDeleteImage($event, image)"
-          (edit)="editImage(image)"
-        ></lc-gallery-image>
-      </div>
-    }
-    @for (
-      _ of loading === loadingStates.LOADING && currentPage > 1
-        ? [1, 2, 3]
-        : loading === loadingStates.LOADING && currentPage === 1
-          ? [1, 2, 3, 4, 5, 6]
-          : [];
-      track _
-    ) {
-      <div class="col-span-12 md:col-span-6 xl:col-span-4">
-        <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
-      </div>
-    }
-    @if (hasNextPage) {
-      <div class="flex justify-center mt-20">
+  <div class="p-6">
+    <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+      <div class="col-span-12 flex justify-end" *isLoggedIn="true">
         <p-button
-          label="{{ t('loadMore') }}"
-          (scrolled)="loadNextPage()"
-          (click)="loadNextPage()"
-          infiniteScroll
-          [infiniteScrollDistance]="2"
-          [infiniteScrollThrottle]="50"
-          [loading]="loading === loadingStates.LOADING && currentPage > 1"
+          (click)="addImage()"
+          icon="pi pi-image"
+          [label]="t('addImage')"
         ></p-button>
       </div>
+
+      @for (image of images; track image) {
+        <div class="col-span-12 md:col-span-6 xl:col-span-4">
+          <lc-gallery-image
+            [image]="image"
+            (delete)="confirmDeleteImage($event, image)"
+            (edit)="editImage(image)"
+          ></lc-gallery-image>
+        </div>
+      }
+      @for (
+        _ of loading === loadingStates.LOADING && currentPage > 1
+          ? [1, 2, 3]
+          : loading === loadingStates.LOADING && currentPage === 1
+            ? [1, 2, 3, 4, 5, 6]
+            : [];
+        track _
+      ) {
+        <div class="col-span-12 md:col-span-6 xl:col-span-4">
+          <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+        </div>
+      }
+      @if (hasNextPage) {
+        <div class="flex justify-center mt-20">
+          <p-button
+            label="{{ t('loadMore') }}"
+            (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            [loading]="loading === loadingStates.LOADING && currentPage > 1"
+          ></p-button>
+        </div>
+      }
+    </div>
+    @if (!(loading === loadingStates.LOADING) && images.length === 0) {
+      <p-message severity="info" icon="pi pi-info-circle">
+        {{ t("thisGalleryIsEmpty") }}
+      </p-message>
     }
+    <p-confirmpopup></p-confirmpopup>
   </div>
-  @if (!(loading === loadingStates.LOADING) && images.length === 0) {
-    <p-message severity="info" icon="pi pi-info-circle">
-      {{ t("thisGalleryIsEmpty") }}
-    </p-message>
-  }
-  <p-confirmpopup></p-confirmpopup>
 </ng-container>

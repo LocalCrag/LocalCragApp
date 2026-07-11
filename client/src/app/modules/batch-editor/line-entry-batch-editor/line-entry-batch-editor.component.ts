@@ -5,7 +5,6 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Card } from 'primeng/card';
 import {
   FormArray,
   FormBuilder,
@@ -59,11 +58,11 @@ import { TopoImage } from '../../../models/topo-image';
 import { Image } from 'primeng/image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-line-entry-batch-editor',
   imports: [
-    Card,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -130,12 +129,18 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private languageService = inject(LanguageService);
   private batchEditorService = inject(BatchEditorService);
+  private pageTitleService = inject(PageTitleService);
 
   public gymMode$ = this.store
     .select(selectGymMode)
     .pipe(takeUntilDestroyed(this.destroyRef));
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        'topoImage.batchUploadForm.batchImageUploadTitle',
+      ),
+    );
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');

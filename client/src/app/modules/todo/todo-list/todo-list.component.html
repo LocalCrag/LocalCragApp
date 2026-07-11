@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
-    <p-card header="{{ t('todos') }}">
       <p-dataView #dv [value]="todos">
         <ng-template #emptymessage>
           @if (
@@ -359,6 +358,5 @@
           ></p-button>
         </div>
       }
-    </p-card>
   </div>
 </ng-container>

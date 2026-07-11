@@ -1,10 +1,5 @@
 <ng-container *transloco="let t; read: 'menuItems.menuItemForm'">
-  <div class="content">
-    <p-card
-      header="{{
-        editMode ? t('editMenuItemTitle') : t('createMenuItemTitle')
-      }}"
-    >
+  <div class="content p-6">
       @if (!editMode) {
         <p class="mt-0">
           {{ t("createMenuItemDescription") }}
@@ -182,6 +177,5 @@
         }
         <p-confirmpopup></p-confirmpopup>
       </div>
-    </p-card>
   </div>
 </ng-container>

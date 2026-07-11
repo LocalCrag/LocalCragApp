@@ -35,7 +35,6 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { TagModule } from 'primeng/tag';
-import { CardModule } from 'primeng/card';
 import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
@@ -53,6 +52,7 @@ import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-todo-list',
@@ -69,7 +69,6 @@ import { LanguageService } from '../../../services/core/language.service';
     TranslocoDirective,
     FormsModule,
     NgClass,
-    CardModule,
     TodoPriorityButtonComponent,
     TickButtonComponent,
     Select,
@@ -125,10 +124,19 @@ export class TodoListComponent implements OnInit, PaginatedListView {
   private languageService = inject(LanguageService);
   private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
+  private pageTitleService = inject(PageTitleService);
 
   protected scalesService = inject(ScalesService);
 
   ngOnInit() {
+    this.setPageTitle();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.setPageTitle();
+      });
+
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
       this.buildAvailableScales(gradeDistribution);
@@ -173,6 +181,12 @@ export class TodoListComponent implements OnInit, PaginatedListView {
       .subscribe(() => {
         this.loadFirstPage();
       });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate('todos.todoList.todos'),
+    );
   }
 
   buildCragFilterOptions() {

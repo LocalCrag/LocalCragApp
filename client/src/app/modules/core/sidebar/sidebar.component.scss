@@ -1,11 +1,14 @@
 @use "../../../styles/media-queries" as m;
 
 :host {
-  flex: 0 0 16rem;
-  width: 16rem;
-  align-self: stretch;
-  border-right: 1px solid var(--p-content-border-color);
-  background-color: var(--lc-subtle-bg);
+  flex: 0 0 var(--lc-sidebar-width, 16rem);
+  width: var(--lc-sidebar-width, 16rem);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  box-shadow: var(--p-card-shadow);
 
   @include m.on-mobile {
     display: none;
@@ -16,7 +19,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1.5rem 1rem;
+  padding: var(--lc-card-padding);
 }
 
 .sidebar-section {
@@ -46,7 +49,7 @@
   gap: 0.15rem;
   padding: 0.5rem 0.65rem;
   border-radius: var(--p-content-border-radius);
-  background-color: var(--p-content-background);
+  background-color: var(--lc-subtle-bg);
   border: 1px solid var(--p-content-border-color);
 }
 

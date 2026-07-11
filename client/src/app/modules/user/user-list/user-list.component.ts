@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CardModule } from 'primeng/card';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { AsyncPipe, NgClass } from '@angular/common';
@@ -35,11 +34,11 @@ import { Select } from 'primeng/select';
 import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
 import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-user-list',
   imports: [
-    CardModule,
     TranslocoDirective,
     AsyncPipe,
     ButtonModule,
@@ -79,8 +78,12 @@ export class UserListComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate('users.list.userListTitle'),
+    );
     this.refreshData();
   }
 

@@ -1,4 +1,5 @@
 import { AbstractModel } from './abstract-model';
+import { File } from './file';
 
 /**
  * Model of a climbing region.
@@ -7,6 +8,7 @@ export class Region extends AbstractModel {
   name: string;
   description: string;
   rules: string;
+  image: File;
   ascentCount: number;
 
   /**
@@ -21,6 +23,7 @@ export class Region extends AbstractModel {
     region.name = payload.name;
     region.description = payload.description;
     region.rules = payload.rules;
+    region.image = payload.image ? File.deserialize(payload.image) : null;
     region.ascentCount = payload.ascentCount;
     return region;
   }
@@ -36,6 +39,7 @@ export class Region extends AbstractModel {
       name: region.name,
       description: region.description,
       rules: region.rules,
+      image: region.image ? region.image.id : null,
     };
   }
 }

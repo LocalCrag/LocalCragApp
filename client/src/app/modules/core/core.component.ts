@@ -11,6 +11,7 @@ import {
 } from '../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { NavigationService } from '../../services/core/navigation.service';
+import { PageTitleComponent } from './page-title/page-title.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { MenuComponent } from './menu/menu.component';
@@ -24,6 +25,7 @@ import { Toast } from 'primeng/toast';
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
   imports: [
+    PageTitleComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
     MenuComponent,

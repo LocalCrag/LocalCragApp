@@ -1,10 +1,5 @@
 <ng-container *transloco="let t; read: 'topoImage.topoImageForm'">
   <div class="content">
-    <p-card
-      header="{{
-        !editMode ? t('addTopoImageTitle') : t('editTopoImageTitle')
-      }}"
-    >
       @if (!editMode) {
         <p class="mt-0">
           {{ t("addTopoImageDescription") }}
@@ -136,6 +131,5 @@
         [hasUnsavedChanges]="topoImageForm.dirty"
         (objectMoved)="onObjectMoved($event)"
       ></lc-move-object-dialog>
-    </p-card>
   </div>
 </ng-container>

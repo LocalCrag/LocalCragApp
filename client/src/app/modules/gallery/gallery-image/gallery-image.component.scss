@@ -114,6 +114,22 @@ lc-gallery-image {
       justify-content: center;
       background-color: var(--p-content-hover-background);
     }
+
+    :where(html.lc-dark) & {
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 10%,
+        var(--p-content-background)
+      );
+
+      .p-card-header {
+        background-color: color-mix(
+          in srgb,
+          var(--p-text-color) 12%,
+          var(--p-content-background)
+        );
+      }
+    }
   }
 
   // Revert PrimeNG styles for small screens that remove the shadow and border-radius

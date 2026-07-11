@@ -4,7 +4,7 @@ import { UserAscentsComponent } from '../../user/user-ascents/user-ascents.compo
 import { isModerator } from '../../../guards/is-moderator';
 import { ObjectType } from '../../../models/object';
 import {
-  authBg,
+  defaultBg,
   lazyOutletRoute,
   loadGalleryComponent,
   outletRoute,
@@ -18,12 +18,12 @@ export const userRoutes: Routes = [
         (m) => m.UserListComponent,
       ),
     canActivate: [isModerator],
-    data: authBg(),
+    data: defaultBg(),
   },
   {
     path: 'users/:user-slug',
     component: UserDetailComponent,
-    data: authBg(),
+    data: defaultBg(),
     children: [
       {
         path: '',

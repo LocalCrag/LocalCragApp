@@ -2,6 +2,7 @@ import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
@@ -10,11 +11,13 @@ import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
 import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectInstanceName,
+  selectMainBgImage,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Select } from 'primeng/select';
 import { DataView } from 'primeng/dataview';
@@ -23,6 +26,7 @@ import { Message } from 'primeng/message';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
@@ -33,7 +37,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [
     DataView,
     ButtonModule,
-    CardModule,
     RouterLink,
     TranslocoDirective,
     FormsModule,
@@ -64,11 +67,19 @@ export class PostListComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
+  private pageTitleService = inject(PageTitleService);
 
   /**
    * Loads the posts on initialization.
    */
   ngOnInit() {
+    this.setPageTitle();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.setPageTitle();
+      });
     this.refreshData();
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -76,6 +87,24 @@ export class PostListComponent implements OnInit {
         `${this.translocoService.translate(marker('postListBrowserTitle'))} - ${instanceName}`,
       );
     });
+  }
+
+  private setPageTitle(): void {
+    this.store
+      .select(selectMainBgImage)
+      .pipe(take(1))
+      .subscribe((mainBgImage) => {
+        this.pageTitleService.setTitle(
+          this.translocoService.translate('posts.postList.postListTitle'),
+          {
+            imageUrl:
+              mainBgImage?.thumbnailL ??
+              mainBgImage?.thumbnailM ??
+              mainBgImage?.path ??
+              null,
+          },
+        );
+      });
   }
 
   /**

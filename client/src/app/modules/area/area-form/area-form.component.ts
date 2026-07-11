@@ -43,7 +43,6 @@ import {
 } from '../../../enums/map-marker-type';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
-import { Card } from 'primeng/card';
 
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
@@ -65,6 +64,7 @@ import { environment } from '../../../../environments/environment';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * Form component for creating and editing areas.
@@ -76,7 +76,6 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
   providers: [ConfirmationService],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -131,6 +130,7 @@ export class AreaFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -169,6 +169,7 @@ export class AreaFormComponent implements OnInit {
       this.buildForm();
       if (areaSlug) {
         this.editMode = true;
+        this.setPageTitle();
         this.areaForm.disable();
         forkJoin([
           this.areasService.getArea(areaSlug).pipe(
@@ -189,6 +190,7 @@ export class AreaFormComponent implements OnInit {
           });
         });
       } else {
+        this.setPageTitle();
         this.store.select(selectInstanceName).subscribe((instanceName) => {
           this.title.setTitle(
             `${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${instanceName}`,
@@ -202,6 +204,16 @@ export class AreaFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'area.areaForm.editAreaTitle'
+          : 'area.areaForm.createAreaTitle',
+      ),
+    );
   }
 
   /**

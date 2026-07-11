@@ -21,4 +21,20 @@ lc-gallery-image-skeleton {
     justify-content: end;
     gap: 0.25rem;
   }
+
+  :where(html.lc-dark) & .gallery-image-card {
+    background-color: color-mix(
+      in srgb,
+      var(--p-text-color) 10%,
+      var(--p-content-background)
+    );
+
+    .p-card-header {
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 12%,
+        var(--p-content-background)
+      );
+    }
+  }
 }

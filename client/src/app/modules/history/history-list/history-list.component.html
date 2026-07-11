@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'history'">
   <div class="content">
-    <p-card header="{{ t('historyTitle') }}">
       @if (historyItems?.length > 0) {
         <p-timeline
           [value]="historyItems"
@@ -59,6 +58,5 @@
         <p-message severity="info" styleClass="w-full" [text]="t('noHistory')">
         </p-message>
       }
-    </p-card>
   </div>
 </ng-container>

@@ -1,11 +1,10 @@
 <ng-container *transloco="let t; read: 'accountForm'">
-  <div class="auth-container">
-    <div class="card login-card">
+  <div class="content p-6">
       <form [formGroup]="accountForm" lcForm>
-        <div class="flex flex-row items-center">
+        <div class="flex flex-row items-center gap-6">
           <lc-avatar-upload formControlName="avatar"></lc-avatar-upload>
 
-          <div class="ml-20">
+          <div>
             <h3>{{ t("accountFormTitle") }}</h3>
 
             {{ t("accountFormDescription") }}
@@ -104,6 +103,7 @@
       }
 
       <p-button
+        class="mt-6 block"
         label="{{ t('saveAccountSettingsButtonLabel') }}"
         (click)="save()"
         [loading]="loadingState === loadingStates.LOADING"
@@ -142,6 +142,5 @@
           ></p-button>
         </div>
       </div>
-    </div>
   </div>
 </ng-container>

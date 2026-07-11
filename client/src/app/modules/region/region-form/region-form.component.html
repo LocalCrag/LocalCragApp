@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'region.regionForm'">
-  <div class="content">
-    <p-card header="{{ t('editRegionTitle') }}">
+  <div class="content p-6">
       <form [formGroup]="regionForm" lcForm>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="name">{{
@@ -91,6 +90,17 @@
         </div>
 
         <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="image">{{
+            t("regionImageLabel")
+          }}</label>
+          <lc-single-image-upload
+            id="image"
+            lcFormControl
+            formControlName="image"
+          ></lc-single-image-upload>
+        </div>
+
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rules">{{
             t("regionRulesLabel")
           }}</label>
@@ -176,6 +186,5 @@
           icon="pi pi-ban"
         ></p-button>
       </div>
-    </p-card>
   </div>
 </ng-container>

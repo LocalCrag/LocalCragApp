@@ -1,7 +1,6 @@
 import {
   Component,
   DestroyRef,
-  HostBinding,
   inject,
   OnInit,
   ViewChild,
@@ -76,8 +75,6 @@ import { AccountSettingsFormComponent } from '../account-settings-form/account-s
   providers: [DialogService],
 })
 export class AccountFormComponent implements OnInit {
-  @HostBinding('class.auth-view') authView: boolean = true;
-
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public accountForm: FormGroup;

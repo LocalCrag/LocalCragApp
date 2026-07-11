@@ -34,7 +34,7 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Card } from 'primeng/card';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -57,7 +57,6 @@ import { AreasService } from '../../../services/crud/areas.service';
   imports: [
     TranslocoDirective,
     TranslocoPipe,
-    Card,
     ReactiveFormsModule,
     SingleImageUploadComponent,
     FormDirective,
@@ -96,6 +95,7 @@ export class TopoImageFormComponent implements OnInit {
   private router = inject(Router);
   private topoImagesService = inject(TopoImagesService);
   private areasService = inject(AreasService);
+  private pageTitleService = inject(PageTitleService);
   private parentArea: Area;
 
   /**
@@ -109,6 +109,7 @@ export class TopoImageFormComponent implements OnInit {
     const imageId = this.route.snapshot.paramMap.get('image-id');
     if (imageId) {
       this.editMode = true;
+      this.setPageTitle();
       this.topoImageForm.disable();
       forkJoin([
         this.topoImagesService.getTopoImage(imageId).pipe(
@@ -135,6 +136,7 @@ export class TopoImageFormComponent implements OnInit {
         );
       });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${instanceName}`,
@@ -142,6 +144,16 @@ export class TopoImageFormComponent implements OnInit {
       });
       this.loadingState = LoadingState.DEFAULT;
     }
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'topoImage.topoImageForm.editTopoImageTitle'
+          : 'topoImage.topoImageForm.addTopoImageTitle',
+      ),
+    );
   }
 
   /**

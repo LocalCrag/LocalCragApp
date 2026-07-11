@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'topoImage.batchUploadForm'">
   <div class="content">
-    <p-card [header]="t('batchImageUploadTitle')">
       <p class="mt-0">{{ t("batchImageUploadDescription") }}</p>
       @if (topoImageBatchUploadForm) {
         <form [formGroup]="topoImageBatchUploadForm" lcForm>
@@ -207,6 +206,5 @@
           </p-stepper>
         </form>
       }
-    </p-card>
   </div>
 </ng-container>

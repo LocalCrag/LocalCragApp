@@ -26,8 +26,6 @@ class InstanceSettings(db.Model):
     dark_logo_image = db.relationship("File", lazy="joined", foreign_keys=[dark_logo_image_id])
     favicon_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     favicon_image = db.relationship("File", lazy="joined", foreign_keys=[favicon_image_id])
-    auth_bg_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
-    auth_bg_image = db.relationship("File", lazy="joined", foreign_keys=[auth_bg_image_id])
     main_bg_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     main_bg_image = db.relationship("File", lazy="joined", foreign_keys=[main_bg_image_id])
     arrow_color = db.Column(db.String(7), nullable=False, server_default="#FFE016")

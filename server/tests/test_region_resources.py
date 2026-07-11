@@ -10,11 +10,17 @@ def test_successful_get_region(client):
     assert res["name"] == "Ticino"
     assert res["description"] == "Great region"
     assert res["rules"] is None
+    assert res["image"] is None
     assert res["ascentCount"] == 1
 
 
-def test_successful_edit_region(client, admin_token):
-    crag_data = {"description": "Fodere et scandere. 2", "rules": "test rules", "name": "Nahe Valley"}
+def test_successful_edit_region(client, admin_token, any_file):
+    crag_data = {
+        "description": "Fodere et scandere. 2",
+        "rules": "test rules",
+        "name": "Nahe Valley",
+        "image": str(any_file.id),
+    }
 
     rv = client.put("/api/region", token=admin_token, json=crag_data)
     assert rv.status_code == 200
@@ -23,6 +29,7 @@ def test_successful_edit_region(client, admin_token):
     assert res["name"] == "Nahe Valley"
     assert res["description"] == "Fodere et scandere. 2"
     assert res["rules"] == "test rules"
+    assert res["image"]["id"] == str(any_file.id)
     assert res["ascentCount"] == 1
 
 

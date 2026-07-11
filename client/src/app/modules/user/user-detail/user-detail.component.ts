@@ -3,17 +3,12 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  TemplateRef,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { forkJoin, of } from 'rxjs';
@@ -23,29 +18,21 @@ import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-user-detail',
-  imports: [
-    BreadcrumbModule,
-    CardModule,
-    RouterOutlet,
-    UserAvatarComponent,
-    SetActiveTabDirective,
-    Tab,
-    TabList,
-    Tabs,
-    RouterLink,
-  ],
+  imports: [RouterOutlet, UserAvatarComponent],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class UserDetailComponent implements OnInit {
+  @ViewChild('pageTitle', { read: TemplateRef })
+  pageTitleTemplate: TemplateRef<unknown>;
+
   public user: User;
   public items: MenuItem[];
 
@@ -55,6 +42,7 @@ export class UserDetailComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private languageService = inject(LanguageService);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
     this.route.paramMap
@@ -72,6 +60,10 @@ export class UserDetailComponent implements OnInit {
           ),
         ]).subscribe(([user]) => {
           this.user = user;
+          this.pageTitleService.setTitle(
+            `${user.firstname} ${user.lastname}`.trim(),
+            { template: this.pageTitleTemplate },
+          );
           this.buildItems(userSlug);
           this.languageService.renderedLanguage$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -106,5 +98,6 @@ export class UserDetailComponent implements OnInit {
         visible: true,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 }

@@ -1,4 +1,5 @@
 <ng-container *transloco="let t; read: 'user.charts'">
+  <div class="p-6">
   @if (stats) {
     <h3 class="charts-section-title charts-section-title--achievements">
       {{ t("achievements") }}
@@ -255,4 +256,5 @@
       <p-skeleton width="100%" height="120px" />
     </div>
   }
+  </div>
 </ng-container>

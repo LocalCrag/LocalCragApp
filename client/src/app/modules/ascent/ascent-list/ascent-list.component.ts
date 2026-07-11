@@ -168,7 +168,8 @@ export class AscentListComponent
 
     // Parent ascent routes reuse this component across param-only navigations (e.g. clicking a
     // notification jumps from one line’s ascents to another). Initial load runs only once via
-    // combineLatest(…take(1)) in ngOnInit, so we must refetch when scoped inputs identity changes.
+    // combineLatest(…take(1)) in ngOnInit; skip scope hydration (undefined → id) to avoid a
+    // duplicate first-page fetch when parentLoading becomes false in the same change cycle.
     const scopeKeys = [
       'lineId',
       'cragId',
@@ -178,7 +179,12 @@ export class AscentListComponent
     ] as const;
     const scopeChanged = scopeKeys.some((key) => {
       const ch = changes[key];
-      return ch && !ch.firstChange && ch.currentValue !== ch.previousValue;
+      return (
+        ch &&
+        !ch.firstChange &&
+        ch.previousValue != null &&
+        ch.currentValue !== ch.previousValue
+      );
     });
     if (
       scopeChanged &&

@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LinePathFormComponent } from '../line-path-form/line-path-form.component';
-import { Card } from 'primeng/card';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-line-path-form-wrapper',
-  imports: [LinePathFormComponent, Card, TranslocoDirective],
+  imports: [LinePathFormComponent, TranslocoDirective],
   templateUrl: './line-path-form-wrapper.component.html',
   styleUrl: './line-path-form-wrapper.component.scss',
 })
-export class LinePathFormWrapperComponent {}
+export class LinePathFormWrapperComponent implements OnInit {
+  private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
+
+  ngOnInit(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate('linePath.linePathForm.addLinePathTitle'),
+    );
+  }
+}

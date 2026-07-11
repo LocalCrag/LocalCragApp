@@ -41,7 +41,6 @@ import {
 
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
-import { Card } from 'primeng/card';
 
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
@@ -59,6 +58,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * A component for creating and editing crags.
@@ -70,7 +70,6 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
   providers: [ConfirmationService],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     ControlGroupDirective,
     FormDirective,
@@ -116,6 +115,7 @@ export class CragFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private languageService = inject(LanguageService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -134,12 +134,14 @@ export class CragFormComponent implements OnInit {
       .subscribe((rendered) => {
         if (!rendered) return;
         this.buildScaleSelectors().subscribe();
+        this.setPageTitle();
       });
 
     const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
 
     if (cragSlug) {
       this.editMode = true;
+      this.setPageTitle();
       this.cragForm.disable();
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
@@ -160,6 +162,7 @@ export class CragFormComponent implements OnInit {
         });
       });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`,
@@ -171,6 +174,16 @@ export class CragFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       });
     }
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'crag.cragForm.editCragTitle'
+          : 'crag.cragForm.createCragTitle',
+      ),
+    );
   }
 
   /**

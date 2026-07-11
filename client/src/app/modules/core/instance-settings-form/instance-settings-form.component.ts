@@ -27,7 +27,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
@@ -47,12 +46,12 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
 import { StartingPosition } from '../../../enums/starting-position';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-instance-settings-form',
   imports: [
     ButtonModule,
-    CardModule,
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
@@ -107,8 +106,14 @@ export class InstanceSettingsFormComponent implements OnInit {
   private router = inject(Router);
   private instanceSettingsService = inject(InstanceSettingsService);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        'instanceSettings.instanceSettingsForm.editInstanceSettings',
+      ),
+    );
     this.buildForm();
     // build translated options for starting positions
     this.startingPositionsOptions = this.startingPositions.map((sp) => ({
@@ -168,7 +173,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       logoImage: [null],
       darkLogoImage: [null],
       faviconImage: [null],
-      authBgImage: [null],
       mainBgImage: [null],
       arrowColor: [null],
       arrowTextColor: [null],
@@ -203,7 +207,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       logoImage: this.instanceSettings.logoImage,
       darkLogoImage: this.instanceSettings.darkLogoImage,
       faviconImage: this.instanceSettings.faviconImage,
-      authBgImage: this.instanceSettings.authBgImage,
       mainBgImage: this.instanceSettings.mainBgImage,
       arrowColor: this.instanceSettings.arrowColor,
       arrowTextColor: this.instanceSettings.arrowTextColor,
@@ -253,8 +256,6 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('faviconImage').value;
       instanceSettings.mainBgImage =
         this.instanceSettingsForm.get('mainBgImage').value;
-      instanceSettings.authBgImage =
-        this.instanceSettingsForm.get('authBgImage').value;
       instanceSettings.arrowColor =
         this.instanceSettingsForm.get('arrowColor').value;
       instanceSettings.arrowTextColor =

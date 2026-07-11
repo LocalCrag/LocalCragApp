@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'line.lineForm'">
-  <div class="content">
-    <p-card header="{{ editMode ? t('editLineTitle') : t('createLineTitle') }}">
+  <div class="content p-6">
       @if (!editMode) {
         <p class="mt-0">
           {{ t("createLineDescription") }}
@@ -810,6 +809,5 @@
       @if (!lineForm) {
         <lc-form-skeleton></lc-form-skeleton>
       }
-    </p-card>
   </div>
 </ng-container>

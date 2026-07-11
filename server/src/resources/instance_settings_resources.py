@@ -50,7 +50,6 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.logo_image_id = instance_settings_data["logoImage"]
         instance_settings.dark_logo_image_id = instance_settings_data["darkLogoImage"]
         instance_settings.favicon_image_id = instance_settings_data["faviconImage"]
-        instance_settings.auth_bg_image_id = instance_settings_data["authBgImage"]
         instance_settings.main_bg_image_id = instance_settings_data["mainBgImage"]
         instance_settings.arrow_color = instance_settings_data["arrowColor"]
         instance_settings.arrow_text_color = instance_settings_data["arrowTextColor"]

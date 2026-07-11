@@ -22,12 +22,6 @@ export function defaultBg(
   return { backgroundImagePath: StaticBackgroundImages.DEFAULT, ...extra };
 }
 
-export function authBg(
-  extra: Record<string, unknown> = {},
-): Record<string, unknown> {
-  return { backgroundImagePath: StaticBackgroundImages.AUTH, ...extra };
-}
-
 export function notFoundBg(): Record<string, unknown> {
   return { backgroundImagePath: StaticBackgroundImages.NOT_FOUND };
 }

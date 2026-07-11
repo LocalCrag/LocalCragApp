@@ -14,7 +14,6 @@ instance_settings_args = {
     "logoImage": fields.String(required=True, allow_none=True),
     "darkLogoImage": fields.String(required=True, allow_none=True),
     "faviconImage": fields.String(required=True, allow_none=True),
-    "authBgImage": fields.String(required=True, allow_none=True),
     "mainBgImage": fields.String(required=True, allow_none=True),
     "arrowColor": fields.Str(required=True, validate=color_validator),
     "arrowTextColor": fields.Str(required=True, validate=color_validator),

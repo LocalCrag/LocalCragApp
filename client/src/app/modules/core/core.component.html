@@ -1,9 +1,12 @@
 <lc-app-level-alerts></lc-app-level-alerts>
 <lc-menu></lc-menu>
 <div class="body-row">
-  <lc-sidebar></lc-sidebar>
-  <div class="main">
-    <router-outlet></router-outlet>
+  <div class="layout-columns">
+    <lc-sidebar></lc-sidebar>
+    <div class="main">
+      <lc-page-title></lc-page-title>
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>
 <lc-footer></lc-footer>

@@ -26,11 +26,6 @@ export const selectMainBgImage = createSelector(
   (instanceSettingsState) => instanceSettingsState.mainBgImage,
 );
 
-export const selectAuthBgImage = createSelector(
-  selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.authBgImage,
-);
-
 export const selectLogoImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.logoImage,

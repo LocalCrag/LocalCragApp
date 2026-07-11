@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
-  <div class="content">
-    <p-card header="{{ t('editInstanceSettings') }}">
+  <div class="content p-6">
       <form [formGroup]="instanceSettingsForm" lcForm>
         <p-divider align="center" type="solid" class="mb-2"
           ><b>{{ t("commonSettings") }}</b></p-divider
@@ -280,24 +279,18 @@
         </div>
 
         <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="main-bg-image">{{
-            t("mainBgImageLabel")
-          }}</label>
+          <div class="form-label flex items-center">
+            <label for="main-bg-image">{{ t("mainBgImageLabel") }}</label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('mainBgImageTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
           <lc-single-image-upload
             id="main-bg-image"
             lcFormControl
             formControlName="mainBgImage"
-          ></lc-single-image-upload>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="auth-bg-image">{{
-            t("authBgImageLabel")
-          }}</label>
-          <lc-single-image-upload
-            id="auth-bg-image"
-            lcFormControl
-            formControlName="authBgImage"
           ></lc-single-image-upload>
         </div>
 
@@ -466,6 +459,5 @@
           [loading]="loadingState === loadingStates.LOADING"
         ></p-button>
       </div>
-    </p-card>
   </div>
 </ng-container>

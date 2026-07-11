@@ -1,6 +1,5 @@
 <ng-container *transloco="let t; read: 'area.areaForm'">
-  <div class="content">
-    <p-card header="{{ editMode ? t('editAreaTitle') : t('createAreaTitle') }}">
+  <div class="content p-6">
       @if (!editMode) {
         <p class="mt-0">
           {{ t("createAreaDescription") }}
@@ -328,6 +327,5 @@
       @if (!areaForm) {
         <lc-form-skeleton></lc-form-skeleton>
       }
-    </p-card>
   </div>
 </ng-container>

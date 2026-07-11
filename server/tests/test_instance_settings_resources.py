@@ -19,7 +19,6 @@ def test_successful_get_instance_settings(client):
     assert res["logoImage"] is None or res["logoImage"] == str(instance_settings.logo_image_id)
     assert res["faviconImage"] is None or res["faviconImage"] == str(instance_settings.favicon_image_id)
     assert res["mainBgImage"] is None or res["mainBgImage"] == str(instance_settings.main_bg_image_id)
-    assert res["authBgImage"] is None or res["authBgImage"] == str(instance_settings.auth_bg_image_id)
     assert res["arrowColor"] == instance_settings.arrow_color
     assert res["arrowTextColor"] == instance_settings.arrow_text_color
     assert res["arrowHighlightColor"] == instance_settings.arrow_highlight_color
@@ -54,7 +53,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
         "darkLogoImage": None,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
@@ -86,7 +84,6 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["logoImage"]["id"] == any_file_id
     assert res["faviconImage"]["id"] == any_file_id
     assert res["mainBgImage"]["id"] == any_file_id
-    assert res["authBgImage"]["id"] == any_file_id
     assert res["arrowColor"] == "#AAAAAA"
     assert res["arrowTextColor"] == "#BBBBBB"
     assert res["arrowHighlightColor"] == "#CCCCCC"
@@ -126,7 +123,6 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
         "darkLogoImage": None,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
@@ -169,7 +165,6 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
         "darkLogoImage": None,
         "faviconImage": any_file_id,
         "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",

@@ -45,7 +45,6 @@ import {
 
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
-import { Card } from 'primeng/card';
 
 import { InputText } from 'primeng/inputtext';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
@@ -67,6 +66,7 @@ import { Crag } from '../../../models/crag';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * Form component for creating and editing sectors.
@@ -78,7 +78,6 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
   providers: [ConfirmationService],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     InputText,
     Editor,
@@ -132,6 +131,7 @@ export class SectorFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -169,6 +169,7 @@ export class SectorFormComponent implements OnInit {
       this.buildForm();
       if (sectorSlug) {
         this.editMode = true;
+        this.setPageTitle();
         this.sectorForm.disable();
         forkJoin([
           this.sectorsService.getSector(sectorSlug).pipe(
@@ -189,6 +190,7 @@ export class SectorFormComponent implements OnInit {
           });
         });
       } else {
+        this.setPageTitle();
         this.store.select(selectInstanceName).subscribe((instanceName) => {
           this.title.setTitle(
             `${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`,
@@ -202,6 +204,16 @@ export class SectorFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'sector.sectorForm.editSectorTitle'
+          : 'sector.sectorForm.createSectorTitle',
+      ),
+    );
   }
 
   /**

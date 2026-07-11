@@ -1,10 +1,5 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageForm'">
-  <div class="content">
-    <p-card
-      header="{{
-        editMode ? t('editMenuPageTitle') : t('createMenuPageTitle')
-      }}"
-    >
+  <div class="content p-6">
       <form [formGroup]="menuPageForm" lcForm>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="title">{{
@@ -134,6 +129,5 @@
         }
         <p-confirmpopup></p-confirmpopup>
       </div>
-    </p-card>
   </div>
 </ng-container>
