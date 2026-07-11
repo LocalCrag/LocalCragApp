@@ -115,6 +115,8 @@ export class TodoListComponent implements OnInit, PaginatedListView {
   public crags: Crag[] = [];
 
   private loadedGradeFilterRange: number[] = null;
+  private regionGradesLoaded = false;
+  private initialLoadStarted = false;
   private destroyRef = inject(DestroyRef);
   private todosService = inject(TodosService);
   private store = inject(Store);
@@ -140,6 +142,8 @@ export class TodoListComponent implements OnInit, PaginatedListView {
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
       this.buildAvailableScales(gradeDistribution);
+      this.regionGradesLoaded = true;
+      this.tryBootstrapList();
       // Rebuild labels on language change
       this.languageService.renderedLanguage$
         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -151,7 +155,6 @@ export class TodoListComponent implements OnInit, PaginatedListView {
           this.buildCragFilterOptions();
           this.cdr.markForCheck();
         });
-      this.selectScale(); // Calls loadFirstPage()
     });
 
     this.buildOrderOptions();
@@ -339,18 +342,45 @@ export class TodoListComponent implements OnInit, PaginatedListView {
     });
   }
 
-  selectScale() {
-    if (this.scaleKey?.value) {
-      this.scalesService
-        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
-        .subscribe((scale) => {
-          this.maxGradeValue = Math.max(
-            ...scale.grades.map((grade) => grade.value),
-          );
-          this.gradeFilterRange = [-2, this.maxGradeValue];
-        });
+  private tryBootstrapList(): void {
+    if (this.initialLoadStarted || !this.regionGradesLoaded) {
+      return;
     }
-    this.loadFirstPage();
+    this.initialLoadStarted = true;
+    this.bootstrapList();
+  }
+
+  private bootstrapList(): void {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+      this.cdr.markForCheck();
+    });
+  }
+
+  selectScale() {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+    });
+  }
+
+  private applyScaleBounds(onReady: () => void): void {
+    if (!this.scaleKey?.value) {
+      this.maxGradeValue = null;
+      this.gradeFilterRange = [-2, null];
+      onReady();
+      return;
+    }
+    this.scalesService
+      .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+      .subscribe((scale) => {
+        this.maxGradeValue = Math.max(
+          ...scale.grades.map((grade) => grade.value),
+        );
+        this.gradeFilterRange = [-2, this.maxGradeValue];
+        onReady();
+      });
   }
 
   reloadOnSlideEnd() {
