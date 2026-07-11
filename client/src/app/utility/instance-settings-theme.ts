@@ -5,10 +5,10 @@ export function effectiveLogoImage(
   darkLogo: File | null,
   isDarkMode: boolean,
 ): File | null {
-  if (isDarkMode && darkLogo) {
-    return darkLogo;
+  if (isDarkMode) {
+    return darkLogo ?? logo;
   }
-  return logo;
+  return logo ?? darkLogo;
 }
 
 export function effectiveBarChartColor(

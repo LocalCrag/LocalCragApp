@@ -252,11 +252,10 @@
                     </div>
                     <div class="ascent-table-date">
                       <i class="pi pi-calendar"></i>
-                      @if (ascent.year) {
-                        {{ ascent.year }}
-                      }
                       @if (ascent.date) {
                         {{ ascent.date | date }}
+                      } @else if (ascent.year) {
+                        {{ ascent.year }}
                       }
                     </div>
                     <div class="ascent-actions">
@@ -388,11 +387,10 @@
                     </div>
                     <div class="ascent-table-date">
                       <i class="pi pi-calendar"></i>
-                      @if (ascent.year) {
-                        {{ ascent.year }}
-                      }
                       @if (ascent.date) {
                         {{ ascent.date | date }}
+                      } @else if (ascent.year) {
+                        {{ ascent.year }}
                       }
                     </div>
                     <div class="ascent-actions">
@@ -562,11 +560,10 @@
                       </div>
                       <div class="ascent-table-date">
                         <i class="pi pi-calendar"></i>
-                        @if (ascent.year) {
-                          {{ ascent.year }}
-                        }
                         @if (ascent.date) {
                           {{ ascent.date | date }}
+                        } @else if (ascent.year) {
+                          {{ ascent.year }}
                         }
                       </div>
                     </div>

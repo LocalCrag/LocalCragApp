@@ -76,8 +76,7 @@ def test_create_secret_line_in_public_area(client, moderator_token):
     assert res["secret"] is False
 
 
-def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_token):
-    any_file = File.query.first()
+def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_token, any_file):
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
@@ -215,9 +214,8 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
 
 
 def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret_items(
-    client, moderator_token, member_token, user_token
+    client, moderator_token, member_token, user_token, any_file
 ):
-    any_file = File.query.first()
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
@@ -262,8 +260,7 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
 
 
 # Test that creating a secret line in a secret area doesn't change the secret state of it's parents
-def test_secret_property_doesnt_change(client, moderator_token):
-    any_file = File.query.first()
+def test_secret_property_doesnt_change(client, moderator_token, any_file):
     # First make crag secret...
     crag_data = {
         "name": "Glees 2",

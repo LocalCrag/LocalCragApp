@@ -99,6 +99,11 @@ def db_session():
 
 
 @pytest.fixture
+def any_file():
+    return File.query.first()
+
+
+@pytest.fixture
 def clean_db():
     """
     Fixture to run test with a clean database.

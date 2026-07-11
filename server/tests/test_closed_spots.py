@@ -2,7 +2,6 @@ from extensions import db
 from models.area import Area
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 from models.line import Line
 from models.line_path import LinePath
 from models.sector import Sector
@@ -82,8 +81,7 @@ def test_create_closed_line_in_open_area(client, moderator_token):
     assert res["closed"] is False
 
 
-def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_token):
-    any_file = File.query.first()
+def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_token, any_file):
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
@@ -130,8 +128,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
     assert res["closed"] is True
 
 
-def test_remove_closure_schedule_from_crag(client, moderator_token):
-    any_file = File.query.first()
+def test_remove_closure_schedule_from_crag(client, moderator_token, any_file):
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
@@ -173,8 +170,7 @@ def test_remove_closure_schedule_from_crag(client, moderator_token):
 
 
 # Test that creating a closed line in a closed area doesn't change the closed state of it's parents
-def test_secret_property_doesnt_change(client, moderator_token):
-    any_file = File.query.first()
+def test_secret_property_doesnt_change(client, moderator_token, any_file):
     # First make crag secret...
     crag_data = {
         "name": "Glees 2",
@@ -392,8 +388,7 @@ def test_move_topo_image_into_closed_area_forces_connected_lines_closed(client, 
     assert moved_line.closed is True
 
 
-def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_token):
-    any_file = File.query.first()
+def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_token, any_file):
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",

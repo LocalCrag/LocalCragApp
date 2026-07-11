@@ -7,7 +7,6 @@ import pytz
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from messages.messages import ResponseMessage
-from models.file import File
 from models.user import User
 
 
@@ -205,9 +204,7 @@ def test_delete_nonexistent_user_returns_404(client, admin_token):
     assert rv.status_code == 404
 
 
-def test_update_user(client, admin_token):
-    any_file = File.query.first()
-
+def test_update_user(client, admin_token, any_file):
     data = {
         "firstname": "Thorsten",
         "lastname": "Test",

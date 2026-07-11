@@ -1,6 +1,5 @@
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 from models.sector import Sector
 
 
@@ -31,8 +30,7 @@ def test_successful_move_sector_to_different_crag(client, moderator_token):
         assert [s.order_index for s in remaining] == list(range(len(remaining)))
 
 
-def test_successful_create_sector(client, moderator_token):
-    any_file = File.query.first()
+def test_successful_create_sector(client, moderator_token, any_file):
     sector_data = {
         "name": "Kruzifix",
         "description": "The classic sector",
@@ -154,8 +152,7 @@ def test_successful_delete_sector(client, moderator_token):
     assert rv.status_code == 204
 
 
-def test_successful_edit_sector(client, moderator_token):
-    any_file = File.query.first()
+def test_successful_edit_sector(client, moderator_token, any_file):
     sector_data = {
         "name": "Romani",
         "description": "Test edit",

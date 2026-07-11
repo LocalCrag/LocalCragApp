@@ -164,11 +164,9 @@ def test_successful_edit_topo_image(client, moderator_token):
     assert res["id"] == str(topo_image.id)
 
 
-def test_successful_add_topo_image(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_add_topo_image(client, moderator_token, any_file):
     topo_image_data = {
-        "image": any_file_id,
+        "image": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 12.13,
@@ -185,7 +183,7 @@ def test_successful_add_topo_image(client, moderator_token):
     assert rv.status_code == 201
     res = rv.json
     assert isinstance(res["id"], str)
-    assert res["image"]["id"] == any_file_id
+    assert res["image"]["id"] == str(any_file.id)
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["mapMarkers"][0]["type"] == MapMarkerType.TOPO_IMAGE.value

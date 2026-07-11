@@ -92,8 +92,18 @@ export function resolveBarChartAccentColor(
  * Converts any browser-resolvable color string to rgba().
  */
 export function toRgba(color: string, alpha: number): string {
+  const trimmed = color.trim();
+  if (
+    typeof CSS !== 'undefined' &&
+    typeof CSS.supports === 'function' &&
+    !CSS.supports('color', trimmed)
+  ) {
+    return color;
+  }
+
   const probe = getColorProbe();
-  probe.style.color = color;
+  probe.style.color = '';
+  probe.style.color = trimmed;
   const resolved = getComputedStyle(probe).color.trim();
   const match = resolved.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
   if (!match) {

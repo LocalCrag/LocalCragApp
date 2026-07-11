@@ -1,6 +1,5 @@
 from models.area import Area
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 from models.sector import Sector
 
 
@@ -31,9 +30,7 @@ def test_successful_move_area_to_different_sector(client, moderator_token):
         assert [a.order_index for a in remaining] == list(range(len(remaining)))
 
 
-def test_successful_create_area(client, moderator_token):
-    any_file = File.query.first()
-
+def test_successful_create_area(client, moderator_token, any_file):
     area_data = {
         "name": "Fiona",
         "description": "Great area",
