@@ -1,5 +1,6 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
-  <div class="content p-6">
+  <div class="content">
+    <div class="p-6">
     <div class="flex justify-end mb-6">
       <p-button
         [disabled]="loadingState === LoadingState.LOADING"
@@ -51,5 +52,6 @@
         </ng-template>
       </p-table>
     }
+    </div>
   </div>
 </ng-container>

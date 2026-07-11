@@ -1,4 +1,5 @@
 <ng-container *transloco="let t; read: 'sector.sector'">
+  <div class="p-6">
   @if (sector) {
     @if (sector.closedReasons?.length) {
       <lc-closed-spot-alert
@@ -46,4 +47,5 @@
     <p-skeleton height="4rem" styleClass="mb-6"></p-skeleton>
     <p-skeleton width="40%" height="4rem"></p-skeleton>
   }
+  </div>
 </ng-container>
