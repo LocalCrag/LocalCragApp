@@ -382,6 +382,7 @@
                         <p-tag
                           value="{{ t('withKneepad') }}"
                           icon="pi pi-ticket"
+                          data-cy="kneepadtag"
                         ></p-tag>
                       }
                     </div>
@@ -404,6 +405,7 @@
                         <p-button
                           icon="pi pi-ellipsis-v"
                           styleClass="p-button-rounded p-button-text"
+                          data-cy="ascent-actions-button"
                           (click)="
                             openAscentActionsMenu($event, ascent, menuMedium)
                           "
@@ -467,6 +469,7 @@
                           <p-button
                             icon="pi pi-ellipsis-v"
                             styleClass="p-button-rounded p-button-text"
+                            data-cy="ascent-actions-button"
                             (click)="
                               openAscentActionsMenu($event, ascent, menuSmall)
                             "
@@ -491,6 +494,7 @@
                         <p-tag
                           value="{{ t('withKneepad') }}"
                           icon="pi pi-ticket"
+                          data-cy="kneepadtag"
                         ></p-tag>
                       }
                     </div>
@@ -549,6 +553,7 @@
                             class="property-small"
                             value="{{ t('withKneepad') }}"
                             icon="pi pi-ticket"
+                            data-cy="kneepadtag"
                           ></p-tag>
                         }
                       </div>
