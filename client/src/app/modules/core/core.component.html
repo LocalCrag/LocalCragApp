@@ -1,5 +1,12 @@
-<lc-app-level-alerts></lc-app-level-alerts>
-<lc-menu></lc-menu>
+<header
+  #siteHeader
+  class="site-header"
+  [class.site-header--hidden]="headerHidden"
+>
+  <lc-app-level-alerts></lc-app-level-alerts>
+  <lc-menu></lc-menu>
+</header>
+<div class="site-header-spacer" [style.height.px]="headerHeight"></div>
 <div class="body-row">
   <div class="layout-columns">
     <lc-sidebar></lc-sidebar>

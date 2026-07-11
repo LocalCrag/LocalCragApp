@@ -7,6 +7,28 @@
   --lc-layout-gap: 1.5rem;
   --lc-sidebar-width: 16rem;
   --lc-main-max-width: 80rem;
+  --lc-menu-height: 3.25rem;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  width: 100%;
+  background-color: var(--p-content-background);
+  transform: translateY(0);
+  transition: transform 0.2s ease;
+  will-change: transform;
+
+  &--hidden {
+    transform: translateY(-100%);
+  }
+}
+
+.site-header-spacer {
+  flex-shrink: 0;
 }
 
 .body-row {
@@ -48,7 +70,7 @@
   border: 1px solid var(--p-content-border-color);
   border-radius: var(--p-content-border-radius);
   box-shadow: var(--p-card-shadow);
-  overflow: hidden;
+  overflow: visible;
 
   @include m.on-mobile {
     border-radius: 0;

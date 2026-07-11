@@ -1,4 +1,13 @@
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
 import { tryAutoLogin } from '../../ngrx/actions/auth.actions';
@@ -35,10 +44,19 @@ import { Toast } from 'primeng/toast';
     Toast,
   ],
 })
-export class CoreComponent implements OnInit {
+export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   public store = inject<Store<AppState>>(Store);
 
+  @ViewChild('siteHeader')
+  private siteHeader?: ElementRef<HTMLElement>;
+
+  headerHidden = false;
+  headerHeight = 0;
+
   private title = inject(Title);
+  private resizeObserver?: ResizeObserver;
+  private lastScrollY = 0;
+  private readonly scrollDeltaMin = 4;
   // // Needs to be instantiated here so all router events are tracked
   private _navigationService = inject(NavigationService);
 
@@ -80,11 +98,60 @@ export class CoreComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     this.store.dispatch(checkIsMobile());
+    this.updateHeaderHeight();
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    const scrollY = window.scrollY;
+
+    if (scrollY <= this.headerHeight) {
+      this.headerHidden = false;
+      this.lastScrollY = scrollY;
+      return;
+    }
+
+    const delta = scrollY - this.lastScrollY;
+
+    if (Math.abs(delta) < this.scrollDeltaMin) {
+      return;
+    }
+
+    if (delta > 0) {
+      this.headerHidden = true;
+    } else {
+      this.headerHidden = false;
+    }
+
+    this.lastScrollY = scrollY;
   }
 
   ngOnInit() {
     this.store.dispatch(tryAutoLogin());
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());
+  }
+
+  ngAfterViewInit() {
+    this.updateHeaderHeight();
+    const headerElement = this.siteHeader?.nativeElement;
+    if (!headerElement || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    this.resizeObserver = new ResizeObserver(() => this.updateHeaderHeight());
+    this.resizeObserver.observe(headerElement);
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
+  }
+
+  private updateHeaderHeight() {
+    this.headerHeight = this.siteHeader?.nativeElement.offsetHeight ?? 0;
+    document.documentElement.style.setProperty(
+      '--lc-menu-height',
+      `${this.headerHeight}px`,
+    );
   }
 }
