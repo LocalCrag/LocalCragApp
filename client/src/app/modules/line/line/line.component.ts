@@ -3,8 +3,6 @@ import {
   DestroyRef,
   inject,
   OnInit,
-  TemplateRef,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
@@ -31,7 +29,6 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 
 import { ScalesService } from '../../../services/crud/scales.service';
-import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -47,18 +44,10 @@ import {
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [
-    LineGradePipe,
-    ClosedSpotTagComponent,
-    SecretSpotTagComponent,
-    RouterOutlet,
-  ],
+  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
-  @ViewChild('pageTitle', { read: TemplateRef })
-  pageTitleTemplate: TemplateRef<unknown>;
-
   public crag: Crag;
   public sector: Sector;
   public area: Area;
@@ -131,19 +120,23 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
-            this.pageTitleService.setTitle(line.name, {
-              template: this.pageTitleTemplate,
-              imageUrl: topoImageHeaderUrl(
-                line.topoImages?.[0],
-                instanceSettings.mainBgImage,
-              ),
-            });
+            const imageUrl = topoImageHeaderUrl(
+              line.topoImages?.[0],
+              instanceSettings.mainBgImage,
+            );
             const gradeValue = instanceSettings.displayUserGrades
               ? line.userGradeValue
               : line.authorGradeValue;
             this.scalesService
               .gradeNameByValue(line.type, line.gradeScale, gradeValue)
               .subscribe((gradeName) => {
+                const displayGrade =
+                  gradeValue > 0
+                    ? gradeName
+                    : this.translocoService.translate(gradeName);
+                this.pageTitleService.setTitle(`${line.name} ${displayGrade}`, {
+                  imageUrl,
+                });
                 const breadcrumbs = [
                   {
                     label: crag.name,
@@ -161,7 +154,7 @@ export class LineComponent implements OnInit {
                     routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
                   },
                   {
-                    label: `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
+                    label: `${line.name} ${displayGrade}`,
                     slug: line.slug,
                   },
                 ].filter(
@@ -171,18 +164,17 @@ export class LineComponent implements OnInit {
                   breadcrumbs,
                   this.breadcrumbHome,
                 );
+                this.buildTabs(isModerator);
 
                 this.store
                   .select(selectInstanceName)
                   .subscribe((instanceName) => {
                     this.title.setTitle(
-                      `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
+                      `${line.name} ${displayGrade} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
                     );
                   });
               });
 
-            // Build the tab/menu items for the line view
-            this.buildTabs(isModerator);
             // Rebuild tabs if the rendered language changes
             this.languageService.renderedLanguage$
               .pipe(takeUntilDestroyed(this.destroyRef))

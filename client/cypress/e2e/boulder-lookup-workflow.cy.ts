@@ -5,8 +5,13 @@ describe('Boulder lookup workflow', () => {
     cy.get('[data-cy="crag-list-item"]').eq(0).click();
     cy.get('[data-cy="sector-list-item"]').eq(0).click();
     cy.get('[data-cy="area-list-item"]').eq(0).click();
+    cy.get('[data-cy="page-tabs-menu"]', { timeout: 10000 }).should(
+      'be.visible',
+    );
     cy.get('[data-cy="page-tabs-menu"] p-tab').eq(2).click();
-    cy.get('[data-cy="line-list-item"]').contains('Super-Spreader 8A').click();
+    cy.get('[data-cy="line-list-item"]', { timeout: 10000 })
+      .contains('Super-Spreader 8A')
+      .click();
     cy.get('[data-cy="page-title-heading"]', { timeout: 10000 })
       .should('be.visible')
       .and('contain', 'Super-Spreader 8A');

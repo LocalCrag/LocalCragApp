@@ -85,13 +85,16 @@
 }
 
 <ng-template #chromeTabs let-onImage="onImage" let-tabs="tabs">
-  <div class="page-chrome__tabs" [class.page-chrome__tabs--on-image]="onImage">
+  <div
+    class="page-chrome__tabs"
+    [class.page-chrome__tabs--on-image]="onImage"
+    data-cy="page-tabs-menu"
+  >
     <p-tabs
       [value]="tabsDirective.activeTabIndex()"
       scrollable
       lcSetActiveTab
       #tabsDirective="lcSetActiveTab"
-      data-cy="page-tabs-menu"
       [items]="tabs"
     >
       <p-tablist>
