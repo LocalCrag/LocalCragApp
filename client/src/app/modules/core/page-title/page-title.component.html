@@ -27,11 +27,13 @@
                 </div>
               }
               @if (state.template) {
-                <h1 class="page-chrome__heading">
+                <h1 class="page-chrome__heading" data-cy="page-title-heading">
                   <ng-container *ngTemplateOutlet="state.template" />
                 </h1>
               } @else if (state.title) {
-                <h1 class="page-chrome__heading">{{ state.title }}</h1>
+                <h1 class="page-chrome__heading" data-cy="page-title-heading">
+                  {{ state.title }}
+                </h1>
               }
             </div>
 
@@ -59,11 +61,13 @@
             </div>
           }
           @if (state.template) {
-            <h1 class="page-chrome__heading">
+            <h1 class="page-chrome__heading" data-cy="page-title-heading">
               <ng-container *ngTemplateOutlet="state.template" />
             </h1>
           } @else if (state.title) {
-            <h1 class="page-chrome__heading">{{ state.title }}</h1>
+            <h1 class="page-chrome__heading" data-cy="page-title-heading">
+              {{ state.title }}
+            </h1>
           }
         </div>
 
@@ -87,6 +91,7 @@
       scrollable
       lcSetActiveTab
       #tabsDirective="lcSetActiveTab"
+      data-cy="page-tabs-menu"
       [items]="tabs"
     >
       <p-tablist>
