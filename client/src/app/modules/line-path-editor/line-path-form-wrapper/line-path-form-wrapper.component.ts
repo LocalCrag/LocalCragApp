@@ -13,6 +13,7 @@ export class LinePathFormWrapperComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
 
+  /** t(linePath.linePathForm.addLinePathTitle) */
   ngOnInit(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate('linePath.linePathForm.addLinePathTitle'),

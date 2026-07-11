@@ -130,8 +130,8 @@ export class MenuPagesFormComponent implements OnInit {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
         this.editMode
-          ? 'menuPages.menuPageForm.editMenuPageTitle'
-          : 'menuPages.menuPageForm.createMenuPageTitle',
+          ? marker('menuPages.menuPageForm.editMenuPageTitle')
+          : marker('menuPages.menuPageForm.createMenuPageTitle'),
       ),
     );
   }

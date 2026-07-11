@@ -20,8 +20,6 @@
   "topoImageForm.addTopoImageButtonLabel": "Opslaan",
   "topoImageForm.cancelButtonLabel": "Annuleren",
   "topoImageForm.moveTopoImageButtonLabel": "Verplaatsen",
-  "topoImageForm.addTopoImageTitle": "Topo-afbeelding toevoegen",
-  "topoImageForm.editTopoImageTitle": "Topo-afbeelding bewerken",
   "batchUploadForm.batchImageUploadDescription": "Upload meerdere topo-afbeeldingen tegelijk en maak routes onmiddellijk aan met basisinformatie. Als u later details aan de routes wilt toevoegen, kunt u dat doen door ze afzonderlijk te bewerken.",
   "batchUploadForm.images": "Afbeeldingen",
   "batchUploadForm.lines": "Routes",
@@ -40,5 +38,7 @@
   "batchUploadForm.saveLinesAndTopoImagesAndNext": "Opslaan en volgende",
   "batchUploadForm.topoImageLabel": "Topo-afbeelding",
   "batchUploadForm.topoImagePlaceholder": "Selecteer een Topo-afbeelding",
+  "topoImageForm.editTopoImageTitle": "Topo-afbeelding bewerken",
+  "topoImageForm.addTopoImageTitle": "Topo-afbeelding toevoegen",
   "batchUploadForm.batchImageUploadTitle": "Topo-upload + Snelle bewerking"
 }

@@ -146,6 +146,7 @@ export class TopoImageFormComponent implements OnInit {
     }
   }
 
+  /** t(topoImage.topoImageForm.editTopoImageTitle, topoImage.topoImageForm.addTopoImageTitle) */
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

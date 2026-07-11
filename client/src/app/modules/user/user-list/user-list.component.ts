@@ -82,7 +82,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit() {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('users.list.userListTitle'),
+      this.translocoService.translate(marker('users.list.userListTitle')),
     );
     this.refreshData();
   }

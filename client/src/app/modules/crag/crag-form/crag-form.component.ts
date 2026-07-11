@@ -176,6 +176,7 @@ export class CragFormComponent implements OnInit {
     }
   }
 
+  /** t(crag.cragForm.editCragTitle, crag.cragForm.createCragTitle) */
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

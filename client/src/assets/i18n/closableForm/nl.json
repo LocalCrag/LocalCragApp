@@ -1,9 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Sluitingsschema's",
   "closableForm.addSchedule": "Sluitingsschema toevoegen",
-  "closableForm.annualScheduleTitle": "Jaarlijks",
-  "closableForm.fixedScheduleTitle": "Vast",
-  "closableForm.permanentScheduleTitle": "Permanent",
   "closableFormScheduleDialog.scheduleTypeLabel": "Type schema",
   "closableForm.scheduledClosureReasonLabel": "Reden tijdens sluiting",
   "closableForm.scheduledClosureReasonPlaceholder": "bijv. broedseizoen...",
@@ -14,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Annuleren",
   "closableFormScheduleDialog.ok": "OK",
   "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
-  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen"
+  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen",
+  "closableForm.permanentScheduleTitle": "Permanent",
+  "closableForm.fixedScheduleTitle": "Vast",
+  "closableForm.annualScheduleTitle": "Jaarlijks"
 }

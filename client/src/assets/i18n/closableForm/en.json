@@ -1,9 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Closure schedules",
   "closableForm.addSchedule": "Add closure schedule",
-  "closableForm.annualScheduleTitle": "Annual",
-  "closableForm.fixedScheduleTitle": "Fixed",
-  "closableForm.permanentScheduleTitle": "Permanent",
   "closableFormScheduleDialog.scheduleTypeLabel": "Schedule type",
   "closableForm.scheduledClosureReasonLabel": "Reason during closure",
   "closableForm.scheduledClosureReasonPlaceholder": "e.g. bird nesting season...",
@@ -14,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Cancel",
   "closableFormScheduleDialog.ok": "OK",
   "closableFormScheduleDialog.editScheduleTitle": "Edit closure schedule",
-  "closableFormScheduleDialog.createScheduleTitle": "Add closure schedule"
+  "closableFormScheduleDialog.createScheduleTitle": "Add closure schedule",
+  "closableForm.permanentScheduleTitle": "Permanent",
+  "closableForm.fixedScheduleTitle": "Fixed",
+  "closableForm.annualScheduleTitle": "Annual"
 }

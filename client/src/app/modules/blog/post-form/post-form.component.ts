@@ -130,8 +130,8 @@ export class PostFormComponent implements OnInit {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
         this.editMode
-          ? 'posts.postForm.editPostTitle'
-          : 'posts.postForm.createPostTitle',
+          ? marker('posts.postForm.editPostTitle')
+          : marker('posts.postForm.createPostTitle'),
       ),
     );
   }

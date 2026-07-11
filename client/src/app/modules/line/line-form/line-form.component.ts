@@ -321,6 +321,7 @@ export class LineFormComponent implements OnInit {
     });
   }
 
+  /** t(line.lineForm.editLineTitle, line.lineForm.createLineTitle) */
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

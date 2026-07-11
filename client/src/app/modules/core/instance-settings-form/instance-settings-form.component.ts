@@ -21,6 +21,7 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -111,7 +112,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   ngOnInit() {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
-        'instanceSettings.instanceSettingsForm.editInstanceSettings',
+        marker('instanceSettings.instanceSettingsForm.editInstanceSettings'),
       ),
     );
     this.buildForm();

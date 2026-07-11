@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RouterOutlet } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class AscentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('ascents.ascents.ascents'),
+      this.translocoService.translate(marker('ascents.ascents.ascents')),
     );
   }
 }

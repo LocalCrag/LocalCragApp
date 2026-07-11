@@ -5,6 +5,7 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TableModule } from 'primeng/table';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
@@ -41,7 +42,7 @@ export class ScaleListComponent implements OnInit {
 
   ngOnInit() {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('scale.scaleList.editScales'),
+      this.translocoService.translate(marker('scale.scaleList.editScales')),
     );
     this.loadingState = LoadingState.LOADING;
     this.scalesService.getScales().subscribe((scales) => {

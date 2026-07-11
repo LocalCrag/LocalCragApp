@@ -188,7 +188,7 @@ export class TodoListComponent implements OnInit, PaginatedListView {
 
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('todos.todoList.todos'),
+      this.translocoService.translate(marker('todos.todoList.todos')),
     );
   }
 

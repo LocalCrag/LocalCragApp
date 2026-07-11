@@ -24,6 +24,7 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -121,7 +122,9 @@ export class RegionFormComponent implements OnInit {
 
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('region.regionForm.editRegionTitle'),
+      this.translocoService.translate(
+        marker('region.regionForm.editRegionTitle'),
+      ),
     );
   }
 

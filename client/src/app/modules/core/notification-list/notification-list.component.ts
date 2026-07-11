@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { NotificationsService } from '../../../services/crud/notifications.service';
@@ -46,7 +47,7 @@ export class NotificationListComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageTitleService.setTitle(
-      this.translocoService.translate('menu.notificationsDetailTitle'),
+      this.translocoService.translate(marker('menu.notificationsDetailTitle')),
     );
     this.store.dispatch(loadUnreadNotificationCount());
     this.loadFirstPage();

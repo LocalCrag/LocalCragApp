@@ -95,7 +95,9 @@ export class PostListComponent implements OnInit {
       .pipe(take(1))
       .subscribe((mainBgImage) => {
         this.pageTitleService.setTitle(
-          this.translocoService.translate('posts.postList.postListTitle'),
+          this.translocoService.translate(
+            marker('posts.postList.postListTitle'),
+          ),
           {
             imageUrl:
               mainBgImage?.thumbnailL ??

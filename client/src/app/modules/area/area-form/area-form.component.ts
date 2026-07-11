@@ -206,6 +206,7 @@ export class AreaFormComponent implements OnInit {
     });
   }
 
+  /** t(area.areaForm.editAreaTitle, area.areaForm.createAreaTitle) */
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

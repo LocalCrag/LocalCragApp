@@ -83,8 +83,6 @@
   "lineForm.cancelButtonLabel": "Annuler",
   "lineForm.moveLineButtonLabel": "Se déplacer",
   "lineForm.deleteLineButtonLabel": "Supprimer la ligne",
-  "lineForm.editLineTitle": "Modifier la ligne",
-  "lineForm.createLineTitle": "Créer une ligne",
   "lineBoolPropList.eliminate": "Définition",
   "lineBoolPropList.traverse": "Traverser",
   "lineBoolPropList.highball": "High-ball",
@@ -133,5 +131,7 @@
   "lineList.advancedFiltersApply": "Appliquer",
   "batchLineForm.lineNamePlaceholder": "Nom",
   "batchLineForm.gradePlaceholder": "Grade",
-  "batchLineForm.lineFANamePlaceholder": "Premier grimpeur"
+  "batchLineForm.lineFANamePlaceholder": "Premier grimpeur",
+  "lineForm.editLineTitle": "Modifier la ligne",
+  "lineForm.createLineTitle": "Créer une ligne"
 }

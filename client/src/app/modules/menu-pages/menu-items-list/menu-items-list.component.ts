@@ -68,7 +68,7 @@ export class MenuItemsListComponent implements OnInit {
   ngOnInit() {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
-        'menuPages.menuPageList.menuItemsListTitle',
+        marker('menuPages.menuPageList.menuItemsListTitle'),
       ),
     );
     this.refreshData();

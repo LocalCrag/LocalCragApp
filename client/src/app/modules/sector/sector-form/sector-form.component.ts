@@ -206,6 +206,7 @@ export class SectorFormComponent implements OnInit {
     });
   }
 
+  /** t(sector.sectorForm.editSectorTitle, sector.sectorForm.createSectorTitle) */
   private setPageTitle(): void {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

@@ -127,8 +127,8 @@ export class ScaleFormComponent implements OnInit {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
         this.editMode
-          ? 'scale.scaleForm.editScale'
-          : 'scale.scaleForm.createTitle',
+          ? marker('scale.scaleForm.editScale')
+          : marker('scale.scaleForm.createTitle'),
       ),
     );
   }

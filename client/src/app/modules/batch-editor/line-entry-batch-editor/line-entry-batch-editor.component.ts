@@ -135,6 +135,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
     .select(selectGymMode)
     .pipe(takeUntilDestroyed(this.destroyRef));
 
+  /** t(topoImage.batchUploadForm.batchImageUploadTitle) */
   ngOnInit() {
     this.pageTitleService.setTitle(
       this.translocoService.translate(

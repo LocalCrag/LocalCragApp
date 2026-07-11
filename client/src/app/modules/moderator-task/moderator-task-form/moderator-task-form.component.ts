@@ -158,8 +158,8 @@ export class ModeratorTaskFormComponent implements OnInit {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
         this.editMode
-          ? 'moderatorTasks.editTaskTitle'
-          : 'moderatorTasks.createTaskTitle',
+          ? marker('moderatorTasks.editTaskTitle')
+          : marker('moderatorTasks.createTaskTitle'),
       ),
     );
   }

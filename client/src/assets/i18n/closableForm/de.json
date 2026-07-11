@@ -1,9 +1,6 @@
 {
   "closableForm.closureSchedulesLabel": "Sperrzeitpläne",
   "closableForm.addSchedule": "Sperrzeitplan hinzufügen",
-  "closableForm.annualScheduleTitle": "Jährlich",
-  "closableForm.fixedScheduleTitle": "Fest",
-  "closableForm.permanentScheduleTitle": "Dauerhaft",
   "closableFormScheduleDialog.scheduleTypeLabel": "Art des Zeitplans",
   "closableForm.scheduledClosureReasonLabel": "Grund der Sperrung",
   "closableForm.scheduledClosureReasonPlaceholder": "z.B. Vogelbrutzeit...",
@@ -14,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Abbrechen",
   "closableFormScheduleDialog.ok": "OK",
   "closableFormScheduleDialog.editScheduleTitle": "Sperrzeitplan bearbeiten",
-  "closableFormScheduleDialog.createScheduleTitle": "Sperrzeitplan hinzufügen"
+  "closableFormScheduleDialog.createScheduleTitle": "Sperrzeitplan hinzufügen",
+  "closableForm.permanentScheduleTitle": "Dauerhaft",
+  "closableForm.fixedScheduleTitle": "Fest",
+  "closableForm.annualScheduleTitle": "Jährlich"
 }

@@ -169,8 +169,8 @@ export class MenuItemsFormComponent implements OnInit {
     this.pageTitleService.setTitle(
       this.translocoService.translate(
         this.editMode
-          ? 'menuItems.menuItemForm.editMenuItemTitle'
-          : 'menuItems.menuItemForm.createMenuItemTitle',
+          ? marker('menuItems.menuItemForm.editMenuItemTitle')
+          : marker('menuItems.menuItemForm.createMenuItemTitle'),
       ),
     );
   }
