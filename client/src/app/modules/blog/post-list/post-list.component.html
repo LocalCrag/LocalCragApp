@@ -1,105 +1,105 @@
 <ng-container *transloco="let t; read: 'posts.postList'">
   <div class="content">
-      <p-dataView
-        #dv
-        [value]="posts"
-        [sortField]="sortField"
-        [sortOrder]="sortOrder"
-      >
-        <ng-template #emptymessage>
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle"
-            class="m-12 mb-1 block"
-            >{{ t("noPostsFoundEmptyMessage") }}</p-message
-          >
-        </ng-template>
-        <ng-template #header>
-          <div class="flex flex-row justify-between">
-            <p-select
-              [options]="sortOptions"
-              [(ngModel)]="sortKey"
-              optionLabel="label"
-              (onChange)="onSortChange($event)"
-              styleClass="md:mb-0"
+    <p-dataView
+      #dv
+      [value]="posts"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template #emptymessage>
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          class="m-12 mb-1 block"
+          >{{ t("noPostsFoundEmptyMessage") }}</p-message
+        >
+      </ng-template>
+      <ng-template #header>
+        <div class="flex flex-row justify-between">
+          <p-select
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            (onChange)="onSortChange($event)"
+            styleClass="md:mb-0"
+            [disabled]="loading === loadingStates.LOADING"
+          ></p-select>
+          <div class="lc-button-group justify-end">
+            <p-button
+              label="{{ t('newPostButtonLabel') }}"
+              icon="pi pi-plus"
+              routerLink="/news/create-post"
               [disabled]="loading === loadingStates.LOADING"
-            ></p-select>
-            <div class="lc-button-group justify-end">
-              <p-button
-                label="{{ t('newPostButtonLabel') }}"
-                icon="pi pi-plus"
-                routerLink="/news/create-post"
-                [disabled]="loading === loadingStates.LOADING"
-                *isModerator="true"
-                class="responsive-button"
-              ></p-button>
-            </div>
+              *isModerator="true"
+              class="responsive-button"
+            ></p-button>
           </div>
-        </ng-template>
-        <ng-template let-posts #list>
-          @if (loading === loadingStates.LOADING) {
-            <lc-post-list-skeleton></lc-post-list-skeleton>
-          }
-          @if (loading !== loadingStates.LOADING) {
-            <div class="grid grid-cols-12">
-              @for (post of posts; track post; let first = $first) {
-                <div class="col-span-12">
+        </div>
+      </ng-template>
+      <ng-template let-posts #list>
+        @if (loading === loadingStates.LOADING) {
+          <lc-post-list-skeleton></lc-post-list-skeleton>
+        }
+        @if (loading !== loadingStates.LOADING) {
+          <div class="grid grid-cols-12">
+            @for (post of posts; track post; let first = $first) {
+              <div class="col-span-12">
+                <div
+                  class="flex flex-col xl:items-start p-6 gap-2"
+                  [ngClass]="{ 'border-t border-surface': !first }"
+                >
                   <div
-                    class="flex flex-col xl:items-start p-6 gap-2"
-                    [ngClass]="{ 'border-t border-surface': !first }"
+                    class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
                   >
-                    <div
-                      class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
-                    >
-                      <div class="grow flex items-center">
-                        <a
-                          class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
-                          [routerLink]="['/news', post.slug]"
-                          >{{ post.title }}</a
-                        >
-                      </div>
-                      <div class="lc-button-group grow-0">
-                        <p-button
-                          label="{{ t('editPostButtonLabel') }}"
-                          icon="pi pi-file-edit"
-                          routerLink="/news/{{ post.slug }}/edit"
-                          class="responsive-button"
-                          styleClass="pr-0"
-                          *isModerator="true"
-                          [text]="true"
-                        ></p-button>
-                      </div>
-                    </div>
-                    <div class="text-xs mb-2">
-                      {{ t("byUser") }}
-                      @if (post.createdBy) {
-                        <a
-                          class="text-primary no-underline hover:underline"
-                          [routerLink]="post.createdBy.routerLink"
-                          >{{ post.createdBy.fullname }}</a
-                        >
-                      } @else {
-                        {{ t("deletedUser") }}
-                      }
-                      {{ t("atDate", { date: post.timeCreated | date }) }}
-                      <span
-                        class="text-surface-500 dark:text-surface-300 hidden sm:inline"
-                        >·</span
+                    <div class="grow flex items-center">
+                      <a
+                        class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
+                        [routerLink]="['/news', post.slug]"
+                        >{{ post.title }}</a
                       >
-                      <span class="text-surface-600 dark:text-surface-200">{{
-                        t("totalComments", { count: post.commentCount })
-                      }}</span>
                     </div>
-                    <div
-                      [innerHTML]="post.text | sanitizeHtml"
-                      class="quill-content"
-                    ></div>
+                    <div class="lc-button-group grow-0">
+                      <p-button
+                        label="{{ t('editPostButtonLabel') }}"
+                        icon="pi pi-file-edit"
+                        routerLink="/news/{{ post.slug }}/edit"
+                        class="responsive-button"
+                        styleClass="pr-0"
+                        *isModerator="true"
+                        [text]="true"
+                      ></p-button>
+                    </div>
                   </div>
+                  <div class="text-xs mb-2">
+                    {{ t("byUser") }}
+                    @if (post.createdBy) {
+                      <a
+                        class="text-primary no-underline hover:underline"
+                        [routerLink]="post.createdBy.routerLink"
+                        >{{ post.createdBy.fullname }}</a
+                      >
+                    } @else {
+                      {{ t("deletedUser") }}
+                    }
+                    {{ t("atDate", { date: post.timeCreated | date }) }}
+                    <span
+                      class="text-surface-500 dark:text-surface-300 hidden sm:inline"
+                      >·</span
+                    >
+                    <span class="text-surface-600 dark:text-surface-200">{{
+                      t("totalComments", { count: post.commentCount })
+                    }}</span>
+                  </div>
+                  <div
+                    [innerHTML]="post.text | sanitizeHtml"
+                    class="quill-content"
+                  ></div>
                 </div>
-              }
-            </div>
-          }
-        </ng-template>
-      </p-dataView>
+              </div>
+            }
+          </div>
+        }
+      </ng-template>
+    </p-dataView>
   </div>
 </ng-container>

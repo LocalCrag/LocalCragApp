@@ -1,135 +1,127 @@
 <ng-container *transloco="let t; read: 'topoImage.topoImageForm'">
   <div class="content">
-      @if (!editMode) {
-        <p class="mt-0">
-          {{ t("addTopoImageDescription") }}
-        </p>
-      }
+    @if (!editMode) {
+      <p class="mt-0">
+        {{ t("addTopoImageDescription") }}
+      </p>
+    }
+    @if (editMode) {
+      <p class="mt-0">
+        {{ t("editTopoImageDescription") }}
+      </p>
+    }
+
+    <form [formGroup]="topoImageForm" lcForm>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <lc-single-image-upload
+          lcFormControl
+          formControlName="image"
+          data-cy="topo-image-input"
+        ></lc-single-image-upload>
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="title">{{
+          t("topoImageTitleLabel")
+        }}</label>
+        <input
+          id="title"
+          type="text"
+          pInputText
+          formControlName="title"
+          placeholder="{{ t('topoImageTitlePlaceholder') }}"
+          lcFormControl
+          data-cy="topo-image-form-title"
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="description">{{
+          t("topoImageDescriptionLabel")
+        }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="description"
+          formControlName="description"
+          lcFormControl
+          placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+          data-cy="topo-image-form-description"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="coordinates">{{
+          t("coordinatesLabel")
+        }}</label>
+        <lc-coordinates
+          id="coordinates"
+          formControlName="coordinates"
+          lcFormControl
+          data-cy="topo-image-form-coordinates"
+          #coordinates
+        ></lc-coordinates>
+      </div>
+    </form>
+
+    <div class="form-actions">
+      <p-button
+        label="{{ t('addTopoImageButtonLabel') }}"
+        (click)="saveTopoImage()"
+        icon="pi pi-save"
+        class="responsive-button"
+        data-cy="submit"
+        [disabled]="coordinates.positionLoading"
+        [loading]="loadingState === loadingStates.LOADING"
+      ></p-button>
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        (click)="cancel()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+      ></p-button>
       @if (editMode) {
-        <p class="mt-0">
-          {{ t("editTopoImageDescription") }}
-        </p>
-      }
-
-      <form [formGroup]="topoImageForm" lcForm>
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <lc-single-image-upload
-            lcFormControl
-            formControlName="image"
-            data-cy="topo-image-input"
-          ></lc-single-image-upload>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="title">{{
-            t("topoImageTitleLabel")
-          }}</label>
-          <input
-            id="title"
-            type="text"
-            pInputText
-            formControlName="title"
-            placeholder="{{ t('topoImageTitlePlaceholder') }}"
-            lcFormControl
-            data-cy="topo-image-form-title"
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 120 }
-          }}</small>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="description">{{
-            t("topoImageDescriptionLabel")
-          }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
-            id="description"
-            formControlName="description"
-            lcFormControl
-            placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            data-cy="topo-image-form-description"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="coordinates">{{
-            t("coordinatesLabel")
-          }}</label>
-          <lc-coordinates
-            id="coordinates"
-            formControlName="coordinates"
-            lcFormControl
-            data-cy="topo-image-form-coordinates"
-            #coordinates
-          ></lc-coordinates>
-        </div>
-      </form>
-
-      <div class="form-actions">
         <p-button
-          label="{{ t('addTopoImageButtonLabel') }}"
-          (click)="saveTopoImage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          data-cy="submit"
-          [disabled]="coordinates.positionLoading"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
-        <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
+          icon="pi pi-arrow-right-arrow-left"
+          label="{{ t('moveTopoImageButtonLabel') }}"
           class="responsive-button"
           styleClass="p-button-secondary"
-          icon="pi pi-ban"
+          (click)="openMoveDialog()"
+          *isModerator="true"
         ></p-button>
-        @if (editMode) {
-          <p-button
-            icon="pi pi-arrow-right-arrow-left"
-            label="{{ t('moveTopoImageButtonLabel') }}"
-            class="responsive-button"
-            styleClass="p-button-secondary"
-            (click)="openMoveDialog()"
-            *isModerator="true"
-          ></p-button>
-        }
-      </div>
-      <lc-move-object-dialog
-        #moveDialog
-        [hasUnsavedChanges]="topoImageForm.dirty"
-        (objectMoved)="onObjectMoved($event)"
-      ></lc-move-object-dialog>
+      }
+    </div>
+    <lc-move-object-dialog
+      #moveDialog
+      [hasUnsavedChanges]="topoImageForm.dirty"
+      (objectMoved)="onObjectMoved($event)"
+    ></lc-move-object-dialog>
   </div>
 </ng-container>

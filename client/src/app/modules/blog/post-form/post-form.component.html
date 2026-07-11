@@ -1,131 +1,121 @@
 <ng-container *transloco="let t; read: 'posts.postForm'">
   <div class="content">
-      <form [formGroup]="postForm" lcForm>
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="title">{{
-            t("postTitleLabel")
-          }}</label>
-          <input
-            id="title"
-            type="text"
-            pInputText
-            formControlName="title"
-            placeholder="{{ t('postTitlePlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 120 }
-          }}</small>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="text">{{ t("postTextLabel") }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
-            id="text"
-            formControlName="text"
-            lcFormControl
-            [modules]="quillModules"
-            [style]="{ height: '500px' }"
-            [readonly]="loadingState === loadingStates.LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
-        </div>
-      </form>
-
-      <div class="form-actions">
-        @if (!editMode) {
-          <p-button
-            label="{{ t('createPostButtonLabel') }}"
-            (click)="savePost()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
-        @if (editMode) {
-          <p-button
-            label="{{ t('editPostButtonLabel') }}"
-            (click)="savePost()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
-        <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
-          class="responsive-button"
-          styleClass="p-button-secondary"
-          icon="pi pi-ban"
-        ></p-button>
-        @if (editMode) {
-          <p-button
-            label="{{ t('deletePostButtonLabel') }}"
-            (click)="confirmDeletePost($event)"
-            icon="pi pi-trash"
-            class="responsive-button"
-            styleClass="p-button-danger"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
-        <p-confirmpopup></p-confirmpopup>
+    <form [formGroup]="postForm" lcForm>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="title">{{ t("postTitleLabel") }}</label>
+        <input
+          id="title"
+          type="text"
+          pInputText
+          formControlName="title"
+          placeholder="{{ t('postTitlePlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
       </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="text">{{ t("postTextLabel") }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="text"
+          formControlName="text"
+          lcFormControl
+          [modules]="quillModules"
+          [style]="{ height: '500px' }"
+          [readonly]="loadingState === loadingStates.LOADING"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button
+                type="button"
+                value="ordered"
+                class="ql-list"
+                aria-label="Ordered List"
+              ></button>
+              <button
+                type="button"
+                value="bullet"
+                class="ql-list"
+                aria-label="Unordered List"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+              <button
+                type="button"
+                class="ql-image"
+                aria-label="Image"
+              ></button>
+              <button
+                type="button"
+                class="ql-video"
+                aria-label="Video"
+              ></button>
+            </span>
+          </ng-template>
+        </p-editor>
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+      </div>
+    </form>
+
+    <div class="form-actions">
+      @if (!editMode) {
+        <p-button
+          label="{{ t('createPostButtonLabel') }}"
+          (click)="savePost()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      @if (editMode) {
+        <p-button
+          label="{{ t('editPostButtonLabel') }}"
+          (click)="savePost()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        (click)="cancel()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+      ></p-button>
+      @if (editMode) {
+        <p-button
+          label="{{ t('deletePostButtonLabel') }}"
+          (click)="confirmDeletePost($event)"
+          icon="pi pi-trash"
+          class="responsive-button"
+          styleClass="p-button-danger"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-confirmpopup></p-confirmpopup>
+    </div>
   </div>
 </ng-container>

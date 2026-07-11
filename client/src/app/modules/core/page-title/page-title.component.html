@@ -1,82 +1,87 @@
 @if (pageTitleService.state$ | async; as state) {
   @if (hasChrome(state)) {
-  <div
-    class="page-chrome"
-    [class.page-chrome--with-image]="state.imageUrl"
-    [class.page-chrome--without-image]="!state.imageUrl"
-  >
-    @if (state.imageUrl && (state.title || state.template)) {
-      <div class="page-chrome__hero">
-        <div
-          class="page-chrome__hero-bg"
-          [style.background-image]="'url(' + state.imageUrl + ')'"
-          role="img"
-          [attr.aria-label]="state.title"
-        ></div>
-        <div class="page-chrome__hero-overlay">
-          <div class="page-chrome__hero-top">
-            @if (hasBreadcrumbs(state)) {
-              <div class="page-chrome__breadcrumb page-chrome__breadcrumb--on-image">
-                <p-breadcrumb
-                  class="max-w-full"
-                  [model]="state.breadcrumbs"
-                  [home]="state.breadcrumbHome"
-                ></p-breadcrumb>
+    <div
+      class="page-chrome"
+      [class.page-chrome--with-image]="state.imageUrl"
+      [class.page-chrome--without-image]="!state.imageUrl"
+    >
+      @if (state.imageUrl && (state.title || state.template)) {
+        <div class="page-chrome__hero">
+          <div
+            class="page-chrome__hero-bg"
+            [style.background-image]="'url(' + state.imageUrl + ')'"
+            role="img"
+            [attr.aria-label]="state.title"
+          ></div>
+          <div class="page-chrome__hero-overlay">
+            <div class="page-chrome__hero-top">
+              @if (hasBreadcrumbs(state)) {
+                <div
+                  class="page-chrome__breadcrumb page-chrome__breadcrumb--on-image"
+                >
+                  <p-breadcrumb
+                    class="max-w-full"
+                    [model]="state.breadcrumbs"
+                    [home]="state.breadcrumbHome"
+                  ></p-breadcrumb>
+                </div>
+              }
+              @if (state.template) {
+                <h1 class="page-chrome__heading">
+                  <ng-container *ngTemplateOutlet="state.template" />
+                </h1>
+              } @else if (state.title) {
+                <h1 class="page-chrome__heading">{{ state.title }}</h1>
+              }
+            </div>
+
+            @if (state.tabs?.length) {
+              <div class="page-chrome__hero-bottom">
+                <ng-container
+                  *ngTemplateOutlet="
+                    chromeTabs;
+                    context: { onImage: true, tabs: state.tabs }
+                  "
+                />
               </div>
             }
-            @if (state.template) {
-              <h1 class="page-chrome__heading">
-                <ng-container *ngTemplateOutlet="state.template" />
-              </h1>
-            } @else if (state.title) {
-              <h1 class="page-chrome__heading">{{ state.title }}</h1>
-            }
           </div>
-
-          @if (state.tabs?.length) {
-            <div class="page-chrome__hero-bottom">
-              <ng-container
-                *ngTemplateOutlet="chromeTabs; context: { onImage: true, tabs: state.tabs }"
-              />
+        </div>
+      } @else {
+        <div class="page-chrome__header">
+          @if (hasBreadcrumbs(state)) {
+            <div class="page-chrome__breadcrumb">
+              <p-breadcrumb
+                class="max-w-full"
+                [model]="state.breadcrumbs"
+                [home]="state.breadcrumbHome"
+              ></p-breadcrumb>
             </div>
           }
+          @if (state.template) {
+            <h1 class="page-chrome__heading">
+              <ng-container *ngTemplateOutlet="state.template" />
+            </h1>
+          } @else if (state.title) {
+            <h1 class="page-chrome__heading">{{ state.title }}</h1>
+          }
         </div>
-      </div>
-    } @else {
-      <div class="page-chrome__header">
-        @if (hasBreadcrumbs(state)) {
-          <div class="page-chrome__breadcrumb">
-            <p-breadcrumb
-              class="max-w-full"
-              [model]="state.breadcrumbs"
-              [home]="state.breadcrumbHome"
-            ></p-breadcrumb>
-          </div>
-        }
-        @if (state.template) {
-          <h1 class="page-chrome__heading">
-            <ng-container *ngTemplateOutlet="state.template" />
-          </h1>
-        } @else if (state.title) {
-          <h1 class="page-chrome__heading">{{ state.title }}</h1>
-        }
-      </div>
 
-      @if (state.tabs?.length) {
-        <ng-container
-          *ngTemplateOutlet="chromeTabs; context: { onImage: false, tabs: state.tabs }"
-        />
+        @if (state.tabs?.length) {
+          <ng-container
+            *ngTemplateOutlet="
+              chromeTabs;
+              context: { onImage: false, tabs: state.tabs }
+            "
+          />
+        }
       }
-    }
-  </div>
+    </div>
   }
 }
 
 <ng-template #chromeTabs let-onImage="onImage" let-tabs="tabs">
-  <div
-    class="page-chrome__tabs"
-    [class.page-chrome__tabs--on-image]="onImage"
-  >
+  <div class="page-chrome__tabs" [class.page-chrome__tabs--on-image]="onImage">
     <p-tabs
       [value]="tabsDirective.activeTabIndex()"
       scrollable

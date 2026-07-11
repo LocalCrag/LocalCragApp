@@ -1,9 +1,6 @@
 <div class="content p-6">
   @if (menuPage) {
-    <div
-      [innerHTML]="menuPage.text | sanitizeHtml"
-      class="quill-content"
-    ></div>
+    <div [innerHTML]="menuPage.text | sanitizeHtml" class="quill-content"></div>
   }
   @if (!menuPage) {
     <p-skeleton height="2rem" styleClass="mb-6"></p-skeleton>

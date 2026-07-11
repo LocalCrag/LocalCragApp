@@ -9,7 +9,8 @@
   --page-chrome-hero-overlay: rgb(0 0 0 / 0.52);
 
   &--with-image {
-    border-radius: var(--p-content-border-radius) var(--p-content-border-radius) 0 0;
+    border-radius: var(--p-content-border-radius) var(--p-content-border-radius)
+      0 0;
     overflow: hidden;
 
     @include m.on-mobile {

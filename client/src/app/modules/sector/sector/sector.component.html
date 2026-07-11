@@ -1,17 +1,17 @@
 <div class="content p-6">
-    <div class="flex gap-1">
-      @if (sector?.closed) {
-        <lc-closed-spot-tag
-          spotType="sector"
-          [slug]="sector.slug"
-          [reasons]="sector.closedReasons"
-          [closureIsPermanent]="sector.closureIsPermanent"
-        ></lc-closed-spot-tag>
-      }
-      @if (sector?.secret) {
-        <lc-secret-spot-tag></lc-secret-spot-tag>
-      }
-    </div>
+  <div class="flex gap-1">
+    @if (sector?.closed) {
+      <lc-closed-spot-tag
+        spotType="sector"
+        [slug]="sector.slug"
+        [reasons]="sector.closedReasons"
+        [closureIsPermanent]="sector.closureIsPermanent"
+      ></lc-closed-spot-tag>
+    }
+    @if (sector?.secret) {
+      <lc-secret-spot-tag></lc-secret-spot-tag>
+    }
+  </div>
 
-    <router-outlet name="sectorContent"></router-outlet>
+  <router-outlet name="sectorContent"></router-outlet>
 </div>
