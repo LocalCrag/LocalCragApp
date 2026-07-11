@@ -1,85 +1,86 @@
 <ng-container *transloco="let t; read: 'menu'">
   <div class="content notifications-page">
     <div class="p-6">
-    <div class="notifications-page-actions">
-      <p-button
-        [label]="t('notificationsMarkAllRead')"
-        [text]="true"
-        [disabled]="unreadCount() === 0"
-        (click)="markAllRead()"
-      />
-    </div>
-
-    @if (notifications.length === 0) {
-      <p-message
-        severity="info"
-        styleClass="w-full"
-        [text]="t('notificationsEmpty')"
-      />
-    } @else {
-      <div class="notifications-page-list">
-        @for (notification of notifications; track notification.id) {
-          <div
-            class="notifications-page-item"
-            [class.is-read]="notification.isDismissed"
-          >
-            <button
-              type="button"
-              class="notifications-page-item-main"
-              (click)="openNotification(notification)"
-            >
-              <div class="notifications-page-item-icon">
-                @if (notificationUi.isReaction(notification)) {
-                  <span>{{
-                    notification.properties.reaction?.emoji || "😊"
-                  }}</span>
-                } @else if (notification.type === "comment_reply") {
-                  <i class="pi pi-comment"></i>
-                } @else if (notification.type === "release_notes") {
-                  <i class="pi pi-megaphone"></i>
-                } @else if (
-                  notification.type === "moderator_task_completed" ||
-                  notification.type === "moderator_task_created" ||
-                  notification.type === "moderator_task_created_and_assigned" ||
-                  notification.type === "moderator_task_assigned"
-                ) {
-                  <i class="pi pi-list-check"></i>
-                } @else {
-                  <i class="pi pi-cog"></i>
-                }
-              </div>
-              <div class="notifications-page-item-content">
-                <div class="notifications-page-item-text">
-                  {{ notificationUi.notificationText(notification) }}
-                </div>
-                <div class="notifications-page-item-time">
-                  {{ notification.timeCreated | date }}
-                </div>
-              </div>
-            </button>
-            @if (!notification.isDismissed) {
-              <button
-                type="button"
-                class="notifications-page-item-mark"
-                (click)="markNotificationRead(notification)"
-              >
-                {{ t("notificationsMarkReadOnly") }}
-              </button>
-            }
-          </div>
-        }
-      </div>
-    }
-
-    @if (hasNextPage) {
-      <div class="notifications-page-load-more">
+      <div class="notifications-page-actions">
         <p-button
-          [label]="t('history.loadMore')"
-          [loading]="loading"
-          (click)="loadNextPage()"
+          [label]="t('notificationsMarkAllRead')"
+          [text]="true"
+          [disabled]="unreadCount() === 0"
+          (click)="markAllRead()"
         />
       </div>
-    }
+
+      @if (notifications.length === 0) {
+        <p-message
+          severity="info"
+          styleClass="w-full"
+          [text]="t('notificationsEmpty')"
+        />
+      } @else {
+        <div class="notifications-page-list">
+          @for (notification of notifications; track notification.id) {
+            <div
+              class="notifications-page-item"
+              [class.is-read]="notification.isDismissed"
+            >
+              <button
+                type="button"
+                class="notifications-page-item-main"
+                (click)="openNotification(notification)"
+              >
+                <div class="notifications-page-item-icon">
+                  @if (notificationUi.isReaction(notification)) {
+                    <span>{{
+                      notification.properties.reaction?.emoji || "😊"
+                    }}</span>
+                  } @else if (notification.type === "comment_reply") {
+                    <i class="pi pi-comment"></i>
+                  } @else if (notification.type === "release_notes") {
+                    <i class="pi pi-megaphone"></i>
+                  } @else if (
+                    notification.type === "moderator_task_completed" ||
+                    notification.type === "moderator_task_created" ||
+                    notification.type ===
+                      "moderator_task_created_and_assigned" ||
+                    notification.type === "moderator_task_assigned"
+                  ) {
+                    <i class="pi pi-list-check"></i>
+                  } @else {
+                    <i class="pi pi-cog"></i>
+                  }
+                </div>
+                <div class="notifications-page-item-content">
+                  <div class="notifications-page-item-text">
+                    {{ notificationUi.notificationText(notification) }}
+                  </div>
+                  <div class="notifications-page-item-time">
+                    {{ notification.timeCreated | date }}
+                  </div>
+                </div>
+              </button>
+              @if (!notification.isDismissed) {
+                <button
+                  type="button"
+                  class="notifications-page-item-mark"
+                  (click)="markNotificationRead(notification)"
+                >
+                  {{ t("notificationsMarkReadOnly") }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (hasNextPage) {
+        <div class="notifications-page-load-more">
+          <p-button
+            [label]="t('history.loadMore')"
+            [loading]="loading"
+            (click)="loadNextPage()"
+          />
+        </div>
+      }
     </div>
   </div>
 </ng-container>
