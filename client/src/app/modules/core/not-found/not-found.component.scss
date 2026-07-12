@@ -5,7 +5,9 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: calc(100dvh - var(--lc-menu-height) - 2 * var(--lc-layout-gap) - 5rem);
+  min-height: calc(
+    100dvh - var(--lc-menu-height) - 2 * var(--lc-layout-gap) - 5rem
+  );
   border-radius: var(--p-content-border-radius);
   overflow: hidden;
   background-image: url("/assets/404.jpeg");
