@@ -7,7 +7,12 @@ import {
   PageTitleService,
   PageTitleState,
 } from '../../../services/core/page-title.service';
+import {
+  pageTitleDefaultBgStyles,
+  pageTitleImageCssVars,
+} from '../../../utility/image-focus';
 import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import { HeroParallaxDirective } from './hero-parallax.directive';
 
 @Component({
   selector: 'lc-page-title',
@@ -23,6 +28,7 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
     Tab,
     RouterLink,
     SetActiveTabDirective,
+    HeroParallaxDirective,
   ],
 })
 export class PageTitleComponent {
@@ -39,5 +45,25 @@ export class PageTitleComponent {
 
   protected hasBreadcrumbs(state: PageTitleState): boolean {
     return !!state.breadcrumbs?.length;
+  }
+
+  protected hasHeroBackground(state: PageTitleState): boolean {
+    return !!state.image || state.heroDefaultBg;
+  }
+
+  protected heroBackgroundStyles(
+    state: PageTitleState,
+  ): Record<string, string> {
+    if (state.heroDefaultBg && !state.image) {
+      return {
+        ...pageTitleDefaultBgStyles(),
+        ...(state.imageBackgroundStyles ?? {}),
+      };
+    }
+
+    return {
+      ...pageTitleImageCssVars(state.image),
+      ...(state.imageBackgroundStyles ?? {}),
+    };
   }
 }

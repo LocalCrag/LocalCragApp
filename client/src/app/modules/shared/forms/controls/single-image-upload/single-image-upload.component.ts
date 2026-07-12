@@ -113,7 +113,10 @@ export class SingleImageUploadComponent
    * @param obj Value to write.
    */
   writeValue(obj: any): void {
-    this.file = obj;
+    this.file = obj ?? null;
+    if (this.file && this.file.focusYAtLoad === undefined) {
+      this.file.snapshotFocusYAtLoad();
+    }
     this.syncFocusFromFile();
   }
 

@@ -15,7 +15,7 @@ import { Title } from '@angular/platform-browser';
 import {
   selectGymMode,
   selectInstanceSettingsState,
-  selectMainBgImage,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -69,15 +69,15 @@ export class CragComponent implements OnInit {
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
           this.blocWeatherService.getNearest('crag', cragSlug),
-          this.store.pipe(select(selectMainBgImage), take(1)),
+          this.store.pipe(select(selectBgImage), take(1)),
         ]).subscribe(
-          ([crag, isModerator, isGymMode, blocweatherConfig, mainBgImage]) => {
+          ([crag, isModerator, isGymMode, blocweatherConfig, bgImage]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
             this.pageTitleService.setPortraitTitle(
               crag.name,
               crag.portraitImage,
-              mainBgImage,
+              bgImage,
             );
             this.store
               .select(selectInstanceSettingsState)

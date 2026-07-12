@@ -36,8 +36,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import {
   PageTitleService,
-  topoImageHeaderFocusY,
-  topoImageHeaderUrl,
+  resolveTopoPageTitleImage,
 } from '../../../services/core/page-title.service';
 
 @Component({
@@ -121,13 +120,9 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
-            const imageUrl = topoImageHeaderUrl(
+            const { image, focusY } = resolveTopoPageTitleImage(
               line.topoImages?.[0],
-              instanceSettings.mainBgImage,
-            );
-            const focusY = topoImageHeaderFocusY(
-              line.topoImages?.[0],
-              instanceSettings.mainBgImage,
+              instanceSettings.bgImage,
             );
             const gradeValue = instanceSettings.displayUserGrades
               ? line.userGradeValue
@@ -140,7 +135,7 @@ export class LineComponent implements OnInit {
                     ? gradeName
                     : this.translocoService.translate(gradeName);
                 this.pageTitleService.setTitle(`${line.name} ${displayGrade}`, {
-                  imageUrl,
+                  image,
                   focusY,
                 });
                 const breadcrumbs = [

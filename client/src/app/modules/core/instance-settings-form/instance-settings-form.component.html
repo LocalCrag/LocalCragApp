@@ -280,17 +280,17 @@
 
       <div class="flex flex-col gap-2" lcControlGroup>
         <div class="form-label flex items-center">
-          <label for="main-bg-image">{{ t("mainBgImageLabel") }}</label>
+          <label for="bg-image">{{ t("bgImageLabel") }}</label>
           <span
             class="pi pi-question-circle ml-2"
-            [pTooltip]="t('mainBgImageTooltip')"
+            [pTooltip]="t('bgImageTooltip')"
             tooltipPosition="right"
           ></span>
         </div>
         <lc-single-image-upload
-          id="main-bg-image"
+          id="bg-image"
           lcFormControl
-          formControlName="mainBgImage"
+          formControlName="bgImage"
           [focusAdjustable]="true"
         ></lc-single-image-upload>
       </div>

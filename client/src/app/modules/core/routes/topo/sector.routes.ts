@@ -7,7 +7,6 @@ import { SectorAscentsComponent } from '../../../sector/sector-ascents/sector-as
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -21,7 +20,6 @@ export const topoSectorRoutes: Routes = [
   {
     path: sectorPrefix,
     component: SectorComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',
@@ -89,7 +87,6 @@ export const topoSectorRoutes: Routes = [
         (m) => m.SectorFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/create-area`,
@@ -98,7 +95,6 @@ export const topoSectorRoutes: Routes = [
         (m) => m.AreaFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/create-line`,
@@ -107,7 +103,6 @@ export const topoSectorRoutes: Routes = [
         (m) => m.LineFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/add-topo-image`,
@@ -116,7 +111,6 @@ export const topoSectorRoutes: Routes = [
         (m) => m.TopoImageFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/line-entry-batch-editor`,
@@ -125,7 +119,6 @@ export const topoSectorRoutes: Routes = [
         (m) => m.LineEntryBatchEditorComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: `${sectorPrefix}/:area-slug/topo-images/:image-id/edit`,
@@ -134,6 +127,5 @@ export const topoSectorRoutes: Routes = [
         (m) => m.TopoImageFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
 ];

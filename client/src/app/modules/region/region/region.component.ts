@@ -14,7 +14,10 @@ import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectInstanceName,
+  selectBgImage,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-region',
@@ -47,9 +50,14 @@ export class RegionComponent implements OnInit {
         }),
       ),
       this.store.pipe(select(selectIsModerator), take(1)),
-    ]).subscribe(([region, isModerator]) => {
+      this.store.pipe(select(selectBgImage), take(1)),
+    ]).subscribe(([region, isModerator, bgImage]) => {
       this.region = region;
-      this.pageTitleService.setPortraitTitle(region.name, region.image);
+      this.pageTitleService.setPortraitTitle(
+        region.name,
+        region.image,
+        bgImage,
+      );
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });

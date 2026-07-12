@@ -18,7 +18,7 @@ import { AreasService } from '../../../services/crud/areas.service';
 import {
   selectGymMode,
   selectInstanceSettingsState,
-  selectMainBgImage,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
@@ -92,7 +92,7 @@ export class AreaComponent implements OnInit {
           this.store.pipe(select(selectIsModerator), take(1)),
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectGymMode), take(1)),
-          this.store.pipe(select(selectMainBgImage), take(1)),
+          this.store.pipe(select(selectBgImage), take(1)),
         ]).subscribe(
           ([
             crag,
@@ -101,7 +101,7 @@ export class AreaComponent implements OnInit {
             isModerator,
             blocWeatherConfig,
             isGymMode,
-            mainBgImage,
+            bgImage,
           ]) => {
             this.hasBlocweather = !!blocWeatherConfig;
             this.crag = crag;
@@ -110,7 +110,7 @@ export class AreaComponent implements OnInit {
             this.pageTitleService.setPortraitTitle(
               area.name,
               area.portraitImage,
-              mainBgImage,
+              bgImage,
             );
             this.store
               .select(selectInstanceSettingsState)

@@ -75,14 +75,13 @@ export class UploadService {
    */
   public saveFileFocusIfChanged(
     file: File | null | undefined,
-    savedFocusY: number | null | undefined,
   ): Observable<File | null> {
     if (!file?.id) {
       return of(null);
     }
 
     const nextFocusY = normalizeImageFocusY(file.focusY);
-    const originalFocusY = normalizeImageFocusY(savedFocusY);
+    const originalFocusY = normalizeImageFocusY(file.focusYAtLoad);
     if (nextFocusY === originalFocusY) {
       return of(null);
     }

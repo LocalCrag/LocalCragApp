@@ -222,13 +222,13 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
     for (const lineType in this.gradeDistribution) {
       for (const gradeScale in this.gradeDistribution[lineType]) {
+        const isDarkMode = this.themeService.isDarkMode();
         scaleObservers.push(
           forkJoin([
             this.store.select(selectBarChartColor).pipe(take(1)),
             this.store.select(selectBarChartAccentColor).pipe(take(1)),
             this.store.select(selectDarkBarChartColor).pipe(take(1)),
             this.store.select(selectDarkBarChartAccentColor).pipe(take(1)),
-            toObservable(this.themeService.isDarkMode).pipe(take(1)),
             this.scalesService.getScale(lineType as LineType, gradeScale),
           ]).pipe(
             map(
@@ -237,7 +237,6 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 barChartAccentColor,
                 darkBarChartColor,
                 darkBarChartAccentColor,
-                isDarkMode,
                 scale,
               ]) => {
                 const usedScale = condensed

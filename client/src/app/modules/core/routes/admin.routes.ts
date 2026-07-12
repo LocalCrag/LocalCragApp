@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { isModerator } from '../../../guards/is-moderator';
 import { isAdmin } from '../../../guards/is-admin';
-import { defaultBg } from './route-helpers';
 
 export const adminRoutes: Routes = [
   {
@@ -11,7 +10,6 @@ export const adminRoutes: Routes = [
         (m) => m.InstanceSettingsFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'scales',
@@ -20,7 +18,6 @@ export const adminRoutes: Routes = [
         (m) => m.ScaleListComponent,
       ),
     canActivate: [isAdmin],
-    data: defaultBg(),
   },
   {
     path: 'scales/create',
@@ -29,7 +26,6 @@ export const adminRoutes: Routes = [
         (m) => m.ScaleFormComponent,
       ),
     canActivate: [isAdmin],
-    data: defaultBg(),
   },
   {
     path: 'scales/:lineType/:name',
@@ -38,7 +34,6 @@ export const adminRoutes: Routes = [
         (m) => m.ScaleFormComponent,
       ),
     canActivate: [isAdmin],
-    data: defaultBg(),
   },
   {
     path: 'history',

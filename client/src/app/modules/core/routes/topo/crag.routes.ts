@@ -9,7 +9,6 @@ import { isModerator } from '../../../../guards/is-moderator';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -23,7 +22,6 @@ export const topoCragRoutes: Routes = [
   {
     path: cragPrefix,
     component: CragComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',
@@ -122,7 +120,6 @@ export const topoCragRoutes: Routes = [
         (m) => m.CragFormComponent,
       ),
     canActivate: [isModerator, skipHierarchy(2, ['/topo'], ['edit'])],
-    data: defaultBg(),
   },
   {
     path: `${cragPrefix}/create-sector`,
@@ -139,6 +136,5 @@ export const topoCragRoutes: Routes = [
         false,
       ),
     ],
-    data: defaultBg(),
   },
 ];

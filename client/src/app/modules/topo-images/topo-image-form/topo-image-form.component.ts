@@ -209,7 +209,7 @@ export class TopoImageFormComponent implements OnInit {
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
         this.uploadService
-          .saveFileFocusIfChanged(topoImage.image, this.topoImage.image?.focusY)
+          .saveFileFocusIfChanged(topoImage.image)
           .pipe(
             switchMap(() => this.topoImagesService.updateTopoImage(topoImage)),
           )
@@ -226,7 +226,7 @@ export class TopoImageFormComponent implements OnInit {
           });
       } else {
         this.uploadService
-          .saveFileFocusIfChanged(topoImage.image, null)
+          .saveFileFocusIfChanged(topoImage.image)
           .pipe(
             switchMap(() =>
               this.topoImagesService.addTopoImage(topoImage, this.areaSlug),

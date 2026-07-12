@@ -16,7 +16,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import {
   selectGymMode,
   selectInstanceSettingsState,
-  selectMainBgImage,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
@@ -80,7 +80,7 @@ export class SectorComponent implements OnInit {
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
-          this.store.pipe(select(selectMainBgImage), take(1)),
+          this.store.pipe(select(selectBgImage), take(1)),
         ]).subscribe(
           ([
             crag,
@@ -88,7 +88,7 @@ export class SectorComponent implements OnInit {
             blocweatherConfig,
             isModerator,
             isGymMode,
-            mainBgImage,
+            bgImage,
           ]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
@@ -96,7 +96,7 @@ export class SectorComponent implements OnInit {
             this.pageTitleService.setPortraitTitle(
               sector.name,
               sector.portraitImage,
-              mainBgImage,
+              bgImage,
             );
             this.store
               .select(selectInstanceSettingsState)

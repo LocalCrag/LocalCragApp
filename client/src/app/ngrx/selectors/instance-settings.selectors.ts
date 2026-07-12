@@ -21,9 +21,9 @@ export const selectGymMode = createSelector(
   (instanceSettingsState) => instanceSettingsState.gymMode,
 );
 
-export const selectMainBgImage = createSelector(
+export const selectBgImage = createSelector(
   selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.mainBgImage,
+  (instanceSettingsState) => instanceSettingsState.bgImage,
 );
 
 export const selectLogoImage = createSelector(

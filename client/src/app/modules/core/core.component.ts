@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  afterNextRender,
   inject,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -53,6 +54,7 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   headerHidden = false;
   headerHeight = 0;
 
+  private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);
   private resizeObserver?: ResizeObserver;
   private lastScrollY = 0;
@@ -61,6 +63,8 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   private _navigationService = inject(NavigationService);
 
   constructor() {
+    afterNextRender(() => this.updateHeaderHeight());
+
     const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
     this.store
       .select(selectInstanceSettingsState)
@@ -133,7 +137,6 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.updateHeaderHeight();
     const headerElement = this.siteHeader?.nativeElement;
     if (!headerElement || typeof ResizeObserver === 'undefined') {
       return;
@@ -149,9 +152,11 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private updateHeaderHeight() {
     this.headerHeight = this.siteHeader?.nativeElement.offsetHeight ?? 0;
-    document.documentElement.style.setProperty(
+    const heightValue = `${this.headerHeight}px`;
+    document.documentElement.style.setProperty('--lc-menu-height', heightValue);
+    this.hostEl.nativeElement.style.setProperty(
       '--lc-menu-height',
-      `${this.headerHeight}px`,
+      heightValue,
     );
   }
 }

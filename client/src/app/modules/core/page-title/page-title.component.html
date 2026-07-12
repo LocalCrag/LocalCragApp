@@ -2,15 +2,15 @@
   @if (hasChrome(state)) {
     <div
       class="page-chrome"
-      [class.page-chrome--with-image]="state.imageUrl"
-      [class.page-chrome--without-image]="!state.imageUrl"
+      [class.page-chrome--with-image]="hasHeroBackground(state)"
+      [class.page-chrome--without-image]="!hasHeroBackground(state)"
     >
-      @if (state.imageUrl && (state.title || state.template)) {
+      @if (hasHeroBackground(state) && (state.title || state.template)) {
         <div class="page-chrome__hero">
           <div
             class="page-chrome__hero-bg"
-            [style.background-image]="'url(' + state.imageUrl + ')'"
-            [ngStyle]="state.imageBackgroundStyles"
+            lcHeroParallax
+            [ngStyle]="heroBackgroundStyles(state)"
             role="img"
             [attr.aria-label]="state.title"
           ></div>

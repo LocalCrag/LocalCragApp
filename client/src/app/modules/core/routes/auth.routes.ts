@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { isLoggedOut } from '../../../guards/is-logged-out';
 import { isLoggedIn } from '../../../guards/is-logged-in';
-import { defaultBg } from './route-helpers';
 
 export const authRoutes: Routes = [
   {
@@ -9,7 +8,6 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('../login/login.component').then((m) => m.LoginComponent),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'change-password',
@@ -18,14 +16,12 @@ export const authRoutes: Routes = [
         (m) => m.ChangePasswordComponent,
       ),
     canActivate: [isLoggedIn],
-    data: defaultBg(),
   },
   {
     path: 'register',
     loadComponent: () =>
       import('../register/register.component').then((m) => m.RegisterComponent),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'register-check-mailbox',
@@ -34,7 +30,6 @@ export const authRoutes: Routes = [
         (m) => m.RegisterCheckMailboxComponent,
       ),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'account',
@@ -43,7 +38,6 @@ export const authRoutes: Routes = [
         (m) => m.AccountFormComponent,
       ),
     canActivate: [isLoggedIn],
-    data: defaultBg(),
   },
   {
     path: 'activate-account',
@@ -51,7 +45,6 @@ export const authRoutes: Routes = [
       import('../activate-account/activate-account.component').then(
         (m) => m.ActivateAccountComponent,
       ),
-    data: defaultBg(),
   },
   {
     path: 'forgot-password',
@@ -60,7 +53,6 @@ export const authRoutes: Routes = [
         (m) => m.ForgotPasswordComponent,
       ),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'forgot-password-check-mailbox',
@@ -69,7 +61,6 @@ export const authRoutes: Routes = [
         (m) => m.ForgotPasswordCheckMailboxComponent,
       ),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'reset-password/:hash',
@@ -78,7 +69,6 @@ export const authRoutes: Routes = [
         (m) => m.ResetPasswordComponent,
       ),
     canActivate: [isLoggedOut],
-    data: defaultBg(),
   },
   {
     path: 'change-email/:hash',
@@ -87,7 +77,6 @@ export const authRoutes: Routes = [
         (m) => m.ChangeEmailComponent,
       ),
     canActivate: [isLoggedIn],
-    data: defaultBg(),
   },
   {
     path: 'notifications',
@@ -96,7 +85,6 @@ export const authRoutes: Routes = [
         (m) => m.NotificationListComponent,
       ),
     canActivate: [isLoggedIn],
-    data: defaultBg(),
   },
   {
     path: 'release-notes/:bundleId',
@@ -105,6 +93,5 @@ export const authRoutes: Routes = [
         (m) => m.ReleaseNotesBundleComponent,
       ),
     canActivate: [isLoggedIn],
-    data: defaultBg(),
   },
 ];

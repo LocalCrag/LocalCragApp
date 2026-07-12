@@ -52,10 +52,32 @@
 
   &__hero-bg {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: -12%;
+    height: 124%;
+    background-image: var(--page-title-img-m);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    will-change: transform;
+
+    @media (prefers-reduced-motion: reduce) {
+      top: 0;
+      height: 100%;
+      will-change: auto;
+    }
+
+    @media (min-width: 500px) {
+      background-image: var(--page-title-img-l, var(--page-title-img-m));
+    }
+
+    @media (min-width: 1000px) {
+      background-image: var(
+        --page-title-img-xl,
+        var(--page-title-img-l, var(--page-title-img-m))
+      );
+    }
   }
 
   &__hero-overlay {

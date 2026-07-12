@@ -16,7 +16,8 @@ import { imageFocusBackgroundStyles } from '../../utility/image-focus';
 
 export interface PageTitleState {
   title: string | null;
-  imageUrl: string | null;
+  image: File | null;
+  heroDefaultBg: boolean;
   imageBackgroundStyles: Record<string, string> | null;
   template: TemplateRef<unknown> | null;
   breadcrumbs: MenuItem[] | null;
@@ -25,14 +26,16 @@ export interface PageTitleState {
 }
 
 export interface SetPageTitleOptions {
-  imageUrl?: string | null;
+  image?: File | null;
   focusY?: number | null;
+  heroDefaultBg?: boolean;
   template?: TemplateRef<unknown> | null;
 }
 
 const initialState: PageTitleState = {
   title: null,
-  imageUrl: null,
+  image: null,
+  heroDefaultBg: false,
   imageBackgroundStyles: null,
   template: null,
   breadcrumbs: null,
@@ -90,7 +93,8 @@ export class PageTitleService {
     this.stateSubject.next({
       ...initialState,
       title,
-      imageUrl: options?.imageUrl ?? null,
+      image: options?.image ?? null,
+      heroDefaultBg: options?.heroDefaultBg ?? false,
       imageBackgroundStyles:
         imageFocusBackgroundStyles(options?.focusY) || null,
       template: options?.template ?? null,
@@ -102,10 +106,11 @@ export class PageTitleService {
     portraitImage?: File | null,
     fallbackImage?: File | null,
   ): void {
-    const hero = resolveHeroImage(portraitImage, fallbackImage);
+    const hero = resolvePageTitleImage(portraitImage, fallbackImage);
     this.setTitle(title, {
-      imageUrl: hero.url,
+      image: hero.image,
       focusY: hero.focusY,
+      heroDefaultBg: !hero.image,
     });
   }
 
@@ -166,58 +171,28 @@ export class PageTitleService {
   }
 }
 
-export function portraitImageUrl(
-  portraitImage?: File | null,
-  fallbackImage?: File | null,
-): string | null {
-  return resolveHeroImage(portraitImage, fallbackImage).url;
-}
-
-export function topoImageHeaderUrl(
-  topoImage?: TopoImage | null,
-  fallbackImage?: File | null,
-): string | null {
-  return resolveHeroImage(topoImage?.image, fallbackImage).url;
-}
-
-export function topoImageHeaderFocusY(
-  topoImage?: TopoImage | null,
-  fallbackImage?: File | null,
-): number | null {
-  return resolveHeroImage(topoImage?.image, fallbackImage).focusY;
-}
-
-function resolveHeroImage(
+export function resolvePageTitleImage(
   primaryImage?: File | null,
   fallbackImage?: File | null,
-): { url: string | null; focusY: number | null } {
+): { image: File | null; focusY: number | null } {
   if (primaryImage) {
     return {
-      url: fileImageUrl(primaryImage) ?? heroImageUrl(primaryImage),
+      image: primaryImage,
       focusY: primaryImage.focusY,
     };
   }
   if (fallbackImage) {
     return {
-      url: heroImageUrl(fallbackImage),
+      image: fallbackImage,
       focusY: fallbackImage.focusY,
     };
   }
-  return { url: null, focusY: null };
+  return { image: null, focusY: null };
 }
 
-function fileImageUrl(file?: File | null): string | null {
-  if (!file) {
-    return null;
-  }
-  return file.thumbnailL ?? file.thumbnailM ?? file.path ?? null;
-}
-
-function heroImageUrl(file?: File | null): string | null {
-  if (!file) {
-    return null;
-  }
-  return (
-    file.thumbnailXL ?? file.thumbnailL ?? file.thumbnailM ?? file.path ?? null
-  );
+export function resolveTopoPageTitleImage(
+  topoImage?: TopoImage | null,
+  fallbackImage?: File | null,
+): { image: File | null; focusY: number | null } {
+  return resolvePageTitleImage(topoImage?.image, fallbackImage);
 }

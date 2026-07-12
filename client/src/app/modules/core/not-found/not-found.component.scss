@@ -1,0 +1,41 @@
+@use "../../../styles/media-queries" as m;
+
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: calc(100dvh - var(--lc-menu-height) - 2 * var(--lc-layout-gap) - 5rem);
+  border-radius: var(--p-content-border-radius);
+  overflow: hidden;
+  background-image: url("/assets/404.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @include m.on-mobile {
+    flex: 1;
+    min-height: 0;
+    border-radius: 0;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+
+    @include m.on-mobile {
+      backdrop-filter: blur(10px);
+    }
+  }
+}
+
+:host.auth-view .auth-container {
+  flex: 1;
+  min-height: 100%;
+  position: relative;
+  z-index: 1;
+}

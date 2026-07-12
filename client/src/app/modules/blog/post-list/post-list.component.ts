@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import {
   selectInstanceName,
-  selectMainBgImage,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Select } from 'primeng/select';
@@ -91,20 +91,16 @@ export class PostListComponent implements OnInit {
 
   private setPageTitle(): void {
     this.store
-      .select(selectMainBgImage)
+      .select(selectBgImage)
       .pipe(take(1))
-      .subscribe((mainBgImage) => {
+      .subscribe((bgImage) => {
         this.pageTitleService.setTitle(
           this.translocoService.translate(
             marker('posts.postList.postListTitle'),
           ),
           {
-            imageUrl:
-              mainBgImage?.thumbnailL ??
-              mainBgImage?.thumbnailM ??
-              mainBgImage?.path ??
-              null,
-            focusY: mainBgImage?.focusY ?? null,
+            image: bgImage ?? null,
+            focusY: bgImage?.focusY ?? null,
           },
         );
       });

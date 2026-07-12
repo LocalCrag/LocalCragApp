@@ -1,6 +1,5 @@
 import { Type } from '@angular/core';
 import { CanActivateFn, Route, Routes } from '@angular/router';
-import { StaticBackgroundImages } from '../background-image/background-image.component';
 import { ObjectType } from '../../../models/object';
 import { isModerator } from '../../../guards/is-moderator';
 
@@ -15,16 +14,6 @@ export const loadCommentsComponent: LazyComponentLoader = () =>
   import('../../comments/comments/comments.component').then(
     (m) => m.CommentsComponent,
   );
-
-export function defaultBg(
-  extra: Record<string, unknown> = {},
-): Record<string, unknown> {
-  return { backgroundImagePath: StaticBackgroundImages.DEFAULT, ...extra };
-}
-
-export function notFoundBg(): Record<string, unknown> {
-  return { backgroundImagePath: StaticBackgroundImages.NOT_FOUND };
-}
 
 interface OutletRouteOptions {
   canActivate?: CanActivateFn[];
@@ -88,13 +77,13 @@ export function moderatorTaskFormRoutes(
       path: `${pathPrefix}/moderator-tasks/create`,
       loadComponent: loadModeratorTaskForm,
       canActivate: [isModerator],
-      data: defaultBg({ scopeType }),
+      data: { scopeType },
     },
     {
       path: `${pathPrefix}/moderator-tasks/:task-id/edit`,
       loadComponent: loadModeratorTaskForm,
       canActivate: [isModerator],
-      data: defaultBg({ scopeType }),
+      data: { scopeType },
     },
   ];
 }

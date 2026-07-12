@@ -149,7 +149,7 @@ export class RegionFormComponent implements OnInit {
       name: this.region.name,
       description: this.region.description,
       rules: this.region.rules,
-      image: this.region.image ?? this.instanceSettings?.mainBgImage ?? null,
+      image: this.region.image ?? this.instanceSettings?.bgImage ?? null,
     });
   }
 
@@ -172,7 +172,7 @@ export class RegionFormComponent implements OnInit {
       region.rules = this.regionForm.get('rules').value;
       region.image = this.regionForm.get('image').value;
       this.uploadService
-        .saveFileFocusIfChanged(region.image, this.region?.image?.focusY)
+        .saveFileFocusIfChanged(region.image)
         .pipe(switchMap(() => this.regionsService.updateRegion(region)))
         .subscribe(() => {
           this.store.dispatch(toastNotification('REGION_UPDATED'));

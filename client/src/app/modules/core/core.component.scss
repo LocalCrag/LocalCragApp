@@ -29,6 +29,7 @@
 
 .site-header-spacer {
   flex-shrink: 0;
+  height: var(--lc-menu-height, 3.25rem);
 }
 
 .body-row {
@@ -57,6 +58,9 @@
   @include m.on-mobile {
     gap: 0;
     max-width: none;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
   }
 }
 
@@ -77,6 +81,8 @@
     border-left: none;
     border-right: none;
     box-shadow: none;
+    flex: 1;
+    min-height: 0;
   }
 
   > *:not(router-outlet) {

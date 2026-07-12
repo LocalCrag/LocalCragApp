@@ -11,7 +11,7 @@ export interface InstanceSettingsState {
   logoImage: File;
   darkLogoImage: File;
   faviconImage: File;
-  mainBgImage: File;
+  bgImage: File;
   arrowColor: string;
   arrowTextColor: string;
   arrowHighlightColor: string;
@@ -40,7 +40,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   logoImage: null,
   darkLogoImage: null,
   faviconImage: null,
-  mainBgImage: null,
+  bgImage: null,
   arrowColor: null,
   arrowTextColor: null,
   arrowHighlightColor: null,
@@ -72,7 +72,7 @@ const instanceSettingsReducer = createReducer(
     logoImage: action.settings.logoImage,
     darkLogoImage: action.settings.darkLogoImage,
     faviconImage: action.settings.faviconImage,
-    mainBgImage: action.settings.mainBgImage,
+    bgImage: action.settings.bgImage,
     arrowColor: action.settings.arrowColor,
     arrowTextColor: action.settings.arrowTextColor,
     arrowHighlightColor: action.settings.arrowHighlightColor,

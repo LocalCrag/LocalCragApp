@@ -17,7 +17,7 @@ def test_successful_get_instance_settings(client):
     assert res["mailGreeting"] == instance_settings.mail_greeting
     assert res["logoImage"] is None or res["logoImage"] == str(instance_settings.logo_image_id)
     assert res["faviconImage"] is None or res["faviconImage"] == str(instance_settings.favicon_image_id)
-    assert res["mainBgImage"] is None or res["mainBgImage"] == str(instance_settings.main_bg_image_id)
+    assert res["bgImage"] is None or res["bgImage"] == str(instance_settings.bg_image_id)
     assert res["arrowColor"] == instance_settings.arrow_color
     assert res["arrowTextColor"] == instance_settings.arrow_text_color
     assert res["arrowHighlightColor"] == instance_settings.arrow_highlight_color
@@ -50,7 +50,7 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
         "logoImage": str(any_file.id),
         "darkLogoImage": None,
         "faviconImage": str(any_file.id),
-        "mainBgImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
@@ -81,7 +81,7 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["mailGreeting"] == "Best regards"
     assert res["logoImage"]["id"] == str(any_file.id)
     assert res["faviconImage"]["id"] == str(any_file.id)
-    assert res["mainBgImage"]["id"] == str(any_file.id)
+    assert res["bgImage"]["id"] == str(any_file.id)
     assert res["arrowColor"] == "#AAAAAA"
     assert res["arrowTextColor"] == "#BBBBBB"
     assert res["arrowHighlightColor"] == "#CCCCCC"
@@ -119,7 +119,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token, 
         "logoImage": str(any_file.id),
         "darkLogoImage": None,
         "faviconImage": str(any_file.id),
-        "mainBgImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
@@ -160,7 +160,7 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token, any
         "logoImage": str(any_file.id),
         "darkLogoImage": None,
         "faviconImage": str(any_file.id),
-        "mainBgImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",

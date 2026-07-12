@@ -296,10 +296,7 @@ export class AreaFormComponent implements OnInit {
       if (this.area) {
         area.slug = this.area.slug;
         this.uploadService
-          .saveFileFocusIfChanged(
-            area.portraitImage,
-            this.area.portraitImage?.focusY,
-          )
+          .saveFileFocusIfChanged(area.portraitImage)
           .pipe(switchMap(() => this.areasService.updateArea(area)))
           .subscribe((area) => {
             this.store.dispatch(toastNotification('AREA_UPDATED'));
@@ -313,7 +310,7 @@ export class AreaFormComponent implements OnInit {
           });
       } else {
         this.uploadService
-          .saveFileFocusIfChanged(area.portraitImage, null)
+          .saveFileFocusIfChanged(area.portraitImage)
           .pipe(
             switchMap(() =>
               this.areasService.createArea(area, this.sectorSlug),

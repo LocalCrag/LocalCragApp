@@ -9,7 +9,6 @@ import { isModerator } from '../../../../guards/is-moderator';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -20,7 +19,6 @@ export const topoRegionRoute: Routes = [
   {
     path: 'topo',
     component: RegionComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',

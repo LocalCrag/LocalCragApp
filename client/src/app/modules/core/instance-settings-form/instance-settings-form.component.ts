@@ -176,7 +176,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       logoImage: [null],
       darkLogoImage: [null],
       faviconImage: [null],
-      mainBgImage: [null],
+      bgImage: [null],
       arrowColor: [null],
       arrowTextColor: [null],
       arrowHighlightColor: [null],
@@ -210,7 +210,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       logoImage: this.instanceSettings.logoImage,
       darkLogoImage: this.instanceSettings.darkLogoImage,
       faviconImage: this.instanceSettings.faviconImage,
-      mainBgImage: this.instanceSettings.mainBgImage,
+      bgImage: this.instanceSettings.bgImage,
       arrowColor: this.instanceSettings.arrowColor,
       arrowTextColor: this.instanceSettings.arrowTextColor,
       arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
@@ -257,8 +257,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('darkLogoImage').value;
       instanceSettings.faviconImage =
         this.instanceSettingsForm.get('faviconImage').value;
-      instanceSettings.mainBgImage =
-        this.instanceSettingsForm.get('mainBgImage').value;
+      instanceSettings.bgImage = this.instanceSettingsForm.get('bgImage').value;
       instanceSettings.arrowColor =
         this.instanceSettingsForm.get('arrowColor').value;
       instanceSettings.arrowTextColor =
@@ -299,10 +298,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       instanceSettings.timezone =
         this.instanceSettingsForm.get('timezone').value;
       this.uploadService
-        .saveFileFocusIfChanged(
-          instanceSettings.mainBgImage,
-          this.instanceSettings?.mainBgImage?.focusY,
-        )
+        .saveFileFocusIfChanged(instanceSettings.bgImage)
         .pipe(
           switchMap(() =>
             this.instanceSettingsService.updateInstanceSettings(

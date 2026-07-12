@@ -3,7 +3,7 @@ import { isModerator } from '../../../../guards/is-moderator';
 import { skipHierarchy } from '../../../../guards/skip-hierarchy';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
-import { defaultBg, moderatorTaskFormRoutes } from '../route-helpers';
+import { moderatorTaskFormRoutes } from '../route-helpers';
 
 export const topoRegionFormRoutes: Routes = [
   ...moderatorTaskFormRoutes('topo', ObjectType.Region),
@@ -14,7 +14,6 @@ export const topoRegionFormRoutes: Routes = [
         (m) => m.RegionFormComponent,
       ),
     canActivate: [isModerator, skipHierarchy(1, ['/topo'], ['edit'])],
-    data: defaultBg(),
   },
   {
     path: 'topo/create-crag',
@@ -31,6 +30,5 @@ export const topoRegionFormRoutes: Routes = [
         false,
       ),
     ],
-    data: defaultBg(),
   },
 ];

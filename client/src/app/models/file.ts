@@ -1,5 +1,6 @@
 import { AbstractModel } from './abstract-model';
 import { ThumbnailWidths } from '../enums/thumbnail-widths';
+import { normalizeImageFocusY } from '../utility/image-focus';
 
 /**
  * Model of a file object.
@@ -17,6 +18,8 @@ export class File extends AbstractModel {
   path: string;
   srcSet: string;
   focusY: number | null;
+  /** Client-only snapshot used to detect focus edits before save. */
+  focusYAtLoad: number | null;
 
   /**
    * Parses a file object.
@@ -48,6 +51,7 @@ export class File extends AbstractModel {
       ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1')
       : null;
     media.focusY = payload.focusY ?? null;
+    media.snapshotFocusYAtLoad();
 
     // Build srcSet
     const srcSetEntries = [
@@ -87,6 +91,10 @@ export class File extends AbstractModel {
 
   applyFocusY(focusY: number | null): void {
     this.focusY = focusY;
+  }
+
+  snapshotFocusYAtLoad(): void {
+    this.focusYAtLoad = normalizeImageFocusY(this.focusY);
   }
 
   /**

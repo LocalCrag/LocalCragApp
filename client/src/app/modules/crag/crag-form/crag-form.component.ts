@@ -264,10 +264,7 @@ export class CragFormComponent implements OnInit {
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.uploadService
-          .saveFileFocusIfChanged(
-            crag.portraitImage,
-            this.crag.portraitImage?.focusY,
-          )
+          .saveFileFocusIfChanged(crag.portraitImage)
           .pipe(switchMap(() => this.cragsService.updateCrag(crag)))
           .subscribe((crag) => {
             this.store.dispatch(toastNotification('CRAG_UPDATED'));
@@ -276,7 +273,7 @@ export class CragFormComponent implements OnInit {
           });
       } else {
         this.uploadService
-          .saveFileFocusIfChanged(crag.portraitImage, null)
+          .saveFileFocusIfChanged(crag.portraitImage)
           .pipe(switchMap(() => this.cragsService.createCrag(crag)))
           .subscribe(() => {
             this.store.dispatch(toastNotification('CRAG_CREATED'));

@@ -298,10 +298,7 @@ export class SectorFormComponent implements OnInit {
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.uploadService
-          .saveFileFocusIfChanged(
-            sector.portraitImage,
-            this.sector.portraitImage?.focusY,
-          )
+          .saveFileFocusIfChanged(sector.portraitImage)
           .pipe(switchMap(() => this.sectorsService.updateSector(sector)))
           .subscribe((sector) => {
             this.store.dispatch(toastNotification('SECTOR_UPDATED'));
@@ -310,7 +307,7 @@ export class SectorFormComponent implements OnInit {
           });
       } else {
         this.uploadService
-          .saveFileFocusIfChanged(sector.portraitImage, null)
+          .saveFileFocusIfChanged(sector.portraitImage)
           .pipe(
             switchMap(() =>
               this.sectorsService.createSector(sector, this.cragSlug),

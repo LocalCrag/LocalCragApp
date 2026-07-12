@@ -6,6 +6,8 @@
  * stored on {@link File} and edited via `lc-single-image-upload`.
  */
 
+import { File } from '../models/file';
+
 /** Vertical center (0 = top, 1 = bottom) for page-title cover backgrounds. */
 export type ImageFocusY = number;
 
@@ -97,5 +99,37 @@ export function imageFocusBackgroundStyles(
 
   return {
     'background-position': `center ${clampImageFocusY(focusY) * 100}%`,
+  };
+}
+
+/** Static fallback hero when no entity or instance background image is set. */
+export const PAGE_TITLE_DEFAULT_BG_IMAGE = '/assets/bg.jpeg';
+
+/**
+ * Inline styles for the static default page-title hero background.
+ */
+export function pageTitleDefaultBgStyles(): Record<string, string> {
+  return {
+    'background-image': `url(${PAGE_TITLE_DEFAULT_BG_IMAGE})`,
+  };
+}
+
+/**
+ * CSS custom properties for a responsive page-title hero background.
+ *
+ * Thumbnail size is chosen in {@link PageTitleComponent} SCSS via media queries
+ * aligned with {@link ThumbnailWidths}.
+ */
+export function pageTitleImageCssVars(
+  file: File | null | undefined,
+): Record<string, string> {
+  if (!file) {
+    return {};
+  }
+
+  return {
+    '--page-title-img-m': `url(${file.thumbnailM})`,
+    '--page-title-img-l': `url(${file.thumbnailL})`,
+    '--page-title-img-xl': `url(${file.thumbnailXL})`,
   };
 }
