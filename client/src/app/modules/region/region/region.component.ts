@@ -49,12 +49,7 @@ export class RegionComponent implements OnInit {
       this.store.pipe(select(selectIsModerator), take(1)),
     ]).subscribe(([region, isModerator]) => {
       this.region = region;
-      this.pageTitleService.setTitle(region.name, {
-        imageUrl:
-          region.image?.thumbnailL ??
-          region.image?.thumbnailM ??
-          region.image?.path,
-      });
+      this.pageTitleService.setPortraitTitle(region.name, region.image);
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });

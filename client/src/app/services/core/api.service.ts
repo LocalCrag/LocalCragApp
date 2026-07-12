@@ -257,6 +257,10 @@ export class ApiService {
     uploadFile: (): string => `${this.apiHost}upload`,
   };
 
+  public files = {
+    update: (id: string): string => `${this.apiHost}files/${id}`,
+  };
+
   public scales = {
     get: (lineType: LineType, name: string) =>
       `${this.apiHost}scales/${lineType}/${name}`,

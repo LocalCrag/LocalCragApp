@@ -57,6 +57,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
+from resources.file_resources import UpdateFile
 from resources.gallery_resources import (
     CreateGalleryImage,
     DeleteGalleryImage,
@@ -225,6 +226,10 @@ def configure_api(app):
     upload_bp = Blueprint("upload", __name__)
     upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_files"))
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
+
+    file_bp = Blueprint("files", __name__)
+    file_bp.add_url_rule("/<uuid:file_id>", view_func=UpdateFile.as_view("update_file"))
+    app.register_blueprint(file_bp, url_prefix="/api/files")
 
     # Statistics API
     statistics_bp = Blueprint("statistics", __name__)

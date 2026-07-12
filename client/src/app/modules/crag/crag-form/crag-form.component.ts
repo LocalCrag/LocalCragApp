@@ -22,7 +22,7 @@ import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import {
   TranslocoDirective,
@@ -263,17 +263,26 @@ export class CragFormComponent implements OnInit {
       crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value || null;
       if (this.crag) {
         crag.slug = this.crag.slug;
-        this.cragsService.updateCrag(crag).subscribe((crag) => {
-          this.store.dispatch(toastNotification('CRAG_UPDATED'));
-          this.router.navigate(['/topo', crag.slug]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(
+            crag.portraitImage,
+            this.crag.portraitImage?.focusY,
+          )
+          .pipe(switchMap(() => this.cragsService.updateCrag(crag)))
+          .subscribe((crag) => {
+            this.store.dispatch(toastNotification('CRAG_UPDATED'));
+            this.router.navigate(['/topo', crag.slug]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.cragsService.createCrag(crag).subscribe(() => {
-          this.store.dispatch(toastNotification('CRAG_CREATED'));
-          this.router.navigate(['/topo/crags']);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(crag.portraitImage, null)
+          .pipe(switchMap(() => this.cragsService.createCrag(crag)))
+          .subscribe(() => {
+            this.store.dispatch(toastNotification('CRAG_CREATED'));
+            this.router.navigate(['/topo/crags']);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       }
     } else {
       this.formDirective.markAsTouched();

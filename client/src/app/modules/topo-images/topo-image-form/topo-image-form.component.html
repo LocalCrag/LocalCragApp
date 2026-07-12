@@ -12,10 +12,11 @@
     }
 
     <form [formGroup]="topoImageForm" lcForm>
-      <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="flex flex-col gap-2 topo-image-upload-group" lcControlGroup>
         <lc-single-image-upload
           lcFormControl
           formControlName="image"
+          [focusAdjustable]="true"
           data-cy="topo-image-input"
         ></lc-single-image-upload>
         <small class="lc-error" *lcIfError="'required'">{{

@@ -1,4 +1,4 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
@@ -15,6 +15,7 @@ import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.di
   styleUrl: './page-title.component.scss',
   imports: [
     AsyncPipe,
+    NgStyle,
     NgTemplateOutlet,
     Breadcrumb,
     Tabs,

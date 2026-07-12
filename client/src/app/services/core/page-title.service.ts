@@ -12,10 +12,12 @@ import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { File } from '../../models/file';
 import { TopoImage } from '../../models/topo-image';
+import { imageFocusBackgroundStyles } from '../../utility/image-focus';
 
 export interface PageTitleState {
   title: string | null;
   imageUrl: string | null;
+  imageBackgroundStyles: Record<string, string> | null;
   template: TemplateRef<unknown> | null;
   breadcrumbs: MenuItem[] | null;
   breadcrumbHome: MenuItem | null;
@@ -24,12 +26,14 @@ export interface PageTitleState {
 
 export interface SetPageTitleOptions {
   imageUrl?: string | null;
+  focusY?: number | null;
   template?: TemplateRef<unknown> | null;
 }
 
 const initialState: PageTitleState = {
   title: null,
   imageUrl: null,
+  imageBackgroundStyles: null,
   template: null,
   breadcrumbs: null,
   breadcrumbHome: null,
@@ -87,6 +91,8 @@ export class PageTitleService {
       ...initialState,
       title,
       imageUrl: options?.imageUrl ?? null,
+      imageBackgroundStyles:
+        imageFocusBackgroundStyles(options?.focusY) || null,
       template: options?.template ?? null,
     });
   }
@@ -96,8 +102,10 @@ export class PageTitleService {
     portraitImage?: File | null,
     fallbackImage?: File | null,
   ): void {
+    const hero = resolveHeroImage(portraitImage, fallbackImage);
     this.setTitle(title, {
-      imageUrl: portraitImageUrl(portraitImage, fallbackImage),
+      imageUrl: hero.url,
+      focusY: hero.focusY,
     });
   }
 
@@ -162,15 +170,40 @@ export function portraitImageUrl(
   portraitImage?: File | null,
   fallbackImage?: File | null,
 ): string | null {
-  return fileImageUrl(portraitImage) ?? heroImageUrl(fallbackImage);
+  return resolveHeroImage(portraitImage, fallbackImage).url;
 }
 
 export function topoImageHeaderUrl(
   topoImage?: TopoImage | null,
   fallbackImage?: File | null,
 ): string | null {
-  const file = topoImage?.image;
-  return heroImageUrl(file) ?? heroImageUrl(fallbackImage);
+  return resolveHeroImage(topoImage?.image, fallbackImage).url;
+}
+
+export function topoImageHeaderFocusY(
+  topoImage?: TopoImage | null,
+  fallbackImage?: File | null,
+): number | null {
+  return resolveHeroImage(topoImage?.image, fallbackImage).focusY;
+}
+
+function resolveHeroImage(
+  primaryImage?: File | null,
+  fallbackImage?: File | null,
+): { url: string | null; focusY: number | null } {
+  if (primaryImage) {
+    return {
+      url: fileImageUrl(primaryImage) ?? heroImageUrl(primaryImage),
+      focusY: primaryImage.focusY,
+    };
+  }
+  if (fallbackImage) {
+    return {
+      url: heroImageUrl(fallbackImage),
+      focusY: fallbackImage.focusY,
+    };
+  }
+  return { url: null, focusY: null };
 }
 
 function fileImageUrl(file?: File | null): string | null {

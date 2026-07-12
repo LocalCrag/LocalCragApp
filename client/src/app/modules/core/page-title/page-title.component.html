@@ -10,6 +10,7 @@
           <div
             class="page-chrome__hero-bg"
             [style.background-image]="'url(' + state.imageUrl + ')'"
+            [ngStyle]="state.imageBackgroundStyles"
             role="img"
             [attr.aria-label]="state.title"
           ></div>

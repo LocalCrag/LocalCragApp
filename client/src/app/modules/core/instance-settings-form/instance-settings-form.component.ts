@@ -22,11 +22,12 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
+import { UploadService } from '../../../services/crud/upload.service';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
@@ -106,6 +107,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
   private instanceSettingsService = inject(InstanceSettingsService);
+  private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
 
@@ -296,8 +298,18 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('language').value;
       instanceSettings.timezone =
         this.instanceSettingsForm.get('timezone').value;
-      this.instanceSettingsService
-        .updateInstanceSettings(instanceSettings)
+      this.uploadService
+        .saveFileFocusIfChanged(
+          instanceSettings.mainBgImage,
+          this.instanceSettings?.mainBgImage?.focusY,
+        )
+        .pipe(
+          switchMap(() =>
+            this.instanceSettingsService.updateInstanceSettings(
+              instanceSettings,
+            ),
+          ),
+        )
         .subscribe({
           next: (instanceSettings) => {
             this.store.dispatch(toastNotification('INSTANCE_SETTINGS_UPDATED'));

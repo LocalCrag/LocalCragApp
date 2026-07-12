@@ -25,7 +25,7 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { RegionService } from '../../../services/crud/region.service';
@@ -171,11 +171,14 @@ export class RegionFormComponent implements OnInit {
       region.description = this.regionForm.get('description').value;
       region.rules = this.regionForm.get('rules').value;
       region.image = this.regionForm.get('image').value;
-      this.regionsService.updateRegion(region).subscribe(() => {
-        this.store.dispatch(toastNotification('REGION_UPDATED'));
-        this.router.navigate(['/topo']);
-        this.loadingState = LoadingState.DEFAULT;
-      });
+      this.uploadService
+        .saveFileFocusIfChanged(region.image, this.region?.image?.focusY)
+        .pipe(switchMap(() => this.regionsService.updateRegion(region)))
+        .subscribe(() => {
+          this.store.dispatch(toastNotification('REGION_UPDATED'));
+          this.router.navigate(['/topo']);
+          this.loadingState = LoadingState.DEFAULT;
+        });
     } else {
       this.formDirective.markAsTouched();
     }

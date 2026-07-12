@@ -16,6 +16,7 @@ export class File extends AbstractModel {
   thumbnailXL: string;
   path: string;
   srcSet: string;
+  focusY: number | null;
 
   /**
    * Parses a file object.
@@ -46,6 +47,7 @@ export class File extends AbstractModel {
     media.thumbnailXL = payload.thumbnailXL
       ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1')
       : null;
+    media.focusY = payload.focusY ?? null;
 
     // Build srcSet
     const srcSetEntries = [
@@ -81,6 +83,10 @@ export class File extends AbstractModel {
         media.width > ThumbnailWidths.L ? media.path : media.thumbnailL;
     }
     return media;
+  }
+
+  applyFocusY(focusY: number | null): void {
+    this.focusY = focusY;
   }
 
   /**

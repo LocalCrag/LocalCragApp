@@ -23,7 +23,7 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
@@ -297,14 +297,25 @@ export class SectorFormComponent implements OnInit {
         this.sectorForm.get('blocweatherUrl').value || null;
       if (this.sector) {
         sector.slug = this.sector.slug;
-        this.sectorsService.updateSector(sector).subscribe((sector) => {
-          this.store.dispatch(toastNotification('SECTOR_UPDATED'));
-          this.router.navigate(['/topo', this.cragSlug, sector.slug]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(
+            sector.portraitImage,
+            this.sector.portraitImage?.focusY,
+          )
+          .pipe(switchMap(() => this.sectorsService.updateSector(sector)))
+          .subscribe((sector) => {
+            this.store.dispatch(toastNotification('SECTOR_UPDATED'));
+            this.router.navigate(['/topo', this.cragSlug, sector.slug]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.sectorsService
-          .createSector(sector, this.cragSlug)
+        this.uploadService
+          .saveFileFocusIfChanged(sector.portraitImage, null)
+          .pipe(
+            switchMap(() =>
+              this.sectorsService.createSector(sector, this.cragSlug),
+            ),
+          )
           .subscribe(() => {
             this.store.dispatch(toastNotification('SECTOR_CREATED'));
             this.router.navigate(['/topo', this.cragSlug, 'sectors']);

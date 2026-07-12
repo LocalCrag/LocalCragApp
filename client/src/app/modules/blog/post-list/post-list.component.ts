@@ -104,6 +104,7 @@ export class PostListComponent implements OnInit {
               mainBgImage?.thumbnailM ??
               mainBgImage?.path ??
               null,
+            focusY: mainBgImage?.focusY ?? null,
           },
         );
       });

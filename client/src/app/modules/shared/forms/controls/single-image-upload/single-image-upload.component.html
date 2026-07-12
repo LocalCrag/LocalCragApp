@@ -22,25 +22,122 @@
     <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
   }
 
-  <div class="image-wrapper">
-    @if (file) {
-      <p-image
-        [src]="file.path"
-        [preview]="!isDisabled"
-        [alt]="file.originalFilename"
-        width="250"
-      >
-        <ng-template #indicator>
-          <i class="pi pi-eye"></i>
-        </ng-template>
-      </p-image>
-    }
-    @if (file && !isDisabled) {
-      <p-button
-        icon="pi pi-times"
-        (click)="removeMedia()"
-        styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
-      ></p-button>
+  <div class="image-upload-preview">
+    <div class="image-wrapper">
+      @if (file) {
+        @if (focusAdjustable && focusAdjustActive && focusFrame) {
+          <div
+            #focusStage
+            class="image-focus-preview"
+            [class.image-focus-preview--dragging]="focusDragging"
+            (pointerdown)="startFocusDrag($event)"
+          >
+            <img
+              class="image-focus-preview__image"
+              [src]="file.path"
+              [alt]="file.originalFilename"
+              width="250"
+              draggable="false"
+            />
+            <div
+              class="image-focus-preview__shade image-focus-preview__shade--top"
+              [style.height.%]="focusFrame.top"
+            ></div>
+            <div
+              class="image-focus-preview__shade image-focus-preview__shade--bottom"
+              [style.top.%]="focusFrame.top + focusFrame.height"
+            ></div>
+            <div
+              class="image-focus-preview__shade image-focus-preview__shade--left"
+              [style.top.%]="focusFrame.top"
+              [style.height.%]="focusFrame.height"
+              [style.width.%]="focusFrame.left"
+            ></div>
+            <div
+              class="image-focus-preview__shade image-focus-preview__shade--right"
+              [style.top.%]="focusFrame.top"
+              [style.height.%]="focusFrame.height"
+              [style.left.%]="focusFrame.left + focusFrame.width"
+            ></div>
+            <div
+              class="image-focus-preview__frame"
+              [style.top.%]="focusFrame.top"
+              [style.left.%]="focusFrame.left"
+              [style.width.%]="focusFrame.width"
+              [style.height.%]="focusFrame.height"
+            ></div>
+            <div
+              class="image-focus-preview__marker"
+              [style.top.%]="focusY * 100"
+            ></div>
+          </div>
+        } @else {
+          <p-image
+            [src]="file.path"
+            [preview]="!isDisabled"
+            [alt]="file.originalFilename"
+            width="250"
+          >
+            <ng-template #indicator>
+              <i class="pi pi-eye"></i>
+            </ng-template>
+          </p-image>
+        }
+      }
+      @if (file && !isDisabled) {
+        <p-button
+          icon="pi pi-times"
+          (click)="removeMedia()"
+          [disabled]="focusAdjustActive"
+          styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
+        ></p-button>
+      }
+    </div>
+
+    @if (file && focusAdjustable && file.width && file.height) {
+      <div class="focus-adjust-actions">
+        @if (focusAdjustActive) {
+          <p-button
+            icon="pi pi-check"
+            [label]="t('adjustCropDoneButtonLabel')"
+            severity="primary"
+            size="small"
+            (click)="confirmFocusAdjust()"
+          />
+          <p-button
+            icon="pi pi-refresh"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            [pTooltip]="t('adjustCropResetButtonLabel')"
+            tooltipPosition="top"
+            (click)="resetFocusAdjust()"
+          />
+          <p-button
+            icon="pi pi-times"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            [pTooltip]="t('adjustCropCancelButtonLabel')"
+            tooltipPosition="top"
+            (click)="cancelFocusAdjust()"
+          />
+        } @else {
+          <p-button
+            icon="pi pi-objects-column"
+            [label]="t('adjustCropButtonLabel')"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (click)="toggleFocusAdjust()"
+          />
+        }
+        <span
+          class="pi pi-info-circle focus-adjust-actions__info"
+          [pTooltip]="t('adjustCropTooltip')"
+          tooltipPosition="right"
+        ></span>
+      </div>
     }
   </div>
 </ng-container>

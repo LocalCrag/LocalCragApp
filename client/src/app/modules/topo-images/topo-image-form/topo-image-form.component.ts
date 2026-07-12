@@ -22,7 +22,7 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -46,6 +46,7 @@ import { Button } from 'primeng/button';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { AreasService } from '../../../services/crud/areas.service';
+import { UploadService } from '../../../services/crud/upload.service';
 
 /**
  * Component for uploading topo images.
@@ -95,6 +96,7 @@ export class TopoImageFormComponent implements OnInit {
   private router = inject(Router);
   private topoImagesService = inject(TopoImagesService);
   private areasService = inject(AreasService);
+  private uploadService = inject(UploadService);
   private pageTitleService = inject(PageTitleService);
   private parentArea: Area;
 
@@ -206,20 +208,30 @@ export class TopoImageFormComponent implements OnInit {
       topoImage.coordinates = this.topoImageForm.get('coordinates').value;
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
-        this.topoImagesService.updateTopoImage(topoImage).subscribe(() => {
-          this.store.dispatch(toastNotification('TOPO_IMAGE_UPDATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            this.areaSlug,
-            'topo-images',
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(topoImage.image, this.topoImage.image?.focusY)
+          .pipe(
+            switchMap(() => this.topoImagesService.updateTopoImage(topoImage)),
+          )
+          .subscribe(() => {
+            this.store.dispatch(toastNotification('TOPO_IMAGE_UPDATED'));
+            this.router.navigate([
+              '/topo',
+              this.cragSlug,
+              this.sectorSlug,
+              this.areaSlug,
+              'topo-images',
+            ]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.topoImagesService
-          .addTopoImage(topoImage, this.areaSlug)
+        this.uploadService
+          .saveFileFocusIfChanged(topoImage.image, null)
+          .pipe(
+            switchMap(() =>
+              this.topoImagesService.addTopoImage(topoImage, this.areaSlug),
+            ),
+          )
           .subscribe(() => {
             this.store.dispatch(toastNotification('TOPO_IMAGE_ADDED'));
             this.router.navigate([

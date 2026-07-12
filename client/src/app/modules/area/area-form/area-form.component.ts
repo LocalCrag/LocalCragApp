@@ -24,7 +24,7 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -295,27 +295,40 @@ export class AreaFormComponent implements OnInit {
       area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
       if (this.area) {
         area.slug = this.area.slug;
-        this.areasService.updateArea(area).subscribe((area) => {
-          this.store.dispatch(toastNotification('AREA_UPDATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            area.slug,
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(
+            area.portraitImage,
+            this.area.portraitImage?.focusY,
+          )
+          .pipe(switchMap(() => this.areasService.updateArea(area)))
+          .subscribe((area) => {
+            this.store.dispatch(toastNotification('AREA_UPDATED'));
+            this.router.navigate([
+              '/topo',
+              this.cragSlug,
+              this.sectorSlug,
+              area.slug,
+            ]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.areasService.createArea(area, this.sectorSlug).subscribe(() => {
-          this.store.dispatch(toastNotification('AREA_CREATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            'areas',
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(area.portraitImage, null)
+          .pipe(
+            switchMap(() =>
+              this.areasService.createArea(area, this.sectorSlug),
+            ),
+          )
+          .subscribe(() => {
+            this.store.dispatch(toastNotification('AREA_CREATED'));
+            this.router.navigate([
+              '/topo',
+              this.cragSlug,
+              this.sectorSlug,
+              'areas',
+            ]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       }
     } else {
       this.formDirective.markAsTouched();
