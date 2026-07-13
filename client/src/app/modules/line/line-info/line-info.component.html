@@ -44,29 +44,31 @@
             *isModerator="true"
           ></p-button>
         </div>
+
         <div
           class="flex flex-col justify-between items-center xl:items-start flex-1 gap-6 pt-6"
         >
           <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
+
           @if (line.description) {
             <div
               [innerHTML]="line.description | sanitizeHtml"
               class="quill-content line-description"
             ></div>
           }
+
           <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
-          @if (line.ascentCount > 0 && displayUserGrades === true) {
-            <div>
-              {{ t("userGrade") }}:
-              {{
-                scalesService.gradeNameByValue(
-                  line.type,
-                  line.gradeScale,
-                  line.userGradeValue
-                ) | async
-              }}
-            </div>
+
+          @if (line.ascentCount > 0) {
+            @if (displayUserGrades) {
+              <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
+            } @else {
+              <div>
+                {{ t("proposedAs") }}: {{ line | lineGrade: "author" }}
+              </div>
+            }
           }
+
           @if (line.videos?.length > 0) {
             <div>
               {{ t("videoBeta") }}:
@@ -81,15 +83,15 @@
               </span>
             </div>
           }
+
           <div>
             {{ t("rating") }}:
             <p-rating
-              [ngModel]="
-                displayUserRating ? line.userRating : line.authorRating
-              "
+              [ngModel]="displayUserRating ? line.userRating : line.authorRating"
               [readonly]="true"
             ></p-rating>
           </div>
+
           @if (line.faName || line.faYear || line.faDate) {
             <div class="fa">
               {{ t("FA") }}
@@ -104,6 +106,7 @@
               }
             </div>
           }
+
           @if (line.routesetter || line.setDate) {
             <div class="routesetter">
               {{ t("routesetter") }}
@@ -115,11 +118,13 @@
               }
             </div>
           }
+
           <lc-archive-button
             [line]="line"
             [showLabel]="true"
             *isModerator="true"
           ></lc-archive-button>
+
           @if (!ticks.has(line.id)) {
             <lc-todo-button
               [line]="line"
@@ -128,6 +133,7 @@
               *isLoggedIn="true"
             ></lc-todo-button>
           }
+
           <lc-tick-button
             [line]="line"
             [ticked]="ticks.has(line.id)"
