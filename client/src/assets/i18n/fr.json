@@ -489,6 +489,8 @@
   "releaseNotes.notes.lineFilters_title": "Filtres de ligne avancés",
   "releaseNotes.notes.newOrderOptions": "En vue liste, vous pouvez désormais trier les lignes par date d'enregistrement et par leur position sur le topo (bloc ou photo). Les falaises, les secteurs et les zones peuvent être triés par nombre de lignes et par nombre total d'ascensions.",
   "releaseNotes.notes.newOrderOptions_title": "Nouvelles options de tri pour les lignes, les rochers et bien plus encore",
+  "releaseNotes.notes.darkMode_title": "Mode sombre et refonte",
+  "releaseNotes.notes.darkMode": "Comme vous pouvez le voir, il y a eu une refonte assez importante ! Les grandes images d’arrière‑plan un peu « old school » ont été supprimées ; à la place, vous trouverez des images d’en‑tête adaptées au site, au secteur et à la voie. Vous pouvez aussi activer le mode sombre dans les paramètres de votre compte. Vos retours sont les bienvenus : https://github.com/LocalCrag/LocalCragApp",
   "notifications.COMMENT_CREATED_SUCCESS_TITLE": "Commentaire ajouté",
   "notifications.COMMENT_CREATED_SUCCESS_MESSAGE": "Le commentaire a été ajouté avec succès.",
   "notifications.COMMENT_UPDATED_SUCCESS_TITLE": "Commentaire enregistré.",

@@ -489,6 +489,8 @@
   "releaseNotes.notes.lineFilters_title": "Geavanceerde lijnfilters",
   "releaseNotes.notes.newOrderOptions": "In de lijstweergave kun je lijnen nu sorteren op registratiedatum en op positie in het topo (blok of foto). Klimgebieden, sectoren en klimwanden kun je sorteren op aantal lijnen en op het totale aantal beklimmingen.",
   "releaseNotes.notes.newOrderOptions_title": "Nieuwe sorteeropties voor lijnen, klimgebieden en meer",
+  "releaseNotes.notes.darkMode_title": "Donkere modus en redesign",
+  "releaseNotes.notes.darkMode": "Zoals je ziet is er een grotere redesign geweest! De wat oldschool grote achtergrondafbeeldingen zijn verwijderd; in plaats daarvan zijn er headerafbeeldingen die passen bij het klimgebied, de sector en de route. Daarnaast kun je in je accountinstellingen de donkere modus inschakelen. Feedback is welkom op: https://github.com/LocalCrag/LocalCragApp",
   "notifications.COMMENT_CREATED_SUCCESS_TITLE": "Opmerking toegevoegd",
   "notifications.COMMENT_CREATED_SUCCESS_MESSAGE": "De opmerking is met succes toegevoegd.",
   "notifications.COMMENT_UPDATED_SUCCESS_TITLE": "Opmerking opgeslagen",

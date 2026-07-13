@@ -11,6 +11,10 @@
     {
       "key": "frenchLanguage",
       "type": "FEATURE"
+    },
+    {
+      "key": "darkMode",
+      "type": "FEATURE"
     }
   ]
 }

@@ -1004,5 +1004,7 @@
   "BOTTOM": "Footer",
   "TOP": "Header",
   "DATE": "Datum",
-  "YEAR": "Jahr"
+  "YEAR": "Jahr",
+  "releaseNotes.notes.darkMode_title": "Dark mode und Redesign",
+  "releaseNotes.notes.darkMode": "Wie ihr seht gab es ein größeres Redesign! Die etwas oldschool wirkenden großen Hintergrundbilder wurden entfernt, dafür gibt es zum Gebiet / Sektor / Linie passende Titelbilder. Außerdem könnt ihr in euren Accounteinstellungen den Dark mode aktivieren. Feedback gerne auf: https://github.com/LocalCrag/LocalCragApp"
 }

@@ -489,6 +489,8 @@
   "releaseNotes.notes.lineFilters_title": "Filtri linee avanzati",
   "releaseNotes.notes.newOrderOptions": "Nella vista elenco puoi ora ordinare le vie per data di inserimento e per blocco o foto nel topo. Zone, settori e aree possono essere ordinati per numero di vie e per numero totale di ripetizioni.",
   "releaseNotes.notes.newOrderOptions_title": "Nuove opzioni di ordinamento per vie, zone e altro",
+  "releaseNotes.notes.darkMode_title": "Modalità scura e redesign",
+  "releaseNotes.notes.darkMode": "Come puoi vedere, c’è stato un redesign importante! Le grandi immagini di sfondo un po’ “old school” sono state rimosse; al loro posto trovi immagini di intestazione adatte a zona/settore/problema. Inoltre puoi attivare la modalità scura nelle impostazioni del tuo account. Feedback benvenuto su: https://github.com/LocalCrag/LocalCragApp",
   "notifications.COMMENT_CREATED_SUCCESS_TITLE": "Commento aggiunto",
   "notifications.COMMENT_CREATED_SUCCESS_MESSAGE": "Il commento è stato aggiunto con successo.",
   "notifications.COMMENT_UPDATED_SUCCESS_TITLE": "Commento salvato",

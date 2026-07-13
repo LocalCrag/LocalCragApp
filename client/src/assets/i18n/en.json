@@ -489,6 +489,8 @@
   "releaseNotes.notes.lineFilters_title": "Advanced line filters",
   "releaseNotes.notes.newOrderOptions": "In list view, you can now sort lines by record date and by their position on the topo (block or photo). Crags, sectors, and areas can be sorted by number of lines and by total ascent count.",
   "releaseNotes.notes.newOrderOptions_title": "New sorting options for lines, crags, and more",
+  "releaseNotes.notes.darkMode_title": "Dark mode and redesign",
+  "releaseNotes.notes.darkMode": "As you can see, there was a bigger redesign! The somewhat old-school large background images were removed; instead there are header images matching the crag, sector, and line. You can also enable dark mode in your account settings. Feedback welcome at: https://github.com/LocalCrag/LocalCragApp",
   "notifications.COMMENT_CREATED_SUCCESS_TITLE": "Comment added",
   "notifications.COMMENT_CREATED_SUCCESS_MESSAGE": "Comment was added successfully.",
   "notifications.COMMENT_UPDATED_SUCCESS_TITLE": "Comment saved.",
