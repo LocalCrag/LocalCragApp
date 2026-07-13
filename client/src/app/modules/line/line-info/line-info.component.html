@@ -63,9 +63,7 @@
             @if (displayUserGrades) {
               <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
             } @else {
-              <div>
-                {{ t("proposedAs") }}: {{ line | lineGrade: "author" }}
-              </div>
+              <div>{{ t("proposedAs") }}: {{ line | lineGrade: "author" }}</div>
             }
           }
 
@@ -87,7 +85,9 @@
           <div>
             {{ t("rating") }}:
             <p-rating
-              [ngModel]="displayUserRating ? line.userRating : line.authorRating"
+              [ngModel]="
+                displayUserRating ? line.userRating : line.authorRating
+              "
               [readonly]="true"
             ></p-rating>
           </div>
