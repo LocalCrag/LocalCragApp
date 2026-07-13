@@ -60,7 +60,7 @@
           <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
 
           @if (line.ascentCount > 0) {
-            @if (displayUserGrades) {
+            @if (!displayUserGrades) {
               <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
             } @else {
               <div>{{ t("proposedAs") }}: {{ line | lineGrade: "author" }}</div>
