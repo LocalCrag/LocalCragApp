@@ -335,7 +335,7 @@ def test_grade_ranking_votes(client, user_token):
 def test_grade_ranking_votes_top_of_scale(client, user_token):
     # Regression: an ascent graded at the highest grade of the scale (FB 9A+ = 29)
     # used to crash the recompute with IndexError, leaving user_grade_value stale.
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     ascent_data = {
         "flash": True,
@@ -357,7 +357,7 @@ def test_grade_ranking_votes_top_of_scale(client, user_token):
     update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
-    assert line.author_grade_value == 1
+    assert line.author_grade_value == 20
     assert line.user_grade_value == 29
 
 
