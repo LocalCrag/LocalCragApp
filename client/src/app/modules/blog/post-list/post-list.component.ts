@@ -98,10 +98,7 @@ export class PostListComponent implements OnInit {
           this.translocoService.translate(
             marker('posts.postList.postListTitle'),
           ),
-          {
-            image: bgImage ?? null,
-            focusY: bgImage?.focusY ?? null,
-          },
+          { image: bgImage ?? null },
         );
       });
   }

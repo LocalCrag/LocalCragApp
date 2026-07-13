@@ -120,7 +120,7 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
-            const { image, focusY } = resolveTopoPageTitleImage(
+            const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
               instanceSettings.bgImage,
             );
@@ -136,7 +136,6 @@ export class LineComponent implements OnInit {
                     : this.translocoService.translate(gradeName);
                 this.pageTitleService.setTitle(`${line.name} ${displayGrade}`, {
                   image,
-                  focusY,
                 });
                 const breadcrumbs = [
                   {

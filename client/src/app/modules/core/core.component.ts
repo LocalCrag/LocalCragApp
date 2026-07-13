@@ -30,6 +30,13 @@ import { FooterComponent } from './footer/footer.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { Toast } from 'primeng/toast';
 
+/**
+ * Application shell: fixed site header, main layout, and global chrome.
+ *
+ * The header is `position: fixed`; a spacer in the template reserves its height via
+ * the `--lc-menu-height` CSS variable (not a template height binding, to avoid
+ * change-detection errors after measuring).
+ */
 @Component({
   selector: 'lc-root',
   templateUrl: './core.component.html',
@@ -51,18 +58,23 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('siteHeader')
   private siteHeader?: ElementRef<HTMLElement>;
 
+  /** Slides the fixed header off-screen when the user scrolls down. */
   headerHidden = false;
+
+  /** Measured header height in px; used for scroll hide/show threshold only. */
   headerHeight = 0;
 
   private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);
   private resizeObserver?: ResizeObserver;
   private lastScrollY = 0;
+  /** Ignore tiny scroll jitter before toggling header visibility. */
   private readonly scrollDeltaMin = 4;
-  // // Needs to be instantiated here so all router events are tracked
+  // Needs to be instantiated here so all router events are tracked
   private _navigationService = inject(NavigationService);
 
   constructor() {
+    // Measure after first render; ViewChild is available and this avoids NG0100.
     afterNextRender(() => this.updateHeaderHeight());
 
     const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
@@ -109,6 +121,7 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   onWindowScroll() {
     const scrollY = window.scrollY;
 
+    // Always show the header near the top of the page.
     if (scrollY <= this.headerHeight) {
       this.headerHidden = false;
       this.lastScrollY = scrollY;
@@ -142,6 +155,7 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    // Re-measure when alerts or menu content change the header height.
     this.resizeObserver = new ResizeObserver(() => this.updateHeaderHeight());
     this.resizeObserver.observe(headerElement);
   }
@@ -150,6 +164,10 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     this.resizeObserver?.disconnect();
   }
 
+  /**
+   * Syncs measured header height to `--lc-menu-height` for the spacer and other
+   * layout (e.g. full-page views that subtract menu height from viewport).
+   */
   private updateHeaderHeight() {
     this.headerHeight = this.siteHeader?.nativeElement.offsetHeight ?? 0;
     const heightValue = `${this.headerHeight}px`;

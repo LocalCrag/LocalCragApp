@@ -34,7 +34,7 @@ import { HeroParallaxDirective } from './hero-parallax.directive';
 export class PageTitleComponent {
   protected pageTitleService = inject(PageTitleService);
 
-  protected hasChrome(state: PageTitleState): boolean {
+  protected hasPageHeader(state: PageTitleState): boolean {
     return (
       !!state.title ||
       !!state.template ||

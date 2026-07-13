@@ -14,21 +14,55 @@ import { File } from '../../models/file';
 import { TopoImage } from '../../models/topo-image';
 import { imageFocusBackgroundStyles } from '../../utility/image-focus';
 
+/**
+ * State for the shared page header ("page title") chrome rendered by
+ * `PageTitleComponent`.
+ *
+ * Notes:
+ * - **Hero image**: pass the full {@link File} so the component can choose the
+ *   best thumbnail size via CSS media queries.
+ * - **Hero focus**: vertical focus is derived from `image.focusY` and mapped to
+ *   inline `background-position` styles via `imageFocusBackgroundStyles(...)`.
+ * - **Reset on navigation**: the service clears state when the primary routed
+ *   component changes (see `getPrimaryPageHostKey(...)`).
+ */
 export interface PageTitleState {
+  /** Page heading string; ignored when `template` is set. */
   title: string | null;
+
+  /** Optional hero background image. */
   image: File | null;
+
+  /**
+   * When true and `image` is null, the component shows a static default hero
+   * background (e.g. instance default / app fallback).
+   */
   heroDefaultBg: boolean;
+
+  /** Inline styles used for image focus (typically `background-position`). */
   imageBackgroundStyles: Record<string, string> | null;
+
+  /** Optional heading template (takes precedence over `title`). */
   template: TemplateRef<unknown> | null;
+
+  /** Breadcrumb items for the header. */
   breadcrumbs: MenuItem[] | null;
   breadcrumbHome: MenuItem | null;
+
+  /** Optional tab menu displayed in the header. */
   tabs: MenuItem[] | null;
 }
 
+/** Options for `setTitle(...)`. */
 export interface SetPageTitleOptions {
+  /** Optional hero background image. */
   image?: File | null;
-  focusY?: number | null;
+  /**
+   * Show the default hero background even without an image.
+   * (Typically used when there *should* be a hero area but no image is set.)
+   */
   heroDefaultBg?: boolean;
+  /** Optional heading template; overrides the `title` string. */
   template?: TemplateRef<unknown> | null;
 }
 
@@ -58,6 +92,9 @@ export class PageTitleService {
   readonly state$ = this.stateSubject.asObservable();
 
   constructor() {
+    // Track the current "page host" route so we can clear header state when the
+    // primary routed component changes (avoids leaking breadcrumbs/tabs/title
+    // between unrelated pages).
     this.currentPageHostKey = this.getPrimaryPageHostKey(
       this.router.routerState.snapshot.root,
     );
@@ -89,31 +126,44 @@ export class PageTitleService {
       });
   }
 
+  /**
+   * Sets the current page header title/chrome and resets all other state to the
+   * defaults.
+   *
+   * Prefer this over patching when navigating between unrelated pages.
+   */
   setTitle(title: string | null, options?: SetPageTitleOptions): void {
+    const image = options?.image ?? null;
     this.stateSubject.next({
       ...initialState,
       title,
-      image: options?.image ?? null,
+      image,
       heroDefaultBg: options?.heroDefaultBg ?? false,
-      imageBackgroundStyles:
-        imageFocusBackgroundStyles(options?.focusY) || null,
+      imageBackgroundStyles: imageFocusBackgroundStyles(image?.focusY) || null,
       template: options?.template ?? null,
     });
   }
 
+  /**
+   * Sets a header title with a portrait-style hero image. If no image is
+   * available, a default hero background is enabled.
+   */
   setPortraitTitle(
     title: string,
     portraitImage?: File | null,
     fallbackImage?: File | null,
   ): void {
-    const hero = resolvePageTitleImage(portraitImage, fallbackImage);
+    const image = resolvePageTitleImage(portraitImage, fallbackImage);
     this.setTitle(title, {
-      image: hero.image,
-      focusY: hero.focusY,
-      heroDefaultBg: !hero.image,
+      image,
+      heroDefaultBg: !image,
     });
   }
 
+  /**
+   * Updates breadcrumbs without resetting the whole page-title state.
+   * Useful when breadcrumbs depend on async-loaded entities.
+   */
   setBreadcrumbs(
     breadcrumbs: MenuItem[] | null,
     home: MenuItem | null = null,
@@ -132,6 +182,13 @@ export class PageTitleService {
     this.stateSubject.next({ ...initialState });
   }
 
+  /**
+   * Builds a "page host" key from the route tree.
+   *
+   * We treat the deepest primary-outlet route that defines a component (or
+   * loadComponent) as the page host. When this key changes, we clear the header
+   * state so it doesn't leak across pages.
+   */
   private getPrimaryPageHostKey(root: ActivatedRouteSnapshot): string {
     let hostRoute: ActivatedRouteSnapshot | null = null;
 
@@ -171,28 +228,28 @@ export class PageTitleService {
   }
 }
 
+/**
+ * Resolves the hero image to use (prefer primary, otherwise fallback).
+ *
+ * Returning the full {@link File} allows responsive thumbnail selection in CSS.
+ */
 export function resolvePageTitleImage(
   primaryImage?: File | null,
   fallbackImage?: File | null,
-): { image: File | null; focusY: number | null } {
+): File | null {
   if (primaryImage) {
-    return {
-      image: primaryImage,
-      focusY: primaryImage.focusY,
-    };
+    return primaryImage;
   }
   if (fallbackImage) {
-    return {
-      image: fallbackImage,
-      focusY: fallbackImage.focusY,
-    };
+    return fallbackImage;
   }
-  return { image: null, focusY: null };
+  return null;
 }
 
+/** Convenience helper for topo-based pages. */
 export function resolveTopoPageTitleImage(
   topoImage?: TopoImage | null,
   fallbackImage?: File | null,
-): { image: File | null; focusY: number | null } {
+): File | null {
   return resolvePageTitleImage(topoImage?.image, fallbackImage);
 }

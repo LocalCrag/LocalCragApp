@@ -1,5 +1,5 @@
 @if (pageTitleService.state$ | async; as state) {
-  @if (hasChrome(state)) {
+  @if (hasPageHeader(state)) {
     <div
       class="page-chrome"
       [class.page-chrome--with-image]="hasHeroBackground(state)"
