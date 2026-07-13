@@ -22,7 +22,7 @@ import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import {
   TranslocoDirective,
@@ -41,7 +41,6 @@ import {
 
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
-import { Card } from 'primeng/card';
 
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
@@ -59,6 +58,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * A component for creating and editing crags.
@@ -70,7 +70,6 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
   providers: [ConfirmationService],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     ControlGroupDirective,
     FormDirective,
@@ -116,6 +115,7 @@ export class CragFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private languageService = inject(LanguageService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -134,12 +134,14 @@ export class CragFormComponent implements OnInit {
       .subscribe((rendered) => {
         if (!rendered) return;
         this.buildScaleSelectors().subscribe();
+        this.setPageTitle();
       });
 
     const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
 
     if (cragSlug) {
       this.editMode = true;
+      this.setPageTitle();
       this.cragForm.disable();
       forkJoin([
         this.cragsService.getCrag(cragSlug).pipe(
@@ -160,6 +162,7 @@ export class CragFormComponent implements OnInit {
         });
       });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('cragFormBrowserTitle'))} - ${instanceName}`,
@@ -171,6 +174,17 @@ export class CragFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       });
     }
+  }
+
+  /** t(crag.cragForm.editCragTitle, crag.cragForm.createCragTitle) */
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'crag.cragForm.editCragTitle'
+          : 'crag.cragForm.createCragTitle',
+      ),
+    );
   }
 
   /**
@@ -249,17 +263,23 @@ export class CragFormComponent implements OnInit {
       crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value || null;
       if (this.crag) {
         crag.slug = this.crag.slug;
-        this.cragsService.updateCrag(crag).subscribe((crag) => {
-          this.store.dispatch(toastNotification('CRAG_UPDATED'));
-          this.router.navigate(['/topo', crag.slug]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(crag.portraitImage)
+          .pipe(switchMap(() => this.cragsService.updateCrag(crag)))
+          .subscribe((crag) => {
+            this.store.dispatch(toastNotification('CRAG_UPDATED'));
+            this.router.navigate(['/topo', crag.slug]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.cragsService.createCrag(crag).subscribe(() => {
-          this.store.dispatch(toastNotification('CRAG_CREATED'));
-          this.router.navigate(['/topo/crags']);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(crag.portraitImage)
+          .pipe(switchMap(() => this.cragsService.createCrag(crag)))
+          .subscribe(() => {
+            this.store.dispatch(toastNotification('CRAG_CREATED'));
+            this.router.navigate(['/topo/crags']);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       }
     } else {
       this.formDirective.markAsTouched();

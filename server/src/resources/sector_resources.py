@@ -22,7 +22,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import (
     set_sector_parents_false,
     update_sector_propagating_boolean_attr,
@@ -125,10 +125,10 @@ class CreateSector(MethodView):
 
         new_sector: Sector = Sector()
         new_sector.name = sector_data["name"].strip()
-        new_sector.description = add_bucket_placeholders(sector_data["description"])
-        new_sector.short_description = sector_data["shortDescription"]
+        new_sector.description = sanitize_wysiwyg_html(sector_data["description"])
+        new_sector.short_description = sanitize_wysiwyg_html(sector_data["shortDescription"])
         new_sector.portrait_image_id = sector_data["portraitImage"]
-        new_sector.rules = add_bucket_placeholders(sector_data["rules"])
+        new_sector.rules = sanitize_wysiwyg_html(sector_data["rules"])
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
@@ -166,10 +166,10 @@ class UpdateSector(MethodView):
             raise NotFound(error)
 
         sector.name = sector_data["name"].strip()
-        sector.description = add_bucket_placeholders(sector_data["description"])
-        sector.short_description = sector_data["shortDescription"]
+        sector.description = sanitize_wysiwyg_html(sector_data["description"])
+        sector.short_description = sanitize_wysiwyg_html(sector_data["shortDescription"])
         sector.portrait_image_id = sector_data["portraitImage"]
-        sector.rules = add_bucket_placeholders(sector_data["rules"])
+        sector.rules = sanitize_wysiwyg_html(sector_data["rules"])
         update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
         apply_closable_configuration(sector, sector_data, "sector_id")
         sector.default_boulder_scale = sector_data["defaultBoulderScale"]

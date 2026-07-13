@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { File } from '../../models/file';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DeleteAction, ImageSpec, ResizeAction } from 'quill-blot-formatter';
+import { ImageFocusY, normalizeImageFocusY } from '../../utility/image-focus';
 
 /**
  * Adds event listeners for Blot Formatters ImageSpec to fix scrolling issues.
@@ -55,6 +56,37 @@ export class UploadService {
     return this.http
       .post<File[]>(this.api.uploader.uploadFile(), formData)
       .pipe(map((response: File[]) => File.deserialize(response[0])));
+  }
+
+  /**
+   * Updates horizontal focus metadata for an uploaded file.
+   */
+  public updateFileFocus(
+    fileId: string,
+    focusY: ImageFocusY | null,
+  ): Observable<File> {
+    return this.http
+      .patch<any>(this.api.files.update(fileId), { focusY })
+      .pipe(map((response) => File.deserialize(response)));
+  }
+
+  /**
+   * Persists focus metadata when it changed since the form was loaded.
+   */
+  public saveFileFocusIfChanged(
+    file: File | null | undefined,
+  ): Observable<File | null> {
+    if (!file?.id) {
+      return of(null);
+    }
+
+    const nextFocusY = normalizeImageFocusY(file.focusY);
+    const originalFocusY = normalizeImageFocusY(file.focusYAtLoad);
+    if (nextFocusY === originalFocusY) {
+      return of(null);
+    }
+
+    return this.updateFileFocus(file.id, nextFocusY);
   }
 
   /**

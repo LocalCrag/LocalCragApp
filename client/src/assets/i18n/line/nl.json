@@ -84,8 +84,6 @@
   "lineForm.cancelButtonLabel": "Annuleren",
   "lineForm.moveLineButtonLabel": "Verplaatsen",
   "lineForm.deleteLineButtonLabel": "Route verwijderen",
-  "lineForm.editLineTitle": "Route bewerken",
-  "lineForm.createLineTitle": "Route aanmaken",
   "lineBoolPropList.eliminate": "Definitie",
   "lineBoolPropList.traverse": "Traversée",
   "lineBoolPropList.highball": "Highball",
@@ -134,5 +132,7 @@
   "lineList.advancedFiltersApply": "Toepassen",
   "batchLineForm.lineNamePlaceholder": "Naam",
   "batchLineForm.gradePlaceholder": "Graad",
-  "batchLineForm.lineFANamePlaceholder": "Eerste klimmer"
+  "batchLineForm.lineFANamePlaceholder": "Eerste klimmer",
+  "lineForm.editLineTitle": "Route bewerken",
+  "lineForm.createLineTitle": "Route aanmaken"
 }

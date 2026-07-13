@@ -57,6 +57,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
+from resources.file_resources import UpdateFile
 from resources.gallery_resources import (
     CreateGalleryImage,
     DeleteGalleryImage,
@@ -145,7 +146,7 @@ from resources.sector_resources import (
     UpdateSector,
     UpdateSectorOrder,
 )
-from resources.statistics_resources import GetCompletion
+from resources.statistics_resources import GetCompletion, GetInstanceStatistics
 from resources.todo_resources import (
     CreateTodo,
     DeleteTodo,
@@ -226,9 +227,14 @@ def configure_api(app):
     upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_files"))
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
 
+    file_bp = Blueprint("files", __name__)
+    file_bp.add_url_rule("/<uuid:file_id>", view_func=UpdateFile.as_view("update_file"))
+    app.register_blueprint(file_bp, url_prefix="/api/files")
+
     # Statistics API
     statistics_bp = Blueprint("statistics", __name__)
     statistics_bp.add_url_rule("completion", view_func=GetCompletion.as_view("get_completion"))
+    statistics_bp.add_url_rule("instance", view_func=GetInstanceStatistics.as_view("get_instance_statistics"))
     app.register_blueprint(statistics_bp, url_prefix="/api/statistics")
 
     # Search API

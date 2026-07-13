@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
@@ -38,6 +39,7 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-history-list',
@@ -75,6 +77,7 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
   private transloco = inject(TranslocoService);
   private scalesService = inject(ScalesService);
   private cdr = inject(ChangeDetectorRef);
+  private pageTitleService = inject(PageTitleService);
 
   loadFirstPage() {
     loadFirstPaginatedPage(this, () => this.loadNextPage());
@@ -99,6 +102,9 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
   }
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.transloco.translate(marker('history.historyTitle')),
+    );
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.loadFirstPage();
   }

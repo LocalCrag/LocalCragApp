@@ -11,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Annuler",
   "closableFormScheduleDialog.ok": "D'ACCORD",
   "closableFormScheduleDialog.editScheduleTitle": "Modifier le calendrier de fermeture",
-  "closableFormScheduleDialog.createScheduleTitle": "Ajouter un horaire de fermeture"
+  "closableFormScheduleDialog.createScheduleTitle": "Ajouter un horaire de fermeture",
+  "closableForm.permanentScheduleTitle": "Permanent",
+  "closableForm.fixedScheduleTitle": "Fixe",
+  "closableForm.annualScheduleTitle": "Annuel"
 }

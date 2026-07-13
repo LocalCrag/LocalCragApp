@@ -7,7 +7,6 @@ import { AreaAscentsComponent } from '../../../area/area-ascents/area-ascents.co
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -21,7 +20,6 @@ export const topoAreaRoutes: Routes = [
   {
     path: areaPrefix,
     component: AreaComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',
@@ -77,6 +75,5 @@ export const topoAreaRoutes: Routes = [
         (m) => m.AreaFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
 ];

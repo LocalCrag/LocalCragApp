@@ -20,8 +20,6 @@
   "topoImageForm.addTopoImageButtonLabel": "Save",
   "topoImageForm.cancelButtonLabel": "Cancel",
   "topoImageForm.moveTopoImageButtonLabel": "Move",
-  "topoImageForm.addTopoImageTitle": "Add Topo image",
-  "topoImageForm.editTopoImageTitle": "Edit Topo image",
   "batchUploadForm.batchImageUploadDescription": "Upload several topo images at the same time and create lines and their paths with basic information right away. If you want to add details to the lines later, you can do so by editing them individually.",
   "batchUploadForm.images": "Images",
   "batchUploadForm.lines": "Lines",
@@ -40,5 +38,7 @@
   "batchUploadForm.saveLinesAndTopoImagesAndNext": "Save & Next",
   "batchUploadForm.topoImageLabel": "Topo image",
   "batchUploadForm.topoImagePlaceholder": "Select a Topo image",
+  "topoImageForm.editTopoImageTitle": "Edit Topo image",
+  "topoImageForm.addTopoImageTitle": "Add Topo image",
   "batchUploadForm.batchImageUploadTitle": "Topo Upload + Quick Edit"
 }

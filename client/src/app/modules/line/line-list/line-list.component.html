@@ -8,17 +8,15 @@
         <p-message
           severity="info"
           icon="pi pi-info-circle"
-          class="m-4 mb-1 block"
+          class="m-12 mb-1 block"
           >{{ t("noLinesFoundEmptyMessage") }}
         </p-message>
       }
     </ng-template>
     <ng-template #header>
-      <div
-        class="flex flex-column sm:flex-column justify-content-between gap-2"
-      >
+      <div class="flex flex-col sm:flex-col justify-between gap-2">
         @if (cragSlug && sectorSlug && areaSlug) {
-          <div class="flex justify-content-start sm:justify-content-end gap-3">
+          <div class="lc-button-group justify-start sm:justify-end">
             <p-button
               label="{{ t('newLineButtonLabel') }}"
               icon="pi pi-plus"
@@ -32,7 +30,7 @@
         }
 
         <div
-          class="line-list-sort-row flex flex-wrap align-items-center gap-2 w-full"
+          class="line-list-sort-row flex flex-wrap items-center gap-2 w-full"
         >
           {{ t("orderByLabel") }}
           <p-select
@@ -45,13 +43,13 @@
           >
             <ng-template #selectedItem>
               @if (orderKey) {
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ orderKey.label }}</div>
                 </div>
               }
             </ng-template>
             <ng-template let-option #item>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
@@ -66,13 +64,13 @@
           >
             <ng-template #selectedItem>
               @if (orderDirectionKey) {
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ orderDirectionKey.label }}</div>
                 </div>
               }
             </ng-template>
             <ng-template let-option #item>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
@@ -80,10 +78,10 @@
         </div>
 
         <div
-          class="line-list-grade-filters-row flex flex-wrap align-items-end gap-4 w-full"
+          class="line-list-grade-filters-row flex flex-wrap items-end gap-6 w-full"
         >
-          <div class="line-list-grade-filters-fields flex-grow-1 min-w-0">
-            <div class="flex flex-wrap align-items-center gap-2">
+          <div class="line-list-grade-filters-fields grow min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
               @if (availableScales.length > 2) {
                 <div>
                   {{ t("lineType") }}
@@ -99,13 +97,13 @@
                   >
                     <ng-template #selectedItem>
                       @if (scaleKey) {
-                        <div class="flex align-items-center gap-2">
+                        <div class="flex items-center gap-2">
                           <div>{{ scaleKey.label }}</div>
                         </div>
                       }
                     </ng-template>
                     <ng-template let-option #item>
-                      <div class="flex align-items-center gap-2">
+                      <div class="flex items-center gap-2">
                         <div>{{ option.label }}</div>
                       </div>
                     </ng-template>
@@ -144,7 +142,7 @@
             }
           </div>
 
-          <div class="line-list-filter-actions flex-shrink-0">
+          <div class="line-list-filter-actions shrink-0">
             <p-button
               [disabled]="
                 loading === loadingStates.LOADING && currentPage === 1
@@ -176,10 +174,10 @@
         <lc-line-list-skeleton></lc-line-list-skeleton>
       }
       @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        <div class="grid grid-nogutter">
+        <div class="grid grid-cols-12">
           @for (line of lines; track line; let first = $first) {
             <a
-              class="col-12 clickable-data-item line-link"
+              class="col-span-12 clickable-data-item line-link"
               [ngClass]="{ ticked: ticks.has(line.id) }"
               routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
                 line.areaSlug
@@ -187,34 +185,42 @@
               data-cy="line-list-item"
             >
               <div
-                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
                 [ngClass]="{
-                  'border-top-1 surface-border': !first,
+                  'border-t border-surface': !first,
                   archived: line.archived,
                 }"
               >
                 @if (line.topoImages.length > 0) {
-                  <lc-topo-image
-                    class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                    [topoImage]="line.topoImages[0]"
-                    [color]="line.color ?? undefined"
-                  ></lc-topo-image>
+                  <div
+                    class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
+                  >
+                    <lc-topo-image
+                      class="shadow block rounded-border"
+                      [topoImage]="line.topoImages[0]"
+                      [color]="line.color ?? undefined"
+                    ></lc-topo-image>
+                  </div>
                 }
                 @if (line.topoImages.length === 0) {
-                  <img
-                    class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                    [src]="'assets/placeholder.png'"
-                    [alt]="line.name"
-                  />
+                  <div
+                    class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
+                  >
+                    <img
+                      class="w-full shadow block rounded-border"
+                      [src]="'assets/placeholder.png'"
+                      [alt]="line.name"
+                    />
+                  </div>
                 }
                 <div
-                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
                 >
                   <div
-                    class="flex flex-column align-items-center sm:align-items-start gap-3 line-info-container"
+                    class="flex flex-col items-center sm:items-start gap-4 line-info-container"
                   >
                     <div
-                      class="text-2xl text-900 line-name flex flex-column md:flex-row align-items-center justify-content-between"
+                      class="text-2xl text-surface-900 dark:text-surface-0 line-name flex flex-col md:flex-row items-center justify-between"
                     >
                       <div>
                         <strong>{{ line.name }}</strong>
@@ -227,7 +233,7 @@
                             : line.authorRating
                         "
                         [readonly]="true"
-                        class="align-self-center md:align-self-end"
+                        class="self-center md:self-end"
                       ></p-rating>
                     </div>
                     <lc-line-bool-prop-list
@@ -253,7 +259,7 @@
                         >
                         </p-button>
                       }
-                      <div class="flex-grow-1"></div>
+                      <div class="grow"></div>
                       <lc-archive-button
                         [line]="line"
                         [showLabel]="false"
@@ -296,7 +302,7 @@
   </p-dataView>
 
   @if (hasNextPage) {
-    <div class="flex justify-content-center mt-5">
+    <div class="flex justify-center mt-20">
       <p-button
         label="{{ t('loadMore') }}"
         (scrolled)="loadNextPage()"

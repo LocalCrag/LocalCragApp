@@ -9,7 +9,7 @@ from marshmallow_schemas.post_schema import post_schema, posts_schema
 from models.comment import Comment
 from models.post import Post
 from models.user import User
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.security_util import check_auth_claims
 from webargs_schemas.post_args import post_args
 
@@ -68,7 +68,7 @@ class CreatePost(MethodView):
 
         new_post: Post = Post()
         new_post.title = post_data["title"].strip()
-        new_post.text = add_bucket_placeholders(post_data["text"])
+        new_post.text = sanitize_wysiwyg_html(post_data["text"])
         new_post.created_by_id = created_by.id
 
         db.session.add(new_post)
@@ -89,7 +89,7 @@ class UpdatePost(MethodView):
         post: Post = Post.find_by_slug(post_slug)
 
         post.title = post_data["title"].strip()
-        post.text = add_bucket_placeholders(post_data["text"])
+        post.text = sanitize_wysiwyg_html(post_data["text"])
         db.session.add(post)
         db.session.commit()
 

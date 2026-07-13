@@ -7,6 +7,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.account_settings_schema import account_settings_schema
 from messages.messages import ResponseMessage
+from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
 )
@@ -51,6 +52,7 @@ class UpdateAccountSettings(MethodView):
         settings.moderator_task_notifications_enabled = data["moderatorTaskNotificationsEnabled"]
         settings.notification_digest_frequency = NotificationDigestFrequencyEnum(data["notificationDigestFrequency"])
         settings.language = data["language"]
+        settings.color_scheme = ColorSchemeEnum(data["colorScheme"])
         db.session.add(settings)
         db.session.commit()
         return account_settings_schema.dump(settings), 200

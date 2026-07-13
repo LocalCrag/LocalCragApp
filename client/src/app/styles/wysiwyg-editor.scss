@@ -1,0 +1,105 @@
+// WYSIWYG editors strip inline colors on save; force theme colors while editing so
+// the preview matches persisted output (including pasted or legacy colored HTML).
+.lc-wysiwyg-editor,
+.p-editor {
+  .p-editor-toolbar.ql-snow,
+  .p-editor-content.ql-snow,
+  .ql-toolbar.ql-snow,
+  .ql-container.ql-snow {
+    border-color: var(--p-form-field-border-color) !important;
+  }
+
+  &:hover {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-hover-border-color) !important;
+    }
+  }
+
+  &:focus-within {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-focus-border-color) !important;
+    }
+  }
+
+  &.p-invalid,
+  &.ng-invalid.ng-touched {
+    .p-editor-toolbar.ql-snow,
+    .p-editor-content.ql-snow,
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--p-form-field-invalid-border-color) !important;
+    }
+  }
+
+  .ql-editor {
+    & * {
+      color: var(--p-text-color) !important;
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    a {
+      color: var(--p-primary-color) !important;
+    }
+
+    // ql-blank is on the same element as ql-editor — not a child.
+    &.ql-blank::before {
+      color: var(--p-text-muted-color) !important;
+    }
+  }
+
+  // Quill snow ships hardcoded #444 strokes; PrimeNG tokens don't always win on toolbar SVGs.
+  .p-editor-toolbar {
+    .ql-stroke,
+    .ql-stroke-miter {
+      stroke: var(--p-text-color) !important;
+    }
+
+    .ql-fill,
+    .ql-stroke.ql-fill {
+      fill: var(--p-text-color) !important;
+    }
+
+    .ql-picker-label {
+      color: var(--p-text-color) !important;
+    }
+
+    button:hover,
+    button:focus,
+    .ql-picker-label:hover {
+      .ql-stroke,
+      .ql-stroke-miter {
+        stroke: var(--p-primary-color) !important;
+      }
+
+      .ql-fill,
+      .ql-stroke.ql-fill {
+        fill: var(--p-primary-color) !important;
+      }
+
+      color: var(--p-primary-color) !important;
+    }
+
+    button.ql-active,
+    .ql-picker-label.ql-active,
+    .ql-picker-item.ql-selected {
+      .ql-stroke,
+      .ql-stroke-miter {
+        stroke: var(--p-primary-color) !important;
+      }
+
+      .ql-fill,
+      .ql-stroke.ql-fill {
+        fill: var(--p-primary-color) !important;
+      }
+
+      color: var(--p-primary-color) !important;
+    }
+  }
+}

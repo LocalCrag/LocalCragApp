@@ -9,7 +9,7 @@
   </p-message>
 
   <form [formGroup]="galleryImageForm" lcForm>
-    <div class="flex flex-column gap-2" lcControlGroup>
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("galleryImageLabel") }}</label>
       <lc-single-image-upload
         lcFormControl
@@ -22,7 +22,7 @@
       }}</small>
     </div>
 
-    <div class="flex flex-column gap-2" lcControlGroup>
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("tagsLabel") }}</label>
       <p-autoComplete
         lcFormControl

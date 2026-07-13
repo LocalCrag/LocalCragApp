@@ -13,12 +13,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { AreasService } from '../../../services/crud/areas.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
@@ -34,35 +29,22 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 
 import { ScalesService } from '../../../services/crud/scales.service';
-import { Card } from 'primeng/card';
-import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import {
+  PageTitleService,
+  resolveTopoPageTitleImage,
+} from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-line',
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [
-    Card,
-    LineGradePipe,
-    ClosedSpotTagComponent,
-    SecretSpotTagComponent,
-    Breadcrumb,
-    Tabs,
-    SetActiveTabDirective,
-    TabList,
-    Tab,
-    RouterLink,
-    RouterOutlet,
-  ],
+  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
@@ -71,8 +53,8 @@ export class LineComponent implements OnInit {
   public area: Area;
   public line: Line;
   public items: MenuItem[];
-  public breadcrumbs: MenuItem[] | undefined;
-  public breadcrumbHome: MenuItem | undefined;
+
+  private breadcrumbHome: MenuItem = { icon: 'pi pi-map', routerLink: '/topo' };
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -85,6 +67,7 @@ export class LineComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
+  private pageTitleService = inject(PageTitleService);
 
   protected scalesService = inject(ScalesService);
 
@@ -137,13 +120,24 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
+            const image = resolveTopoPageTitleImage(
+              line.topoImages?.[0],
+              instanceSettings.bgImage,
+            );
             const gradeValue = instanceSettings.displayUserGrades
               ? line.userGradeValue
               : line.authorGradeValue;
             this.scalesService
               .gradeNameByValue(line.type, line.gradeScale, gradeValue)
               .subscribe((gradeName) => {
-                this.breadcrumbs = [
+                const displayGrade =
+                  gradeValue > 0
+                    ? gradeName
+                    : this.translocoService.translate(gradeName);
+                this.pageTitleService.setTitle(`${line.name} ${displayGrade}`, {
+                  image,
+                });
+                const breadcrumbs = [
                   {
                     label: crag.name,
                     slug: crag.slug,
@@ -160,24 +154,27 @@ export class LineComponent implements OnInit {
                     routerLink: `/topo/${crag.slug}/${sector.slug}/${area.slug}/topo-images`,
                   },
                   {
-                    label: `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)}`,
+                    label: `${line.name} ${displayGrade}`,
                     slug: line.slug,
                   },
                 ].filter(
                   (menuItem) => menuItem.slug != environment.skippedSlug,
                 );
+                this.pageTitleService.setBreadcrumbs(
+                  breadcrumbs,
+                  this.breadcrumbHome,
+                );
+                this.buildTabs(isModerator);
 
                 this.store
                   .select(selectInstanceName)
                   .subscribe((instanceName) => {
                     this.title.setTitle(
-                      `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
+                      `${line.name} ${displayGrade} / ${area.name} / ${sector.name} / ${crag.name} - ${instanceName}`,
                     );
                   });
               });
 
-            // Build the tab/menu items for the line view
-            this.buildTabs(isModerator);
             // Rebuild tabs if the rendered language changes
             this.languageService.renderedLanguage$
               .pipe(takeUntilDestroyed(this.destroyRef))
@@ -188,7 +185,6 @@ export class LineComponent implements OnInit {
                   this.buildTabs(isModerator);
                 }
               });
-            this.breadcrumbHome = { icon: 'pi pi-map', routerLink: '/topo' };
           },
         );
       });
@@ -234,5 +230,6 @@ export class LineComponent implements OnInit {
         visible: isModerator,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 }

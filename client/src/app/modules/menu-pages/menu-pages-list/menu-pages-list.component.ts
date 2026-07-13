@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { RouterLink } from '@angular/router';
 import { SelectItem } from 'primeng/api';
@@ -10,6 +9,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { MenuPage } from '../../../models/menu-page';
@@ -24,7 +24,6 @@ import { Message } from 'primeng/message';
   selector: 'lc-menu-pages-list',
   imports: [
     ButtonModule,
-    CardModule,
     DataViewModule,
     RouterLink,
     TranslocoDirective,
@@ -51,11 +50,17 @@ export class MenuPagesListComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   /**
    * Loads the menu pages on initialization.
    */
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        marker('menuPages.menuPageList.menuPagesListTitle'),
+      ),
+    );
     this.refreshData();
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe((instanceName) => {

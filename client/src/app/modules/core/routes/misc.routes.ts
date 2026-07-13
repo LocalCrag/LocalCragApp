@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { isLoggedIn } from '../../../guards/is-logged-in';
-import { authBg, defaultBg, notFoundBg } from './route-helpers';
 
 export const rootRedirectRoutes: Routes = [
   {
@@ -18,7 +17,6 @@ export const miscRoutes: Routes = [
       import('../sentry-test/sentry-test.component').then(
         (m) => m.SentryTestComponent,
       ),
-    data: defaultBg(),
   },
   {
     path: 'todos',
@@ -27,7 +25,6 @@ export const miscRoutes: Routes = [
         (m) => m.TodoListComponent,
       ),
     canActivate: [isLoggedIn],
-    data: authBg(),
   },
 ];
 
@@ -49,6 +46,5 @@ export const notFoundRoute: Routes = [
   {
     component: NotFoundComponent,
     path: '**',
-    data: notFoundBg(),
   },
 ];

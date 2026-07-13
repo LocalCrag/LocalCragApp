@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { MenuPageDetailComponent } from '../../menu-pages/menu-page-detail/menu-page-detail.component';
 import { isModerator } from '../../../guards/is-moderator';
-import { defaultBg } from './route-helpers';
 
 export const menuRoutes: Routes = [
   {
@@ -11,7 +10,6 @@ export const menuRoutes: Routes = [
         (m) => m.MenuPagesListComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'pages/create-menu-page',
@@ -20,12 +18,10 @@ export const menuRoutes: Routes = [
         (m) => m.MenuPagesFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'pages/:menu-page-slug',
     component: MenuPageDetailComponent,
-    data: defaultBg(),
   },
   {
     path: 'pages/:menu-page-slug/edit',
@@ -34,7 +30,6 @@ export const menuRoutes: Routes = [
         (m) => m.MenuPagesFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'menu-items',
@@ -43,7 +38,6 @@ export const menuRoutes: Routes = [
         (m) => m.MenuItemsListComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'menu-items/create-menu-item/:position',
@@ -52,7 +46,6 @@ export const menuRoutes: Routes = [
         (m) => m.MenuItemsFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'menu-items/:menu-item-id/edit',
@@ -61,6 +54,5 @@ export const menuRoutes: Routes = [
         (m) => m.MenuItemsFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
 ];

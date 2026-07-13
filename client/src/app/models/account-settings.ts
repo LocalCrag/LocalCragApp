@@ -1,4 +1,5 @@
 import { LanguageCode } from '../utility/types/language';
+import { ColorScheme } from '../services/core/theme.service';
 
 export class AccountSettings {
   commentReplyMailsEnabled: boolean;
@@ -7,6 +8,7 @@ export class AccountSettings {
   moderatorTaskNotificationsEnabled: boolean;
   notificationDigestFrequency: 'daily' | 'weekly';
   language: LanguageCode;
+  colorScheme: ColorScheme;
 
   public static deserialize(payload: any): AccountSettings {
     const accountSettings = new AccountSettings();
@@ -20,6 +22,7 @@ export class AccountSettings {
     accountSettings.notificationDigestFrequency =
       payload.notificationDigestFrequency;
     accountSettings.language = payload.language;
+    accountSettings.colorScheme = payload.colorScheme ?? 'system';
     return accountSettings;
   }
 
@@ -33,6 +36,7 @@ export class AccountSettings {
         accountSettings.moderatorTaskNotificationsEnabled,
       notificationDigestFrequency: accountSettings.notificationDigestFrequency,
       language: accountSettings.language,
+      colorScheme: accountSettings.colorScheme,
     };
   }
 }

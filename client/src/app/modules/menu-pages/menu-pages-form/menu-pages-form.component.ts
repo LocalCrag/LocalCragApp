@@ -25,7 +25,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 
@@ -35,12 +34,12 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-menu-pages-form',
   imports: [
     ButtonModule,
-    CardModule,
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
@@ -77,6 +76,7 @@ export class MenuPagesFormComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -95,6 +95,7 @@ export class MenuPagesFormComponent implements OnInit {
         );
       });
       this.editMode = true;
+      this.setPageTitle();
       this.menuPageForm.disable();
       this.menuPagesService
         .getMenuPage(menuPageSlug)
@@ -115,6 +116,7 @@ export class MenuPagesFormComponent implements OnInit {
           }
         });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('menuPageFormBrowserTitle'))} - ${instanceName}`,
@@ -122,6 +124,16 @@ export class MenuPagesFormComponent implements OnInit {
       });
       this.loadingState = LoadingState.DEFAULT;
     }
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? marker('menuPages.menuPageForm.editMenuPageTitle')
+          : marker('menuPages.menuPageForm.createMenuPageTitle'),
+      ),
+    );
   }
 
   /**

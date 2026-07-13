@@ -14,15 +14,19 @@ lc-ranking-list {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-    color: #64748b;
+    color: var(--p-text-muted-color);
   }
 
   a {
     text-decoration: none;
-    color: #4b5563;
+    color: var(--p-text-muted-color);
 
     &:hover {
       text-decoration: underline;
+    }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
     }
   }
 

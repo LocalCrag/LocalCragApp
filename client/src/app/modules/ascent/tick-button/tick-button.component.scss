@@ -19,6 +19,6 @@ lc-tick-button {
     background-color: var(--ticked-color);
     border-radius: 0.25rem;
     padding: 0.1rem;
-    color: white;
+    color: var(--p-primary-contrast-color);
   }
 }

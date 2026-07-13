@@ -5,7 +5,6 @@ import { LineAscentsComponent } from '../../../line/line-ascents/line-ascents.co
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -19,7 +18,6 @@ export const topoLineRoutes: Routes = [
   {
     path: linePrefix,
     component: LineComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',
@@ -56,7 +54,6 @@ export const topoLineRoutes: Routes = [
         (m) => m.LineFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
@@ -65,6 +62,5 @@ export const topoLineRoutes: Routes = [
         (m) => m.LinePathFormWrapperComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
 ];

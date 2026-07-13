@@ -2,7 +2,7 @@ lc-notification-bell {
   .notifications-bell {
     border: none;
     background: transparent;
-    color: var(--text-color);
+    color: var(--p-text-color);
     cursor: pointer;
     position: relative;
     width: 2.5rem;
@@ -17,8 +17,8 @@ lc-notification-bell {
     position: absolute;
     top: 0;
     right: 0;
-    background: #ef4444;
-    color: #fff;
+    background: var(--p-red-500);
+    color: var(--p-primary-contrast-color);
     border-radius: 9999px;
     min-width: 1.1rem;
     height: 1.1rem;
@@ -42,8 +42,8 @@ lc-notification-bell {
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.65rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f8fafc;
+  border-bottom: 1px solid var(--p-content-border-color);
+  background: var(--p-overlay-popover-background);
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
@@ -52,7 +52,7 @@ lc-notification-bell {
   border: none;
   border-radius: 9999px;
   background: none;
-  color: #2563eb;
+  color: var(--p-primary-600);
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   font-size: 0.85rem;
@@ -60,7 +60,7 @@ lc-notification-bell {
   &:disabled {
     opacity: 0.45;
     cursor: not-allowed;
-    color: #94a3b8;
+    color: var(--p-text-muted-color);
   }
 }
 
@@ -75,15 +75,19 @@ lc-notification-bell {
 }
 
 .notifications-item.is-read {
-  background: #ffffff;
+  background: var(--p-overlay-popover-background);
 }
 
 .notifications-item:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--p-content-border-color);
 }
 
 .notifications-item:hover {
-  background: #f8fafc;
+  background: color-mix(
+    in srgb,
+    var(--p-text-color) 5%,
+    var(--p-content-background)
+  );
 }
 
 .notifications-item-main {
@@ -98,7 +102,7 @@ lc-notification-bell {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #6b7280;
+  color: var(--p-text-muted-color);
 }
 
 .notifications-item-text {
@@ -107,13 +111,13 @@ lc-notification-bell {
 }
 
 .notifications-item:focus-visible {
-  outline: 2px solid #94a3b8;
+  outline: 2px solid var(--p-content-border-color);
   outline-offset: -2px;
   border-radius: 0.25rem;
 }
 
 .notifications-empty {
-  color: #6b7280;
+  color: var(--p-text-muted-color);
   font-size: 0.9rem;
   padding: 0.65rem;
 }
@@ -129,7 +133,7 @@ lc-notification-bell {
 }
 
 .notifications-popover-panel.p-popover:after {
-  border-bottom-color: #f8fafc;
+  border-bottom-color: var(--p-overlay-popover-background);
 }
 
 .notifications-item-actions {
@@ -149,9 +153,9 @@ lc-notification-bell {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--p-text-muted-color);
 }
 
 .notifications-item-more:hover {
-  background: #e5e7eb;
+  background: var(--p-content-hover-background);
 }

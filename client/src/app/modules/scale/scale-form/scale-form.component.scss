@@ -1,12 +1,5 @@
 @use "../../../styles/media-queries" as m;
 
-.button-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
 .scale-form-header-field {
   display: grid;
   grid-template-columns: minmax(8rem, 11rem) minmax(12rem, 20rem);
@@ -52,14 +45,6 @@
   .p-select {
     width: 100%;
   }
-}
-
-.scale-form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
 }
 
 :host ::ng-deep .stacked-bracket-color-picker {

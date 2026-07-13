@@ -3,13 +3,11 @@ import { PostListComponent } from '../../blog/post-list/post-list.component';
 import { PostDetailComponent } from '../../blog/post-detail/post-detail.component';
 import { isModerator } from '../../../guards/is-moderator';
 import { ObjectType } from '../../../models/object';
-import { defaultBg } from './route-helpers';
 
 export const blogRoutes: Routes = [
   {
     path: 'news',
     component: PostListComponent,
-    data: defaultBg(),
   },
   {
     path: 'news/create-post',
@@ -18,7 +16,6 @@ export const blogRoutes: Routes = [
         (m) => m.PostFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'news/:post-slug/edit',
@@ -27,11 +24,10 @@ export const blogRoutes: Routes = [
         (m) => m.PostFormComponent,
       ),
     canActivate: [isModerator],
-    data: defaultBg(),
   },
   {
     path: 'news/:post-slug',
     component: PostDetailComponent,
-    data: defaultBg({ objectType: ObjectType.Post }),
+    data: { objectType: ObjectType.Post },
   },
 ];

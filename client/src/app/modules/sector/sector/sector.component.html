@@ -1,48 +1,17 @@
 <div class="content">
-  <p-card header="{{ sector?.name }}">
-    <div class="flex gap-1">
-      @if (sector?.closed) {
-        <lc-closed-spot-tag
-          spotType="sector"
-          [slug]="sector.slug"
-          [reasons]="sector.closedReasons"
-          [closureIsPermanent]="sector.closureIsPermanent"
-        ></lc-closed-spot-tag>
-      }
-      @if (sector?.secret) {
-        <lc-secret-spot-tag></lc-secret-spot-tag>
-      }
-    </div>
-
-    @if (sector?.slug !== environment.skippedSlug) {
-      <p-breadcrumb
-        class="max-w-full"
-        [model]="breadcrumbs"
-        [home]="breadcrumbHome"
-      ></p-breadcrumb>
+  <div class="flex gap-1">
+    @if (sector?.closed) {
+      <lc-closed-spot-tag
+        spotType="sector"
+        [slug]="sector.slug"
+        [reasons]="sector.closedReasons"
+        [closureIsPermanent]="sector.closureIsPermanent"
+      ></lc-closed-spot-tag>
     }
-
-    @if (sector) {
-      <p-tabs
-        [value]="tabsDirective.activeTabIndex()"
-        scrollable
-        lcSetActiveTab
-        #tabsDirective="lcSetActiveTab"
-        [items]="items"
-      >
-        <p-tablist>
-          @for (tab of items; track $index) {
-            @if (tab.visible) {
-              <p-tab [value]="$index" [routerLink]="tab.routerLink">
-                <i [class]="tab.icon" style="font-size: 1rem"></i>
-                {{ tab.label }}
-              </p-tab>
-            }
-          }
-        </p-tablist>
-      </p-tabs>
+    @if (sector?.secret) {
+      <lc-secret-spot-tag></lc-secret-spot-tag>
     }
+  </div>
 
-    <router-outlet name="sectorContent"></router-outlet>
-  </p-card>
+  <router-outlet name="sectorContent"></router-outlet>
 </div>

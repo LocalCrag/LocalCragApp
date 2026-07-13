@@ -66,6 +66,7 @@ export class ScheduledClosureFormComponent implements ControlValueAccessor {
     this.onChange();
   }
 
+  /** t(closableForm.closableForm.permanentScheduleTitle, closableForm.closableForm.fixedScheduleTitle, closableForm.closableForm.annualScheduleTitle) */
   scheduleTitleKey(scheduleType: ClosureScheduleType): string {
     switch (scheduleType) {
       case ClosureScheduleType.PERMANENT:

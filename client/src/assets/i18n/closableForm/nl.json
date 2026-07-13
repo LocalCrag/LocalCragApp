@@ -11,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Annuleren",
   "closableFormScheduleDialog.ok": "OK",
   "closableFormScheduleDialog.editScheduleTitle": "Sluitingsschema bewerken",
-  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen"
+  "closableFormScheduleDialog.createScheduleTitle": "Sluitingsschema toevoegen",
+  "closableForm.permanentScheduleTitle": "Permanent",
+  "closableForm.fixedScheduleTitle": "Vast",
+  "closableForm.annualScheduleTitle": "Jaarlijks"
 }

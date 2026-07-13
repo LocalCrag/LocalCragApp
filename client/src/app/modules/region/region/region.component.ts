@@ -1,8 +1,6 @@
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
 
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
@@ -11,26 +9,19 @@ import { forkJoin, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
-import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import {
+  selectInstanceName,
+  selectBgImage,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 
 @Component({
   selector: 'lc-region',
-  imports: [
-    BreadcrumbModule,
-    CardModule,
-    RouterOutlet,
-    Tabs,
-    TabList,
-    Tab,
-    RouterLink,
-    SetActiveTabDirective,
-  ],
+  imports: [RouterOutlet],
   templateUrl: './region.component.html',
   styleUrl: './region.component.scss',
 })
@@ -45,6 +36,7 @@ export class RegionComponent implements OnInit {
   private router = inject(Router);
   private store = inject(Store);
   private title = inject(Title);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
     this.region = null;
@@ -58,8 +50,14 @@ export class RegionComponent implements OnInit {
         }),
       ),
       this.store.pipe(select(selectIsModerator), take(1)),
-    ]).subscribe(([region, isModerator]) => {
+      this.store.pipe(select(selectBgImage), take(1)),
+    ]).subscribe(([region, isModerator, bgImage]) => {
       this.region = region;
+      this.pageTitleService.setPortraitTitle(
+        region.name,
+        region.image,
+        bgImage,
+      );
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });
@@ -137,5 +135,6 @@ export class RegionComponent implements OnInit {
         visible: isModerator,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 }

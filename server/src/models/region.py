@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
@@ -18,6 +19,8 @@ class Region(BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     rules = db.Column(db.Text, nullable=True)
+    image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
+    image = db.relationship("File", lazy="joined", foreign_keys=[image_id])
 
     @hybrid_property
     def ascent_count(self):

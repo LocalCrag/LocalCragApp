@@ -21,13 +21,14 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { catchError } from 'rxjs/operators';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
+import { UploadService } from '../../../services/crud/upload.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
@@ -47,12 +48,12 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
 import { StartingPosition } from '../../../enums/starting-position';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-instance-settings-form',
   imports: [
     ButtonModule,
-    CardModule,
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
@@ -106,9 +107,16 @@ export class InstanceSettingsFormComponent implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
   private instanceSettingsService = inject(InstanceSettingsService);
+  private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        marker('instanceSettings.instanceSettingsForm.editInstanceSettings'),
+      ),
+    );
     this.buildForm();
     // build translated options for starting positions
     this.startingPositionsOptions = this.startingPositions.map((sp) => ({
@@ -166,15 +174,17 @@ export class InstanceSettingsFormComponent implements OnInit {
       displayUserGrades: [null],
       displayUserRatings: [null],
       logoImage: [null],
+      darkLogoImage: [null],
       faviconImage: [null],
-      authBgImage: [null],
-      mainBgImage: [null],
+      bgImage: [null],
       arrowColor: [null],
       arrowTextColor: [null],
       arrowHighlightColor: [null],
       arrowHighlightTextColor: [null],
       barChartColor: [null],
       barChartAccentColor: [null],
+      darkBarChartColor: [null],
+      darkBarChartAccentColor: [null],
       matomoTrackerUrl: [null, [Validators.maxLength(120)]],
       matomoSiteId: [null, [Validators.maxLength(120)]],
       maptilerApiKey: [null, [Validators.maxLength(120)]],
@@ -198,9 +208,9 @@ export class InstanceSettingsFormComponent implements OnInit {
       displayUserGrades: this.instanceSettings.displayUserGrades,
       displayUserRatings: this.instanceSettings.displayUserRatings,
       logoImage: this.instanceSettings.logoImage,
+      darkLogoImage: this.instanceSettings.darkLogoImage,
       faviconImage: this.instanceSettings.faviconImage,
-      authBgImage: this.instanceSettings.authBgImage,
-      mainBgImage: this.instanceSettings.mainBgImage,
+      bgImage: this.instanceSettings.bgImage,
       arrowColor: this.instanceSettings.arrowColor,
       arrowTextColor: this.instanceSettings.arrowTextColor,
       arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
@@ -208,6 +218,10 @@ export class InstanceSettingsFormComponent implements OnInit {
       barChartColor: getRgbObject(this.instanceSettings.barChartColor),
       barChartAccentColor: getRgbObject(
         this.instanceSettings.barChartAccentColor,
+      ),
+      darkBarChartColor: getRgbObject(this.instanceSettings.darkBarChartColor),
+      darkBarChartAccentColor: getRgbObject(
+        this.instanceSettings.darkBarChartAccentColor,
       ),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
@@ -239,12 +253,11 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('displayUserRatings').value;
       instanceSettings.logoImage =
         this.instanceSettingsForm.get('logoImage').value;
+      instanceSettings.darkLogoImage =
+        this.instanceSettingsForm.get('darkLogoImage').value;
       instanceSettings.faviconImage =
         this.instanceSettingsForm.get('faviconImage').value;
-      instanceSettings.mainBgImage =
-        this.instanceSettingsForm.get('mainBgImage').value;
-      instanceSettings.authBgImage =
-        this.instanceSettingsForm.get('authBgImage').value;
+      instanceSettings.bgImage = this.instanceSettingsForm.get('bgImage').value;
       instanceSettings.arrowColor =
         this.instanceSettingsForm.get('arrowColor').value;
       instanceSettings.arrowTextColor =
@@ -260,6 +273,12 @@ export class InstanceSettingsFormComponent implements OnInit {
       );
       instanceSettings.barChartAccentColor = this.getCSSRgbValue(
         this.instanceSettingsForm.get('barChartAccentColor').value,
+      );
+      instanceSettings.darkBarChartColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('darkBarChartColor').value,
+      );
+      instanceSettings.darkBarChartAccentColor = this.getCSSRgbValue(
+        this.instanceSettingsForm.get('darkBarChartAccentColor').value,
       );
       instanceSettings.matomoSiteId =
         this.instanceSettingsForm.get('matomoSiteId').value;
@@ -278,8 +297,15 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('language').value;
       instanceSettings.timezone =
         this.instanceSettingsForm.get('timezone').value;
-      this.instanceSettingsService
-        .updateInstanceSettings(instanceSettings)
+      this.uploadService
+        .saveFileFocusIfChanged(instanceSettings.bgImage)
+        .pipe(
+          switchMap(() =>
+            this.instanceSettingsService.updateInstanceSettings(
+              instanceSettings,
+            ),
+          ),
+        )
         .subscribe({
           next: (instanceSettings) => {
             this.store.dispatch(toastNotification('INSTANCE_SETTINGS_UPDATED'));

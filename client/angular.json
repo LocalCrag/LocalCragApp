@@ -51,9 +51,9 @@
             ],
             "assets": ["src/favicon.ico", "src/.htaccess", "src/assets"],
             "styles": [
+              "src/tailwind.generated.css",
               "src/styles.scss",
               "node_modules/maplibre-gl/dist/maplibre-gl.css",
-              "node_modules/primeflex/primeflex.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/quill-image-uploader/dist/quill.imageUploader.min.css"
             ],
@@ -133,7 +133,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/tailwind.generated.css", "src/styles.scss"],
             "scripts": []
           }
         },

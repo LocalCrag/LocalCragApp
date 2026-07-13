@@ -22,6 +22,7 @@ class UserSchema(BaseEntitySchema):
     lastname = fields.String()
     slug = fields.String()
     accountLanguage = fields.String(attribute="account_settings.language")
+    accountColorScheme = fields.Function(lambda obj: obj.account_settings.color_scheme.value)
     superadmin = fields.Boolean()
     admin = fields.Boolean()
     moderator = fields.Boolean()

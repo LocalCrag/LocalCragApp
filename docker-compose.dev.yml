@@ -94,7 +94,7 @@ services:
     command:
       - sh
       - "-c"
-      - "npx ng serve --host 0.0.0.0 --hmr"
+      - "npm run tw:build && npx concurrently -k -n tw,ng \"npm run tw:watch\" \"npx ng serve --host 0.0.0.0 --hmr\""
 
 volumes:
   database:

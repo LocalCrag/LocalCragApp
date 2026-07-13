@@ -5,6 +5,43 @@ from models.line import Line
 from models.user import User
 
 
+def test_successful_get_instance_statistics(client):
+    rv = client.get("/api/statistics/instance")
+    assert rv.status_code == 200
+    res = rv.json
+    assert "totals" in res
+    assert "totalAscents" in res["totals"]
+    assert "ascentsLastWeek" in res["totals"]
+    assert "totalLines" in res["totals"]
+    assert "totalUsers" in res["totals"]
+    assert isinstance(res["hardestAscentsLastMonth"], list)
+    assert isinstance(res["latestFirstAscents"], list)
+    assert "newestLines" not in res
+    assert res["totals"]["totalAscents"] >= 1
+    assert res["totals"]["totalLines"] >= 1
+    assert res["totals"]["totalUsers"] >= 1
+
+
+def test_instance_statistics_excludes_secret_lines(client, moderator_token):
+    line = Line.query.filter(Line.archived.is_(False)).first()
+    assert line is not None
+
+    rv_before = client.get("/api/statistics/instance")
+    total_lines_before = rv_before.json["totals"]["totalLines"]
+
+    line.secret = True
+    db.session.add(line)
+    db.session.commit()
+
+    rv = client.get("/api/statistics/instance")
+    assert rv.status_code == 200
+    assert rv.json["totals"]["totalLines"] == total_lines_before - 1
+
+    rv_secret = client.get("/api/statistics/instance", token=moderator_token)
+    assert rv_secret.status_code == 200
+    assert rv_secret.json["totals"]["totalLines"] == total_lines_before
+
+
 def test_successful_get_completion(client):
     admin_id = User.find_by_email("admin@localcrag.invalid.org").id
     ascent = Ascent.query.filter(Ascent.created_by_id == admin_id).all()[0]

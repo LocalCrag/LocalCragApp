@@ -7,7 +7,7 @@ lc-gallery-image {
     align-items: center;
 
     i {
-      color: var(--p-gray-500);
+      color: var(--p-text-muted-color);
     }
   }
 
@@ -19,7 +19,6 @@ lc-gallery-image {
 
   .p-speeddial {
     position: absolute;
-    top: 2px; // Button is misaligned for some reason
     left: 0;
     width: 2rem;
     height: 2rem;
@@ -49,12 +48,34 @@ lc-gallery-image {
     flex-wrap: wrap;
     display: flex;
     justify-content: end;
+    align-items: center;
     gap: 0.25rem;
 
     p-tag {
-      color: white;
+      color: var(--p-primary-contrast-color);
       border-radius: calc(2 * var(--p-tag-rounded-border-radius));
       padding: 0.125rem 0.25rem;
+    }
+
+    :where(html.lc-dark) & lc-tag .p-tag {
+      color: color-mix(
+        in srgb,
+        var(--p-text-color) 82%,
+        var(--p-content-hover-background)
+      );
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 12%,
+        var(--p-content-hover-background)
+      );
+
+      &:hover {
+        background-color: color-mix(
+          in srgb,
+          var(--p-text-color) 22%,
+          var(--p-content-hover-background)
+        );
+      }
     }
   }
 
@@ -91,7 +112,23 @@ lc-gallery-image {
     .p-card-header {
       display: flex;
       justify-content: center;
-      background-color: #f4f4f4;
+      background-color: var(--p-content-hover-background);
+    }
+
+    :where(html.lc-dark) & {
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 10%,
+        var(--p-content-background)
+      );
+
+      .p-card-header {
+        background-color: color-mix(
+          in srgb,
+          var(--p-text-color) 12%,
+          var(--p-content-background)
+        );
+      }
     }
   }
 

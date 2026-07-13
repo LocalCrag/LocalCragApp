@@ -9,7 +9,6 @@ import { isModerator } from '../../../../guards/is-moderator';
 import { environment } from '../../../../../environments/environment';
 import { ObjectType } from '../../../../models/object';
 import {
-  defaultBg,
   lazyOutletRoute,
   loadCommentsComponent,
   loadGalleryComponent,
@@ -20,7 +19,6 @@ export const topoRegionRoute: Routes = [
   {
     path: 'topo',
     component: RegionComponent,
-    data: defaultBg(),
     children: [
       {
         path: '',
@@ -55,15 +53,6 @@ export const topoRegionRoute: Routes = [
       outletRoute('lines', LineListComponent, 'regionContent', {
         canActivate: [skipHierarchy(1, ['/topo'], ['lines'])],
       }),
-      lazyOutletRoute(
-        'map',
-        () =>
-          import('../../../maps/map/map.component').then((m) => m.MapComponent),
-        'regionContent',
-        {
-          canActivate: [skipHierarchy(1, ['/topo'])],
-        },
-      ),
       lazyOutletRoute(
         'rules',
         () =>

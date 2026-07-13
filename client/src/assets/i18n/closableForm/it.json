@@ -11,5 +11,8 @@
   "closableFormScheduleDialog.cancel": "Annulla",
   "closableFormScheduleDialog.ok": "OK",
   "closableFormScheduleDialog.editScheduleTitle": "Modifica programma di chiusura",
-  "closableFormScheduleDialog.createScheduleTitle": "Aggiungi programma di chiusura"
+  "closableFormScheduleDialog.createScheduleTitle": "Aggiungi programma di chiusura",
+  "closableForm.permanentScheduleTitle": "Permanente",
+  "closableForm.fixedScheduleTitle": "Fisso",
+  "closableForm.annualScheduleTitle": "Annuale"
 }

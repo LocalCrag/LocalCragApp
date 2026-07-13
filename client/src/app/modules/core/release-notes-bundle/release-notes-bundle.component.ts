@@ -10,7 +10,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { ReleaseNotesService } from '../../../services/crud/release-notes.service';
 import {
@@ -21,6 +20,8 @@ import { releaseNoteBundleItemsInDisplayOrder } from '../../../utility/release-n
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../ngrx/reducers';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { EMPTY, of } from 'rxjs';
 import {
   catchError,
@@ -35,7 +36,7 @@ import '../../../utility/release-note-transloco-keys';
 
 @Component({
   selector: 'lc-release-notes-bundle',
-  imports: [TranslocoDirective, CardModule, MessageModule],
+  imports: [TranslocoDirective, MessageModule],
   templateUrl: './release-notes-bundle.component.html',
   styleUrl: './release-notes-bundle.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -47,6 +48,8 @@ export class ReleaseNotesBundleComponent implements OnInit {
   private transloco = inject(TranslocoService);
   private title = inject(Title);
   private store = inject<Store<AppState>>(Store);
+  private languageService = inject(LanguageService);
+  private pageTitleService = inject(PageTitleService);
 
   bundle: ReleaseNoteBundlePayload | null = null;
   loadError = false;
@@ -56,6 +59,14 @@ export class ReleaseNotesBundleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setPageTitle();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.setPageTitle();
+      });
+
     this.route.paramMap
       .pipe(
         map((pm) => pm.get('bundleId')),
@@ -93,5 +104,11 @@ export class ReleaseNotesBundleComponent implements OnInit {
             );
           });
       });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.transloco.translate(marker('releaseNotes.heading')),
+    );
   }
 }

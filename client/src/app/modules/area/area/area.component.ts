@@ -5,12 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
@@ -23,34 +18,21 @@ import { AreasService } from '../../../services/crud/areas.service';
 import {
   selectGymMode,
   selectInstanceSettingsState,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-area',
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss'],
-  imports: [
-    Card,
-    ClosedSpotTagComponent,
-    SecretSpotTagComponent,
-    Breadcrumb,
-    Tabs,
-    SetActiveTabDirective,
-    TabList,
-    Tab,
-    RouterLink,
-    RouterOutlet,
-  ],
+  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaComponent implements OnInit {
@@ -58,8 +40,8 @@ export class AreaComponent implements OnInit {
   public sector: Sector;
   public area: Area;
   public items: MenuItem[];
-  public breadcrumbs: MenuItem[] | undefined;
-  public breadcrumbHome: MenuItem | undefined;
+
+  private breadcrumbHome: MenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -72,6 +54,7 @@ export class AreaComponent implements OnInit {
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
+  private pageTitleService = inject(PageTitleService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -109,12 +92,26 @@ export class AreaComponent implements OnInit {
           this.store.pipe(select(selectIsModerator), take(1)),
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectGymMode), take(1)),
+          this.store.pipe(select(selectBgImage), take(1)),
         ]).subscribe(
-          ([crag, sector, area, isModerator, blocWeatherConfig, isGymMode]) => {
+          ([
+            crag,
+            sector,
+            area,
+            isModerator,
+            blocWeatherConfig,
+            isGymMode,
+            bgImage,
+          ]) => {
             this.hasBlocweather = !!blocWeatherConfig;
             this.crag = crag;
             this.sector = sector;
             this.area = area;
+            this.pageTitleService.setPortraitTitle(
+              area.name,
+              area.portraitImage,
+              bgImage,
+            );
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {
@@ -132,6 +129,7 @@ export class AreaComponent implements OnInit {
                       instanceSettings.skippedHierarchyLayers,
                     ),
                 };
+                this.updateBreadcrumbs(crag, sector, area);
               });
             this.buildItems(isModerator, isGymMode);
             this.languageService.renderedLanguage$
@@ -140,25 +138,32 @@ export class AreaComponent implements OnInit {
                 if (!rendered) return;
                 this.buildItems(isModerator, isGymMode);
               });
-            this.breadcrumbs = [
-              {
-                label: crag.name,
-                slug: crag.slug,
-                routerLink: `/topo/${crag.slug}/sectors`,
-              },
-              {
-                label: sector.name,
-                slug: sector.slug,
-                routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
-              },
-              {
-                label: area.name,
-                slug: area.slug,
-              },
-            ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
           },
         );
       });
+  }
+
+  private updateBreadcrumbs(crag: Crag, sector: Sector, area: Area) {
+    const breadcrumbs = [
+      {
+        label: crag.name,
+        slug: crag.slug,
+        routerLink: `/topo/${crag.slug}/sectors`,
+      },
+      {
+        label: sector.name,
+        slug: sector.slug,
+        routerLink: `/topo/${crag.slug}/${sector.slug}/areas`,
+      },
+      {
+        label: area.name,
+        slug: area.slug,
+      },
+    ].filter((menuItem) => menuItem.slug != environment.skippedSlug);
+    this.pageTitleService.setBreadcrumbs(
+      breadcrumbs,
+      this.breadcrumbHome ?? null,
+    );
   }
 
   private buildItems(isModerator: boolean, isGymMode: boolean) {
@@ -219,5 +224,6 @@ export class AreaComponent implements OnInit {
         visible: isModerator,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 }

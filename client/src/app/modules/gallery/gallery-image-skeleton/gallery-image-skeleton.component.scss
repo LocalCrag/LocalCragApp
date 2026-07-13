@@ -4,7 +4,7 @@ lc-gallery-image-skeleton {
   }
 
   .p-card-header {
-    background-color: #f4f4f4;
+    background-color: var(--p-content-hover-background);
     border-radius: var(--p-card-border-radius);
 
     .image-container {
@@ -20,5 +20,21 @@ lc-gallery-image-skeleton {
     display: flex;
     justify-content: end;
     gap: 0.25rem;
+  }
+
+  :where(html.lc-dark) & .gallery-image-card {
+    background-color: color-mix(
+      in srgb,
+      var(--p-text-color) 10%,
+      var(--p-content-background)
+    );
+
+    .p-card-header {
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 12%,
+        var(--p-content-background)
+      );
+    }
   }
 }

@@ -1,9 +1,9 @@
 @for (i of Array.from({ length: 5 }); track $index) {
-  <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-    <div class="w-12 sm:w-9 xl:w-5 align-self-center">
+  <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6">
+    <div class="w-full sm:w-9/12 xl:w-5/12 self-start">
       <p-skeleton height="20rem"></p-skeleton>
     </div>
-    <div class="w-12 sm:w-12 xl:w-7 flex flex-column gap-2">
+    <div class="w-full sm:w-full xl:w-7/12 flex flex-col gap-2">
       <p-skeleton height="3rem"></p-skeleton>
       <p-skeleton height="1.5rem"></p-skeleton>
       <p-skeleton height="1.5rem"></p-skeleton>

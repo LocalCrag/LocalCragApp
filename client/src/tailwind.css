@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+@source not "../cypress/**/*";
+
+@custom-variant dark (&:where(.lc-dark, .lc-dark *));

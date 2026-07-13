@@ -1,378 +1,350 @@
 <ng-container *transloco="let t; read: 'crag.cragForm'">
-  <div class="content">
-    <p-card header="{{ editMode ? t('editCragTitle') : t('createCragTitle') }}">
-      @if (!editMode) {
-        <p class="mt-0">
-          {{ t("createCragDescription") }}
-        </p>
-      }
+  <div class="content p-6">
+    @if (!editMode) {
+      <p class="mt-0">
+        {{ t("createCragDescription") }}
+      </p>
+    }
 
-      <form [formGroup]="cragForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="name">{{ t("cragNameLabel") }}</label>
-          <input
-            id="name"
-            type="text"
-            pInputText
-            formControlName="name"
-            placeholder="{{ t('cragNamePlaceholder') }}"
-            lcFormControl
-            data-cy="crag-form-name"
-          />
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 120 }
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="short-description">{{
-            t("cragShortDescriptionLabel")
-          }}</label>
-          <p-editor
-            id="short-description"
-            formControlName="shortDescription"
-            lcFormControl
-            placeholder="{{ t('cragShortDescriptionPlaceholder') }}"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-            data-cy="crag-form-shortDescription"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="description">{{
-            t("cragDescriptionLabel")
-          }}</label>
-          <p-editor
-            id="description"
-            formControlName="description"
-            lcFormControl
-            placeholder="{{ t('cragDescriptionPlaceholder') }}"
-            [modules]="quillModules"
-            data-cy="crag-form-description"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="rules">{{
-            t("cragRulesLabel")
-          }}</label>
-          <p-editor
-            formControlName="rules"
-            id="rules"
-            lcFormControl
-            placeholder="{{ t('cragRulesPlaceholder') }}"
-            [modules]="quillModules"
-            data-cy="crag-form-rules"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="portrait-image">{{
-            t("cragPortraitImageLabel")
-          }}</label>
-          <lc-single-image-upload
-            lcFormControl
-            id="portrait-image"
-            formControlName="portraitImage"
-            data-cy="crag-form-portraitImage"
-          >
-          </lc-single-image-upload>
-        </div>
-        <div
-          class="flex flex-column gap-2"
-          lcControlGroup
-          *isOutdoorMode="true"
-        >
-          <label class="form-label" for="blocweatherUrl"
-            >{{ t("blocweatherUrlLabel") }}
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('blocweatherTooltip')"
-              tooltipPosition="right"
-            ></span>
-          </label>
-          <input
-            id="blocweatherUrl"
-            type="text"
-            pInputText
-            formControlName="blocweatherUrl"
-            placeholder="https://blocweather.com/<country>/<region>/<spot>"
-            lcFormControl
-            data-cy="crag-form-blocweatherUrl"
-          />
-          <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
-            t("invalidBlocweatherUrl")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 255 }
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="map-markers">{{
-            t("mapMarkersLabel")
-          }}</label>
-          <lc-map-marker-form-array
-            id="map-markers"
-            formControlName="mapMarkers"
-            [disabledMarkerTypes]="disabledMarkerTypesCrag"
-            lcFormControl
-            [defaultMarkerType]="MapMarkerType.CRAG"
-          ></lc-map-marker-form-array>
-        </div>
-
-        <lc-scheduled-closure-form
-          formControlName="closureSchedules"
+    <form [formGroup]="cragForm" lcForm>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="name">{{ t("cragNameLabel") }}</label>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          formControlName="name"
+          placeholder="{{ t('cragNamePlaceholder') }}"
           lcFormControl
+          data-cy="crag-form-name"
         />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
 
-        <div class="grid align-items-center">
-          <h4 class="col-12">{{ "defaultScalesLabel" | transloco }}</h4>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="short-description">{{
+          t("cragShortDescriptionLabel")
+        }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="short-description"
+          formControlName="shortDescription"
+          lcFormControl
+          placeholder="{{ t('cragShortDescriptionPlaceholder') }}"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+          data-cy="crag-form-shortDescription"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
 
-          <label
-            for="defaultBoulderScale"
-            class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
-            {{ "BOULDER" | transloco }}:
-          </label>
-          <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-select
-              id="defaultBoulderScale"
-              [options]="boulderScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultBoulderScale"
-              lcFormControl
-            ></p-select>
-          </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="description">{{
+          t("cragDescriptionLabel")
+        }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="description"
+          formControlName="description"
+          lcFormControl
+          placeholder="{{ t('cragDescriptionPlaceholder') }}"
+          [modules]="quillModules"
+          data-cy="crag-form-description"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button
+                type="button"
+                value="ordered"
+                class="ql-list"
+                aria-label="Ordered List"
+              ></button>
+              <button
+                type="button"
+                value="bullet"
+                class="ql-list"
+                aria-label="Unordered List"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+              <button
+                type="button"
+                class="ql-image"
+                aria-label="Image"
+              ></button>
+              <button
+                type="button"
+                class="ql-video"
+                aria-label="Video"
+              ></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
 
-          <label
-            for="defaultSportScale"
-            class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
-            {{ "SPORT" | transloco }}:
-          </label>
-          <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-select
-              id="defaultSportScale"
-              [options]="sportScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultSportScale"
-              lcFormControl
-            ></p-select>
-          </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="rules">{{ t("cragRulesLabel") }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          formControlName="rules"
+          id="rules"
+          lcFormControl
+          placeholder="{{ t('cragRulesPlaceholder') }}"
+          [modules]="quillModules"
+          data-cy="crag-form-rules"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button
+                type="button"
+                value="ordered"
+                class="ql-list"
+                aria-label="Ordered List"
+              ></button>
+              <button
+                type="button"
+                value="bullet"
+                class="ql-list"
+                aria-label="Unordered List"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+              <button
+                type="button"
+                class="ql-image"
+                aria-label="Image"
+              ></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
 
-          <label
-            for="defaultTradScale"
-            class="xl:col-1 md:col-2 sm:col-3 col-4"
-          >
-            {{ "TRAD" | transloco }}:
-          </label>
-          <div class="xl:col-11 md:col-10 sm:col-9 col-8">
-            <p-select
-              id="defaultTradScale"
-              [options]="tradScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultTradScale"
-              lcFormControl
-            ></p-select>
-          </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="portrait-image">{{
+          t("cragPortraitImageLabel")
+        }}</label>
+        <lc-single-image-upload
+          lcFormControl
+          id="portrait-image"
+          formControlName="portraitImage"
+          [focusAdjustable]="true"
+          data-cy="crag-form-portraitImage"
+        >
+        </lc-single-image-upload>
+      </div>
+      <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
+        <label class="form-label" for="blocweatherUrl"
+          >{{ t("blocweatherUrlLabel") }}
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('blocweatherTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </label>
+        <input
+          id="blocweatherUrl"
+          type="text"
+          pInputText
+          formControlName="blocweatherUrl"
+          placeholder="https://blocweather.com/<country>/<region>/<spot>"
+          lcFormControl
+          data-cy="crag-form-blocweatherUrl"
+        />
+        <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
+          t("invalidBlocweatherUrl")
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 255 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="map-markers">{{
+          t("mapMarkersLabel")
+        }}</label>
+        <lc-map-marker-form-array
+          id="map-markers"
+          formControlName="mapMarkers"
+          [disabledMarkerTypes]="disabledMarkerTypesCrag"
+          lcFormControl
+          [defaultMarkerType]="MapMarkerType.CRAG"
+        ></lc-map-marker-form-array>
+      </div>
+
+      <lc-scheduled-closure-form
+        formControlName="closureSchedules"
+        lcFormControl
+      />
+
+      <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6 items-center">
+        <h4 class="col-span-12">{{ "defaultScalesLabel" | transloco }}</h4>
+
+        <label
+          for="defaultBoulderScale"
+          class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
+        >
+          {{ "BOULDER" | transloco }}:
+        </label>
+        <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
+          <p-select
+            id="defaultBoulderScale"
+            [options]="boulderScales"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="defaultBoulderScale"
+            lcFormControl
+          ></p-select>
         </div>
 
-        @if (crag?.slug !== environment.skippedSlug) {
-          <div class="flex flex-column gap-2" lcControlGroup>
-            <label class="form-label">{{ t("cragOptionsLabel") }}</label>
-            <div class="flex flex-column gap-2">
-              <div class="flex">
-                <p-checkbox
-                  inputId="secret"
-                  name="secret"
-                  [binary]="true"
-                  formControlName="secret"
-                  lcFormControl
-                ></p-checkbox>
-                <label [for]="'secret'" class="ml-2">{{
-                  t("secretLabel")
-                }}</label>
-              </div>
+        <label
+          for="defaultSportScale"
+          class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
+        >
+          {{ "SPORT" | transloco }}:
+        </label>
+        <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
+          <p-select
+            id="defaultSportScale"
+            [options]="sportScales"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="defaultSportScale"
+            lcFormControl
+          ></p-select>
+        </div>
+
+        <label
+          for="defaultTradScale"
+          class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
+        >
+          {{ "TRAD" | transloco }}:
+        </label>
+        <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
+          <p-select
+            id="defaultTradScale"
+            [options]="tradScales"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="defaultTradScale"
+            lcFormControl
+          ></p-select>
+        </div>
+      </div>
+
+      @if (crag?.slug !== environment.skippedSlug) {
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label">{{ t("cragOptionsLabel") }}</label>
+          <div class="flex flex-col gap-2">
+            <div class="flex">
+              <p-checkbox
+                inputId="secret"
+                name="secret"
+                [binary]="true"
+                formControlName="secret"
+                lcFormControl
+              ></p-checkbox>
+              <label [for]="'secret'" class="ml-2">{{
+                t("secretLabel")
+              }}</label>
             </div>
           </div>
-        }
-      </form>
+        </div>
+      }
+    </form>
 
-      <div class="form-actions">
-        @if (!editMode) {
-          <p-button
-            label="{{ t('createCragButtonLabel') }}"
-            (click)="saveCrag()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            data-cy="submit"
-          ></p-button>
-        }
-        @if (editMode) {
-          <p-button
-            label="{{ t('editCragButtonLabel') }}"
-            (click)="saveCrag()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
+    <div class="form-actions">
+      @if (!editMode) {
         <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
-          class="ml-3 responsive-button"
-          styleClass="p-button-secondary"
-          icon="pi pi-ban"
+          label="{{ t('createCragButtonLabel') }}"
+          (click)="saveCrag()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+          data-cy="submit"
         ></p-button>
-        @if (editMode && crag?.slug !== environment.skippedSlug) {
-          <p-button
-            label="{{ t('deleteCragButtonLabel') }}"
-            (click)="confirmDeleteCrag($event)"
-            icon="pi pi-trash"
-            class="ml-3 responsive-button"
-            styleClass="p-button-danger"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
-        <p-confirmpopup></p-confirmpopup>
-      </div>
-    </p-card>
+      }
+      @if (editMode) {
+        <p-button
+          label="{{ t('editCragButtonLabel') }}"
+          (click)="saveCrag()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        (click)="cancel()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+      ></p-button>
+      @if (editMode && crag?.slug !== environment.skippedSlug) {
+        <p-button
+          label="{{ t('deleteCragButtonLabel') }}"
+          (click)="confirmDeleteCrag($event)"
+          icon="pi pi-trash"
+          class="responsive-button"
+          styleClass="p-button-danger"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-confirmpopup></p-confirmpopup>
+    </div>
   </div>
 </ng-container>

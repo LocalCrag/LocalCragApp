@@ -7,18 +7,18 @@
   >
     <ng-template let-item #item>
       @if (!showImage && !showLinePathLineName && item.name) {
-        <div class="flex flex-wrap p-2 align-items-center gap-3">
+        <div class="flex flex-wrap p-2 items-center gap-6">
           {{ item.name }}
         </div>
       }
       @if (showLinePathLineName) {
-        <div class="flex flex-wrap p-2 align-items-center gap-3">
+        <div class="flex flex-wrap p-2 items-center gap-6">
           {{ item.line.name }}
           {{ item.line | lineGrade }}
         </div>
       }
       @if (showMenuItemTitle) {
-        <div class="flex flex-wrap p-2 align-items-center gap-3">
+        <div class="flex flex-wrap p-2 items-center gap-6">
           {{ item.type | transloco }}
           @if (item.type === menuItemTypes.MENU_PAGE) {
             <span>({{ item.menuPage.title }})</span>
@@ -28,14 +28,14 @@
       @if (showImage) {
         <img
           alt="{{ t('orderItemImageAlt') }}"
-          class="w-5 sm:w-5rem xl:w-5rem shadow-2 block xl:block mx-auto border-round"
+          class="w-5/12 sm:w-20 xl:w-20 shadow block xl:block mx-auto rounded-border"
           [src]="item.image.thumbnailM"
         />
       }
     </ng-template>
   </p-orderList>
 
-  <div class="flex gap-3 mt-4 justify-content-end">
+  <div class="form-actions mt-12 justify-end">
     <p-button
       label="{{ t('cancelButtonLabel') }}"
       (click)="cancel()"

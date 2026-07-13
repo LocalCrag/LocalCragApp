@@ -1,5 +1,91 @@
+@use "../../styles/media-queries" as m;
+
 :host {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  --lc-layout-gap: 1.5rem;
+  --lc-sidebar-width: 16rem;
+  --lc-main-max-width: 80rem;
+  --lc-menu-height: 3.25rem;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  width: 100%;
+  background-color: var(--p-content-background);
+  transform: translateY(0);
+  transition: transform 0.2s ease;
+  will-change: transform;
+
+  &--hidden {
+    transform: translateY(-100%);
+  }
+}
+
+.site-header-spacer {
+  flex-shrink: 0;
+  height: var(--lc-menu-height, 3.25rem);
+}
+
+.body-row {
+  flex: 1;
+  display: flex;
+  background-color: var(--lc-subtle-bg);
+  padding: var(--lc-layout-gap);
+  min-height: 0;
+
+  @include m.on-mobile {
+    padding: 0;
+  }
+}
+
+.layout-columns {
+  display: flex;
+  gap: var(--lc-layout-gap);
+  width: 100%;
+  max-width: calc(
+    var(--lc-sidebar-width) + var(--lc-layout-gap) + var(--lc-main-max-width)
+  );
+  margin: 0 auto;
+  align-items: flex-start;
+  min-width: 0;
+
+  @include m.on-mobile {
+    gap: 0;
+    max-width: none;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background-color: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  box-shadow: var(--p-card-shadow);
+  overflow: visible;
+
+  @include m.on-mobile {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    flex: 1;
+    min-height: 0;
+  }
+
+  > *:not(router-outlet) {
+    width: 100%;
+  }
 }

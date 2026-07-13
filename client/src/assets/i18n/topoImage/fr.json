@@ -20,8 +20,6 @@
   "topoImageForm.addTopoImageButtonLabel": "Enregistrer",
   "topoImageForm.cancelButtonLabel": "Annuler",
   "topoImageForm.moveTopoImageButtonLabel": "Déplacer",
-  "topoImageForm.addTopoImageTitle": "Ajouter une image topo",
-  "topoImageForm.editTopoImageTitle": "Modifier l'image topo",
   "batchUploadForm.batchImageUploadDescription": "Téléversez plusieurs images topo en même temps et créez immédiatement des voies avec leurs tracés et les informations de base. Si vous souhaitez ajouter des détails plus tard, vous pouvez le faire en modifiant chaque voie individuellement.",
   "batchUploadForm.images": "Images",
   "batchUploadForm.lines": "Voies",
@@ -40,5 +38,7 @@
   "batchUploadForm.saveLinesAndTopoImagesAndNext": "Enregistrer et continuer",
   "batchUploadForm.topoImageLabel": "Image topo",
   "batchUploadForm.topoImagePlaceholder": "Sélectionner une image topo",
+  "topoImageForm.editTopoImageTitle": "Modifier l'image topo",
+  "topoImageForm.addTopoImageTitle": "Ajouter une image topo",
   "batchUploadForm.batchImageUploadTitle": "Import topo + édition rapide"
 }

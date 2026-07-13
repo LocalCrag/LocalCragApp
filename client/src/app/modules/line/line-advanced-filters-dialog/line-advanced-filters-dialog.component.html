@@ -1,11 +1,11 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
-  <div class="line-adv-filters-dialog flex flex-column gap-3">
+  <div class="line-adv-filters-dialog flex flex-col gap-6">
     <div>
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersGradeSection") }}
       </div>
       @if (availableScales.length > 2) {
-        <div class="mb-3">
+        <div class="mb-12">
           <label class="block text-sm mb-1">{{ t("lineType") }}</label>
           <p-select
             [options]="availableScales"
@@ -16,13 +16,13 @@
           >
             <ng-template #selectedItem>
               @if (dialogScaleKey) {
-                <div class="flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                   <div>{{ dialogScaleKey.label }}</div>
                 </div>
               }
             </ng-template>
             <ng-template let-option #item>
-              <div class="flex align-items-center gap-2">
+              <div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
               </div>
             </ng-template>
@@ -54,8 +54,8 @@
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersFaYearSection") }}
       </div>
-      <div class="fa-year-range grid w-full">
-        <div class="fa-year-field col-6 flex flex-column gap-1">
+      <div class="fa-year-range grid grid-cols-12 gap-6 w-full">
+        <div class="fa-year-field col-span-6 flex flex-col gap-1">
           <label class="block text-sm mb-1" for="advancedFiltersFaYearFrom">{{
             t("advancedFiltersFaYearFrom")
           }}</label>
@@ -74,7 +74,7 @@
             class="w-full"
           ></p-date-picker>
         </div>
-        <div class="fa-year-field col-6 flex flex-column gap-1">
+        <div class="fa-year-field col-span-6 flex flex-col gap-1">
           <label class="block text-sm mb-1" for="advancedFiltersFaYearTo">{{
             t("advancedFiltersFaYearTo")
           }}</label>
@@ -105,7 +105,7 @@
         [(ngModel)]="draft.hasVideo"
         optionLabel="label"
         optionValue="value"
-        styleClass="w-full md:w-20rem"
+        styleClass="w-full md:w-80"
       ></p-select>
     </div>
 
@@ -118,7 +118,7 @@
         [(ngModel)]="draft.climbState"
         optionLabel="label"
         optionValue="value"
-        styleClass="w-full md:w-20rem"
+        styleClass="w-full md:w-80"
       ></p-select>
     </div>
 
@@ -131,7 +131,7 @@
         [(ngModel)]="draft.startingPosition"
         optionLabel="label"
         optionValue="value"
-        styleClass="w-full md:w-20rem"
+        styleClass="w-full md:w-80"
         [placeholder]="t('advancedFiltersStartingPositionsPlaceholder')"
       ></p-select>
     </div>
@@ -141,12 +141,12 @@
         {{ t("advancedFiltersBoolSection") }}
       </div>
       <ng-container *transloco="let bt; read: 'line.lineBoolPropList'">
-        <div class="text-sm font-medium mb-2 mt-3">
+        <div class="text-sm font-medium mb-2 mt-12">
           {{ t("advancedFiltersBoolSectionGeneral") }}
         </div>
         <div class="bool-grid">
           @for (key of boolGeneralKeys; track key) {
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <p-checkbox
                 [inputId]="'bool-' + key"
                 [ngModel]="boolRequired(key)"
@@ -160,12 +160,12 @@
           }
         </div>
 
-        <div class="text-sm font-medium mb-2 mt-3">
+        <div class="text-sm font-medium mb-2 mt-12">
           {{ t("advancedFiltersBoolSectionAngles") }}
         </div>
         <div class="bool-grid">
           @for (key of boolAngleKeys; track key) {
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <p-checkbox
                 [inputId]="'bool-' + key"
                 [ngModel]="boolRequired(key)"
@@ -179,12 +179,12 @@
           }
         </div>
 
-        <div class="text-sm font-medium mb-2 mt-3">
+        <div class="text-sm font-medium mb-2 mt-12">
           {{ t("advancedFiltersBoolSectionMovement") }}
         </div>
         <div class="bool-grid">
           @for (key of boolMovementKeys; track key) {
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <p-checkbox
                 [inputId]="'bool-' + key"
                 [ngModel]="boolRequired(key)"
@@ -198,12 +198,12 @@
           }
         </div>
 
-        <div class="text-sm font-medium mb-2 mt-3">
+        <div class="text-sm font-medium mb-2 mt-12">
           {{ t("advancedFiltersBoolSectionHolds") }}
         </div>
         <div class="bool-grid">
           @for (key of boolHoldKeys; track key) {
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <p-checkbox
                 [inputId]="'bool-' + key"
                 [ngModel]="boolRequired(key)"
@@ -217,12 +217,12 @@
           }
         </div>
 
-        <div class="text-sm font-medium mb-2 mt-3">
+        <div class="text-sm font-medium mb-2 mt-12">
           {{ t("advancedFiltersBoolSectionStructure") }}
         </div>
         <div class="bool-grid">
           @for (key of boolStructureKeys; track key) {
-            <div class="flex align-items-center gap-2">
+            <div class="flex items-center gap-2">
               <p-checkbox
                 [inputId]="'bool-' + key"
                 [ngModel]="boolRequired(key)"
@@ -238,7 +238,7 @@
       </ng-container>
     </div>
 
-    <div class="flex flex-wrap justify-content-between gap-2 mt-2">
+    <div class="lc-button-group justify-between mt-2">
       <p-button
         [label]="t('advancedFiltersReset')"
         icon="pi pi-refresh"
@@ -246,7 +246,7 @@
         class="responsive-button"
         (click)="reset()"
       ></p-button>
-      <div class="flex gap-2">
+      <div class="lc-button-group">
         <p-button
           [label]="t('advancedFiltersCancel')"
           icon="pi pi-times"

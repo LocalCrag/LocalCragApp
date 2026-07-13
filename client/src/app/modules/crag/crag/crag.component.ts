@@ -1,11 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
@@ -20,41 +15,28 @@ import { Title } from '@angular/platform-browser';
 import {
   selectGymMode,
   selectInstanceSettingsState,
+  selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Card } from 'primeng/card';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
-  imports: [
-    Card,
-    ClosedSpotTagComponent,
-    SecretSpotTagComponent,
-    Breadcrumb,
-    Tabs,
-    SetActiveTabDirective,
-    TabList,
-    Tab,
-    RouterLink,
-    RouterOutlet,
-  ],
+  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 export class CragComponent implements OnInit {
   public crag: Crag;
   public items: MenuItem[];
-  public breadcrumbs: MenuItem[] | undefined;
-  public breadcrumbHome: MenuItem | undefined;
+
+  private breadcrumbHome: MenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -65,6 +47,7 @@ export class CragComponent implements OnInit {
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
+  private pageTitleService = inject(PageTitleService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -86,39 +69,58 @@ export class CragComponent implements OnInit {
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
           this.blocWeatherService.getNearest('crag', cragSlug),
-        ]).subscribe(([crag, isModerator, isGymMode, blocweatherConfig]) => {
-          this.hasBlocweather = !!blocweatherConfig;
-          this.crag = crag;
-          this.store
-            .select(selectInstanceSettingsState)
-            .subscribe((instanceSettings) => {
-              this.title.setTitle(
-                `${crag.name} - ${instanceSettings.instanceName}`,
-              );
-              this.breadcrumbHome = {
-                icon: 'pi pi-map',
-                routerLink:
-                  '/topo' +
-                  `/${environment.skippedSlug}`.repeat(
-                    instanceSettings.skippedHierarchyLayers,
-                  ),
-              };
-            });
-          this.buildItems(crag, isModerator, isGymMode);
-          this.languageService.renderedLanguage$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((rendered) => {
-              if (!rendered) return;
-              this.buildItems(crag, isModerator, isGymMode);
-            });
-          this.breadcrumbs = [
-            {
-              label: crag.name,
-              routerLink: `/topo/${crag.slug}`,
-            },
-          ];
-        });
+          this.store.pipe(select(selectBgImage), take(1)),
+        ]).subscribe(
+          ([crag, isModerator, isGymMode, blocweatherConfig, bgImage]) => {
+            this.hasBlocweather = !!blocweatherConfig;
+            this.crag = crag;
+            this.pageTitleService.setPortraitTitle(
+              crag.name,
+              crag.portraitImage,
+              bgImage,
+            );
+            this.store
+              .select(selectInstanceSettingsState)
+              .subscribe((instanceSettings) => {
+                this.title.setTitle(
+                  `${crag.name} - ${instanceSettings.instanceName}`,
+                );
+                this.breadcrumbHome = {
+                  icon: 'pi pi-map',
+                  routerLink:
+                    '/topo' +
+                    `/${environment.skippedSlug}`.repeat(
+                      instanceSettings.skippedHierarchyLayers,
+                    ),
+                };
+                this.updateBreadcrumbs(crag);
+              });
+            this.buildItems(crag, isModerator, isGymMode);
+            this.languageService.renderedLanguage$
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((rendered) => {
+                if (!rendered) return;
+                this.buildItems(crag, isModerator, isGymMode);
+              });
+          },
+        );
       });
+  }
+
+  private updateBreadcrumbs(crag: Crag) {
+    if (crag.slug === environment.skippedSlug) {
+      this.pageTitleService.setBreadcrumbs(null);
+      return;
+    }
+    this.pageTitleService.setBreadcrumbs(
+      [
+        {
+          label: crag.name,
+          routerLink: `/topo/${crag.slug}`,
+        },
+      ],
+      this.breadcrumbHome ?? null,
+    );
   }
 
   private buildItems(crag: Crag, isModerator: boolean, isGymMode: boolean) {
@@ -191,6 +193,7 @@ export class CragComponent implements OnInit {
         visible: isModerator,
       },
     ];
+    this.pageTitleService.setTabs(this.items);
   }
 
   protected readonly environment = environment;

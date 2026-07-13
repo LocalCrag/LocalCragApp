@@ -1,13 +1,5 @@
 @use "media-queries" as m;
 
-.content .p-card {
-  @include m.on-mobile {
-    border-radius: 0;
-    box-shadow: none;
-    min-height: 100%;
-  }
-}
-
 // Breadcrumb ellipsis for small screens
 p-breadcrumb {
   .p-breadcrumb-item-label {

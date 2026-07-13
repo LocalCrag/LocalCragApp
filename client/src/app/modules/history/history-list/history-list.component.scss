@@ -33,4 +33,16 @@ lc-history-list {
   .username {
     color: var(--p-text-color);
   }
+
+  // In dark mode the inner timeline cards share the outer card's background,
+  // so the drop shadow is invisible. Lift them onto a slightly elevated
+  // surface (and add a subtle border) so they read as distinct cards.
+  :where(html.lc-dark) & .p-timeline-event-content .p-card {
+    background: color-mix(
+      in srgb,
+      var(--p-text-color) 6%,
+      var(--p-content-background)
+    );
+    border: 1px solid var(--p-content-border-color);
+  }
 }

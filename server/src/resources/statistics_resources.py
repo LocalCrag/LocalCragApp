@@ -1,14 +1,20 @@
-from flask import request
+import datetime
+
+from flask import jsonify, request
 from flask.views import MethodView
+from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
+from marshmallow_schemas.instance_statistics_schema import instance_statistics_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
+from models.user import User
 from util.secret_service import SecretService
 
 
@@ -144,3 +150,69 @@ class GetCompletion(MethodView):
         result = {"crags": crag_counts, "sectors": sector_counts, "areas": area_counts}
 
         return result
+
+
+def _ascent_list_options():
+    return (
+        joinedload(Ascent.line).joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag),
+        joinedload(Ascent.created_by),
+    )
+
+
+class GetInstanceStatistics(MethodView):
+    """Public instance-wide stats for the sidebar."""
+
+    def get(self):
+        instance_settings = InstanceSettings.return_it()
+        display_user_grades = bool(instance_settings.display_user_grades)
+        grade_col = Line.user_grade_value if display_user_grades else Line.author_grade_value
+
+        today = datetime.date.today()
+        month_ago = today - datetime.timedelta(days=30)
+        week_ago = today - datetime.timedelta(days=7)
+
+        ascent_base = (
+            db.session.query(Ascent)
+            .join(Line, Ascent.line_id == Line.id)
+            .filter(Line.archived.is_(False), Line.author_grade_value >= 0)
+        )
+        ascent_base = SecretService.apply_line_filter(ascent_base)
+
+        line_base = db.session.query(Line).filter(Line.archived.is_(False), Line.author_grade_value >= 0)
+        line_base = SecretService.apply_line_filter(line_base)
+
+        hardest_ascents_last_month = (
+            ascent_base.options(*_ascent_list_options())
+            .filter(Ascent.ascent_date >= month_ago)
+            .order_by(grade_col.desc(), Ascent.id.desc())
+            .limit(5)
+            .all()
+        )
+
+        latest_first_ascents = (
+            ascent_base.options(*_ascent_list_options())
+            .filter(Ascent.fa.is_(True))
+            .order_by(Ascent.time_created.desc(), Ascent.id.desc())
+            .limit(5)
+            .all()
+        )
+
+        total_ascents = ascent_base.with_entities(func.count(Ascent.id)).scalar() or 0
+        ascents_last_week = (
+            ascent_base.filter(Ascent.ascent_date >= week_ago).with_entities(func.count(Ascent.id)).scalar() or 0
+        )
+        total_lines = line_base.with_entities(func.count(Line.id)).scalar() or 0
+        total_users = db.session.query(func.count(User.id)).filter(User.activated.is_(True)).scalar() or 0
+
+        payload = {
+            "totals": {
+                "total_ascents": total_ascents,
+                "ascents_last_week": ascents_last_week,
+                "total_lines": total_lines,
+                "total_users": total_users,
+            },
+            "hardest_ascents_last_month": hardest_ascents_last_month,
+            "latest_first_ascents": latest_first_ascents,
+        }
+
+        return jsonify(instance_statistics_schema.dump(payload)), 200

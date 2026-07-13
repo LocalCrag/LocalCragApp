@@ -84,8 +84,6 @@
   "lineForm.cancelButtonLabel": "Annulla",
   "lineForm.moveLineButtonLabel": "Spostare",
   "lineForm.deleteLineButtonLabel": "Elimina Problema",
-  "lineForm.editLineTitle": "Modifica Problema",
-  "lineForm.createLineTitle": "Aggiungi Problema",
   "lineBoolPropList.eliminate": "Definizione",
   "lineBoolPropList.traverse": "Traversa",
   "lineBoolPropList.highball": "Highball",
@@ -134,5 +132,7 @@
   "lineList.advancedFiltersApply": "Applica",
   "batchLineForm.lineNamePlaceholder": "Nome",
   "batchLineForm.gradePlaceholder": "Grado",
-  "batchLineForm.lineFANamePlaceholder": "Aperto da"
+  "batchLineForm.lineFANamePlaceholder": "Aperto da",
+  "lineForm.editLineTitle": "Modifica Problema",
+  "lineForm.createLineTitle": "Aggiungi Problema"
 }

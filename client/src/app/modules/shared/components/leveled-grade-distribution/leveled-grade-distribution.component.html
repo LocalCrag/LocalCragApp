@@ -5,7 +5,7 @@
 
   @if (!gradeDistributionEmpty) {
     @for (data of stackChartData; track data) {
-      <div class="mb-3">
+      <div class="mb-6">
         <p-meterGroup
           [value]="data.meterValues"
           [min]="0"
@@ -13,7 +13,7 @@
         >
           <ng-template #label>
             <div
-              class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-3"
+              class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-6"
             >
               @if (data.total - data.projects > 0) {
                 <div class="p-metergroup-label font-bold">

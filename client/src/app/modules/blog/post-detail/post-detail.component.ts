@@ -8,7 +8,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { CommentsComponent } from '../../comments/comments/comments.component';
@@ -23,7 +22,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
   selector: 'lc-post-detail',
   imports: [
     TranslocoDirective,
-    CardModule,
     ButtonModule,
     DividerModule,
     RouterLink,

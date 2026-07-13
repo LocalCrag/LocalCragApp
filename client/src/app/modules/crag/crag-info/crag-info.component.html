@@ -1,50 +1,52 @@
 <ng-container *transloco="let t; read: 'crag.crag'">
-  @if (crag) {
-    @if (crag.closedReasons?.length) {
-      <lc-closed-spot-alert
-        [reasons]="crag.closedReasons"
-      ></lc-closed-spot-alert>
+  <div class="p-6">
+    @if (crag) {
+      @if (crag.closedReasons?.length) {
+        <lc-closed-spot-alert
+          [reasons]="crag.closedReasons"
+        ></lc-closed-spot-alert>
+      }
+      @if (crag.upcomingClosureWarnings?.length) {
+        <lc-upcoming-closure-alert
+          [warnings]="crag.upcomingClosureWarnings"
+        ></lc-upcoming-closure-alert>
+      }
+      <lc-current-conditions
+        [slug]="crag.slug"
+        [level]="'crag'"
+      ></lc-current-conditions>
+      <h4>{{ t("gradeDistribution") }}:</h4>
+      <lc-grade-distribution-bar-chart
+        *isOutdoorMode="true"
+        [fetchingObservable]="fetchCragGrades"
+      ></lc-grade-distribution-bar-chart>
+      @if (crag.description) {
+        <h4>{{ t("description") }}:</h4>
+        <section
+          [innerHTML]="crag.description | sanitizeHtml"
+          class="quill-content"
+        ></section>
+      }
+      @if (cragCoordinates) {
+        <lc-coordinates-button
+          [coordinates]="cragCoordinates"
+        ></lc-coordinates-button>
+      }
+      <lc-map [target]="crag"></lc-map>
+      <h4>{{ t("season") }}:</h4>
+      @if (season) {
+        <lc-season-chart [season]="season"></lc-season-chart>
+      }
+      @if (!crag && !season) {
+        <p-skeleton width="100%" class="mb-2"></p-skeleton>
+        <p-skeleton width="90%" class="mb-2"></p-skeleton>
+        <p-skeleton width="87%" class="mb-2"></p-skeleton>
+        <p-skeleton width="70%" class="mb-2"></p-skeleton>
+        <p-skeleton width="65%" class="mb-2"></p-skeleton>
+        <p-skeleton width="45%" class="mb-6"></p-skeleton>
+        <p-skeleton height="4rem" class="mb-6"></p-skeleton>
+        <p-skeleton width="40%" height="4rem"></p-skeleton>
+      }
     }
-    @if (crag.upcomingClosureWarnings?.length) {
-      <lc-upcoming-closure-alert
-        [warnings]="crag.upcomingClosureWarnings"
-      ></lc-upcoming-closure-alert>
-    }
-    <lc-current-conditions
-      [slug]="crag.slug"
-      [level]="'crag'"
-    ></lc-current-conditions>
-    <h4>{{ t("gradeDistribution") }}:</h4>
-    <lc-grade-distribution-bar-chart
-      *isOutdoorMode="true"
-      [fetchingObservable]="fetchCragGrades"
-    ></lc-grade-distribution-bar-chart>
-    @if (crag.description) {
-      <h4>{{ t("description") }}:</h4>
-      <section
-        [innerHTML]="crag.description | sanitizeHtml"
-        class="quill-content"
-      ></section>
-    }
-    @if (cragCoordinates) {
-      <lc-coordinates-button
-        [coordinates]="cragCoordinates"
-      ></lc-coordinates-button>
-    }
-    <lc-map [target]="crag"></lc-map>
-    <h4>{{ t("season") }}:</h4>
-    @if (season) {
-      <lc-season-chart [season]="season"></lc-season-chart>
-    }
-    @if (!crag && !season) {
-      <p-skeleton width="100%" class="mb-2"></p-skeleton>
-      <p-skeleton width="90%" class="mb-2"></p-skeleton>
-      <p-skeleton width="87%" class="mb-2"></p-skeleton>
-      <p-skeleton width="70%" class="mb-2"></p-skeleton>
-      <p-skeleton width="65%" class="mb-2"></p-skeleton>
-      <p-skeleton width="45%" class="mb-4"></p-skeleton>
-      <p-skeleton height="4rem" class="mb-4"></p-skeleton>
-      <p-skeleton width="40%" height="4rem"></p-skeleton>
-    }
-  }
+  </div>
 </ng-container>

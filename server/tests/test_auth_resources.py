@@ -6,7 +6,6 @@ import pytz
 from app import db
 from messages.messages import ResponseMessage
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 from models.user import User
 
 
@@ -250,9 +249,8 @@ def test_cannot_promote_own_user(client, admin_token):
     assert rv.status_code == 409
 
 
-def test_permission_levels(client, user_token, member_token, moderator_token):
+def test_permission_levels(client, user_token, member_token, moderator_token, any_file):
     admin = User.find_by_email("admin@localcrag.invalid.org")
-    any_file_id = str(File.query.first().id)
 
     # Test USER+MEMBER permissions
     for tok in [user_token, member_token]:
@@ -268,7 +266,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
             "description": "Fodere et scandere.",
             "shortDescription": "Fodere et scandere 2.",
             "rules": "Parking only on Saturday and Sunday.",
-            "portraitImage": any_file_id,
+            "portraitImage": str(any_file.id),
             "lat": 12.13,
             "lng": 42.42,
             "secret": False,
@@ -290,7 +288,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token):
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
-        "portraitImage": any_file_id,
+        "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 12.13,

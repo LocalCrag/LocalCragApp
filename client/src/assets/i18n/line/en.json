@@ -84,8 +84,6 @@
   "lineForm.cancelButtonLabel": "Cancel",
   "lineForm.moveLineButtonLabel": "Move",
   "lineForm.deleteLineButtonLabel": "Delete line",
-  "lineForm.editLineTitle": "Edit line",
-  "lineForm.createLineTitle": "Create line",
   "lineBoolPropList.eliminate": "Definition",
   "lineBoolPropList.traverse": "Traverse",
   "lineBoolPropList.highball": "Highball",
@@ -134,5 +132,7 @@
   "lineList.advancedFiltersApply": "Apply",
   "batchLineForm.lineNamePlaceholder": "Name",
   "batchLineForm.gradePlaceholder": "Grade",
-  "batchLineForm.lineFANamePlaceholder": "First Climber"
+  "batchLineForm.lineFANamePlaceholder": "First Climber",
+  "lineForm.editLineTitle": "Edit line",
+  "lineForm.createLineTitle": "Create line"
 }

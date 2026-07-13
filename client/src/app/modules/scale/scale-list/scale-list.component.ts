@@ -1,15 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TableModule } from 'primeng/table';
 import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
 
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
 import { Message } from 'primeng/message';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-scale-list',
@@ -20,7 +25,6 @@ import { Message } from 'primeng/message';
     TableModule,
     RouterLink,
     ButtonModule,
-    CardModule,
     TranslocoPipe,
     ScaleListSkeletonComponent,
     Message,
@@ -31,10 +35,15 @@ export class ScaleListComponent implements OnInit {
   public scales: Scale[] = null;
 
   private scalesService = inject(ScalesService);
+  private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   protected router = inject(Router);
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(marker('scale.scaleList.editScales')),
+    );
     this.loadingState = LoadingState.LOADING;
     this.scalesService.getScales().subscribe((scales) => {
       this.scales = scales.sort((a, b) =>

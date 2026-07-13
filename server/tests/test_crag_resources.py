@@ -1,17 +1,14 @@
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 
 
-def test_successful_create_crag(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_create_crag(client, moderator_token, any_file):
     crag_data = {
         "name": "Glees",
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
-        "portraitImage": any_file_id,
+        "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 12.13,
@@ -39,7 +36,7 @@ def test_successful_create_crag(client, moderator_token):
     assert res["rules"] == "Parking only on Saturday and Sunday."
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
-    assert res["portraitImage"]["id"] == any_file_id
+    assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
     assert res["lineCount"] == 0
     assert res["ascentCount"] == 0
@@ -133,15 +130,13 @@ def test_successful_delete_crag(client, moderator_token):
     assert rv.status_code == 204
 
 
-def test_successful_edit_crag(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_edit_crag(client, moderator_token, any_file):
     crag_data = {
         "name": "Glees 2",
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
-        "portraitImage": any_file_id,
+        "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 42.1,

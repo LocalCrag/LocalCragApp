@@ -1,12 +1,12 @@
 <ng-container *transloco="let t; read: 'comments'">
-  <div class="flex flex-row gap-3" [id]="comment.id">
+  <div class="flex flex-row gap-6" [id]="comment.id">
     <lc-user-avatar
       [user]="comment.createdBy"
       [imageFallback]="comment.isDeleted ? 'assets/user.png' : null"
       size="large"
     />
-    <div class="flex flex-column gap-1 flex-grow-1">
-      <div class="flex justify-content-between">
+    <div class="flex flex-col gap-1 grow">
+      <div class="flex justify-between">
         <div>
           @if (!comment.isDeleted) {
             <a class="username" routerLink="{{ comment.routerLinkCreatedBy }}"
@@ -71,7 +71,7 @@
         </div>
       }
       @if (showReplies) {
-        <div class="flex flex-column gap-3 mt-3">
+        <div class="flex flex-col gap-6 mt-6">
           @for (reply of replies; track reply) {
             <lc-comment
               [comment]="reply"
@@ -159,7 +159,7 @@
       </div>
     }
     @if (replyActive) {
-      <div class="mt-3">
+      <div class="mt-6">
         <lc-comment-editor
           [parentId]="comment.id"
           (cancelled)="replyActive = false"

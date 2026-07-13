@@ -1,40 +1,42 @@
 <ng-container *transloco="let t; read: 'comments'">
-  @if (commentsContextService.object) {
-    <div class="mt-2 mb-4 block">
-      <lc-comment-editor
-        *isLoggedIn="true"
-        (created)="onCommentCreated($event)"
-      ></lc-comment-editor>
-    </div>
-  }
+  <div class="p-6">
+    @if (commentsContextService.object) {
+      <div class="mt-2 mb-12 block">
+        <lc-comment-editor
+          *isLoggedIn="true"
+          (created)="onCommentCreated($event)"
+        ></lc-comment-editor>
+      </div>
+    }
 
-  <div class="flex gap-3 flex-column mt-2">
-    @for (comment of comments; track comment) {
-      <lc-comment [comment]="comment"></lc-comment>
+    <div class="flex gap-6 flex-col mt-2">
+      @for (comment of comments; track comment) {
+        <lc-comment [comment]="comment"></lc-comment>
+      }
+    </div>
+    @if (loading === loadingStates.LOADING && currentPage === 1) {
+      <lc-comments-skeleton></lc-comments-skeleton>
+    }
+    @if (loading === loadingStates.LOADING && currentPage > 1) {
+      <lc-comments-skeleton></lc-comments-skeleton>
+    }
+    @if (hasNextPage) {
+      <div class="flex justify-center mt-20">
+        <p-button
+          label="{{ t('loadMore') }}"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          [loading]="loading === loadingStates.LOADING && currentPage > 1"
+        ></p-button>
+      </div>
+    }
+    @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
+      <p-message severity="info" icon="pi pi-info-circle">
+        {{ t("thisCommentFeedIsEmpty") }}
+      </p-message>
     }
   </div>
-  @if (loading === loadingStates.LOADING && currentPage === 1) {
-    <lc-comments-skeleton></lc-comments-skeleton>
-  }
-  @if (loading === loadingStates.LOADING && currentPage > 1) {
-    <lc-comments-skeleton></lc-comments-skeleton>
-  }
-  @if (hasNextPage) {
-    <div class="flex justify-content-center mt-5">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING && currentPage > 1"
-      ></p-button>
-    </div>
-  }
-  @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
-    <p-message severity="info" icon="pi pi-info-circle">
-      {{ t("thisCommentFeedIsEmpty") }}
-    </p-message>
-  }
 </ng-container>

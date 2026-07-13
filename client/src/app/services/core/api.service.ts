@@ -45,6 +45,7 @@ export class ApiService {
 
   public statistics = {
     completion: (): string => `${this.apiHost}statistics/completion`,
+    instance: (): string => `${this.apiHost}statistics/instance`,
   };
 
   public search = {
@@ -254,6 +255,10 @@ export class ApiService {
 
   public uploader = {
     uploadFile: (): string => `${this.apiHost}upload`,
+  };
+
+  public files = {
+    update: (id: string): string => `${this.apiHost}files/${id}`,
   };
 
   public scales = {
