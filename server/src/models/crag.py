@@ -8,14 +8,17 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
+from models.mixins.has_order_index import HasOrderIndex
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
+from models.mixins.is_secret import IsSecret
 from models.sector import Sector
-from util.secret_spots_auth import get_show_secret
+from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
+from util.secret_service import SecretService
 
 
-class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
+class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
     """
     Model of a climbing crag. Could be e.g. "Glees". Contains one or more sectors.
     """
@@ -32,9 +35,7 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
     sectors = db.relationship(
         "Sector", cascade="all,delete", backref="crag", lazy="select", order_by="Sector.order_index.asc()"
     )
-    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
-    secret = db.Column(db.Boolean, default=False, server_default="0")
     map_markers = db.relationship("MapMarker", back_populates="crag")
     default_boulder_scale = db.Column(db.String(32), nullable=True)
     default_sport_scale = db.Column(db.String(32), nullable=True)
@@ -43,18 +44,23 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     @hybrid_property
     def line_count(self):
+        cached = get_cached_line_count(self)
+        if cached is not None:
+            return cached
         query = (
             db.session.query(func.count(Line.id))
             .join(Area, Line.area_id == Area.id)
             .join(Sector, Area.sector_id == Sector.id)
             .where(Sector.crag_id == self.id)
         )
-        if not get_show_secret():
-            query = query.where(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         return query.scalar()
 
     @hybrid_property
     def ascent_count(self):
+        cached = get_cached_ascent_count(self)
+        if cached is not None:
+            return cached
         query = (
             db.session.query(func.count(Ascent.id))
             .join(Line)
@@ -62,8 +68,7 @@ class Crag(HasSlug, IsSearchable, IsClosable, BaseEntity):
             .join(Sector, Area.sector_id == Sector.id)
             .where(Sector.crag_id == self.id)
         )
-        if not get_show_secret():
-            query = query.where(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         return query.scalar()
 
     @classmethod

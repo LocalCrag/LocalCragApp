@@ -20,7 +20,7 @@ def test_successful_create_ascent(client, member_token):
         "comment": "Hahahahaha",
         "year": None,
         "gradeValue": 11,
-        "line": str(Line.get_id_by_slug("treppe")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-13",
     }
 
@@ -37,23 +37,23 @@ def test_successful_create_ascent(client, member_token):
     assert res["year"] is None
     assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
-    assert res["line"]["slug"] == "treppe"
-    assert res["area"]["slug"] == "dritter-block-von-links"
-    assert res["sector"]["slug"] == "schattental"
+    assert res["line"]["slug"] == "the-vessel"
+    assert res["area"]["slug"] == "shark-attack"
+    assert res["sector"]["slug"] == "pampelmousse"
     assert res["crag"]["slug"] == "brione"
 
     # Check updated ascent counts
-    rv = client.get("/api/lines/treppe")
+    rv = client.get("/api/lines/the-vessel")
     assert rv.status_code == 200
     res = rv.json
     assert res["ascentCount"] == 1
 
-    rv = client.get("/api/areas/dritter-block-von-links")
+    rv = client.get("/api/areas/shark-attack")
     assert rv.status_code == 200
     res = rv.json
     assert res["ascentCount"] == 2
 
-    rv = client.get("/api/sectors/schattental")
+    rv = client.get("/api/sectors/pampelmousse")
     assert rv.status_code == 200
     res = rv.json
     assert res["ascentCount"] == 2
@@ -100,8 +100,8 @@ def test_successful_update_ascent(client, admin_token):
     assert res["gradeValue"] == 11
     assert res["date"] == "2024-04-13"
     assert res["line"]["slug"] == "super-spreader"
-    assert res["area"]["slug"] == "dritter-block-von-links"
-    assert res["sector"]["slug"] == "schattental"
+    assert res["area"]["slug"] == "shark-attack"
+    assert res["sector"]["slug"] == "pampelmousse"
     assert res["crag"]["slug"] == "brione"
 
 
@@ -162,8 +162,8 @@ def test_successful_get_ascents(client):
     assert res["items"][0]["gradeValue"] == 22
     assert res["items"][0]["date"] == "2024-04-16"
     assert res["items"][0]["line"]["slug"] == "super-spreader"
-    assert res["items"][0]["area"]["slug"] == "dritter-block-von-links"
-    assert res["items"][0]["sector"]["slug"] == "schattental"
+    assert res["items"][0]["area"]["slug"] == "shark-attack"
+    assert res["items"][0]["sector"]["slug"] == "pampelmousse"
     assert res["items"][0]["crag"]["slug"] == "brione"
     assert res["hasNext"] is False
 
@@ -267,7 +267,7 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     line_id = res["id"]
@@ -283,11 +283,11 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
     assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 2
     assert smtp_mock.return_value.__enter__.return_value.quit.call_count == 2
 
-    treppe = str(Line.get_id_by_slug("treppe"))
+    stairs = str(Line.get_id_by_slug("the-vessel"))
 
     # Try sending a project climbed message for a line that is not a project
     project_climbed_data = {
-        "line": treppe,
+        "line": stairs,
         "message": "I climbed the project! I think it's a 9A+ boulder. Cheers, Aidan Roberts",
     }
     rv = client.post("/api/ascents/send-project-climbed-message", token=user_token, json=project_climbed_data)
@@ -304,7 +304,7 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
 
 
 def test_grade_ranking_votes(client, user_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     ascent_data = {
         "flash": True,
@@ -326,14 +326,43 @@ def test_grade_ranking_votes(client, user_token):
     update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
-    assert line.author_grade_value == 1
+    assert line.author_grade_value == 20
     assert line.user_grade_value == 22
     assert line.author_rating == 1
     assert line.user_rating == 5
 
 
+def test_grade_ranking_votes_top_of_scale(client, user_token):
+    # Regression: an ascent graded at the highest grade of the scale (FB 9A+ = 29)
+    # used to crash the recompute with IndexError, leaving user_grade_value stale.
+    line_id = Line.get_id_by_slug("the-vessel")
+
+    ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": True,
+        "rating": 5,
+        "comment": "Hahahahaha",
+        "year": None,
+        "gradeValue": 29,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    rv = client.post("/api/ascents", token=user_token, json=ascent_data)
+    assert 200 <= rv.status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 20
+    assert line.user_grade_value == 29
+
+
 def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     ascent_data = {
         "flash": True,
@@ -359,14 +388,14 @@ def test_grade_ranking_votes_multiple(client, user_token, member_token, admin_to
     update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
-    assert line.author_grade_value == 1
+    assert line.author_grade_value == 20
     assert line.user_grade_value == 11
     assert line.author_rating == 1
     assert line.user_rating == 5
 
 
 def test_grade_ranking_votes_multiple_2(client, user_token, member_token, admin_token, moderator_token):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
 
     ascent_data = {
         "flash": True,
@@ -397,7 +426,7 @@ def test_grade_ranking_votes_multiple_2(client, user_token, member_token, admin_
     update_grades_and_rating(line_id)
 
     line = Line.find_by_id(line_id)
-    assert line.author_grade_value == 1
+    assert line.author_grade_value == 20
     assert line.user_grade_value == 16
     assert line.author_rating == 1
     assert line.user_rating == 5
@@ -419,7 +448,7 @@ def test_gym_mode_disables_fa_in_ascents_on_create(client, member_token):
         "comment": "should not be FA",
         "year": None,
         "gradeValue": 11,
-        "line": str(Line.get_id_by_slug("treppe")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-13",
     }
 
@@ -440,7 +469,7 @@ def test_successful_validate_soft_hard(client, member_token):
         "comment": "Hahahahaha",
         "year": None,
         "gradeValue": 11,
-        "line": str(Line.get_id_by_slug("treppe")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-13",
     }
 
@@ -477,7 +506,7 @@ def test_non_moderator_cannot_clear_ascent_fa(client, member_token):
         "comment": "FA ascent",
         "year": None,
         "gradeValue": 11,
-        "line": str(Line.get_id_by_slug("treppe")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-13",
     }
     rv = client.post("/api/ascents", token=member_token, json=ascent_data)
@@ -492,7 +521,7 @@ def test_non_moderator_cannot_clear_ascent_fa(client, member_token):
 
 
 def test_moderator_clear_ascent_fa_idempotent(client, moderator_token, admin_token):
-    # Seed data only has FA ascents; create a non-FA tick (admin has super-spreader, not treppe).
+    # Seed data only has FA ascents; create a non-FA tick (admin has super-spreader, not the-vessel).
     ascent_data = {
         "flash": False,
         "fa": False,
@@ -503,7 +532,7 @@ def test_moderator_clear_ascent_fa_idempotent(client, moderator_token, admin_tok
         "comment": "no FA",
         "year": None,
         "gradeValue": 11,
-        "line": str(Line.get_id_by_slug("treppe")),
+        "line": str(Line.get_id_by_slug("the-vessel")),
         "date": "2024-04-14",
     }
     rv = client.post("/api/ascents", token=admin_token, json=ascent_data)

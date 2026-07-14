@@ -2,7 +2,6 @@ from extensions import db
 from models.crag import Crag
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
 from models.enums.starting_position_enum import StartingPositionEnum
-from models.file import File
 from models.instance_settings import InstanceSettings
 from models.sector import Sector
 
@@ -15,16 +14,18 @@ def test_successful_get_instance_settings(client):
     res = rv.json
     assert res["instanceName"] == instance_settings.instance_name
     assert res["copyrightOwner"] == instance_settings.copyright_owner
+    assert res["mailGreeting"] == instance_settings.mail_greeting
     assert res["logoImage"] is None or res["logoImage"] == str(instance_settings.logo_image_id)
     assert res["faviconImage"] is None or res["faviconImage"] == str(instance_settings.favicon_image_id)
-    assert res["mainBgImage"] is None or res["mainBgImage"] == str(instance_settings.main_bg_image_id)
-    assert res["authBgImage"] is None or res["authBgImage"] == str(instance_settings.auth_bg_image_id)
+    assert res["bgImage"] is None or res["bgImage"] == str(instance_settings.bg_image_id)
     assert res["arrowColor"] == instance_settings.arrow_color
     assert res["arrowTextColor"] == instance_settings.arrow_text_color
     assert res["arrowHighlightColor"] == instance_settings.arrow_highlight_color
     assert res["arrowHighlightTextColor"] == instance_settings.arrow_highlight_text_color
     assert res["barChartColor"] == instance_settings.bar_chart_color
     assert res["barChartAccentColor"] == instance_settings.bar_chart_accent_color
+    assert res["darkBarChartColor"] == instance_settings.dark_bar_chart_color
+    assert res["darkBarChartAccentColor"] == instance_settings.dark_bar_chart_accent_color
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
@@ -40,22 +41,24 @@ def test_successful_get_instance_settings(client):
     assert res["timezone"] == instance_settings.timezone
 
 
-def test_successful_edit_instance_settings(client, moderator_token):
+def test_successful_edit_instance_settings(client, moderator_token, any_file):
     instance_settings = InstanceSettings.return_it()
-    any_file_id = str(File.query.first().id)
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "logoImage": any_file_id,
-        "faviconImage": any_file_id,
-        "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
+        "mailGreeting": "Best regards",
+        "logoImage": str(any_file.id),
+        "darkLogoImage": None,
+        "faviconImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
         "barChartAccentColor": "rgb(250, 204, 21)",
+        "darkBarChartColor": "rgb(248, 113, 113)",
+        "darkBarChartAccentColor": "rgb(253, 224, 71)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
@@ -75,16 +78,18 @@ def test_successful_edit_instance_settings(client, moderator_token):
     res = rv.json
     assert res["instanceName"] == "Gleesbouldering"
     assert res["copyrightOwner"] == "Die Gleesards e.V."
-    assert res["logoImage"]["id"] == any_file_id
-    assert res["faviconImage"]["id"] == any_file_id
-    assert res["mainBgImage"]["id"] == any_file_id
-    assert res["authBgImage"]["id"] == any_file_id
+    assert res["mailGreeting"] == "Best regards"
+    assert res["logoImage"]["id"] == str(any_file.id)
+    assert res["faviconImage"]["id"] == str(any_file.id)
+    assert res["bgImage"]["id"] == str(any_file.id)
     assert res["arrowColor"] == "#AAAAAA"
     assert res["arrowTextColor"] == "#BBBBBB"
     assert res["arrowHighlightColor"] == "#CCCCCC"
     assert res["arrowHighlightTextColor"] == "#DDDDDD"
     assert res["barChartColor"] == "rgb(213, 30, 39)"
     assert res["barChartAccentColor"] == "rgb(250, 204, 21)"
+    assert res["darkBarChartColor"] == "rgb(248, 113, 113)"
+    assert res["darkBarChartAccentColor"] == "rgb(253, 224, 71)"
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
@@ -101,26 +106,28 @@ def test_successful_edit_instance_settings(client, moderator_token):
     assert res["timezone"] == "Europe/Berlin"
 
 
-def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
+def test_successful_change_skipped_hierarchical_layers(client, moderator_token, any_file):
     # Clean database
     crags = Crag.query.all()
     for crag in crags:
         db.session.delete(crag)
 
-    any_file_id = str(File.query.first().id)
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "logoImage": any_file_id,
-        "faviconImage": any_file_id,
-        "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
+        "mailGreeting": "Best regards",
+        "logoImage": str(any_file.id),
+        "darkLogoImage": None,
+        "faviconImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
         "barChartAccentColor": "rgb(250, 204, 21)",
+        "darkBarChartColor": "rgb(248, 113, 113)",
+        "darkBarChartAccentColor": "rgb(253, 224, 71)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",
@@ -145,21 +152,23 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token):
     assert sector is not None
 
 
-def test_error_conflict_skipped_hierarchical_layers(client, moderator_token):
-    any_file_id = str(File.query.first().id)
+def test_error_conflict_skipped_hierarchical_layers(client, moderator_token, any_file):
     post_data = {
         "instanceName": "Gleesbouldering",
         "copyrightOwner": "Die Gleesards e.V.",
-        "logoImage": any_file_id,
-        "faviconImage": any_file_id,
-        "mainBgImage": any_file_id,
-        "authBgImage": any_file_id,
+        "mailGreeting": "Best regards",
+        "logoImage": str(any_file.id),
+        "darkLogoImage": None,
+        "faviconImage": str(any_file.id),
+        "bgImage": str(any_file.id),
         "arrowColor": "#AAAAAA",
         "arrowTextColor": "#BBBBBB",
         "arrowHighlightColor": "#CCCCCC",
         "arrowHighlightTextColor": "#DDDDDD",
         "barChartColor": "rgb(213, 30, 39)",
         "barChartAccentColor": "rgb(250, 204, 21)",
+        "darkBarChartColor": "rgb(248, 113, 113)",
+        "darkBarChartAccentColor": "rgb(253, 224, 71)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
         "maptilerApiKey": "maptiler",

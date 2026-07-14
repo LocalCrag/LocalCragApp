@@ -1,17 +1,14 @@
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
-from models.file import File
 
 
-def test_successful_create_crag(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_create_crag(client, moderator_token, any_file):
     crag_data = {
         "name": "Glees",
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
-        "portraitImage": any_file_id,
+        "rules": "Parking only on Saturday and Sunday.",
+        "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 12.13,
@@ -36,10 +33,10 @@ def test_successful_create_crag(client, moderator_token):
     assert res["slug"] == "glees"
     assert res["description"] == "Fodere et scandere."
     assert res["shortDescription"] == "Fodere et scandere 2."
-    assert res["rules"] == "Parken nur Samstag und Sonntag."
+    assert res["rules"] == "Parking only on Saturday and Sunday."
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
-    assert res["portraitImage"]["id"] == any_file_id
+    assert res["portraitImage"]["id"] == str(any_file.id)
     assert res["id"] is not None
     assert res["lineCount"] == 0
     assert res["ascentCount"] == 0
@@ -58,7 +55,7 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "name": "Glees",
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
-        "rules": "Parken nur Samstag und Sonntag.",
+        "rules": "Parking only on Saturday and Sunday.",
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
@@ -133,15 +130,13 @@ def test_successful_delete_crag(client, moderator_token):
     assert rv.status_code == 204
 
 
-def test_successful_edit_crag(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_edit_crag(client, moderator_token, any_file):
     crag_data = {
         "name": "Glees 2",
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
-        "portraitImage": any_file_id,
+        "rules": "Parking only on Saturday and Sunday 2.",
+        "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 42.1,
@@ -166,7 +161,7 @@ def test_successful_edit_crag(client, moderator_token):
     assert res["slug"] == "glees-2"
     assert res["description"] == "Fodere et scandere. 2"
     assert res["shortDescription"] == "Fodere et scandere 3."
-    assert res["rules"] == "Parken nur Samstag und Sonntag 2."
+    assert res["rules"] == "Parking only on Saturday and Sunday 2."
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["orderIndex"] == 0
@@ -236,7 +231,7 @@ def test_successful_get_crag_grades(client):
     rv = client.get("/api/crags/brione/grades")
     assert rv.status_code == 200
     res = rv.json
-    assert res["BOULDER"]["FB"] == {"1": 1, "22": 1}
+    assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}
 
 
 def test_crag_season(client):

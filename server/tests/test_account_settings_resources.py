@@ -4,19 +4,20 @@ from models.notification import Notification
 
 
 def test_get_account_settings(client, member_token):
-    rv = client.get("/api/users/account/settings", token=member_token)
+    rv = client.get("/api/account/settings", token=member_token)
     assert rv.status_code == 200, rv.text
     assert rv.json["commentReplyMailsEnabled"] is True
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is True
     assert rv.json["moderatorTaskNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "daily"
-    assert rv.json["language"] in ("de", "en", "it")
+    assert rv.json["language"] in ("de", "en", "fr", "it", "nl")
+    assert rv.json["colorScheme"] == "system"
 
 
 def test_update_account_settings(client, member_token):
     rv = client.put(
-        "/api/users/account/settings",
+        "/api/account/settings",
         token=member_token,
         json={
             "commentReplyMailsEnabled": False,
@@ -25,6 +26,7 @@ def test_update_account_settings(client, member_token):
             "moderatorTaskNotificationsEnabled": False,
             "notificationDigestFrequency": "daily",
             "language": "it",
+            "colorScheme": "dark",
         },
     )
     assert rv.status_code == 200, rv.text
@@ -34,11 +36,12 @@ def test_update_account_settings(client, member_token):
     assert rv.json["moderatorTaskNotificationsEnabled"] is False
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] == "it"
+    assert rv.json["colorScheme"] == "dark"
 
 
 def test_update_account_settings_weekly_digest(client, member_token):
     rv = client.put(
-        "/api/users/account/settings",
+        "/api/account/settings",
         token=member_token,
         json={
             "commentReplyMailsEnabled": True,
@@ -47,12 +50,13 @@ def test_update_account_settings_weekly_digest(client, member_token):
             "moderatorTaskNotificationsEnabled": True,
             "notificationDigestFrequency": "weekly",
             "language": "en",
+            "colorScheme": "system",
         },
     )
     assert rv.status_code == 200, rv.text
     assert rv.json["notificationDigestFrequency"] == "weekly"
     # Read again
-    rv = client.get("/api/users/account/settings", token=member_token)
+    rv = client.get("/api/account/settings", token=member_token)
     assert rv.json["commentReplyMailsEnabled"] is True
     assert rv.json["reactionNotificationsEnabled"] is True
     assert rv.json["systemNotificationsEnabled"] is True
@@ -62,7 +66,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
 
 
 def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token, smtp_mock):
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     # Member creates root comment
     rv = client.post(
         "/api/comments",
@@ -91,7 +95,7 @@ def test_comment_reply_email_sent_when_enabled(client, admin_token, member_token
 def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_token, smtp_mock):
     # Disable setting for member
     rv = client.put(
-        "/api/users/account/settings",
+        "/api/account/settings",
         token=member_token,
         json={
             "commentReplyMailsEnabled": False,
@@ -100,10 +104,11 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
             "moderatorTaskNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "de",
+            "colorScheme": "system",
         },
     )
     assert rv.status_code == 200, rv.text
-    line_id = Line.get_id_by_slug("treppe")
+    line_id = Line.get_id_by_slug("the-vessel")
     # Member creates root comment
     rv = client.post(
         "/api/comments",
@@ -131,7 +136,7 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
 
 def test_update_account_settings_invalid_language(client, member_token):
     rv = client.put(
-        "/api/users/account/settings",
+        "/api/account/settings",
         token=member_token,
         json={
             "commentReplyMailsEnabled": True,
@@ -139,7 +144,8 @@ def test_update_account_settings_invalid_language(client, member_token):
             "systemNotificationsEnabled": True,
             "moderatorTaskNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
-            "language": "fr",
+            "language": "es",
+            "colorScheme": "system",
         },
     )
     assert rv.status_code == 400, rv.text

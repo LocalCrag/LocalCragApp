@@ -7,19 +7,19 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
 import { Select } from 'primeng/select';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { LoadingState } from '../../../enums/loading-state';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { ModeratorTask } from '../../../models/moderator-task';
 import { ObjectType } from '../../../models/object';
 import { ModeratorTasksService } from '../../../services/crud/moderator-tasks.service';
@@ -41,13 +41,13 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   selector: 'lc-moderator-task-form',
   imports: [
     ButtonModule,
-    CardModule,
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
     Select,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -87,6 +87,7 @@ export class ModeratorTaskFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -98,6 +99,7 @@ export class ModeratorTaskFormComponent implements OnInit {
     this.listLink = this.buildListLink();
     this.taskId = this.route.snapshot.paramMap.get('task-id');
     this.editMode = !!this.taskId;
+    this.setPageTitle();
 
     if (this.editMode) {
       forkJoin([
@@ -150,6 +152,16 @@ export class ModeratorTaskFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       },
     });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? marker('moderatorTasks.editTaskTitle')
+          : marker('moderatorTasks.createTaskTitle'),
+      ),
+    );
   }
 
   public saveTask(): void {

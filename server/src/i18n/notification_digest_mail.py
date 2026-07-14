@@ -1,15 +1,10 @@
 notification_digest_mail = {
     "de": {
         "title": "Benachrichtigungen für {instance_name}",
-        "LOCALCRAG": "LocalCrag",
-        "hello": "Hallo",
         "intro": "Hier ist deine tägliche Zusammenfassung neuer Benachrichtigungen:",
         "intro_weekly": "Hier ist deine wöchentliche Zusammenfassung neuer Benachrichtigungen:",
-        "open_notifications": "LocalCrag öffnen",
-        "thanks": "Viele Grüße,",
-        "greetings": "Dein LocalCrag Team",
+        "open_notifications": "{instance_name} öffnen",
         "subject": "Benachrichtigungen für {instance_name}",
-        "copyright": "© LocalCrag. Alle Rechte vorbehalten.",
         "reaction_ascent_text": "{count} neue Reaktionen auf deine Begehung von {target_link}",
         "reaction_ascent_text_single": "Neue Reaktion auf deine Begehung von {target_link}",
         "reaction_comment_text": "{count} neue Reaktionen auf deinen Kommentar zu {target_link}",
@@ -18,20 +13,13 @@ notification_digest_mail = {
         "reaction_generic_text_single": "Neue Reaktion",
         "comment_reply_text": "{count} neue Antworten auf deinen Kommentar zu {target_link}",
         "comment_reply_text_single": "Neue Antwort auf deinen Kommentar zu {target_link}",
-        "fa_removed_text": (
-            "{moderator_name} hat das FA-Label von deiner Begehung von {target_link} "
-            "entfernt. Im Zweifel kontaktiere uns bitte per E-Mail unter {moderator_email}."
-        ),
+        "fa_removed_text": "{moderator_name} hat das FA-Label von deiner Begehung von {target_link} entfernt. Im Zweifel kontaktiere uns bitte per E-Mail unter {moderator_email}.",
         "moderator_task_completed_text": "{count} Aufgaben abgeschlossen: {title} ({target_link})",
         "moderator_task_completed_text_single": "Aufgabe abgeschlossen: {title} ({target_link})",
         "moderator_task_created_text": "{count} neue Aufgaben: {title} ({target_link})",
         "moderator_task_created_text_single": "Neue Aufgabe: {title} ({target_link})",
-        "moderator_task_created_and_assigned_text": (
-            "{count} neue Aufgaben erstellt und dir zugewiesen: {title} ({target_link})"
-        ),
-        "moderator_task_created_and_assigned_text_single": (
-            "Neue Aufgabe erstellt und dir zugewiesen: {title} ({target_link})"
-        ),
+        "moderator_task_created_and_assigned_text": "{count} neue Aufgaben erstellt und dir zugewiesen: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text_single": "Neue Aufgabe erstellt und dir zugewiesen: {title} ({target_link})",
         "moderator_task_assigned_text": "{count} Aufgaben dir zugewiesen: {title} ({target_link})",
         "moderator_task_assigned_text_single": "Aufgabe dir zugewiesen: {title} ({target_link})",
         "view_comment_label": "Kommentar ansehen",
@@ -39,15 +27,10 @@ notification_digest_mail = {
     },
     "en": {
         "title": "Notifications for {instance_name}",
-        "LOCALCRAG": "LocalCrag",
-        "hello": "Hello",
         "intro": "Here is your daily summary of new notifications:",
         "intro_weekly": "Here is your weekly summary of new notifications:",
-        "open_notifications": "Open LocalCrag",
-        "thanks": "Thanks,",
-        "greetings": "Your LocalCrag team",
+        "open_notifications": "Open {instance_name}",
         "subject": "Notifications for {instance_name}",
-        "copyright": "© LocalCrag. All rights reserved.",
         "reaction_ascent_text": "{count} new reactions on your ascent of {target_link}",
         "reaction_ascent_text_single": "New reaction on your ascent of {target_link}",
         "reaction_comment_text": "{count} new reactions on your comment on {target_link}",
@@ -56,36 +39,50 @@ notification_digest_mail = {
         "reaction_generic_text_single": "New reaction",
         "comment_reply_text": "{count} new replies to your comment on {target_link}",
         "comment_reply_text_single": "New reply to your comment on {target_link}",
-        "fa_removed_text": (
-            "{moderator_name} removed the FA label from your ascent of {target_link}. "
-            "In doubt, please contact us via email {moderator_email}."
-        ),
+        "fa_removed_text": "{moderator_name} removed the FA label from your ascent of {target_link}. In doubt, please contact us via email {moderator_email}.",
         "moderator_task_completed_text": "{count} tasks completed: {title} ({target_link})",
         "moderator_task_completed_text_single": "Task completed: {title} ({target_link})",
         "moderator_task_created_text": "{count} new tasks: {title} ({target_link})",
         "moderator_task_created_text_single": "New task: {title} ({target_link})",
-        "moderator_task_created_and_assigned_text": (
-            "{count} new tasks created and assigned to you: {title} ({target_link})"
-        ),
-        "moderator_task_created_and_assigned_text_single": (
-            "New task created and assigned to you: {title} ({target_link})"
-        ),
+        "moderator_task_created_and_assigned_text": "{count} new tasks created and assigned to you: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text_single": "New task created and assigned to you: {title} ({target_link})",
         "moderator_task_assigned_text": "{count} tasks assigned to you: {title} ({target_link})",
         "moderator_task_assigned_text_single": "Task assigned to you: {title} ({target_link})",
         "view_comment_label": "View comment",
         "open_account_label": "Open account",
     },
+    "fr": {
+        "title": "Notifications pour {instance_name}",
+        "intro": "Voici votre résumé quotidien des nouvelles notifications :",
+        "intro_weekly": "Voici votre résumé hebdomadaire des nouvelles notifications :",
+        "open_notifications": "Ouvrir {instance_name}",
+        "subject": "Notifications pour {instance_name}",
+        "reaction_ascent_text": "{count} nouvelles réactions sur votre ascension de {target_link}",
+        "reaction_ascent_text_single": "Nouvelle réaction sur votre ascension de {target_link}",
+        "reaction_comment_text": "{count} nouvelles réactions sur votre commentaire sur {target_link}",
+        "reaction_comment_text_single": "Nouvelle réaction sur votre commentaire sur {target_link}",
+        "reaction_generic_text": "{count} nouvelles réactions",
+        "reaction_generic_text_single": "Nouvelle réaction",
+        "comment_reply_text": "{count} nouvelles réponses à votre commentaire sur {target_link}",
+        "comment_reply_text_single": "Nouvelle réponse à votre commentaire sur {target_link}",
+        "fa_removed_text": "{moderator_name} a retiré le label FA de votre ascension de {target_link}. En cas de doute, contactez-nous par e-mail à {moderator_email}.",
+        "moderator_task_completed_text": "{count} tâches terminées : {title} ({target_link})",
+        "moderator_task_completed_text_single": "Tâche terminée : {title} ({target_link})",
+        "moderator_task_created_text": "{count} nouvelles tâches : {title} ({target_link})",
+        "moderator_task_created_text_single": "Nouvelle tâche : {title} ({target_link})",
+        "moderator_task_created_and_assigned_text": "{count} nouvelles tâches créées et assignées à vous : {title} ({target_link})",
+        "moderator_task_created_and_assigned_text_single": "Nouvelle tâche créée et assignée à vous : {title} ({target_link})",
+        "moderator_task_assigned_text": "{count} tâches assignées à vous : {title} ({target_link})",
+        "moderator_task_assigned_text_single": "Tâche assignée à vous : {title} ({target_link})",
+        "view_comment_label": "Voir le commentaire",
+        "open_account_label": "Ouvrir le compte",
+    },
     "it": {
         "title": "Notifiche per {instance_name}",
-        "LOCALCRAG": "LocalCrag",
-        "hello": "Ciao",
         "intro": "Ecco il riepilogo giornaliero delle nuove notifiche:",
         "intro_weekly": "Ecco il riepilogo settimanale delle nuove notifiche:",
-        "open_notifications": "Apri LocalCrag",
-        "thanks": "Grazie,",
-        "greetings": "Il team LocalCrag",
+        "open_notifications": "Apri {instance_name}",
         "subject": "Notifiche per {instance_name}",
-        "copyright": "© LocalCrag. Tutti i diritti riservati.",
         "reaction_ascent_text": "{count} nuove reazioni alla tua salita di {target_link}",
         "reaction_ascent_text_single": "Nuova reazione alla tua salita di {target_link}",
         "reaction_comment_text": "{count} nuove reazioni al tuo commento su {target_link}",
@@ -94,20 +91,13 @@ notification_digest_mail = {
         "reaction_generic_text_single": "Nuova reazione",
         "comment_reply_text": "{count} nuove risposte al tuo commento su {target_link}",
         "comment_reply_text_single": "Nuova risposta al tuo commento su {target_link}",
-        "fa_removed_text": (
-            "{moderator_name} ha rimosso l'etichetta FA dalla tua salita di {target_link}. "
-            "In caso di dubbi, contattaci via email a {moderator_email}."
-        ),
+        "fa_removed_text": "{moderator_name} ha rimosso l'etichetta FA dalla tua salita di {target_link}. In caso di dubbi, contattaci via email a {moderator_email}.",
         "moderator_task_completed_text": "{count} attività completate: {title} ({target_link})",
         "moderator_task_completed_text_single": "Attività completata: {title} ({target_link})",
         "moderator_task_created_text": "{count} nuove attività: {title} ({target_link})",
         "moderator_task_created_text_single": "Nuova attività: {title} ({target_link})",
-        "moderator_task_created_and_assigned_text": (
-            "{count} nuove attività create e assegnate a te: {title} ({target_link})"
-        ),
-        "moderator_task_created_and_assigned_text_single": (
-            "Nuova attività creata e assegnata a te: {title} ({target_link})"
-        ),
+        "moderator_task_created_and_assigned_text": "{count} nuove attività create e assegnate a te: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text_single": "Nuova attività creata e assegnata a te: {title} ({target_link})",
         "moderator_task_assigned_text": "{count} attività assegnate a te: {title} ({target_link})",
         "moderator_task_assigned_text_single": "Attività assegnata a te: {title} ({target_link})",
         "view_comment_label": "Vedi commento",
@@ -115,15 +105,10 @@ notification_digest_mail = {
     },
     "nl": {
         "title": "Meldingen voor {instance_name}",
-        "LOCALCRAG": "LocalCrag",
-        "hello": "Hallo",
         "intro": "Hier is je dagelijkse samenvatting van nieuwe meldingen:",
         "intro_weekly": "Hier is je wekelijkse samenvatting van nieuwe meldingen:",
-        "open_notifications": "Open LocalCrag",
-        "thanks": "Bedankt,",
-        "greetings": "Je LocalCrag-team",
+        "open_notifications": "Open {instance_name}",
         "subject": "Meldingen voor {instance_name}",
-        "copyright": "© LocalCrag. Alle rechten voorbehouden.",
         "reaction_ascent_text": "{count} nieuwe reacties op je beklimming van {target_link}",
         "reaction_ascent_text_single": "Nieuwe reactie op je beklimming van {target_link}",
         "reaction_comment_text": "{count} nieuwe reacties op je opmerking over {target_link}",
@@ -132,20 +117,13 @@ notification_digest_mail = {
         "reaction_generic_text_single": "Nieuwe reactie",
         "comment_reply_text": "{count} nieuwe antwoorden op je opmerking over {target_link}",
         "comment_reply_text_single": "Nieuw antwoord op je opmerking over {target_link}",
-        "fa_removed_text": (
-            "{moderator_name} heeft het FA-label van je beklimming van {target_link} "
-            "verwijderd. Neem bij twijfel contact met ons op via e-mail {moderator_email}."
-        ),
+        "fa_removed_text": "{moderator_name} heeft het FA-label van je beklimming van {target_link} verwijderd. Neem bij twijfel contact met ons op via e-mail {moderator_email}.",
         "moderator_task_completed_text": "{count} taken afgerond: {title} ({target_link})",
         "moderator_task_completed_text_single": "Taak afgerond: {title} ({target_link})",
         "moderator_task_created_text": "{count} nieuwe taken: {title} ({target_link})",
         "moderator_task_created_text_single": "Nieuwe taak: {title} ({target_link})",
-        "moderator_task_created_and_assigned_text": (
-            "{count} nieuwe taken aangemaakt en aan jou toegewezen: {title} ({target_link})"
-        ),
-        "moderator_task_created_and_assigned_text_single": (
-            "Nieuwe taak aangemaakt en aan jou toegewezen: {title} ({target_link})"
-        ),
+        "moderator_task_created_and_assigned_text": "{count} nieuwe taken aangemaakt en aan jou toegewezen: {title} ({target_link})",
+        "moderator_task_created_and_assigned_text_single": "Nieuwe taak aangemaakt en aan jou toegewezen: {title} ({target_link})",
         "moderator_task_assigned_text": "{count} taken aan jou toegewezen: {title} ({target_link})",
         "moderator_task_assigned_text_single": "Taak aan jou toegewezen: {title} ({target_link})",
         "view_comment_label": "Opmerking bekijken",

@@ -21,14 +21,15 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
 )
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_crag_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
@@ -40,6 +41,8 @@ class GetCrags(MethodView):
         Returns all crags.
         """
         crags: Crag = Crag.return_all(order_by=lambda: Crag.order_index.asc())
+        attach_crag_counts(crags)
+        SecretService.attach_secret_flags(crags)
         return jsonify(crags_schema.dump(crags)), 200
 
 
@@ -70,9 +73,9 @@ class CreateCrag(MethodView):
 
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
-        new_crag.description = add_bucket_placeholders(crag_data["description"])
-        new_crag.short_description = crag_data["shortDescription"]
-        new_crag.rules = add_bucket_placeholders(crag_data["rules"])
+        new_crag.description = sanitize_wysiwyg_html(crag_data["description"])
+        new_crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
+        new_crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
         new_crag.portrait_image_id = crag_data["portraitImage"]
         new_crag.secret = crag_data["secret"]
         new_crag.created_by_id = created_by.id
@@ -108,9 +111,9 @@ class UpdateCrag(MethodView):
             raise NotFound(error)
 
         crag.name = crag_data["name"].strip()
-        crag.description = add_bucket_placeholders(crag_data["description"])
-        crag.short_description = crag_data["shortDescription"]
-        crag.rules = add_bucket_placeholders(crag_data["rules"])
+        crag.description = sanitize_wysiwyg_html(crag_data["description"])
+        crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
+        crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")
@@ -185,8 +188,7 @@ class GetCragGrades(MethodView):
             .join(Sector)
             .filter(Sector.crag_id == crag_id, Line.archived.is_(False))
         )
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         result = query.all()
 
         response_data = {

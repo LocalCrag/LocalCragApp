@@ -17,7 +17,6 @@ import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
-import { AsyncPipe } from '@angular/common';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -32,8 +31,8 @@ import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { ScalesService } from '../../../services/crud/scales.service';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -61,8 +60,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     TopoImageComponent,
-    AsyncPipe,
     DatePipe,
+    LineGradePipe,
   ],
 })
 export class LineInfoComponent implements OnInit {
@@ -84,8 +83,6 @@ export class LineInfoComponent implements OnInit {
   private linePathsService = inject(LinePathsService);
   private linesService = inject(LinesService);
   private store = inject(Store);
-
-  protected scalesService = inject(ScalesService);
 
   ngOnInit() {
     this.route.paramMap

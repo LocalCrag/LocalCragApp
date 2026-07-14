@@ -4,6 +4,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -16,8 +17,9 @@ from models.line_path import LinePath
 from models.topo_image import TopoImage
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.move_args import move_topo_image_args
@@ -38,7 +40,7 @@ class AddTopoImage(MethodView):
         new_topo_image: TopoImage = TopoImage()
         new_topo_image.file_id = topo_image_data["image"]
         new_topo_image.title = topo_image_data["title"]
-        new_topo_image.description = topo_image_data["description"]
+        new_topo_image.description = sanitize_wysiwyg_html(topo_image_data["description"])
         new_topo_image.area_id = area_id
         new_topo_image.created_by_id = created_by.id
         new_topo_image.order_index = TopoImage.find_max_order_index(area_id) + 1
@@ -58,7 +60,7 @@ class UpdateTopoImage(MethodView):
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
 
         topo_image.title = topo_image_data["title"]
-        topo_image.description = topo_image_data["description"]
+        topo_image.description = sanitize_wysiwyg_html(topo_image_data["description"])
         topo_image.map_markers = create_or_update_markers(topo_image_data["mapMarkers"], topo_image)
         db.session.add(topo_image)
         db.session.commit()
@@ -168,9 +170,16 @@ class GetTopoImages(MethodView):
         topo_images: List[TopoImage] = TopoImage.return_all(
             filter=lambda: [TopoImage.archived == archived, TopoImage.area_id == area_id],
             order_by=lambda: TopoImage.order_index.asc(),
+            options=(
+                joinedload(TopoImage.file),
+                selectinload(TopoImage.line_paths).joinedload(LinePath.line),
+                selectinload(TopoImage.map_markers),
+            ),
         )
+        lines = [line_path.line for topo_image in topo_images for line_path in topo_image.line_paths]
+        SecretService.attach_secret_flags(lines)
         include_secret = True
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             include_secret = False
         unfiltered_response = topo_images_schema.dump(topo_images)
         if not include_secret:

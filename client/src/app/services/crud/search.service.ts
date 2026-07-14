@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Searchable } from '../../models/searchable';
 import { ObjectType } from '../../models/object';
+import { httpGetOptions } from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -17,16 +18,11 @@ export class SearchService {
     query: string,
     objectType?: ObjectType,
   ): Observable<Searchable[]> {
-    // If an object type is given, attach it as query param to restrict the searched type of objects
-    if (objectType) {
-      const params = new URLSearchParams({
-        objectType,
-      });
-      query = query + '?' + params.toString();
-    }
-
     return this.http
-      .get(this.api.search.search(query))
+      .get(
+        this.api.search.search(query),
+        httpGetOptions(objectType ? { objectType } : undefined),
+      )
       .pipe(
         map((searchListJson: any) =>
           searchListJson.map(Searchable.deserialize),

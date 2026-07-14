@@ -652,7 +652,7 @@ def request_closure_materialization() -> None:
 
     from flask import current_app
 
-    from schedulers import enqueue_closure_materialization
+    from scheduler_jobs.closure_materialization import enqueue_closure_materialization
 
     if "pytest" in sys.modules:
         apply_materialized_closures()

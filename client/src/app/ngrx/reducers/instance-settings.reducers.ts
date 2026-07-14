@@ -9,15 +9,17 @@ export interface InstanceSettingsState {
   instanceName: string;
   copyrightOwner: string;
   logoImage: File;
+  darkLogoImage: File;
   faviconImage: File;
-  mainBgImage: File;
-  authBgImage: File;
+  bgImage: File;
   arrowColor: string;
   arrowTextColor: string;
   arrowHighlightColor: string;
   arrowHighlightTextColor: string;
   barChartColor: string;
   barChartAccentColor: string;
+  darkBarChartColor: string;
+  darkBarChartAccentColor: string;
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
@@ -36,15 +38,17 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   instanceName: 'Loading...',
   copyrightOwner: 'Loading...',
   logoImage: null,
+  darkLogoImage: null,
   faviconImage: null,
-  mainBgImage: null,
-  authBgImage: null,
+  bgImage: null,
   arrowColor: null,
   arrowTextColor: null,
   arrowHighlightColor: null,
   arrowHighlightTextColor: null,
   barChartColor: null,
   barChartAccentColor: null,
+  darkBarChartColor: null,
+  darkBarChartAccentColor: null,
   maptilerApiKey: null,
   maxFileSize: 0,
   maxImageSize: 0,
@@ -66,15 +70,17 @@ const instanceSettingsReducer = createReducer(
     instanceName: action.settings.instanceName,
     copyrightOwner: action.settings.copyrightOwner,
     logoImage: action.settings.logoImage,
+    darkLogoImage: action.settings.darkLogoImage,
     faviconImage: action.settings.faviconImage,
-    mainBgImage: action.settings.mainBgImage,
-    authBgImage: action.settings.authBgImage,
+    bgImage: action.settings.bgImage,
     arrowColor: action.settings.arrowColor,
     arrowTextColor: action.settings.arrowTextColor,
     arrowHighlightColor: action.settings.arrowHighlightColor,
     arrowHighlightTextColor: action.settings.arrowHighlightTextColor,
     barChartColor: action.settings.barChartColor,
     barChartAccentColor: action.settings.barChartAccentColor,
+    darkBarChartColor: action.settings.darkBarChartColor,
+    darkBarChartAccentColor: action.settings.darkBarChartAccentColor,
     maptilerApiKey: action.settings.maptilerApiKey,
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,

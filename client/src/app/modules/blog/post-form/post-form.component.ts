@@ -10,7 +10,11 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -19,7 +23,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { Editor, EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,6 +32,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -37,12 +41,12 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   selector: 'lc-post-form',
   imports: [
     ButtonModule,
-    CardModule,
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
     ReactiveFormsModule,
     TranslocoDirective,
+    TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -72,6 +76,7 @@ export class PostFormComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
+  private pageTitleService = inject(PageTitleService);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -90,6 +95,7 @@ export class PostFormComponent implements OnInit {
         );
       });
       this.editMode = true;
+      this.setPageTitle();
       this.postForm.disable();
       this.postsService
         .getPost(postSlug)
@@ -110,6 +116,7 @@ export class PostFormComponent implements OnInit {
           }
         });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('postFormBrowserTitle'))} - ${instanceName}`,
@@ -117,6 +124,16 @@ export class PostFormComponent implements OnInit {
       });
       this.loadingState = LoadingState.DEFAULT;
     }
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? marker('posts.postForm.editPostTitle')
+          : marker('posts.postForm.createPostTitle'),
+      ),
+    );
   }
 
   /**

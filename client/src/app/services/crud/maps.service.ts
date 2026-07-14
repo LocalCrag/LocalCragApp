@@ -4,6 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MapMarkerProperties } from '../../models/map-marker';
 import { FeatureCollection, Point } from 'geojson';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +17,11 @@ export class MapsService {
   private http = inject(HttpClient);
 
   public getMarkersGeoJSON(
-    filters: string = '',
+    params: ApiQueryParams = {},
   ): Observable<FeatureCollection<Point, MapMarkerProperties>> {
-    return this.http.get(this.api.maps.getMarkers(filters)) as Observable<
-      FeatureCollection<Point, MapMarkerProperties>
-    >;
+    return this.http.get(
+      this.api.maps.getMarkers(),
+      httpGetOptions(params),
+    ) as Observable<FeatureCollection<Point, MapMarkerProperties>>;
   }
 }

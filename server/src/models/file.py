@@ -22,6 +22,7 @@ class File(BaseEntity):
     thumbnail_m = db.Column(db.Boolean, nullable=True)
     thumbnail_l = db.Column(db.Boolean, nullable=True)
     thumbnail_xl = db.Column(db.Boolean, nullable=True)
+    focus_y = db.Column(db.Float, nullable=True)
 
     @hybrid_property
     def filename_with_host(self):

@@ -12,9 +12,10 @@ from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
+from models.mixins.is_secret import IsSecret
 
 
-class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
+class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     """
     Model of a line in a sector. Can be a boulder or route.
     """
@@ -78,7 +79,6 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
     )
 
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
-    secret = db.Column(db.Boolean, default=False, server_default="0")
 
     area_slug = association_proxy("area", "slug")
     sector_slug = association_proxy("area", "sector_slug")
@@ -89,4 +89,9 @@ class Line(HasSlug, IsSearchable, IsClosable, BaseEntity):
 
     @hybrid_property
     def ascent_count(self):
+        from util.entity_count_cache import get_cached_line_ascent_count
+
+        cached = get_cached_line_ascent_count(self)
+        if cached is not None:
+            return cached
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()

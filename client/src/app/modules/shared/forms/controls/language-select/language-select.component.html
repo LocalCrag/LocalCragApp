@@ -5,6 +5,7 @@
   [ngModel]="value"
   (onChange)="onSelect($event.value)"
   appendTo="body"
+  [overlayOptions]="selectOverlayOptions"
 >
   <ng-template #selectedItem let-code>
     <div class="language-option">
@@ -18,7 +19,7 @@
     <div class="language-option">
       <img [src]="getFlagSrc(code)" alt="" class="flag" />
       @if (!noLabel) {
-        <div class="ml-2 inline-block">{{ code | transloco }}</div>
+        <span>{{ code | transloco }}</span>
       }
     </div>
   </ng-template>

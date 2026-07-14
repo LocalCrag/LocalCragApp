@@ -9,7 +9,7 @@
   </p-message>
 
   <form [formGroup]="galleryImageForm" lcForm>
-    <div class="flex flex-column gap-2" lcControlGroup>
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("galleryImageLabel") }}</label>
       <lc-single-image-upload
         lcFormControl
@@ -18,11 +18,11 @@
         data-cy="topo-image-input"
       ></lc-single-image-upload>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
+        "validation.required" | transloco
       }}</small>
     </div>
 
-    <div class="flex flex-column gap-2" lcControlGroup>
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("tagsLabel") }}</label>
       <p-autoComplete
         lcFormControl

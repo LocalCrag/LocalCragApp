@@ -5,14 +5,17 @@ import { LoadingState } from '../enums/loading-state';
 import { Coordinates } from '../interfaces/coordinates.interface';
 import { MapMarkerType } from '../enums/map-marker-type';
 import { Area } from './area';
+import {
+  deserializeOrderIndexAttributes,
+  HasOrderIndex,
+} from './mixins/has-order-index';
 
 /**
  * Model of a topo image.
  */
-export class TopoImage extends AbstractModel {
+export class TopoImage extends HasOrderIndex(AbstractModel) {
   image: File;
   linePaths: LinePath[];
-  orderIndex: number;
   coordinates: Coordinates;
   title: string;
   description: string;
@@ -31,8 +34,8 @@ export class TopoImage extends AbstractModel {
   public static deserialize(payload: any): TopoImage {
     const topoImage = new TopoImage();
     AbstractModel.deserializeAbstractAttributes(topoImage, payload);
+    deserializeOrderIndexAttributes(topoImage, payload);
     topoImage.image = File.deserialize(payload.image);
-    topoImage.orderIndex = payload.orderIndex;
     // We parse the map parker into simple coordinates object for topo images
     topoImage.coordinates =
       payload.mapMarkers?.length > 0

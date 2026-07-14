@@ -1,8 +1,20 @@
-<lc-background-image></lc-background-image>
-<lc-app-level-alerts></lc-app-level-alerts>
-<lc-menu></lc-menu>
-<div class="main">
-  <router-outlet></router-outlet>
+<header
+  #siteHeader
+  class="site-header"
+  [class.site-header--hidden]="headerHidden"
+>
+  <lc-app-level-alerts></lc-app-level-alerts>
+  <lc-menu></lc-menu>
+</header>
+<div class="site-header-spacer"></div>
+<div class="body-row">
+  <div class="layout-columns">
+    <lc-sidebar></lc-sidebar>
+    <div class="main">
+      <lc-page-title></lc-page-title>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
 <lc-footer></lc-footer>
 <lc-refresh-login-modal></lc-refresh-login-modal>

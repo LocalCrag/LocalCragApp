@@ -14,14 +14,16 @@ export class NotificationPresentationService {
   }
 
   public notificationText(notification: NotificationItem): string {
-    const lineLabel = this.formatLineLabel(notification.line);
+    const subject = notification.properties.subject;
+    const lineLabel = this.formatLineLabel(subject?.line ?? null);
     const topicLabel = this.formatTopicLabel(
-      notification.line,
-      notification.topicName,
+      subject?.line ?? null,
+      subject?.topicName ?? null,
     );
+    const moderatorTask = notification.properties.moderatorTask;
 
     if (notification.type === 'reaction') {
-      const subject =
+      const subjectLabel =
         notification.entityType === 'ascent'
           ? this.translocoService.translate('menu.notificationSubjectAscent', {
               label: lineLabel,
@@ -32,7 +34,7 @@ export class NotificationPresentationService {
       return this.translocoService
         .translate('menu.notificationTextReactionSingle', {
           actor: notification.actorName || '',
-          subject,
+          subject: subjectLabel,
         })
         .trim();
     }
@@ -59,8 +61,8 @@ export class NotificationPresentationService {
       return this.translocoService
         .translate('menu.notificationTextModeratorTaskCompleted', {
           actor: notification.actorName || '',
-          title: notification.taskTitle || '',
-          label: notification.topicName || '',
+          title: moderatorTask?.title || '',
+          label: moderatorTask?.targetLabel || '',
         })
         .trim();
     }
@@ -69,8 +71,8 @@ export class NotificationPresentationService {
       return this.translocoService
         .translate('menu.notificationTextModeratorTaskCreated', {
           actor: notification.actorName || '',
-          title: notification.taskTitle || '',
-          label: notification.topicName || '',
+          title: moderatorTask?.title || '',
+          label: moderatorTask?.targetLabel || '',
         })
         .trim();
     }
@@ -79,8 +81,8 @@ export class NotificationPresentationService {
       return this.translocoService
         .translate('menu.notificationTextModeratorTaskCreatedAndAssigned', {
           actor: notification.actorName || '',
-          title: notification.taskTitle || '',
-          label: notification.topicName || '',
+          title: moderatorTask?.title || '',
+          label: moderatorTask?.targetLabel || '',
         })
         .trim();
     }
@@ -89,8 +91,8 @@ export class NotificationPresentationService {
       return this.translocoService
         .translate('menu.notificationTextModeratorTaskAssigned', {
           actor: notification.actorName || '',
-          title: notification.taskTitle || '',
-          label: notification.topicName || '',
+          title: moderatorTask?.title || '',
+          label: moderatorTask?.targetLabel || '',
         })
         .trim();
     }
@@ -99,7 +101,8 @@ export class NotificationPresentationService {
       const lead = this.translocoService
         .translate('menu.notificationTextReleaseNotesLead')
         .trim();
-      const keys = notification.releaseNoteItemKeys ?? [];
+      const keys =
+        notification.properties.releaseNotes?.releaseNoteItemKeys ?? [];
       if (keys.length === 0) {
         return lead;
       }

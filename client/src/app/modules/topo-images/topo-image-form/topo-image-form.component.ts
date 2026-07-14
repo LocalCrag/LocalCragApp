@@ -19,9 +19,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -33,7 +34,7 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Card } from 'primeng/card';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -45,6 +46,7 @@ import { Button } from 'primeng/button';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { AreasService } from '../../../services/crud/areas.service';
+import { UploadService } from '../../../services/crud/upload.service';
 
 /**
  * Component for uploading topo images.
@@ -55,7 +57,7 @@ import { AreasService } from '../../../services/crud/areas.service';
   styleUrls: ['./topo-image-form.component.scss'],
   imports: [
     TranslocoDirective,
-    Card,
+    TranslocoPipe,
     ReactiveFormsModule,
     SingleImageUploadComponent,
     FormDirective,
@@ -94,6 +96,8 @@ export class TopoImageFormComponent implements OnInit {
   private router = inject(Router);
   private topoImagesService = inject(TopoImagesService);
   private areasService = inject(AreasService);
+  private uploadService = inject(UploadService);
+  private pageTitleService = inject(PageTitleService);
   private parentArea: Area;
 
   /**
@@ -107,6 +111,7 @@ export class TopoImageFormComponent implements OnInit {
     const imageId = this.route.snapshot.paramMap.get('image-id');
     if (imageId) {
       this.editMode = true;
+      this.setPageTitle();
       this.topoImageForm.disable();
       forkJoin([
         this.topoImagesService.getTopoImage(imageId).pipe(
@@ -133,6 +138,7 @@ export class TopoImageFormComponent implements OnInit {
         );
       });
     } else {
+      this.setPageTitle();
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(
           `${this.translocoService.translate(marker('addTopoImageBrowserTitle'))} - ${instanceName}`,
@@ -140,6 +146,17 @@ export class TopoImageFormComponent implements OnInit {
       });
       this.loadingState = LoadingState.DEFAULT;
     }
+  }
+
+  /** t(topoImage.topoImageForm.editTopoImageTitle, topoImage.topoImageForm.addTopoImageTitle) */
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'topoImage.topoImageForm.editTopoImageTitle'
+          : 'topoImage.topoImageForm.addTopoImageTitle',
+      ),
+    );
   }
 
   /**
@@ -191,20 +208,30 @@ export class TopoImageFormComponent implements OnInit {
       topoImage.coordinates = this.topoImageForm.get('coordinates').value;
       if (this.topoImage) {
         topoImage.id = this.topoImage.id;
-        this.topoImagesService.updateTopoImage(topoImage).subscribe(() => {
-          this.store.dispatch(toastNotification('TOPO_IMAGE_UPDATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            this.areaSlug,
-            'topo-images',
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.uploadService
+          .saveFileFocusIfChanged(topoImage.image)
+          .pipe(
+            switchMap(() => this.topoImagesService.updateTopoImage(topoImage)),
+          )
+          .subscribe(() => {
+            this.store.dispatch(toastNotification('TOPO_IMAGE_UPDATED'));
+            this.router.navigate([
+              '/topo',
+              this.cragSlug,
+              this.sectorSlug,
+              this.areaSlug,
+              'topo-images',
+            ]);
+            this.loadingState = LoadingState.DEFAULT;
+          });
       } else {
-        this.topoImagesService
-          .addTopoImage(topoImage, this.areaSlug)
+        this.uploadService
+          .saveFileFocusIfChanged(topoImage.image)
+          .pipe(
+            switchMap(() =>
+              this.topoImagesService.addTopoImage(topoImage, this.areaSlug),
+            ),
+          )
           .subscribe(() => {
             this.store.dispatch(toastNotification('TOPO_IMAGE_ADDED'));
             this.router.navigate([
@@ -228,7 +255,6 @@ export class TopoImageFormComponent implements OnInit {
 
   onObjectMoved(obj: TopoImage | Sector | Area | Line) {
     const movedImage = obj as TopoImage;
-    console.log(movedImage.area.routerLink);
     this.router.navigate([movedImage.area.routerLink, 'topo-images']);
   }
 }

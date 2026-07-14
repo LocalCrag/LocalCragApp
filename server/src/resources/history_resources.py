@@ -9,7 +9,7 @@ from models.crag import Crag
 from models.history_item import HistoryItem
 from models.line import Line
 from models.sector import Sector
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class GetHistory(MethodView):
@@ -26,7 +26,7 @@ class GetHistory(MethodView):
         query = select(HistoryItem)
 
         # Filter secret spots
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             query = (
                 query.outerjoin(Line, (HistoryItem.object_id == Line.id) & (HistoryItem.object_type == "Line"))
                 .outerjoin(Area, (HistoryItem.object_id == Line.id) & (HistoryItem.object_type == "Area"))

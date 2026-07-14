@@ -1,179 +1,173 @@
 <ng-container *transloco="let t; read: 'region.regionForm'">
-  <div class="content">
-    <p-card header="{{ t('editRegionTitle') }}">
-      <form [formGroup]="regionForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="name">{{
-            t("regionNameLabel")
-          }}</label>
-          <input
-            id="name"
-            type="text"
-            pInputText
-            formControlName="name"
-            placeholder="{{ t('regionNamePlaceholder') }}"
-            lcFormControl
-            data-cy="region-form-name"
-          />
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="description">{{
-            t("regionDescriptionLabel")
-          }}</label>
-          <p-editor
-            id="description"
-            formControlName="description"
-            lcFormControl
-            placeholder="{{ t('regionDescriptionPlaceholder') }}"
-            [modules]="quillModules"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="rules">{{
-            t("regionRulesLabel")
-          }}</label>
-          <p-editor
-            id="rules"
-            formControlName="rules"
-            lcFormControl
-            placeholder="{{ t('regionRulesPlaceholder') }}"
-            [modules]="quillModules"
-            [style]="{ height: '200px' }"
-            [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
-        </div>
-      </form>
-
-      <div class="form-actions">
-        @if (editMode) {
-          <p-button
-            label="{{ t('editRegionButtonLabel') }}"
-            (click)="saveRegion()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-          ></p-button>
-        }
-        <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
-          class="ml-3 responsive-button"
-          styleClass="p-button-secondary"
-          icon="pi pi-ban"
-        ></p-button>
+  <div class="content p-6">
+    <form [formGroup]="regionForm" lcForm>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="name">{{ t("regionNameLabel") }}</label>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          formControlName="name"
+          placeholder="{{ t('regionNamePlaceholder') }}"
+          lcFormControl
+          data-cy="region-form-name"
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
       </div>
-    </p-card>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="description">{{
+          t("regionDescriptionLabel")
+        }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="description"
+          formControlName="description"
+          lcFormControl
+          placeholder="{{ t('regionDescriptionPlaceholder') }}"
+          [modules]="quillModules"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button
+                type="button"
+                value="ordered"
+                class="ql-list"
+                aria-label="Ordered List"
+              ></button>
+              <button
+                type="button"
+                value="bullet"
+                class="ql-list"
+                aria-label="Unordered List"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+              <button
+                type="button"
+                class="ql-image"
+                aria-label="Image"
+              ></button>
+              <button
+                type="button"
+                class="ql-video"
+                aria-label="Video"
+              ></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="image">{{
+          t("regionImageLabel")
+        }}</label>
+        <lc-single-image-upload
+          id="image"
+          lcFormControl
+          formControlName="image"
+          [focusAdjustable]="true"
+        ></lc-single-image-upload>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="rules">{{
+          t("regionRulesLabel")
+        }}</label>
+        <p-editor
+          class="lc-wysiwyg-editor"
+          id="rules"
+          formControlName="rules"
+          lcFormControl
+          placeholder="{{ t('regionRulesPlaceholder') }}"
+          [modules]="quillModules"
+          [style]="{ height: '200px' }"
+          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+        >
+          <ng-template #header>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button
+                type="button"
+                class="ql-italic"
+                aria-label="Italic"
+              ></button>
+              <button
+                type="button"
+                class="ql-underline"
+                aria-label="Underline"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button
+                type="button"
+                value="ordered"
+                class="ql-list"
+                aria-label="Ordered List"
+              ></button>
+              <button
+                type="button"
+                value="bullet"
+                class="ql-list"
+                aria-label="Unordered List"
+              ></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Link"></button>
+              <button
+                type="button"
+                class="ql-image"
+                aria-label="Image"
+              ></button>
+              <button
+                type="button"
+                class="ql-video"
+                aria-label="Video"
+              ></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+    </form>
+
+    <div class="form-actions">
+      @if (editMode) {
+        <p-button
+          label="{{ t('editRegionButtonLabel') }}"
+          (click)="saveRegion()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        (click)="cancel()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+      ></p-button>
+    </div>
   </div>
 </ng-container>

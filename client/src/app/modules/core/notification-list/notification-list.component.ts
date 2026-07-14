@@ -2,8 +2,8 @@ import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { CardModule } from 'primeng/card';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { NotificationsService } from '../../../services/crud/notifications.service';
@@ -15,16 +15,11 @@ import { NotificationPresentationService } from '../notification-presentation.se
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-notification-list',
-  imports: [
-    TranslocoDirective,
-    CardModule,
-    ButtonModule,
-    MessageModule,
-    DatePipe,
-  ],
+  imports: [TranslocoDirective, ButtonModule, MessageModule, DatePipe],
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -42,6 +37,8 @@ export class NotificationListComponent implements OnInit {
   private notificationsService = inject(NotificationsService);
   private router = inject(Router);
   private store = inject(Store);
+  private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -49,6 +46,9 @@ export class NotificationListComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(marker('menu.notificationsDetailTitle')),
+    );
     this.store.dispatch(loadUnreadNotificationCount());
     this.loadFirstPage();
   }

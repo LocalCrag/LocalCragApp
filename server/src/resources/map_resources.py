@@ -3,6 +3,7 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from sqlalchemy import and_, or_
+from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
@@ -18,7 +19,8 @@ from models.enums.map_marker_type_enum import (
 from models.map_marker import MapMarker
 from models.sector import Sector
 from models.topo_image import TopoImage
-from util.secret_spots_auth import get_show_secret
+from util.html_inline_styles import sanitize_wysiwyg_html
+from util.secret_service import SecretService
 
 
 class GetMarkers(MethodView):
@@ -64,7 +66,7 @@ class GetMarkers(MethodView):
             query = query.join(Crag, MapMarker.crag_id == Crag.id)
 
         # Filter out secret spots if the user is not allowed to see them
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             query = query.filter(
                 and_(
                     or_(MapMarker.crag.has(secret=False), MapMarker.crag_id.is_(None)),
@@ -73,7 +75,12 @@ class GetMarkers(MethodView):
                 )
             )
 
-        markers: List[MapMarker] = query.all()
+        markers: List[MapMarker] = query.options(
+            joinedload(MapMarker.crag),
+            joinedload(MapMarker.sector).joinedload(Sector.crag),
+            joinedload(MapMarker.area).joinedload(Area.sector).joinedload(Sector.crag),
+            joinedload(MapMarker.topo_image).joinedload(TopoImage.area).joinedload(Area.sector).joinedload(Sector.crag),
+        ).all()
 
         # Convert markers to GeoJSON
         markers_geo_json = {"type": "FeatureCollection", "features": []}
@@ -187,7 +194,7 @@ def create_or_update_markers(markers_json: List[dict], parent_entity) -> List[Ma
         marker.lat = marker_json["lat"]
         marker.lng = marker_json["lng"]
         marker.name = marker_json["name"]
-        marker.description = marker_json["description"]
+        marker.description = sanitize_wysiwyg_html(marker_json["description"])
         marker.type = marker_json["type"]
         new_markers.append(marker)
         db.session.add(marker)

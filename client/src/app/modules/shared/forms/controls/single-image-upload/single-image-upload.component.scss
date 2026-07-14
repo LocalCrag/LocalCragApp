@@ -1,4 +1,22 @@
 lc-single-image-upload {
+  .image-upload-preview {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .focus-adjust-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &__info {
+      color: var(--p-text-muted-color);
+      cursor: help;
+    }
+  }
+
   .image-wrapper {
     overflow: hidden;
     display: inline-block;
@@ -14,6 +32,79 @@ lc-single-image-upload {
       position: absolute;
       top: 6px;
       right: 6px;
+      z-index: 3;
+    }
+  }
+
+  .image-focus-preview {
+    position: relative;
+    display: inline-block;
+    width: 250px;
+    border-radius: 6px;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    cursor: ns-resize;
+
+    &--dragging {
+      cursor: grabbing;
+    }
+
+    &__image {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+      border-radius: 6px;
+    }
+
+    &__shade {
+      position: absolute;
+      background: rgb(0 0 0 / 0.45);
+      pointer-events: none;
+      z-index: 1;
+
+      &--top,
+      &--bottom {
+        left: 0;
+        right: 0;
+      }
+
+      &--top {
+        top: 0;
+      }
+
+      &--bottom {
+        bottom: 0;
+      }
+
+      &--left {
+        left: 0;
+      }
+
+      &--right {
+        right: 0;
+      }
+    }
+
+    &__frame {
+      position: absolute;
+      box-sizing: border-box;
+      border: 2px solid #fff;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    &__marker {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      margin-top: -1px;
+      background: #fff;
+      box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35);
+      pointer-events: none;
+      z-index: 3;
     }
   }
 

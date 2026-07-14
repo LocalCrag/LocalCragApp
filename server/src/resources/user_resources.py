@@ -47,7 +47,7 @@ from util.email import (
 )
 from util.password_util import generate_password
 from util.regexes import email_regex
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from webargs_schemas.change_password_args import change_password_args
 from webargs_schemas.get_users_args import get_users_args
@@ -304,8 +304,7 @@ class GetUserGrades(MethodView):
             .join(Ascent, Ascent.line_id == Line.id)
             .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
         )
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         result = query.all()
         response_data = {
             LineTypeEnum.BOULDER.value: defaultdict(Counter),
@@ -338,8 +337,7 @@ class GetUserStatistics(MethodView):
             .join(Line, Ascent.line_id == Line.id)
             .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
         )
-        if not get_show_secret():
-            ascents_query = ascents_query.filter(Line.secret.is_(False))
+        ascents_query = SecretService.apply_line_filter(ascents_query)
         pairs = ascents_query.all()
 
         hardest_ascent: dict = {}

@@ -5,6 +5,10 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Line } from '../../models/line';
 import { Paginated } from '../../models/paginated';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 /**
  * CRUD service for lines.
@@ -29,9 +33,9 @@ export class LinesService {
       .pipe(map(Line.deserialize));
   }
 
-  public getLines(filters: string): Observable<Paginated<Line>> {
+  public getLines(params: ApiQueryParams): Observable<Paginated<Line>> {
     return this.http
-      .get(this.api.lines.getList(filters))
+      .get(this.api.lines.getList(), httpGetOptions(params))
       .pipe(map((payload) => Paginated.deserialize(payload, Line.deserialize)));
   }
 

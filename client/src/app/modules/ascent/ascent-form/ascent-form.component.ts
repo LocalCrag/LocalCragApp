@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -66,6 +66,7 @@ import {
     ButtonModule,
     ConfirmPopupModule,
     TranslocoDirective,
+    TranslocoPipe,
     RatingModule,
     DatePickerModule,
     ToggleButtonModule,

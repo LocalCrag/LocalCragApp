@@ -1,12 +1,12 @@
 describe('Create line', () => {
   it('creates a line', () => {
     cy.login();
-    cy.visit('/topo/brione/schattental/dritter-block-von-links/create-line');
+    cy.visit('/topo/brione/pampelmousse/shark-attack/create-line');
     cy.intercept('POST', '**/areas/*/lines').as('createLine');
     cy.get('[data-cy="line-form-name"]').focus().type('Alphane');
     cy.get('[data-cy="line-form-description"] .ql-editor')
       .focus()
-      .type('Oben ist sehr toll.');
+      .type('Upper Brione is very great.');
     cy.get('[data-cy="grade-dropdown"] > div').click();
     cy.get('[data-cy="grade-dropdown-item"]').eq(30).click();
     cy.get('[data-cy="starting-position-dropdown"] > div').click();
@@ -18,10 +18,7 @@ describe('Create line', () => {
     cy.get('[data-cy="line-form-highball"]').click();
     cy.get('[data-cy="submit"]').click();
     cy.wait('@createLine');
-    cy.url().should(
-      'include',
-      '/topo/brione/schattental/dritter-block-von-links/lines',
-    );
+    cy.url().should('include', '/topo/brione/pampelmousse/shark-attack/lines');
     cy.contains('[data-cy="line-list-item"]', 'Alphane');
   });
 });

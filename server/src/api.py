@@ -57,6 +57,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
+from resources.file_resources import UpdateFile
 from resources.gallery_resources import (
     CreateGalleryImage,
     DeleteGalleryImage,
@@ -145,7 +146,7 @@ from resources.sector_resources import (
     UpdateSector,
     UpdateSectorOrder,
 )
-from resources.statistics_resources import GetCompletion
+from resources.statistics_resources import GetCompletion, GetInstanceStatistics
 from resources.todo_resources import (
     CreateTodo,
     DeleteTodo,
@@ -226,9 +227,14 @@ def configure_api(app):
     upload_bp.add_url_rule("", view_func=UploadFile.as_view("upload_files"))
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
 
+    file_bp = Blueprint("files", __name__)
+    file_bp.add_url_rule("/<uuid:file_id>", view_func=UpdateFile.as_view("update_file"))
+    app.register_blueprint(file_bp, url_prefix="/api/files")
+
     # Statistics API
     statistics_bp = Blueprint("statistics", __name__)
     statistics_bp.add_url_rule("completion", view_func=GetCompletion.as_view("get_completion"))
+    statistics_bp.add_url_rule("instance", view_func=GetInstanceStatistics.as_view("get_instance_statistics"))
     app.register_blueprint(statistics_bp, url_prefix="/api/statistics")
 
     # Search API
@@ -282,36 +288,38 @@ def configure_api(app):
     user_bp.add_url_rule("/<string:user_id>", view_func=DeleteUser.as_view("delete_user"))
     user_bp.add_url_rule("/<string:user_slug>", view_func=GetUser.as_view("get_user"))
     user_bp.add_url_rule("/<string:user_id>/promote", view_func=PromoteUser.as_view("promote_user"))
-    user_bp.add_url_rule("/account", view_func=UpdateAccount.as_view("update_account"))
-    user_bp.add_url_rule("/account/change-email", view_func=ChangeEmail.as_view("change_email"))
     user_bp.add_url_rule(
         "/<string:user_id>/resend-user-create-mail", view_func=ResendUserCreateMail.as_view("resend_user_create_mail")
     )
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
     user_bp.add_url_rule("/<string:user_slug>/grades", view_func=GetUserGrades.as_view("get_user_grades"))
     user_bp.add_url_rule("/<string:user_slug>/statistics", view_func=GetUserStatistics.as_view("get_user_statistics"))
-    user_bp.add_url_rule("/account/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
-    user_bp.add_url_rule("/account/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
-    user_bp.add_url_rule("/account/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
-    user_bp.add_url_rule("/account/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
-    user_bp.add_url_rule("/account/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
-    user_bp.add_url_rule(
-        "/account/release-notes/<string:bundle_id>",
+    app.register_blueprint(user_bp, url_prefix="/api/users")
+
+    # Account API
+    account_bp = Blueprint("account", __name__)
+    account_bp.add_url_rule("", view_func=UpdateAccount.as_view("update_account"))
+    account_bp.add_url_rule("/change-email", view_func=ChangeEmail.as_view("change_email"))
+    account_bp.add_url_rule("/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
+    account_bp.add_url_rule("/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
+    account_bp.add_url_rule("/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
+    account_bp.add_url_rule("/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
+    account_bp.add_url_rule("/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
+    account_bp.add_url_rule(
+        "/release-notes/<string:bundle_id>",
         view_func=GetReleaseNoteBundle.as_view("get_release_note_bundle"),
     )
-    user_bp.add_url_rule("/account/notifications", view_func=GetNotifications.as_view("get_notifications"))
-    user_bp.add_url_rule(
-        "/account/notifications/count", view_func=GetNotificationsCount.as_view("get_notifications_count")
-    )
-    user_bp.add_url_rule(
-        "/account/notifications/<string:notification_id>/dismiss",
+    account_bp.add_url_rule("/notifications", view_func=GetNotifications.as_view("get_notifications"))
+    account_bp.add_url_rule("/notifications/count", view_func=GetNotificationsCount.as_view("get_notifications_count"))
+    account_bp.add_url_rule(
+        "/notifications/<string:notification_id>/dismiss",
         view_func=DismissNotification.as_view("dismiss_notification"),
     )
-    user_bp.add_url_rule(
-        "/account/notifications/dismiss-all",
+    account_bp.add_url_rule(
+        "/notifications/dismiss-all",
         view_func=DismissAllNotifications.as_view("dismiss_all_notifications"),
     )
-    app.register_blueprint(user_bp, url_prefix="/api/users")
+    app.register_blueprint(account_bp, url_prefix="/api/account")
 
     # Gallery API
     gallery_bp = Blueprint("gallery", __name__)

@@ -1,13 +1,13 @@
 import { AbstractModel } from './abstract-model';
 import { User } from './user';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 
 /**
  * Model of a blog post.
  */
-export class Post extends AbstractModel {
+export class Post extends HasSlug(AbstractModel) {
   title: string;
   text: string;
-  slug: string;
   createdBy: User;
   commentCount: number;
 
@@ -20,9 +20,9 @@ export class Post extends AbstractModel {
   public static deserialize(payload: any): Post {
     const post = new Post();
     AbstractModel.deserializeAbstractAttributes(post, payload);
+    deserializeSlugAttributes(post, payload);
     post.title = payload.title;
     post.text = payload.text;
-    post.slug = payload.slug;
     post.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;

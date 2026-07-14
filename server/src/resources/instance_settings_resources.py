@@ -11,7 +11,9 @@ from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.region import Region
 from models.sector import Sector
-from schedulers import reschedule_closure_materialization_job
+from scheduler_jobs.closure_materialization import (
+    reschedule_closure_materialization_job,
+)
 from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import instance_settings_args
@@ -44,16 +46,19 @@ class UpdateInstanceSettings(MethodView):
 
         instance_settings.instance_name = instance_settings_data["instanceName"]
         instance_settings.copyright_owner = instance_settings_data["copyrightOwner"]
+        instance_settings.mail_greeting = instance_settings_data["mailGreeting"]
         instance_settings.logo_image_id = instance_settings_data["logoImage"]
+        instance_settings.dark_logo_image_id = instance_settings_data["darkLogoImage"]
         instance_settings.favicon_image_id = instance_settings_data["faviconImage"]
-        instance_settings.auth_bg_image_id = instance_settings_data["authBgImage"]
-        instance_settings.main_bg_image_id = instance_settings_data["mainBgImage"]
+        instance_settings.bg_image_id = instance_settings_data["bgImage"]
         instance_settings.arrow_color = instance_settings_data["arrowColor"]
         instance_settings.arrow_text_color = instance_settings_data["arrowTextColor"]
         instance_settings.arrow_highlight_color = instance_settings_data["arrowHighlightColor"]
         instance_settings.arrow_highlight_text_color = instance_settings_data["arrowHighlightTextColor"]
         instance_settings.bar_chart_color = instance_settings_data["barChartColor"]
         instance_settings.bar_chart_accent_color = instance_settings_data["barChartAccentColor"]
+        instance_settings.dark_bar_chart_color = instance_settings_data["darkBarChartColor"]
+        instance_settings.dark_bar_chart_accent_color = instance_settings_data["darkBarChartAccentColor"]
         instance_settings.language = instance_settings_data["language"]
         instance_settings.matomo_tracker_url = instance_settings_data["matomoTrackerUrl"]
         instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]

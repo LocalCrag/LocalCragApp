@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
@@ -24,6 +25,12 @@ import { select, Store } from '@ngrx/store';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map } from 'rxjs/operators';
@@ -31,6 +38,8 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { ObjectType } from '../../../models/object';
+import { ApiQueryParams } from '../../../utility/http/query-params';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-history-list',
@@ -52,10 +61,9 @@ import { ObjectType } from '../../../models/object';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HistoryListComponent implements OnInit {
+export class HistoryListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public hasNextPage = true;
   public currentPage = 0;
   public historyItems: HistoryItem[] = [];
@@ -69,42 +77,34 @@ export class HistoryListComponent implements OnInit {
   private transloco = inject(TranslocoService);
   private scalesService = inject(ScalesService);
   private cdr = inject(ChangeDetectorRef);
+  private pageTitleService = inject(PageTitleService);
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
+    loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.historyItems = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
-        per_page: '10',
-      });
-      const filterString = `?${filters.toString()}`;
-      this.historyService.getHistory(filterString).subscribe((historyItems) => {
-        this.historyItems = [...this.historyItems, ...historyItems.items];
-        this.hasNextPage = historyItems.hasNext;
-        this.loadingFirstPage = LoadingState.DEFAULT;
-        this.loadingAdditionalPage = LoadingState.DEFAULT;
-        this.cdr.detectChanges();
-      });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.historyItems = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      per_page: 10,
+    };
+    this.historyService.getHistory(params).subscribe((historyItems) => {
+      this.historyItems = [...this.historyItems, ...historyItems.items];
+      completePaginatedPageLoad(this, historyItems.hasNext);
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.transloco.translate(marker('history.historyTitle')),
+    );
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.loadFirstPage();
   }

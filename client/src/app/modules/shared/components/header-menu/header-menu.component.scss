@@ -6,14 +6,16 @@
 .menubar {
   padding: 0.5rem;
   display: flex;
-  background: #f9fafb;
-  color: #4b5563;
+  background: var(--p-content-background);
+  color: var(--p-text-color);
+  border-bottom: 1px solid var(--p-content-border-color);
   align-items: center;
   position: relative;
   width: 100%;
 }
 
 .menubar-start {
+  flex-shrink: 0;
 }
 
 .menubar-end {

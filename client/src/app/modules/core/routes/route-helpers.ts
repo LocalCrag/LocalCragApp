@@ -1,0 +1,89 @@
+import { Type } from '@angular/core';
+import { CanActivateFn, Route, Routes } from '@angular/router';
+import { ObjectType } from '../../../models/object';
+import { isModerator } from '../../../guards/is-moderator';
+
+type LazyComponentLoader = () => Promise<Type<unknown>>;
+
+export const loadGalleryComponent: LazyComponentLoader = () =>
+  import('../../gallery/gallery/gallery.component').then(
+    (m) => m.GalleryComponent,
+  );
+
+export const loadCommentsComponent: LazyComponentLoader = () =>
+  import('../../comments/comments/comments.component').then(
+    (m) => m.CommentsComponent,
+  );
+
+interface OutletRouteOptions {
+  canActivate?: CanActivateFn[];
+  data?: Record<string, unknown>;
+  pathMatch?: 'full' | 'prefix';
+}
+
+export function outletRoute(
+  path: string,
+  component: Type<unknown>,
+  outlet: string,
+  options: OutletRouteOptions = {},
+): Route {
+  return {
+    path,
+    ...(options.canActivate && { canActivate: options.canActivate }),
+    children: [
+      {
+        path: '',
+        component,
+        outlet,
+        ...(options.pathMatch && { pathMatch: options.pathMatch }),
+        ...(options.data && { data: options.data }),
+      },
+    ],
+  };
+}
+
+export function lazyOutletRoute(
+  path: string,
+  loadComponent: LazyComponentLoader,
+  outlet: string,
+  options: OutletRouteOptions = {},
+): Route {
+  return {
+    path,
+    ...(options.canActivate && { canActivate: options.canActivate }),
+    children: [
+      {
+        path: '',
+        loadComponent,
+        outlet,
+        ...(options.pathMatch && { pathMatch: options.pathMatch }),
+        ...(options.data && { data: options.data }),
+      },
+    ],
+  };
+}
+
+export function moderatorTaskFormRoutes(
+  pathPrefix: string,
+  scopeType: ObjectType,
+): Routes {
+  const loadModeratorTaskForm: LazyComponentLoader = () =>
+    import('../../moderator-task/moderator-task-form/moderator-task-form.component').then(
+      (m) => m.ModeratorTaskFormComponent,
+    );
+
+  return [
+    {
+      path: `${pathPrefix}/moderator-tasks/create`,
+      loadComponent: loadModeratorTaskForm,
+      canActivate: [isModerator],
+      data: { scopeType },
+    },
+    {
+      path: `${pathPrefix}/moderator-tasks/:task-id/edit`,
+      loadComponent: loadModeratorTaskForm,
+      canActivate: [isModerator],
+      data: { scopeType },
+    },
+  ];
+}

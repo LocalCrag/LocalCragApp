@@ -3,6 +3,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import {
   TranslocoDirective,
   TranslocoPipe,
@@ -13,7 +14,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
-import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
@@ -31,7 +31,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'lc-menu-items-list',
   imports: [
-    CardModule,
     DataViewModule,
     ButtonModule,
     NgClass,
@@ -61,11 +60,17 @@ export class MenuItemsListComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
+  private pageTitleService = inject(PageTitleService);
 
   /**
    * Loads the menu items on initialization.
    */
   ngOnInit() {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        marker('menuPages.menuPageList.menuItemsListTitle'),
+      ),
+    );
     this.refreshData();
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.store.select(selectInstanceName).subscribe((instanceName) => {

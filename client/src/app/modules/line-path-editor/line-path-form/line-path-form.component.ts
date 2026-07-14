@@ -29,6 +29,7 @@ import { Title } from '@angular/platform-browser';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -52,6 +53,7 @@ import { TopoImage } from '../../../models/topo-image';
   styleUrls: ['./line-path-form.component.scss'],
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,

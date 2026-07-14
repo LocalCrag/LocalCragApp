@@ -8,7 +8,7 @@ from sqlalchemy.orm import declared_attr
 
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class BaseEntity(db.Model):
@@ -51,8 +51,7 @@ class BaseEntity(db.Model):
             query = query.order_by(cls.id)
         # Check if a model has the secret spot property, if yes add a filter based on view rights
         if hasattr(cls, "secret"):
-            if not get_show_secret():
-                query = query.filter(cls.secret.is_(False))
+            query = SecretService.apply_topo_entity_filter(query, cls)
         return query.all()
 
     @classmethod

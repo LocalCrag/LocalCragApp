@@ -22,6 +22,7 @@ import { environment } from '../../../environments/environment';
 import * as Sentry from '@sentry/angular';
 import { providePrimeNG } from 'primeng/config';
 import { LocalCragTheme } from './theme/theme';
+import { ThemeService } from '../../services/core/theme.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideTransloco,
@@ -132,6 +133,10 @@ export const appConfig: ApplicationConfig = {
       inject(Sentry.TraceService);
       return Promise.resolve();
     }),
+    provideAppInitializer(() => {
+      inject(ThemeService).init();
+      return Promise.resolve();
+    }),
     provideRouter(appRoutes),
     {
       provide: HTTP_INTERCEPTORS,
@@ -164,7 +169,11 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: LocalCragTheme,
         options: {
-          darkModeSelector: false,
+          darkModeSelector: '.lc-dark',
+          cssLayer: {
+            name: 'primeng',
+            order: 'theme, base, primeng',
+          },
         },
       },
     }),
@@ -177,6 +186,8 @@ export const appConfig: ApplicationConfig = {
           'de-gym',
           'en',
           'en-gym',
+          'fr',
+          'fr-gym',
           'it',
           'it-gym',
           'nl',

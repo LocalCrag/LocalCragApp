@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from models.enums.line_type_enum import LineTypeEnum
 from models.scale import Scale
 
-ALLOWED_LANGUAGES = {"de", "en", "it", "nl"}
+ALLOWED_LANGUAGES = {"de", "en", "fr", "it", "nl"}
 
 
 def validate_language(value: str):
@@ -97,6 +97,9 @@ def blocweather_url_validator(url: Optional[str]):
 
     url = url.strip()
     if url == "":
+        raise ValidationError("Invalid BlocWeather URL")
+
+    if len(url) > 255:
         raise ValidationError("Invalid BlocWeather URL")
 
     prefix = "https://blocweather.com/"

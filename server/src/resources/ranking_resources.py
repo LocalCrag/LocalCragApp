@@ -8,7 +8,7 @@ from extensions import db
 from marshmallow_schemas.ranking_schema import ranking_schema
 from models.enums.line_type_enum import LineTypeEnum
 from models.ranking import Ranking
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 
 
 class GetRanking(MethodView):
@@ -16,7 +16,7 @@ class GetRanking(MethodView):
     def get(self):
         secret_ranking = request.args.get("secret") == "1"
 
-        if secret_ranking and not get_show_secret():
+        if secret_ranking and not SecretService.can_view_secrets():
             raise Unauthorized("No permission to view secret rankings.")
 
         line_type = request.args.get("line_type")

@@ -4,9 +4,9 @@
       <b>{{ t("ascentDate") }}</b>
     </p-divider>
 
-    <div class="flex justify-content-center gap-2 mb-2">
+    <div class="flex justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
-        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+        <div class="flex flex-col gap-2 grow" lcControlGroup>
           <p-date-picker
             formControlName="year"
             view="year"
@@ -22,12 +22,12 @@
             t("yearInFutureValidationError")
           }}</small>
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
         </div>
       }
       @if (!ascentForm.get("yearOnly").value) {
-        <div class="flex flex-column gap-2 flex-grow-1" lcControlGroup>
+        <div class="flex flex-col gap-2 grow" lcControlGroup>
           <p-date-picker
             formControlName="date"
             view="date"
@@ -43,7 +43,7 @@
             t("dateInFutureValidationError")
           }}</small>
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
         </div>
       }
@@ -55,7 +55,7 @@
       ></p-toggleButton>
     </div>
 
-    <div class="flex justify-content-center gap-2">
+    <div class="flex justify-center gap-2">
       <p-button
         [label]="t('today')"
         size="small"
@@ -80,10 +80,7 @@
       <b>{{ t("personalGrade") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-row gap-2 justify-content-center align-items-center"
-      lcControlGroup
-    >
+    <div class="flex flex-row gap-2 justify-center items-center" lcControlGroup>
       <p-toggleButton
         formControlName="soft"
         [onLabel]="t('soft')"
@@ -99,10 +96,7 @@
         lcFormControl
       >
         <ng-template let-grade #item>
-          <div
-            class="flex align-items-center gap-2"
-            data-cy="grade-dropdown-item"
-          >
+          <div class="flex items-center gap-2" data-cy="grade-dropdown-item">
             <div>{{ grade.name | translateSpecialGrades }}</div>
           </div>
         </ng-template>
@@ -117,7 +111,7 @@
         [dt]="toggleButtonDt"
       ></p-toggleButton>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
+        "validation.required" | transloco
       }}</small>
     </div>
     @if (gradeDifferenceWarning) {
@@ -130,17 +124,14 @@
       <b>{{ t("rating") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-column gap-2 align-items-center justify-content-center"
-      lcControlGroup
-    >
+    <div class="flex flex-col gap-2 items-center justify-center" lcControlGroup>
       <p-rating
         formControlName="rating"
         lcFormControl
         data-cy="rating"
       ></p-rating>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
+        "validation.required" | transloco
       }}</small>
     </div>
 
@@ -164,10 +155,7 @@
       <b>{{ t("otherInfo") }}</b>
     </p-divider>
 
-    <div
-      class="flex flex-row gap-2 align-items-center justify-content-center"
-      lcControlGroup
-    >
+    <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
       <p-toggleButton
         formControlName="flash"
         [dt]="toggleButtonDt"

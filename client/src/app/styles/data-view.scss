@@ -5,7 +5,11 @@
   text-decoration: none;
 
   &:hover {
-    background-color: var(--p-surface-100);
+    background-color: color-mix(
+      in srgb,
+      var(--p-text-color) 5%,
+      var(--p-content-background)
+    );
   }
 }
 

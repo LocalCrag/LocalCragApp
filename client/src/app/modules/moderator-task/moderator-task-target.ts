@@ -5,6 +5,7 @@ import { ModeratorTask } from '../../models/moderator-task';
 import { ObjectType } from '../../models/object';
 import { Region } from '../../models/region';
 import { Sector } from '../../models/sector';
+import { ApiQueryParams } from '../../utility/http/query-params';
 
 /**
  * Query parameters for `GET /api/moderator-tasks` at the current topo page.
@@ -45,58 +46,58 @@ export interface ModeratorTaskListQuery {
 }
 
 const appendModeratorTaskScopeParams = (
-  params: URLSearchParams,
+  params: ApiQueryParams,
   scope: ModeratorTaskScope,
 ): void => {
-  params.set('scope-type', scope.scopeType);
+  params['scope-type'] = scope.scopeType;
   switch (scope.scopeType) {
     case ObjectType.Crag:
       if (scope.cragSlug) {
-        params.set('crag-slug', scope.cragSlug);
+        params['crag-slug'] = scope.cragSlug;
       }
       break;
     case ObjectType.Sector:
       if (scope.sectorSlug) {
-        params.set('sector-slug', scope.sectorSlug);
+        params['sector-slug'] = scope.sectorSlug;
       }
       break;
     case ObjectType.Area:
       if (scope.areaSlug) {
-        params.set('area-slug', scope.areaSlug);
+        params['area-slug'] = scope.areaSlug;
       }
       break;
     case ObjectType.Line:
       if (scope.lineSlug) {
-        params.set('line-slug', scope.lineSlug);
+        params['line-slug'] = scope.lineSlug;
       }
       break;
   }
 };
 
 /**
- * Builds the query string appended to `GET /api/moderator-tasks`.
- *
- * Example: `?scope-type=Line&line-slug=example-line&page=1&per_page=10`
+ * Builds query params for `GET /api/moderator-tasks`.
  */
 export const buildModeratorTaskListQuery = (
   query: ModeratorTaskListQuery,
-): string => {
-  const params = new URLSearchParams();
+): ApiQueryParams => {
+  const params: ApiQueryParams = {
+    'scope-type': query.scope.scopeType,
+    page: query.page,
+    per_page: query.perPage ?? 10,
+  };
   appendModeratorTaskScopeParams(params, query.scope);
-  params.set('page', String(query.page));
-  params.set('per_page', String(query.perPage ?? 10));
   if (query.assignedToUnassigned) {
-    params.set('assigned-to-unassigned', 'true');
+    params['assigned-to-unassigned'] = 'true';
   } else if (query.assignedToId) {
-    params.set('assigned-to-id', query.assignedToId);
+    params['assigned-to-id'] = query.assignedToId;
   }
   if (query.createdById) {
-    params.set('created-by-id', query.createdById);
+    params['created-by-id'] = query.createdById;
   }
   if (query.finishedById) {
-    params.set('finished-by-id', query.finishedById);
+    params['finished-by-id'] = query.finishedById;
   }
-  return `?${params.toString()}`;
+  return params;
 };
 
 const entityLink = (entity: {

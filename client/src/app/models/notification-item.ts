@@ -1,5 +1,30 @@
 import { Line } from './line';
 
+export interface NotificationSubjectProperties {
+  line: Line | null;
+  topicName: string | null;
+}
+
+export interface NotificationReactionProperties {
+  emoji: string | null;
+}
+
+export interface NotificationModeratorTaskProperties {
+  title: string;
+  targetLabel: string;
+}
+
+export interface NotificationReleaseNotesProperties {
+  releaseNoteItemKeys: string[];
+}
+
+export interface NotificationItemProperties {
+  subject?: NotificationSubjectProperties;
+  reaction?: NotificationReactionProperties;
+  moderatorTask?: NotificationModeratorTaskProperties;
+  releaseNotes?: NotificationReleaseNotesProperties;
+}
+
 export interface NotificationItem {
   id: string;
   type: string;
@@ -9,10 +34,6 @@ export interface NotificationItem {
   entityType: string | null;
   entityId: string | null;
   actionLink: string | null;
-  line: Line | null;
-  topicName: string | null;
-  taskTitle?: string | null;
-  reactionEmoji: string | null;
   isDismissed: boolean;
-  releaseNoteItemKeys?: string[];
+  properties: NotificationItemProperties;
 }

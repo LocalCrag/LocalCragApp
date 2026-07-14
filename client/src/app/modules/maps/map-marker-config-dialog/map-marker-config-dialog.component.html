@@ -6,7 +6,7 @@
       [(visible)]="isOpen"
     >
       <form [formGroup]="mapMarkerForm" lcForm>
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="type">{{ t("typeLabel") }}</label>
           <ng-container *transloco="let t2; read: 'maps.markerList'">
             <p-select
@@ -21,7 +21,7 @@
             >
               <ng-template let-type #item>
                 <div
-                  class="flex align-items-center gap-2"
+                  class="flex items-center gap-2"
                   data-cy="type-dropdown-item"
                 >
                   <div>{{ t2(type) }}</div>
@@ -33,10 +33,10 @@
             </p-select>
           </ng-container>
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
           }}</small>
         </div>
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="coordinates">{{
             t("coordinatesLabel")
           }}</label>
@@ -49,7 +49,7 @@
           ></lc-coordinates>
         </div>
         @if (!nameAndDescriptionHidden) {
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="name">{{
               t("markerNameLabel")
             }}</label>
@@ -63,16 +63,17 @@
               data-cy="marker-form-name"
             />
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              "validation.maxLength" | transloco: { max: 120 }
             }}</small>
           </div>
         }
         @if (!nameAndDescriptionHidden) {
-          <div class="flex flex-column gap-2" lcControlGroup>
+          <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="description">{{
               t("markerDescriptionLabel")
             }}</label>
             <p-editor
+              class="lc-wysiwyg-editor"
               id="description"
               formControlName="description"
               lcFormControl

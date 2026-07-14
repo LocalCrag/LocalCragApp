@@ -66,7 +66,7 @@ def test_successful_update_scale(client, admin_token):
     rv = client.put("/api/scales/BOULDER/FB", token=admin_token, json=scale_data)
     assert rv.status_code == 200
 
-    rv = client.get("/api/lines/treppe")
+    rv = client.get("/api/lines/the-vessel")
     assert rv.status_code == 200
     res = rv.json
     assert res["gradeScale"] == "FBnew"

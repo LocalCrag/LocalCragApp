@@ -1,13 +1,17 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  HostListener,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
   inject,
   DestroyRef,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 import {
   selectAuthState,
   selectCurrentUser,
@@ -19,8 +23,8 @@ import {
 } from 'src/app/ngrx/actions/auth.actions';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { take } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take, map } from 'rxjs/operators';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
@@ -30,9 +34,12 @@ import { MenuItemType } from '../../../enums/menu-item-type';
 import { Crag } from '../../../models/crag';
 import {
   selectInstanceName,
+  selectDarkLogoImage,
   selectLogoImage,
   selectSkippedHierarchyLayers,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { effectiveLogoImage } from '../../../utility/instance-settings-theme';
+import { ThemeService } from '../../../services/core/theme.service';
 import { File } from '../../../models/file';
 import { User } from '../../../models/user';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -51,6 +58,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LanguageCode } from '../../../utility/types/language';
 import { LanguageService } from '../../../services/core/language.service';
 import { NotificationBellComponent } from '../notification-bell/notification-bell.component';
+import {
+  MAX_NAVBAR_COLLAPSE_LEVEL,
+  NAVBAR_COLLAPSE_LEVELS,
+} from './navbar-collapse';
 
 @Component({
   selector: 'lc-menu',
@@ -74,7 +85,10 @@ import { NotificationBellComponent } from '../notification-bell/notification-bel
     NotificationBellComponent,
   ],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, AfterViewInit {
+  @ViewChild(HeaderMenuComponent)
+  headerMenu?: HeaderMenuComponent;
+
   items: MenuItem[] = [];
   userMenuItems: MenuItem[] = [];
   isMobile$: Observable<boolean>;
@@ -84,6 +98,14 @@ export class MenuComponent implements OnInit {
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
   language: LanguageCode;
+  /**
+   * How many optional header controls are currently hidden (0 = all visible).
+   * Recomputed from scratch on resize and layout changes; see `reconcileNavbarOverflow()`.
+   */
+  navbarCollapseLevel = 0;
+
+  /** Threshold constants for `showNavbarElement()` in the template. */
+  readonly navbarCollapseLevels = NAVBAR_COLLAPSE_LEVELS;
 
   private menuItemsService = inject(MenuItemsService);
   private translocoService = inject(TranslocoService);
@@ -92,9 +114,22 @@ export class MenuComponent implements OnInit {
   private store = inject(Store);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
+  readonly themeService = inject(ThemeService);
+  private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
+  private navbarResizeObserver?: ResizeObserver;
+  private isReconcilingNavbarOverflow = false;
 
   ngOnInit() {
-    this.logoImage$ = this.store.pipe(select(selectLogoImage));
+    this.logoImage$ = combineLatest([
+      this.store.select(selectLogoImage),
+      this.store.select(selectDarkLogoImage),
+      this.isDarkMode$,
+    ]).pipe(
+      map(([logo, darkLogo, isDarkMode]) =>
+        effectiveLogoImage(logo, darkLogo, isDarkMode),
+      ),
+    );
     this.instanceName$ = this.store.pipe(select(selectInstanceName));
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.currentUser$ = this.store.pipe(select(selectCurrentUser));
@@ -133,6 +168,83 @@ export class MenuComponent implements OnInit {
       });
   }
 
+  ngAfterViewInit() {
+    this.reconcileNavbarOverflow();
+    if (!window.ResizeObserver || !this.headerMenu) {
+      return;
+    }
+    this.navbarResizeObserver = new ResizeObserver(() => {
+      this.reconcileNavbarOverflow();
+    });
+    this.navbarResizeObserver.observe(
+      this.headerMenu.elementRef.nativeElement as HTMLElement,
+    );
+    this.destroyRef.onDestroy(() => this.navbarResizeObserver?.disconnect());
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.reconcileNavbarOverflow();
+  }
+
+  /** Whether an optional header control should render at the current collapse level. */
+  showNavbarElement(threshold: number): boolean {
+    return this.navbarCollapseLevel < threshold;
+  }
+
+  /**
+   * Fits the top navigation to the available width using a two-stage collapse strategy.
+   *
+   * **Stage 1 — link menu:** Try the full horizontal link menu first
+   * (`overflowDetected = false`). If the menubar overflows, collapse the dynamic
+   * nav links into the burger menu (`overflowDetected = true`). This frees horizontal
+   * space without hiding search, logo, or other end-slot controls.
+   *
+   * **Stage 2 — optional controls:** If the menubar still overflows with the burger
+   * menu, increase `navbarCollapseLevel` one step at a time, hiding elements in the
+   * order defined by {@link NAVBAR_COLLAPSE_LEVELS}: theme toggle → language select →
+   * notifications → search → logo.
+   *
+   * Each pass starts from the most expanded state so controls reappear automatically
+   * when the viewport grows. A `ResizeObserver` on the menubar and window resize
+   * events trigger reconciliation; auth and menu model changes schedule a pass as well.
+   *
+   * Projected start/end template content lives in this component, so collapse state
+   * and change detection are owned here rather than in `HeaderMenuComponent`.
+   */
+  private reconcileNavbarOverflow() {
+    if (!this.headerMenu || this.isReconcilingNavbarOverflow) {
+      return;
+    }
+
+    this.isReconcilingNavbarOverflow = true;
+    try {
+      // Stage 1a: prefer the full horizontal link menu with all controls visible.
+      this.navbarCollapseLevel = 0;
+      this.headerMenu.setOverflowDetected(false);
+      this.cdr.detectChanges();
+
+      if (!this.headerMenu.isOverflowing()) {
+        return;
+      }
+
+      // Stage 1b: collapse nav links into the burger menu.
+      this.headerMenu.setOverflowDetected(true);
+      this.cdr.detectChanges();
+
+      // Stage 2: hide optional controls one by one until the menubar fits.
+      while (
+        this.headerMenu.isOverflowing() &&
+        this.navbarCollapseLevel < MAX_NAVBAR_COLLAPSE_LEVEL
+      ) {
+        this.navbarCollapseLevel++;
+        this.cdr.detectChanges();
+      }
+    } finally {
+      this.isReconcilingNavbarOverflow = false;
+    }
+  }
+
   /**
    * Recompute both the main and user menus.
    */
@@ -144,6 +256,10 @@ export class MenuComponent implements OnInit {
   updateLanguage(language: LanguageCode) {
     this.language = language;
     this.languageService.setPreferredLanguage(language);
+  }
+
+  toggleGuestColorScheme(): void {
+    this.themeService.toggleGuestColorScheme();
   }
 
   buildUserMenu() {
@@ -242,6 +358,7 @@ export class MenuComponent implements OnInit {
             this.userMenuItems = items;
           }
         }
+        queueMicrotask(() => this.reconcileNavbarOverflow());
       });
   }
 
@@ -254,35 +371,35 @@ export class MenuComponent implements OnInit {
       const skippedHierarchyLayersSlug = `${environment.skippedSlug}/`.repeat(
         skippedHierarchyLayers,
       );
-      this.items = [];
+      const items: MenuItem[] = [];
       const menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
       );
-      menuItemsTop.map((menuItem) => {
+      menuItemsTop.forEach((menuItem) => {
         switch (menuItem.type) {
           case MenuItemType.MENU_PAGE:
-            this.items.push({
+            items.push({
               label: menuItem.menuPage.title,
               icon: `pi pi-fw ${menuItem.icon}`,
               routerLink: '/pages/' + menuItem.menuPage.slug,
             });
             break;
           case MenuItemType.NEWS:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.news')),
               icon: 'pi pi-fw pi-megaphone',
               routerLink: '/news',
             });
             break;
           case MenuItemType.URL:
-            this.items.push({
+            items.push({
               label: menuItem.title,
               url: menuItem.url,
               icon: `pi pi-fw ${menuItem.icon}`,
             });
             break;
           case MenuItemType.TOPO:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.topo')),
               icon: 'pi pi-fw pi-map',
               routerLink: '/topo/crags',
@@ -290,28 +407,28 @@ export class MenuComponent implements OnInit {
             });
             break;
           case MenuItemType.ASCENTS:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.ascents')),
               icon: 'pi pi-fw pi-check-square',
               routerLink: '/ascents',
             });
             break;
           case MenuItemType.RANKING:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.ranking')),
               icon: 'pi pi-fw pi-trophy',
               routerLink: '/ranking',
             });
             break;
           case MenuItemType.GALLERY:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.gallery')),
               icon: 'pi pi-fw pi-images',
               routerLink: `/topo/${skippedHierarchyLayersSlug}gallery`,
             });
             break;
           case MenuItemType.HISTORY:
-            this.items.push({
+            items.push({
               label: this.translocoService.translate(marker('menu.history')),
               icon: 'pi pi-fw pi-clock',
               routerLink: '/history',
@@ -319,6 +436,8 @@ export class MenuComponent implements OnInit {
             break;
         }
       });
+      this.items = items;
+      queueMicrotask(() => this.reconcileNavbarOverflow());
     });
   }
 

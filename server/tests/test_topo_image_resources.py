@@ -8,7 +8,7 @@ from models.topo_image import TopoImage
 
 def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client, moderator_token):
     # pick a source area that has topo images
-    source_area_slug = "dritter-block-von-links"
+    source_area_slug = "shark-attack"
     topo_images = client.get(f"/api/areas/{source_area_slug}/topo-images").json
     assert len(topo_images) > 0
     image_id = topo_images[0]["id"]
@@ -148,8 +148,8 @@ def test_successful_edit_topo_image(client, moderator_token):
                 "name": None,
             }
         ],
-        "title": "Geiler Block",
-        "description": "Ein wahrhaft geiler Block!",
+        "title": "Awesome block",
+        "description": "A truly awesome block!",
     }
 
     rv = client.put(f"/api/topo-images/{topo_image.id}", token=moderator_token, json=topo_image_data)
@@ -159,16 +159,14 @@ def test_successful_edit_topo_image(client, moderator_token):
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["mapMarkers"][0]["type"] == MapMarkerType.TOPO_IMAGE.value
-    assert res["title"] == "Geiler Block"
-    assert res["description"] == "Ein wahrhaft geiler Block!"
+    assert res["title"] == "Awesome block"
+    assert res["description"] == "A truly awesome block!"
     assert res["id"] == str(topo_image.id)
 
 
-def test_successful_add_topo_image(client, moderator_token):
-    any_file_id = str(File.query.first().id)
-
+def test_successful_add_topo_image(client, moderator_token, any_file):
     topo_image_data = {
-        "image": any_file_id,
+        "image": str(any_file.id),
         "mapMarkers": [
             {
                 "lat": 12.13,
@@ -178,24 +176,24 @@ def test_successful_add_topo_image(client, moderator_token):
                 "name": None,
             }
         ],
-        "title": "Geiler Block",
-        "description": "Ein wahrhaft geiler Block!",
+        "title": "Awesome block",
+        "description": "A truly awesome block!",
     }
-    rv = client.post("/api/areas/dritter-block-von-links/topo-images", token=moderator_token, json=topo_image_data)
+    rv = client.post("/api/areas/shark-attack/topo-images", token=moderator_token, json=topo_image_data)
     assert rv.status_code == 201
     res = rv.json
     assert isinstance(res["id"], str)
-    assert res["image"]["id"] == any_file_id
+    assert res["image"]["id"] == str(any_file.id)
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["mapMarkers"][0]["type"] == MapMarkerType.TOPO_IMAGE.value
-    assert res["title"] == "Geiler Block"
-    assert res["description"] == "Ein wahrhaft geiler Block!"
+    assert res["title"] == "Awesome block"
+    assert res["description"] == "A truly awesome block!"
     assert len(res["linePaths"]) == 0
 
 
 def test_successful_get_topo_images(client):
-    rv = client.get("/api/areas/dritter-block-von-links/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 2
@@ -233,7 +231,7 @@ def test_successful_delete_topo_image(client, moderator_token):
 def test_successful_order_topo_images(client, moderator_token):
     topo_images = TopoImage.query.all()
 
-    rv = client.get("/api/areas/dritter-block-von-links/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert res[0]["id"] == str(topo_images[0].id)
@@ -245,12 +243,10 @@ def test_successful_order_topo_images(client, moderator_token):
         str(topo_images[0].id): 1,
         str(topo_images[1].id): 0,
     }
-    rv = client.put(
-        "/api/areas/dritter-block-von-links/topo-images/update-order", token=moderator_token, json=new_order
-    )
+    rv = client.put("/api/areas/shark-attack/topo-images/update-order", token=moderator_token, json=new_order)
     assert rv.status_code == 200
 
-    rv = client.get("/api/areas/dritter-block-von-links/topo-images")
+    rv = client.get("/api/areas/shark-attack/topo-images")
     assert rv.status_code == 200
     res = rv.json
     assert res[0]["id"] == str(topo_images[1].id)

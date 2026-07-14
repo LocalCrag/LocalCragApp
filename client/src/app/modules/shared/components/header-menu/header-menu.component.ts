@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -29,7 +28,7 @@ import { Button } from 'primeng/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [HeaderMenuService],
 })
-export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
+export class HeaderMenuComponent implements OnChanges, OnInit {
   @Input() model: MenuItem[];
 
   @ContentChild('start', { static: true }) startTemplate: TemplateRef<any>;
@@ -38,12 +37,20 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   public processedModel: ProcessedMenuItem[];
   public isMobile = false;
   public mobileExpanded = false;
+  /**
+   * True when the horizontal link menu does not fit and nav items should move into
+   * the burger menu. Set by `MenuComponent.reconcileNavbarOverflow()` — not reset on
+   * window resize here; reconciliation owns the full collapse state.
+   *
+   * Also true implicitly on small viewports via {@link isMobile} in the template
+   * (`isMobile || overflowDetected`).
+   */
   public overflowDetected = false;
 
-  private resizeObserver!: ResizeObserver;
+  readonly elementRef = inject(ElementRef);
+
   private headerMenuService = inject(HeaderMenuService);
   private cdr = inject(ChangeDetectorRef);
-  private el = inject(ElementRef);
 
   ngOnInit() {
     this.handleOnResize(Number(window.innerWidth));
@@ -52,38 +59,24 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['model']) {
-      this.processedModel = this.processItems(this.model, null);
+      this.processedModel = this.processItems(this.model ?? [], null);
+      this.cdr.markForCheck();
     }
   }
 
-  /**
-   * Set the overflowDetected flag if the menu is overflowing.
-   */
-  setOverflowDetected() {
-    // Don't run if it's already detected. As the menu is not overflowing anymore
-    // after the mobile version is shown, this check is necessary.
-    if (!this.overflowDetected) {
-      const width = this.el.nativeElement.offsetWidth;
-      this.overflowDetected = width < this.el.nativeElement.scrollWidth;
-      if (this.overflowDetected) {
-        // Change detection needed as this happens after the regular cycle
-        this.cdr.detectChanges();
-      }
-    }
+  /** True when the menubar content is wider than its container (`scrollWidth > offsetWidth`). */
+  isOverflowing(): boolean {
+    const element = this.elementRef.nativeElement as HTMLElement;
+    return element.offsetWidth < element.scrollWidth;
   }
 
-  ngAfterViewInit() {
-    this.setOverflowDetected();
-    if (!window.ResizeObserver) {
-      // We do not support the auto resize feature on legacy browsers. Fail silently instead.
+  /** Updates {@link overflowDetected} during navbar reconciliation in `MenuComponent`. */
+  setOverflowDetected(overflowDetected: boolean) {
+    if (this.overflowDetected === overflowDetected) {
       return;
     }
-    this.resizeObserver = new ResizeObserver((entries) => {
-      for (const _entry of entries) {
-        this.setOverflowDetected();
-      }
-    });
-    this.resizeObserver.observe(this.el.nativeElement);
+    this.overflowDetected = overflowDetected;
+    this.cdr.markForCheck();
   }
 
   processItems(
@@ -111,11 +104,10 @@ export class HeaderMenuComponent implements OnChanges, OnInit, AfterViewInit {
   }
 
   /**
-   * Reset overflow detection when the window is resized. Widths will be recalculated after
+   * Updates the mobile breakpoint flag. Nav overflow is reconciled by `MenuComponent`.
    * @param width innerWidth of the window
    */
   handleOnResize(width: number) {
-    this.overflowDetected = false;
     this.isMobile = width <= MOBILE_BREAKPOINT_HEADER_MENU;
   }
 

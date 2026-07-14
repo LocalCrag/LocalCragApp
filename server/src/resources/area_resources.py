@@ -21,7 +21,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
-from util.bucket_placeholders import add_bucket_placeholders
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import (
     set_area_parents_false,
     update_area_propagating_boolean_attr,
@@ -30,8 +30,9 @@ from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
 )
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_area_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.area_args import area_args
 from webargs_schemas.move_args import move_area_args
@@ -90,6 +91,8 @@ class GetAreas(MethodView):
         areas: List[Area] = Area.return_all(
             filter=lambda: Area.sector_id == sector_id, order_by=lambda: Area.order_index.asc()
         )
+        attach_area_counts(areas)
+        SecretService.attach_secret_flags(areas)
         return jsonify(areas_schema.dump(areas)), 200
 
 
@@ -121,8 +124,8 @@ class CreateArea(MethodView):
 
         new_area: Area = Area()
         new_area.name = area_data["name"].strip()
-        new_area.description = add_bucket_placeholders(area_data["description"])
-        new_area.short_description = area_data["shortDescription"]
+        new_area.description = sanitize_wysiwyg_html(area_data["description"])
+        new_area.short_description = sanitize_wysiwyg_html(area_data["shortDescription"])
         new_area.portrait_image_id = area_data["portraitImage"]
         new_area.sector_id = sector_id
         new_area.created_by_id = created_by.id
@@ -162,8 +165,8 @@ class UpdateArea(MethodView):
             raise NotFound(error)
 
         area.name = area_data["name"].strip()
-        area.description = add_bucket_placeholders(area_data["description"])
-        area.short_description = area_data["shortDescription"]
+        area.description = sanitize_wysiwyg_html(area_data["description"])
+        area.short_description = sanitize_wysiwyg_html(area_data["shortDescription"])
         area.portrait_image_id = area_data["portraitImage"]
         update_area_propagating_boolean_attr(area, area_data["secret"], "secret")
         apply_closable_configuration(area, area_data, "area_id")
@@ -236,8 +239,7 @@ class GetAreaGrades(MethodView):
             Line.grade_scale,
             Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
         ).filter(Line.area_id == area_id, Line.archived.is_(False))
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
         result = query.all()
 
         response_data = {

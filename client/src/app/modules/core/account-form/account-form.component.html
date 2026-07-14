@@ -1,63 +1,86 @@
 <ng-container *transloco="let t; read: 'accountForm'">
-  <div class="auth-container">
-    <div class="card login-card">
-      <form [formGroup]="accountForm" lcForm>
-        <div class="flex flex-row align-items-center">
-          <lc-avatar-upload formControlName="avatar"></lc-avatar-upload>
+  <div class="content p-6">
+    <form [formGroup]="accountForm" lcForm>
+      <div class="flex flex-row items-center gap-6">
+        <lc-avatar-upload formControlName="avatar"></lc-avatar-upload>
 
-          <div class="ml-5">
-            <h3>{{ t("accountFormTitle") }}</h3>
+        <div>
+          <h3>{{ t("accountFormTitle") }}</h3>
 
-            {{ t("accountFormDescription") }}
-          </div>
+          {{ t("accountFormDescription") }}
         </div>
+      </div>
 
+      <div class="card-container block" lcControlGroup>
+        <input
+          type="text"
+          pInputText
+          formControlName="firstname"
+          placeholder="{{ t('firstnamePlaceholder') }}"
+          lcFormControl
+          data-cy="register-form-firstname"
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="card-container block" lcControlGroup>
+        <input
+          type="text"
+          pInputText
+          formControlName="lastname"
+          placeholder="{{ t('lastnamePlaceholder') }}"
+          lcFormControl
+          data-cy="register-form-lastname"
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div formGroupName="emails">
         <div class="card-container block" lcControlGroup>
           <input
             type="text"
             pInputText
-            formControlName="firstname"
-            placeholder="{{ t('firstnamePlaceholder') }}"
+            formControlName="email"
+            placeholder="{{ t('emailPlaceholder') }}"
             lcFormControl
-            data-cy="register-form-firstname"
+            data-cy="register-form-email"
           />
           <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
+            "validation.required" | transloco
+          }}</small>
+          <small class="lc-error" *lcIfError="'pattern'">{{
+            t("invalidEmailHint")
+          }}</small>
+          <small class="lc-error" *lcIfError="'emailTaken'">{{
+            t("emailTaken")
           }}</small>
           <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
+            "validation.maxLength" | transloco: { max: 120 }
           }}</small>
         </div>
 
-        <div class="card-container block" lcControlGroup>
-          <input
-            type="text"
-            pInputText
-            formControlName="lastname"
-            placeholder="{{ t('lastnamePlaceholder') }}"
-            lcFormControl
-            data-cy="register-form-lastname"
-          />
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
-        <div formGroupName="emails">
+        @if (accountForm.get("emails.email").value !== currentUser.email) {
           <div class="card-container block" lcControlGroup>
             <input
               type="text"
               pInputText
-              formControlName="email"
-              placeholder="{{ t('emailPlaceholder') }}"
+              formControlName="emailConfirm"
+              placeholder="{{ t('emailConfirmPlaceholder') }}"
               lcFormControl
-              data-cy="register-form-email"
+              data-cy="register-form-email-confirm"
             />
             <small class="lc-error" *lcIfError="'required'">{{
-              t("required")
+              "validation.required" | transloco
             }}</small>
             <small class="lc-error" *lcIfError="'pattern'">{{
               t("invalidEmailHint")
@@ -66,81 +89,57 @@
               t("emailTaken")
             }}</small>
             <small class="lc-error" *lcIfError="'maxlength'">{{
-              t("maxlength120")
+              "validation.maxLength" | transloco: { max: 120 }
             }}</small>
           </div>
+        }
+      </div>
+    </form>
 
-          @if (accountForm.get("emails.email").value !== currentUser.email) {
-            <div class="card-container block" lcControlGroup>
-              <input
-                type="text"
-                pInputText
-                formControlName="emailConfirm"
-                placeholder="{{ t('emailConfirmPlaceholder') }}"
-                lcFormControl
-                data-cy="register-form-email-confirm"
-              />
-              <small class="lc-error" *lcIfError="'required'">{{
-                t("required")
-              }}</small>
-              <small class="lc-error" *lcIfError="'pattern'">{{
-                t("invalidEmailHint")
-              }}</small>
-              <small class="lc-error" *lcIfError="'emailTaken'">{{
-                t("emailTaken")
-              }}</small>
-              <small class="lc-error" *lcIfError="'maxlength'">{{
-                t("maxlength120")
-              }}</small>
-            </div>
-          }
-        </div>
-      </form>
-
-      @if (savePressed && emailsDontMatch()) {
-        <p-message severity="error" class="mt-4">
-          {{ t("emailsDontMatchAlertText") }}
-        </p-message>
-      }
-
-      <p-button
-        label="{{ t('saveAccountSettingsButtonLabel') }}"
-        (click)="save()"
-        [loading]="loadingState === loadingStates.LOADING"
-      ></p-button>
-
-      @if (emailChangedPostSave) {
-        <p-message severity="info" class="w-full max-w-35rem">
-          {{ t("emailAddressChangeInfoText") }}
-        </p-message>
-      }
-
-      <lc-account-settings-form></lc-account-settings-form>
-
-      <p-divider align="center" class="mt-5">
-        <b>{{ t("dangerZoneTitle") }}</b>
-      </p-divider>
-
-      <p-message
-        severity="info"
-        class="w-full"
-        icon="pi pi-info-circle"
-        *isSuperadmin="true"
-      >
-        {{ t("superadminsCannotDeleteOwnUser") }}
+    @if (savePressed && emailsDontMatch()) {
+      <p-message severity="error" class="mt-12">
+        {{ t("emailsDontMatchAlertText") }}
       </p-message>
+    }
 
-      <div class="flex flex-column gap-3 mt-3" *isSuperadmin="false">
-        <div class="text-600">
-          {{ t("deleteAccountInfoText") }}
-        </div>
-        <div>
-          <p-button
-            label="{{ t('deleteAccountButtonLabel') }}"
-            severity="danger"
-            (click)="openDeleteDialog()"
-          ></p-button>
-        </div>
+    <p-button
+      class="mt-6 block"
+      label="{{ t('saveAccountSettingsButtonLabel') }}"
+      (click)="save()"
+      [loading]="loadingState === loadingStates.LOADING"
+    ></p-button>
+
+    @if (emailChangedPostSave) {
+      <p-message severity="info" class="mt-6 w-full max-w-35rem">
+        {{ t("emailAddressChangeInfoText") }}
+      </p-message>
+    }
+
+    <lc-account-settings-form></lc-account-settings-form>
+
+    <p-divider align="center" class="mt-20">
+      <b>{{ t("dangerZoneTitle") }}</b>
+    </p-divider>
+
+    <p-message
+      severity="info"
+      class="w-full"
+      icon="pi pi-info-circle"
+      *isSuperadmin="true"
+    >
+      {{ t("superadminsCannotDeleteOwnUser") }}
+    </p-message>
+
+    <div class="flex flex-col gap-6 mt-6" *isSuperadmin="false">
+      <div class="text-surface-600 dark:text-surface-200">
+        {{ t("deleteAccountInfoText") }}
+      </div>
+      <div>
+        <p-button
+          label="{{ t('deleteAccountButtonLabel') }}"
+          severity="danger"
+          (click)="openDeleteDialog()"
+        ></p-button>
       </div>
     </div>
   </div>

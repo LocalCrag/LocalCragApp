@@ -1,0 +1,10 @@
+{
+  "linePathForm.addLinePathDescription": "Ici, vous pouvez tracer une ligne sur une image Topo. Sélectionnez la ligne à tracer dans la liste puis tracez le chemin de la ligne en cliquant sur l'image.",
+  "linePathForm.lineLabel": "Doubler",
+  "linePathForm.linePlaceholder": "Sélectionnez une ligne",
+  "linePathForm.linePathLabel": "Chemin de ligne",
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Tracez une ligne avec au moins deux points d'ancrage.",
+  "linePathForm.addLinePathButtonLabel": "Tracer une ligne",
+  "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur",
+  "linePathForm.addLinePathTitle": "Tracer une ligne"
+}

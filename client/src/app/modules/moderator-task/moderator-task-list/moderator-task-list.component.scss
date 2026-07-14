@@ -22,7 +22,7 @@
 
   .task-list-filter-label {
     font-size: 0.875rem;
-    color: var(--text-color-secondary);
+    color: var(--p-text-muted-color);
   }
 }
 
@@ -73,6 +73,7 @@
 }
 
 .task-row-title {
+  margin-top: 0;
   padding-right: 0.25rem;
 }
 
@@ -82,8 +83,8 @@
   margin-bottom: calc(-1 * var(--task-row-pad-bottom));
   margin-left: calc(-1 * var(--task-row-pad-left));
   padding: 0.75rem var(--task-row-pad-right) 1rem var(--task-row-pad-left);
-  border-top: 1px solid var(--p-surface-200);
-  background-color: var(--p-surface-100);
+  border-top: 1px solid var(--p-content-border-color);
+  background-color: var(--p-content-hover-background);
 
   @media (min-width: 992px) {
     margin-top: calc(-1 * var(--task-row-pad-top));
@@ -92,9 +93,9 @@
     margin-left: 0;
     padding: 1rem var(--task-row-pad-right) 1rem 1rem;
     border-top: none;
-    border-left: 1px solid var(--p-surface-200);
+    border-left: 1px solid var(--p-content-border-color);
     border-radius: 0;
-    background-color: var(--p-surface-50);
+    background-color: var(--p-content-hover-background);
   }
 }
 
@@ -123,7 +124,7 @@
 .task-person-date {
   display: block;
   margin-top: 0.15rem;
-  color: var(--text-color-secondary);
+  color: var(--p-text-muted-color);
   font-size: 0.8125rem;
 }
 

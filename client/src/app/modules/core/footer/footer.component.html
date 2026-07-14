@@ -4,7 +4,6 @@
       @for (menuItem of menuItems; track menuItem) {
         @if (menuItem.routerLink) {
           <p-button
-            [dt]="footerButtonsDt"
             label="{{ menuItem.title }}"
             styleClass="p-button-secondary p-button-text"
             routerLink="{{ menuItem.routerLink }}"
@@ -13,7 +12,6 @@
         }
         @if (menuItem.link) {
           <p-button
-            [dt]="footerButtonsDt"
             label="{{ menuItem.title }}"
             styleClass="p-button-secondary p-button-text"
             (click)="openLink(menuItem.link)"

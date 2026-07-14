@@ -60,7 +60,7 @@ lc-line-list {
       width: 0.5rem;
       height: 0.5rem;
       border-radius: 50%;
-      background: #22c55e;
+      background: var(--p-green-500);
       pointer-events: none;
       animation: line-list-filter-dot-pulse 1.4s ease-in-out infinite;
     }
@@ -79,17 +79,11 @@ lc-line-list {
     }
   }
 
-  .slider-container {
-    margin-left: 0.5715rem;
-    margin-right: 0.5715rem;
-    display: grid;
-  }
-
   .archived {
-    background-color: #ddd;
+    background-color: var(--p-content-hover-background);
 
     .line-name {
-      color: var(--p-surface-700) !important;
+      color: var(--p-text-muted-color) !important;
     }
 
     .p-rating-icon {

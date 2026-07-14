@@ -1,14 +1,15 @@
 from marshmallow import fields, post_dump
 
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
+from marshmallow_schemas.file_schema import file_schema
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
 class RegionSchema(BaseEntityMinSchema):
     name = fields.String()
     description = fields.String()
-    slug = fields.String()
     rules = fields.String()
+    image = fields.Nested(file_schema, attribute="image")
     ascentCount = fields.Integer(attribute="ascent_count")
 
     @post_dump

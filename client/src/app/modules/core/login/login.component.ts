@@ -18,7 +18,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Observable } from 'rxjs';
 import { selectLoginLoadingState } from '../../../ngrx/selectors/auth.selectors';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { Button } from 'primeng/button';
@@ -37,6 +37,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   styleUrls: ['./login.component.scss'],
   imports: [
     TranslocoDirective,
+    TranslocoPipe,
     ReactiveFormsModule,
     InputText,
     Password,
@@ -87,8 +88,8 @@ export class LoginComponent implements OnInit {
    */
   private buildForm() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.maxLength(120)]],
+      password: ['', [Validators.required, Validators.maxLength(120)]],
     });
   }
 }

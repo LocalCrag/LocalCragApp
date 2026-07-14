@@ -5,15 +5,19 @@ import { map } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
 import { Comment } from '../../models/comment';
 import { Paginated } from '../../models/paginated';
+import {
+  ApiQueryParams,
+  httpGetOptions,
+} from '../../utility/http/query-params';
 
 @Injectable({ providedIn: 'root' })
 export class CommentsService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
-  public getComments(filterString: string): Observable<Paginated<Comment>> {
+  public getComments(params: ApiQueryParams): Observable<Paginated<Comment>> {
     return this.http
-      .get(this.api.comments.getList(filterString))
+      .get(this.api.comments.getList(), httpGetOptions(params))
       .pipe(
         map((payload) => Paginated.deserialize(payload, Comment.deserialize)),
       );

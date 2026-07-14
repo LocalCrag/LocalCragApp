@@ -27,6 +27,13 @@ import { Store } from '@ngrx/store';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  failPaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { ModeratorTask } from '../../../models/moderator-task';
 import { Region } from '../../../models/region';
 import { User } from '../../../models/user';
@@ -75,12 +82,11 @@ type TaskListRow = { kind: 'task'; task: ModeratorTask } | { kind: 'divider' };
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
 })
-export class ModeratorTaskListComponent implements OnInit {
+export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
   @ViewChild('taskMenu') taskMenu: Menu;
 
   public tasks: ModeratorTask[] = [];
-  public loadingFirstPage = LoadingState.DEFAULT;
-  public loadingAdditionalPage = LoadingState.DEFAULT;
+  public loading = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
   public hasNextPage = true;
   public currentPage = 0;
@@ -185,7 +191,7 @@ export class ModeratorTaskListComponent implements OnInit {
         },
         error: () => {
           this.usersLoading = false;
-          this.loadingFirstPage = LoadingState.DEFAULT;
+          this.loading = LoadingState.DEFAULT;
           this.cdr.markForCheck();
         },
       });
@@ -204,52 +210,37 @@ export class ModeratorTaskListComponent implements OnInit {
   }
 
   public loadFirstPage(): void {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadingFirstPage = LoadingState.DEFAULT;
-    this.loadingAdditionalPage = LoadingState.DEFAULT;
-    this.loadNextPage();
+    loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
   public loadNextPage(): void {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.tasks = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-
-      this.moderatorTasksService
-        .getTasks({
-          scope: this.scope,
-          page: this.currentPage,
-          ...this.buildAssigneeListQuery(),
-          createdById: this.filterCreatorId,
-          finishedById: this.filterFinisherId,
-        })
-        .subscribe({
-          next: (page) => {
-            this.appendUniqueTasks(page.items);
-            this.sortTasks();
-            this.hasNextPage = page.hasNext;
-            this.loadingFirstPage = LoadingState.DEFAULT;
-            this.loadingAdditionalPage = LoadingState.DEFAULT;
-            this.cdr.markForCheck();
-          },
-          error: () => {
-            this.currentPage -= 1;
-            this.loadingFirstPage = LoadingState.DEFAULT;
-            this.loadingAdditionalPage = LoadingState.DEFAULT;
-            this.cdr.markForCheck();
-          },
-        });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.tasks = [];
+    });
+    if (page === null) {
+      return;
     }
+
+    this.moderatorTasksService
+      .getTasks({
+        scope: this.scope,
+        page: this.currentPage,
+        ...this.buildAssigneeListQuery(),
+        createdById: this.filterCreatorId,
+        finishedById: this.filterFinisherId,
+      })
+      .subscribe({
+        next: (page) => {
+          this.appendUniqueTasks(page.items);
+          this.sortTasks();
+          completePaginatedPageLoad(this, page.hasNext);
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          failPaginatedPageLoad(this);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   public isToggling(taskId: string): boolean {

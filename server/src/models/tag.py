@@ -16,14 +16,6 @@ class Tag(db.Model):
     object_type = db.Column(db.Unicode(255))
     object_id = db.Column(UUID())
     object = generic_relationship(object_type, object_id)
-    secret = db.Column(db.Boolean, default=False, server_default="0")
-
-
-def update_tag_secret_property(target):
-    tag = db.session.query(Tag).filter_by(object=target).first()
-    if tag:
-        tag.secret = target.secret
-        db.session.add(tag)
 
 
 def get_child_tags(tag_object_type, tag_object_id):

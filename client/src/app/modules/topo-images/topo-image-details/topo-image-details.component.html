@@ -1,6 +1,6 @@
 @if (topoImage.title || (topoImage.coordinates && topoImage.coordinates)) {
-  <div class="flex justify-content-center align-items-center mt-2">
-    <div class="flex-grow-1 flex block-title">
+  <div class="flex justify-center items-center mt-2">
+    <div class="grow flex block-title">
       @if (topoImage.title) {
         <h5 class="mt-0 mb-0 inline-block">
           {{ topoImage.title }}
@@ -16,7 +16,7 @@
 }
 
 @if (topoImage.description) {
-  <section class="text-xs flex justify-content-left">
+  <section class="text-xs flex justify-start">
     <div [innerHTML]="topoImage.description | sanitizeHtml"></div>
   </section>
 }

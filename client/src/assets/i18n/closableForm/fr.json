@@ -1,0 +1,18 @@
+{
+  "closableForm.closureSchedulesLabel": "Horaires de fermeture",
+  "closableForm.addSchedule": "Ajouter un horaire de fermeture",
+  "closableFormScheduleDialog.scheduleTypeLabel": "Type d'horaire",
+  "closableForm.scheduledClosureReasonLabel": "Raison lors de la fermeture",
+  "closableForm.scheduledClosureReasonPlaceholder": "par ex. la saison de nidification des oiseaux...",
+  "closableForm.scheduledClosureStartLabel": "Depuis",
+  "closableForm.scheduledClosureEndLabel": "Jusqu'à",
+  "closableForm.fixedEndBeforeStartValidationError": "La date de fin doit être identique ou postérieure à la date de début.",
+  "closableForm.closureMaterializationInfo": "Après l'enregistrement, cela peut prendre quelques secondes jusqu'à ce que les états fermés soient mis à jour dans tous les spots enfants.",
+  "closableFormScheduleDialog.cancel": "Annuler",
+  "closableFormScheduleDialog.ok": "D'ACCORD",
+  "closableFormScheduleDialog.editScheduleTitle": "Modifier le calendrier de fermeture",
+  "closableFormScheduleDialog.createScheduleTitle": "Ajouter un horaire de fermeture",
+  "closableForm.permanentScheduleTitle": "Permanent",
+  "closableForm.fixedScheduleTitle": "Fixe",
+  "closableForm.annualScheduleTitle": "Annuel"
+}

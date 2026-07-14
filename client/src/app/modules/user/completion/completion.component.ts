@@ -13,20 +13,18 @@ import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectItem } from 'primeng/api';
-import { AsyncPipe } from '@angular/common';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { Checkbox } from 'primeng/checkbox';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-completion',
@@ -35,14 +33,11 @@ import { Checkbox } from 'primeng/checkbox';
     CompletionProgressBarComponent,
     AccordionModule,
     ExpandButtonComponent,
-    SliderLabelsComponent,
-    SliderModule,
+    GradeRangeSliderComponent,
     FormsModule,
     TranslocoDirective,
-    AsyncPipe,
     Select,
     Message,
-    TranslateSpecialGradesPipe,
     Checkbox,
   ],
   templateUrl: './completion.component.html',
@@ -113,22 +108,22 @@ export class CompletionComponent implements OnInit {
 
   public loadCompletion() {
     this.loadedGradeFilterRange = [...this.gradeFilterRange];
-    const filters = new URLSearchParams({
+    const params: ApiQueryParams = {
       user_id: this.user.id,
-    });
+    };
     if (this.gradeFilterRange[1] !== null) {
-      filters.set('min_grade', this.gradeFilterRange[0]);
-      filters.set('max_grade', this.gradeFilterRange[1]);
+      params.min_grade = this.gradeFilterRange[0];
+      params.max_grade = this.gradeFilterRange[1];
     }
     if (this.scaleKey?.value) {
-      filters.set('line_type', this.scaleKey.value.lineType);
-      filters.set('grade_scale', this.scaleKey.value.gradeScale);
+      params.line_type = this.scaleKey.value.lineType;
+      params.grade_scale = this.scaleKey.value.gradeScale;
     }
     if (this.includeClosed) {
-      filters.set('include_closed', '1');
+      params.include_closed = '1';
     }
     return this.statisticsService
-      .getCompletion(`?${filters.toString()}`)
+      .getCompletion(params)
       .subscribe((completion) => {
         this.completion = completion;
       });

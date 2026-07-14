@@ -30,6 +30,8 @@ server:
   # REQUIRED: The public URL of your frontend (with trailing slash).
   # Example: "https://localcrag.example.com/"
   frontendHost: ""
+  # Application log level (DEBUG, INFO, WARNING, ERROR). Logs go to stdout for kubectl logs.
+  logLevel: INFO
   resources:
     requests:
       cpu: 500m

@@ -7,6 +7,14 @@
     {
       "key": "newOrderOptions",
       "type": "FEATURE"
+    },
+    {
+      "key": "frenchLanguage",
+      "type": "FEATURE"
+    },
+    {
+      "key": "darkMode",
+      "type": "FEATURE"
     }
   ]
 }

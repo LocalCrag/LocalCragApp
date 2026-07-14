@@ -7,9 +7,10 @@ from models.base_entity import BaseEntity
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_page import MenuPage
+from models.mixins.has_order_index import HasOrderIndex
 
 
-class MenuItem(BaseEntity):
+class MenuItem(HasOrderIndex, BaseEntity):
     """
     Model of a menu item. Can
     """
@@ -19,7 +20,6 @@ class MenuItem(BaseEntity):
     type = db.Column(db.Enum(MenuItemTypeEnum), nullable=False)
     position = db.Column(db.Enum(MenuItemPositionEnum), nullable=False)
     icon = db.Column(db.String(120), nullable=True)
-    order_index = db.Column(db.Integer, nullable=False, server_default="0")
     menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
     menu_page: Mapped[MenuPage] = relationship()
     url = db.Column(db.String(120), nullable=True)

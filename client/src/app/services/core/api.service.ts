@@ -25,27 +25,27 @@ export class ApiService {
   };
 
   public account = {
-    getSettings: (): string => `${this.apiHost}users/account/settings`,
-    updateSettings: (): string => `${this.apiHost}users/account/settings`,
-    getRecentSearches: (): string =>
-      `${this.apiHost}users/account/recent-searches`,
-    createRecentSearch: (): string =>
-      `${this.apiHost}users/account/recent-searches`,
-    getNotifications: (filters = ''): string =>
-      `${this.apiHost}users/account/notifications${filters}`,
+    update: (): string => `${this.apiHost}account`,
+    changeEmail: (): string => `${this.apiHost}account/change-email`,
+    deleteOwnUser: (): string => `${this.apiHost}account/delete-own-user`,
+    getSettings: (): string => `${this.apiHost}account/settings`,
+    updateSettings: (): string => `${this.apiHost}account/settings`,
+    getRecentSearches: (): string => `${this.apiHost}account/recent-searches`,
+    createRecentSearch: (): string => `${this.apiHost}account/recent-searches`,
+    getNotifications: (): string => `${this.apiHost}account/notifications`,
     getNotificationsCount: (): string =>
-      `${this.apiHost}users/account/notifications/count`,
+      `${this.apiHost}account/notifications/count`,
     dismissNotification: (id: string): string =>
-      `${this.apiHost}users/account/notifications/${id}/dismiss`,
+      `${this.apiHost}account/notifications/${id}/dismiss`,
     dismissAllNotifications: (): string =>
-      `${this.apiHost}users/account/notifications/dismiss-all`,
+      `${this.apiHost}account/notifications/dismiss-all`,
     releaseNoteBundle: (bundleId: string): string =>
-      `${this.apiHost}users/account/release-notes/${bundleId}`,
+      `${this.apiHost}account/release-notes/${bundleId}`,
   };
 
   public statistics = {
-    completion: (query: string): string =>
-      `${this.apiHost}statistics/completion${query}`,
+    completion: (): string => `${this.apiHost}statistics/completion`,
+    instance: (): string => `${this.apiHost}statistics/instance`,
   };
 
   public search = {
@@ -53,12 +53,11 @@ export class ApiService {
   };
 
   public history = {
-    getList: (filters: string): string => `${this.apiHost}history${filters}`,
+    getList: (): string => `${this.apiHost}history`,
   };
 
   public maps = {
-    getMarkers: (filters: string): string =>
-      `${this.apiHost}maps/markers${filters}`,
+    getMarkers: (): string => `${this.apiHost}maps/markers`,
   };
 
   public blocweather = {
@@ -71,7 +70,7 @@ export class ApiService {
     create: (): string => `${this.apiHost}gallery`,
     update: (id: string): string => `${this.apiHost}gallery/${id}`,
     delete: (id: string): string => `${this.apiHost}gallery/${id}`,
-    getList: (filters: string): string => `${this.apiHost}gallery${filters}`,
+    getList: (): string => `${this.apiHost}gallery`,
   };
 
   public ticks = {
@@ -88,25 +87,21 @@ export class ApiService {
 
   public users = {
     register: (): string => `${this.apiHost}users`,
-    getList: (filters = ''): string => `${this.apiHost}users${filters}`,
+    getList: (): string => `${this.apiHost}users`,
     getDetail: (slug: string): string => `${this.apiHost}users/${slug}`,
-    updateAccount: (): string => `${this.apiHost}users/account`,
     resendUserCreateMail: (id: string): string =>
       `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
     promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
-    changeEmail: (): string => `${this.apiHost}users/account/change-email`,
     getEmailTaken: (email: string): string =>
       `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
     getStatistics: (slug: string): string =>
       `${this.apiHost}users/${slug}/statistics`,
-    deleteOwnUser: (): string => `${this.apiHost}users/account/delete-own-user`,
   };
 
   public moderatorTasks = {
-    getList: (filters: string): string =>
-      `${this.apiHost}moderator-tasks${filters}`,
+    getList: (): string => `${this.apiHost}moderator-tasks`,
     getDetail: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
     create: (): string => `${this.apiHost}moderator-tasks`,
     update: (id: string): string => `${this.apiHost}moderator-tasks/${id}`,
@@ -117,7 +112,7 @@ export class ApiService {
 
   public todos = {
     create: (): string => `${this.apiHost}todos`,
-    getList: (filters: string): string => `${this.apiHost}todos${filters}`,
+    getList: (): string => `${this.apiHost}todos`,
     delete: (id: string): string => `${this.apiHost}todos/${id}`,
     updatePriority: (id: string): string =>
       `${this.apiHost}todos/${id}/update-priority`,
@@ -212,20 +207,20 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}ascents/${id}`,
     clearFa: (id: string): string => `${this.apiHost}ascents/${id}/clear-fa`,
     delete: (id: string): string => `${this.apiHost}ascents/${id}`,
-    getList: (filters: string): string => `${this.apiHost}ascents${filters}`,
+    getList: (): string => `${this.apiHost}ascents`,
     sendProjectClimbedMessage: (): string =>
       `${this.apiHost}ascents/send-project-climbed-message`,
   };
 
   public ranking = {
-    getList: (filters: string): string => `${this.apiHost}ranking${filters}`,
+    getList: (): string => `${this.apiHost}ranking`,
   };
 
   public topoImages = {
     add: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/topo-images`,
-    getList: (areaSlug: string, filters?: string): string =>
-      `${this.apiHost}areas/${areaSlug}/topo-images${filters ?? ''}`,
+    getList: (areaSlug: string): string =>
+      `${this.apiHost}areas/${areaSlug}/topo-images`,
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,
@@ -247,7 +242,7 @@ export class ApiService {
   public lines = {
     create: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/lines`,
-    getList: (filters: string): string => `${this.apiHost}lines${filters}`,
+    getList: (): string => `${this.apiHost}lines`,
     getListForLineEditor: (areaSlug: string): string =>
       `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
@@ -260,6 +255,10 @@ export class ApiService {
 
   public uploader = {
     uploadFile: (): string => `${this.apiHost}upload`,
+  };
+
+  public files = {
+    update: (id: string): string => `${this.apiHost}files/${id}`,
   };
 
   public scales = {
@@ -275,7 +274,7 @@ export class ApiService {
 
   // Comments API
   public comments = {
-    getList: (filters: string): string => `${this.apiHost}comments${filters}`,
+    getList: (): string => `${this.apiHost}comments`,
     create: (): string => `${this.apiHost}comments`,
     update: (id: string): string => `${this.apiHost}comments/${id}`,
     delete: (id: string): string => `${this.apiHost}comments/${id}`,

@@ -26,7 +26,7 @@ from models.user import User
 from util.email import send_project_climbed_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from util.validators import cross_validate_grade
 from util.voting import update_grades_and_rating
@@ -105,7 +105,7 @@ class GetAscents(MethodView):
                 )
 
         # Filter secret spots
-        if not get_show_secret():
+        if not SecretService.can_view_secrets():
             query = query.filter(Ascent.line.has(secret=False))
 
         # Apply ordering

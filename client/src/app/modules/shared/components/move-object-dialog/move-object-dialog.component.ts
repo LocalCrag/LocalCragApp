@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,
@@ -46,6 +46,7 @@ import { Message } from 'primeng/message';
     DialogModule,
     ButtonModule,
     TranslocoDirective,
+    TranslocoPipe,
     AutoCompleteModule,
     FormDirective,
     ControlGroupDirective,

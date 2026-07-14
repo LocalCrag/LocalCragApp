@@ -1,6 +1,7 @@
 from marshmallow import validate
 from webargs import fields
 
+from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
 )
@@ -16,4 +17,8 @@ account_settings_args = {
         validate=validate.OneOf([member.value for member in NotificationDigestFrequencyEnum]),
     ),
     "language": fields.Str(required=True, validate=validate_language),
+    "colorScheme": fields.Str(
+        required=True,
+        validate=validate.OneOf([member.value for member in ColorSchemeEnum]),
+    ),
 }

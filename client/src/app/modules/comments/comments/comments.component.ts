@@ -13,6 +13,12 @@ import { ObjectUtilsService } from '../../../services/utils/object-utils.service
 import { ObjectType } from '../../../models/object';
 import { Comment } from '../../../models/comment';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { CommentsService } from '../../../services/crud/comments.service';
 import { Button } from 'primeng/button';
 import { CommentsSkeletonComponent } from '../comments-skeleton/comments-skeleton.component';
@@ -22,6 +28,7 @@ import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CommentComponent } from '../comment/comment.component';
 import { CommentsContextService } from '../comments-context.service';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-comments',
@@ -39,13 +46,12 @@ import { CommentsContextService } from '../comments-context.service';
   styleUrl: './comments.component.scss',
   providers: [CommentsContextService],
 })
-export class CommentsComponent implements OnInit {
+export class CommentsComponent implements OnInit, PaginatedListView {
   public comments: Comment[] = [];
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public commentsContextService = inject(CommentsContextService);
 
   private objectType: ObjectType;
@@ -108,49 +114,40 @@ export class CommentsComponent implements OnInit {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
+    loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
   loadNextPage() {
     const objectId = this.commentsContextService.object?.id;
-    if (
-      !!objectId &&
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.comments = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const filters = new URLSearchParams({
-        page: this.currentPage.toString(),
-        'per-page': '20',
-      });
-      if (this.objectType) {
-        filters.set('object-type', this.objectType);
-        filters.set('object-id', objectId);
-      }
-      const filterString = `?${filters.toString()}`;
-      this.commentsService
-        .getComments(filterString)
-        .pipe(
-          map((comments) => {
-            this.comments.push(...comments.items);
-            this.commentsContextService.addComments(comments.items);
-            this.hasNextPage = comments.hasNext;
-            this.loadingFirstPage = LoadingState.DEFAULT;
-            this.loadingAdditionalPage = LoadingState.DEFAULT;
-            this.cdr.detectChanges();
-          }),
-        )
-        .subscribe();
+    if (!objectId) {
+      return;
     }
+
+    const page = beginPaginatedPageLoad(this, () => {
+      this.comments = [];
+    });
+    if (page === null) {
+      return;
+    }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      'per-page': 20,
+    };
+    if (this.objectType) {
+      params['object-type'] = this.objectType;
+      params['object-id'] = objectId;
+    }
+    this.commentsService
+      .getComments(params)
+      .pipe(
+        map((comments) => {
+          this.comments.push(...comments.items);
+          this.commentsContextService.addComments(comments.items);
+          completePaginatedPageLoad(this, comments.hasNext);
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe();
   }
 
   onCommentCreated(comment: Comment) {

@@ -15,6 +15,16 @@
   span ~ span::before {
     content: ", ";
   }
+
+  a {
+    color: var(--p-primary-color);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+
+    &:hover {
+      color: color-mix(in srgb, var(--p-primary-color) 82%, white);
+    }
+  }
 }
 
 lc-archive-button,

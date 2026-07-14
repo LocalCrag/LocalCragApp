@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from sqlalchemy import func, nullslast, select
+from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -23,6 +24,7 @@ from models.line_path import LinePath
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.html_inline_styles import sanitize_wysiwyg_html
 from util.line_list_query_args import parse_line_list_filters
 from util.line_list_sql_filters import apply_get_lines_advanced_filters
 from util.propagating_boolean_attrs import (
@@ -33,8 +35,9 @@ from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
 )
-from util.secret_spots_auth import get_show_secret
+from util.secret_service import SecretService
 from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.topo_entity_counts import attach_line_ascent_counts
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import cross_validate_line_args, line_args
 from webargs_schemas.move_args import move_line_args
@@ -153,8 +156,7 @@ class GetLines(MethodView):
         if area_slug:
             query = query.filter(Area.slug == area_slug)
         # Filter secret spots
-        if not get_show_secret():
-            query = query.filter(Line.secret.is_(False))
+        query = SecretService.apply_line_filter(query)
 
         user_for_filters = None
         if list_filters.climb_filter != "any":
@@ -163,6 +165,11 @@ class GetLines(MethodView):
             user_for_filters = User.find_by_email(identity) if identity else None
 
         query = apply_get_lines_advanced_filters(query, list_filters, instance_settings, user_for_filters)
+
+        query = query.options(
+            joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag),
+            selectinload(Line.line_paths).joinedload(LinePath.topo_image),
+        )
 
         # Handle order
         if order_by and order_direction:
@@ -194,6 +201,8 @@ class GetLines(MethodView):
                 query = query.order_by(nullslast(getattr(order_attribute, order_direction)()), Line.id)
 
         paginated_lines = db.paginate(query, page=int(page), per_page=per_page)
+        attach_line_ascent_counts(paginated_lines.items)
+        SecretService.attach_secret_flags(paginated_lines.items)
 
         return jsonify(paginated_lines_schema.dump(paginated_lines)), 200
 
@@ -226,7 +235,7 @@ class CreateLine(MethodView):
         new_line: Line = Line()
 
         new_line.name = line_data["name"].strip()
-        new_line.description = line_data["description"]
+        new_line.description = sanitize_wysiwyg_html(line_data["description"])
         new_line.color = line_data.get("color", None)
         new_line.videos = line_data["videos"]
         new_line.type = line_data["type"]
@@ -312,7 +321,7 @@ class UpdateLine(MethodView):
             raise BadRequest("Grade scale, value and line type do not match.")
 
         line.name = line_data["name"].strip()
-        line.description = line_data["description"]
+        line.description = sanitize_wysiwyg_html(line_data["description"])
         line.color = line_data.get("color", None)
         line.videos = line_data["videos"]
         line.type = line_data["type"]

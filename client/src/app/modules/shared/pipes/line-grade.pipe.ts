@@ -19,10 +19,19 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | null = null;
   private cachedResult: string | null = null;
   private lastLine: Line | undefined;
+  private lastMode: 'user' | 'author' | undefined;
 
-  transform(line?: Line): string {
-    if (line !== this.lastLine) {
+  /**
+   * Resolves the displayed grade name of a line.
+   *
+   * @param line Line to resolve the grade for.
+   * @param mode Optional override forcing the user or author grade. When
+   *   omitted, the instance-wide displayUserGrades toggle decides.
+   */
+  transform(line?: Line, mode?: 'user' | 'author'): string {
+    if (line !== this.lastLine || mode !== this.lastMode) {
       this.lastLine = line;
+      this.lastMode = mode;
       this.cachedResult = null;
 
       if (this.subscription) {
@@ -31,15 +40,16 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
 
       if (line) {
         const observable = this.store.select(selectInstanceSettingsState).pipe(
-          map((instanceSettings) =>
-            this.scalesService.gradeNameByValue(
+          map((instanceSettings) => {
+            const useUserGrade = mode
+              ? mode === 'user'
+              : instanceSettings.displayUserGrades;
+            return this.scalesService.gradeNameByValue(
               line?.type,
               line?.gradeScale,
-              instanceSettings.displayUserGrades
-                ? line?.userGradeValue
-                : line?.authorGradeValue,
-            ),
-          ),
+              useUserGrade ? line?.userGradeValue : line?.authorGradeValue,
+            );
+          }),
           switchMap((gradeNameObservable) => gradeNameObservable),
         );
 

@@ -1,4 +1,15 @@
 lc-instance-settings-form {
+  .lc-theme-variant-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   p-password {
     width: 100%;
 

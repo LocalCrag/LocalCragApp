@@ -11,7 +11,7 @@ from models.topo_image import TopoImage
 
 def test_create_secret_line_in_public_area(client, moderator_token):
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret Kingline",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 19,
@@ -53,19 +53,19 @@ def test_create_secret_line_in_public_area(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["secret"] is True
 
     # Test, that area, sector and crag are still public
 
-    rv = client.get("/api/areas/dritter-block-von-links")
+    rv = client.get("/api/areas/shark-attack")
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is False
 
-    rv = client.get("/api/sectors/schattental")
+    rv = client.get("/api/sectors/pampelmousse")
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is False
@@ -76,13 +76,12 @@ def test_create_secret_line_in_public_area(client, moderator_token):
     assert res["secret"] is False
 
 
-def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_token):
-    any_file = File.query.first()
+def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_token, any_file):
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -108,22 +107,22 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
 
     # Test, that sectors, areas and lines are now also secret
 
-    rv = client.get("/api/sectors/schattental", token=moderator_token)
+    rv = client.get("/api/sectors/pampelmousse", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/sectors/oben", token=moderator_token)
+    rv = client.get("/api/sectors/upper-brione", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
+    rv = client.get("/api/areas/shark-attack", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/lines/treppe", token=moderator_token)
+    rv = client.get("/api/lines/the-vessel", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
@@ -131,7 +130,7 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
     # Create public line, check that parents are now public but siblings still secret
 
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret Kingline",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 19,
@@ -173,17 +172,17 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["secret"] is False
 
-    rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
+    rv = client.get("/api/areas/shark-attack", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is False
 
-    rv = client.get("/api/sectors/schattental", token=moderator_token)
+    rv = client.get("/api/sectors/pampelmousse", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is False
@@ -198,31 +197,30 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
     res = rv.json
     assert res["secret"] is False  # Was public all the time!
 
-    rv = client.get("/api/sectors/oben", token=moderator_token)
+    rv = client.get("/api/sectors/upper-brione", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/areas/noch-ein-bereich", token=moderator_token)
+    rv = client.get("/api/areas/another-area", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/lines/treppe", token=moderator_token)
+    rv = client.get("/api/lines/the-vessel", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
 
 def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret_items(
-    client, moderator_token, member_token, user_token
+    client, moderator_token, member_token, user_token, any_file
 ):
-    any_file = File.query.first()
     crag_data = {
         "name": "brione",
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -249,7 +247,7 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
     rv = client.get("/api/crags/brione", json=crag_data)
     assert rv.status_code == 401
 
-    rv = client.get("/api/lines/treppe", json=crag_data)
+    rv = client.get("/api/lines/the-vessel", json=crag_data)
     assert rv.status_code == 401
 
     # Logged in but not member
@@ -262,14 +260,13 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
 
 
 # Test that creating a secret line in a secret area doesn't change the secret state of it's parents
-def test_secret_property_doesnt_change(client, moderator_token):
-    any_file = File.query.first()
+def test_secret_property_doesnt_change(client, moderator_token, any_file):
     # First make crag secret...
     crag_data = {
         "name": "Glees 2",
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
-        "rules": "Parken nur Samstag und Sonntag 2.",
+        "rules": "Parking only on Saturday and Sunday 2.",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -293,7 +290,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
 
     # Add a secret line
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret Kingline",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 19,
@@ -335,19 +332,19 @@ def test_secret_property_doesnt_change(client, moderator_token):
         "closureSchedules": [],
     }
 
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["secret"] is True
 
     # Test, that area, sector and crag are still secret
 
-    rv = client.get("/api/areas/dritter-block-von-links", token=moderator_token)
+    rv = client.get("/api/areas/shark-attack", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
 
-    rv = client.get("/api/sectors/schattental", token=moderator_token)
+    rv = client.get("/api/sectors/pampelmousse", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["secret"] is True
@@ -361,7 +358,7 @@ def test_secret_property_doesnt_change(client, moderator_token):
 def test_gallery_secret(client, moderator_token, member_token):
     # First create a secret line
     line_data = {
-        "name": "Es geheim",
+        "name": "Secret Kingline",
         "description": "Super Boulder",
         "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
         "authorGradeValue": 20,
@@ -402,7 +399,7 @@ def test_gallery_secret(client, moderator_token, member_token):
         "secret": True,
         "closureSchedules": [],
     }
-    rv = client.post("/api/areas/dritter-block-von-links/lines", token=moderator_token, json=line_data)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
     assert rv.status_code == 201
     res = rv.json
     assert res["secret"] is True
@@ -443,7 +440,7 @@ def test_gallery_secret(client, moderator_token, member_token):
 
 def test_move_line_into_secret_area_forces_line_secret(client, moderator_token):
     # pick a public line + a target secret area by setting an existing area to secret
-    line = Line.find_by_slug("treppe")
+    line = Line.find_by_slug("the-vessel")
     assert line.secret is False
 
     target_area = Area.query.filter(Area.id != line.area_id).first()
@@ -468,7 +465,7 @@ def test_move_line_into_secret_area_forces_line_secret(client, moderator_token):
 
 
 def test_move_area_into_secret_sector_forces_area_secret(client, moderator_token):
-    area = Area.find_by_slug("dritter-block-von-links")
+    area = Area.find_by_slug("shark-attack")
     assert area.secret is False
     target_sector = Sector.query.filter(Sector.id != area.sector_id).first()
     assert target_sector is not None
@@ -492,7 +489,7 @@ def test_move_area_into_secret_sector_forces_area_secret(client, moderator_token
 
 
 def test_move_sector_into_secret_crag_forces_sector_secret(client, moderator_token):
-    sector = Sector.find_by_slug("schattental")
+    sector = Sector.find_by_slug("pampelmousse")
     assert sector.secret is False
     target_crag = Crag.query.filter(Crag.id != sector.crag_id).first()
     assert target_crag is not None
@@ -517,7 +514,7 @@ def test_move_sector_into_secret_crag_forces_sector_secret(client, moderator_tok
 
 def test_move_topo_image_into_secret_area_forces_connected_lines_secret(client, moderator_token):
     """Moving a topo image also moves connected lines; secret rule must be applied to those moved lines."""
-    source_area = Area.find_by_slug("dritter-block-von-links")
+    source_area = Area.find_by_slug("shark-attack")
     assert source_area.secret is False
     topo_image = TopoImage.query.filter_by(area_id=source_area.id).first()
     assert topo_image is not None

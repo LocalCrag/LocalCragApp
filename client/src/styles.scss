@@ -1,4 +1,3 @@
-@use "app/styles/media-queries" as m;
 @use "app/styles/auth-views";
 @use "app/styles/forms";
 @use "app/styles/grades";
@@ -7,6 +6,7 @@
 @use "app/styles/primeng-fixes";
 @use "app/styles/primeng-mobile-optimisation";
 @use "app/styles/main-views";
+@use "app/styles/wysiwyg-editor";
 @use "app/styles/util";
 @use "app/styles/confirm-dialog";
 @import "primeicons/primeicons.css";
@@ -18,12 +18,31 @@ body {
 
 html {
   height: 100vh;
-  --ticked-bg-color: #eafeee;
+  --lc-card-padding-block: 1.5rem;
+  --lc-card-padding-inline: 1rem;
+  --lc-card-padding: var(--lc-card-padding-block) var(--lc-card-padding-inline);
+  --lc-subtle-bg: color-mix(
+    in srgb,
+    var(--p-text-color) 6%,
+    var(--p-content-background)
+  );
+  --ticked-bg-color: var(--p-green-50);
   --ticked-color: var(--p-green-600);
+
+  &.lc-dark {
+    --lc-subtle-bg: color-mix(
+      in srgb,
+      var(--p-text-color) 7%,
+      var(--p-content-background)
+    );
+    --ticked-bg-color: color-mix(in srgb, var(--p-green-500) 18%, transparent);
+    --ticked-color: var(--p-green-400);
+  }
 }
 
 body {
   height: 100vh;
+  background-color: var(--lc-subtle-bg);
   font-family:
     "Inter var",
     -apple-system,
@@ -38,31 +57,9 @@ body {
     "Segoe UI Symbol";
 }
 
-.main {
-  flex: auto;
-  align-items: stretch;
-  display: flex;
-
-  > *:not(router-outlet) {
-    width: 100%;
-  }
-}
-
 .content {
-  padding: 3rem 6rem;
   height: 100%;
   width: 100%;
-  max-width: 110rem;
-  margin-left: auto;
-  margin-right: auto;
-
-  @include m.on-mobile {
-    padding: 0 0;
-  }
-
-  .p-card-content {
-    padding-bottom: 0;
-  }
 }
 
 .p-confirmpopup {

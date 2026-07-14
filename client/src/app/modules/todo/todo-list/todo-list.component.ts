@@ -8,6 +8,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  loadFirstPaginatedPage,
+  PaginatedListView,
+} from '../../../utility/paginated-list';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
@@ -17,19 +23,18 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DataViewModule } from 'primeng/dataview';
 import { MenuModule } from 'primeng/menu';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
-import { SliderLabelsComponent } from '../../shared/components/slider-labels/slider-labels.component';
-import { SliderModule } from 'primeng/slider';
-import { TagModule } from 'primeng/tag';
 import { FormsModule } from '@angular/forms';
-import { CardModule } from 'primeng/card';
+import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
+import { TagModule } from 'primeng/tag';
 import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
@@ -45,9 +50,9 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
 import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-todo-list',
@@ -59,32 +64,27 @@ import { LanguageService } from '../../../services/core/language.service';
     MenuModule,
     RatingModule,
     RouterLink,
-    SliderLabelsComponent,
-    SliderModule,
+    GradeRangeSliderComponent,
     TagModule,
     TranslocoDirective,
     FormsModule,
     NgClass,
-    CardModule,
     TodoPriorityButtonComponent,
     TickButtonComponent,
-    AsyncPipe,
     Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
     Message,
     LineGradePipe,
-    TranslateSpecialGradesPipe,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loadingFirstPage: LoadingState = LoadingState.DEFAULT;
-  public loadingAdditionalPage: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.DEFAULT;
   public todos: Todo[];
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
@@ -115,6 +115,8 @@ export class TodoListComponent implements OnInit {
   public crags: Crag[] = [];
 
   private loadedGradeFilterRange: number[] = null;
+  private regionGradesLoaded = false;
+  private initialLoadStarted = false;
   private destroyRef = inject(DestroyRef);
   private todosService = inject(TodosService);
   private store = inject(Store);
@@ -124,13 +126,24 @@ export class TodoListComponent implements OnInit {
   private languageService = inject(LanguageService);
   private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
+  private pageTitleService = inject(PageTitleService);
 
   protected scalesService = inject(ScalesService);
 
   ngOnInit() {
+    this.setPageTitle();
+    this.languageService.renderedLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((rendered) => {
+        if (!rendered) return;
+        this.setPageTitle();
+      });
+
     // Only offer lineType/gradeScales for filtering that are indeed available
     this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
       this.buildAvailableScales(gradeDistribution);
+      this.regionGradesLoaded = true;
+      this.tryBootstrapList();
       // Rebuild labels on language change
       this.languageService.renderedLanguage$
         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -142,7 +155,6 @@ export class TodoListComponent implements OnInit {
           this.buildCragFilterOptions();
           this.cdr.markForCheck();
         });
-      this.selectScale(); // Calls loadFirstPage()
     });
 
     this.buildOrderOptions();
@@ -172,6 +184,12 @@ export class TodoListComponent implements OnInit {
       .subscribe(() => {
         this.loadFirstPage();
       });
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(marker('todos.todoList.todos')),
+    );
   }
 
   buildCragFilterOptions() {
@@ -324,18 +342,45 @@ export class TodoListComponent implements OnInit {
     });
   }
 
-  selectScale() {
-    if (this.scaleKey?.value) {
-      this.scalesService
-        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
-        .subscribe((scale) => {
-          this.maxGradeValue = Math.max(
-            ...scale.grades.map((grade) => grade.value),
-          );
-          this.gradeFilterRange = [-2, this.maxGradeValue];
-        });
+  private tryBootstrapList(): void {
+    if (this.initialLoadStarted || !this.regionGradesLoaded) {
+      return;
     }
-    this.loadFirstPage();
+    this.initialLoadStarted = true;
+    this.bootstrapList();
+  }
+
+  private bootstrapList(): void {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+      this.cdr.markForCheck();
+    });
+  }
+
+  selectScale() {
+    this.applyScaleBounds(() => {
+      this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      this.loadFirstPage();
+    });
+  }
+
+  private applyScaleBounds(onReady: () => void): void {
+    if (!this.scaleKey?.value) {
+      this.maxGradeValue = null;
+      this.gradeFilterRange = [-2, null];
+      onReady();
+      return;
+    }
+    this.scalesService
+      .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
+      .subscribe((scale) => {
+        this.maxGradeValue = Math.max(
+          ...scale.grades.map((grade) => grade.value),
+        );
+        this.gradeFilterRange = [-2, this.maxGradeValue];
+        onReady();
+      });
   }
 
   reloadOnSlideEnd() {
@@ -349,59 +394,53 @@ export class TodoListComponent implements OnInit {
   }
 
   loadFirstPage() {
-    this.currentPage = 0;
-    this.hasNextPage = true;
-    this.loadNextPage();
-    this.loadedGradeFilterRange = [...this.gradeFilterRange];
+    loadFirstPaginatedPage(
+      this,
+      () => this.loadNextPage(),
+      () => {
+        this.loadedGradeFilterRange = [...this.gradeFilterRange];
+      },
+    );
   }
 
   loadNextPage() {
-    if (
-      this.loadingFirstPage !== LoadingState.LOADING &&
-      this.loadingAdditionalPage !== LoadingState.LOADING &&
-      this.hasNextPage
-    ) {
-      this.currentPage += 1;
-      if (this.currentPage === 1) {
-        this.loadingFirstPage = LoadingState.LOADING;
-        this.todos = [];
-      } else {
-        this.loadingAdditionalPage = LoadingState.LOADING;
-      }
-      const filters = new URLSearchParams();
-      filters.set('page', this.currentPage.toString());
-      if (this.gradeFilterRange[1] !== null) {
-        filters.set('min_grade', this.gradeFilterRange[0].toString());
-        filters.set('max_grade', this.gradeFilterRange[1].toString());
-      }
-      if (this.scaleKey?.value) {
-        filters.set('line_type', this.scaleKey.value.lineType);
-        filters.set('grade_scale', this.scaleKey.value.gradeScale);
-      }
-      filters.set('order_by', this.orderKey.value);
-      filters.set('order_direction', this.orderDirectionKey.value);
-      filters.set('per_page', '10');
-      if (this.cragFilterKey?.value) {
-        filters.set('crag_id', this.cragFilterKey.value);
-      }
-      if (this.sectorFilterKey?.value) {
-        filters.set('sector_id', this.sectorFilterKey.value);
-      }
-      if (this.areaFilterKey?.value) {
-        filters.set('area_id', this.areaFilterKey.value);
-      }
-      if (this.priorityFilterKey.value !== null) {
-        filters.set('priority', this.priorityFilterKey.value);
-      }
-      const filterString = `?${filters.toString()}`;
-      this.todosService.getTodos(filterString).subscribe((todos) => {
-        this.todos.push(...todos.items);
-        this.hasNextPage = todos.hasNext;
-        this.loadingFirstPage = LoadingState.DEFAULT;
-        this.loadingAdditionalPage = LoadingState.DEFAULT;
-        this.cdr.detectChanges();
-      });
+    const page = beginPaginatedPageLoad(this, () => {
+      this.todos = [];
+    });
+    if (page === null) {
+      return;
     }
+    const params: ApiQueryParams = {
+      page: this.currentPage,
+      order_by: this.orderKey.value,
+      order_direction: this.orderDirectionKey.value,
+      per_page: 10,
+    };
+    if (this.gradeFilterRange[1] !== null) {
+      params.min_grade = this.gradeFilterRange[0];
+      params.max_grade = this.gradeFilterRange[1];
+    }
+    if (this.scaleKey?.value) {
+      params.line_type = this.scaleKey.value.lineType;
+      params.grade_scale = this.scaleKey.value.gradeScale;
+    }
+    if (this.cragFilterKey?.value) {
+      params.crag_id = this.cragFilterKey.value;
+    }
+    if (this.sectorFilterKey?.value) {
+      params.sector_id = this.sectorFilterKey.value;
+    }
+    if (this.areaFilterKey?.value) {
+      params.area_id = this.areaFilterKey.value;
+    }
+    if (this.priorityFilterKey.value !== null) {
+      params.priority = this.priorityFilterKey.value;
+    }
+    this.todosService.getTodos(params).subscribe((todos) => {
+      this.todos.push(...todos.items);
+      completePaginatedPageLoad(this, todos.hasNext);
+      this.cdr.detectChanges();
+    });
   }
 
   protected readonly LineType = LineType;

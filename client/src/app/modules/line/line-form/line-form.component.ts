@@ -49,7 +49,6 @@ import { TopoImage } from '../../../models/topo-image';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Scale } from '../../../models/scale';
-import { Card } from 'primeng/card';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
@@ -73,6 +72,7 @@ import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { ClosureState } from '../../../models/closure-state';
@@ -88,7 +88,6 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
   providers: [ConfirmationService],
   imports: [
     TranslocoDirective,
-    Card,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -173,6 +172,7 @@ export class LineFormComponent implements OnInit {
   private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
+  private pageTitleService = inject(PageTitleService);
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
@@ -262,6 +262,7 @@ export class LineFormComponent implements OnInit {
 
       if (lineSlug) {
         this.editMode = true;
+        this.setPageTitle();
         this.lineForm.disable();
         this.linesService
           .getLine(lineSlug)
@@ -297,6 +298,7 @@ export class LineFormComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((rendered) => {
             if (!rendered) return;
+            this.setPageTitle();
             if (this.editMode) {
               if (this.line) {
                 this.buildTypeOptionsForLine();
@@ -306,6 +308,7 @@ export class LineFormComponent implements OnInit {
             }
           });
       } else {
+        this.setPageTitle();
         this.store.select(selectInstanceName).subscribe((instanceName) => {
           this.title.setTitle(
             `${this.translocoService.translate(marker('lineFormBrowserTitle'))} - ${instanceName}`,
@@ -316,6 +319,17 @@ export class LineFormComponent implements OnInit {
         this.loadingState = LoadingState.DEFAULT;
       }
     });
+  }
+
+  /** t(line.lineForm.editLineTitle, line.lineForm.createLineTitle) */
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? 'line.lineForm.editLineTitle'
+          : 'line.lineForm.createLineTitle',
+      ),
+    );
   }
 
   /**

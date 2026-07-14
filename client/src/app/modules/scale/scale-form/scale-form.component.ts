@@ -5,7 +5,6 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { CardModule } from 'primeng/card';
 import {
   AbstractControl,
   FormArray,
@@ -46,6 +45,7 @@ import {
   DEFAULT_STACKED_CHART_BRACKET_COLORS,
   normalizeStackedChartBracket,
 } from '../../../utility/scale/stacked-chart-brackets';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-scale-form',
@@ -53,7 +53,6 @@ import {
   styleUrl: './scale-form.component.scss',
   imports: [
     TranslocoDirective,
-    CardModule,
     ReactiveFormsModule,
     TranslocoPipe,
     InputTextModule,
@@ -89,6 +88,7 @@ export class ScaleFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   protected router = inject(Router);
   private store = inject(Store);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit() {
     const lineType = this.route.snapshot.paramMap.get('lineType') as LineType;
@@ -120,6 +120,17 @@ export class ScaleFormComponent implements OnInit {
       this.setFormValue();
       this.loadingState = LoadingState.DEFAULT;
     }
+    this.setPageTitle();
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? marker('scale.scaleForm.editScale')
+          : marker('scale.scaleForm.createTitle'),
+      ),
+    );
   }
 
   buildForm() {
@@ -156,7 +167,9 @@ export class ScaleFormComponent implements OnInit {
 
     this.scaleForm = this.fb.group({
       lineType: this.editMode ? undefined : [null, Validators.required],
-      name: this.editMode ? undefined : ['', Validators.required],
+      name: this.editMode
+        ? undefined
+        : ['', [Validators.required, Validators.maxLength(32)]],
       grades: this.fb.array([], [notUniqueValidator]),
       stackedChartBrackets: this.fb.array(
         [],

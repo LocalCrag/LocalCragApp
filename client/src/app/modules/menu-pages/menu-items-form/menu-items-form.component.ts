@@ -32,7 +32,6 @@ import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemType } from '../../../enums/menu-item-type';
 
-import { CardModule } from 'primeng/card';
 import { NgClass } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { ButtonModule } from 'primeng/button';
@@ -41,6 +40,7 @@ import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { getInstanceEquivalentFromList } from '../../../utility/array-operations';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { PageTitleService } from '../../../services/core/page-title.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { Select } from 'primeng/select';
@@ -52,7 +52,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'lc-menu-items-form',
   imports: [
-    CardModule,
     PaginatorModule,
     TranslocoDirective,
     ReactiveFormsModule,
@@ -119,6 +118,7 @@ export class MenuItemsFormComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
+  private pageTitleService = inject(PageTitleService);
 
   /**
    * Builds the form on component initialization.
@@ -147,11 +147,13 @@ export class MenuItemsFormComponent implements OnInit {
             );
           });
           this.editMode = true;
+          this.setPageTitle();
           this.menuItemForm.disable();
           this.menuItem = menuItem;
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
         } else {
+          this.setPageTitle();
           this.store.select(selectInstanceName).subscribe((instanceName) => {
             this.title.setTitle(
               `${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`,
@@ -160,6 +162,16 @@ export class MenuItemsFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         }
       },
+    );
+  }
+
+  private setPageTitle(): void {
+    this.pageTitleService.setTitle(
+      this.translocoService.translate(
+        this.editMode
+          ? marker('menuItems.menuItemForm.editMenuItemTitle')
+          : marker('menuItems.menuItemForm.createMenuItemTitle'),
+      ),
     );
   }
 
@@ -194,7 +206,9 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm
         .get('menuPage')
         .setValue(this.menuPages.length > 0 ? this.menuPages[0] : null);
-      this.menuItemForm.get('icon').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('icon')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
       this.menuItemForm.get('url').setValidators([]);
@@ -206,11 +220,19 @@ export class MenuItemsFormComponent implements OnInit {
     } else if (this.menuItemForm.get('type').value === MenuItemType.URL) {
       this.menuItemForm
         .get('url')
-        .setValidators([Validators.required, httpUrlValidator()]);
+        .setValidators([
+          Validators.required,
+          httpUrlValidator(),
+          Validators.maxLength(120),
+        ]);
       this.menuItemForm.get('url').enable();
-      this.menuItemForm.get('title').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('title')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('title').enable();
-      this.menuItemForm.get('icon').setValidators([Validators.required]);
+      this.menuItemForm
+        .get('icon')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
       this.menuItemForm.get('icon').enable();
       this.menuItemForm.get('icon').setValue(this.icons[0]);
       this.menuItemForm.get('menuPage').setValidators([]);

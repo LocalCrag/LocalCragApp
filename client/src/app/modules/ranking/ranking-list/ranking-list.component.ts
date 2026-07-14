@@ -33,6 +33,7 @@ import { Sector } from '../../../models/sector';
 import { Store } from '@ngrx/store';
 import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
+import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -83,11 +84,15 @@ export class RankingListComponent implements OnInit {
   ngOnInit() {
     this.rankingTypes = [
       {
-        label: this.translocoService.translate(marker('top10Ranking')),
+        label: this.translocoService.translate(marker('ranking.topN'), {
+          count: 10,
+        }),
         value: 'top10',
       },
       {
-        label: this.translocoService.translate(marker('top50Ranking')),
+        label: this.translocoService.translate(marker('ranking.topN'), {
+          count: 50,
+        }),
         value: 'top50',
       },
       {
@@ -157,32 +162,30 @@ export class RankingListComponent implements OnInit {
       return;
     }
     this.loading = LoadingState.LOADING;
-    const query_params = new URLSearchParams({
+    const params: ApiQueryParams = {
       line_type: this.lineType.value.toString(),
-    });
+    };
     if (this.crag) {
-      query_params.set('crag_id', this.crag.id);
+      params.crag_id = this.crag.id;
     }
     if (this.sector) {
-      query_params.set('sector_id', this.sector.id);
+      params.sector_id = this.sector.id;
     }
     if (this.secretRankings) {
-      query_params.set('secret', '1');
+      params.secret = '1';
     }
-    this.rankingService
-      .getRanking(`?${query_params.toString()}`)
-      .subscribe((rankings) => {
-        this.rankings = rankings;
-        this.sortField = this.rankingType.value;
-        this.rankings.sort((a, b) =>
-          a[this.sortField] < b[this.sortField]
-            ? 1
-            : a[this.sortField] > b[this.sortField]
-              ? -1
-              : 0,
-        );
-        this.loading = LoadingState.DEFAULT;
-      });
+    this.rankingService.getRanking(params).subscribe((rankings) => {
+      this.rankings = rankings;
+      this.sortField = this.rankingType.value;
+      this.rankings.sort((a, b) =>
+        a[this.sortField] < b[this.sortField]
+          ? 1
+          : a[this.sortField] > b[this.sortField]
+            ? -1
+            : 0,
+      );
+      this.loading = LoadingState.DEFAULT;
+    });
   }
 
   showDialog() {

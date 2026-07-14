@@ -4,6 +4,7 @@ import {
   BlocWeatherReportStatus,
   BlocWeatherService,
 } from '../../../services/crud/blocweather.service';
+import { ThemeService } from '../../../services/core/theme.service';
 import {
   AbstractControl,
   FormBuilder,
@@ -17,7 +18,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { DatePicker } from 'primeng/datepicker';
 import { Textarea } from 'primeng/textarea';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { Message } from 'primeng/message';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,6 +51,7 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
     DatePicker,
     Textarea,
     TranslocoDirective,
+    TranslocoPipe,
     Message,
     FormDirective,
     ControlGroupDirective,
@@ -68,76 +70,67 @@ export class ReportConditionsDialogComponent {
   public form: FormGroup;
   public maxDate = new Date(Date.now() + 60_000);
 
-  public dryDt = {
-    background: '{green.50}',
-    borderColor: '{green.100}',
-    color: '{green.700}',
-    hoverBackground: '{green.100}',
-    hoverBorderColor: '{green.200}',
-    hoverColor: '{green.800}',
-    checkedBackground: '{green.500}',
-    checkedBorderColor: '{green.500}',
-    checkedColor: '{surface.0}',
-    checkedHoverBackground: '{green.600}',
-    checkedHoverBorderColor: '{green.600}',
-    checkedHoverColor: '{surface.0}',
-    contentBackground: '{green.50}',
-    contentCheckedBackground: '{green.500}',
-  };
-  public someWetDt = {
-    background: '{yellow.50}',
-    borderColor: '{yellow.100}',
-    color: '{yellow.700}',
-    hoverBackground: '{yellow.100}',
-    hoverBorderColor: '{yellow.200}',
-    hoverColor: '{yellow.800}',
-    checkedBackground: '{yellow.500}',
-    checkedBorderColor: '{yellow.500}',
-    checkedColor: '{surface.0}',
-    checkedHoverBackground: '{yellow.600}',
-    checkedHoverBorderColor: '{yellow.600}',
-    checkedHoverColor: '{surface.0}',
-    contentBackground: '{yellow.50}',
-    contentCheckedBackground: '{yellow.500}',
-  };
-  public mostlyWetDt = {
-    background: '{orange.50}',
-    borderColor: '{orange.100}',
-    color: '{orange.700}',
-    hoverBackground: '{orange.100}',
-    hoverBorderColor: '{orange.200}',
-    hoverColor: '{orange.800}',
-    checkedBackground: '{orange.500}',
-    checkedBorderColor: '{orange.500}',
-    checkedColor: '{surface.0}',
-    checkedHoverBackground: '{orange.600}',
-    checkedHoverBorderColor: '{orange.600}',
-    checkedHoverColor: '{surface.0}',
-    contentBackground: '{orange.50}',
-    contentCheckedBackground: '{orange.500}',
-  };
-  public wetDt = {
-    background: '{red.50}',
-    borderColor: '{red.100}',
-    color: '{red.700}',
-    hoverBackground: '{red.100}',
-    hoverBorderColor: '{red.200}',
-    hoverColor: '{red.800}',
-    checkedBackground: '{red.500}',
-    checkedBorderColor: '{red.500}',
-    checkedColor: '{surface.0}',
-    checkedHoverBackground: '{red.600}',
-    checkedHoverBorderColor: '{red.600}',
-    checkedHoverColor: '{surface.0}',
-    contentBackground: '{red.50}',
-    contentCheckedBackground: '{red.500}',
-  };
+  public get dryDt() {
+    return this.buildToggleDt('green');
+  }
+  public get someWetDt() {
+    return this.buildToggleDt('yellow');
+  }
+  public get mostlyWetDt() {
+    return this.buildToggleDt('orange');
+  }
+  public get wetDt() {
+    return this.buildToggleDt('red');
+  }
 
   private config: BlocWeatherConfig;
   private blocWeatherService = inject(BlocWeatherService);
   private notifications = inject(AppNotificationsService);
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
+  private theme = inject(ThemeService);
+
+  /**
+   * Toggle-button design tokens per status color. In dark mode the unchecked
+   * state uses deep palette steps so the buttons don't glow against the dark
+   * dialog; the checked (selected) state stays vivid in both themes.
+   */
+  private buildToggleDt(hue: string) {
+    if (this.theme.isDarkMode()) {
+      return {
+        background: `{${hue}.950}`,
+        borderColor: `{${hue}.800}`,
+        color: `{${hue}.300}`,
+        hoverBackground: `{${hue}.900}`,
+        hoverBorderColor: `{${hue}.700}`,
+        hoverColor: `{${hue}.200}`,
+        checkedBackground: `{${hue}.500}`,
+        checkedBorderColor: `{${hue}.500}`,
+        checkedColor: '{surface.0}',
+        checkedHoverBackground: `{${hue}.400}`,
+        checkedHoverBorderColor: `{${hue}.400}`,
+        checkedHoverColor: '{surface.0}',
+        contentBackground: `{${hue}.950}`,
+        contentCheckedBackground: `{${hue}.500}`,
+      };
+    }
+    return {
+      background: `{${hue}.50}`,
+      borderColor: `{${hue}.100}`,
+      color: `{${hue}.700}`,
+      hoverBackground: `{${hue}.100}`,
+      hoverBorderColor: `{${hue}.200}`,
+      hoverColor: `{${hue}.800}`,
+      checkedBackground: `{${hue}.500}`,
+      checkedBorderColor: `{${hue}.500}`,
+      checkedColor: '{surface.0}',
+      checkedHoverBackground: `{${hue}.600}`,
+      checkedHoverBorderColor: `{${hue}.600}`,
+      checkedHoverColor: '{surface.0}',
+      contentBackground: `{${hue}.50}`,
+      contentCheckedBackground: `{${hue}.500}`,
+    };
+  }
 
   public open(config: BlocWeatherConfig) {
     this.config = config;

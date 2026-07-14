@@ -21,19 +21,19 @@ export const selectGymMode = createSelector(
   (instanceSettingsState) => instanceSettingsState.gymMode,
 );
 
-export const selectMainBgImage = createSelector(
+export const selectBgImage = createSelector(
   selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.mainBgImage,
-);
-
-export const selectAuthBgImage = createSelector(
-  selectInstanceSettingsState,
-  (instanceSettingsState) => instanceSettingsState.authBgImage,
+  (instanceSettingsState) => instanceSettingsState.bgImage,
 );
 
 export const selectLogoImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.logoImage,
+);
+
+export const selectDarkLogoImage = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkLogoImage,
 );
 
 export const selectFaviconImage = createSelector(
@@ -49,6 +49,16 @@ export const selectBarChartColor = createSelector(
 export const selectBarChartAccentColor = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.barChartAccentColor,
+);
+
+export const selectDarkBarChartColor = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkBarChartColor,
+);
+
+export const selectDarkBarChartAccentColor = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.darkBarChartAccentColor,
 );
 
 export const selectRankingPastWeeks = createSelector(

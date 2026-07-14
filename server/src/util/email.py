@@ -10,6 +10,7 @@ from flask import current_app, render_template
 from i18n.change_email_address_mail import change_email_address_mail
 from i18n.comment_created_mail import comment_created_mail
 from i18n.create_user_mail import create_user_mail
+from i18n.mail_common import merge_mail_translations
 from i18n.notification_digest_mail import notification_digest_mail
 from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
@@ -35,8 +36,27 @@ def build_i18n_keyword_arg_dict(locale, i18n_source_dict):
     :return: Dictionary that has keys in the format of 'i18n_<key>' and translated string as values.
     """
     i18n_keyword_arg_dict = {}
-    for key, value in i18n_source_dict[locale].items():
+    for key, value in merge_mail_translations(locale, i18n_source_dict[locale]).items():
         i18n_keyword_arg_dict["i18n_{}".format(key)] = value
+    return i18n_keyword_arg_dict
+
+
+def _instance_branding():
+    settings = InstanceSettings.return_it()
+    return {
+        "instance_name": settings.instance_name,
+        "copyright_owner": settings.copyright_owner,
+        "mail_greeting": settings.mail_greeting,
+    }
+
+
+def _apply_instance_branding(i18n_keyword_arg_dict):
+    branding = _instance_branding()
+    for key, value in list(i18n_keyword_arg_dict.items()):
+        if isinstance(value, str) and ("{instance_name}" in value or "{copyright_owner}" in value):
+            i18n_keyword_arg_dict[key] = value.format(**branding)
+    i18n_keyword_arg_dict["i18n_thanks"] = branding["mail_greeting"]
+    i18n_keyword_arg_dict.update(branding)
     return i18n_keyword_arg_dict
 
 
@@ -47,12 +67,12 @@ def send_generic_mail(msg):
     """
 
     if current_app.config["PRINT_MAILS_TO_CONSOLE"]:
-        print_decoded_email_parts(msg)
+        log_decoded_email_parts(msg)
         return
 
     smtp_type = current_app.config.get("SMTP_TYPE", "").lower()
     if smtp_type not in ["smtps", "starttls", "plain", "disabled"]:
-        print(f"WARNING: Invalid SMTP_TYPE set ({smtp_type!r}), defaulting to 'disabled'")
+        current_app.logger.warning("Invalid SMTP_TYPE set (%r), defaulting to 'disabled'", smtp_type)
         smtp_type = "disabled"
 
     if smtp_type == "starttls":  # pragma: no cover
@@ -83,6 +103,7 @@ def prepare_message(user: User, i18n_dict_source):
     :return: Tuple of message object and translation dict.
     """
     i18n_keyword_arg_dict = build_i18n_keyword_arg_dict(user.account_settings.language, i18n_dict_source)
+    _apply_instance_branding(i18n_keyword_arg_dict)
     msg = MIMEMultipart("alternative")
     msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"]
     msg["From"] = current_app.config["SYSTEM_EMAIL"]
@@ -215,9 +236,6 @@ def send_notification_digest_email(receiver: User, notifications: list[Notificat
 
     msg, i18n_keyword_arg_dict = prepare_message(receiver, notification_digest_mail)
     msg["To"] = receiver.email
-    instance_name = InstanceSettings.return_it().instance_name
-    msg["Subject"] = i18n_keyword_arg_dict["i18n_subject"].format(instance_name=instance_name)
-    i18n_keyword_arg_dict["i18n_title"] = i18n_keyword_arg_dict["i18n_title"].format(instance_name=instance_name)
     if receiver.account_settings.notification_digest_frequency == NotificationDigestFrequencyEnum.WEEKLY:
         i18n_keyword_arg_dict["i18n_intro"] = i18n_keyword_arg_dict["i18n_intro_weekly"]
     digest_i18n = notification_digest_mail[receiver.account_settings.language]
@@ -226,7 +244,6 @@ def send_notification_digest_email(receiver: User, notifications: list[Notificat
     template = render_template(
         "notification-digest-mail.html",
         receiver_firstname=receiver.firstname,
-        instance_name=instance_name,
         digest_items=digest_items,
         frontend_host=current_app.config["FRONTEND_HOST"],
         notifications_link=current_app.config["FRONTEND_HOST"],
@@ -245,13 +262,13 @@ def _html_to_plain_text(html: str) -> str:
     return h.handle(html).strip()
 
 
-def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
+def _log_decoded_email_parts_once(email_message: Message, *, strip_html: bool) -> None:
     if email_message.is_multipart():
         for part in email_message.walk():
             content_disposition = part.get("Content-Disposition")
             if content_disposition is not None:
                 # This is an attachment (may be multipart, e.g. forwarded message)
-                print(f"Attachment: {part.get_filename()}")
+                current_app.logger.info("Attachment: %s", part.get_filename())
                 continue
             content_type = part.get_content_type()
             if part.is_multipart():
@@ -265,28 +282,28 @@ def _print_decoded_email_parts_once(email_message: Message, *, strip_html: bool)
                 body = raw.decode(charset)
                 if strip_html and content_type == "text/html":
                     body = _html_to_plain_text(body)
-                print(f"Content Type: {content_type}\nBody:\n{body}\n")
+                current_app.logger.info("Content Type: %s\nBody:\n%s\n", content_type, body)
             except Exception as e:
-                print(f"Could not decode part: {e}")
+                current_app.logger.warning("Could not decode part: %s", e)
     else:
         charset = email_message.get_content_charset() or "utf-8"
         raw = email_message.get_payload(decode=True)
         if raw is None:
-            print("Body:\n(empty)\n")
+            current_app.logger.info("Body:\n(empty)\n")
             return
         body = raw.decode(charset)
         ct = email_message.get_content_type()
         if strip_html and ct == "text/html":
             body = _html_to_plain_text(body)
-        print(f"Body:\n{body}\n")
+        current_app.logger.info("Body:\n%s\n", body)
 
 
-def print_decoded_email_parts(email_message: Message):
+def log_decoded_email_parts(email_message: Message):
     """
-    Print all parts of an email message twice: first as decoded HTML (with markup), then the same
+    Log all parts of an email message twice: first as decoded HTML (with markup), then the same
     bodies run through html2text so values like temporary passwords are easy to spot in the console.
     """
-    print("--- Mail (with markup) ---")
-    _print_decoded_email_parts_once(email_message, strip_html=False)
-    print("--- Mail (plain text) ---")
-    _print_decoded_email_parts_once(email_message, strip_html=True)
+    current_app.logger.info("--- Mail (with markup) ---")
+    _log_decoded_email_parts_once(email_message, strip_html=False)
+    current_app.logger.info("--- Mail (plain text) ---")
+    _log_decoded_email_parts_once(email_message, strip_html=True)

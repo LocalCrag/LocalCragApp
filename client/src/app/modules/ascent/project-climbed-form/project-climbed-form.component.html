@@ -5,19 +5,19 @@
       text="{{ t('projectClimbedInfoMessage') }}"
     ></p-message>
 
-    <div class="flex flex-column gap-2" lcControlGroup>
+    <div class="flex flex-col gap-2" lcControlGroup>
       <textarea
         rows="5"
         cols="30"
         pTextarea
         lcFormControl
         formControlName="message"
-        class="w-full mt-3"
+        class="w-full mt-6"
         data-cy="message"
         [placeholder]="t('message')"
       ></textarea>
       <small class="lc-error" *lcIfError="'required'">{{
-        t("required")
+        "validation.required" | transloco
       }}</small>
     </div>
   </form>

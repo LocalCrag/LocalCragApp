@@ -1,53 +1,17 @@
 <div class="content">
-  <p-card>
-    <ng-template #header>
-      <div class="card-header p-card-title">
-        {{ line?.name }}
-        <span class="grade-font">{{ line | lineGrade }}</span>
-      </div>
-    </ng-template>
-
-    <div class="flex gap-1">
-      @if (line?.closed) {
-        <lc-closed-spot-tag
-          spotType="line"
-          [slug]="line.slug"
-          [reasons]="line.closedReasons"
-          [closureIsPermanent]="line.closureIsPermanent"
-        ></lc-closed-spot-tag>
-      }
-      @if (line?.secret) {
-        <lc-secret-spot-tag></lc-secret-spot-tag>
-      }
-    </div>
-
-    <p-breadcrumb
-      class="max-w-full"
-      [model]="breadcrumbs"
-      [home]="breadcrumbHome"
-    ></p-breadcrumb>
-
-    @if (line) {
-      <p-tabs
-        [value]="tabsDirective.activeTabIndex()"
-        scrollable
-        lcSetActiveTab
-        #tabsDirective="lcSetActiveTab"
-        [items]="items"
-      >
-        <p-tablist>
-          @for (tab of items; track $index) {
-            @if (tab.visible) {
-              <p-tab [value]="$index" [routerLink]="tab.routerLink">
-                <i [class]="tab.icon" style="font-size: 1rem"></i>
-                {{ tab.label }}
-              </p-tab>
-            }
-          }
-        </p-tablist>
-      </p-tabs>
+  <div class="flex gap-1">
+    @if (line?.closed) {
+      <lc-closed-spot-tag
+        spotType="line"
+        [slug]="line.slug"
+        [reasons]="line.closedReasons"
+        [closureIsPermanent]="line.closureIsPermanent"
+      ></lc-closed-spot-tag>
     }
+    @if (line?.secret) {
+      <lc-secret-spot-tag></lc-secret-spot-tag>
+    }
+  </div>
 
-    <router-outlet name="lineContent"></router-outlet>
-  </p-card>
+  <router-outlet name="lineContent"></router-outlet>
 </div>

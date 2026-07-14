@@ -1,6 +1,10 @@
+import logging
+
 from app import app
 from models.line import Line
 from util.voting import update_grades_and_rating
+
+logger = logging.getLogger(__name__)
 
 
 def calculate_user_grades():
@@ -9,11 +13,12 @@ def calculate_user_grades():
     """
     with app.app_context():
         lines = list(Line.query.all())
-        print(f"Calculating user grades for {len(lines)} lines")
-        for i, line in enumerate(lines):
-            print(f"Progress: {i}/{len(lines)}", end="\r")
+        logger.info("Calculating user grades for %s lines", len(lines))
+        for i, line in enumerate(lines, start=1):
             update_grades_and_rating(line.id)
-        print("\nDone")
+            if i == len(lines) or i % 100 == 0:
+                logger.info("Progress: %s/%s lines processed", i, len(lines))
+        logger.info("Finished calculating user grades")
 
 
 if __name__ == "__main__":

@@ -6,13 +6,13 @@
     [sortOrder]="sortOrder"
   >
     <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 mb-1 block"
+      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
         >{{ t("noCragsFoundEmptyMessage") }}
       </p-message>
     </ng-template>
     <ng-template #header>
-      <div class="flex flex-column sm:flex-row justify-content-between gap-2">
-        <div class="flex flex-wrap align-items-center gap-2">
+      <div class="flex flex-col sm:flex-row justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           {{ t("orderByLabel") }}
           <p-select
             [options]="orderOptions"
@@ -49,7 +49,7 @@
             </ng-template>
           </p-select>
         </div>
-        <div class="flex justify-content-start sm:justify-content-end gap-3">
+        <div class="lc-button-group justify-start sm:justify-end">
           <p-button
             label="{{ t('newCragButtonLabel') }}"
             icon="pi pi-plus"
@@ -74,19 +74,19 @@
         <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
       }
       @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-nogutter">
+        <div class="grid grid-cols-12">
           @for (crag of crags; track crag; let first = $first) {
             <a
-              class="col-12 clickable-data-item"
+              class="col-span-12 clickable-data-item"
               routerLink="/topo/{{ crag.slug }}/sectors"
               data-cy="crag-list-item"
             >
               <div
-                class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
-                [ngClass]="{ 'border-top-1 surface-border': !first }"
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
+                [ngClass]="{ 'border-t border-surface': !first }"
               >
                 <img
-                  class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                  class="w-9/12 sm:w-64 xl:w-40 shadow block xl:block mx-auto rounded-border"
                   [src]="
                     crag.portraitImage
                       ? crag.portraitImage.thumbnailM
@@ -95,12 +95,12 @@
                   [alt]="crag.name"
                 />
                 <div
-                  class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
                 >
                   <div
-                    class="flex flex-column align-items-center sm:align-items-start gap-3 w-full"
+                    class="flex flex-col items-center sm:items-start gap-4 w-full"
                   >
-                    <div class="flex justify-content-between w-full">
+                    <div class="flex justify-between w-full">
                       <span class="text-2xl font-bold black-font">
                         {{ crag.name }}
                       </span>

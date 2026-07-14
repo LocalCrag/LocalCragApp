@@ -1,8 +1,8 @@
 @if (blocWeatherConfig) {
   <ng-container *transloco="let t; read: 'blocWeather'">
-    <p-message icon="pi pi-info-circle" class="mt-3 full-width-message">
-      <div class="flex justify-content-between">
-        <div class="flex align-items-center">
+    <p-message icon="pi pi-info-circle" class="mt-6 full-width-message">
+      <div class="flex justify-between">
+        <div class="flex items-center">
           <div>
             {{ t("currentConditions") }}:
             @if (!disableDetailsLink) {

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AbstractModel } from '../../../../models/abstract-model';
 import { LoadingState } from '../../../../enums/loading-state';
+import { ItemOrder } from '../../../../interfaces/item-order.interface';
 import { Observable } from 'rxjs';
 import { MenuItemType } from '../../../../enums/menu-item-type';
 import { Store } from '@ngrx/store';
@@ -41,7 +42,7 @@ export class OrderItemsComponent {
   public menuItemTypes = MenuItemType;
   public isMobile$: Observable<boolean>;
 
-  readonly callback: (payload: any, slug?: string) => Observable<any>;
+  readonly callback: (payload: ItemOrder, slug?: string) => Observable<any>;
   readonly idAccessor = (item: AbstractModel) => item.id; // Sometimes we have to get the id from a deeper property
   readonly slugParameter: string;
 
@@ -83,7 +84,7 @@ export class OrderItemsComponent {
    */
   saveItems() {
     this.loadingState = LoadingState.LOADING;
-    const newOrder = {};
+    const newOrder: ItemOrder = {};
     this.items.forEach((item, index) => {
       newOrder[this.idAccessor(item)] = index;
     });

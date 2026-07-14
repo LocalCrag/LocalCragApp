@@ -1,12 +1,12 @@
 import { AbstractModel } from './abstract-model';
+import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 
 /**
  * Model of a menu page.
  */
-export class MenuPage extends AbstractModel {
+export class MenuPage extends HasSlug(AbstractModel) {
   title: string;
   text: string;
-  slug: string;
 
   /**
    * Parses a menu page.
@@ -17,9 +17,9 @@ export class MenuPage extends AbstractModel {
   public static deserialize(payload: any): MenuPage {
     const menuPage = new MenuPage();
     AbstractModel.deserializeAbstractAttributes(menuPage, payload);
+    deserializeSlugAttributes(menuPage, payload);
     menuPage.title = payload.title;
     menuPage.text = payload.text;
-    menuPage.slug = payload.slug;
     return menuPage;
   }
 

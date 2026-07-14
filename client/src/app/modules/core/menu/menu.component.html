@@ -1,23 +1,24 @@
 <ng-container *transloco="let t; read: 'menu'">
   <lc-header-menu [model]="items" data-cy="main-menu">
     <ng-template #start>
-      <a class="main-link" routerLink="/">
-        @if (logoImage$ | async) {
-          <img
-            alt="{{ t('logoImageAlt') }}"
-            [src]="(logoImage$ | async).thumbnailM"
-            height="40"
-            class="mr-2 flex cursor-pointer"
-          />
-        }
-        @if (
-          (logoImage$ | async) === null || (logoImage$ | async) === undefined
-        ) {
-          <strong class="cursor-pointer white-space-nowrap">{{
-            instanceName$ | async
-          }}</strong>
-        }
-      </a>
+      @if (showNavbarElement(navbarCollapseLevels.logo)) {
+        <a class="main-link shrink-0" routerLink="/">
+          @if (logoImage$ | async) {
+            <img
+              alt="{{ t('logoImageAlt') }}"
+              [src]="(logoImage$ | async).thumbnailM"
+              class="mr-2 h-10 w-auto shrink-0 max-w-none object-contain cursor-pointer"
+            />
+          }
+          @if (
+            (logoImage$ | async) === null || (logoImage$ | async) === undefined
+          ) {
+            <strong class="cursor-pointer whitespace-nowrap">{{
+              instanceName$ | async
+            }}</strong>
+          }
+        </a>
+      }
     </ng-template>
     <ng-template #end>
       <p-menu
@@ -27,21 +28,40 @@
         data-cy="auth-menu"
         styleClass="wide-menu"
       ></p-menu>
-      <div class="flex align-items-center justify-content-center gap-2">
-        <div class="search-fake-input" (click)="openSearch()" tabindex="0">
-          <i class="pi pi-search mr-2"></i>
-          <span class="search-label">{{ t("searchPlaceholder") }}</span>
+      <div class="flex items-center justify-center gap-2">
+        <div class="navbar-field-group">
+          @if (showNavbarElement(navbarCollapseLevels.search)) {
+            <div class="search-fake-input" (click)="openSearch()" tabindex="0">
+              <i class="pi pi-search mr-2"></i>
+              <span class="search-label">{{ t("searchPlaceholder") }}</span>
+            </div>
+          }
+          @if (showNavbarElement(navbarCollapseLevels.languageSelect)) {
+            <lc-language-select
+              *isLoggedOut="true"
+              [noLabel]="true"
+              [(ngModel)]="language"
+              (ngModelChange)="updateLanguage($event)"
+              lcFormControl
+            ></lc-language-select>
+          }
+          @if (showNavbarElement(navbarCollapseLevels.themeToggle)) {
+            <p-button
+              *isLoggedOut="true"
+              [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+              severity="secondary"
+              variant="text"
+              styleClass="navbar-icon-button navbar-color-scheme-toggle"
+              (onClick)="toggleGuestColorScheme()"
+              data-cy="navbar-color-scheme-toggle"
+            ></p-button>
+          }
         </div>
-        <lc-language-select
-          *isLoggedOut="true"
-          [noLabel]="true"
-          [(ngModel)]="language"
-          (ngModelChange)="updateLanguage($event)"
-          lcFormControl
-        ></lc-language-select>
 
         <ng-container *isLoggedIn="true">
-          <lc-notification-bell></lc-notification-bell>
+          @if (showNavbarElement(navbarCollapseLevels.notifications)) {
+            <lc-notification-bell></lc-notification-bell>
+          }
           @if (currentUser$ | async; as authUser) {
             <lc-user-avatar
               [user]="authUser"
@@ -56,8 +76,9 @@
           icon="pi pi-user"
           routerLink="login"
           severity="secondary"
+          variant="text"
+          styleClass="navbar-icon-button"
           *isLoggedOut="true"
-          [text]="true"
           data-cy="navbar-login"
         ></p-button>
       </div>

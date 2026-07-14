@@ -13,6 +13,10 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
+import { take } from 'rxjs/operators';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'lc-account-settings-form',
@@ -50,6 +54,7 @@ export class AccountSettingsFormComponent implements OnInit {
       moderatorTaskNotificationsEnabled: [null],
       notificationDigestFrequency: [null],
       language: [null],
+      colorScheme: [null],
     });
   }
 
@@ -76,6 +81,7 @@ export class AccountSettingsFormComponent implements OnInit {
       notificationDigestFrequency:
         this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
+      colorScheme: this.accountSettings.colorScheme,
     });
   }
 
@@ -96,8 +102,24 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.notificationDigestFrequency =
         this.accountSettingsForm.get('notificationDigestFrequency').value;
       accountSettings.language = this.accountSettingsForm.get('language').value;
+      accountSettings.colorScheme =
+        this.accountSettingsForm.get('colorScheme').value;
       this.accountService.updateAccountSettings(accountSettings).subscribe({
         next: () => {
+          this.store
+            .select(selectCurrentUser)
+            .pipe(take(1))
+            .subscribe((user) => {
+              if (user) {
+                const updatedUser = Object.assign(new User(), user, {
+                  accountLanguage: accountSettings.language,
+                  accountColorScheme: accountSettings.colorScheme,
+                });
+                this.store.dispatch(
+                  updateAccountSettings({ user: updatedUser }),
+                );
+              }
+            });
           this.store.dispatch(toastNotification('ACCOUNT_SETTINGS_UPDATED'));
           this.loadingState = LoadingState.DEFAULT;
         },

@@ -1,236 +1,250 @@
 <ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
-  <div class="content">
-    <p-card header="{{ t('editInstanceSettings') }}">
-      <form [formGroup]="instanceSettingsForm" lcForm>
-        <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("commonSettings") }}</b></p-divider
-        >
+  <div class="content p-6">
+    <form [formGroup]="instanceSettingsForm" lcForm>
+      <p-divider align="center" type="solid" class="mb-2"
+        ><b>{{ t("commonSettings") }}</b></p-divider
+      >
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="instance-name">{{
-            t("instanceNameLabel")
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="instance-name"
-            formControlName="instanceName"
-            placeholder="{{ t('instanceNamePlaceholder') }}"
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="instance-name">{{
+          t("instanceNameLabel")
+        }}</label>
+        <input
+          type="text"
+          pInputText
+          id="instance-name"
+          formControlName="instanceName"
+          placeholder="{{ t('instanceNamePlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="copyright-owner">{{
+          t("copyrightOwnerLabel")
+        }}</label>
+        <input
+          id="copyright-owner"
+          type="text"
+          pInputText
+          formControlName="copyrightOwner"
+          placeholder="{{ t('copyrightOwnerPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="mail-greeting">{{
+          t("mailGreetingLabel")
+        }}</label>
+        <input
+          id="mail-greeting"
+          type="text"
+          pInputText
+          formControlName="mailGreeting"
+          placeholder="{{ t('mailGreetingPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="gym-mode">
+          {{ t("gymModeLabel") }}
+        </label>
+        <div class="flex items-center justify-center sm:justify-start">
+          {{ t("gymModeLabelFalse") }}
+          <p-toggleswitch
+            id="gym-mode"
+            class="mx-2 blue-green-switch"
+            formControlName="gymMode"
             lcFormControl
           />
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          {{ t("gymModeLabelTrue") }}
         </div>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="copyright-owner">{{
-            t("copyrightOwnerLabel")
-          }}</label>
-          <input
-            id="copyright-owner"
-            type="text"
-            pInputText
-            formControlName="copyrightOwner"
-            placeholder="{{ t('copyrightOwnerPlaceholder') }}"
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="display-user-grades">
+          {{ t("displayUserGradesLabel") }}
+        </label>
+        <div class="flex items-center justify-center sm:justify-start">
+          {{ t("displayUserGradesFalse") }}
+          <p-toggleswitch
+            id="display-user-grades"
+            class="mx-2 blue-green-switch"
+            formControlName="displayUserGrades"
             lcFormControl
           />
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          {{ t("displayUserGradesTrue") }}
         </div>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="gym-mode">
-            {{ t("gymModeLabel") }}
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="display-user-ratings">
+          {{ t("displayUserRatingsLabel") }}
+        </label>
+        <div class="flex items-center justify-center sm:justify-start">
+          {{ t("displayUserRatingsFalse") }}
+          <p-toggleswitch
+            id="display-user-ratings"
+            class="mx-2 blue-green-switch"
+            formControlName="displayUserRatings"
+            lcFormControl
+          />
+          {{ t("displayUserRatingsTrue") }}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="skippedHierarchicalLayers">
+            {{ t("skippedHierarchicalLayersLabel") }}
           </label>
-          <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
-          >
-            {{ t("gymModeLabelFalse") }}
-            <p-toggleswitch
-              id="gym-mode"
-              class="mx-2 blue-green-switch"
-              formControlName="gymMode"
-              lcFormControl
-            />
-            {{ t("gymModeLabelTrue") }}
-          </div>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('skippedHierarchicalLayersDescription')"
+            tooltipPosition="right"
+          ></span>
         </div>
+        <p-select
+          id="skippedHierarchicalLayers"
+          [options]="[
+            { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
+            { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
+            { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
+          ]"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="skippedHierarchicalLayers"
+          lcFormControl
+        ></p-select>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="display-user-grades">
-            {{ t("displayUserGradesLabel") }}
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="faDefaultFormat">
+            {{ t("faDefaultFormat") }}
           </label>
-          <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
-          >
-            {{ t("displayUserGradesFalse") }}
-            <p-toggleswitch
-              id="display-user-grades"
-              class="mx-2 blue-green-switch"
-              formControlName="displayUserGrades"
-              lcFormControl
-            />
-            {{ t("displayUserGradesTrue") }}
-          </div>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('faDefaultFormatTooltip')"
+            tooltipPosition="right"
+          ></span>
         </div>
+        <p-select
+          id="faDefaultFormat"
+          [options]="[
+            { value: faDefaultFormats.YEAR, label: t('YEAR') },
+            { value: faDefaultFormats.DATE, label: t('DATE') },
+          ]"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="faDefaultFormat"
+          lcFormControl
+        ></p-select>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="display-user-ratings">
-            {{ t("displayUserRatingsLabel") }}
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="defaultStartingPosition">
+            {{ t("defaultStartingPosition") }}
           </label>
-          <div
-            class="flex align-items-center justify-content-center sm:justify-content-start"
-          >
-            {{ t("displayUserRatingsFalse") }}
-            <p-toggleswitch
-              id="display-user-ratings"
-              class="mx-2 blue-green-switch"
-              formControlName="displayUserRatings"
-              lcFormControl
-            />
-            {{ t("displayUserRatingsTrue") }}
-          </div>
         </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="skippedHierarchicalLayers">
-              {{ t("skippedHierarchicalLayersLabel") }}
-            </label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('skippedHierarchicalLayersDescription')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <p-select
-            id="skippedHierarchicalLayers"
-            [options]="[
-              { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
-              { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
-              { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
-            ]"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="skippedHierarchicalLayers"
-            lcFormControl
-          ></p-select>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="faDefaultFormat">
-              {{ t("faDefaultFormat") }}
-            </label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('faDefaultFormatTooltip')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <p-select
-            id="faDefaultFormat"
-            [options]="[
-              { value: faDefaultFormats.YEAR, label: t('YEAR') },
-              { value: faDefaultFormats.DATE, label: t('DATE') },
-            ]"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="faDefaultFormat"
-            lcFormControl
-          ></p-select>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="defaultStartingPosition">
-              {{ t("defaultStartingPosition") }}
-            </label>
-          </div>
-          <p-select
-            id="defaultStartingPosition"
-            [options]="startingPositionsOptions"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="defaultStartingPosition"
-            lcFormControl
-          >
-          </p-select>
-          <small class="lc-error" *lcIfError="'required'">{{
-            t("required")
-          }}</small>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="rankingPastWeeks">
-              {{ t("rankingPastWeeksLabel") }}
-            </label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('rankingPastWeeksTooltip')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <p-select
-            id="rankingPastWeeks"
-            [options]="rankingPastWeeksOptions"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="rankingPastWeeks"
-            lcFormControl
-          ></p-select>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="language">{{ t("languageLabel") }}</label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('instanceLanguageTooltip')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <lc-language-select
-            id="language"
-            formControlName="language"
-            lcFormControl
-          ></lc-language-select>
-        </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <div class="form-label flex align-items-center">
-            <label for="timezone">{{ t("timezoneLabel") }}</label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('timezoneTooltip')"
-              tooltipPosition="right"
-            ></span>
-          </div>
-          <p-select
-            id="timezone"
-            [options]="timezoneOptions"
-            optionLabel="label"
-            optionValue="value"
-            [filter]="true"
-            formControlName="timezone"
-            lcFormControl
-          ></p-select>
-        </div>
-
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("imagesSettings") }}</b></p-divider
+        <p-select
+          id="defaultStartingPosition"
+          [options]="startingPositionsOptions"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="defaultStartingPosition"
+          lcFormControl
         >
+        </p-select>
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="rankingPastWeeks">
+            {{ t("rankingPastWeeksLabel") }}
+          </label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('rankingPastWeeksTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+        <p-select
+          id="rankingPastWeeks"
+          [options]="rankingPastWeeksOptions"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="rankingPastWeeks"
+          lcFormControl
+        ></p-select>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="language">{{ t("languageLabel") }}</label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('instanceLanguageTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+        <lc-language-select
+          id="language"
+          formControlName="language"
+          lcFormControl
+        ></lc-language-select>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="timezone">{{ t("timezoneLabel") }}</label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('timezoneTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+        <p-select
+          id="timezone"
+          [options]="timezoneOptions"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          formControlName="timezone"
+          lcFormControl
+        ></p-select>
+      </div>
+
+      <p-divider align="center" type="solid" class="mt-12 mb-2"
+        ><b>{{ t("imagesSettings") }}</b></p-divider
+      >
+
+      <div class="lc-theme-variant-pair">
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="logo-upload">{{
             t("logoImageLabel")
           }}</label>
@@ -241,88 +255,96 @@
           ></lc-single-image-upload>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="favicon-image-upload">{{
-            t("faviconImageLabel")
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="dark-logo-upload">{{
+            t("darkLogoImageLabel")
           }}</label>
           <lc-single-image-upload
-            id="favicon-image-upload"
             lcFormControl
-            formControlName="faviconImage"
+            id="dark-logo-upload"
+            formControlName="darkLogoImage"
           ></lc-single-image-upload>
         </div>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="main-bg-image">{{
-            t("mainBgImageLabel")
-          }}</label>
-          <lc-single-image-upload
-            id="main-bg-image"
-            lcFormControl
-            formControlName="mainBgImage"
-          ></lc-single-image-upload>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="favicon-image-upload">{{
+          t("faviconImageLabel")
+        }}</label>
+        <lc-single-image-upload
+          id="favicon-image-upload"
+          lcFormControl
+          formControlName="faviconImage"
+        ></lc-single-image-upload>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="bg-image">{{ t("bgImageLabel") }}</label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('bgImageTooltip')"
+            tooltipPosition="right"
+          ></span>
         </div>
+        <lc-single-image-upload
+          id="bg-image"
+          lcFormControl
+          formControlName="bgImage"
+          [focusAdjustable]="true"
+        ></lc-single-image-upload>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="auth-bg-image">{{
-            t("authBgImageLabel")
-          }}</label>
-          <lc-single-image-upload
-            id="auth-bg-image"
-            lcFormControl
-            formControlName="authBgImage"
-          ></lc-single-image-upload>
-        </div>
+      <p-divider align="center" type="solid" class="mt-12 mb-2"
+        ><b>{{ t("arrowsSettings") }}</b></p-divider
+      >
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("arrowsSettings") }}</b></p-divider
-        >
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="arrow-color">{{
+          t("arrowColorLabel")
+        }}</label>
+        <p-colorPicker
+          formControlName="arrowColor"
+          id="arrow-color"
+        ></p-colorPicker>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="arrow-color">{{
-            t("arrowColorLabel")
-          }}</label>
-          <p-colorPicker
-            formControlName="arrowColor"
-            id="arrow-color"
-          ></p-colorPicker>
-        </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="arrowTextColor">{{
+          t("arrowTextColorLabel")
+        }}</label>
+        <p-colorPicker
+          formControlName="arrowTextColor"
+          id="arrowTextColor"
+        ></p-colorPicker>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="arrowTextColor">{{
-            t("arrowTextColorLabel")
-          }}</label>
-          <p-colorPicker
-            formControlName="arrowTextColor"
-            id="arrowTextColor"
-          ></p-colorPicker>
-        </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="arrow-highlight-color">{{
+          t("arrowHighlightColorLabel")
+        }}</label>
+        <p-colorPicker
+          formControlName="arrowHighlightColor"
+          id="arrow-highlight-color"
+        ></p-colorPicker>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="arrow-highlight-color">{{
-            t("arrowHighlightColorLabel")
-          }}</label>
-          <p-colorPicker
-            formControlName="arrowHighlightColor"
-            id="arrow-highlight-color"
-          ></p-colorPicker>
-        </div>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="arrow-highlight-text-color">{{
+          t("arrowHighlightTextColorLabel")
+        }}</label>
+        <p-colorPicker
+          id="arrow-highlight-text-color"
+          formControlName="arrowHighlightTextColor"
+        ></p-colorPicker>
+      </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="arrow-highlight-text-color">{{
-            t("arrowHighlightTextColorLabel")
-          }}</label>
-          <p-colorPicker
-            id="arrow-highlight-text-color"
-            formControlName="arrowHighlightTextColor"
-          ></p-colorPicker>
-        </div>
+      <p-divider align="center" type="solid" class="mt-12 mb-2"
+        ><b>{{ t("chartSettings") }}</b></p-divider
+      >
 
-        <p-divider align="center" type="solid" class="mt-6 mb-2"
-          ><b>{{ t("chartSettings") }}</b></p-divider
-        >
-
-        <div class="flex flex-column gap-2" lcControlGroup>
+      <div class="lc-theme-variant-pair">
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="bar-chart-color">{{
             t("barChartColorLabel")
           }}</label>
@@ -333,7 +355,20 @@
           ></p-colorPicker>
         </div>
 
-        <div class="flex flex-column gap-2" lcControlGroup>
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="dark-bar-chart-color">{{
+            t("darkBarChartColorLabel")
+          }}</label>
+          <p-colorPicker
+            id="dark-bar-chart-color"
+            formControlName="darkBarChartColor"
+            format="rgb"
+          ></p-colorPicker>
+        </div>
+      </div>
+
+      <div class="lc-theme-variant-pair">
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="bar-chart-accent-color">{{
             t("barChartAccentColorLabel")
           }}</label>
@@ -344,75 +379,86 @@
           ></p-colorPicker>
         </div>
 
-        <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("matomoSettings") }}</b></p-divider
-        >
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="matomo-tracker-url">{{
-            t("matomoTrackerUrlLabel")
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="dark-bar-chart-accent-color">{{
+            t("darkBarChartAccentColorLabel")
           }}</label>
-          <input
-            type="text"
-            pInputText
-            id="matomo-tracker-url"
-            formControlName="matomoTrackerUrl"
-            placeholder="{{ t('matomoTrackerUrlPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
+          <p-colorPicker
+            id="dark-bar-chart-accent-color"
+            formControlName="darkBarChartAccentColor"
+            format="rgb"
+          ></p-colorPicker>
         </div>
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="matomo-site-id">{{
-            t("matomoSiteIdLabel")
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="matomo-site-id"
-            formControlName="matomoSiteId"
-            placeholder="{{ t('matomoSiteIdPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-
-        <p-divider align="center" type="solid" class="mb-2"
-          ><b>{{ t("mapSettings") }}</b></p-divider
-        >
-
-        <div class="flex flex-column gap-2" lcControlGroup>
-          <label class="form-label" for="maptiler-api-key">{{
-            t("maptilerApiKeyLabel")
-          }}</label>
-          <p-password
-            [toggleMask]="true"
-            [feedback]="false"
-            id="maptiler-api-key"
-            formControlName="maptilerApiKey"
-            placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            t("maxlength120")
-          }}</small>
-        </div>
-      </form>
-
-      <div class="form-actions">
-        <p-button
-          label="{{ t('editInstanceSettingsButtonLabel') }}"
-          (click)="saveInstanceSettings()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
       </div>
-    </p-card>
+
+      <p-divider align="center" type="solid" class="mb-2"
+        ><b>{{ t("matomoSettings") }}</b></p-divider
+      >
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="matomo-tracker-url">{{
+          t("matomoTrackerUrlLabel")
+        }}</label>
+        <input
+          type="text"
+          pInputText
+          id="matomo-tracker-url"
+          formControlName="matomoTrackerUrl"
+          placeholder="{{ t('matomoTrackerUrlPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="matomo-site-id">{{
+          t("matomoSiteIdLabel")
+        }}</label>
+        <input
+          type="text"
+          pInputText
+          id="matomo-site-id"
+          formControlName="matomoSiteId"
+          placeholder="{{ t('matomoSiteIdPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+
+      <p-divider align="center" type="solid" class="mb-2"
+        ><b>{{ t("mapSettings") }}</b></p-divider
+      >
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="maptiler-api-key">{{
+          t("maptilerApiKeyLabel")
+        }}</label>
+        <p-password
+          [toggleMask]="true"
+          [feedback]="false"
+          id="maptiler-api-key"
+          formControlName="maptilerApiKey"
+          placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 120 }
+        }}</small>
+      </div>
+    </form>
+
+    <div class="form-actions">
+      <p-button
+        label="{{ t('editInstanceSettingsButtonLabel') }}"
+        (click)="saveInstanceSettings()"
+        icon="pi pi-save"
+        class="responsive-button"
+        [loading]="loadingState === loadingStates.LOADING"
+      ></p-button>
+    </div>
   </div>
 </ng-container>

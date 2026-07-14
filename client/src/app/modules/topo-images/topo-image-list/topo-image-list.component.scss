@@ -19,21 +19,21 @@ lc-topo-image-list {
 
   .line-table {
     width: 100%;
-    border-top: 1px solid var(--p-surface-200);
-    border-bottom: 1px solid var(--p-surface-200);
+    border-top: 1px solid var(--p-content-border-color);
+    border-bottom: 1px solid var(--p-content-border-color);
     padding-bottom: 0.5rem;
     container-type: inline-size;
 
     .table-header {
-      background-color: var(--p-surface-50);
+      background-color: var(--p-content-hover-background);
       font-weight: 700;
-      color: var(--p-surface-700);
+      color: var(--p-text-muted-color);
       padding: 0.5rem;
     }
   }
 
   .archived {
-    background-color: #ddd;
+    background-color: var(--p-content-hover-background);
 
     .line-table .table-header {
       background-color: inherit;
@@ -59,7 +59,7 @@ lc-topo-image-list {
       display: flex;
       color: inherit;
       text-decoration: inherit;
-      border-top: 1px solid var(--p-surface-200);
+      border-top: 1px solid var(--p-content-border-color);
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
 
