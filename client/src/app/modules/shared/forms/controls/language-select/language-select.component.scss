@@ -1,5 +1,5 @@
 lc-language-select {
-  p-select {
+  &:not(.no-label) p-select {
     height: 100%;
     align-items: center;
   }

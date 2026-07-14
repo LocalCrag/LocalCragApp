@@ -31,6 +31,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 })
 export class LanguageSelectComponent implements ControlValueAccessor {
   readonly languages = [...LANGUAGE_CODES];
+  /** Above `.site-header` (z-index: 1100) so the panel is not hidden behind the navbar. */
+  readonly selectOverlayOptions = { baseZIndex: 1200 };
   value: LanguageCode | null = null;
   disabled = false;
 
