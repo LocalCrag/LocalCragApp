@@ -1,6 +1,10 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  HostListener,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
   inject,
   DestroyRef,
@@ -54,6 +58,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LanguageCode } from '../../../utility/types/language';
 import { LanguageService } from '../../../services/core/language.service';
 import { NotificationBellComponent } from '../notification-bell/notification-bell.component';
+import {
+  MAX_NAVBAR_COLLAPSE_LEVEL,
+  NAVBAR_COLLAPSE_LEVELS,
+} from './navbar-collapse';
 
 @Component({
   selector: 'lc-menu',
@@ -77,7 +85,10 @@ import { NotificationBellComponent } from '../notification-bell/notification-bel
     NotificationBellComponent,
   ],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, AfterViewInit {
+  @ViewChild(HeaderMenuComponent)
+  headerMenu?: HeaderMenuComponent;
+
   items: MenuItem[] = [];
   userMenuItems: MenuItem[] = [];
   isMobile$: Observable<boolean>;
@@ -87,6 +98,14 @@ export class MenuComponent implements OnInit {
   skippedHierarchyLayers$: Observable<number>;
   ref: DynamicDialogRef | undefined;
   language: LanguageCode;
+  /**
+   * How many optional header controls are currently hidden (0 = all visible).
+   * Recomputed from scratch on resize and layout changes; see `reconcileNavbarOverflow()`.
+   */
+  navbarCollapseLevel = 0;
+
+  /** Threshold constants for `showNavbarElement()` in the template. */
+  readonly navbarCollapseLevels = NAVBAR_COLLAPSE_LEVELS;
 
   private menuItemsService = inject(MenuItemsService);
   private translocoService = inject(TranslocoService);
@@ -95,8 +114,11 @@ export class MenuComponent implements OnInit {
   private store = inject(Store);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   readonly themeService = inject(ThemeService);
   private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
+  private navbarResizeObserver?: ResizeObserver;
+  private isReconcilingNavbarOverflow = false;
 
   ngOnInit() {
     this.logoImage$ = combineLatest([
@@ -144,6 +166,83 @@ export class MenuComponent implements OnInit {
         }
         this.recomputeMenus();
       });
+  }
+
+  ngAfterViewInit() {
+    this.reconcileNavbarOverflow();
+    if (!window.ResizeObserver || !this.headerMenu) {
+      return;
+    }
+    this.navbarResizeObserver = new ResizeObserver(() => {
+      this.reconcileNavbarOverflow();
+    });
+    this.navbarResizeObserver.observe(
+      this.headerMenu.elementRef.nativeElement as HTMLElement,
+    );
+    this.destroyRef.onDestroy(() => this.navbarResizeObserver?.disconnect());
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.reconcileNavbarOverflow();
+  }
+
+  /** Whether an optional header control should render at the current collapse level. */
+  showNavbarElement(threshold: number): boolean {
+    return this.navbarCollapseLevel < threshold;
+  }
+
+  /**
+   * Fits the top navigation to the available width using a two-stage collapse strategy.
+   *
+   * **Stage 1 — link menu:** Try the full horizontal link menu first
+   * (`overflowDetected = false`). If the menubar overflows, collapse the dynamic
+   * nav links into the burger menu (`overflowDetected = true`). This frees horizontal
+   * space without hiding search, logo, or other end-slot controls.
+   *
+   * **Stage 2 — optional controls:** If the menubar still overflows with the burger
+   * menu, increase `navbarCollapseLevel` one step at a time, hiding elements in the
+   * order defined by {@link NAVBAR_COLLAPSE_LEVELS}: theme toggle → language select →
+   * notifications → search → logo.
+   *
+   * Each pass starts from the most expanded state so controls reappear automatically
+   * when the viewport grows. A `ResizeObserver` on the menubar and window resize
+   * events trigger reconciliation; auth and menu model changes schedule a pass as well.
+   *
+   * Projected start/end template content lives in this component, so collapse state
+   * and change detection are owned here rather than in `HeaderMenuComponent`.
+   */
+  private reconcileNavbarOverflow() {
+    if (!this.headerMenu || this.isReconcilingNavbarOverflow) {
+      return;
+    }
+
+    this.isReconcilingNavbarOverflow = true;
+    try {
+      // Stage 1a: prefer the full horizontal link menu with all controls visible.
+      this.navbarCollapseLevel = 0;
+      this.headerMenu.setOverflowDetected(false);
+      this.cdr.detectChanges();
+
+      if (!this.headerMenu.isOverflowing()) {
+        return;
+      }
+
+      // Stage 1b: collapse nav links into the burger menu.
+      this.headerMenu.setOverflowDetected(true);
+      this.cdr.detectChanges();
+
+      // Stage 2: hide optional controls one by one until the menubar fits.
+      while (
+        this.headerMenu.isOverflowing() &&
+        this.navbarCollapseLevel < MAX_NAVBAR_COLLAPSE_LEVEL
+      ) {
+        this.navbarCollapseLevel++;
+        this.cdr.detectChanges();
+      }
+    } finally {
+      this.isReconcilingNavbarOverflow = false;
+    }
   }
 
   /**
@@ -259,6 +358,7 @@ export class MenuComponent implements OnInit {
             this.userMenuItems = items;
           }
         }
+        queueMicrotask(() => this.reconcileNavbarOverflow());
       });
   }
 
@@ -337,6 +437,7 @@ export class MenuComponent implements OnInit {
         }
       });
       this.items = items;
+      queueMicrotask(() => this.reconcileNavbarOverflow());
     });
   }
 
