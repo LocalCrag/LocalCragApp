@@ -6,12 +6,9 @@
     [sortOrder]="sortOrder"
   >
     <ng-template #emptymessage>
-      <p-message
-        severity="info"
-        icon="pi pi-info-circle"
-        class="m-4 block"
-        >{{ t("noRankingsFoundMessage") }}</p-message
-      >
+      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
+        t("noRankingsFoundMessage")
+      }}</p-message>
     </ng-template>
     <ng-template #header>
       <div class="flex flex-col sm:flex-row gap-x-6 gap-y-4">

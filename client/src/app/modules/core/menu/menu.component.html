@@ -41,9 +41,7 @@
           ></lc-language-select>
           <p-button
             *isLoggedOut="true"
-            [icon]="
-              themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'
-            "
+            [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
             severity="secondary"
             variant="text"
             styleClass="navbar-icon-button navbar-color-scheme-toggle"

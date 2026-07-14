@@ -6,10 +6,7 @@
           todos?.length === 0 &&
           !(loading === loadingStates.LOADING && currentPage === 1)
         ) {
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle"
-            class="m-4 block"
+          <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
             >{{ t("noTodosFoundMessage") }}
           </p-message>
         }

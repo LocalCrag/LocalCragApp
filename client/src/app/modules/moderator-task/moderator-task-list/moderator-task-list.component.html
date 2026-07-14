@@ -6,11 +6,7 @@
         tasks.length === 0 &&
         !filtersActive
       ) {
-        <p-message
-          severity="info"
-          icon="pi pi-info-circle"
-          class="m-4 block"
-        >
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
           {{ t("emptyList") }}
         </p-message>
       }
@@ -19,11 +15,7 @@
         tasks.length === 0 &&
         filtersActive
       ) {
-        <p-message
-          severity="info"
-          icon="pi pi-info-circle"
-          class="m-4 block"
-        >
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
           {{ t("emptyFilterList") }}
         </p-message>
       }
