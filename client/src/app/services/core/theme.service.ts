@@ -14,6 +14,8 @@ import {
 
 export type ColorScheme = 'light' | 'dark' | 'system';
 
+const GUEST_COLOR_SCHEME_STORAGE_KEY = 'preferredColorScheme';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -36,7 +38,12 @@ export class ThemeService {
   };
 
   init(): void {
-    this.applyDarkClass();
+    const guestScheme = this.readGuestColorScheme();
+    if (guestScheme) {
+      this.applyColorScheme(guestScheme);
+    } else {
+      this.applyDarkClass();
+    }
     this.mediaQuery.addEventListener('change', this.mediaListener);
 
     this.actions$
@@ -48,8 +55,14 @@ export class ThemeService {
     this.actions$
       .pipe(ofType(cleanupCredentials), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.applyColorScheme('system');
+        this.applyColorScheme(this.readGuestColorScheme() ?? 'system');
       });
+  }
+
+  toggleGuestColorScheme(): void {
+    const next: ColorScheme = this.isDarkMode() ? 'light' : 'dark';
+    this.applyColorScheme(next);
+    localStorage.setItem(GUEST_COLOR_SCHEME_STORAGE_KEY, next);
   }
 
   applyColorScheme(scheme: ColorScheme): void {
@@ -66,5 +79,13 @@ export class ThemeService {
       this.colorScheme() === 'dark' ||
       (this.colorScheme() === 'system' && this.mediaQuery.matches);
     document.documentElement.classList.toggle('lc-dark', isDark);
+  }
+
+  private readGuestColorScheme(): ColorScheme | null {
+    const saved = localStorage.getItem(GUEST_COLOR_SCHEME_STORAGE_KEY);
+    if (saved === 'light' || saved === 'dark') {
+      return saved;
+    }
+    return null;
   }
 }

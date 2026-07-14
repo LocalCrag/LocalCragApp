@@ -95,7 +95,7 @@ export class MenuComponent implements OnInit {
   private store = inject(Store);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
-  private themeService = inject(ThemeService);
+  readonly themeService = inject(ThemeService);
   private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
 
   ngOnInit() {
@@ -157,6 +157,10 @@ export class MenuComponent implements OnInit {
   updateLanguage(language: LanguageCode) {
     this.language = language;
     this.languageService.setPreferredLanguage(language);
+  }
+
+  toggleGuestColorScheme(): void {
+    this.themeService.toggleGuestColorScheme();
   }
 
   buildUserMenu() {

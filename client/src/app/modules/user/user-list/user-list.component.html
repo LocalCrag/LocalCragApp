@@ -7,12 +7,9 @@
       [sortOrder]="sortOrder"
     >
       <ng-template #emptymessage>
-        <p-message
-          severity="info"
-          icon="pi pi-info-circle"
-          class="m-12 mb-1 block"
-          >{{ t("noUsersFoundEmptyMessage") }}</p-message
-        >
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
+          t("noUsersFoundEmptyMessage")
+        }}</p-message>
       </ng-template>
       <ng-template #header>
         <div class="flex flex-col sm:flex-row justify-between gap-2">

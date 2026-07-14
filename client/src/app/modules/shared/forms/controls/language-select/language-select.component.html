@@ -5,6 +5,7 @@
   [ngModel]="value"
   (onChange)="onSelect($event.value)"
   appendTo="body"
+  [overlayOptions]="selectOverlayOptions"
 >
   <ng-template #selectedItem let-code>
     <div class="language-option">

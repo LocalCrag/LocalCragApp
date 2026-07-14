@@ -1,4 +1,6 @@
 lc-menu {
+  $navbar-icon-color: var(--p-text-color);
+
   width: 100%;
 
   .main-link {
@@ -23,31 +25,76 @@ lc-menu {
     width: 15rem;
   }
 
+  .navbar-icon-button {
+    color: $navbar-icon-color !important;
+
+    .p-button-icon {
+      color: $navbar-icon-color !important;
+    }
+  }
+
   .navbar-field-group {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     gap: 0.5rem;
 
     lc-language-select {
       display: flex;
-      align-items: stretch;
+      align-items: center;
 
       p-select {
         display: flex;
-        flex: 1;
-        height: 100%;
+        height: auto;
       }
 
       .p-select {
-        flex: 1;
-        height: 100%;
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
         align-items: center;
+        justify-content: center;
+        min-height: 2.5rem;
+        min-width: 2.5rem;
+        padding: 0;
+
+        &:not(.p-disabled):hover,
+        &:not(.p-disabled).p-focus,
+        &:not(.p-disabled):focus-within {
+          background: transparent !important;
+          border-color: transparent !important;
+          box-shadow: none !important;
+        }
       }
 
       .p-select-label {
         display: flex;
         align-items: center;
+        justify-content: center;
+        padding: 0;
       }
+    }
+
+    .navbar-color-scheme-toggle {
+      background: transparent !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+
+      &:not(:disabled):hover,
+      &:not(:disabled):active,
+      &:not(:disabled):focus,
+      &:not(:disabled):focus-visible {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  lc-header-menu .menubar > p-button {
+    color: $navbar-icon-color !important;
+
+    .p-button-icon {
+      color: $navbar-icon-color !important;
     }
   }
 
@@ -66,6 +113,10 @@ lc-menu {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    .pi-search {
+      color: $navbar-icon-color;
+    }
 
     &:hover {
       border-color: var(--p-primary-500);

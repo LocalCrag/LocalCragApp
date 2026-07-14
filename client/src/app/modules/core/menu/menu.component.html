@@ -39,6 +39,15 @@
             (ngModelChange)="updateLanguage($event)"
             lcFormControl
           ></lc-language-select>
+          <p-button
+            *isLoggedOut="true"
+            [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+            severity="secondary"
+            variant="text"
+            styleClass="navbar-icon-button navbar-color-scheme-toggle"
+            (onClick)="toggleGuestColorScheme()"
+            data-cy="navbar-color-scheme-toggle"
+          ></p-button>
         </div>
 
         <ng-container *isLoggedIn="true">
@@ -57,8 +66,9 @@
           icon="pi pi-user"
           routerLink="login"
           severity="secondary"
+          variant="text"
+          styleClass="navbar-icon-button"
           *isLoggedOut="true"
-          [text]="true"
           data-cy="navbar-login"
         ></p-button>
       </div>
