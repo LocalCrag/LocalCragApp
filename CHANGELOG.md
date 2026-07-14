@@ -1,3 +1,18 @@
+# [1.44.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.43.0...v1.44.0) (2026-07-14)
+
+
+### Bug Fixes
+
+* **core:** add missing length validation ([#1162](https://github.com/LocalCrag/LocalCragApp/issues/1162)) ([d56c7d0](https://github.com/LocalCrag/LocalCragApp/commit/d56c7d005eed20e00ccc3b3017449389746ea8ee))
+* **topo:** fix issue where ascent and todo lists were loading the first page twice ([#1175](https://github.com/LocalCrag/LocalCragApp/issues/1175)) ([c005f9d](https://github.com/LocalCrag/LocalCragApp/commit/c005f9d6112df0e00c29e99fce17095c48a86ee1))
+
+
+### Features
+
+* **core:** add dark mode ([#1174](https://github.com/LocalCrag/LocalCragApp/issues/1174)) ([e29a413](https://github.com/LocalCrag/LocalCragApp/commit/e29a413f04e2494c1b3d2816b01e5b2321f9e185)), closes [#159](https://github.com/LocalCrag/LocalCragApp/issues/159)
+* **core:** add french language ([#1151](https://github.com/LocalCrag/LocalCragApp/issues/1151)) ([706a2f6](https://github.com/LocalCrag/LocalCragApp/commit/706a2f684f300e1ebfa35f976eaaf7421551e285)), closes [#992](https://github.com/LocalCrag/LocalCragApp/issues/992)
+* **topo:** show proposed grade in line detail if user grade is active ([#1139](https://github.com/LocalCrag/LocalCragApp/issues/1139)) ([79c57df](https://github.com/LocalCrag/LocalCragApp/commit/79c57df88abc0ad26ef166533ff18b0cb867f1d2))
+
 # [1.43.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.42.0...v1.43.0) (2026-06-21)
 
 
