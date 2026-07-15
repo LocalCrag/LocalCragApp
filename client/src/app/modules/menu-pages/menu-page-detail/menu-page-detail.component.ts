@@ -1,14 +1,16 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { MenuPage } from '../../../models/menu-page';
-import { MenuPagesService } from '../../../services/crud/menu-pages.service';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingState } from '../../../enums/loading-state';
-
+import { select, Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import { SkeletonModule } from 'primeng/skeleton';
-
-import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LoadingState } from '../../../enums/loading-state';
+import { MenuPage } from '../../../models/menu-page';
+import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { MenuPagesService } from '../../../services/crud/menu-pages.service';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 @Component({
   selector: 'lc-menu-page-detail',
@@ -25,6 +27,8 @@ export class MenuPageDetailComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
+  private title = inject(Title);
+  private store = inject(Store);
 
   ngOnInit() {
     this.route.paramMap
@@ -35,6 +39,11 @@ export class MenuPageDetailComponent implements OnInit {
           next: (menuPage) => {
             this.menuPage = menuPage;
             this.pageTitleService.setTitle(menuPage.title);
+            this.store
+              .pipe(select(selectInstanceName), take(1))
+              .subscribe((instanceName) => {
+                this.title.setTitle(`${menuPage.title} - ${instanceName}`);
+              });
             this.loadingState = LoadingState.DEFAULT;
           },
           error: () => {
