@@ -193,7 +193,7 @@ export class CommentComponent implements OnInit {
 
   private buildEllipsisMenu(currentUser: any, isModerator: boolean) {
     this.ellipsisMenuItems = [];
-    const isAuthor = this.comment.createdBy?.id === currentUser.id;
+    const isAuthor = currentUser?.id === this.comment.createdBy?.id;
     if (isAuthor) {
       this.ellipsisMenuItems.push({
         label: this.translocoService.translate(marker('comments.edit')),
