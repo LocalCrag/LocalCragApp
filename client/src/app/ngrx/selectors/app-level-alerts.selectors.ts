@@ -14,3 +14,8 @@ export const selectShowCookieAlert = createSelector(
   selectAppLevelAlertsState,
   (appLevelAlertsState) => appLevelAlertsState.showCookieAlert,
 );
+
+export const selectShowOfflineAlert = createSelector(
+  selectAppLevelAlertsState,
+  (appLevelAlertsState) => appLevelAlertsState.showOfflineAlert,
+);

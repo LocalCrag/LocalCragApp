@@ -6,7 +6,11 @@ import {
   LOCALE_ID,
   provideAppInitializer,
 } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import {
+  provideRouter,
+  Router,
+  withNavigationErrorHandler,
+} from '@angular/router';
 import { appRoutes } from './app.routes';
 import {
   HTTP_INTERCEPTORS,
@@ -15,6 +19,8 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { ErrorHandlerInterceptor } from '../../utility/http-interceptors/error.interceptor';
+import { LocalCragErrorHandler } from '../../services/core/local-crag-error-handler';
+import { ErrorHandlerService } from '../../services/core/error-handler.service';
 import { RefreshTokenInterceptor } from '../../utility/http-interceptors/refresh-token.interceptor';
 import { JWTInterceptor } from '../../utility/http-interceptors/jwt.interceptor';
 import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-type.interceptor';
@@ -121,9 +127,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        showDialog: false,
-      }),
+      useClass: LocalCragErrorHandler,
     },
     {
       provide: Sentry.TraceService,
@@ -137,7 +141,14 @@ export const appConfig: ApplicationConfig = {
       inject(ThemeService).init();
       return Promise.resolve();
     }),
-    provideRouter(appRoutes),
+    provideRouter(
+      appRoutes,
+      withNavigationErrorHandler((navigationError) => {
+        inject(ErrorHandlerService).handleClientError(
+          navigationError.error ?? navigationError,
+        );
+      }),
+    ),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorHandlerInterceptor,
