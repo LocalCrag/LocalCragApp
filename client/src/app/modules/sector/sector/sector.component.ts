@@ -180,6 +180,7 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(this.sector.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('sector.ranking')),
@@ -192,12 +193,14 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(this.sector.imageCount),
       },
       {
         label: this.translocoService.translate(marker('sector.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(this.sector.commentCount),
       },
       {
         label: this.translocoService.translate(marker('sector.weather')),
@@ -219,6 +222,10 @@ export class SectorComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number | null | undefined): string | undefined {
+    return count && count > 0 ? String(count) : undefined;
   }
 
   protected readonly environment = environment;

@@ -13,6 +13,7 @@ from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 from models.mixins.is_secret import IsSecret
+from util.topo_tab_counts import count_gallery_images, count_root_comments
 
 
 class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
@@ -95,3 +96,11 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
         if cached is not None:
             return cached
         return db.session.query(func.count(Ascent.id)).where(Ascent.line_id == self.id).scalar()
+
+    @hybrid_property
+    def comment_count(self):
+        return count_root_comments("Line", self.id)
+
+    @hybrid_property
+    def image_count(self):
+        return count_gallery_images("Line", self.id)

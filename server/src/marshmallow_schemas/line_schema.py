@@ -94,7 +94,8 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 
 
 class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin):
-    pass
+    imageCount = fields.Integer(attribute="image_count")
+    commentCount = fields.Integer(attribute="comment_count")
 
 
 class PaginatedLinesSchema(ma.SQLAlchemySchema):

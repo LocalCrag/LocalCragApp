@@ -11,6 +11,8 @@ class RegionSchema(BaseEntityMinSchema):
     rules = fields.String()
     image = fields.Nested(file_schema, attribute="image")
     ascentCount = fields.Integer(attribute="ascent_count")
+    imageCount = fields.Integer(attribute="image_count")
+    commentCount = fields.Integer(attribute="comment_count")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

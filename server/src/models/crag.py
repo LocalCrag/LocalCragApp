@@ -16,6 +16,7 @@ from models.mixins.is_secret import IsSecret
 from models.sector import Sector
 from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
 from util.secret_service import SecretService
+from util.topo_tab_counts import count_gallery_images, count_root_comments
 
 
 class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
@@ -70,6 +71,14 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
         )
         query = SecretService.apply_line_filter(query)
         return query.scalar()
+
+    @hybrid_property
+    def comment_count(self):
+        return count_root_comments("Crag", self.id)
+
+    @hybrid_property
+    def image_count(self):
+        return count_gallery_images("Crag", self.id)
 
     @classmethod
     def find_max_order_index(cls) -> int:

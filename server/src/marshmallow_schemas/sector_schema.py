@@ -37,6 +37,8 @@ class SectorDetailSchema(SectorSchema, IsClosableDetailSchemaMixin):
     defaultSportScale = fields.String(attribute="default_sport_scale")
     defaultTradScale = fields.String(attribute="default_trad_scale")
     blocweatherUrl = fields.String(attribute="blocweather_url")
+    imageCount = fields.Integer(attribute="image_count")
+    commentCount = fields.Integer(attribute="comment_count")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

@@ -79,6 +79,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   topoImages: TopoImage[];
   area: Area | null;
   ascentCount: number;
+  imageCount: number;
+  commentCount: number;
 
   areaSlug: string;
   sectorSlug: string;
@@ -175,6 +177,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
       : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
     line.ascentCount = payload.ascentCount;
+    line.imageCount = payload.imageCount;
+    line.commentCount = payload.commentCount;
     line.routerLink = topoLineRouterLink(line);
 
     return line;

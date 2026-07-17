@@ -195,18 +195,21 @@ export class AreaComponent implements OnInit {
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(this.area.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('area.gallery')),
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(this.area.imageCount),
       },
       {
         label: this.translocoService.translate(marker('area.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(this.area.commentCount),
       },
       {
         label: this.translocoService.translate(marker('area.weather')),
@@ -228,5 +231,9 @@ export class AreaComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number | null | undefined): string | undefined {
+    return count && count > 0 ? String(count) : undefined;
   }
 }

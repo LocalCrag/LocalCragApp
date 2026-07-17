@@ -104,6 +104,7 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/ascents`,
         visible: true,
+        badge: this.tabBadge(region.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('region.ranking')),
@@ -116,12 +117,14 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/gallery`,
         visible: true,
+        badge: this.tabBadge(region.imageCount),
       },
       {
         label: this.translocoService.translate(marker('region.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/comments`,
         visible: true,
+        badge: this.tabBadge(region.commentCount),
       },
       {
         label: this.translocoService.translate(marker('region.tasks')),
@@ -137,5 +140,9 @@ export class RegionComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number | null | undefined): string | undefined {
+    return count && count > 0 ? String(count) : undefined;
   }
 }

@@ -15,6 +15,7 @@ from models.mixins.is_searchable import IsSearchable
 from models.mixins.is_secret import IsSecret
 from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
 from util.secret_service import SecretService
+from util.topo_tab_counts import count_gallery_images, count_root_comments
 
 
 class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
@@ -59,6 +60,14 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
         query = db.session.query(func.count(Ascent.id)).join(Line).where(Line.area_id == self.id)
         query = SecretService.apply_line_filter(query)
         return query.scalar()
+
+    @hybrid_property
+    def comment_count(self):
+        return count_root_comments("Area", self.id)
+
+    @hybrid_property
+    def image_count(self):
+        return count_gallery_images("Area", self.id)
 
     @classmethod
     def find_max_order_index(cls, sector_id) -> int:

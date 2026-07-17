@@ -104,6 +104,14 @@
             <p-tab [value]="$index" [routerLink]="tab.routerLink">
               <i [class]="tab.icon" style="font-size: 1rem"></i>
               {{ tab.label }}
+              @if (tab.badge) {
+                <p-badge
+                  [value]="tab.badge"
+                  badgeSize="small"
+                  severity="secondary"
+                  class="page-chrome__tab-badge"
+                />
+              }
             </p-tab>
           }
         }

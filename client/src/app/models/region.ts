@@ -10,6 +10,8 @@ export class Region extends AbstractModel {
   rules: string;
   image: File;
   ascentCount: number;
+  imageCount: number;
+  commentCount: number;
 
   /**
    * Parses a region.
@@ -25,6 +27,8 @@ export class Region extends AbstractModel {
     region.rules = payload.rules;
     region.image = payload.image ? File.deserialize(payload.image) : null;
     region.ascentCount = payload.ascentCount;
+    region.imageCount = payload.imageCount;
+    region.commentCount = payload.commentCount;
     return region;
   }
 

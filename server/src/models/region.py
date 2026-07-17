@@ -7,6 +7,7 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.line import Line
 from util.secret_service import SecretService
+from util.topo_tab_counts import count_all_gallery_images, count_root_comments
 
 
 class Region(BaseEntity):
@@ -27,6 +28,15 @@ class Region(BaseEntity):
         query = db.session.query(func.count(Ascent.id)).join(Line)
         query = SecretService.apply_line_filter(query)
         return query.scalar()
+
+    @hybrid_property
+    def comment_count(self):
+        return count_root_comments("Region", self.id)
+
+    @hybrid_property
+    def image_count(self):
+        # Region gallery lists all images (no tag filter), matching GetGalleryImages without tags.
+        return count_all_gallery_images()
 
     @classmethod
     def return_it(cls):
