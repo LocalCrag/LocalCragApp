@@ -1,3 +1,20 @@
+# [1.45.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.44.0...v1.45.0) (2026-07-17)
+
+
+### Bug Fixes
+
+* **comment:** correct author comparison logic in ellipsis menu ([#1188](https://github.com/LocalCrag/LocalCragApp/issues/1188)) ([09e2118](https://github.com/LocalCrag/LocalCragApp/commit/09e2118305c7055cee1eb2f1f75a126fd77d7ae7)), closes [#1180](https://github.com/LocalCrag/LocalCragApp/issues/1180)
+* **core:** fix exception handling for failed http requests to the server ([#1195](https://github.com/LocalCrag/LocalCragApp/issues/1195)) ([b7604ff](https://github.com/LocalCrag/LocalCragApp/commit/b7604ff1531fe28987e252f05d89e88d5f5f8f1f))
+* **core:** fix menu pages not setting browser tab titles ([#1187](https://github.com/LocalCrag/LocalCragApp/issues/1187)) ([610b83b](https://github.com/LocalCrag/LocalCragApp/commit/610b83b48d55461c44e0d9abd206be67f5b92bbf)), closes [#1181](https://github.com/LocalCrag/LocalCragApp/issues/1181)
+* **core:** improve favicon handling in CoreComponent ([#1189](https://github.com/LocalCrag/LocalCragApp/issues/1189)) ([c3584c3](https://github.com/LocalCrag/LocalCragApp/commit/c3584c35408578830848f45b790fc136fad3ef58)), closes [#1177](https://github.com/LocalCrag/LocalCragApp/issues/1177)
+* **maps:** fix timing issue where map tried to render but user already navigated away ([#1190](https://github.com/LocalCrag/LocalCragApp/issues/1190)) ([11a557c](https://github.com/LocalCrag/LocalCragApp/commit/11a557c42b98864c5dabb97520e71754b132a42f)), closes [#1179](https://github.com/LocalCrag/LocalCragApp/issues/1179)
+* **notifications:** prevent multiple notification mails being sent in multi worker environments ([#1194](https://github.com/LocalCrag/LocalCragApp/issues/1194)) ([61c9fc6](https://github.com/LocalCrag/LocalCragApp/commit/61c9fc66ce13fac1787939d643a807dc60286ad0)), closes [#1191](https://github.com/LocalCrag/LocalCragApp/issues/1191)
+
+
+### Features
+
+* **core:** implement offline alert component and fix Sentry connectivity handling ([#1193](https://github.com/LocalCrag/LocalCragApp/issues/1193)) ([76a8d1e](https://github.com/LocalCrag/LocalCragApp/commit/76a8d1e642db796341c7f59e42cf69997cb05263)), closes [#1178](https://github.com/LocalCrag/LocalCragApp/issues/1178)
+
 # [1.44.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.43.0...v1.44.0) (2026-07-14)
 
 
