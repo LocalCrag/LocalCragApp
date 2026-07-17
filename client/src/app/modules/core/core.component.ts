@@ -24,6 +24,7 @@ import { NavigationService } from '../../services/core/navigation.service';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
+import { OfflineAlertComponent } from './offline-alert/offline-alert.component';
 import { MenuComponent } from './menu/menu.component';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './footer/footer.component';
@@ -45,6 +46,7 @@ import { Toast } from 'primeng/toast';
     PageTitleComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
+    OfflineAlertComponent,
     MenuComponent,
     RouterOutlet,
     FooterComponent,
@@ -77,7 +79,7 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     // Measure after first render; ViewChild is available and this avoids NG0100.
     afterNextRender(() => this.updateHeaderHeight());
 
-    const favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+    const favIcon = document.querySelector<HTMLLinkElement>('#favIcon');
     this.store
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettingsState) => {
@@ -97,10 +99,10 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
           '--arrow-highlight-text-color',
           instanceSettingsState.arrowHighlightTextColor,
         );
-        if (instanceSettingsState.faviconImage) {
-          favIcon.href = instanceSettingsState.faviconImage.thumbnailS;
-        } else {
-          favIcon.href = 'assets/lc_logo.svg';
+        if (favIcon) {
+          favIcon.href = instanceSettingsState.faviconImage
+            ? instanceSettingsState.faviconImage.thumbnailS
+            : 'assets/lc_logo.svg';
         }
       });
     this.store

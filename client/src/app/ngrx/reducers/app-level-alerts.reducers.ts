@@ -9,11 +9,13 @@ import { Action, createReducer, on } from '@ngrx/store';
 export interface AppLevelAlertsState {
   showRefreshTokenAboutToExpireAlert: boolean;
   showCookieAlert: boolean;
+  showOfflineAlert: boolean;
 }
 
 export const initialAppLevelAlertsState: AppLevelAlertsState = {
   showRefreshTokenAboutToExpireAlert: false,
   showCookieAlert: false,
+  showOfflineAlert: false,
 };
 
 const appLevelAlertsStateReducer = createReducer(
@@ -38,6 +40,12 @@ const appLevelAlertsStateReducer = createReducer(
     ...state,
     showRefreshTokenAboutToExpireAlert: false,
   })),
+  on(AppLevelAlertsActions.showOfflineAlert, (state) =>
+    state.showOfflineAlert ? state : { ...state, showOfflineAlert: true },
+  ),
+  on(AppLevelAlertsActions.hideOfflineAlert, (state) =>
+    state.showOfflineAlert ? { ...state, showOfflineAlert: false } : state,
+  ),
 );
 
 /**

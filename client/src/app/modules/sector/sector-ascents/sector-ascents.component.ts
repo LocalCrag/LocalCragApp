@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { catchError, take } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Sector } from '../../../models/sector';
@@ -42,8 +42,9 @@ export class SectorAscentsComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           )
           .subscribe((sector) => {

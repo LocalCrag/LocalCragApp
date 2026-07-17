@@ -314,14 +314,10 @@ export class AuthEffects {
               initialCredentials: false,
             }),
           ),
-          catchError((err: HttpErrorResponse) => {
-            // When we end up here, the token is either invalid or the server is offline
-            if (err.status === 0) {
-              // We just notify here and don't force logout the user as there might be some unsaved work and the server might recover.
-              this.store.dispatch(
-                toastNotification('UNKNOWN_AUTHENTICATION_ERROR'),
-              );
-            }
+          catchError((_err: HttpErrorResponse) => {
+            // Network failures (status 0) show the offline app-level alert via the
+            // error interceptor. Don't force logout — there might be unsaved work
+            // and the server might recover.
             return of(AuthActions.refreshAccessTokenFailed());
           }),
         ),

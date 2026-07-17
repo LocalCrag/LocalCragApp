@@ -377,6 +377,7 @@
   "appLevelAlerts.thisWebsiteUsesCookies": "Wij gebruiken cookies op onze website om u de best mogelijke ervaring te bieden.",
   "appLevelAlerts.readMoreAboutCookies": "Meer informatie",
   "appLevelAlerts.AcceptCookiesButton": "Nodige cookies accepteren",
+  "appLevelAlerts.youAreOffline": "Je bent offline. Sommige functies zijn niet beschikbaar.",
   "activateAccount.activateAccountTitle": "Account activeren",
   "activateAccount.activateAccountDescription": "Je bent al ingelogd. Log uit om een ander account te activeren.",
   "activateAccount.activateNowButtonLabel": "Log nu uit",

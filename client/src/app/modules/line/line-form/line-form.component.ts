@@ -24,7 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, map, take } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -270,8 +270,9 @@ export class LineFormComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           )
           .subscribe((line) => {

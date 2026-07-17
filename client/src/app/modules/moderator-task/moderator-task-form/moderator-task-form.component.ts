@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import { catchError, forkJoin, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, of, switchMap, throwError } from 'rxjs';
 import { Select } from 'primeng/select';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -107,8 +107,9 @@ export class ModeratorTaskFormComponent implements OnInit {
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
+              return of(null);
             }
-            return of(null);
+            return throwError(() => e);
           }),
         ),
         this.usersService.getUsers({ isModerator: true }),

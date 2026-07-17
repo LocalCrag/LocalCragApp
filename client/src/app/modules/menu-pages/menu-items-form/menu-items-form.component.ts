@@ -26,7 +26,7 @@ import {
 import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
-import { forkJoin, Observable, of } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
@@ -131,8 +131,9 @@ export class MenuItemsFormComponent implements OnInit {
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
+            return EMPTY;
           }
-          return of(e);
+          return throwError(() => e);
         }),
       );
     }

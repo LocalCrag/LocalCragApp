@@ -23,7 +23,7 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
@@ -153,8 +153,9 @@ export class InstanceSettingsFormComponent implements OnInit {
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
+            return EMPTY;
           }
-          return of(e);
+          return throwError(() => e);
         }),
       )
       .subscribe((instanceSettings) => {

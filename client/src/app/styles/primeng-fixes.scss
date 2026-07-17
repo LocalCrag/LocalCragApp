@@ -8,11 +8,6 @@
   max-width: 100vw;
 }
 
-// Makes the skeleton full width actually display
-.lc-p-full-width-skeleton {
-  display: contents;
-}
-
 // Fixes elliptic avatars when space is not enough
 .p-avatar-lg {
   min-width: var(--p-avatar-lg-width);

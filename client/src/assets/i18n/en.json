@@ -377,6 +377,7 @@
   "appLevelAlerts.thisWebsiteUsesCookies": "We use cookies on our website to give you the best experience possible.",
   "appLevelAlerts.readMoreAboutCookies": "Find out more",
   "appLevelAlerts.AcceptCookiesButton": "Accept Required Cookies",
+  "appLevelAlerts.youAreOffline": "You are offline. Some features are unavailable.",
   "activateAccount.activateAccountTitle": "Enable Account",
   "activateAccount.activateAccountDescription": "You are already logged in. Log out to activate another account.",
   "activateAccount.activateNowButtonLabel": "Log out now",
