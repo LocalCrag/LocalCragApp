@@ -1,3 +1,13 @@
+# [1.46.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.45.0...v1.46.0) (2026-07-17)
+
+
+### Features
+
+* **core:** add ascent info popovers for sidebar ([#1199](https://github.com/LocalCrag/LocalCragApp/issues/1199)) ([74b413f](https://github.com/LocalCrag/LocalCragApp/commit/74b413fd23d53de3ae4c96914b6c9abad5592298)), closes [#1186](https://github.com/LocalCrag/LocalCragApp/issues/1186)
+* **topo:** add comment counts to lines in list and topo image views ([#1198](https://github.com/LocalCrag/LocalCragApp/issues/1198)) ([2c8d5c9](https://github.com/LocalCrag/LocalCragApp/commit/2c8d5c9821945f21990cf4889333ff71c72df02a)), closes [#1197](https://github.com/LocalCrag/LocalCragApp/issues/1197)
+* **topo:** add counts of ascents, gallery images, comments etc. in tabs ([#1196](https://github.com/LocalCrag/LocalCragApp/issues/1196)) ([f62cb64](https://github.com/LocalCrag/LocalCragApp/commit/f62cb6474c20989e9f803a999e18dfccaab86ee3)), closes [#1065](https://github.com/LocalCrag/LocalCragApp/issues/1065)
+* **topo:** add topo hierarchy breadcrumbs in line list ([#1200](https://github.com/LocalCrag/LocalCragApp/issues/1200)) ([e954095](https://github.com/LocalCrag/LocalCragApp/commit/e954095d7b333d07c42e58a433d7ede76fc7e0d8)), closes [#1129](https://github.com/LocalCrag/LocalCragApp/issues/1129)
+
 # [1.45.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.44.0...v1.45.0) (2026-07-17)
 
 
