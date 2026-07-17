@@ -224,8 +224,8 @@ export class SectorComponent implements OnInit {
     this.pageTitleService.setTabs(this.items);
   }
 
-  private tabBadge(count: number | null | undefined): string | undefined {
-    return count && count > 0 ? String(count) : undefined;
+  private tabBadge(count: number): string {
+    return String(count);
   }
 
   protected readonly environment = environment;
