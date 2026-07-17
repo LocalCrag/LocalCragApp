@@ -794,6 +794,15 @@ def test_successful_get_lines(client):
         assert r["closed"] == line.closed
         assert "closedReasons" not in r
         assert "closureSchedules" not in r
+        assert r["area"]["id"] == str(line.area.id)
+        assert r["area"]["slug"] == line.area.slug
+        assert r["area"]["name"] == line.area.name
+        assert r["sector"]["id"] == str(line.area.sector.id)
+        assert r["sector"]["slug"] == line.area.sector.slug
+        assert r["sector"]["name"] == line.area.sector.name
+        assert r["crag"]["id"] == str(line.area.sector.crag.id)
+        assert r["crag"]["slug"] == line.area.sector.crag.slug
+        assert r["crag"]["name"] == line.area.sector.crag.name
 
 
 def test_successful_get_lines_order_by_ascent_count_ascending(client):

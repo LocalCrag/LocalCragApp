@@ -2,7 +2,9 @@ from marshmallow import fields
 from marshmallow_enum import EnumField
 
 from extensions import ma
+from marshmallow_schemas.area_schema import AscentAndTodoAreaSchema
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
+from marshmallow_schemas.crag_schema import AscentAndTodoCragSchema
 from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
@@ -10,6 +12,7 @@ from marshmallow_schemas.mixins.is_closable import (
 from marshmallow_schemas.mixins.moderator_task_count import (
     ModeratorTaskCountSchemaMixin,
 )
+from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -43,6 +46,9 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     areaSlug = fields.String(attribute="area_slug")
     sectorSlug = fields.String(attribute="sector_slug")
     cragSlug = fields.String(attribute="crag_slug")
+    area = fields.Nested(AscentAndTodoAreaSchema())
+    sector = fields.Nested(AscentAndTodoSectorSchema(), attribute="area.sector")
+    crag = fields.Nested(AscentAndTodoCragSchema(), attribute="area.sector.crag")
     videos = fields.List(fields.Dict)
     type = EnumField(LineTypeEnum, by_value=True)
     authorRating = fields.Integer(attribute="author_rating")

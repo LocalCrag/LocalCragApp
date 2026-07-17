@@ -1,0 +1,25 @@
+.topo-hierarchy-breadcrumbs {
+  font-size: 0.65rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+
+  a,
+  &__segment {
+    text-decoration: none;
+    color: var(--p-text-muted-color);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+:host-context(html.lc-dark) {
+  .topo-hierarchy-breadcrumbs a,
+  .topo-hierarchy-breadcrumbs__segment {
+    color: var(--p-text-color);
+  }
+}
