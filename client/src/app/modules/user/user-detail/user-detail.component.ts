@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { User } from '../../../models/user';
@@ -54,8 +54,9 @@ export class UserDetailComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           ),
         ]).subscribe(([user]) => {

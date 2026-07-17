@@ -6,7 +6,7 @@ import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
@@ -65,16 +65,18 @@ export class SectorComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404 || e.status === 401) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           ),
           this.sectorsService.getSector(sectorSlug).pipe(
             catchError((e) => {
               if (e.status === 404 || e.status === 401) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           ),
           this.blocWeatherService.getNearest('sector', sectorSlug),

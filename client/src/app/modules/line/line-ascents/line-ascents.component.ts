@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { catchError, take } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import {
   selectInstanceName,
   selectInstanceSettingsState,
@@ -46,8 +46,9 @@ export class LineAscentsComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           ),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),

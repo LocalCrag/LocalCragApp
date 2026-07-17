@@ -5,7 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
@@ -45,8 +45,9 @@ export class RegionComponent implements OnInit {
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
+            return EMPTY;
           }
-          return of(e);
+          return throwError(() => e);
         }),
       ),
       this.store.pipe(select(selectIsModerator), take(1)),

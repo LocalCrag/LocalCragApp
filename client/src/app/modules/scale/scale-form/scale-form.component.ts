@@ -22,7 +22,7 @@ import { Scale } from '../../../models/scale';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LineType } from '../../../enums/line-type';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -107,8 +107,9 @@ export class ScaleFormComponent implements OnInit {
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
+              return EMPTY;
             }
-            return of(e);
+            return throwError(() => e);
           }),
         )
         .subscribe((scale) => {
