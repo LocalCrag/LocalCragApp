@@ -222,6 +222,13 @@
                       <div>
                         <strong>{{ line.name }}</strong>
                         {{ line | lineGrade }}
+                        <lc-topo-hierarchy-breadcrumbs
+                          class="mt-1"
+                          [crag]="line.crag"
+                          [sector]="line.sector"
+                          [area]="line.area"
+                          [stopPropagation]="true"
+                        ></lc-topo-hierarchy-breadcrumbs>
                       </div>
                       <p-rating
                         [ngModel]="

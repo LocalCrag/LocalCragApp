@@ -4,6 +4,8 @@ import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
 import { Area } from './area';
+import { Crag } from './crag';
+import { Sector } from './sector';
 import {
   deserializeClosableAttributes,
   IsClosable,
@@ -78,6 +80,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
 
   topoImages: TopoImage[];
   area: Area | null;
+  sector: Sector | null;
+  crag: Crag | null;
   ascentCount: number;
   imageCount: number;
   commentCount: number;
@@ -91,6 +95,9 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   disabled = false;
   blockOrderIndex: number; // Set after ordering for easy efficient reuse of ng prime data view order feature
   routerLink: string | null;
+  routerLinkCrag: string | null;
+  routerLinkSector: string | null;
+  routerLinkArea: string | null;
 
   constructor() {
     super();
@@ -177,11 +184,24 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         })
       : null;
     line.area = payload.area ? Area.deserialize(payload.area) : null;
+    line.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
+    line.crag = payload.crag ? Crag.deserialize(payload.crag) : null;
     line.ascentCount = payload.ascentCount;
     line.imageCount = payload.imageCount;
     line.commentCount = payload.commentCount;
     line.taskCount = payload.taskCount;
-    line.routerLink = topoLineRouterLink(line);
+
+    if (line.cragSlug && line.sectorSlug && line.areaSlug) {
+      line.routerLinkCrag = `/topo/${line.cragSlug}`;
+      line.routerLinkSector = `${line.routerLinkCrag}/${line.sectorSlug}`;
+      line.routerLinkArea = `${line.routerLinkSector}/${line.areaSlug}`;
+      line.routerLink = `${line.routerLinkArea}/${line.slug}`;
+    } else {
+      line.routerLinkCrag = null;
+      line.routerLinkSector = null;
+      line.routerLinkArea = null;
+      line.routerLink = topoLineRouterLink(line);
+    }
 
     return line;
   }

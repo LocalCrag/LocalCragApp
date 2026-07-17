@@ -42,13 +42,13 @@ import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
-import { environment } from '../../../../environments/environment';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
 
 import { User } from '../../../models/user';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
+import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { MenuModule } from 'primeng/menu';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -94,6 +94,7 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     TranslateSpecialGradesPipe,
     LineGradePipe,
     ReactionWrapperComponent,
+    TopoHierarchyBreadcrumbsComponent,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -579,5 +580,4 @@ export class AscentListComponent
   }
 
   protected readonly LineType = LineType;
-  protected readonly environment = environment;
 }

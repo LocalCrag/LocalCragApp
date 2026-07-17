@@ -237,17 +237,11 @@
                         }}</a>
                       </div>
                       <div class="todo-table-line-location mt-1">
-                        <a routerLink="{{ todo.routerLinkCrag }}">{{
-                          todo.crag.name
-                        }}</a
-                        >,
-                        <a routerLink="{{ todo.routerLinkSector }}">{{
-                          todo.sector.name
-                        }}</a
-                        >,
-                        <a routerLink="{{ todo.routerLinkArea }}">{{
-                          todo.area.name
-                        }}</a>
+                        <lc-topo-hierarchy-breadcrumbs
+                          [crag]="todo.crag"
+                          [sector]="todo.sector"
+                          [area]="todo.area"
+                        ></lc-topo-hierarchy-breadcrumbs>
                       </div>
                     </div>
                     <div class="todo-table-grade">
@@ -289,17 +283,11 @@
                           }}</a>
                         </div>
                         <div class="todo-table-line-location mt-1">
-                          <a routerLink="{{ todo.routerLinkCrag }}">{{
-                            todo.crag.name
-                          }}</a
-                          >,
-                          <a routerLink="{{ todo.routerLinkSector }}">{{
-                            todo.sector.name
-                          }}</a
-                          >,
-                          <a routerLink="{{ todo.routerLinkArea }}">{{
-                            todo.area.name
-                          }}</a>
+                          <lc-topo-hierarchy-breadcrumbs
+                            [crag]="todo.crag"
+                            [sector]="todo.sector"
+                            [area]="todo.area"
+                          ></lc-topo-hierarchy-breadcrumbs>
                         </div>
                       </div>
                       <div class="todo-table-grade">
