@@ -156,6 +156,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["authorRating"] == 5
     assert "userRating" in res
     assert res["ascentCount"] == 0
+    assert res["commentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faDate"] is None
     assert res["faName"] == "Dave Graham"
@@ -251,6 +252,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["type"] == "BOULDER"
     assert res["authorRating"] == 5
     assert res["ascentCount"] == 0
+    assert res["commentCount"] == 0
     assert res["faYear"] is None  # Should be set to None automatically for projects!
     assert res["faName"] is None  # Should be set to None automatically for projects!
     assert res["startingPosition"] == "FRENCH"
@@ -785,6 +787,7 @@ def test_successful_get_lines(client):
         assert r["slug"] == line.slug
         assert r["name"] == line.name
         assert r["ascentCount"] == line.ascent_count
+        assert r["commentCount"] == line.comment_count
         assert r["secret"] == line.secret
         assert r["color"] == line.color
         assert len(r["linePaths"]) == len(line.line_paths)

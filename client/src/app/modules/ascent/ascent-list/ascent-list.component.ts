@@ -145,6 +145,7 @@ export class AscentListComponent
   private loadedGradeFilterRange: number[] = null;
   private regionGradesLoaded = false;
   private initialLoadStarted = false;
+  private reloadWhenReady = false;
   private destroyRef = inject(DestroyRef);
   private ascentsService = inject(AscentsService);
   private dialogService = inject(DialogService);
@@ -159,14 +160,27 @@ export class AscentListComponent
   private gradeDistribution: any = null;
 
   ngOnChanges(changes: SimpleChanges) {
+    const parentBecameReady =
+      !!changes['parentLoading'] &&
+      changes['parentLoading'].previousValue === true &&
+      changes['parentLoading'].currentValue === false;
+
     if (changes['parentLoading']) {
+      if (changes['parentLoading'].currentValue === true) {
+        // Parent is reloading scope (e.g. line slug changed). Allow a fresh
+        // bootstrap and show the built-in skeleton while waiting.
+        this.initialLoadStarted = false;
+        this.reloadWhenReady = false;
+        this.ascents = undefined;
+        this.cdr.markForCheck();
+      }
       this.tryBootstrapList();
     }
 
     // Parent ascent routes reuse this component across param-only navigations (e.g. clicking a
-    // notification jumps from one line’s ascents to another). Initial load runs only once via
-    // combineLatest(…take(1)) in ngOnInit; skip scope hydration (undefined → id) to avoid a
-    // duplicate first-page fetch when parentLoading becomes false in the same change cycle.
+    // notification jumps from one line’s ascents to another). Refetch when scope identity
+    // changes. Skip the undefined→id hydration that shares a CD cycle with parentBecameReady
+    // (bootstrap already fetched with the new id in that case).
     const scopeKeys = [
       'lineId',
       'cragId',
@@ -176,19 +190,21 @@ export class AscentListComponent
     ] as const;
     const scopeChanged = scopeKeys.some((key) => {
       const ch = changes[key];
-      return (
-        ch &&
-        !ch.firstChange &&
-        ch.previousValue != null &&
-        ch.currentValue !== ch.previousValue
-      );
+      return ch && !ch.firstChange && ch.currentValue !== ch.previousValue;
     });
-    if (scopeChanged && this.canBootstrap() && this.initialLoadStarted) {
-      this.loadFirstPage();
+    if (scopeChanged) {
+      const alreadyStarted = this.initialLoadStarted;
+      this.tryBootstrapList();
+      if (alreadyStarted && this.canBootstrap() && !parentBecameReady) {
+        this.loadFirstPage();
+      }
     }
   }
 
   ngOnInit() {
+    this.buildOrderOptions();
+    this.buildDirectionOptions();
+
     if (this.disableGradeOrderAndFiltering) {
       this.tryBootstrapList();
     } else {
@@ -199,9 +215,6 @@ export class AscentListComponent
         this.tryBootstrapList();
       });
     }
-
-    this.buildOrderOptions();
-    this.buildDirectionOptions();
 
     this.store
       .select(selectCurrentUser)
@@ -232,6 +245,12 @@ export class AscentListComponent
 
   private canBootstrap(): boolean {
     if (this.parentLoading) {
+      return false;
+    }
+    // Line ascents disable grade filters and must not fetch until lineId is set.
+    // Without this, a race can bootstrap an unscoped first page before the parent
+    // finishes loading the line.
+    if (this.disableGradeOrderAndFiltering && !this.lineId) {
       return false;
     }
     return this.disableGradeOrderAndFiltering || this.regionGradesLoaded;
@@ -291,6 +310,10 @@ export class AscentListComponent
   }
 
   loadFirstPage() {
+    if (this.loading === this.loadingStates.LOADING) {
+      this.reloadWhenReady = true;
+      return;
+    }
     loadFirstPaginatedPage(
       this,
       () => this.loadNextPage(),
@@ -342,6 +365,11 @@ export class AscentListComponent
     this.ascentsService.getAscents(params).subscribe((ascents) => {
       this.ascents.push(...ascents.items);
       completePaginatedPageLoad(this, ascents.hasNext);
+      if (this.reloadWhenReady) {
+        this.reloadWhenReady = false;
+        this.loadFirstPage();
+        return;
+      }
       this.cdr.detectChanges();
     });
   }
