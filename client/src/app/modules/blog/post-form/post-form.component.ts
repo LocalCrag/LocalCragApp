@@ -17,7 +17,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Post } from '../../../models/post';
@@ -103,8 +103,9 @@ export class PostFormComponent implements OnInit {
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
+              return EMPTY;
             }
-            return of(e);
+            return throwError(() => e);
           }),
         )
         .subscribe((post) => {

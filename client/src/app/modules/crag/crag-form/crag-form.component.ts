@@ -21,7 +21,7 @@ import { environment } from '../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import {
@@ -148,8 +148,9 @@ export class CragFormComponent implements OnInit {
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
+              return EMPTY;
             }
-            return of(e);
+            return throwError(() => e);
           }),
         ),
         scalesPopulated,

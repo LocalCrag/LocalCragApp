@@ -26,7 +26,7 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError, switchMap } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
@@ -99,8 +99,9 @@ export class RegionFormComponent implements OnInit {
         catchError((e) => {
           if (e.status === 404) {
             this.router.navigate(['/not-found']);
+            return of(null);
           }
-          return of(null);
+          return throwError(() => e);
         }),
       ),
       this.instanceSettingsService

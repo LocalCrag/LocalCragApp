@@ -6,7 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { forkJoin, of } from 'rxjs';
+import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
@@ -62,8 +62,9 @@ export class CragComponent implements OnInit {
             catchError((e) => {
               if (e.status === 404 || e.status === 401) {
                 this.router.navigate(['/not-found']);
+                return EMPTY;
               }
-              return of(e);
+              return throwError(() => e);
             }),
           ),
           this.store.pipe(select(selectIsModerator), take(1)),

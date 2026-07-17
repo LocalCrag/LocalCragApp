@@ -20,7 +20,7 @@ import {
 import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
@@ -103,8 +103,9 @@ export class MenuPagesFormComponent implements OnInit {
           catchError((e) => {
             if (e.status === 404) {
               this.router.navigate(['/not-found']);
+              return EMPTY;
             }
-            return of(e);
+            return throwError(() => e);
           }),
         )
         .subscribe((menuPage) => {
