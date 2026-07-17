@@ -21,6 +21,17 @@ def test_successful_get_instance_statistics(client):
     assert res["totals"]["totalLines"] >= 1
     assert res["totals"]["totalUsers"] >= 1
 
+    # Sidebar ascent popovers (#1186) need location + ascent detail fields
+    for ascent in res["hardestAscentsLastMonth"] + res["latestFirstAscents"]:
+        assert "crag" in ascent and ascent["crag"] is not None
+        assert "sector" in ascent and ascent["sector"] is not None
+        assert "area" in ascent and ascent["area"] is not None
+        assert "rating" in ascent
+        assert "fa" in ascent
+        assert "withKneepad" in ascent
+        assert "comment" in ascent
+        assert "date" in ascent or "year" in ascent
+
 
 def test_instance_statistics_excludes_secret_lines(client, moderator_token):
     line = Line.query.filter(Line.archived.is_(False)).first()
