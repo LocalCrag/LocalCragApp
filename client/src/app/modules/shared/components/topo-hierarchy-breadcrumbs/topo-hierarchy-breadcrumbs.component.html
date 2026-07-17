@@ -8,7 +8,8 @@
           >{{ crag.name }}</span
         >,
       } @else {
-        <a [routerLink]="cragLink">{{ crag.name }}</a>,
+        <a [routerLink]="cragLink">{{ crag.name }}</a
+        >,
       }
     }
     @if (showSector && sector) {
@@ -19,7 +20,8 @@
           >{{ sector.name }}</span
         >,
       } @else {
-        <a [routerLink]="sectorLink">{{ sector.name }}</a>,
+        <a [routerLink]="sectorLink">{{ sector.name }}</a
+        >,
       }
     }
     @if (showArea && area) {
