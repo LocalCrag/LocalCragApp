@@ -19,11 +19,12 @@ from util.moderator_task_notifications import should_show_notification_to_user
 from util.notifications import should_send_notification_mail
 
 JOB_ID = "send_notification_digests_daily"
+_LOCK_NAME = "send_notification_digests_job_lock"
 
 
 def register(app, scheduler: BackgroundScheduler) -> str:
     scheduler.add_job(
-        func=lambda: _run(app),
+        func=lambda: _run_with_lock(app),
         trigger=IntervalTrigger(hours=24),
         id=JOB_ID,
         max_instances=1,
@@ -87,18 +88,25 @@ def send_notification_digests(app, *, respect_digest_schedule: bool = True) -> d
         return {"usersMailed": users_mailed, "notificationsMailed": notifications_mailed}
 
 
-def _run(app) -> None:
-    app.logger.info("Starting send_notification_digests job.")
-    try:
+def _run_with_lock(app) -> None:
+    from schedulers import run_with_advisory_lock
+
+    def work() -> None:
         counts = send_notification_digests(app)
         app.logger.info(
-            "Completed send_notification_digests job: usersMailed=%s notificationsMailed=%s",
+            "send_notification_digests mailed usersMailed=%s notificationsMailed=%s",
             counts["usersMailed"],
             counts["notificationsMailed"],
         )
-    except Exception:
-        app.logger.exception("send_notification_digests job failed")
-        raise
+
+    run_with_advisory_lock(
+        app,
+        _LOCK_NAME,
+        work,
+        skip_message="send_notification_digests skipped: another instance is running.",
+        start_message="Starting send_notification_digests job.",
+        complete_message="Completed send_notification_digests job.",
+    )
 
 
 def _is_monday_utc() -> bool:

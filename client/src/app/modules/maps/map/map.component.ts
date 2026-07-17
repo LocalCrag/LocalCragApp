@@ -2,12 +2,14 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   Input,
   OnDestroy,
   ViewChild,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   GeolocateControl,
@@ -51,12 +53,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   public apiKey: string;
 
   @ViewChild('map')
-  private mapContainer!: ElementRef<HTMLElement>;
+  private mapContainer?: ElementRef<HTMLElement>;
   @ViewChild(MapItemInfoDialogComponent)
   private infoDialog: MapItemInfoDialogComponent | undefined;
 
   private mapsService = inject(MapsService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
 
@@ -93,63 +96,69 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     forkJoin([
       this.mapsService.getMarkersGeoJSON(params),
       this.store.select(selectInstanceSettingsState).pipe(take(1)),
-    ]).subscribe(([markersSource, instanceSettingsState]) => {
-      let mapStyleUrl = '';
-      this.apiKey = instanceSettingsState.maptilerApiKey;
-      switch (this.mapStyle) {
-        case MapStyles.TOPO:
-          mapStyleUrl = `https://api.maptiler.com/maps/topo-v2/style.json?key=${this.apiKey}`;
-          break;
-        case MapStyles.SATELLITE:
-          mapStyleUrl = `https://api.maptiler.com/maps/satellite/style.json?key=${this.apiKey}`;
-          break;
-      }
-      this.markersSource = markersSource;
-      if (this.markersSource?.features?.length === 0 || !this.apiKey) {
-        return;
-      }
-      this.cdr.detectChanges();
-      this.addMissingMarkerNames();
-      this.map = new MaplibreMap({
-        container: this.mapContainer.nativeElement,
-        style: mapStyleUrl,
-        zoom: 10,
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([markersSource, instanceSettingsState]) => {
+        let mapStyleUrl = '';
+        this.apiKey = instanceSettingsState.maptilerApiKey;
+        switch (this.mapStyle) {
+          case MapStyles.TOPO:
+            mapStyleUrl = `https://api.maptiler.com/maps/topo-v2/style.json?key=${this.apiKey}`;
+            break;
+          case MapStyles.SATELLITE:
+            mapStyleUrl = `https://api.maptiler.com/maps/satellite/style.json?key=${this.apiKey}`;
+            break;
+        }
+        this.markersSource = markersSource;
+        if (this.markersSource?.features?.length === 0 || !this.apiKey) {
+          return;
+        }
+        this.cdr.detectChanges();
+        this.addMissingMarkerNames();
+        const mapElement = this.mapContainer?.nativeElement;
+        if (!mapElement) {
+          return;
+        }
+        this.map = new MaplibreMap({
+          container: mapElement,
+          style: mapStyleUrl,
+          zoom: 10,
+        });
+        this.map.addControl(new NavigationControl({}), 'top-right');
+        this.map.on('load', () => {
+          const images = [
+            { name: 'rock', path: 'assets/icons/rock.svg' },
+            { name: 'access', path: 'assets/icons/access.svg' },
+            { name: 'lc-parking', path: 'assets/icons/parking.svg' },
+            { name: 'info', path: 'assets/icons/info.svg' },
+            { name: 'boulder', path: 'assets/icons/boulder.svg' },
+          ];
+          from(images)
+            .pipe(
+              mergeMap(
+                (image) =>
+                  new Observable((observer) => {
+                    const img = new Image(100, 100);
+                    img.onload = () => {
+                      this.map.addImage(image.name, img);
+                      observer.next(null);
+                      observer.complete();
+                    };
+                    img.src = image.path;
+                  }),
+              ),
+              toArray(),
+            )
+            .subscribe(() => {
+              this.addSource();
+              this.addLayers();
+              this.addCurrentLocation();
+              this.setupClickActions();
+              this.setupCursors();
+            });
+        });
+        this.fitBounds();
       });
-      this.map.addControl(new NavigationControl({}), 'top-right');
-      this.map.on('load', () => {
-        const images = [
-          { name: 'rock', path: 'assets/icons/rock.svg' },
-          { name: 'access', path: 'assets/icons/access.svg' },
-          { name: 'lc-parking', path: 'assets/icons/parking.svg' },
-          { name: 'info', path: 'assets/icons/info.svg' },
-          { name: 'boulder', path: 'assets/icons/boulder.svg' },
-        ];
-        from(images)
-          .pipe(
-            mergeMap(
-              (image) =>
-                new Observable((observer) => {
-                  const img = new Image(100, 100);
-                  img.onload = () => {
-                    this.map.addImage(image.name, img);
-                    observer.next(null);
-                    observer.complete();
-                  };
-                  img.src = image.path;
-                }),
-            ),
-            toArray(),
-          )
-          .subscribe(() => {
-            this.addSource();
-            this.addLayers();
-            this.addCurrentLocation();
-            this.setupClickActions();
-            this.setupCursors();
-          });
-      });
-      this.fitBounds();
-    });
   }
 
   ngOnDestroy() {
