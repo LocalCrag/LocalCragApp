@@ -4,7 +4,6 @@ import pytz
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import and_, or_, select
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -26,13 +25,12 @@ from util.moderator_task_notifications import (
     notify_task_completed,
     notify_task_created,
 )
+from util.moderator_task_scope import HIERARCHY_TYPES, filter_tasks_by_scope
 from util.security_util import check_auth_claims
 from webargs_schemas.moderator_task_args import (
     moderator_task_args,
     moderator_task_update_args,
 )
-
-HIERARCHY_TYPES = {"Region", "Crag", "Sector", "Area", "Line"}
 
 
 def _resolve_target(object_type: str, object_id):
@@ -98,75 +96,6 @@ def _resolve_assigned_to(assigned_to_id):
     return assignee
 
 
-def _scope_pairs_for_crag(crag_id):
-    pairs = [("Crag", crag_id)]
-    sector_rows = db.session.execute(select(Sector.id).where(Sector.crag_id == crag_id)).all()
-    sector_ids = [row[0] for row in sector_rows]
-    for sector_id in sector_ids:
-        pairs.append(("Sector", sector_id))
-    if sector_ids:
-        area_rows = db.session.execute(select(Area.id).where(Area.sector_id.in_(sector_ids))).all()
-        area_ids = [row[0] for row in area_rows]
-        for area_id in area_ids:
-            pairs.append(("Area", area_id))
-        if area_ids:
-            line_rows = db.session.execute(select(Line.id).where(Line.area_id.in_(area_ids))).all()
-            for (line_id,) in line_rows:
-                pairs.append(("Line", line_id))
-    return pairs
-
-
-def _scope_pairs_for_sector(sector_id):
-    pairs = [("Sector", sector_id)]
-    area_rows = db.session.execute(select(Area.id).where(Area.sector_id == sector_id)).all()
-    area_ids = [row[0] for row in area_rows]
-    for area_id in area_ids:
-        pairs.append(("Area", area_id))
-    if area_ids:
-        line_rows = db.session.execute(select(Line.id).where(Line.area_id.in_(area_ids))).all()
-        for (line_id,) in line_rows:
-            pairs.append(("Line", line_id))
-    return pairs
-
-
-def _scope_pairs_for_area(area_id):
-    pairs = [("Area", area_id)]
-    line_rows = db.session.execute(select(Line.id).where(Line.area_id == area_id)).all()
-    for (line_id,) in line_rows:
-        pairs.append(("Line", line_id))
-    return pairs
-
-
-def _get_scope_pairs(scope_type: str, scope_id):
-    if scope_type == "Region":
-        region = Region.find_by_id(scope_id)
-        pairs = [("Region", region.id)]
-        crag_rows = db.session.execute(select(Crag.id)).all()
-        for (crag_id,) in crag_rows:
-            pairs.extend(_scope_pairs_for_crag(crag_id))
-        return pairs
-    if scope_type == "Crag":
-        return _scope_pairs_for_crag(scope_id)
-    if scope_type == "Sector":
-        return _scope_pairs_for_sector(scope_id)
-    if scope_type == "Area":
-        return _scope_pairs_for_area(scope_id)
-    if scope_type == "Line":
-        return [("Line", scope_id)]
-    raise ValueError(f"Unsupported scope type: {scope_type}")
-
-
-def _filter_tasks_by_scope(query, scope_type: str, scope_id):
-    pairs = _get_scope_pairs(scope_type, scope_id)
-    if not pairs:
-        return query.filter(False)
-    conditions = [
-        and_(ModeratorTask.object_type == object_type, ModeratorTask.object_id == object_id)
-        for object_type, object_id in pairs
-    ]
-    return query.filter(or_(*conditions))
-
-
 def _apply_task_list_filters(query):
     assigned_to_unassigned = request.args.get("assigned-to-unassigned")
     if assigned_to_unassigned in ("true", "1"):
@@ -203,7 +132,7 @@ class GetModeratorTasks(MethodView):
         page = int(request.args.get("page") or 1)
         per_page = int(request.args.get("per_page") or 10)
         query = ModeratorTask.query
-        query = _filter_tasks_by_scope(query, scope_type, scope_id)
+        query = filter_tasks_by_scope(query, scope_type, scope_id)
         query = _apply_task_list_filters(query)
         query = _order_tasks_for_list(query)
         paginated_tasks = db.paginate(query, page=page, per_page=per_page)

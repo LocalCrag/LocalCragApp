@@ -183,30 +183,35 @@ export class AreaComponent implements OnInit {
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
         visible: true,
+        badge: this.tabBadge(this.area.topoImageCount),
       },
       {
         label: this.translocoService.translate(marker('area.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(this.area.lineCount),
       },
       {
         label: this.translocoService.translate(marker('area.ascents')),
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(this.area.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('area.gallery')),
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(this.area.imageCount),
       },
       {
         label: this.translocoService.translate(marker('area.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(this.area.commentCount),
       },
       {
         label: this.translocoService.translate(marker('area.weather')),
@@ -219,6 +224,7 @@ export class AreaComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.area.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('area.edit')),
@@ -228,5 +234,9 @@ export class AreaComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number): string {
+    return String(count);
   }
 }

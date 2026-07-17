@@ -8,6 +8,9 @@ from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
 )
+from marshmallow_schemas.mixins.moderator_task_count import (
+    ModeratorTaskCountSchemaMixin,
+)
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
@@ -28,13 +31,16 @@ class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     secret = fields.Boolean()
 
 
-class AreaDetailSchema(AreaSchema, IsClosableDetailSchemaMixin):
+class AreaDetailSchema(AreaSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     description = fields.String(attribute="description")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")
     defaultSportScale = fields.String(attribute="default_sport_scale")
     defaultTradScale = fields.String(attribute="default_trad_scale")
     blocweatherUrl = fields.String(attribute="blocweather_url")
+    imageCount = fields.Integer(attribute="image_count")
+    commentCount = fields.Integer(attribute="comment_count")
+    topoImageCount = fields.Integer(attribute="topo_image_count")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):
