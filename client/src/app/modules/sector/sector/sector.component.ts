@@ -168,18 +168,21 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
         visible: true,
+        badge: this.tabBadge(this.sector.areaCount),
       },
       {
         label: this.translocoService.translate(marker('sector.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(this.sector.lineCount),
       },
       {
         label: this.translocoService.translate(marker('sector.ascents')),
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(this.sector.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('sector.ranking')),
@@ -192,12 +195,14 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(this.sector.imageCount),
       },
       {
         label: this.translocoService.translate(marker('sector.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(this.sector.commentCount),
       },
       {
         label: this.translocoService.translate(marker('sector.weather')),
@@ -210,6 +215,7 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.sector.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('sector.edit')),
@@ -219,6 +225,10 @@ export class SectorComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number): string {
+    return String(count);
   }
 
   protected readonly environment = environment;

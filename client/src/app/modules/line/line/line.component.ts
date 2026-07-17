@@ -208,24 +208,28 @@ export class LineComponent implements OnInit {
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(this.line.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('line.gallery')),
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(this.line.imageCount),
       },
       {
         label: this.translocoService.translate(marker('line.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(this.line.commentCount),
       },
       {
         label: this.translocoService.translate(marker('line.tasks')),
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.line.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('line.edit')),
@@ -235,5 +239,9 @@ export class LineComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number): string {
+    return String(count);
   }
 }

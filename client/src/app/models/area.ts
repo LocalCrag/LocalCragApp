@@ -24,6 +24,10 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   portraitImage: File;
   lineCount: number;
   ascentCount: number;
+  imageCount: number;
+  commentCount: number;
+  topoImageCount: number;
+  taskCount?: number;
   secret: boolean;
   mapMarkers: MapMarker[];
   defaultBoulderScale: string | null = null;
@@ -55,6 +59,10 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     area.sector = payload.sector ? Sector.deserialize(payload.sector) : null;
     area.lineCount = payload.lineCount;
     area.ascentCount = payload.ascentCount;
+    area.imageCount = payload.imageCount;
+    area.commentCount = payload.commentCount;
+    area.topoImageCount = payload.topoImageCount;
+    area.taskCount = payload.taskCount;
     area.secret = payload.secret;
     area.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)

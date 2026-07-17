@@ -229,6 +229,9 @@
 
     .p-tab {
       border-bottom: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
     .p-tab-active {
@@ -242,6 +245,10 @@
     .p-tablist-tab-list :first-child {
       padding-left: 0 !important;
     }
+  }
+
+  &__tab-badge.p-badge {
+    margin-left: 0.05rem;
   }
 
   &__tabs--on-image {
@@ -285,6 +292,9 @@
       border-bottom: none;
       color: rgb(255 255 255 / 0.62);
       text-shadow: 0 1px 8px rgb(0 0 0 / 0.55);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
     .p-tab-active {
@@ -324,6 +334,11 @@
 
     .p-tablist-tab-list :first-child {
       padding-left: 0 !important;
+    }
+
+    .page-chrome__tab-badge.p-badge {
+      background: rgb(255 255 255 / 0.22);
+      color: #fff;
     }
   }
 }

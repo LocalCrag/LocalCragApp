@@ -1,0 +1,48 @@
+@if (showCrag || showSector || showArea) {
+  <div class="topo-hierarchy-breadcrumbs">
+    @if (showCrag && crag) {
+      @if (stopPropagation) {
+        <span
+          class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
+          (click)="onNestedSegmentClick($event, cragLink)"
+          (keydown.enter)="onNestedSegmentClick($event, cragLink)"
+          >{{ crag.name }}</span
+        >,
+      } @else {
+        <a [routerLink]="cragLink">{{ crag.name }}</a
+        >,
+      }
+    }
+    @if (showSector && sector) {
+      @if (stopPropagation) {
+        <span
+          class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
+          (click)="onNestedSegmentClick($event, sectorLink)"
+          (keydown.enter)="onNestedSegmentClick($event, sectorLink)"
+          >{{ sector.name }}</span
+        >,
+      } @else {
+        <a [routerLink]="sectorLink">{{ sector.name }}</a
+        >,
+      }
+    }
+    @if (showArea && area) {
+      @if (stopPropagation) {
+        <span
+          class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
+          (click)="onNestedSegmentClick($event, areaLink)"
+          (keydown.enter)="onNestedSegmentClick($event, areaLink)"
+          >{{ area.name }}</span
+        >
+      } @else {
+        <a [routerLink]="areaLink">{{ area.name }}</a>
+      }
+    }
+  </div>
+}

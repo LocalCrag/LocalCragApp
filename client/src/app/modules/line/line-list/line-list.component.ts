@@ -12,6 +12,7 @@ import { TicksService } from '../../../services/crud/ticks.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { CommentCountComponent } from '../../comments/comment-count/comment-count.component';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -58,6 +59,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
@@ -86,6 +88,7 @@ import {
   selector: 'lc-line-list',
   imports: [
     AscentCountComponent,
+    CommentCountComponent,
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,
@@ -110,6 +113,7 @@ import {
     LineBoolPropListComponent,
     LineGradePipe,
     TopoImageComponent,
+    TopoHierarchyBreadcrumbsComponent,
   ],
   providers: [ConfirmationService, DialogService],
   templateUrl: './line-list.component.html',

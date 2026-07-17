@@ -92,18 +92,21 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/crags`,
         visible: true,
+        badge: this.tabBadge(region.cragCount),
       },
       {
         label: this.translocoService.translate(marker('region.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/lines`,
         visible: true,
+        badge: this.tabBadge(region.lineCount),
       },
       {
         label: this.translocoService.translate(marker('region.ascents')),
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/ascents`,
         visible: true,
+        badge: this.tabBadge(region.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('region.ranking')),
@@ -116,18 +119,21 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/gallery`,
         visible: true,
+        badge: this.tabBadge(region.imageCount),
       },
       {
         label: this.translocoService.translate(marker('region.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/comments`,
         visible: true,
+        badge: this.tabBadge(region.commentCount),
       },
       {
         label: this.translocoService.translate(marker('region.tasks')),
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(region.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('region.edit')),
@@ -137,5 +143,9 @@ export class RegionComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number): string {
+    return String(count);
   }
 }

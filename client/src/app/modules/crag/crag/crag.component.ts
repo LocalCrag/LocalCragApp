@@ -144,18 +144,21 @@ export class CragComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/${this.crag.slug}/sectors`,
         visible: true,
+        badge: this.tabBadge(crag.sectorCount),
       },
       {
         label: this.translocoService.translate(marker('crag.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(crag.lineCount),
       },
       {
         label: this.translocoService.translate(marker('crag.ascents')),
         icon: 'pi pi-fw pi-check-square',
         routerLink: `/topo/${this.crag.slug}/ascents`,
         visible: true,
+        badge: this.tabBadge(crag.ascentCount),
       },
       {
         label: this.translocoService.translate(marker('crag.ranking')),
@@ -168,12 +171,14 @@ export class CragComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/gallery`,
         visible: true,
+        badge: this.tabBadge(crag.imageCount),
       },
       {
         label: this.translocoService.translate(marker('crag.comments')),
         icon: 'pi pi-fw pi-comments',
         routerLink: `/topo/${this.crag.slug}/comments`,
         visible: true,
+        badge: this.tabBadge(crag.commentCount),
       },
       {
         label: this.translocoService.translate(marker('crag.weather')),
@@ -186,6 +191,7 @@ export class CragComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(crag.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('crag.edit')),
@@ -195,6 +201,10 @@ export class CragComponent implements OnInit {
       },
     ];
     this.pageTitleService.setTabs(this.items);
+  }
+
+  private tabBadge(count: number): string {
+    return String(count);
   }
 
   protected readonly environment = environment;

@@ -166,21 +166,11 @@
                         </div>
                       </div>
                       <div class="ascent-table-line-location mt-1">
-                        @if (ascent.crag.slug !== environment.skippedSlug) {
-                          <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                            ascent.crag.name
-                          }}</a
-                          >,
-                        }
-                        @if (ascent.sector.slug !== environment.skippedSlug) {
-                          <a routerLink="{{ ascent.routerLinkSector }}">{{
-                            ascent.sector.name
-                          }}</a
-                          >,
-                        }
-                        <a routerLink="{{ ascent.routerLinkArea }}">{{
-                          ascent.area.name
-                        }}</a>
+                        <lc-topo-hierarchy-breadcrumbs
+                          [crag]="ascent.crag"
+                          [sector]="ascent.sector"
+                          [area]="ascent.area"
+                        ></lc-topo-hierarchy-breadcrumbs>
                       </div>
                     </div>
                     <div class="ascent-table-comment">
@@ -301,21 +291,11 @@
                           </div>
                         </div>
                         <div class="ascent-table-line-location mt-1">
-                          @if (ascent.crag.slug !== environment.skippedSlug) {
-                            <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                              ascent.crag.name
-                            }}</a
-                            >,
-                          }
-                          @if (ascent.sector.slug !== environment.skippedSlug) {
-                            <a routerLink="{{ ascent.routerLinkSector }}">{{
-                              ascent.sector.name
-                            }}</a
-                            >,
-                          }
-                          <a routerLink="{{ ascent.routerLinkArea }}">{{
-                            ascent.area.name
-                          }}</a>
+                          <lc-topo-hierarchy-breadcrumbs
+                            [crag]="ascent.crag"
+                            [sector]="ascent.sector"
+                            [area]="ascent.area"
+                          ></lc-topo-hierarchy-breadcrumbs>
                         </div>
                       </div>
                     </div>
@@ -437,21 +417,11 @@
                           </div>
                         </div>
                         <div class="ascent-table-line-location mt-1">
-                          @if (ascent.crag.slug !== environment.skippedSlug) {
-                            <a routerLink="{{ ascent.routerLinkCrag }}">{{
-                              ascent.crag.name
-                            }}</a
-                            >,
-                          }
-                          @if (ascent.sector.slug !== environment.skippedSlug) {
-                            <a routerLink="{{ ascent.routerLinkSector }}">{{
-                              ascent.sector.name
-                            }}</a
-                            >,
-                          }
-                          <a routerLink="{{ ascent.routerLinkArea }}">{{
-                            ascent.area.name
-                          }}</a>
+                          <lc-topo-hierarchy-breadcrumbs
+                            [crag]="ascent.crag"
+                            [sector]="ascent.sector"
+                            [area]="ascent.area"
+                          ></lc-topo-hierarchy-breadcrumbs>
                         </div>
                       </div>
                       <div class="ascent-actions">

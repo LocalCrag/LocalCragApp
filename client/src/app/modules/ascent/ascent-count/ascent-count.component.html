@@ -1,9 +1,12 @@
 <ng-container *transloco="let t; read: 'ascentCount'">
-  <i class="pi pi-check ticked"></i>
-  @if (ascentCount === 1) {
-    <span>{{ ascentCount }} {{ t("ascent") }}</span>
-  }
-  @if (ascentCount !== 1) {
-    <span>{{ ascentCount }} {{ t("ascents") }}</span>
-  }
+  <p-chip
+    [label]="
+      ascentCount === 1
+        ? ascentCount + ' ' + t('ascent')
+        : ascentCount + ' ' + t('ascents')
+    "
+    icon="pi pi-check"
+    [class.clickable]="!!routerLink"
+    (click)="onClick($event)"
+  ></p-chip>
 </ng-container>

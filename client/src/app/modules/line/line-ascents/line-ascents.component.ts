@@ -1,7 +1,6 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -19,7 +18,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 
 @Component({
   selector: 'lc-line-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent],
   templateUrl: './line-ascents.component.html',
   styleUrl: './line-ascents.component.scss',
 })
@@ -39,6 +38,7 @@ export class LineAscentsComponent implements OnInit {
     this.route.parent.parent.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.line = undefined;
         const lineSlug =
           this.route.parent.parent.snapshot.paramMap.get('line-slug');
         forkJoin([

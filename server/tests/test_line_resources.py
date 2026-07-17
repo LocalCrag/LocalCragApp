@@ -156,6 +156,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["authorRating"] == 5
     assert "userRating" in res
     assert res["ascentCount"] == 0
+    assert res["commentCount"] == 0
     assert res["faYear"] == 2016
     assert res["faDate"] is None
     assert res["faName"] == "Dave Graham"
@@ -251,6 +252,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["type"] == "BOULDER"
     assert res["authorRating"] == 5
     assert res["ascentCount"] == 0
+    assert res["commentCount"] == 0
     assert res["faYear"] is None  # Should be set to None automatically for projects!
     assert res["faName"] is None  # Should be set to None automatically for projects!
     assert res["startingPosition"] == "FRENCH"
@@ -785,12 +787,22 @@ def test_successful_get_lines(client):
         assert r["slug"] == line.slug
         assert r["name"] == line.name
         assert r["ascentCount"] == line.ascent_count
+        assert r["commentCount"] == line.comment_count
         assert r["secret"] == line.secret
         assert r["color"] == line.color
         assert len(r["linePaths"]) == len(line.line_paths)
         assert r["closed"] == line.closed
         assert "closedReasons" not in r
         assert "closureSchedules" not in r
+        assert r["area"]["id"] == str(line.area.id)
+        assert r["area"]["slug"] == line.area.slug
+        assert r["area"]["name"] == line.area.name
+        assert r["sector"]["id"] == str(line.area.sector.id)
+        assert r["sector"]["slug"] == line.area.sector.slug
+        assert r["sector"]["name"] == line.area.sector.name
+        assert r["crag"]["id"] == str(line.area.sector.crag.id)
+        assert r["crag"]["slug"] == line.area.sector.crag.slug
+        assert r["crag"]["name"] == line.area.sector.crag.name
 
 
 def test_successful_get_lines_order_by_ascent_count_ascending(client):

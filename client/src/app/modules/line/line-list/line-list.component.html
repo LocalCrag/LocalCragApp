@@ -222,6 +222,13 @@
                       <div>
                         <strong>{{ line.name }}</strong>
                         {{ line | lineGrade }}
+                        <lc-topo-hierarchy-breadcrumbs
+                          class="mt-1"
+                          [crag]="line.crag"
+                          [sector]="line.sector"
+                          [area]="line.area"
+                          [stopPropagation]="true"
+                        ></lc-topo-hierarchy-breadcrumbs>
                       </div>
                       <p-rating
                         [ngModel]="
@@ -242,9 +249,38 @@
                         class="quill-content"
                       ></div>
                     }
-                    <lc-ascent-count
-                      [ascentCount]="line.ascentCount"
-                    ></lc-ascent-count>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <lc-ascent-count
+                        [ascentCount]="line.ascentCount"
+                        [routerLink]="
+                          '/topo/' +
+                          line.cragSlug +
+                          '/' +
+                          line.sectorSlug +
+                          '/' +
+                          line.areaSlug +
+                          '/' +
+                          line.slug +
+                          '/ascents'
+                        "
+                      ></lc-ascent-count>
+                      @if (line.commentCount > 0) {
+                        <lc-comment-count
+                          [commentCount]="line.commentCount"
+                          [routerLink]="
+                            '/topo/' +
+                            line.cragSlug +
+                            '/' +
+                            line.sectorSlug +
+                            '/' +
+                            line.areaSlug +
+                            '/' +
+                            line.slug +
+                            '/comments'
+                          "
+                        ></lc-comment-count>
+                      }
+                    </div>
                     <div class="bottom-row">
                       @if (line.videos?.length > 0) {
                         <p-button

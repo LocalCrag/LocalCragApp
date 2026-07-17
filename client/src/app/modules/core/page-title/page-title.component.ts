@@ -2,6 +2,7 @@ import { AsyncPipe, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
+import { Badge } from 'primeng/badge';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import {
   PageTitleService,
@@ -23,6 +24,7 @@ import { HeroParallaxDirective } from './hero-parallax.directive';
     NgStyle,
     NgTemplateOutlet,
     Breadcrumb,
+    Badge,
     Tabs,
     TabList,
     Tab,
