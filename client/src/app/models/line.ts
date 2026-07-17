@@ -81,6 +81,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   ascentCount: number;
   imageCount: number;
   commentCount: number;
+  taskCount?: number;
 
   areaSlug: string;
   sectorSlug: string;
@@ -179,6 +180,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.ascentCount = payload.ascentCount;
     line.imageCount = payload.imageCount;
     line.commentCount = payload.commentCount;
+    line.taskCount = payload.taskCount;
     line.routerLink = topoLineRouterLink(line);
 
     return line;

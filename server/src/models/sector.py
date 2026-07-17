@@ -57,6 +57,12 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEnt
         return query.scalar()
 
     @hybrid_property
+    def area_count(self):
+        query = db.session.query(func.count(Area.id)).where(Area.sector_id == self.id)
+        query = SecretService.apply_topo_entity_filter(query, Area)
+        return query.scalar()
+
+    @hybrid_property
     def ascent_count(self):
         cached = get_cached_ascent_count(self)
         if cached is not None:
@@ -77,6 +83,12 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEnt
     @hybrid_property
     def image_count(self):
         return count_gallery_images("Sector", self.id)
+
+    @hybrid_property
+    def task_count(self):
+        from util.moderator_task_scope import count_open_moderator_tasks
+
+        return count_open_moderator_tasks("Sector", self.id)
 
     @classmethod
     def find_max_order_index(cls, crag_id) -> int:

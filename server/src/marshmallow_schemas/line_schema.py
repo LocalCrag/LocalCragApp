@@ -7,6 +7,9 @@ from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
 )
+from marshmallow_schemas.mixins.moderator_task_count import (
+    ModeratorTaskCountSchemaMixin,
+)
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -93,7 +96,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     ascentCount = fields.Integer(attribute="ascent_count")
 
 
-class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin):
+class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")
 

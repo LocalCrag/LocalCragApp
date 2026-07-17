@@ -92,12 +92,14 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/crags`,
         visible: true,
+        badge: this.tabBadge(region.cragCount),
       },
       {
         label: this.translocoService.translate(marker('region.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/lines`,
         visible: true,
+        badge: this.tabBadge(region.lineCount),
       },
       {
         label: this.translocoService.translate(marker('region.ascents')),
@@ -131,6 +133,7 @@ export class RegionComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(region.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('region.edit')),

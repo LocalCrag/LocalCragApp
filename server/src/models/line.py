@@ -104,3 +104,9 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     @hybrid_property
     def image_count(self):
         return count_gallery_images("Line", self.id)
+
+    @hybrid_property
+    def task_count(self):
+        from util.moderator_task_scope import count_open_moderator_tasks
+
+        return count_open_moderator_tasks("Line", self.id)

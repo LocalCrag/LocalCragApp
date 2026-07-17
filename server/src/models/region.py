@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
+from models.crag import Crag
 from models.line import Line
 from util.secret_service import SecretService
 from util.topo_tab_counts import count_all_gallery_images, count_root_comments
@@ -24,6 +25,18 @@ class Region(BaseEntity):
     image = db.relationship("File", lazy="joined", foreign_keys=[image_id])
 
     @hybrid_property
+    def crag_count(self):
+        query = db.session.query(func.count(Crag.id))
+        query = SecretService.apply_topo_entity_filter(query, Crag)
+        return query.scalar()
+
+    @hybrid_property
+    def line_count(self):
+        query = db.session.query(func.count(Line.id))
+        query = SecretService.apply_line_filter(query)
+        return query.scalar()
+
+    @hybrid_property
     def ascent_count(self):
         query = db.session.query(func.count(Ascent.id)).join(Line)
         query = SecretService.apply_line_filter(query)
@@ -37,6 +50,12 @@ class Region(BaseEntity):
     def image_count(self):
         # Region gallery lists all images (no tag filter), matching GetGalleryImages without tags.
         return count_all_gallery_images()
+
+    @hybrid_property
+    def task_count(self):
+        from util.moderator_task_scope import count_open_moderator_tasks
+
+        return count_open_moderator_tasks("Region", self.id)
 
     @classmethod
     def return_it(cls):

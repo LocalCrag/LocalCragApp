@@ -183,12 +183,14 @@ export class AreaComponent implements OnInit {
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/topo-images`,
         visible: true,
+        badge: this.tabBadge(this.area.topoImageCount),
       },
       {
         label: this.translocoService.translate(marker('area.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(this.area.lineCount),
       },
       {
         label: this.translocoService.translate(marker('area.ascents')),
@@ -222,6 +224,7 @@ export class AreaComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.area.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('area.edit')),

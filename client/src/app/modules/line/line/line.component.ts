@@ -229,6 +229,7 @@ export class LineComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.line.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('line.edit')),

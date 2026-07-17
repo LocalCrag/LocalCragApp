@@ -12,6 +12,9 @@ export class Region extends AbstractModel {
   ascentCount: number;
   imageCount: number;
   commentCount: number;
+  cragCount: number;
+  lineCount: number;
+  taskCount?: number;
 
   /**
    * Parses a region.
@@ -29,6 +32,9 @@ export class Region extends AbstractModel {
     region.ascentCount = payload.ascentCount;
     region.imageCount = payload.imageCount;
     region.commentCount = payload.commentCount;
+    region.cragCount = payload.cragCount;
+    region.lineCount = payload.lineCount;
+    region.taskCount = payload.taskCount;
     return region;
   }
 

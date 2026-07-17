@@ -8,6 +8,9 @@ from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
 )
+from marshmallow_schemas.mixins.moderator_task_count import (
+    ModeratorTaskCountSchemaMixin,
+)
 from marshmallow_schemas.sector_schema import SectorMenuSchema
 from util.bucket_placeholders import replace_bucket_placeholders
 
@@ -29,7 +32,7 @@ class CragSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     secret = fields.Boolean()
 
 
-class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin):
+class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     rules = fields.String()
     description = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
@@ -39,6 +42,7 @@ class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin):
     blocweatherUrl = fields.String(attribute="blocweather_url")
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")
+    sectorCount = fields.Integer(attribute="sector_count")
 
     @post_dump
     def handle_bucket_placeholders(self, data, **kwargs):

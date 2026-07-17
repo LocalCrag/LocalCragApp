@@ -14,6 +14,8 @@ def test_successful_get_region(client):
     assert res["ascentCount"] == 1
     assert res["imageCount"] == 2
     assert res["commentCount"] == 0
+    assert res["cragCount"] == 2
+    assert res["lineCount"] == 2
 
 
 def test_successful_edit_region(client, admin_token, any_file):

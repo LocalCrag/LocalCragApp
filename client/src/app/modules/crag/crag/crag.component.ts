@@ -144,12 +144,14 @@ export class CragComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/${this.crag.slug}/sectors`,
         visible: true,
+        badge: this.tabBadge(crag.sectorCount),
       },
       {
         label: this.translocoService.translate(marker('crag.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(crag.lineCount),
       },
       {
         label: this.translocoService.translate(marker('crag.ascents')),
@@ -189,6 +191,7 @@ export class CragComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(crag.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('crag.edit')),

@@ -168,12 +168,14 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-sitemap',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/areas`,
         visible: true,
+        badge: this.tabBadge(this.sector.areaCount),
       },
       {
         label: this.translocoService.translate(marker('sector.lines')),
         icon: 'pi pi-fw pi-chart-line',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/lines`,
         visible: true,
+        badge: this.tabBadge(this.sector.lineCount),
       },
       {
         label: this.translocoService.translate(marker('sector.ascents')),
@@ -213,6 +215,7 @@ export class SectorComponent implements OnInit {
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/moderator-tasks`,
         visible: isModerator,
+        badge: this.tabBadge(this.sector.taskCount ?? 0),
       },
       {
         label: this.translocoService.translate(marker('sector.edit')),

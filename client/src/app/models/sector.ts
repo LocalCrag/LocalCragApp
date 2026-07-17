@@ -30,6 +30,8 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   ascentCount: number;
   imageCount: number;
   commentCount: number;
+  areaCount: number;
+  taskCount?: number;
   routerLink: string | null;
   secret: boolean;
   mapMarkers: MapMarker[];
@@ -64,6 +66,8 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     sector.ascentCount = payload.ascentCount;
     sector.imageCount = payload.imageCount;
     sector.commentCount = payload.commentCount;
+    sector.areaCount = payload.areaCount;
+    sector.taskCount = payload.taskCount;
     sector.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;

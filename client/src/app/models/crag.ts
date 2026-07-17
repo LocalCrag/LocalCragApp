@@ -28,6 +28,8 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   ascentCount: number;
   imageCount: number;
   commentCount: number;
+  sectorCount: number;
+  taskCount?: number;
   routerLink: string | null;
   secret: boolean;
   mapMarkers: MapMarker[];
@@ -63,6 +65,8 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     crag.ascentCount = payload.ascentCount;
     crag.imageCount = payload.imageCount;
     crag.commentCount = payload.commentCount;
+    crag.sectorCount = payload.sectorCount;
+    crag.taskCount = payload.taskCount;
     crag.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
