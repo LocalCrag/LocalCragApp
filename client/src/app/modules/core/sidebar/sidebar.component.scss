@@ -152,15 +152,9 @@ lc-sidebar {
 .sidebar-ascent-popover-location {
   font-size: 0.8rem;
   line-height: 1.35;
-  color: var(--p-text-muted-color);
 
-  a {
-    color: var(--p-primary-color);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  lc-topo-hierarchy-breadcrumbs {
+    font-size: inherit;
   }
 }
 

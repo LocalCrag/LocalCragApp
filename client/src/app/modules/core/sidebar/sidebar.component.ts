@@ -13,10 +13,10 @@ import { Popover } from 'primeng/popover';
 import { RatingModule } from 'primeng/rating';
 import { Skeleton } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
-import { environment } from '../../../../environments/environment';
 import { Ascent } from '../../../models/ascent';
 import { InstanceStatistics } from '../../../models/instance-statistics';
 import { StatisticsService } from '../../../services/crud/statistics.service';
+import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 
@@ -35,6 +35,7 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
     TagModule,
     FormsModule,
     DatePipe,
+    TopoHierarchyBreadcrumbsComponent,
   ],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
@@ -49,7 +50,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   stats: InstanceStatistics | null = null;
   loading = true;
   activeAscent: Ascent | null = null;
-  readonly skippedSlug = environment.skippedSlug;
 
   ngOnInit(): void {
     this.statisticsService.getInstanceStatistics().subscribe({
