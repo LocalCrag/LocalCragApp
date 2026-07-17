@@ -8,7 +8,11 @@
           }}</span>
           <ul class="sidebar-list">
             @for (ascent of stats.hardestAscentsLastMonth; track ascent.id) {
-              <li class="sidebar-list-item">
+              <li
+                class="sidebar-list-item"
+                (mouseenter)="showAscentPopover($event, ascent)"
+                (mouseleave)="scheduleHideAscentPopover()"
+              >
                 <a
                   [routerLink]="ascent.routerLinkLine"
                   class="sidebar-list-link"
@@ -38,7 +42,11 @@
           <span class="sidebar-heading">{{ t("latestFirstAscents") }}</span>
           <ul class="sidebar-list">
             @for (ascent of stats.latestFirstAscents; track ascent.id) {
-              <li class="sidebar-list-item">
+              <li
+                class="sidebar-list-item"
+                (mouseenter)="showAscentPopover($event, ascent)"
+                (mouseleave)="scheduleHideAscentPopover()"
+              >
                 <a
                   [routerLink]="ascent.routerLinkLine"
                   class="sidebar-list-link"
@@ -94,4 +102,62 @@
       }
     </div>
   </nav>
+
+  <p-popover
+    #ascentPopover
+    appendTo="body"
+    styleClass="sidebar-ascent-popover"
+    [focusOnShow]="false"
+    (onShow)="positionAscentPopoverRight()"
+  >
+    @if (activeAscent; as ascent) {
+      <div
+        class="sidebar-ascent-popover-content"
+        *transloco="let at; read: 'ascents.ascentList'"
+        (mouseenter)="keepAscentPopover()"
+        (mouseleave)="scheduleHideAscentPopover()"
+      >
+        <div class="sidebar-ascent-popover-location">
+          @if (ascent.crag.slug !== skippedSlug) {
+            <a [routerLink]="ascent.routerLinkCrag">{{ ascent.crag.name }}</a
+            >,
+          }
+          @if (ascent.sector.slug !== skippedSlug) {
+            <a [routerLink]="ascent.routerLinkSector">{{
+              ascent.sector.name
+            }}</a
+            >,
+          }
+          <a [routerLink]="ascent.routerLinkArea">{{ ascent.area.name }}</a>
+        </div>
+
+        <div class="sidebar-ascent-popover-meta">
+          <span class="sidebar-ascent-popover-date">
+            <i class="pi pi-calendar" aria-hidden="true"></i>
+            @if (ascent.date) {
+              {{ ascent.date | date }}
+            } @else if (ascent.year) {
+              {{ ascent.year }}
+            }
+          </span>
+          <p-rating [ngModel]="ascent.rating" [readonly]="true" />
+        </div>
+
+        @if (ascent.fa || ascent.withKneepad) {
+          <div class="sidebar-ascent-popover-tags">
+            @if (ascent.fa) {
+              <p-tag [value]="at('fa')" icon="pi pi-star" />
+            }
+            @if (ascent.withKneepad) {
+              <p-tag [value]="at('withKneepad')" icon="pi pi-ticket" />
+            }
+          </div>
+        }
+
+        @if (ascent.comment) {
+          <p class="sidebar-ascent-popover-comment">{{ ascent.comment }}</p>
+        }
+      </div>
+    }
+  </p-popover>
 </ng-container>
