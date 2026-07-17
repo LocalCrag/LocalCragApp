@@ -71,7 +71,7 @@ export class TopoHierarchyBreadcrumbsComponent {
     return !!this.area && !!this.areaLink;
   }
 
-  protected onNestedSegmentClick(event: MouseEvent, link: string | null): void {
+  protected onNestedSegmentClick(event: Event, link: string | null): void {
     event.preventDefault();
     event.stopPropagation();
     if (link) {

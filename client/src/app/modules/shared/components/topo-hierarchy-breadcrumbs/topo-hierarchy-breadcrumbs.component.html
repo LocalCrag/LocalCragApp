@@ -4,7 +4,10 @@
       @if (stopPropagation) {
         <span
           class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
           (click)="onNestedSegmentClick($event, cragLink)"
+          (keydown.enter)="onNestedSegmentClick($event, cragLink)"
           >{{ crag.name }}</span
         >,
       } @else {
@@ -16,7 +19,10 @@
       @if (stopPropagation) {
         <span
           class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
           (click)="onNestedSegmentClick($event, sectorLink)"
+          (keydown.enter)="onNestedSegmentClick($event, sectorLink)"
           >{{ sector.name }}</span
         >,
       } @else {
@@ -28,7 +34,10 @@
       @if (stopPropagation) {
         <span
           class="topo-hierarchy-breadcrumbs__segment"
+          role="link"
+          tabindex="0"
           (click)="onNestedSegmentClick($event, areaLink)"
+          (keydown.enter)="onNestedSegmentClick($event, areaLink)"
           >{{ area.name }}</span
         >
       } @else {
