@@ -24,6 +24,7 @@ import { NavigationService } from '../../services/core/navigation.service';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
+import { OfflineAlertComponent } from './offline-alert/offline-alert.component';
 import { MenuComponent } from './menu/menu.component';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './footer/footer.component';
@@ -45,6 +46,7 @@ import { Toast } from 'primeng/toast';
     PageTitleComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
+    OfflineAlertComponent,
     MenuComponent,
     RouterOutlet,
     FooterComponent,

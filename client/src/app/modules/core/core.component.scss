@@ -12,7 +12,7 @@
 
 .site-header {
   position: fixed;
-  top: 0;
+  top: var(--lc-offline-alert-height, 0px);
   left: 0;
   right: 0;
   z-index: 1100;
@@ -29,7 +29,9 @@
 
 .site-header-spacer {
   flex-shrink: 0;
-  height: var(--lc-menu-height, 3.25rem);
+  height: calc(
+    var(--lc-menu-height, 3.25rem) + var(--lc-offline-alert-height, 0px)
+  );
 }
 
 .body-row {
