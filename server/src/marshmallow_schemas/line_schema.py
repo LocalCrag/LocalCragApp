@@ -94,11 +94,11 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     linePaths = fields.List(fields.Nested("LinePathSchemaForLines"), attribute="line_paths")
 
     ascentCount = fields.Integer(attribute="ascent_count")
+    commentCount = fields.Integer(attribute="comment_count")
 
 
 class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     imageCount = fields.Integer(attribute="image_count")
-    commentCount = fields.Integer(attribute="comment_count")
 
 
 class PaginatedLinesSchema(ma.SQLAlchemySchema):

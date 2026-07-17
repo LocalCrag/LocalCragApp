@@ -12,6 +12,7 @@ import { TicksService } from '../../../services/crud/ticks.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
+import { CommentCountComponent } from '../../comments/comment-count/comment-count.component';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -86,6 +87,7 @@ import {
   selector: 'lc-line-list',
   imports: [
     AscentCountComponent,
+    CommentCountComponent,
     ButtonModule,
     DataViewModule,
     HasPermissionDirective,

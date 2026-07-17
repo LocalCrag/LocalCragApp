@@ -252,6 +252,14 @@ export class TopoImageListComponent implements OnInit {
     }
   }
 
+  openComments(event: MouseEvent, line: Line) {
+    event.preventDefault();
+    event.stopPropagation();
+    void this.router.navigateByUrl(
+      `/topo/${this.cragSlug}/${this.sectorSlug}/${this.areaSlug}/${line.slug}/comments`,
+    );
+  }
+
   /**
    * Sets the sort field and order.
    * @param event Sort change event.

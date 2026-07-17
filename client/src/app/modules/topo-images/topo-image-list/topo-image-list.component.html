@@ -258,6 +258,16 @@
                                 ></p-rating>
                               </div>
                               <div class="line-table-info-actions">
+                                @if (linePath.line.commentCount > 0) {
+                                  <p-button
+                                    icon="pi pi-comment"
+                                    styleClass="p-button-rounded p-button-text"
+                                    (click)="
+                                      openComments($event, linePath.line)
+                                    "
+                                  >
+                                  </p-button>
+                                }
                                 @if (linePath.line.videos?.length > 0) {
                                   <p-button
                                     icon="pi pi-video"

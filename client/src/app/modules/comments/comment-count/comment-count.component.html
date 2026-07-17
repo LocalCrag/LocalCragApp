@@ -1,0 +1,9 @@
+<ng-container *transloco="let t; read: 'commentCount'">
+  <p-chip
+    [label]="displayCount"
+    icon="pi pi-comment"
+    [attr.aria-label]="t('ariaLabel', { count: commentCount })"
+    [class.clickable]="!!routerLink"
+    (click)="onClick($event)"
+  ></p-chip>
+</ng-container>

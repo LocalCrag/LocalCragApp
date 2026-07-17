@@ -4,16 +4,20 @@ import { Chip } from 'primeng/chip';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
-  selector: 'lc-ascent-count',
+  selector: 'lc-comment-count',
   imports: [Chip, TranslocoDirective],
-  templateUrl: './ascent-count.component.html',
-  styleUrl: './ascent-count.component.scss',
+  templateUrl: './comment-count.component.html',
+  styleUrl: './comment-count.component.scss',
 })
-export class AscentCountComponent {
-  @Input() ascentCount = 0;
+export class CommentCountComponent {
+  @Input() commentCount = 0;
   @Input() routerLink: string | null = null;
 
   private router = inject(Router);
+
+  get displayCount(): string {
+    return this.commentCount > 9 ? '9+' : String(this.commentCount);
+  }
 
   onClick(event: MouseEvent) {
     if (!this.routerLink) {
