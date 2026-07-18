@@ -6,6 +6,7 @@ Welcome to the LocalCragApp repository! We're excited that you're interested in 
 By contributing, you agree that your contributions will be licensed under the repository’s existing license. See [LICENSE](https://github.com/LocalCrag/LocalCragApp/blob/main/LICENSE) for details.
 
 ## Getting Started
+- Set up your local environment using the [dev tooling guide](./docs/dev-tooling.md) (Docker Compose or native).
 - Pick any open issue you’d like to work on. Feel free to suggest new ideas by opening an issue.
 - If an issue already exists but you have additional insights or ideas, comment on it before starting work.
 - Contributions are welcome in any form, including bug fixes, feature development, documentation improvements, and test enhancements.
