@@ -1,8 +1,10 @@
 # LocalCrag Server
 
+For the full local toolchain (Docker vs native, Husky, MinIO), see [docs/dev-tooling.md](../docs/dev-tooling.md).
+
 ## Setup
 
-- Install [pip](https://pip.pypa.io/en/stable/installation/), [pipenv](https://pipenv.pypa.io/en/latest/) and Python (see Python version in Pipfile)
+- Install [pip](https://pip.pypa.io/en/stable/installation/), [pipenv](https://pipenv.pypa.io/en/latest/) and Python (see Python version in Pipfile; currently `3.14`)
 - Install Postgres and create a new database
 - Install the server dependencies `pipenv install`
 - Create a local config file `src/config/dev.cfg` by copying the config template `src/config/template.cfg` and fill out the appropriate values
