@@ -18,6 +18,9 @@ class Ranking(db.Model):
     top_50 = db.Column(db.Integer(), default=0)
     top_values = db.Column(JSON)
     total_count = db.Column(db.Integer(), default=0)
+    rank_top_10 = db.Column(db.Integer(), nullable=True)
+    rank_top_50 = db.Column(db.Integer(), nullable=True)
+    rank_total_count = db.Column(db.Integer(), nullable=True)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     secret = db.Column(db.Boolean(), nullable=False, server_default="0")
 

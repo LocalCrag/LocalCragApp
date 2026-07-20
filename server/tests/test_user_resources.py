@@ -412,3 +412,40 @@ def test_successful_get_user_statistics(client):
     assert "galleryImagesUploaded" in res["social"]
     assert "moderation" in res
     assert res["moderation"]["cragsCreated"] >= 0
+
+
+def test_user_statistics_shared_ranks_on_tied_scores(client):
+    """Equal primary scores share a competition rank; next score skips (1,1,3)."""
+    from models.enums.line_type_enum import LineTypeEnum
+    from models.ranking import Ranking
+    from util.build_rankings import assign_competition_ranks
+
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+    member = User.find_by_email("member@localcrag.invalid.org")
+    other = User.find_by_email("user@localcrag.invalid.org")
+
+    # Admin already has global BOULDER ranking (top_10=22) from seed data.
+    # Member ties admin on top_10; other places third with a lower score.
+    for user, top_10, top_50, total_count in (
+        (member, 22, 10, 1),
+        (other, 15, 15, 2),
+    ):
+        ranking = Ranking()
+        ranking.user_id = user.id
+        ranking.top_10 = top_10
+        ranking.top_50 = top_50
+        ranking.top_values = [top_10]
+        ranking.total_count = total_count
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.secret = False
+        db.session.add(ranking)
+    db.session.commit()
+    assign_competition_ranks()
+
+    admin_stats = client.get(f"/api/users/{admin.slug}/statistics").json
+    member_stats = client.get(f"/api/users/{member.slug}/statistics").json
+    other_stats = client.get(f"/api/users/{other.slug}/statistics").json
+
+    assert admin_stats["globalRankByLineType"]["BOULDER"] == 1
+    assert member_stats["globalRankByLineType"]["BOULDER"] == 1
+    assert other_stats["globalRankByLineType"]["BOULDER"] == 3

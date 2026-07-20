@@ -38,7 +38,7 @@
         <p-select
           [options]="rankingTypes"
           [(ngModel)]="rankingType"
-          (ngModelChange)="sortField = rankingType.value"
+          (ngModelChange)="onRankingTypeChange()"
           optionLabel="label"
           styleClass="md:mb-0 md:mr-2"
           [disabled]="loading === loadingStates.LOADING"
@@ -114,7 +114,9 @@
                 [ngClass]="{ 'border-t border-surface': !first }"
               >
                 <div class="ranking-table-row">
-                  <div class="ranking-table-rank">{{ index + 1 }}.</div>
+                  <div class="ranking-table-rank">
+                    {{ ranking[rankField] }}.
+                  </div>
                   <div class="ranking-table-user-info">
                     <lc-user-avatar
                       [user]="ranking.user"

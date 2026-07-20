@@ -1,7 +1,7 @@
 import datetime
 from bisect import insort
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm.attributes import flag_modified
 
 from extensions import db
@@ -90,6 +90,64 @@ def _push_top_value_sorted(top_values: list, value, limit: int = 50) -> None:
     # Replace the smallest and restore order with an insertion.
     top_values.pop(0)
     insort(top_values, value)
+
+
+def competition_ranks(scores):
+    """
+    Given scores already sorted best-first (descending for numeric scores),
+    return a list of 1-based competition ranks of the same length.
+    """
+    ranks = []
+    for idx, score in enumerate(scores):
+        if idx == 0 or score != scores[idx - 1]:
+            ranks.append(idx + 1)
+        else:
+            ranks.append(ranks[-1])
+    return ranks
+
+
+ASSIGN_COMPETITION_RANKS_SQL = """
+UPDATE rankings AS r
+SET
+    rank_top_10 = ranked.rank_top_10,
+    rank_top_50 = ranked.rank_top_50,
+    rank_total_count = ranked.rank_total_count
+FROM (
+    SELECT
+        id,
+        RANK() OVER (
+            PARTITION BY type, secret, crag_id, sector_id
+            ORDER BY COALESCE(top_10, 0) DESC
+        ) AS rank_top_10,
+        RANK() OVER (
+            PARTITION BY type, secret, crag_id, sector_id
+            ORDER BY COALESCE(top_50, 0) DESC
+        ) AS rank_top_50,
+        RANK() OVER (
+            PARTITION BY type, secret, crag_id, sector_id
+            ORDER BY COALESCE(total_count, 0) DESC
+        ) AS rank_total_count
+    FROM rankings
+) AS ranked
+WHERE r.id = ranked.id
+"""
+
+
+def assign_competition_ranks(connection=None):
+    """
+    Persist competition ranks from current scores in one SQL pass.
+
+    Does not recompute scores. PostgreSQL RANK() is Olympic-style (1, 1, 3).
+
+    Pass ``connection`` (e.g. ``op.get_bind()``) when running inside an Alembic
+    migration so the UPDATE uses the same connection/transaction as the DDL.
+    Using ``db.session`` during a migration deadlocks on ``rankings`` locks.
+    """
+    if connection is not None:
+        connection.execute(text(ASSIGN_COMPETITION_RANKS_SQL))
+    else:
+        db.session.execute(text(ASSIGN_COMPETITION_RANKS_SQL))
+        db.session.commit()
 
 
 def build_rankings():
@@ -186,3 +244,6 @@ def build_rankings():
 
         # Keep per-user memory bounded.
         db.session.expunge_all()
+
+    # Scores are finalized for every user; assign shared ranks in one set-based SQL update.
+    assign_competition_ranks()

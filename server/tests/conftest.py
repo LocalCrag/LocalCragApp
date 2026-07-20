@@ -680,7 +680,7 @@ def fill_db_with_sample_data():
     menu_item.created_by_id = admin_id
     db.session.add(menu_item)
 
-    for secret in [None, True]:
+    for secret in [False, True]:
         ranking = Ranking()
         ranking.user_id = admin_id
         ranking.top_10 = 22
@@ -688,6 +688,9 @@ def fill_db_with_sample_data():
         ranking.type = LineTypeEnum.BOULDER
         ranking.top_values = [22]
         ranking.total_count = 1
+        ranking.rank_top_10 = 1
+        ranking.rank_top_50 = 1
+        ranking.rank_total_count = 1
         ranking.secret = secret
         db.session.add(ranking)
 
@@ -699,6 +702,9 @@ def fill_db_with_sample_data():
         ranking.type = LineTypeEnum.BOULDER
         ranking.top_values = [22]
         ranking.total_count = 1
+        ranking.rank_top_10 = 1
+        ranking.rank_top_50 = 1
+        ranking.rank_total_count = 1
         ranking.secret = secret
         db.session.add(ranking)
 
@@ -710,6 +716,9 @@ def fill_db_with_sample_data():
         ranking.type = LineTypeEnum.BOULDER
         ranking.top_values = [22]
         ranking.total_count = 1
+        ranking.rank_top_10 = 1
+        ranking.rank_top_50 = 1
+        ranking.rank_total_count = 1
         ranking.secret = secret
         db.session.add(ranking)
 
