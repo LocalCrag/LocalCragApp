@@ -389,47 +389,16 @@ class GetUserStatistics(MethodView):
         global_rank_top50_by_line_type = {}
         global_rank_total_count_by_line_type = {}
         for lt in LineTypeEnum:
-            rankings = Ranking.query.filter(
+            ranking = Ranking.query.filter(
+                Ranking.user_id == user_id,
                 Ranking.crag_id.is_(None),
                 Ranking.sector_id.is_(None),
                 Ranking.secret.is_(False),
                 Ranking.type == lt,
-            ).all()
-            rankings_top10 = list(rankings)
-            rankings_top10.sort(
-                key=lambda r: (r.top_10 or 0, r.top_50 or 0, r.total_count or 0),
-                reverse=True,
-            )
-            rank_top10 = None
-            for idx, r in enumerate(rankings_top10):
-                if r.user_id == user_id:
-                    rank_top10 = idx + 1
-                    break
-            global_rank_top10_by_line_type[lt.value] = rank_top10
-
-            rankings_top50 = list(rankings)
-            rankings_top50.sort(
-                key=lambda r: (r.top_50 or 0, r.top_10 or 0, r.total_count or 0),
-                reverse=True,
-            )
-            rank_top50 = None
-            for idx, r in enumerate(rankings_top50):
-                if r.user_id == user_id:
-                    rank_top50 = idx + 1
-                    break
-            global_rank_top50_by_line_type[lt.value] = rank_top50
-
-            rankings_total = list(rankings)
-            rankings_total.sort(
-                key=lambda r: (r.total_count or 0, r.top_10 or 0, r.top_50 or 0),
-                reverse=True,
-            )
-            rank_total = None
-            for idx, r in enumerate(rankings_total):
-                if r.user_id == user_id:
-                    rank_total = idx + 1
-                    break
-            global_rank_total_count_by_line_type[lt.value] = rank_total
+            ).first()
+            global_rank_top10_by_line_type[lt.value] = ranking.rank_top_10 if ranking else None
+            global_rank_top50_by_line_type[lt.value] = ranking.rank_top_50 if ranking else None
+            global_rank_total_count_by_line_type[lt.value] = ranking.rank_total_count if ranking else None
 
         comments_count = (
             db.session.query(func.count(Comment.id))

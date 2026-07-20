@@ -66,6 +66,7 @@ export class RankingListComponent implements OnInit {
   public rankings: Ranking[];
   public loading: LoadingState = LoadingState.DEFAULT;
   public sortField: string;
+  public rankField: 'rankTop10' | 'rankTop50' | 'rankTotalCount' = 'rankTop10';
   public sortOrder = -1;
   public rankingTypes: SelectItem[];
   public rankingType: SelectItem;
@@ -80,6 +81,15 @@ export class RankingListComponent implements OnInit {
   private cragsService = inject(CragsService);
   private sectorsService = inject(SectorsService);
   private store = inject(Store);
+
+  private static readonly RANK_FIELD_BY_SORT: Record<
+    string,
+    'rankTop10' | 'rankTop50' | 'rankTotalCount'
+  > = {
+    top10: 'rankTop10',
+    top50: 'rankTop50',
+    totalCount: 'rankTotalCount',
+  };
 
   ngOnInit() {
     this.rankingTypes = [
@@ -176,16 +186,29 @@ export class RankingListComponent implements OnInit {
     }
     this.rankingService.getRanking(params).subscribe((rankings) => {
       this.rankings = rankings;
-      this.sortField = this.rankingType.value;
-      this.rankings.sort((a, b) =>
-        a[this.sortField] < b[this.sortField]
-          ? 1
-          : a[this.sortField] > b[this.sortField]
-            ? -1
-            : 0,
-      );
+      this.applyRankingTypeSort();
       this.loading = LoadingState.DEFAULT;
     });
+  }
+
+  onRankingTypeChange() {
+    this.applyRankingTypeSort();
+  }
+
+  applyRankingTypeSort() {
+    this.sortField = this.rankingType.value;
+    this.rankField =
+      RankingListComponent.RANK_FIELD_BY_SORT[this.sortField] ?? 'rankTop10';
+    if (!this.rankings?.length) {
+      return;
+    }
+    this.rankings.sort((a, b) =>
+      a[this.sortField] < b[this.sortField]
+        ? 1
+        : a[this.sortField] > b[this.sortField]
+          ? -1
+          : 0,
+    );
   }
 
   showDialog() {

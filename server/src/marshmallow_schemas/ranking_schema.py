@@ -9,6 +9,9 @@ class RankingSchema(ma.SQLAlchemySchema):
     top10 = fields.Integer(attribute="top_10")
     top50 = fields.Integer(attribute="top_50")
     totalCount = fields.Integer(attribute="total_count")
+    rankTop10 = fields.Integer(attribute="rank_top_10")
+    rankTop50 = fields.Integer(attribute="rank_top_50")
+    rankTotalCount = fields.Integer(attribute="rank_total_count")
 
 
 ranking_schema = RankingSchema(many=True)
