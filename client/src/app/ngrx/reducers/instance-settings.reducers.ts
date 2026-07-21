@@ -23,6 +23,8 @@ export interface InstanceSettingsState {
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
+  sentryEnabled: boolean;
+  sentryDsn: string;
   gymMode: boolean;
   skippedHierarchyLayers: number;
   displayUserGrades: boolean;
@@ -52,6 +54,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   maptilerApiKey: null,
   maxFileSize: 0,
   maxImageSize: 0,
+  sentryEnabled: false,
+  sentryDsn: '',
   gymMode: false,
   skippedHierarchyLayers: 0,
   displayUserGrades: false,
@@ -84,6 +88,8 @@ const instanceSettingsReducer = createReducer(
     maptilerApiKey: action.settings.maptilerApiKey,
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,
+    sentryEnabled: action.settings.sentryEnabled,
+    sentryDsn: action.settings.sentryDsn,
     gymMode: action.settings.gymMode,
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
     displayUserGrades: action.settings.displayUserGrades,

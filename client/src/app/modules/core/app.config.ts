@@ -53,6 +53,11 @@ import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { LanguageService } from '../../services/core/language.service';
 import { de } from 'primelocale/js/de.js';
+import { InstanceSettings } from '../../models/instance-settings';
+import {
+  SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
+  shouldDropSentryEvent,
+} from '../../utility/sentry-network-error';
 
 /**
  * Transloco HTTP loader.
@@ -88,6 +93,7 @@ const initInstanceSettingsAndLanguage = (
     return instanceSettingsService.getInstanceSettings().pipe(
       map((instanceSettings) => {
         store.dispatch(updateInstanceSettings({ settings: instanceSettings }));
+        initSentryFromSettings(instanceSettings);
         return instanceSettings.language;
       }),
       concatMap(languageService.initApp.bind(languageService)),
@@ -115,6 +121,34 @@ const initMatomo = (
       }
     });
   };
+};
+
+/**
+ * Initializes Sentry from server env-driven settings (SENTRY_ENABLED / SENTRY_DSN).
+ */
+const initSentryFromSettings = (settings: InstanceSettings): void => {
+  if (!settings.sentryEnabled || !settings.sentryDsn) {
+    return;
+  }
+  // According to Sentry: DSNs are safe to keep public (public in client-side code anyway)
+  Sentry.init({
+    dsn: settings.sentryDsn,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration(),
+    ],
+    ignoreErrors: SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
+    beforeSend(event, hint) {
+      if (shouldDropSentryEvent(event, hint)) {
+        return null;
+      }
+      return event;
+    },
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: ['localhost', '127.0.0.1'],
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
+  });
 };
 
 export function localeFactory(): string {

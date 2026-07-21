@@ -30,8 +30,8 @@ For the full local toolchain (Docker vs native, Husky, MinIO), see [docs/dev-too
     - `S3_BUCKET` S3 object storage bucket name
     - `S3_ACCESS_ENDPOINT` Access endpoint of the S3 object storage
     - `S3_ADDRESSING` S3 object storage addressing mode: `virtual` or `path`
-    - `SENTRY_DSN` DSN for Sentry error tracking
-    - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN
+    - `SENTRY_DSN` DSN for Sentry error tracking (used by server and exposed to the client)
+    - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN on server and client
     - `LOG_LEVEL` Application log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Defaults to `INFO`. Logs are written to stdout.
 - For configuring a local object storage, read `../docs/dev-tooling.md`. This is needed if you are working with fileupload in any way.
 - Now you are ready to set up the database of your local dev instance:

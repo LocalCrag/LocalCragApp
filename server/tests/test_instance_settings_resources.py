@@ -31,6 +31,8 @@ def test_successful_get_instance_settings(client):
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
+    assert res["sentryEnabled"] is False
+    assert res["sentryDsn"] == ""
     assert res["gymMode"] == instance_settings.gym_mode
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserGrades"] == instance_settings.display_user_grades
@@ -95,6 +97,8 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["maptilerApiKey"] == "maptiler"
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
+    assert res["sentryEnabled"] is False
+    assert res["sentryDsn"] == ""
     assert res["gymMode"] is True
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserRatings"] is True
