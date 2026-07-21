@@ -25,7 +25,7 @@ existingSecret:
 server:
   image:
     repository: ghcr.io/localcrag/localcrag-server
-    tag: 1.46.0
+    tag: 1.47.0
     pullPolicy: Always
   # REQUIRED: The public URL of your frontend (with trailing slash).
   # Example: "https://localcrag.example.com/"
@@ -107,7 +107,7 @@ systemEmail: ""
 client:
   image:
     repository: ghcr.io/localcrag/localcrag-client
-    tag: 1.46.0
+    tag: 1.47.0
     pullPolicy: Always
   resources:
     requests:

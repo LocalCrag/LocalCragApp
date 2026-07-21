@@ -1,3 +1,11 @@
+# [1.47.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.46.0...v1.47.0) (2026-07-21)
+
+
+### Features
+
+* **core:** configure client and server Sentry via env vars ([#1207](https://github.com/LocalCrag/LocalCragApp/issues/1207)) ([1709803](https://github.com/LocalCrag/LocalCragApp/commit/170980303b2c32e707275103899536f8d2b49366)), closes [#586](https://github.com/LocalCrag/LocalCragApp/issues/586)
+* **rankings:** change rankings to competition rankings with shared ranks on ties ([#1205](https://github.com/LocalCrag/LocalCragApp/issues/1205)) ([197f6b6](https://github.com/LocalCrag/LocalCragApp/commit/197f6b610f15ba0daef644580ac72374a278f1c1)), closes [#1173](https://github.com/LocalCrag/LocalCragApp/issues/1173)
+
 # [1.46.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.45.0...v1.46.0) (2026-07-17)
 
 
