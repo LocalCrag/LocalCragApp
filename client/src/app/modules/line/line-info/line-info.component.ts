@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -62,6 +62,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TopoImageComponent,
     DatePipe,
     LineGradePipe,
+    RouterLink,
   ],
 })
 export class LineInfoComponent implements OnInit {

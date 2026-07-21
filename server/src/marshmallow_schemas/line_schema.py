@@ -17,6 +17,17 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
+class LineFaUserSchema(ma.Schema):
+    """UserMin fields plus the FA ascent's year/date."""
+
+    id = fields.String(attribute="user.id")
+    slug = fields.String(attribute="user.slug")
+    firstname = fields.String(attribute="user.firstname")
+    lastname = fields.String(attribute="user.lastname")
+    year = fields.Integer()
+    date = fields.Date()
+
+
 class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     name = fields.String()
     slug = fields.String()
@@ -105,6 +116,10 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 
 class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     imageCount = fields.Integer(attribute="image_count")
+    faUsers = fields.Method("get_fa_users")
+
+    def get_fa_users(self, obj):
+        return LineFaUserSchema(many=True).dump(obj.get_fa_users())
 
 
 class PaginatedLinesSchema(ma.SQLAlchemySchema):
