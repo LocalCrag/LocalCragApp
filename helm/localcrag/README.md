@@ -30,6 +30,9 @@ systemEmail: "noreply@example.com"
 # REQUIRED: Public URL of your frontend application (with trailing slash)
 server:
   frontendHost: "https://localcrag.example.com/"
+  # Optional: Sentry (disabled by default)
+  # sentryEnabled: true
+  # sentryDsn: "https://examplePublicKey@o0.ingest.sentry.io/0"
 
 # REQUIRED: S3 / MinIO configuration
 appS3:

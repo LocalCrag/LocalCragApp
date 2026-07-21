@@ -21,8 +21,8 @@ This document provides an overview of the environment variables used in the serv
 | `S3_ACCESS_ENDPOINT`      | `string` (e.g., `http://localhost:9000`)                  | Endpoint for accessing object storage from the client (may differ from `S3_ENDPOINT`). |
 | `S3_ADDRESSING`           | `string` (`path`, `virtual`)                              | Addressing style for object storage (path-based or virtual-hosted).                    |
 | `FRONTEND_HOST`           | `string` (e.g., `http://localhost:4200`)                  | Base URL of the frontend application                                                   |
-| `SENTRY_DSN`              | `string`                                                  | Data Source Name (DSN) for Sentry error tracking.                                      |
-| `SENTRY_ENABLED`          | `boolean` (`true`, `false`)                               | Flag to enable or disable Sentry integration.                                          |
+| `SENTRY_DSN`              | `string`                                                  | Data Source Name (DSN) for Sentry error tracking (server + client).                    |
+| `SENTRY_ENABLED`          | `boolean` (`true`, `false`)                               | Enable or disable Sentry for server and client.                                        |
 | `SUPERADMIN_EMAIL`        | `string` (e.g., `admin@example.com`)                      | Email address of the initial superadmin user.                                          |
 | `SUPERADMIN_FIRSTNAME`    | `string`                                                  | First name of the initial superadmin user.                                             |
 | `SUPERADMIN_LASTNAME`     | `string`                                                  | Last name of the initial superadmin user.                                              |

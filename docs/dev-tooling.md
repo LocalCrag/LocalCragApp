@@ -1,14 +1,55 @@
-# Dev tooling
+# Local development toolchain
 
-## Introduction
+This guide is the hub for setting up LocalCrag for local development. Detailed native setup steps live in the [client](../client/README.md) and [server](../server/README.md) READMEs; this page covers prerequisites, path choice, shared tooling, and common day-to-day workflows.
 
-LocalCrag uses Pipenv for managing Python dependencies and npm for managing JavaScript dependencies. Install the dependencies, then run the frontend and backend servers to start developing.
+## Prerequisites
 
-For file storage, LocalCrag uses MinIO, which is a self-hosted S3-compatible object storage solution.
+| Tool | Notes |
+|------|--------|
+| **Git** | Clone the repository |
+| **Node.js** | Client: Node ≥ 21 (see [client README](../client/README.md)) |
+| **npm** | Used for the client, root Husky install, and server `lint-staged` |
+| **Python** | `3.14` (see `server/Pipfile` `[requires]`) |
+| **Pipenv** | Server dependency management |
+| **PostgreSQL** | Required for native server setup |
+| **Docker** | Optional; required for the Compose-based path and convenient for MinIO |
+
+## Choose a setup path
+
+| Path | Best when | Start here |
+|------|-----------|------------|
+| **Docker Compose (dev)** | You want frontend, backend, Postgres, MinIO, MailHog, and Adminer with minimal host setup | [Docker development setup](./docker-dev-setup.md) |
+| **Native** | You prefer running Angular/`flask` on the host (faster iteration, IDE debugging) | [Client README](../client/README.md) + [Server README](../server/README.md) + [MinIO](#minio-setup) below |
+
+Both paths need a `server/src/config/dev.cfg` copied from `server/src/config/template.cfg` (fill at least the `SUPERADMIN_*` values; for native also DB and S3 settings).
+
+## Docker Compose (dev)
+
+Use the **dev** compose file (`docker-compose.dev.yml`), not the production `docker-compose.yml`.
+
+```bash
+# from repo root
+cp server/src/config/template.cfg server/src/config/dev.cfg
+# edit SUPERADMIN_* in server/src/config/dev.cfg
+
+docker compose -f docker-compose.dev.yml build
+docker compose -f docker-compose.dev.yml up
+```
+
+Full steps, URLs, and teardown: [docker-dev-setup.md](./docker-dev-setup.md).
+
+## Native setup (overview)
+
+1. **Client** — install Node, `cd client && npm i`, then `npm run dev` (Tailwind watch + `ng serve`). Details: [client/README.md](../client/README.md).
+2. **Server** — install Python/Pipenv/Postgres, `cd server && pipenv install`, create `src/config/dev.cfg`, run migrations and `flask run`. Details: [server/README.md](../server/README.md).
+3. **Object storage** — run MinIO (below) and point the S3_* keys in `dev.cfg` at it. Needed for uploads.
+4. **Pre-commit hooks** — from the repo root, `npm install` (activates Husky). See [Pre-commit hooks](#pre-commit-hooks-husky--lint-staged).
+
+Config reference: [environment-variables.md](./environment-variables.md).
 
 ## MinIO setup
 
-Start your MinIO server with the env vars set in the server dev config file:
+For native development, LocalCrag uses MinIO as S3-compatible object storage. Align credentials with the `S3_*` values in `server/src/config/dev.cfg`.
 
 ```bash
 export MINIO_ROOT_USER=your-access-key
@@ -25,7 +66,7 @@ docker run -d --name minio \
   quay.io/minio/minio server /data --console-address ":9001"
 ```
 
-Create a bucket for LocalCrag:
+Create and publish the bucket:
 
 ```bash
 docker exec -it minio sh -c "
@@ -34,6 +75,35 @@ docker exec -it minio sh -c "
   mc anonymous set public minio/$MINIO_INIT_BUCKET
 "
 ```
+
+The Docker Compose path already includes MinIO; you do not need this standalone container when using `docker-compose.dev.yml`.
+
+## Pre-commit hooks (Husky + lint-staged)
+
+Root Husky runs `lint-staged` in `server/` then `client/` before each commit (see `.husky/pre-commit`).
+
+### Install
+
+From the **repository root**:
+
+```bash
+npm install
+```
+
+The root `prepare` script runs `husky install` and activates the existing hooks. Also install dependencies in `client/` and `server/` if you have not already (`npm install` in each), so `npx lint-staged` can run.
+
+Do **not** run `npx husky init` — that recreates hooks and can overwrite the project’s `.husky/pre-commit`.
+
+### What runs
+
+- **Server** (`server/package.json`): Black, flake8, and isort on staged `*.py` via Pipenv.
+- **Client** (`client/package.json`): Prettier and ESLint on staged JS/TS (and Prettier on i18n JSON).
+
+## Tests (pointers)
+
+- **Client unit tests:** `cd client && npm run test` (CI: `npm run test:ci`)
+- **Client E2E:** see [client/README.md](../client/README.md) (`npm run e2e` / Cypress)
+- **Server tests:** pytest under `server/tests` with a test config — see [server/README.md](../server/README.md)
 
 ## Notification digest mails (dev)
 
@@ -84,30 +154,8 @@ cd server && pipenv install --dev && pipenv run python src/util/scripts/validate
 
 Run this before pushing if you edited `release_notes_manifest.json` by hand.
 
-## Docker development setup
+## Related docs
 
-LocalCrag alternatively provides a Docker Compose setup for development. This allows you to run the frontend, backend, and MinIO in isolated containers.
-See [docker-dev-setup.md](./docs/docker-dev-setup.md) for more information on how to set up and use the Docker development environment.
-
-## pre-commit hooks for linting using Husky and lint-staged
-
-The linting pipeline will do several checks on the codebase. To ensure that your code is properly formatted and passes
-all checks _before_ you commit and push it, you can install and set up Husky. Husky will run linting commands against
-the staged files using lint-staged before each commit.
-
-### Installing Husky
-
-1. Run `npm install` in the root directory of the project to install Husky and its dependencies.
-2. Initialize Husky by running `npx husky init`. This will activate the existing hooks in the project.
-3. Make sure to install the `lint-staged` package in both the client and the server directories using `npm install`.
-
-### Using Husky during development
-
-- Automatic hook execution: Once initialized, the Husky hooks will run automatically before each commit. This ensures
-  that your code is formatted and linted according to the project's standards.
-
-### Importance of Husky
-
-Using `husky` ensures that your code is formatted correctly and passes all linting checks before being committed. This
-helps prevent pipeline failures due to formatting issues or linting errors. Make sure to set up and use `Husky` to
-maintain code quality and consistency throughout the project.
+- [Contributor guidelines](../CONTRIBUTING.md)
+- [Docker Compose production install](./docker-compose-installation.md)
+- [Environment variables](./environment-variables.md)

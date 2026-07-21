@@ -1,11 +1,19 @@
 import datetime
 import time
 
+from extensions import db
 from models.crag import Crag
+from models.enums.line_type_enum import LineTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.ranking import Ranking
 from models.sector import Sector
-from util.build_rankings import build_rankings
+from models.user import User
+from util.build_rankings import (
+    assign_competition_ranks,
+    build_rankings,
+    competition_ranks,
+)
 
 
 def test_successful_get_ranking_boulder(client):
@@ -197,3 +205,69 @@ def test_scheduler_schedules_ranking_every_15_minutes(client):
     # Teardown: stop scheduler to avoid cross-test side effects
     sched._scheduler.shutdown(wait=False)
     sched._scheduler = None
+
+
+def test_competition_ranks_distinct_scores():
+    assert competition_ranks([100, 90, 80]) == [1, 2, 3]
+
+
+def test_competition_ranks_ties_skip_next():
+    assert competition_ranks([100, 100, 90]) == [1, 1, 3]
+    assert competition_ranks([50, 40, 40, 40, 10]) == [1, 2, 2, 2, 5]
+
+
+def test_competition_ranks_empty():
+    assert competition_ranks([]) == []
+
+
+def test_assign_competition_ranks_persists_shared_ranks(client):
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+    member = User.find_by_email("member@localcrag.invalid.org")
+    other = User.find_by_email("user@localcrag.invalid.org")
+
+    # Admin already has global non-secret BOULDER ranking (top_10=22) from seed.
+    for user, top_10 in ((member, 22), (other, 15)):
+        ranking = Ranking()
+        ranking.user_id = user.id
+        ranking.top_10 = top_10
+        ranking.top_50 = top_10
+        ranking.top_values = [top_10]
+        ranking.total_count = 1
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.secret = False
+        db.session.add(ranking)
+    db.session.commit()
+
+    assign_competition_ranks()
+
+    admin_rank = Ranking.query.filter(
+        Ranking.user_id == admin.id,
+        Ranking.crag_id.is_(None),
+        Ranking.sector_id.is_(None),
+        Ranking.secret.is_(False),
+        Ranking.type == LineTypeEnum.BOULDER,
+    ).one()
+    member_rank = Ranking.query.filter(
+        Ranking.user_id == member.id,
+        Ranking.crag_id.is_(None),
+        Ranking.sector_id.is_(None),
+        Ranking.secret.is_(False),
+        Ranking.type == LineTypeEnum.BOULDER,
+    ).one()
+    other_rank = Ranking.query.filter(
+        Ranking.user_id == other.id,
+        Ranking.crag_id.is_(None),
+        Ranking.sector_id.is_(None),
+        Ranking.secret.is_(False),
+        Ranking.type == LineTypeEnum.BOULDER,
+    ).one()
+    assert admin_rank.rank_top_10 == 1
+    assert member_rank.rank_top_10 == 1
+    assert other_rank.rank_top_10 == 3
+
+    rv = client.get("/api/ranking?line_type=BOULDER")
+    assert rv.status_code == 200
+    by_slug = {row["user"]["slug"]: row for row in rv.json}
+    assert by_slug["admin-admin"]["rankTop10"] == 1
+    assert by_slug["member-member"]["rankTop10"] == 1
+    assert by_slug["user-user"]["rankTop10"] == 3
