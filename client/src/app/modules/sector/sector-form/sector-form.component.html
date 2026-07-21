@@ -332,6 +332,7 @@
             icon="pi pi-save"
             class="responsive-button"
             [loading]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
           ></p-button>
         }
         <p-button
@@ -358,6 +359,7 @@
             class="responsive-button"
             styleClass="p-button-danger"
             [loading]="loadingState === loadingStates.LOADING"
+            data-cy="delete"
           ></p-button>
         }
         <p-confirmpopup></p-confirmpopup>
