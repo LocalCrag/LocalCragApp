@@ -25,6 +25,8 @@ export class InstanceSettings {
   maptilerApiKey: string;
   maxFileSize: number;
   maxImageSize: number;
+  sentryEnabled: boolean;
+  sentryDsn: string;
   gymMode: boolean;
   displayUserGrades: boolean;
   displayUserRatings: boolean;
@@ -66,6 +68,8 @@ export class InstanceSettings {
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
+    instanceSettings.sentryEnabled = payload.sentryEnabled;
+    instanceSettings.sentryDsn = payload.sentryDsn;
     instanceSettings.gymMode = payload.gymMode;
     instanceSettings.displayUserGrades = payload.displayUserGrades;
     instanceSettings.displayUserRatings = payload.displayUserRatings;

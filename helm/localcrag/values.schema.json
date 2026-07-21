@@ -62,6 +62,14 @@
           "type": "string",
           "enum": ["DEBUG", "INFO", "WARNING", "ERROR"],
           "description": "Application log level written to stdout"
+        },
+        "sentryEnabled": {
+          "type": "boolean",
+          "description": "Enable Sentry error tracking for server and client"
+        },
+        "sentryDsn": {
+          "type": "string",
+          "description": "Sentry DSN (required when sentryEnabled is true)"
         }
       }
     },

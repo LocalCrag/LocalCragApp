@@ -25,6 +25,8 @@ def add_fixed_instance_settings(payload):
     """
     payload["maxFileSize"] = current_app.config["MAX_FILE_SIZE"]
     payload["maxImageSize"] = current_app.config["MAX_IMAGE_SIZE"]
+    payload["sentryEnabled"] = current_app.config["SENTRY_ENABLED"]
+    payload["sentryDsn"] = current_app.config["SENTRY_DSN"]
     return payload
 
 

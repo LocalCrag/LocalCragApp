@@ -32,6 +32,10 @@ server:
   frontendHost: ""
   # Application log level (DEBUG, INFO, WARNING, ERROR). Logs go to stdout for kubectl logs.
   logLevel: INFO
+  # Optional Sentry error tracking (server + client). When enabled, sentryDsn is required.
+  # Disabled by default (env var omitted so the app default False applies).
+  sentryEnabled: false
+  sentryDsn: ""
   resources:
     requests:
       cpu: 500m
