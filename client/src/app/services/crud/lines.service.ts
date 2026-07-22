@@ -46,6 +46,22 @@ export class LinesService {
   }
 
   /**
+   * Finds lines by exact name (case-insensitive) across the whole system.
+   */
+  public findByName(
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Line[]> {
+    const params: Record<string, string> = { name };
+    if (excludeId) {
+      params['excludeId'] = excludeId;
+    }
+    return this.http
+      .get(this.api.lines.findByName(), { params })
+      .pipe(map((payload: any) => payload.map(Line.deserialize)));
+  }
+
+  /**
    * Returns a Line.
    *
    * @param slug Slug of the Line to load.

@@ -4,14 +4,15 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import text
+from sqlalchemy import func, text
+from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
-from marshmallow_schemas.search_schema import area_search_schema
+from marshmallow_schemas.search_schema import area_search_schema, areas_search_schema
 from models.area import Area
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
@@ -94,6 +95,27 @@ class GetAreas(MethodView):
         attach_area_counts(areas)
         SecretService.attach_secret_flags(areas)
         return jsonify(areas_schema.dump(areas)), 200
+
+
+class FindAreasByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all areas whose name matches (case-insensitive, trimmed).
+        Optionally excludes an area by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Area.query.options(joinedload(Area.sector).joinedload(Sector.crag)).filter(
+            func.lower(Area.name) == name.lower()
+        )
+        if exclude_id:
+            query = query.filter(Area.id != exclude_id)
+        matches = query.order_by(Area.name.asc()).all()
+        return jsonify(areas_search_schema.dump(matches)), 200
 
 
 class GetArea(MethodView):

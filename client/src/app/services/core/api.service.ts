@@ -163,6 +163,7 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}crags/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}crags/${slug}/grades`,
     updateOrder: (): string => `${this.apiHost}crags/update-order`,
+    findByName: (): string => `${this.apiHost}crags/find-by-name`,
   };
 
   public sectors = {
@@ -182,6 +183,7 @@ export class ApiService {
     getSeason: (cragSlug: string): string =>
       `${this.apiHost}crags/${cragSlug}/season`,
     move: (slug: string): string => `${this.apiHost}sectors/${slug}/move`,
+    findByName: (): string => `${this.apiHost}sectors/find-by-name`,
   };
 
   public areas = {
@@ -200,6 +202,7 @@ export class ApiService {
     batchCreate: (slug: string): string =>
       `${this.apiHost}areas/${slug}/batch-create`,
     move: (slug: string): string => `${this.apiHost}areas/${slug}/move`,
+    findByName: (): string => `${this.apiHost}areas/find-by-name`,
   };
 
   public ascents = {
@@ -251,6 +254,7 @@ export class ApiService {
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`,
     move: (id: string): string => `${this.apiHost}lines/${id}/move`,
+    findByName: (): string => `${this.apiHost}lines/find-by-name`,
   };
 
   public uploader = {

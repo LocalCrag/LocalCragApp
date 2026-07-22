@@ -24,6 +24,12 @@
         <small class="lc-error" *lcIfError="'maxlength'">{{
           "validation.maxLength" | transloco: { max: 120 }
         }}</small>
+        <lc-duplicate-name-warning
+          [nameControl]="cragForm.get('name')"
+          [excludeId]="crag?.id"
+          entityType="crag"
+          [findByName]="findCragsByName"
+        />
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>

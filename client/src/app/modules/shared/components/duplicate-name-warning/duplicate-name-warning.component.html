@@ -1,0 +1,26 @@
+@if (matches.length) {
+  <ng-container *transloco="let t; read: 'duplicateNameWarning'">
+    <p-message
+      severity="warn"
+      icon="pi pi-info-circle"
+      styleClass="w-full mt-1"
+      data-cy="duplicate-name-warning"
+    >
+      <div class="flex flex-col gap-1">
+        <span>{{ t(messageKey) }}</span>
+        <ul class="m-0 pl-4">
+          @for (match of matches; track match.slug) {
+            <li>
+              <a [href]="match.routerLink" target="_blank" rel="noopener">
+                {{ matchLabel(match) }}
+                @if (entityType === 'line') {
+                  {{ asLine(match) | lineGrade }}
+                }
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    </p-message>
+  </ng-container>
+}

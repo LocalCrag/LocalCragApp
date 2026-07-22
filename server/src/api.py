@@ -9,6 +9,7 @@ from resources.archive_resources import SetArchived
 from resources.area_resources import (
     CreateArea,
     DeleteArea,
+    FindAreasByName,
     GetArea,
     GetAreaGrades,
     GetAreas,
@@ -50,6 +51,7 @@ from resources.comment_resources import (
 from resources.crag_resources import (
     CreateCrag,
     DeleteCrag,
+    FindCragsByName,
     GetCrag,
     GetCragGrades,
     GetCrags,
@@ -79,6 +81,7 @@ from resources.line_path_resources import (
 from resources.line_resources import (
     CreateLine,
     DeleteLine,
+    FindLinesByName,
     GetLine,
     GetLines,
     GetLinesForLineEditor,
@@ -139,6 +142,7 @@ from resources.search_resources import CreateRecentSearch, GetRecentSearches, Se
 from resources.sector_resources import (
     CreateSector,
     DeleteSector,
+    FindSectorsByName,
     GetSector,
     GetSectorGrades,
     GetSectors,
@@ -332,6 +336,7 @@ def configure_api(app):
     # Line API
     line_bp = Blueprint("lines", __name__)
     line_bp.add_url_rule("", view_func=GetLines.as_view("get_lines"))
+    line_bp.add_url_rule("/find-by-name", view_func=FindLinesByName.as_view("find_lines_by_name"))
     line_bp.add_url_rule(
         "/for-line-editor/<string:area_slug>", view_func=GetLinesForLineEditor.as_view("get_lines_for_line_editor")
     )
@@ -394,6 +399,7 @@ def configure_api(app):
 
     # Area API
     area_bp = Blueprint("areas", __name__)
+    area_bp.add_url_rule("/find-by-name", view_func=FindAreasByName.as_view("find_areas_by_name"))
     area_bp.add_url_rule("/<string:area_slug>", view_func=GetArea.as_view("get_area_details"))
     area_bp.add_url_rule("/<string:area_slug>", view_func=UpdateArea.as_view("update_area"))
     area_bp.add_url_rule("/<string:area_slug>", view_func=DeleteArea.as_view("delete_area"))
@@ -431,6 +437,7 @@ def configure_api(app):
 
     # Sector API
     sector_bp = Blueprint("sectors", __name__)
+    sector_bp.add_url_rule("/find-by-name", view_func=FindSectorsByName.as_view("find_sectors_by_name"))
     sector_bp.add_url_rule("/<string:sector_slug>", view_func=GetSector.as_view("get_sector_details"))
     sector_bp.add_url_rule("/<string:sector_slug>", view_func=UpdateSector.as_view("update_sector"))
     sector_bp.add_url_rule("/<string:sector_slug>", view_func=DeleteSector.as_view("delete_sector"))
@@ -452,6 +459,7 @@ def configure_api(app):
     crag_bp.add_url_rule("", view_func=GetCrags.as_view("get_crags"))
     crag_bp.add_url_rule("", view_func=CreateCrag.as_view("create_crag"))
     crag_bp.add_url_rule("/update-order", view_func=UpdateCragOrder.as_view("update_crag_order"))
+    crag_bp.add_url_rule("/find-by-name", view_func=FindCragsByName.as_view("find_crags_by_name"))
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=GetCrag.as_view("get_crag_details"))
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=UpdateCrag.as_view("update_crag"))
     crag_bp.add_url_rule("/<string:crag_slug>", view_func=DeleteCrag.as_view("delete_crag"))

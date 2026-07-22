@@ -1454,3 +1454,24 @@ def test_get_lines_starting_position_filters_lines(client):
     slugs = {item["slug"] for item in rv.json["items"]}
     assert slugs == {"super-spreader"}
     assert all(item["startingPosition"] == "SIT" for item in rv.json["items"])
+
+
+def test_find_lines_by_name(client, moderator_token):
+    line = Line.query.filter_by(archived=False).first()
+    assert line is not None
+
+    rv = client.get(f"/api/lines/find-by-name?name={line.name}", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) >= 1
+    match = next(item for item in res if item["slug"] == line.slug)
+    assert match["area"]["slug"]
+    assert match["area"]["sector"]["slug"]
+    assert match["area"]["sector"]["crag"]["slug"]
+
+    rv = client.get(
+        f"/api/lines/find-by-name?name={line.name}&excludeId={line.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    assert all(item["id"] != str(line.id) for item in rv.json)

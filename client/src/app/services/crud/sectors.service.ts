@@ -54,6 +54,22 @@ export class SectorsService {
   }
 
   /**
+   * Finds sectors by exact name (case-insensitive) across the whole system.
+   */
+  public findByName(
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Sector[]> {
+    const params: Record<string, string> = { name };
+    if (excludeId) {
+      params['excludeId'] = excludeId;
+    }
+    return this.http
+      .get(this.api.sectors.findByName(), { params })
+      .pipe(map((payload: any) => payload.map(Sector.deserialize)));
+  }
+
+  /**
    * Returns a Sector.
    *
    * @param sectorSlug Slug of the Sector to load.

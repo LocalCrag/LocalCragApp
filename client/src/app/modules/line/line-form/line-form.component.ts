@@ -24,7 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, map, take } from 'rxjs/operators';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -77,6 +77,7 @@ import { MoveObjectDialogComponent } from '../../shared/components/move-object-d
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * Form component for lines.
@@ -114,6 +115,7 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
     FormsModule,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class LineFormComponent implements OnInit {
@@ -176,6 +178,11 @@ export class LineFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
+
+  public findLinesByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Line[]> => this.linesService.findByName(name, excludeId);
 
   /**
    * Builds the form on component initialization.
