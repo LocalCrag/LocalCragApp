@@ -6,6 +6,7 @@ import { StartingPosition } from '../enums/starting-position';
 import { Area } from './area';
 import { Crag } from './crag';
 import { Sector } from './sector';
+import { User } from './user';
 import {
   deserializeClosableAttributes,
   IsClosable,
@@ -21,6 +22,13 @@ import {
 export interface LineVideo {
   url: string;
   title: string;
+}
+
+/** Registered FA climber plus their FA ascent year/date. */
+export interface LineFaUser {
+  user: User;
+  year: number | null;
+  date: Date | null;
 }
 
 /**
@@ -40,6 +48,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   faYear: number;
   faDate: Date;
   faName: string;
+  faUsers: LineFaUser[] = [];
   routesetter: string;
   setDate: Date;
   startingPosition: StartingPosition;
@@ -131,6 +140,15 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
       ? parseLocalCalendarDate(payload.faDate)
       : null;
     line.faName = payload.faName;
+    line.faUsers = payload.faUsers
+      ? payload.faUsers.map(
+          (faUser: any): LineFaUser => ({
+            user: User.deserialize(faUser),
+            year: faUser.year ?? null,
+            date: faUser.date ? parseLocalCalendarDate(faUser.date) : null,
+          }),
+        )
+      : [];
     line.routesetter = payload.routesetter;
     line.setDate = payload.setDate
       ? parseLocalCalendarDate(payload.setDate)

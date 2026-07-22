@@ -92,17 +92,36 @@
             ></p-rating>
           </div>
 
-          @if (line.faName || line.faYear || line.faDate) {
+          @if (
+            line.faUsers?.length || line.faName || line.faYear || line.faDate
+          ) {
             <div class="fa">
               {{ t("FA") }}
-              @if (line.faYear) {
-                <span>{{ line.faYear }}</span>
-              }
-              @if (line.faDate) {
-                <span>{{ line.faDate | date }}</span>
-              }
-              @if (line.faName) {
-                <span>{{ line.faName }}</span>
+              @if (line.faUsers?.length) {
+                <span class="link-list">
+                  @for (fa of line.faUsers; track fa.user.id) {
+                    <span>
+                      @if (fa.date) {
+                        {{ fa.date | date }}{{ " " }}
+                      } @else if (fa.year) {
+                        {{ fa.year }}{{ " " }}
+                      }
+                      <a [routerLink]="fa.user.routerLink">{{
+                        fa.user.fullname
+                      }}</a></span
+                    >
+                  }
+                </span>
+              } @else {
+                @if (line.faYear) {
+                  <span>{{ line.faYear }}</span>
+                }
+                @if (line.faDate) {
+                  <span>{{ line.faDate | date }}</span>
+                }
+                @if (line.faName) {
+                  <span>{{ line.faName }}</span>
+                }
               }
             </div>
           }

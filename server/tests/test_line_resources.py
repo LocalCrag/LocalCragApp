@@ -4,12 +4,14 @@ import pytz
 
 from extensions import db
 from models.area import Area
+from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.line import Line
 from models.line_path import LinePath
 from models.topo_image import TopoImage
+from models.user import User
 
 
 def test_successful_move_line_to_different_area(client, moderator_token):
@@ -160,6 +162,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["faYear"] == 2016
     assert res["faDate"] is None
     assert res["faName"] == "Dave Graham"
+    assert res["faUsers"] == []
     assert res["startingPosition"] == "FRENCH"
     assert res["eliminate"] is True
     assert res["traverse"] is True
@@ -976,6 +979,13 @@ def test_successful_get_line(client):
     assert res["faYear"] == 2024
     assert res["faDate"] is None
     assert res["faName"] == "Felix Engelmann"
+    assert len(res["faUsers"]) == 1
+    assert res["faUsers"][0]["firstname"] == "admin"
+    assert res["faUsers"][0]["lastname"] == "admin"
+    assert res["faUsers"][0]["slug"] == "admin-admin"
+    assert res["faUsers"][0]["id"] is not None
+    assert res["faUsers"][0]["date"] == "2024-04-16"
+    assert res["faUsers"][0]["year"] is None
     assert res["startingPosition"] == "SIT"
     assert res["eliminate"] is False
     assert res["traverse"] is False
@@ -1012,6 +1022,87 @@ def test_successful_get_line(client):
     assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
     assert res["closed"] is False
     assert res["closedReasons"] == []
+
+
+def test_line_get_fa_users_super_spreader():
+    line = Line.find_by_slug("super-spreader")
+    fa_users = line.get_fa_users()
+    assert len(fa_users) == 1
+    assert fa_users[0]["user"].firstname == "admin"
+    assert fa_users[0]["user"].lastname == "admin"
+    assert fa_users[0]["user"].slug == "admin-admin"
+    assert fa_users[0]["year"] is None
+    assert fa_users[0]["date"] == datetime.date(2024, 4, 16)
+
+
+def test_line_get_fa_users_empty_when_no_fa_ascents():
+    line = Line.find_by_slug("the-vessel")
+    assert line.get_fa_users() == []
+
+
+def test_line_get_fa_users_shared_fa_ordered_by_ascent_date(client):
+    """Two FA ascents on the same line are ordered by ascent_date ASC, then lastname/firstname."""
+    line = Line.find_by_slug("the-vessel")
+    member = User.find_by_email("member@localcrag.invalid.org")
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+
+    # Member FA first (earlier date) — should appear first despite lastname "member" > "admin"
+    member_ascent = Ascent()
+    member_ascent.fa = True
+    member_ascent.grade_value = 11
+    member_ascent.rating = 2
+    member_ascent.date = datetime.date(2020, 1, 1)
+    member_ascent.ascent_date = datetime.date(2020, 1, 1)
+    member_ascent.created_by_id = member.id
+    member_ascent.line_id = line.id
+    db.session.add(member_ascent)
+
+    admin_ascent = Ascent()
+    admin_ascent.fa = True
+    admin_ascent.grade_value = 11
+    admin_ascent.rating = 2
+    admin_ascent.year = 2021
+    admin_ascent.ascent_date = datetime.date(2021, 1, 1)
+    admin_ascent.created_by_id = admin.id
+    admin_ascent.line_id = line.id
+    db.session.add(admin_ascent)
+    db.session.commit()
+
+    fa_users = line.get_fa_users()
+    assert len(fa_users) == 2
+    assert fa_users[0]["user"].slug == "member-member"
+    assert fa_users[0]["date"] == datetime.date(2020, 1, 1)
+    assert fa_users[0]["year"] is None
+    assert fa_users[1]["user"].slug == "admin-admin"
+    assert fa_users[1]["year"] == 2021
+    assert fa_users[1]["date"] is None
+
+    # API GET also returns ordered faUsers with ascent year/date; faName stays untouched
+    rv = client.get("/api/lines/the-vessel")
+    assert rv.status_code == 200
+    res = rv.json
+    assert [u["slug"] for u in res["faUsers"]] == ["member-member", "admin-admin"]
+    assert res["faUsers"][0]["date"] == "2020-01-01"
+    assert res["faUsers"][0]["year"] is None
+    assert res["faUsers"][1]["year"] == 2021
+    assert res["faUsers"][1]["date"] is None
+    assert res["faName"] is None
+
+
+def test_get_line_fa_users_does_not_sync_fa_name(client):
+    """faName remains the free-text column; faUsers does not overwrite it."""
+    line = Line.find_by_slug("super-spreader")
+    original_fa_name = line.fa_name
+
+    rv = client.get("/api/lines/super-spreader")
+    assert rv.status_code == 200
+    assert rv.json["faName"] == original_fa_name
+    assert len(rv.json["faUsers"]) == 1
+    assert rv.json["faUsers"][0]["date"] == "2024-04-16"
+    assert rv.json["faUsers"][0]["year"] is None
+
+    db.session.refresh(line)
+    assert line.fa_name == original_fa_name
 
 
 def test_get_deleted_line(client):

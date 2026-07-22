@@ -13,6 +13,7 @@ from models.mixins.has_slug import HasSlug
 from models.mixins.is_closable import IsClosable
 from models.mixins.is_searchable import IsSearchable
 from models.mixins.is_secret import IsSecret
+from models.user import User
 from util.topo_tab_counts import count_gallery_images, count_root_comments
 
 
@@ -110,3 +111,19 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
         from util.moderator_task_scope import count_open_moderator_tasks
 
         return count_open_moderator_tasks("Line", self.id)
+
+    def get_fa_users(self):
+        """FA climbers with ascent year/date, ordered by ascent_date then name.
+
+        Each item is ``{"user": User, "year": int|None, "date": date|None}``.
+        """
+        if self.id is None:
+            return []
+        rows = (
+            db.session.query(User, Ascent.year, Ascent.date)
+            .join(Ascent, Ascent.created_by_id == User.id)
+            .filter(Ascent.fa.is_(True), Ascent.line_id == self.id)
+            .order_by(Ascent.ascent_date.asc(), User.lastname.asc(), User.firstname.asc())
+            .all()
+        )
+        return [{"user": user, "year": year, "date": date} for user, year, date in rows]
