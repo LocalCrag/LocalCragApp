@@ -53,6 +53,22 @@ export class AreasService {
   }
 
   /**
+   * Finds areas by exact name (case-insensitive) across the whole system.
+   */
+  public findByName(
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Area[]> {
+    const params: Record<string, string> = { name };
+    if (excludeId) {
+      params['excludeId'] = excludeId;
+    }
+    return this.http
+      .get(this.api.areas.findByName(), { params })
+      .pipe(map((payload: any) => payload.map(Area.deserialize)));
+  }
+
+  /**
    * Returns an Area.
    *
    * @param slug Slug of the Area to load.

@@ -1,3 +1,4 @@
+from extensions import db
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.sector import Sector
@@ -230,3 +231,33 @@ def test_successful_get_sector_grades(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}
+
+
+def test_find_sectors_by_name_across_crags(client, moderator_token):
+    other = Crag.find_by_slug("chironico")
+    duplicate = Sector()
+    duplicate.name = "Pampelmousse"
+    duplicate.crag_id = other.id
+    duplicate.order_index = Sector.find_max_order_index(other.id) + 1
+    db.session.add(duplicate)
+    db.session.commit()
+
+    rv = client.get("/api/sectors/find-by-name?name=pampelmousse", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 2
+    assert {item["crag"]["slug"] for item in res} == {"brione", "chironico"}
+    for item in res:
+        assert item["name"] == "Pampelmousse"
+        assert item["slug"]
+        assert item["crag"]["slug"]
+
+    original = Sector.find_by_slug("pampelmousse")
+    rv = client.get(
+        f"/api/sectors/find-by-name?name=pampelmousse&excludeId={original.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 1
+    assert res[0]["crag"]["slug"] == "chironico"

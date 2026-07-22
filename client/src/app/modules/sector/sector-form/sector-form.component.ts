@@ -24,7 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -67,6 +67,7 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -98,6 +99,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     OutdoorModeDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class SectorFormComponent implements OnInit {
@@ -132,6 +134,11 @@ export class SectorFormComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
+
+  public findSectorsByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Sector[]> => this.sectorsService.findByName(name, excludeId);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();

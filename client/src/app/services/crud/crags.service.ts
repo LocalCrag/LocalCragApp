@@ -50,6 +50,22 @@ export class CragsService {
   }
 
   /**
+   * Finds crags by exact name (case-insensitive) across the whole system.
+   */
+  public findByName(
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Crag[]> {
+    const params: Record<string, string> = { name };
+    if (excludeId) {
+      params['excludeId'] = excludeId;
+    }
+    return this.http
+      .get(this.api.crags.findByName(), { params })
+      .pipe(map((payload: any) => payload.map(Crag.deserialize)));
+  }
+
+  /**
    * Returns a Crag.
    *
    * @param slug Slug of the Crag to load.

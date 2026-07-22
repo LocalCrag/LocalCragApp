@@ -25,6 +25,12 @@
           <small class="lc-error" *lcIfError="'maxlength'">{{
             "validation.maxLength" | transloco: { max: 120 }
           }}</small>
+          <lc-duplicate-name-warning
+            [nameControl]="lineForm.get('name')"
+            [excludeId]="line?.id"
+            entityType="line"
+            [findByName]="findLinesByName"
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{

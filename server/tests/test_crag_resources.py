@@ -244,3 +244,42 @@ def test_crag_season(client):
         assert month in map(str, range(1, 13))
     # All percentages have to add up to 1
     assert sum(res.values()) == 1
+
+
+def test_find_crags_by_name_requires_moderator(client, member_token):
+    rv = client.get("/api/crags/find-by-name?name=Brione", token=member_token)
+    assert rv.status_code == 401
+
+
+def test_find_crags_by_name(client, moderator_token):
+    rv = client.get("/api/crags/find-by-name?name=brione", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 1
+    assert res[0]["name"] == "Brione"
+    assert res[0]["slug"] == "brione"
+    assert "id" in res[0]
+
+    rv = client.get("/api/crags/find-by-name?name=does-not-exist", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []
+
+
+def test_find_crags_by_name_excludes_id(client, moderator_token):
+    crag = Crag.find_by_slug("brione")
+    rv = client.get(
+        f"/api/crags/find-by-name?name=brione&excludeId={crag.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    assert rv.json == []
+
+
+def test_find_crags_by_name_empty_returns_empty_list(client, moderator_token):
+    rv = client.get("/api/crags/find-by-name?name=", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []
+
+    rv = client.get("/api/crags/find-by-name", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []

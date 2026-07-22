@@ -12,7 +12,7 @@ from marshmallow_schemas.line_schema import (
     lines_schema,
     paginated_lines_schema,
 )
-from marshmallow_schemas.search_schema import line_search_schema
+from marshmallow_schemas.search_schema import line_search_schema, lines_search_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
@@ -111,6 +111,27 @@ class GetLinesForLineEditor(MethodView):
         """
         lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
+
+
+class FindLinesByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all lines whose name matches (case-insensitive, trimmed).
+        Optionally excludes a line by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Line.query.options(joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag)).filter(
+            func.lower(Line.name) == name.lower()
+        )
+        if exclude_id:
+            query = query.filter(Line.id != exclude_id)
+        matches = query.order_by(Line.name.asc()).all()
+        return jsonify(lines_search_schema.dump(matches)), 200
 
 
 class GetLines(MethodView):

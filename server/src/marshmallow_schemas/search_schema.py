@@ -15,6 +15,7 @@ class CragSearchSchema(ma.SQLAlchemySchema):
 
 
 crag_search_schema = CragSearchSchema()
+crags_search_schema = CragSearchSchema(many=True)
 
 
 class SectorSearchSchema(ma.SQLAlchemySchema):
@@ -26,6 +27,7 @@ class SectorSearchSchema(ma.SQLAlchemySchema):
 
 
 sector_search_schema = SectorSearchSchema()
+sectors_search_schema = SectorSearchSchema(many=True)
 
 
 class AreaSearchSchema(ma.SQLAlchemySchema):
@@ -37,6 +39,7 @@ class AreaSearchSchema(ma.SQLAlchemySchema):
 
 
 area_search_schema = AreaSearchSchema()
+areas_search_schema = AreaSearchSchema(many=True)
 
 
 class LineSearchSchema(ma.SQLAlchemySchema):
@@ -51,6 +54,7 @@ class LineSearchSchema(ma.SQLAlchemySchema):
 
 
 line_search_schema = LineSearchSchema()
+lines_search_schema = LineSearchSchema(many=True)
 
 
 class UserSearchSchema(ma.SQLAlchemySchema):

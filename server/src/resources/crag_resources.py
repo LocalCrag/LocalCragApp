@@ -3,13 +3,14 @@ from collections import Counter, defaultdict
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import text
+from sqlalchemy import func, text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
+from marshmallow_schemas.search_schema import crags_search_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
@@ -44,6 +45,25 @@ class GetCrags(MethodView):
         attach_crag_counts(crags)
         SecretService.attach_secret_flags(crags)
         return jsonify(crags_schema.dump(crags)), 200
+
+
+class FindCragsByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all crags whose name matches (case-insensitive, trimmed).
+        Optionally excludes a crag by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Crag.query.filter(func.lower(Crag.name) == name.lower())
+        if exclude_id:
+            query = query.filter(Crag.id != exclude_id)
+        matches = query.order_by(Crag.name.asc()).all()
+        return jsonify(crags_search_schema.dump(matches)), 200
 
 
 class GetCrag(MethodView):

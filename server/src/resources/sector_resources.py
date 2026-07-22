@@ -4,13 +4,17 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import text
+from sqlalchemy import func, text
+from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from marshmallow_schemas.search_schema import sector_search_schema
+from marshmallow_schemas.search_schema import (
+    sector_search_schema,
+    sectors_search_schema,
+)
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
@@ -95,6 +99,25 @@ class GetSectors(MethodView):
         attach_sector_counts(sectors)
         SecretService.attach_secret_flags(sectors)
         return jsonify(sectors_schema.dump(sectors)), 200
+
+
+class FindSectorsByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all sectors whose name matches (case-insensitive, trimmed).
+        Optionally excludes a sector by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Sector.query.options(joinedload(Sector.crag)).filter(func.lower(Sector.name) == name.lower())
+        if exclude_id:
+            query = query.filter(Sector.id != exclude_id)
+        matches = query.order_by(Sector.name.asc()).all()
+        return jsonify(sectors_search_schema.dump(matches)), 200
 
 
 class GetSector(MethodView):
