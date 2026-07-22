@@ -13,7 +13,7 @@
             <li>
               <a [href]="match.routerLink" target="_blank" rel="noopener">
                 {{ matchLabel(match) }}
-                @if (entityType === 'line') {
+                @if (entityType === "line") {
                   {{ asLine(match) | lineGrade }}
                 }
               </a>
