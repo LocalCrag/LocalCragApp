@@ -446,6 +446,7 @@
   "projectClimbedForm.sendProjectClimbedMessageButtonLabel": "Invia",
   "ascents.ascentList.noAscentsFoundMessage": "Nessuna ripetizione trovata",
   "ascents.ascentList.orderByLabel": "Ordina per",
+  "ascents.ascentList.filterLabel": "Filtra per",
   "ascents.ascentList.lineType": "Tipo di problema",
   "ascents.ascentList.soft": "facile",
   "ascents.ascentList.hard": "difficile",

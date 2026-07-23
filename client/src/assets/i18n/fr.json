@@ -446,6 +446,7 @@
   "projectClimbedForm.sendProjectClimbedMessageButtonLabel": "Envoyer",
   "ascents.ascentList.noAscentsFoundMessage": "Aucune ascension trouvée",
   "ascents.ascentList.orderByLabel": "Trier par",
+  "ascents.ascentList.filterLabel": "Filtrer par",
   "ascents.ascentList.lineType": "Type de ligne",
   "ascents.ascentList.soft": "doux",
   "ascents.ascentList.hard": "dur",

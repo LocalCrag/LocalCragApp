@@ -54,6 +54,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
@@ -64,6 +65,7 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -86,6 +88,7 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     GradeRangeSliderComponent,
     MenuModule,
     Select,
+    ToggleButtonModule,
     RouterLink,
     InfiniteScrollDirective,
     AscentListSkeletonComponent,
@@ -95,6 +98,7 @@ import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/react
     LineGradePipe,
     ReactionWrapperComponent,
     TopoHierarchyBreadcrumbsComponent,
+    GymModeDirective,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -139,6 +143,14 @@ export class AscentListComponent
   public orderKey: SelectItem;
   public orderDirectionOptions: SelectItem[];
   public orderDirectionKey: SelectItem;
+  public filterFlash = false;
+  public filterFa = false;
+  public filterWithKneepad = false;
+  public toggleButtonDt = {
+    checkedBackground: '{primary.500}',
+    contentCheckedBackground: '{primary.500}',
+    checkedColor: '{surface.0}',
+  };
   public ascentActionItems: MenuItem[] = [];
   public clickedAscentForAction: Ascent;
   private currentUser: User | null = null;
@@ -347,6 +359,15 @@ export class AscentListComponent
     if (!this.disableGradeOrderAndFiltering && this.scaleKey?.value) {
       params.line_type = this.scaleKey.value.lineType;
       params.grade_scale = this.scaleKey.value.gradeScale;
+    }
+    if (this.filterFlash) {
+      params.flash = true;
+    }
+    if (this.filterFa) {
+      params.fa = true;
+    }
+    if (this.filterWithKneepad) {
+      params.with_kneepad = true;
     }
     if (this.user) {
       params.user_id = this.user.id;

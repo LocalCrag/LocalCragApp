@@ -446,6 +446,7 @@
   "projectClimbedForm.sendProjectClimbedMessageButtonLabel": "Versturen",
   "ascents.ascentList.noAscentsFoundMessage": "Geen beklimmingen gevonden",
   "ascents.ascentList.orderByLabel": "Sorteren op",
+  "ascents.ascentList.filterLabel": "Filteren op",
   "ascents.ascentList.lineType": "Lijntype",
   "ascents.ascentList.soft": "zacht",
   "ascents.ascentList.hard": "hard",
