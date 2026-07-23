@@ -241,6 +241,10 @@ export class LineFormComponent implements OnInit {
           this.lineForm
             .get('scale')
             .setValue(this.defaultScales[item] ?? this.scaleOptions[0].value);
+          if (item !== LineType.SPORT) {
+            this.lineForm.get('bolter').setValue(null);
+            this.lineForm.get('boltDate').setValue(null);
+          }
         });
       this.lineForm
         .get('scale')
@@ -369,6 +373,8 @@ export class LineFormComponent implements OnInit {
           faName: [null, [Validators.maxLength(120)]],
           routesetter: [null, [Validators.maxLength(120)]],
           setDate: [null, [dateNotInFutureValidator()]],
+          bolter: [null, [Validators.maxLength(120)]],
+          boltDate: [null, [dateNotInFutureValidator()]],
           startingPosition: [
             instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
             [Validators.required],
@@ -476,6 +482,8 @@ export class LineFormComponent implements OnInit {
       faName: this.line.faName,
       routesetter: this.line.routesetter,
       setDate: this.line.setDate,
+      bolter: this.line.bolter,
+      boltDate: this.line.boltDate,
       startingPosition: this.line.startingPosition,
       drying: this.line.drying,
       eliminate: this.line.eliminate,
@@ -562,6 +570,13 @@ export class LineFormComponent implements OnInit {
       line.faName = this.lineForm.get('faName').value;
       line.routesetter = this.lineForm.get('routesetter').value;
       line.setDate = this.lineForm.get('setDate').value;
+      if (line.type === LineType.SPORT) {
+        line.bolter = this.lineForm.get('bolter').value;
+        line.boltDate = this.lineForm.get('boltDate').value;
+      } else {
+        line.bolter = null;
+        line.boltDate = null;
+      }
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.drying = this.lineForm.get('drying').value;
       line.eliminate = this.lineForm.get('eliminate').value;

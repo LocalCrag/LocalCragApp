@@ -73,6 +73,8 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     faName = fields.String(attribute="fa_name")
     routesetter = fields.String()
     setDate = fields.Date(attribute="set_date")
+    bolter = fields.String()
+    boltDate = fields.Date(attribute="bolt_date")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     drying = EnumField(DryingEnum, by_value=True, allow_none=True)
     secret = fields.Boolean()

@@ -138,6 +138,18 @@
             </div>
           }
 
+          @if (line.bolter || line.boltDate) {
+            <div class="bolter">
+              {{ t("bolter") }}
+              @if (line.bolter) {
+                <span>{{ line.bolter }}</span>
+              }
+              @if (line.boltDate) {
+                <span>{{ line.boltDate | date }}</span>
+              }
+            </div>
+          }
+
           <lc-archive-button
             [line]="line"
             [showLabel]="true"
