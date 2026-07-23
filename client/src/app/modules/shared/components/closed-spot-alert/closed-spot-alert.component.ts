@@ -5,6 +5,7 @@ import {
   ClosureReasonAlert,
   formatClosureScheduleRange,
 } from '../../../../models/closure-reason-alert';
+import { LanguageService } from '../../../../services/core/language.service';
 
 @Component({
   selector: 'lc-closed-spot-alert',
@@ -16,6 +17,7 @@ export class ClosedSpotAlertComponent {
   @Input() reasons: ClosureReasonAlert[] | null = null;
 
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
 
   get displayAlerts(): ClosureReasonAlert[] {
     if (this.reasons?.length) {
@@ -25,7 +27,10 @@ export class ClosedSpotAlertComponent {
   }
 
   alertText(alert: ClosureReasonAlert): string {
-    const range = formatClosureScheduleRange(alert);
+    const range = formatClosureScheduleRange(
+      alert,
+      this.languageService.calculatedLanguage,
+    );
     const reason = alert.reason?.trim() || null;
 
     if (reason && range) {

@@ -8,10 +8,11 @@ import { nl } from 'date-fns/locale/nl';
 import { LanguageService } from '../../../services/core/language.service';
 
 /**
- * Formats a date with the given formatting string using date-fns and locale.
+ * Formats a date with the given formatting string using date-fns and the UI locale.
  */
 @Pipe({
   name: 'date',
+  pure: false,
 })
 export class DatePipe implements PipeTransform {
   private languageService = inject(LanguageService);
@@ -28,7 +29,7 @@ export class DatePipe implements PipeTransform {
    * Transforms the input value by formatting the Date with the given formatting string.
    *
    * @param value Date (or parsable string/number) to format.
-   * @param  type Choice of formatting string. 'date' for date only, 'datetime' for date and time.
+   * @param type Choice of formatting string. 'date' for date only, 'datetime' for date and time.
    * @return Formatted Date.
    */
   transform(
@@ -37,15 +38,7 @@ export class DatePipe implements PipeTransform {
   ): string {
     if (!value) return '';
 
-    // Build formatting string depending on type.
-    let formattingString = '';
-    if (type === 'date') {
-      formattingString = 'P';
-    } else if (type === 'datetime') {
-      formattingString = 'Pp';
-    }
-
-    // Determine which locale to use: explicit arg -> injected LOCALE_ID -> default
+    const formattingString = type === 'datetime' ? 'Pp' : 'P';
     const locale = this.languageService.calculatedLanguage;
     const localeObj = DatePipe.DATE_FNS_LOCALES[locale];
 
