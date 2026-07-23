@@ -6,6 +6,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
+from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
@@ -42,6 +43,7 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     routesetter = db.Column(db.String(120), nullable=True)
     set_date = db.Column(db.Date, nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
+    drying = db.Column(db.Enum(DryingEnum), nullable=True)
     archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
     eliminate = db.Column(db.Boolean, nullable=False, default=False)

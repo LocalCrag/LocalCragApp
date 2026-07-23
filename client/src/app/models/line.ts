@@ -3,6 +3,7 @@ import { LineType } from '../enums/line-type';
 import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
+import { Drying } from '../enums/drying';
 import { Area } from './area';
 import { Crag } from './crag';
 import { Sector } from './sector';
@@ -52,6 +53,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   routesetter: string;
   setDate: Date;
   startingPosition: StartingPosition;
+  drying: Drying | null;
   secret: boolean;
   archived?: boolean;
 
@@ -154,6 +156,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
       ? parseLocalCalendarDate(payload.setDate)
       : null;
     line.startingPosition = payload.startingPosition;
+    line.drying = payload.drying ?? null;
     line.secret = payload.secret;
     line.archived = payload.archived;
 
@@ -248,6 +251,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         routesetter: line.routesetter ? line.routesetter : null,
         setDate: line.setDate ? formatLocalCalendarDate(line.setDate) : null,
         startingPosition: line.startingPosition,
+        drying: line.drying ?? null,
         secret: line.secret,
 
         eliminate: line.eliminate,

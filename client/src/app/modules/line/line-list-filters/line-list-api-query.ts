@@ -33,6 +33,9 @@ export function appendLineListQueryParams(
   if (advanced.startingPosition != null) {
     params.starting_position = advanced.startingPosition;
   }
+  if (advanced.drying != null) {
+    params.drying = advanced.drying;
+  }
   if (advanced.hasVideo !== 'any') {
     params.has_video = advanced.hasVideo;
   }

@@ -138,6 +138,20 @@
 
     <div>
       <div class="font-semibold mb-2">
+        {{ t("advancedFiltersDryingSection") }}
+      </div>
+      <p-select
+        [options]="dryingOptions"
+        [(ngModel)]="draft.drying"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full md:w-80"
+        [placeholder]="t('advancedFiltersDryingPlaceholder')"
+      ></p-select>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2">
         {{ t("advancedFiltersBoolSection") }}
       </div>
       <ng-container *transloco="let bt; read: 'line.lineBoolPropList'">

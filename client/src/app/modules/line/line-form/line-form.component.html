@@ -188,6 +188,30 @@
           }}</small>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="drying">{{ t("dryingLabel") }}</label>
+          <p-select
+            id="drying"
+            formControlName="drying"
+            [options]="dryingOptions"
+            [showClear]="true"
+            lcFormControl
+            data-cy="drying-dropdown"
+            [placeholder]="t('dryingPlaceholder')"
+          >
+            <ng-template let-drying #item>
+              <div
+                class="flex items-center gap-2"
+                data-cy="drying-dropdown-item"
+              >
+                <div>{{ drying | transloco }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedItem #selectedItem>
+              {{ selectedItem | transloco }}
+            </ng-template>
+          </p-select>
+        </div>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rating">{{
             t("lineRatingLabel")
           }}</label>
