@@ -87,6 +87,9 @@ def apply_get_lines_advanced_filters(
     if filters.starting_position is not None:
         query = query.filter(Line.starting_position == filters.starting_position)
 
+    if filters.drying is not None:
+        query = query.filter(Line.drying == filters.drying)
+
     # JSON array column: non-null with length > 0 counts as having a video.
     video_len = func.coalesce(func.json_array_length(Line.videos), 0)
     if filters.has_video == "yes":

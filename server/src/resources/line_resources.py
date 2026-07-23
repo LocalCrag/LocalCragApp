@@ -264,6 +264,7 @@ class CreateLine(MethodView):
         new_line.author_grade_value = line_data["authorGradeValue"]
         new_line.user_grade_value = line_data["authorGradeValue"]
         new_line.starting_position = line_data["startingPosition"]
+        new_line.drying = line_data["drying"]
         new_line.author_rating = line_data["authorRating"]
         new_line.user_rating = line_data["authorRating"]
         new_line.secret = line_data["secret"]
@@ -358,6 +359,7 @@ class UpdateLine(MethodView):
         line.author_grade_value = line_data["authorGradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
+        line.drying = line_data["drying"]
         line.author_rating = line_data["authorRating"]
         update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
         apply_closable_configuration(line, line_data, "line_id")

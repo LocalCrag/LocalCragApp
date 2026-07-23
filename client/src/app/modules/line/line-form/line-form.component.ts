@@ -33,6 +33,7 @@ import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 
 import { StartingPosition } from '../../../enums/starting-position';
+import { Drying } from '../../../enums/drying';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import {
@@ -142,6 +143,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
+  public dryingOptions = [Drying.FAST, Drying.SLOW];
   public today = new Date(new Date().getFullYear(), 11, 31);
   public parentArea: Area;
   public parentClosureState: ClosureState | null = null;
@@ -371,6 +373,7 @@ export class LineFormComponent implements OnInit {
             instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
             [Validators.required],
           ],
+          drying: [null],
           eliminate: [false],
           traverse: [false],
           highball: [false],
@@ -474,6 +477,7 @@ export class LineFormComponent implements OnInit {
       routesetter: this.line.routesetter,
       setDate: this.line.setDate,
       startingPosition: this.line.startingPosition,
+      drying: this.line.drying,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
@@ -559,6 +563,7 @@ export class LineFormComponent implements OnInit {
       line.routesetter = this.lineForm.get('routesetter').value;
       line.setDate = this.lineForm.get('setDate').value;
       line.startingPosition = this.lineForm.get('startingPosition').value;
+      line.drying = this.lineForm.get('drying').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;

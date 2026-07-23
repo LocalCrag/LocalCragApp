@@ -164,6 +164,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["faName"] == "Dave Graham"
     assert res["faUsers"] == []
     assert res["startingPosition"] == "FRENCH"
+    assert res["drying"] is None
     assert res["eliminate"] is True
     assert res["traverse"] is True
     assert res["highball"] is True
@@ -1454,6 +1455,90 @@ def test_get_lines_starting_position_filters_lines(client):
     slugs = {item["slug"] for item in rv.json["items"]}
     assert slugs == {"super-spreader"}
     assert all(item["startingPosition"] == "SIT" for item in rv.json["items"])
+
+
+def test_get_lines_rejects_invalid_drying(client):
+    rv = client.get("/api/lines?drying=NOT_A_VALUE")
+    assert rv.status_code == 400
+
+
+def test_get_lines_drying_filters_lines(client):
+    from models.enums.drying_enum import DryingEnum
+
+    rv = client.get("/api/lines?drying=FAST&per_page=50")
+    assert rv.status_code == 200
+    assert rv.json["items"] == []
+
+    line: Line = Line.find_by_slug("the-vessel")
+    line.drying = DryingEnum.FAST
+    db.session.add(line)
+    db.session.commit()
+
+    rv2 = client.get("/api/lines?drying=FAST&per_page=50")
+    assert rv2.status_code == 200
+    slugs = {item["slug"] for item in rv2.json["items"]}
+    assert slugs == {"the-vessel"}
+    assert all(item["drying"] == "FAST" for item in rv2.json["items"])
+
+
+def test_create_line_with_drying(client, moderator_token):
+    line_data = {
+        "name": "Quick Dry",
+        "description": None,
+        "videos": None,
+        "authorGradeValue": 10,
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "authorRating": None,
+        "faYear": None,
+        "faDate": None,
+        "faName": None,
+        "startingPosition": "STAND",
+        "drying": "SLOW",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": False,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    assert rv.json["drying"] == "SLOW"
+    slug = rv.json["slug"]
+
+    line_data["drying"] = "FAST"
+    rv2 = client.put(f"/api/lines/{slug}", token=moderator_token, json=line_data)
+    assert rv2.status_code == 200
+    assert rv2.json["drying"] == "FAST"
+
+    line_data["drying"] = None
+    rv3 = client.put(f"/api/lines/{slug}", token=moderator_token, json=line_data)
+    assert rv3.status_code == 200
+    assert rv3.json["drying"] is None
 
 
 def test_find_lines_by_name(client, moderator_token):

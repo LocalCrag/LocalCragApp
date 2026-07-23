@@ -13,6 +13,7 @@ from marshmallow_schemas.mixins.moderator_task_count import (
     ModeratorTaskCountSchemaMixin,
 )
 from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
+from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -73,6 +74,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     routesetter = fields.String()
     setDate = fields.Date(attribute="set_date")
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
+    drying = EnumField(DryingEnum, by_value=True, allow_none=True)
     secret = fields.Boolean()
     archived = fields.Boolean()
 
