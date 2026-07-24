@@ -8,4 +8,18 @@ lc-leveled-grade-distribution {
   .p-metergroup-labels {
     flex-wrap: wrap;
   }
+
+  .leveled-grade-tag--clickable {
+    cursor: pointer;
+    transition:
+      filter 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      filter: brightness(0.88);
+      box-shadow: 0 0 0 2px rgba(46, 49, 50, 0.28);
+      transform: translateY(-1px);
+    }
+  }
 }

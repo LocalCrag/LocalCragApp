@@ -120,6 +120,7 @@
                       [fetchingObservable]="
                         cragsService.getCragGrades(crag.slug)
                       "
+                      [linesListUrl]="'/topo/' + crag.slug + '/lines'"
                     ></lc-leveled-grade-distribution>
                     <lc-ascent-count
                       [ascentCount]="crag.ascentCount"
